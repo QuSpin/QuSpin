@@ -1,3 +1,4 @@
-
-*.pyc 
+# compliled python code #
+*.pyc
+# backup files from gedit #
 *~
