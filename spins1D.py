@@ -328,7 +328,7 @@ class Hamiltonian1D:
 #	@profile(precision=6)
 	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,dtype=np.complex128):
 		if type(kblock) is int: 
-			if dtype != np.complex128 or dtype != np.complex64:
+			if dtype != np.complex128 and dtype != np.complex64:
 				print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
 				dtype=np.complex64
 		self.Static=static
