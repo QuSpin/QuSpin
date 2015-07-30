@@ -10,7 +10,7 @@ from itertools import repeat
 from array import array as vec
 
 from scipy import linalg as la # imported this for use of eigenvalue functions
-from scipy.linalg import norm # imported this to calculate the norm of vectors when doing error analysis
+from numpy.linalg import norm # imported this to calculate the norm of vectors when doing error analysis
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse.linalg  as sla	# needed for the sparse linear algebra packages
@@ -418,7 +418,7 @@ class Hamiltonian1D:
 				V+=V1
 
 				if i%2 == 0:
-					e=norm(V1,ord='fro')
+					e=norm(V1)
 				i+=1
 		return V
 
