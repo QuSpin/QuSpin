@@ -58,7 +58,7 @@ def CheckState(kblock,L,s,T=1):
 		if t < s:
 			return -1
 		elif t==s:
-			if kblock % (L/i) != 0: return -1
+			if kblock % (L/i) != 0: return -1 # need to check the shift condition 
 			return i
 
 
