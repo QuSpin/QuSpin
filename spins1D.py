@@ -325,7 +325,6 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 
 
 class Hamiltonian1D:
-#	@profile(precision=6)
 	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,dtype=np.complex128):
 		if type(kblock) is int: 
 			if dtype != np.complex128 and dtype != np.complex64:
@@ -334,12 +333,13 @@ class Hamiltonian1D:
 		self.Static=static
 		self.Dynamic=dynamic
 		self.B=Basis1D(Length,Nup=Nup,kblock=kblock,a=a)
+		self.Ns=self.B.Ns
 		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
 		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
 
-	@profile(precision=6)
+
 	def return_H(self,time=0):
-		if self.B.Ns**2 > sys.maxsize:
+		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create')
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
@@ -377,27 +377,25 @@ class Hamiltonian1D:
 		return sla.eigsh(H,k=n,sigma=sigma,which=which)
 	
 
-	@profile(precision=6)
-	def DenseEE(self,time=0):
-		if self.B.Ns**2 > sys.maxsize:
-			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
-		H=self.Static_H
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
-		denseH=H.todense()	
-		return la.eigvalsh(denseH,check_finite=False,overwrite_a=True,overwrite_b=True)
 
-	@profile(precision=6)
-	def DenseEV(self,time=0):
-		if self.B.Ns**2 > sys.maxsize:
+	def DenseEE(self,time=0):
+		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
-		denseH=H.todense()		
-		return la.eigh(denseH,check_finite=False,overwrite_a=True,overwrite_b=True)
+			H=H+J*self.Dynamic_Hs[i]	
+		return la.eigvalsh(H.todense(),overwrite_a=False,overwrite_b=False)
+
+	@profile(precision=3)
+	def DenseEV(self,time=0):
+		if self.Ns**2 > sys.maxsize:
+			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
+		H=self.Static_H
+		for i in xrange(len(self.Dynamic)):
+			J=self.Dynamic[i][2](time)
+			H=H+J*self.Dynamic_Hs[i]	
+		return la.eigh(H.todense(),overwrite_a=True,overwrite_b=True)
 
 
 
