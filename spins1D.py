@@ -249,14 +249,16 @@ def StaticH1D(B,static,dtype=np.complex128):
 		else:
 			sys.exit('StaticH: operator symbol not recognized')
 
-	ME_list=asarray(ME_list).T.tolist()
-	ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
-	ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])
-	H=coo_matrix((ME_list[0],(ME_list[1],ME_list[2])),shape=(B.Ns,B.Ns),dtype=dtype)
-	H=H.tocsr()
-	H.sum_duplicates()
-	H.eliminate_zeros()
-	return H
+	if static:
+		ME_list=asarray(ME_list).T.tolist()
+		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
+		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])
+		H=coo_matrix((ME_list[0],(ME_list[1],ME_list[2])),shape=(B.Ns,B.Ns),dtype=dtype)
+		H=H.tocsr()
+		H.sum_duplicates()
+		H.eliminate_zeros()
+		return H
+
 
 
 
@@ -300,7 +302,7 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 					sys.exit("StaticH1D warning: attemping to put non-magnetization conserving operators when this is an assumed symmetry.")
 		elif List[0] == 'const':
 			for H in enumerate(List[1]):
-				ME_list.extend([[H[1],st,st] for s in st])
+				ME_list.extend([[H[1],s,s] for s in st])
 		else:
 			sys.exit('DynamicH: operator symbol not recognized')
 
@@ -341,15 +343,22 @@ class Hamiltonian1D:
 	def return_H(self,time=0):
 		if self.B.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create')
-		H=self.Static_H
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]
 		return H.todense()
 	
 	def MatrixElement(self,Vl,Vr,time=0):
-		t=time
-		H=self.Static_H
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]
@@ -359,9 +368,13 @@ class Hamiltonian1D:
 
 
 	def dot(self,V,time=0):
-		t=time
-		H=self.Static_H
-		for i in xrange(len(self.Dynamic)):
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
+
+		for i in xrange(1,len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]
 		HV=csr_matrix.dot(H,V)
@@ -369,8 +382,12 @@ class Hamiltonian1D:
 
 
 	def SparseEV(self,time=0,n=None,sigma=None,which='SA'):
-		t=time
-		H=self.Static_H
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
+		
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]
@@ -381,7 +398,11 @@ class Hamiltonian1D:
 	def DenseEE(self,time=0):
 		if self.B.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
-		H=self.Static_H
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]
@@ -392,7 +413,11 @@ class Hamiltonian1D:
 	def DenseEV(self,time=0):
 		if self.B.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
-		H=self.Static_H
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]
@@ -405,7 +430,11 @@ class Hamiltonian1D:
 
 	def Evolve(self,V,dt,time=0,n=1,error=10**(-15)):
 		t=time
-		H=self.Static_H
+		if self.Static:
+			H=self.Static_H	
+		else:
+			J=self.Dynamic[0][2](time)
+			H=J*self.Dynamic_Hs[0]
 		if n <= 0: n=1
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
