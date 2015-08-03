@@ -19,12 +19,26 @@ import numpy as np # needed for general mathematical operators on vectors/matric
 from numpy import pi 
 from numpy import  * # importing functions from numpy so that they can be used in evolve function.
 
+from inspect import currentframe, getframeinfo #allows to grap current line number
 
 
 """
 Note: the 1D basis can be used for any dimension if the momentum states are not used.
 Later we shall add a more general version of the basis class with functionality for arbitrary lattices.
 """
+
+
+# check binary operations
+def int2bin(n,L):
+	""" Convert an integer n to a binary vector 
+	padded with zeros up to the appropriate length L """
+
+	return (((fliplr(n,L) & (1 << np.arange(L)))) > 0).astype(int)
+
+def bin2int(v):
+	""" Convert a binary vector v to an integer """
+
+	return np.sum([v[i]*2**i for i in range(len(v))])
 
 def ncr(n, r):
 # this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
@@ -49,6 +63,17 @@ def shift(int_type,shift,period):
 		else:
 			return (int_type << shift%period) & (2**period-1) | ((int_type & (2**period-1)) >> (period-(shift%period)))
 
+def fliplr(int_type,length):
+# this function flips the bits of an integer around the centre, e.g. 1010 -> 0101
+# (generator of) parity symmetry
+    return sum(1<<(length-1-i) for i in range(length) if int_type>>i&1)
+
+def flip_all(int_type,length):
+# this function flips all bits
+# (generator of) inversion symmetry
+    lower = 0;
+    upper = length;
+    return int_type^((1<<upper)-1)&~((1<<lower)-1)
 
 def CheckState(kblock,L,s,T=1):
 # this is a function defined in Ander's paper. It is used to check if the integer inputed is the marker state for a state with momentum k.
@@ -61,11 +86,52 @@ def CheckState(kblock,L,s,T=1):
 			if kblock % (L/i) != 0: return -1
 			return i
 
+def CheckStatePZ(pblock,zblock,L,s,T=1):
+# parity Check_State
+    t = s
+    i = 0
+    t = fliplr(t,L)
+    if t < s:
+    	return -1
+    elif t == s:
+    	if pblock == -1: return -1
+    	i = 1
+    t = flip_all(t,L)
+    if t < s:
+    	return -1
+    elif t == s:
+    	if (pblock == -1 and zblock == 1) or (pblock == 1 and zblock == -1): return -1
+    	i = 1
+    return 2			 
+		
+
+def CheckStateP(pblock,L,s,T=1):
+# parity Check_State
+    t = s
+    i = 1
+    t = fliplr(t,L)
+    if t < s:
+    	return -1
+    elif t == s:
+    	if pblock == -1: return -1
+    	return i 
+    return 2	
+
+def CheckStateZ(zblock,L,s,T=1):
+# inversion Check_State
+    t = s
+    i = 2 #alternative one can put i=0 but then one needs to modify the basis class to accept it
+    t = flip_all(t,L)
+    if t < s:
+    	return -1
+    #no compatibility condition for inversion symmetry  
+    return i			
+
 
 
 
 class Basis1D:
-	def __init__(self,L,Nup=None,kblock=None,a=1):
+	def __init__(self,L,Nup=None,pblock=None,zblock=None,a=1):
 		self.L=L
 		if type(Nup) is int:
 			if Nup <=0 or Nup >= L: sys.exit("Basis1D error: Nup must fall inbetween 0 and L")
@@ -86,26 +152,75 @@ class Basis1D:
 			self.Mcon=False
 			zbasis=xrange(self.Ns)
 
-		if type(kblock) is int:
-			self.kblock=kblock
-			self.k=2*pi*a*kblock/L
-			self.Kcon=True
-			self.R=vec('I')
-			self.basis=vec('L')
+		#print pblock, zblock	
+
+
+		if type(pblock) is int and type(zblock) is int:
+		   self.Pcon = True
+		   self.Zcon = True
+		   self.p = pblock
+		   self.z = zblock
+		   self.Npz = []
+		   self.basis = []
+		   for s in zbasis:
+		   	   rp = CheckStateP(pblock,self.L,s,T=a)
+		   	   rz = CheckStateZ(zblock,self.L,s,T=a)
+		   	   rpz = CheckStatePZ(pblock,zblock,self.L,s,T=a)
+		   	   print rp, rz, rpz
+		   	   if rpz > 0:
+		   	   	  self.Npz.append(4)
+		   	   	  self.basis.append(s)
+		   	   	  if rpz == 1:
+		   	   	  	self.Npz.append(8)
+		   	   self.Ns=len(self.basis)
+		elif type(pblock) is int:
+			self.Pcon = True
+			self.Zcon = False
+			self.p = pblock
+			self.z = zblock
+			self.Np = []
+			self.basis = []
 			for s in zbasis:
-				r=CheckState(kblock,L,s,T=a)
-				if r > 0:
-					self.R.append(r)
+				rp=CheckStateP(pblock,self.L,s,T=a)
+				print rp
+				if rp > 0:
+					self.Np.append(2)
 					self.basis.append(s)
-			self.Ns=len(self.basis)
+					if rp == 1:
+						self.Np.append(4)
+					#print s
+				self.Ns=len(self.basis)
+		elif type(zblock) is int:
+			self.Pcon = False
+			self.Zcon = True
+			self.p = pblock
+			self.z = zblock
+			#self.Rz = []
+			self.basis = []
+			#print zbasis
+			for s in zbasis:
+				rz=CheckStateZ(zblock,self.L,s,T=a)
+				if rz > 0:
+					#self.Rz.append(rz)
+					self.basis.append(s)
+					#print s
+				self.Ns=len(self.basis)	
 		else: 
-			self.Kcon=False
-			self.basis=zbasis
-			
+			self.Pcon=False
+			self.Zcon=False
+			self.basis=zbasis 	
+		#print self.Rz	
+
+		#for s in zbasis:
+		#		print s, int2bin(s,self.L)
+
+
 
 
 	def FindZstate(self,s):
-		if self.Kcon or self.Mcon:
+		if self.Mcon:
+			#cf = currentframe()
+			#print "There was Kcon here; Line:", cf.f_lineno 
 			bmin=0;bmax=self.Ns-1
 			while True:
 				b=(bmin+bmax)/2
@@ -119,19 +234,24 @@ class Basis1D:
 					return -1
 		else: return s
 
-
 	def RefState(self,s):
-		t=s; r=s; l=0;
-		for i in xrange(1,self.L+1,self.a):
-			t=shift(t,-self.a,self.L)
-			if t < r:
-				r=t; l=i;
-
-		return r,l
-
-
-
-
+		t=s; r=s; g=0; q=0;
+		if self.Pcon and self.Zcon:
+			t = fliplr(t,self.L)
+			if t < s:
+				r=t; q=1;
+				t = flip_all(t,self.L)
+				if t < s:
+					r=t; g=1;
+		elif self.Pcon:
+			t = fliplr(t,self.L)
+			if t < s:
+				r=t; q=1;
+		elif self.Zcon:
+			t = flip_all(t,self.L)
+			if t < s:
+				r=t; g=1;
+		return r,q,g
 
 
 def findSz(B,J,st,i,j):
@@ -149,18 +269,25 @@ def findSxy(B,J,st,i,j):
 	if s1 == s2:
 		return [0,st,st]
 	else:
-		if B.Kcon:
-			s2,l=B.RefState(s2)
+		if B.Pcon or B.Zcon:
+		   	s2,q,g=B.RefState(s2)
+		   	#print s1,exchangeBits(s1,i,j), s2, g
 			stt=B.FindZstate(s2)
 			if stt >= 0:
-				ME=sqrt(float(B.R[st])/B.R[stt])*0.5*J*exp(-1j*B.k*l)
+				#print s1,s2
+				if B.Pcon and B.Zcon:
+					ME = sqrt( float( B.Npz[stt]/B.Npz[st] )  )*0.5*J*B.p**(q)*B.z**(g)
+				elif B.Pcon:
+						ME = sqrt( float( B.Np[stt]/(B.Np[st]) ) )*0.5*J*B.p**(q)
+				elif B.Zcon:
+					ME =  0.5*J*B.z**(g)		
 			else:
-				ME=0.0
-				stt=0
+				ME = 0.0
+				stt = 0		
 		else:
 			stt=B.FindZstate(s2)
 			ME=0.5*J
-
+		#print [ME,st,stt]
 		return [ME,st,stt]
 
 
@@ -176,33 +303,43 @@ def findhz(B,h,st,i):
 
 
 
-def findhxy(B,hx,hy,st,i):
+def findhxy(B,h,st,i):
 	s1=B.basis[st]
 	s2=flipBit(s1,i)
 	if testBit(s2,i) == 1:
-		if B.Kcon:
-			s2,l=B.RefState(s2)
+		if B.Pcon or B.Zcon:
+			s2,q,g=B.RefState(s2)
 			stt=B.FindZstate(s2)
 			if stt >= 0:
-				ME=-sqrt(float(B.R[st])/B.R[stt])*0.5*(hx-1j*hy)*exp(-1j*B.k*l)
-			else: 
-				ME=0.0
+				if B.Pcon and B.Zcon:
+					ME=sqrt( B.Npz[stt]/B.Npz[st] )*0.5*(h[0]-1j*h[1])*B.p**(q)*B.z**(g)
+				elif B.Pcon:
+					ME=sqrt(B.Np[stt]/(B.Np[st]))*0.5*(h[0]-1j*h[1])*B.p**(q)
+				elif B.Zcon:
+					ME=0.5*(h[0]-1j*h[1])*B.z**(g)
+			else:
+				ME = 0.0
 				stt=0
 		else:
 			stt=B.FindZstate(s2)
-			ME=-0.5*(hx-1j*hy)
+			ME=-0.5*(h[0]-1j*h[1])
 	else:
-		if B.Kcon:
-			s2,l=B.RefState(s2)
+		if B.Pcon or B.Zcon:
+			s2,q,g=B.RefState(s2)
 			stt=B.FindZstate(s2)
 			if stt >= 0:
-				ME=-sqrt(float(B.R[st])/B.R[stt])*0.5*(hx+1j*hy)*exp(-1j*B.k*l)
+				if B.Pcon and B.Zcon:
+					ME=sqrt( B.Npz[stt]/B.Npz[st] )*0.5*(h[0]+1j*h[1])*B.p**(q)*B.z**(g)
+				elif B.Pcon:
+					ME=sqrt(B.Np[stt]/(B.Np[st]))*0.5*(h[0]+1j*h[1])*B.p**(q)
+				elif B.Zcon:
+					ME=0.5*(h[0]+1j*h[1])*B.z**(g)
 			else: 
 				ME=0.0
 				stt=0
 		else:
 			stt=B.FindZstate(s2)
-			ME=-0.5*(hx+1j*hy)
+			ME=-0.5*(h[0]+1j*h[1])
 		
 	return [ME,st,stt]
 
@@ -326,14 +463,14 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 
 class Hamiltonian1D:
 #	@profile(precision=6)
-	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,dtype=np.complex128):
-		if type(kblock) is int: 
+	def __init__(self,static,dynamic,Length,Nup=None,pblock=None,zblock=None,a=1,dtype=np.complex128):
+		if type(pblock) is int: 
 			if dtype != np.complex128 and dtype != np.complex64:
 				print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
 				dtype=np.complex64
 		self.Static=static
 		self.Dynamic=dynamic
-		self.B=Basis1D(Length,Nup=Nup,kblock=kblock,a=a)
+		self.B=Basis1D(Length,Nup=Nup,pblock=pblock,zblock=zblock,a=a)
 		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
 		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
 
