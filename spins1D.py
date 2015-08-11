@@ -143,7 +143,7 @@ def CheckStatePZ(z,p,s,L,rpz=-1):
 		t=s
 		t=fliplr(t,L)
 		if t > s:
-			rpz=4
+			rpz=2
 		elif t==s:
 			if p != -1:
 				rpz=8
@@ -161,6 +161,10 @@ def CheckStatePZ(z,p,s,L,rpz=-1):
 				rpz=8
 			else:
 				rpz=-1
+		elif t > s:
+			rpz=4
+		else:
+			rpz=-1
 
 
 	return t,rpz
@@ -204,10 +208,12 @@ class Basis1D:
 			self.a=a
 			zbasis=vec('L')
 			s=sum([2**i for i in xrange(0,Nup)])
+#			print int2bin(s,L)
 			zbasis.append(s)
 			for i in xrange(self.Ns-1):
 				t = (s | (s - 1)) + 1
 				s = t | ((((t & -t) / (s & -s)) >> 1) - 1) 
+#				print int2bin(s,L)
 				zbasis.append(s)
 		else:
 			self.Ns=2**L
@@ -226,11 +232,11 @@ class Basis1D:
 		   self.Npz = []
 		   self.basis = []
 		   for s in zbasis:
-					print int2bin(s,self.L)
+#					print int2bin(s,self.L)
 #		   	   rp = CheckStateP(pblock,self.L,s)
 #		   	   rz = CheckStateZ(zblock,self.L,s)
 					t,rpz = CheckStatePZ(pblock,zblock,s,self.L)
-					print rpz
+#					print rpz
 					if rpz > 0:
 						self.basis.append(s)
 						self.Npz.append(rpz)
@@ -305,11 +311,18 @@ class Basis1D:
 		t=s; r=s; g=0; q=0;
 		if self.Pcon and self.Zcon:
 			t = flip_all(t,self.L)
-			if t < s:
-				r=t; g=1;
-				t = fliplr(t,self.L)
-				if t < s:
-					r=t; q=1;
+			if t < r:
+				r=t; g=1;q=0;
+
+			t=s
+			t = fliplr(t,self.L)
+			if t < r:
+				r=t; q=1; g=0;
+			t=flip_all(t,self.L)
+
+			if t < r:
+				r=t; q=1; g=1;
+			
 		elif self.Pcon:
 			t = fliplr(t,self.L)
 			if t < s:
@@ -318,6 +331,7 @@ class Basis1D:
 			t = flip_all(t,self.L)
 			if t < s:
 				r=t; g=1;
+
 		return r,q,g
 
 
@@ -339,7 +353,7 @@ def findSxy(B,J,st,i,j):
 		if B.Pcon or B.Zcon:
 			s2,q,g=B.RefState(s2)
 			stt=B.FindZstate(s2)
-			print st,int2bin(s1,B.L),int2bin(exchangeBits(s1,i,j),B.L), stt,int2bin(s2,B.L), q, g, [i,j]
+#			print st,int2bin(s1,B.L),int2bin(exchangeBits(s1,i,j),B.L), stt,int2bin(s2,B.L), q, g, [i,j]
 			if stt >= 0:
 				#print s1,s2
 				if B.Pcon and B.Zcon:
