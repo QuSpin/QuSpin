@@ -147,6 +147,7 @@ def CheckStatePZ(z,p,s,L,rpz=-1):
 		elif t==s:
 			if p != -1:
 				rpz=8
+				return t, rpz 
 			else:
 				rpz=-1
 		else:
