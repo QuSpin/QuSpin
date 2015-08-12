@@ -85,24 +85,7 @@ def CheckState(kblock,L,s,T=1):
 		elif t==s:
 			if kblock % (L/i) != 0: return -1 # need to check the shift condition 
 			return i
-"""
-def CheckStatePZ(pblock,zblock,L,s,T=1):
-# parity Check_State
-    t = s
-    i = 2
-    t = fliplr(t,L)
-    if t < s:
-    	return -1
-    elif t == s:
-    	if pblock == -1: return -1
-    	i = 1
-    t = flip_all(t,L)
-    if t < s:
-    	return -1
-    elif t == s:
-    	if (pblock == -1 and zblock == 1) or (pblock == 1 and zblock == -1): return -1
-    	i = 1
-    return i			 
+ 
 		
 
 def CheckStateP(pblock,L,s,T=1):
@@ -126,7 +109,7 @@ def CheckStateZ(zblock,L,s,T=1):
     	return -1
     #no compatibility condition for inversion symmetry  
     return i			
-"""
+
 
 
 
@@ -134,6 +117,7 @@ def CheckStatePZ(z,p,s,L,rpz=-1):
 
 	t=s
 	t=flip_all(t,L)
+	print int2bin(t,L), int2bin(s,L)
 	if t > s:
 		rpz=2
 	else:
@@ -170,9 +154,29 @@ def CheckStatePZ(z,p,s,L,rpz=-1):
 
 	return t,rpz
 	
+
+def CheckStatePandZ(pz,s,L,rpz=-1):
+
+	t=s
+	#print pz, s, L
+	#print int2bin(t,L), int2bin(s,L)
+	t=fliplr(t,L)
+	t=flip_all(t,L)
+	
+	if t==s:
+		if pz != -1:
+			rpz=4
+		else:
+			rpz=-1
+	elif t > s:
+		rpz=2
+	else:
+		rpz=-1
+
+	return t,rpz
 		
 
-
+'''
 
 def CheckStateP(p,s,L,rp=-1):
 	t=s
@@ -195,11 +199,11 @@ def CheckStateZ(z,s,L,rz=-1):
 		rz=2;
 
 	return t,rz;
-
+'''
 
 
 class Basis1D:
-	def __init__(self,L,Nup=None,pblock=None,zblock=None,a=1):
+	def __init__(self,L,Nup=None,pblock=None,zblock=None,pzblock=None,a=1):
 		self.L=L
 		if type(Nup) is int:
 			if Nup <=0 or Nup >= L: sys.exit("Basis1D error: Nup must fall inbetween 0 and L")
@@ -228,6 +232,7 @@ class Basis1D:
 		if type(pblock) is int and type(zblock) is int:
 		   self.Pcon = True
 		   self.Zcon = True
+		   self.PZcon = False
 		   self.p = pblock
 		   self.z = zblock
 		   self.Npz = []
@@ -249,13 +254,14 @@ class Basis1D:
 		elif type(pblock) is int:
 			self.Pcon = True
 			self.Zcon = False
+			self.PZcon = False
 			self.p = pblock
 			self.z = zblock
 			self.Np = []
 			self.basis = []
 			for s in zbasis:
 				rp=CheckStateP(pblock,self.L,s,T=a)
-				print rp
+				#print rp
 				if rp > 0:
 					self.basis.append(s)
 					if rp == 1:
@@ -267,6 +273,7 @@ class Basis1D:
 		elif type(zblock) is int:
 			self.Pcon = False
 			self.Zcon = True
+			self.PZcon = False
 			self.p = pblock
 			self.z = zblock
 			#self.Rz = []
@@ -278,10 +285,28 @@ class Basis1D:
 					#self.Rz.append(rz)
 					self.basis.append(s)
 					#print s
+				self.Ns=len(self.basis)
+		elif type(pzblock) is int:
+			self.PZcon = True
+			self.Zcon = False
+			self.Pcon = False
+			self.pz = pzblock
+			self.Npz = []
+			self.basis = []
+			#print zbasis
+			for s in zbasis:
+				t, rpz = CheckStatePandZ(pzblock,s,self.L)
+				#print [rpz],s,t
+				if rpz > 0:
+					#self.Rz.append(rz)
+					self.basis.append(s)
+					self.Npz.append(rpz)
+					#print s
 				self.Ns=len(self.basis)	
 		else: 
 			self.Pcon=False
 			self.Zcon=False
+			self.PZcon=False
 			self.basis=zbasis 	
 		#print self.Rz	
 
@@ -309,7 +334,7 @@ class Basis1D:
 		else: return s
 
 	def RefState(self,s):
-		t=s; r=s; g=0; q=0;
+		t=s; r=s; g=0; q=0; qg=0;
 		if self.Pcon and self.Zcon:
 			t = flip_all(t,self.L)
 			if t < r:
@@ -332,8 +357,13 @@ class Basis1D:
 			t = flip_all(t,self.L)
 			if t < s:
 				r=t; g=1;
+		elif self.PZcon:
+			t = fliplr(t,self.L)
+			t = flip_all(t,self.L)
+			if t < s:
+				r=t; qg=1;		
 
-		return r,q,g
+		return r,q,g,qg
 
 
 def findSz(B,J,st,i,j):
@@ -351,8 +381,8 @@ def findSxy(B,J,st,i,j):
 	if s1 == s2:
 		return [0,st,st]
 	else:
-		if B.Pcon or B.Zcon:
-			s2,q,g=B.RefState(s2)
+		if B.Pcon or B.Zcon or B.PZcon:
+			s2,q,g,qg=B.RefState(s2)
 			stt=B.FindZstate(s2)
 #			print st,int2bin(s1,B.L),int2bin(exchangeBits(s1,i,j),B.L), stt,int2bin(s2,B.L), q, g, [i,j]
 			if stt >= 0:
@@ -362,7 +392,9 @@ def findSxy(B,J,st,i,j):
 				elif B.Pcon:
 						ME = sqrt( float(B.Np[stt])/(B.Np[st]) )*0.5*J*B.p**(q)
 				elif B.Zcon:
-					ME =  0.5*J*B.z**(g)		
+					ME =  0.5*J*B.z**(g)
+				elif B.PZcon:
+					ME = sqrt( float(B.Npz[stt])/B.Npz[st]   )*0.5*J*B.pz**(qg)		
 			else:
 				ME = 0.0
 				stt = 0		
@@ -399,6 +431,8 @@ def findhxy(B,hx,hy,st,i):
 					ME=sqrt(float(B.Np[stt])/(B.Np[st]))*0.5*(hx-1j*hy)*B.p**(q)
 				elif B.Zcon:
 					ME=0.5*(hx-1j*hy)*B.z**(g)
+				elif B.PZcon:
+				 	ME=sqrt( float(B.Npz[stt])/B.Npz[st] )*0.5*(hx-1j*hy)*B.pz**(qg)
 			else:
 				ME = 0.0
 				stt=0
@@ -416,6 +450,8 @@ def findhxy(B,hx,hy,st,i):
 					ME=sqrt( float(B.Np[stt])/(B.Np[st]))*0.5*(hx+1j*hy)*B.p**(q)
 				elif B.Zcon:
 					ME=0.5*(hx+1j*hy)*B.z**(g)
+				elif B.PZcon:
+				 	ME=sqrt( float(B.Npz[stt])/B.Npz[st] )*0.5*(hx+1j*hy)*B.pz**(qg)
 			else: 
 				ME=0.0
 				stt=0
@@ -545,14 +581,14 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 
 class Hamiltonian1D:
 #	@profile(precision=6)
-	def __init__(self,static,dynamic,Length,Nup=None,pblock=None,zblock=None,a=1,dtype=np.complex128):
+	def __init__(self,static,dynamic,Length,Nup=None,pblock=None,zblock=None,pzblock=None,a=1,dtype=np.complex128):
 		if type(pblock) is int: 
 			if dtype != np.complex128 and dtype != np.complex64:
 				print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
 				dtype=np.complex64
 		self.Static=static
 		self.Dynamic=dynamic
-		self.B=Basis1D(Length,Nup=Nup,pblock=pblock,zblock=zblock,a=a)
+		self.B=Basis1D(Length,Nup=Nup,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
 		self.Ns=self.B.Ns
 		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
 		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
