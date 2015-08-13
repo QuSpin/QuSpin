@@ -4,7 +4,7 @@ from BitOps import * # loading modules for bit operations.
 
 #python 2.7 modules
 import operator as op # needed to calculate n choose r in function ncr(n,r).
-from memory_profiler import profile # needed for the @profile functions which profile the memory usage of a particular function.
+#from memory_profiler import profile # needed for the @profile functions which profile the memory usage of a particular function.
 from itertools import repeat
 
 from array import array as vec
@@ -343,7 +343,6 @@ class Hamiltonian1D:
 		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
 		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
 
-	@profile
 	def return_H(self,time=0):
 		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create')
@@ -413,7 +412,6 @@ class Hamiltonian1D:
 		denseH=H.todense()
 		return eigh(H.todense(),JOBZ='N')
 
-	@profile(precision=3)
 	def DenseEV(self,time=0):
 		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
