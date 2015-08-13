@@ -8,12 +8,13 @@ from memory_profiler import profile # needed for the @profile functions which pr
 from itertools import repeat
 
 from array import array as vec
-
+from py_lapack import eigh
 from scipy import linalg as la # imported this for use of eigenvalue functions
 from numpy.linalg import norm # imported this to calculate the norm of vectors when doing error analysis
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse.linalg  as sla	# needed for the sparse linear algebra packages
+from numpy import int32, int64, float32, float64, complex64, complex128
 
 import numpy as np # needed for general mathematical operators on vectors/matrices
 from numpy import pi 
@@ -50,7 +51,7 @@ def shift(int_type,shift,period):
 			return (int_type << shift%period) & (2**period-1) | ((int_type & (2**period-1)) >> (period-(shift%period)))
 
 
-def CheckState(kblock,L,s,T=1):
+def CheckStateT(kblock,L,s,T=1):
 # this is a function defined in Ander's paper. It is used to check if the integer inputed is the marker state for a state with momentum k.
 	t=s
 	for i in xrange(1,L+1,T):
@@ -93,7 +94,7 @@ class Basis1D:
 			self.R=vec('I')
 			self.basis=vec('L')
 			for s in zbasis:
-				r=CheckState(kblock,L,s,T=a)
+				r=CheckStateT(kblock,L,s,T=a)
 				if r > 0:
 					self.R.append(r)
 					self.basis.append(s)
@@ -283,7 +284,7 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 					J=repeat(bond[0], B.Ns)
 					i=repeat(bond[1], B.Ns)
 					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:findSz(B,J,st,i,j),J,st,i,j))
+					ME_list.extend(map(lambda J,st,i,j:findSxy(B,J,st,i,j),J,st,i,j))
 		elif List[0] == 'h':
 			for H in enumerate(List[1]):
 				if H[1][2] != 0:
@@ -327,9 +328,12 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 class Hamiltonian1D:
 	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,dtype=np.complex128):
 		if type(kblock) is int: 
-			if dtype != np.complex128 and dtype != np.complex64:
+			if dtype != complex128 and dtype != complex64:
 				print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
 				dtype=np.complex64
+		if dtype not in [float32, float64, complex64, complex128]:
+			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
+
 		self.Static=static
 		self.Dynamic=dynamic
 		self.B=Basis1D(Length,Nup=Nup,kblock=kblock,a=a)
@@ -337,7 +341,7 @@ class Hamiltonian1D:
 		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
 		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
 
-
+	@profile
 	def return_H(self,time=0):
 		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create')
@@ -385,7 +389,8 @@ class Hamiltonian1D:
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]	
-		return la.eigvalsh(H.todense(),overwrite_a=False,overwrite_b=False)
+		denseH=H.todense()
+		return eigh(H.todense(),JOBZ='N')
 
 	@profile(precision=3)
 	def DenseEV(self,time=0):
@@ -395,7 +400,8 @@ class Hamiltonian1D:
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]	
-		return la.eigh(H.todense(),overwrite_a=True,overwrite_b=True)
+		denseH=H.todense()
+		return eigh(denseH)
 
 
 
