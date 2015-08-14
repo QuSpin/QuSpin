@@ -22,10 +22,31 @@ from numpy import  * # importing functions from numpy so that they can be used i
 
 
 
-"""
-Note: the 1D basis can be used for any dimension if the momentum states are not used.
-Later we shall add a more general version of the basis class with functionality for arbitrary lattices.
-"""
+
+# classes for exceptions:
+
+class BasisError(Exception):
+	def __init__(self,message):
+		self.message=message
+	def __str__(self):
+		return self.message
+
+
+class StaticHError(Exception):
+	def __init__(self,message):
+		self.message=message
+	def __str__(self):
+		return self.message
+
+class DynamicHError(Exception):
+	def __init__(self,message):
+		self.message=message
+	def __str__(self):
+		return self.message
+
+
+
+
 
 def ncr(n, r):
 # this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
@@ -35,6 +56,102 @@ def ncr(n, r):
     denom = reduce(op.mul, xrange(1, r+1))
     return numer//denom
 
+
+
+
+# Parent Class Basis: This class is the basic template for all other basis classes. It only has Magnetization symmetry as an option.
+# all 'child' classes will inherit its functionality, but that functionality can be overwritten in the child class.
+# Basis classes must have the functionality of finding the matrix elements built in. This way, the function for constructing 
+# the hamiltonian is universal and the basis object takes care of constructing the correct matrix elements based on its internal symmetry. 
+class Basis:
+	def __init__(self,L,Nup=None):
+		self.L=L
+		if type(Nup) is int:
+			if Nup <=0 or Nup >= L: sys.exit("Basis1D error: Nup must fall inbetween 0 and L")
+			self.Nup=Nup
+			self.Mcon=True 
+			self.symm=True # Symmetry exsists so one must use the search functionality when calculating matrix elements
+			self.Ns=ncr(L,Nup) 
+			zbasis=vec('L')
+			s=sum([2**i for i in xrange(0,Nup)])
+			zbasis.append(s)
+			for i in xrange(self.Ns-1):
+				t = (s | (s - 1)) + 1
+				s = t | ((((t & -t) / (s & -s)) >> 1) - 1) 
+				zbasis.append(s)
+		else:
+			self.Ns=2**L
+			self.a=a
+			self.Mcon=False
+			self.symm=False # No symmetries here. at all so each integer corresponds to the number in the hilbert space.
+			zbasis=xrange(self.Ns)
+
+		self.basis=zbasis
+
+
+	def FindZstate(self,s):
+		if self.symm:
+			bmin=0;bmax=self.Ns-1
+			while True:
+				b=(bmin+bmax)/2
+				if s < self.basis[b]:
+					bmax=b-1
+				elif s > self.basis[b]:
+					bmin=b+1
+				else:
+					return b
+				if bmin > bmax:
+					return -1
+		else: return s
+
+	def findSz(self,J,st,i,j):
+		s1=self.basis[st]
+		s2=exchangeBits(s1,i,j)
+		if s1 == s2:
+			return [0.25*J,st,st]
+		else:
+			return [-0.25*J,st,st]
+
+	def findSxy(self,J,st,i,j):
+		s1=self.basis[st]
+		s2=exchangeBits(s1,i,j)
+		if s1 == s2:
+			return [0,st,st]
+		else:
+			stt=self.FindZstate(s2)
+			ME=0.5*J
+		return [ME,st,stt]
+
+	def findhz(self,h,st,i):
+		s1=self.basis[st]
+		if testBit(s1,i) == 1:
+			return [-0.5*h,st,st]
+		else:
+			return [0.5*h,st,st]
+
+	def findhxy(self,hx,hy,st,i):
+		if not self.Mcon:
+			raise BasisError('transverse field terms present when Magnetization is conserved.')
+		s1=self.basis[st]
+		s2=flipBit(s1,i)
+		if testBit(s2,i) == 1:
+			stt=B.FindZstate(s2)
+			ME=-0.5*(hx-1j*hy)
+		else:
+			stt=B.FindZstate(s2)
+			ME=-0.5*(hx+1j*hy)
+				
+		return [ME,st,stt]
+
+
+
+
+
+
+
+
+# First child class, this is the momentum conserving basis:
+# this functions are needed for constructing the momentum states:
 
 
 def shift(int_type,shift,period):
@@ -63,34 +180,16 @@ def CheckStateT(kblock,L,s,T=1):
 			return i
 
 
-
-
-class Basis1D:
+class BasisT(Basis):
 	def __init__(self,L,Nup=None,kblock=None,a=1):
-		self.L=L
-		if type(Nup) is int:
-			if Nup <=0 or Nup >= L: sys.exit("Basis1D error: Nup must fall inbetween 0 and L")
-			self.Nup=Nup
-			self.Mcon=True
-			self.Ns=ncr(L,Nup)
-			self.a=a
-			zbasis=vec('L')
-			s=sum([2**i for i in xrange(0,Nup)])
-			zbasis.append(s)
-			for i in xrange(self.Ns-1):
-				t = (s | (s - 1)) + 1
-				s = t | ((((t & -t) / (s & -s)) >> 1) - 1) 
-				zbasis.append(s)
-		else:
-			self.Ns=2**L
-			self.a=a
-			self.Mcon=False
-			zbasis=xrange(self.Ns)
-
+		Basis.__init__(self,L,Nup)
+		self.a=a
+		zbasis=self.basis
 		if type(kblock) is int:
 			self.kblock=kblock
 			self.k=2*pi*a*kblock/L
 			self.Kcon=True
+			self.symm=True # even if Mcon=False there is a symmetry therefore we must search through basis list.
 			self.R=vec('I')
 			self.basis=vec('L')
 			for s in zbasis:
@@ -100,26 +199,8 @@ class Basis1D:
 					self.basis.append(s)
 			self.Ns=len(self.basis)
 		else: 
-			self.Kcon=False
-			self.basis=zbasis
-			
-
-
-	def FindZstate(self,s):
-		if self.Kcon or self.Mcon:
-			bmin=0;bmax=self.Ns-1
-			while True:
-				b=(bmin+bmax)/2
-				if s < self.basis[b]:
-					bmax=b-1
-				elif s > self.basis[b]:
-					bmin=b+1
-				else:
-					return b
-				if bmin > bmax:
-					return -1
-		else: return s
-
+			self.Kcon=False # do not change symm to False since there may be Magnetization conservation.
+		
 
 	def RefState(self,s):
 		t=s; r=s; l=0;
@@ -130,11 +211,59 @@ class Basis1D:
 
 		return r,l
 
+	# don't need to override diagonal matrix elements
+	# overriding off diagonal matrix element functions for this more specific basis.
+	# if there are no conservation laws specified then it calls the parent class function.
+	def findSxy(self,J,st,i,j):
+		if self.Kcon:
+			s1=self.basis[st]
+			s2=exchangeBits(s1,i,j)
+			if s1 == s2:
+				ME=0.0;	stt=st
+			else:
+				s2,l=self.RefState(s2)
+				stt=self.FindZstate(s2)
+				if stt >= 0:
+					ME=sqrt(float(self.R[st])/self.R[stt])*0.5*J*exp(-1j*self.k*l)
+				else:
+					ME=0.0;	stt=0
+			return [ME,st,stt]
+		else:
+			return Basis.findSxy(self,J,st,i,j)
+
+
+	def findhxy(self,hx,hy,st,i):
+		if not self.Mcon:
+			raise BasisError('transverse field terms present when Magnetization is conserved.')
+		if self.Kcon:
+			s1=self.basis[st]
+			s2=flipBit(s1,i)
+			updown=testBit(s2,i)
+			s2,l=self.RefState(s2)
+			stt=self.FindZstate(s2)
+			if stt >= 0:
+				if updown == 1:
+					ME=-sqrt(float(self.R[st])/self.R[stt])*0.5*(hx-1j*hy)*exp(-1j*self.k*l)
+				else:
+					ME=-sqrt(float(self.R[st])/self.R[stt])*0.5*(hx+1j*hy)*exp(-1j*self.k*l)
+			else: 
+				ME=0.0
+				stt=0
+			return [ME,st,stt]
+		else:
+			return Basis.findhxy(self,hx,hy,st,i)
+
+
+		
+
+
+	
 
 
 
 
 
+"""
 def findSz(B,J,st,i,j):
 	s1=B.basis[st]
 	s2=exchangeBits(s1,i,j)
@@ -207,11 +336,11 @@ def findhxy(B,hx,hy,st,i):
 		
 	return [ME,st,stt]
 
+"""
 
 
 
-
-def StaticH1D(B,static,dtype=np.complex128):
+def StaticH(B,static,dtype=np.complex128):
 	ME_list=[]
 	st=xrange(B.Ns)
 	for i in xrange(len(static)):
@@ -222,33 +351,31 @@ def StaticH1D(B,static,dtype=np.complex128):
 					J=repeat(bond[0], B.Ns)
 					i=repeat(bond[1], B.Ns)
 					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:findSz(B,J,st,i,j),J,st,i,j))
+					ME_list.extend(map(lambda J,st,i,j:B.findSz(J,st,i,j),J,st,i,j))
 		elif List[0] == 'xy':
 			for bond in List[1]:
 				if bond[0] != 0:
 					J=repeat(bond[0], B.Ns)
 					i=repeat(bond[1], B.Ns)
 					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:findSxy(B,J,st,i,j),J,st,i,j))
+					ME_list.extend(map(lambda J,st,i,j:B.findSxy(J,st,i,j),J,st,i,j))
 		elif List[0] == 'h':
 			for H in enumerate(List[1]):
 				if H[1][2] != 0:
 					i=repeat(H[0], B.Ns)
 					h=repeat(H[1][2], B.Ns)
-					ME_list.extend(map(lambda h,st,i:findhz(B,h,st,i),h,st,i))
+					ME_list.extend(map(lambda h,st,i:B.findhz(h,st,i),h,st,i))
 				if B.Mcon == False:
 					if H[1][0] != 0 or H[1][1] != 0:
 						i=repeat(H[0], B.Ns)
 						hx=repeat(H[1][0], B.Ns)
 						hy=repeat(H[1][1], B.Ns)
-						ME_list.extend(map(lambda hx,hy,st,i:findhxy(B,hx,hy,st,i),hx,hy,st,i))
-				elif H[1][0] != 0 or H[1][1] != 0 :
-					sys.exit("StaticH1D warning: attemping to put non-magnetization conserving operators when this is an assumed symmetry.")
+						ME_list.extend(map(lambda hx,hy,st,i:B.findhxy(hx,hy,st,i),hx,hy,st,i))
 		elif List[0] == 'const':
 			for H in enumerate(List[1]):
 				ME_list.extend([[H[1],st,st] for s in st])
 		else:
-			sys.exit('StaticH: operator symbol not recognized')
+			raise StaticHError("StaticH doesn't support symbol: "+List[0]) 
 
 	if static:
 		ME_list=asarray(ME_list).T.tolist()
@@ -258,7 +385,7 @@ def StaticH1D(B,static,dtype=np.complex128):
 		H=H.tocsr()
 		H.sum_duplicates()
 		H.eliminate_zeros()
-		return H
+	return H
 
 
 
@@ -267,7 +394,7 @@ def StaticH1D(B,static,dtype=np.complex128):
 
 
 
-def DynamicHs1D(B,dynamic,dtype=np.complex128):
+def DynamicHs(B,dynamic,dtype=np.complex128):
 	Dynamic_Hs=[]
 	st=[ k for k in xrange(B.Ns) ]
 	for i in xrange(len(dynamic)):
@@ -279,33 +406,31 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 					J=repeat(bond[0], B.Ns)
 					i=repeat(bond[1], B.Ns)
 					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:findSz(B,J,st,i,j),J,st,i,j))
+					ME_list.extend(map(lambda J,st,i,j:B.findSz(J,st,i,j),J,st,i,j))
 		elif List[0] == 'xy':
 			for bond in List[1]:
 				if bond[0] != 0:
 					J=repeat(bond[0], B.Ns)
 					i=repeat(bond[1], B.Ns)
 					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:findSxy(B,J,st,i,j),J,st,i,j))
+					ME_list.extend(map(lambda J,st,i,j:B.findSxy(J,st,i,j),J,st,i,j))
 		elif List[0] == 'h':
 			for H in enumerate(List[1]):
 				if H[1][2] != 0:
 					i=repeat(H[0], B.Ns)
 					h=repeat(H[1][2], B.Ns)
-					ME_list.extend(map(lambda h,st,i:findhz(B,h,st,i),h,st,i))
+					ME_list.extend(map(lambda h,st,i:B.findhz(h,st,i),h,st,i))
 				if B.Mcon == False:
 					if H[1][0] != 0 or H[1][1] != 0:
 						i=repeat(H[0], B.Ns)
 						hx=repeat(H[1][0], B.Ns)
 						hy=repeat(H[1][1], B.Ns)
-						ME_list.extend(map(lambda hx,hy,st,i:findhxy(B,hx,hy,st,i),hx,hy,st,i))
-				elif H[1][0] != 0 or H[1][1] != 0 :
-					sys.exit("StaticH1D warning: attemping to put non-magnetization conserving operators when this is an assumed symmetry.")
+						ME_list.extend(map(lambda hx,hy,st,i:B.findhxy(hx,hy,st,i),hx,hy,st,i))
 		elif List[0] == 'const':
 			for H in enumerate(List[1]):
 				ME_list.extend([[H[1],s,s] for s in st])
 		else:
-			sys.exit('DynamicH: operator symbol not recognized')
+			raise DynamicHError("DynamicHs doesn't support symbol: "+List[0]) 
 
 		ME_list=asarray(ME_list).T.tolist()
 		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
@@ -328,101 +453,123 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 
 
 class Hamiltonian1D:
-	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,dtype=np.complex128):
+	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,dtype=complex64):
 		if type(kblock) is int: 
 			if dtype != complex128 and dtype != complex64:
 				print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
-				dtype=np.complex64
+				dtype=complex64
 		if dtype not in [float32, float64, complex64, complex128]:
 			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
 
 		self.Static=static
 		self.Dynamic=dynamic
-		self.B=Basis1D(Length,Nup=Nup,kblock=kblock,a=a)
+		self.B=BasisT(Length,Nup=Nup,kblock=kblock,a=a)
 		self.Ns=self.B.Ns
-		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
-		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
+		self.Static_H=StaticH(self.B,static,dtype=dtype)
+		self.Dynamic_Hs=DynamicHs(self.B,dynamic,dtype=dtype)
 
 	def return_H(self,time=0):
 		if self.Ns**2 > sys.maxsize:
-			sys.exit('Hamiltonian1D: dense matrix is too large to create')
-		if self.Static:
+			raise MemoryError
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+
 		return H.todense()
 	
 	def MatrixElement(self,Vl,Vr,time=0):
-		if self.Static:
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+
 		HVr=csr_matrix.dot(H,Vr)
 		ME=np.dot(Vl.T.conj(),HVr)
 		return ME[0,0]
 
 
 	def dot(self,V,time=0):
-		if self.Static:
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
 
-		for i in xrange(1,len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
 		HV=csr_matrix.dot(H,V)
 		return HV
 
 
 	def SparseEV(self,time=0,n=None,sigma=None,which='SA'):
-		if self.Static:
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
-		
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+
 		return sla.eigsh(H,k=n,sigma=sigma,which=which)
 	
 
 
 	def DenseEE(self,time=0):
 		if self.Ns**2 > sys.maxsize:
-			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
-		if self.Static:
+			raise MemoryError
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]	
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
 		denseH=H.todense()
+
 		return eigh(H.todense(),JOBZ='N')
 
 	def DenseEV(self,time=0):
 		if self.Ns**2 > sys.maxsize:
-			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
-		if self.Static:
+			raise MemoryError
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]	
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+
 		denseH=H.todense()
 		return eigh(denseH)
 
@@ -431,12 +578,18 @@ class Hamiltonian1D:
 
 
 	def Evolve(self,V,dt,time=0,n=1,error=10**(-15)):
-		t=time
-		if self.Static:
+		if self.Static: # if there is a static Hamiltonian...
 			H=self.Static_H	
-		else:
+			for i in xrange(len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
 			H=J*self.Dynamic_Hs[0]
+			for i in xrange(1,len(self.Dynamic)):
+				J=self.Dynamic[i][2](time)
+				H=H+J*self.Dynamic_Hs[i]
+
 		if n <= 0: n=1
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
