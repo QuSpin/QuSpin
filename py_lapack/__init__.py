@@ -1,1 +1,1 @@
-import py_lapack
+from py_lapack import *
