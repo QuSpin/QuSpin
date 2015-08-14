@@ -1,6 +1,5 @@
 
 # local modules
-from BitOps import *
-from ReadWrite import *
-from spins1D import *
+import spins1D, BitOps, ReadWrite, py_lapack
+from spins1D import Hamiltonian1D
 
