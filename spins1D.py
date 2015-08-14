@@ -9,6 +9,7 @@ from itertools import repeat
 
 from array import array as vec
 
+import py_lapack
 from scipy import linalg as la # imported this for use of eigenvalue functions
 from numpy.linalg import norm # imported this to calculate the norm of vectors when doing error analysis
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
@@ -87,7 +88,7 @@ def CheckState(kblock,L,s,T=1):
 			return i
  
 		
-
+"""
 def CheckStateP(pblock,L,s,T=1):
 # parity Check_State
     t = s
@@ -111,51 +112,7 @@ def CheckStateZ(zblock,L,s,T=1):
     return i			
 
 
-
-
-def CheckStatePZ(z,p,s,L,rpz=-1):
-
-	t=s
-	t=flip_all(t,L)
-	print int2bin(t,L), int2bin(s,L)
-	if t > s:
-		rpz=2
-	else:
-		rpz=-1;
-
-	if rpz != -1:
-		t=s
-		t=fliplr(t,L)
-		if t > s:
-			rpz=2
-		elif t==s:
-			if p != -1:
-				rpz=8
-				return t, rpz 
-			else:
-				rpz=-1
-		else:
-			rpz=-1;
-
-	if rpz != -1:
-		t=s
-		t=fliplr(t,L)
-		t=flip_all(t,L)
-		if t==s:
-			if z*p != -1:
-				rpz=8
-			else:
-				rpz=-1
-		elif t > s:
-			rpz=4
-		else:
-			rpz=-1
-
-
-	return t,rpz
-	
-
-def CheckStatePandZ(pz,s,L,rpz=-1):
+def CheckStatePandZ(pz,s,L,rpz=2):
 
 	t=s
 	#print pz, s, L
@@ -174,32 +131,52 @@ def CheckStatePandZ(pz,s,L,rpz=-1):
 		rpz=-1
 
 	return t,rpz
+
+"""
+
+
+def CheckStatePZ(pz,s,L,rpz=2):
+	t=s
+	t=fliplr(t,L)
+	t=flip_all(t,L)
+	if t==s:
+		if pz != -1:
+			rpz*=2
+		else:
+			rpz=-1*abs(rpz)
+	elif t > s:
+		rpz*=1
+	else:
+		rpz=-1*abs(rpz)
+
+	return rpz
 		
 
-'''
-
-def CheckStateP(p,s,L,rp=-1):
+def CheckStateP(p,s,L,rp=2):
 	t=s
 	t=fliplr(t,L)
 	if t == s:
 		if p != -1:
-			rp=4;
+			rp*=2
 		else:
-			rp=-1;
-	elif t > s and rp == -1: 
-		rp=2;
+			rp=-1*abs(rp)
+	elif t > s: 
+		rp*=1
+	else:
+		rp=-1*abs(rp)
 
-	return t,rp;
+	return rp;
 
 
-def CheckStateZ(z,s,L,rz=-1):
+def CheckStateZ(z,s,L,rz=2):
 	t=s
 	t=flip_all(t,L)
-	if t > s and rz == -1:
-		rz=2;
+	if t > s:
+		rz*=1;
+	else:
+		rz=-1*abs(rz)
+	return rz;
 
-	return t,rz;
-'''
 
 
 class Basis1D:
@@ -230,27 +207,23 @@ class Basis1D:
 
 
 		if type(pblock) is int and type(zblock) is int:
-		   self.Pcon = True
-		   self.Zcon = True
-		   self.PZcon = False
-		   self.p = pblock
-		   self.z = zblock
-		   self.Npz = []
-		   self.basis = []
-		   for s in zbasis:
-#					print int2bin(s,self.L)
-#		   	   rp = CheckStateP(pblock,self.L,s)
-#		   	   rz = CheckStateZ(zblock,self.L,s)
-					t,rpz = CheckStatePZ(pblock,zblock,s,self.L)
-#					print rpz
-					if rpz > 0:
-						self.basis.append(s)
-						self.Npz.append(rpz)
-#					if rpz == 1:
-#						self.Npz.append(8)
-#					else:
-#						self.Npz.append(4)
-					self.Ns=len(self.basis)
+			self.Pcon = True
+			self.Zcon = True
+			self.PZcon = False
+			self.p = pblock
+			self.z = zblock
+			self.pz = pblock*zblock
+			self.Npz = []
+			self.basis = []
+			for s in zbasis:
+				rpz = CheckStateZ(zblock,s,self.L)
+				rpz = CheckStateP(pblock,s,self.L,rp=rpz)
+				rpz = CheckStatePZ(pblock*zblock,s,self.L,rpz=rpz)
+#				print rpz, int2bin(s,self.L)
+				if rpz > 0:
+					self.basis.append(s)
+					self.Npz.append(rpz)
+			self.Ns=len(self.basis)
 		elif type(pblock) is int:
 			self.Pcon = True
 			self.Zcon = False
@@ -260,32 +233,24 @@ class Basis1D:
 			self.Np = []
 			self.basis = []
 			for s in zbasis:
-				rp=CheckStateP(pblock,self.L,s,T=a)
-				#print rp
+				rp=CheckStateP(pblock,s,self.L)
+#				print rp, int2bin(s,self.L)
 				if rp > 0:
 					self.basis.append(s)
-					if rp == 1:
-						self.Np.append(4)
-					else:
-						self.Np.append(2)
-					#print s
-				self.Ns=len(self.basis)
+					self.Np.append(rp)
+			self.Ns=len(self.basis)
 		elif type(zblock) is int:
 			self.Pcon = False
 			self.Zcon = True
 			self.PZcon = False
-			self.p = pblock
 			self.z = zblock
-			#self.Rz = []
 			self.basis = []
-			#print zbasis
 			for s in zbasis:
-				rz=CheckStateZ(zblock,self.L,s,T=a)
+				rz=CheckStateZ(zblock,s,self.L)
+#				print rz, int2bin(s,self.L)
 				if rz > 0:
-					#self.Rz.append(rz)
 					self.basis.append(s)
-					#print s
-				self.Ns=len(self.basis)
+			self.Ns=len(self.basis)
 		elif type(pzblock) is int:
 			self.PZcon = True
 			self.Zcon = False
@@ -293,25 +258,18 @@ class Basis1D:
 			self.pz = pzblock
 			self.Npz = []
 			self.basis = []
-			#print zbasis
 			for s in zbasis:
-				t, rpz = CheckStatePandZ(pzblock,s,self.L)
-				#print [rpz],s,t
+				rpz = CheckStatePZ(pzblock,s,self.L)
+#				print rpz, int2bin(s,self.L)
 				if rpz > 0:
-					#self.Rz.append(rz)
 					self.basis.append(s)
 					self.Npz.append(rpz)
-					#print s
-				self.Ns=len(self.basis)	
+			self.Ns=len(self.basis)	
 		else: 
 			self.Pcon=False
 			self.Zcon=False
 			self.PZcon=False
 			self.basis=zbasis 	
-		#print self.Rz	
-
-		#for s in zbasis:
-		#		print s, int2bin(s,self.L)
 
 
 
@@ -339,16 +297,13 @@ class Basis1D:
 			t = flip_all(t,self.L)
 			if t < r:
 				r=t; g=1;q=0;
-
 			t=s
 			t = fliplr(t,self.L)
 			if t < r:
 				r=t; q=1; g=0;
 			t=flip_all(t,self.L)
-
 			if t < r:
 				r=t; q=1; g=1;
-			
 		elif self.Pcon:
 			t = fliplr(t,self.L)
 			if t < s:
@@ -582,21 +537,20 @@ def DynamicHs1D(B,dynamic,dtype=np.complex128):
 class Hamiltonian1D:
 #	@profile(precision=6)
 	def __init__(self,static,dynamic,Length,Nup=None,pblock=None,zblock=None,pzblock=None,a=1,dtype=np.complex128):
-		if type(pblock) is int: 
-			if dtype != np.complex128 and dtype != np.complex64:
-				print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
-				dtype=np.complex64
 		self.Static=static
 		self.Dynamic=dynamic
 		self.B=Basis1D(Length,Nup=Nup,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
 		self.Ns=self.B.Ns
-		self.Static_H=StaticH1D(self.B,static,dtype=dtype)
-		self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
+		if self.Ns > 0:
+			self.Static_H=StaticH1D(self.B,static,dtype=dtype)
+			self.Dynamic_Hs=DynamicHs1D(self.B,dynamic,dtype=dtype)
 
 
 	def return_H(self,time=0):
 		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create')
+		if self.Ns <= 0:
+			return matrix([])
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
@@ -604,6 +558,8 @@ class Hamiltonian1D:
 		return H.todense()
 	
 	def MatrixElement(self,Vl,Vr,time=0):
+		if self.Ns <= 0:
+			return None
 		t=time
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
@@ -615,6 +571,8 @@ class Hamiltonian1D:
 
 
 	def dot(self,V,time=0):
+		if self.Ns <= 0:
+			return array([])
 		t=time
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
@@ -625,6 +583,8 @@ class Hamiltonian1D:
 
 
 	def SparseEV(self,time=0,n=None,sigma=None,which='SA'):
+		if self.Ns <= 0:
+			return array([]), matrix([])
 		t=time
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
@@ -637,27 +597,35 @@ class Hamiltonian1D:
 	def DenseEE(self,time=0):
 		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
+		if self.Ns <= 0:
+			return array([])
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]	
-		return la.eigvalsh(H.todense(),overwrite_a=False,overwrite_b=False)
+			H=H+J*self.Dynamic_Hs[i]
+		Hdense=H.todense()
+		return py_lapack.eigh(Hdense,JOBZ='N')
 
 #	@profile(precision=3)
 	def DenseEV(self,time=0):
 		if self.Ns**2 > sys.maxsize:
 			sys.exit('Hamiltonian1D: dense matrix is too large to create. Full diagonalization is not possible')
+		if self.Ns <= 0:
+			return array([]), matrix([])
 		H=self.Static_H
 		for i in xrange(len(self.Dynamic)):
 			J=self.Dynamic[i][2](time)
 			H=H+J*self.Dynamic_Hs[i]	
-		return la.eigh(H.todense(),overwrite_a=True,overwrite_b=True)
+		Hdense=H.todense()
+		return py_lapack.eigh(Hdense)
 
 
 
 
 
 	def Evolve(self,V,dt,time=0,n=1,error=10**(-15)):
+		if self.Ns <= 0:
+			return array([])
 		t=time
 		H=self.Static_H
 		if n <= 0: n=1
