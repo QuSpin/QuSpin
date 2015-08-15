@@ -2,7 +2,7 @@ from BitOps import * # loading modules for bit operations.
 from Z_Basis import Basis, BasisError
 
 from array import array as vec
-from numpy import pi, sqrt
+from numpy import pi,exp, sqrt
 
 # First child class, this is the momentum conserving basis:
 # this functions are needed for constructing the momentum states:
