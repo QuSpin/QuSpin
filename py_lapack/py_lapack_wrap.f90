@@ -107,7 +107,6 @@ real(kind=8), dimension(3*N-2) :: RWORK
 
 allocate(WORK(1))
 call zheev(JOBZ,UPLO,N,A,N,W,WORK,-1,RWORK,INFO)
-print*, WORK(1)
 if(info.eq.0) then
 LWORK=int(WORK(1))
 if(LWORK.le.0) then
@@ -139,13 +138,14 @@ integer(kind=4), intent(in) :: N
 complex(kind=4), intent(inout), dimension(N,N) :: A
 complex(kind=4), intent(out), dimension(N) :: W
 integer(kind=4), intent(out) :: INFO
+real(kind=4), dimension(2*N) :: RWORK
 complex(kind=4), allocatable, dimension(:,:) :: VL,VR
 complex(kind=4), allocatable, dimension(:) :: WORK
 integer(kind=4) :: LWORK, LDVL, LDVR
 
 
 
-if(JOBR.eq.'V'.and.JOBR.eq.'V') then
+if(JOBR.eq.'V'.and.JOBL.eq.'V') then
 info=2790
 return
 end if
@@ -157,7 +157,7 @@ LDVL=1; allocate(VL(1,1))
 end if
 
 if(JOBR.eq.'V') then
-LDVR=N; allocate(VL(LDVR,N))
+LDVR=N; allocate(VR(LDVR,N))
 else
 LDVR=1; allocate(VR(1,1))
 end if
@@ -166,7 +166,7 @@ end if
 
 
 allocate(WORK(1))
-call cgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,-1,INFO)
+call cgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,-1,RWORK,INFO)
 if(info.eq.0) then
 LWORK=int(WORK(1))
 if(LWORK.le.0) then
@@ -179,7 +179,7 @@ else
 return
 end if
 
-call cgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,LWORK,INFO)
+call cgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,LWORK,RWORK,INFO)
 
 if(JOBL.eq.'V') then
 A=VL
@@ -204,25 +204,26 @@ integer(kind=4), intent(in) :: N
 complex(kind=8), intent(inout), dimension(N,N) :: A
 complex(kind=8), intent(out), dimension(N) :: W
 integer(kind=4), intent(out) :: INFO
+real(kind=8), dimension(2*N) :: RWORK
 complex(kind=8), allocatable, dimension(:,:) :: VL,VR
 complex(kind=8), allocatable, dimension(:) :: WORK
 integer(kind=4) :: LWORK, LDVL, LDVR
 
 
 
-if(JOBR.eq.'V'.and.JOBR.eq.'V') then
+if(JOBR.eq.'V'.and.JOBL.eq.'V') then
 info=2790
 return
 end if
 
 if(JOBL.eq.'V') then
-LDVL=N; allocate(VL(N,LDVL))
+LDVL=N; allocate(VL(LDVL,N))
 else
 LDVL=1; allocate(VL(1,1))
 end if
 
 if(JOBR.eq.'V') then
-LDVR=N; allocate(VL(N,LDVR))
+LDVR=N; allocate(VR(LDVR,N))
 else
 LDVR=1; allocate(VR(1,1))
 end if
@@ -231,7 +232,7 @@ end if
 
 
 allocate(WORK(1))
-call cgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,-1,INFO)
+call zgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,-1,RWORK,INFO)
 if(info.eq.0) then
 LWORK=int(WORK(1))
 deallocate(WORK)
@@ -240,7 +241,7 @@ else
 return
 end if
 
-call cgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,LWORK,INFO)
+call zgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,LWORK,RWORK,INFO)
 
 if(JOBL.eq.'V') then
 A=VL
