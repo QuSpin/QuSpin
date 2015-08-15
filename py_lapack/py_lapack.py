@@ -81,7 +81,6 @@ def eigh(a,copy_a=False,check_finite=True,JOBZ='V',UPLO='L'):
 		raise LapackError(prefix+"ev failed to diagonalize matrix: INFO=%d" % (info,))
 
 	if JOBZ=='V':
-		print a1
 		return v, a1
 	elif JOBZ=='N':
 		return v
