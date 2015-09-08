@@ -71,7 +71,7 @@ class PeriodicBasisT(Basis):
 
 
 	def findhxy(self,hx,hy,st,i):
-		if not self.Mcon:
+		if self.Mcon:
 			raise BasisError('transverse field terms present when Magnetization is conserved.')
 		if self.Kcon:
 			s1=self.basis[st]

@@ -43,7 +43,6 @@ class Basis:
 				zbasis.append(s)
 		else:
 			self.Ns=2**L
-			self.a=a
 			self.Mcon=False
 			self.symm=False # No symmetries here. at all so each integer corresponds to the number in the hilbert space.
 			zbasis=xrange(self.Ns)
@@ -92,15 +91,15 @@ class Basis:
 			return [0.5*h,st,st]
 
 	def findhxy(self,hx,hy,st,i):
-		if not self.Mcon:
+		if self.Mcon:
 			raise BasisError('transverse field terms present when Magnetization is conserved.')
 		s1=self.basis[st]
 		s2=flipBit(s1,i)
 		if testBit(s2,i) == 1:
-			stt=B.FindZstate(s2)
+			stt=self.FindZstate(s2)
 			ME=-0.5*(hx-1j*hy)
 		else:
-			stt=B.FindZstate(s2)
+			stt=self.FindZstate(s2)
 			ME=-0.5*(hx+1j*hy)
 				
 		return [ME,st,stt]

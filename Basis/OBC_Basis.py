@@ -183,36 +183,36 @@ class OpenBasisPZ(Basis):
 
 
 
-	def findhxy(B,hx,hy,st,i):
-		if not self.Mcon:
+	def findhxy(self,hx,hy,st,i):
+		if self.Mcon:
 			raise BasisError('transverse field terms present when Magnetization is conserved.')
-		if B.Pcon or B.Zcon or B.PZcon:
-			s1=B.basis[st]
+		if self.Pcon or self.Zcon or self.PZcon:
+			s1=self.basis[st]
 			s2=flipBit(s1,i)
 			updown=testBit(s2,i)
-			s2,q,g=B.RefState(s2)
-			stt=B.FindZstate(s2)
+			s2,q,g=self.RefState(s2)
+			stt=self.FindZstate(s2)
 			if stt >= 0:
-				if B.Pcon and B.Zcon:
+				if self.Pcon and self.Zcon:
 					if updown==1:
-						ME=-sqrt( float(B.Npz[stt])/B.Npz[st] )*0.5*(hx-1j*hy)*B.p**(q)*B.z**(g)
+						ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx-1j*hy)*self.p**(q)*self.z**(g)
 					else:
-						ME=-sqrt( float(B.Npz[stt])/B.Npz[st] )*0.5*(hx+1j*hy)*B.p**(q)*B.z**(g)
-				elif B.Pcon:
+						ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx+1j*hy)*self.p**(q)*self.z**(g)
+				elif self.Pcon:
 					if updown==1:
-						ME=-sqrt(float(B.Np[stt])/(B.Np[st]))*0.5*(hx-1j*hy)*B.p**(q)
+						ME=-sqrt(float(self.Np[stt])/(self.Np[st]))*0.5*(hx-1j*hy)*self.p**(q)
 					else:
-						ME=-sqrt(float(B.Np[stt])/(B.Np[st]))*0.5*(hx+1j*hy)*B.p**(q)
-				elif B.Zcon:
+						ME=-sqrt(float(self.Np[stt])/(self.Np[st]))*0.5*(hx+1j*hy)*self.p**(q)
+				elif self.Zcon:
 					if updown==1:
-						ME=-0.5*(hx-1j*hy)*B.z**(g)
+						ME=-0.5*(hx-1j*hy)*self.z**(g)
 					else:
-						ME=-0.5*(hx+1j*hy)*B.z**(g)
-				elif B.PZcon:
+						ME=-0.5*(hx+1j*hy)*self.z**(g)
+				elif self.PZcon:
 					if updown==1:
-				 		ME=-sqrt( float(B.Npz[stt])/B.Npz[st] )*0.5*(hx-1j*hy)*B.pz**(qg)
+				 		ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx-1j*hy)*self.pz**(qg)
 					else:
-						ME=-sqrt( float(B.Npz[stt])/B.Npz[st] )*0.5*(hx+1j*hy)*B.pz**(qg)
+						ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx+1j*hy)*self.pz**(qg)
 			else:
 				ME = 0.0
 				stt=0

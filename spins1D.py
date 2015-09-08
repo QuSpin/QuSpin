@@ -87,7 +87,7 @@ def StaticH(B,static,dtype):
 		H=H.tocsr()
 		H.sum_duplicates()
 		H.eliminate_zeros()
-	return H
+		return H
 
 
 
