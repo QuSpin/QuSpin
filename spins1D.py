@@ -74,8 +74,9 @@ def StaticH(B,static,dtype):
 						hy=repeat(H[1][1], B.Ns)
 						ME_list.extend(map(lambda hx,hy,st,i:B.findhxy(hx,hy,st,i),hx,hy,st,i))
 		elif List[0] == 'const':
-			for H in enumerate(List[1]):
-				ME_list.extend([[H[1],st,st] for s in st])
+			print List[1];
+			for H in List[1]:
+				ME_list.extend([[H,s,s] for s in st])
 		else:
 			raise StaticHError("StaticH doesn't support symbol: "+str(List[0])) 
 
@@ -218,7 +219,7 @@ class Hamiltonian1D:
 
 		HVr=csr_matrix.dot(H,Vr)
 		ME=dot(Vl.T.conj(),HVr)
-		return ME[0,0]
+		return ME
 
 
 	def dot(self,V,time=0):
