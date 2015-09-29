@@ -74,7 +74,6 @@ def StaticH(B,static,dtype):
 						hy=repeat(H[1][1], B.Ns)
 						ME_list.extend(map(lambda hx,hy,st,i:B.findhxy(hx,hy,st,i),hx,hy,st,i))
 		elif List[0] == 'const':
-			print List[1];
 			for H in List[1]:
 				ME_list.extend([[H,s,s] for s in st])
 		else:
@@ -241,7 +240,7 @@ class Hamiltonian1D:
 		return HV
 
 
-	def SparseEV(self,time=0,n=None,sigma=None,which='SA'):
+	def SparseEV(self,time=0,n=6,sigma=None,which='SA'):
 		if self.Ns <= 0:
 			return array([]), matrix([])
 		if self.Static: # if there is a static Hamiltonian...
@@ -276,9 +275,9 @@ class Hamiltonian1D:
 			for i in xrange(1,len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
-		denseH=H.todense()
 
 		return eigh(H.todense(),JOBZ='N')
+		#return la.eigvalsh(H.todense())
 
 	def DenseEV(self,time=0):
 		if self.Ns**2 > sys.maxsize:
@@ -297,8 +296,8 @@ class Hamiltonian1D:
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
 
-		denseH=H.todense()
-		return eigh(denseH)
+		return eigh(H.todense())
+		#return la.eigh(H.todense())
 
 
 
