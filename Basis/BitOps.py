@@ -1,3 +1,13 @@
+from numpy import array
+
+class BitOpsError(Exception):
+	def __init__(self,message):
+		self.message=message
+	def __str__(self):
+		return self.message
+
+
+
 
 
 def int2bin(n,L):
@@ -9,7 +19,7 @@ def int2bin(n,L):
 def bin2int(v):
 	""" Convert a binary vector v to an integer """
 
-	return np.sum([v[i]*2**i for i in range(len(v))])
+	return np.sum([v[i]*2**i for i in xrange(len(v))])
 
 
 
@@ -28,11 +38,33 @@ def shift(int_type,shift,period):
 			return (int_type << shift%period) & (2**period-1) | ((int_type & (2**period-1)) >> (period-(shift%period)))
 
 
+def fliplrup(int_type,length,axis):
+	M=[[x+length*y for x in xrange(length)] for y in xrange(length)]
+	if axis == 1:
+		for m in M:
+			m.reverse()
+	elif axis == 2:
+		M=array(M).T.tolist()
+		for m in M:
+			m.reverse()
+		M=array(M).T.tolist()
+
+	new_state=0
+	for y in xrange(length):
+		for x in xrange(length):
+			i=x+length*y
+			j=M[y][x]
+			if int_type>>i&1:
+				new_state+=2**j
+
+	return new_state
+			
+
 
 def fliplr(int_type,length):
 # this function flips the bits of an integer around the centre, e.g. 1010 -> 0101
 # (generator of) parity symmetry
-    return sum(1<<(length-1-i) for i in range(length) if int_type>>i&1)
+    return sum(1<<(length-1-i) for i in xrange(length) if int_type>>i&1)
 
 def flip_all(int_type,length):
 # this function flips all bits
