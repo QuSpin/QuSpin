@@ -190,7 +190,7 @@ class OpenBasisPZ(Basis):
 			s1=self.basis[st]
 			s2=flipBit(s1,i)
 			updown=testBit(s2,i)
-			s2,q,g=self.RefState(s2)
+			s2,q,g,qg=self.RefState(s2)
 			stt=self.FindZstate(s2)
 			if stt >= 0:
 				if self.Pcon and self.Zcon:
