@@ -62,6 +62,7 @@ class OpenBasisPZ(Basis):
 			self.Pcon = True
 			self.Zcon = True
 			self.PZcon = True
+			self.symm = True
 			self.p = pblock
 			self.z = zblock
 			self.pz = pblock*zblock
@@ -82,6 +83,7 @@ class OpenBasisPZ(Basis):
 			self.Pcon = True
 			self.Zcon = False
 			self.PZcon = False
+			self.symm = True
 			self.p = pblock
 			self.z = zblock
 			self.Np = []
@@ -97,6 +99,7 @@ class OpenBasisPZ(Basis):
 			self.Pcon = False
 			self.Zcon = True
 			self.PZcon = False
+			self.symm = True
 			self.z = zblock
 			self.basis = []
 			for s in zbasis:
@@ -109,6 +112,7 @@ class OpenBasisPZ(Basis):
 			self.PZcon = True
 			self.Zcon = False
 			self.Pcon = False
+			self.symm = True
 			self.pz = pzblock
 			self.Npz = []
 			self.basis = []

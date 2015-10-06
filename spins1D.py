@@ -235,7 +235,6 @@ class Hamiltonian1D:
 			for i in xrange(1,len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
-
 		HV=csr_matrix.dot(H,V)
 		return HV
 
