@@ -235,11 +235,10 @@ class Hamiltonian1D:
 			for i in xrange(1,len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
-		HV=csr_matrix.dot(H,V)
-		return HV
+		return csr_matrix.dot(H,V)
 
 
-	def SparseEV(self,time=0,n=6,sigma=None,which='SA'):
+	def SparseEV(self,time=0,n=6,sigma=None,which='SA',tol=0,maxiter=None):
 		if self.Ns <= 0:
 			return array([]), matrix([])
 		if self.Static: # if there is a static Hamiltonian...
@@ -254,7 +253,7 @@ class Hamiltonian1D:
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
 
-		return sla.eigsh(H,k=n,sigma=sigma,which=which)
+		return sla.eigsh(H,k=n,sigma=sigma,which=which,tol=tol)
 	
 
 

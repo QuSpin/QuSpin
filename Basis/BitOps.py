@@ -1,4 +1,4 @@
-
+import numpy as np
 
 def int2bin(n,L):
 	""" Convert an integer n to a binary vector 
