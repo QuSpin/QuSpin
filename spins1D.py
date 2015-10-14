@@ -253,7 +253,7 @@ class Hamiltonian1D:
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
 
-		return sla.eigsh(H,k=n,sigma=sigma,which=which,tol=tol)
+		return sla.eigsh(H,k=n,sigma=sigma,which=which,tol=tol,maxiter=maxiter)
 	
 
 
