@@ -1,3 +1,4 @@
+from SpinOps import SpinOp
 from BitOps import * # loading modules for bit operations.
 import operator as op # needed to calculate n choose r in function ncr(n,r).
 from array import array as vec
@@ -65,45 +66,12 @@ class Basis:
 					return -1
 		else: return s
 
-	def findSz(self,J,st,i,j):
-		s1=self.basis[st]
-		s2=exchangeBits(s1,i,j)
-		if s1 == s2:
-			return [0.25*J,st,st]
-		else:
-			return [-0.25*J,st,st]
 
-	def findSxy(self,J,st,i,j):
+	def Op(self,J,st,opstr,indx):
 		s1=self.basis[st]
-		s2=exchangeBits(s1,i,j)
-		if s1 == s2:
-			return [0,st,st]
-		else:
-			stt=self.FindZstate(s2)
-			ME=0.5*J
-		return [ME,st,stt]
-
-	def findhz(self,h,st,i):
-		s1=self.basis[st]
-		if testBit(s1,i) == 1:
-			return [-0.5*h,st,st]
-		else:
-			return [0.5*h,st,st]
-
-	def findhxy(self,hx,hy,st,i):
-		if self.Mcon:
-			raise BasisError('transverse field terms present when Magnetization is conserved.')
-		s1=self.basis[st]
-		s2=flipBit(s1,i)
-		if testBit(s2,i) == 1:
-			stt=self.FindZstate(s2)
-			ME=-0.5*(hx-1j*hy)
-		else:
-			stt=self.FindZstate(s2)
-			ME=-0.5*(hx+1j*hy)
-				
-		return [ME,st,stt]
-
+		ME,s2=SpinOp(s1,opstr,indx)
+		stt=self.FindZstate(s2)
+		return [J*ME,st,stt]
 
 
 
