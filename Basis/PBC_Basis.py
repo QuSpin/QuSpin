@@ -52,10 +52,10 @@ class PeriodicBasisT(Basis):
 
 
 
-	def Op(self,J,st,opstr,indx):
+	def Op(self,J,st,opstr,indx,pauli=False):
 		if self.Kcon:
 			s1=self.basis[st]
-			ME,s2=SpinOp(s1,opstr,indx)
+			ME,s2=SpinOp(s1,opstr,indx,pauli=pauli)
 			s2,l=self.RefState(s2)
 			stt=self.FindZstate(s2)
 			if stt >= 0:
@@ -64,7 +64,7 @@ class PeriodicBasisT(Basis):
 				ME=0.0;	stt=st
 			return [ME,st,stt]
 		else:
-			return Basis.Op(self,J,st,opstr,indx)
+			return Basis.Op(self,J,st,opstr,indx,pauli=pauli)
 		
 		
 

@@ -21,7 +21,7 @@ from numpy import int32, int64, float32, float64, complex64, complex128
 
 
 
-def StaticH(B,static,dtype):
+def StaticH(B,static,dtype,pauli):
 	ME_list=[]
 	st=xrange(B.Ns)
 	for i in xrange(len(static)):
@@ -31,9 +31,9 @@ def StaticH(B,static,dtype):
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
+			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx,pauli=pauli),st))
 
-	if static:
+	if len(ME_list)!=0:
 		ME_list=asarray(ME_list).T.tolist()
 		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
 		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])
@@ -50,18 +50,19 @@ def StaticH(B,static,dtype):
 
 
 
-def DynamicHs(B,dynamic,dtype):
+def DynamicHs(B,dynamic,dtype,pauli):
 	Dynamic_Hs=[]
 	st=[ k for k in xrange(B.Ns) ]
 	for i in xrange(len(dynamic)):
 		ME_list=[]
 		List=dynamic[i]
 		opstr=List[0]
+		bonds=List[1]
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
-	
+			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx,pauli=pauli),st))
+		
 		ME_list=asarray(ME_list).T.tolist()
 		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
 		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])
@@ -83,7 +84,7 @@ def DynamicHs(B,dynamic,dtype):
 
 
 class Hamiltonian1D:
-	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,zblock=None,pblock=None,pzblock=None,dtype=complex64):
+	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,zblock=None,pblock=None,pzblock=None,dtype=complex64,pauli=False):
 		if dtype not in [float32, float64, complex64, complex128]:
 			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
 
@@ -106,8 +107,8 @@ class Hamiltonian1D:
 		
 		self.Ns=self.B.Ns
 		if self.Ns > 0:
-			self.Static_H=StaticH(self.B,static,dtype)
-			self.Dynamic_Hs=DynamicHs(self.B,dynamic,dtype)
+			self.Static_H=StaticH(self.B,static,dtype,pauli)
+			self.Dynamic_Hs=DynamicHs(self.B,dynamic,dtype,pauli)
 
 	def return_H(self,time=0):
 		if self.Ns**2 > sys.maxsize:
