@@ -160,10 +160,10 @@ class OpenBasisPZ(Basis):
 		return r,q,g,qg
 
 
-	def Op(self,J,st,opstr,indx,pauli=False):
+	def Op(self,J,st,opstr,indx):
 		if self.Pcon or self.Zcon or self.PZcon:
 			s1=self.basis[st]
-			ME,s2=SpinOp(s1,opstr,indx,pauli=pauli)
+			ME,s2=SpinOp(s1,opstr,indx)
 			s2,q,g,qg=self.RefState(s2)
 			stt=self.FindZstate(s2)
 			#print st,int2bin(s1,self.L),int2bin(exchangeBits(s1,i,j),self.L), stt,int2bin(s2,self.L), q, g, [i,j]
@@ -181,7 +181,7 @@ class OpenBasisPZ(Basis):
 				stt = st
 			return [ME,st,stt]	
 		else:
-			return Basis.Op(self,J,st,opstr,indx,pauli=pauli)
+			return Basis.Op(self,J,st,opstr,indx)
 
 
 

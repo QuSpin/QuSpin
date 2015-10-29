@@ -67,9 +67,9 @@ class Basis:
 		else: return s
 
 
-	def Op(self,J,st,opstr,indx,pauli=False):
+	def Op(self,J,st,opstr,indx):
 		s1=self.basis[st]
-		ME,s2=SpinOp(s1,opstr,indx,pauli=pauli)
+		ME,s2=SpinOp(s1,opstr,indx)
 		stt=self.FindZstate(s2)
 		return [J*ME,st,stt]
 
