@@ -1,4 +1,5 @@
 from BitOps import * # loading modules for bit operations.
+from SpinOps import SpinOp
 from Z_Basis import Basis, BasisError
 
 from array import array as vec
@@ -49,49 +50,22 @@ class PeriodicBasisT(Basis):
 
 		return r,l
 
-	# don't need to override diagonal matrix elements
-	# overriding off diagonal matrix element functions for this more specific basis.
-	# if there are no conservation laws specified then it calls the parent class function.
-	def findSxy(self,J,st,i,j):
-		if self.Kcon:
-			s1=self.basis[st]
-			s2=exchangeBits(s1,i,j)
-			if s1 == s2:
-				ME=0.0;	stt=st
-			else:
-				s2,l=self.RefState(s2)
-				stt=self.FindZstate(s2)
-				if stt >= 0:
-					ME=sqrt(float(self.R[st])/self.R[stt])*0.5*J*exp(-1j*self.k*l)
-				else:
-					ME=0.0;	stt=0
-			return [ME,st,stt]
-		else:
-			return Basis.findSxy(self,J,st,i,j)
 
 
-	def findhxy(self,hx,hy,st,i):
-		if self.Mcon:
-			raise BasisError('transverse field terms present when Magnetization is conserved.')
+	def Op(self,J,st,opstr,indx):
 		if self.Kcon:
 			s1=self.basis[st]
-			s2=flipBit(s1,i)
-			updown=testBit(s2,i)
+			ME,s2=SpinOp(s1,opstr,indx)
 			s2,l=self.RefState(s2)
 			stt=self.FindZstate(s2)
 			if stt >= 0:
-				if updown == 1:
-					ME=-sqrt(float(self.R[st])/self.R[stt])*0.5*(hx-1j*hy)*exp(-1j*self.k*l)
-				else:
-					ME=-sqrt(float(self.R[st])/self.R[stt])*0.5*(hx+1j*hy)*exp(-1j*self.k*l)
-			else: 
-				ME=0.0
-				stt=0
+				ME *= sqrt(float(self.R[st])/self.R[stt])*J*exp(-1j*self.k*l)
+			else:
+				ME=0.0;	stt=st
 			return [ME,st,stt]
 		else:
-			return Basis.findhxy(self,hx,hy,st,i)
-
-
+			return Basis.Op(self,J,st,opstr,indx)
+		
 		
 
 

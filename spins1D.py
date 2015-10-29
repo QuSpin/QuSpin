@@ -21,63 +21,17 @@ from numpy import int32, int64, float32, float64, complex64, complex128
 
 
 
-# classes for exceptions:
-
-class StaticHError(Exception):
-	def __init__(self,message):
-		self.message=message
-	def __str__(self):
-		return self.message
-
-class DynamicHError(Exception):
-	def __init__(self,message):
-		self.message=message
-	def __str__(self):
-		return self.message
-
-
-
-
-
-
-
-
 def StaticH(B,static,dtype):
 	ME_list=[]
 	st=xrange(B.Ns)
 	for i in xrange(len(static)):
 		List=static[i]
-		if List[0] == "z":
-			for bond in List[1]:
-				if bond[0] != 0:
-					J=repeat(bond[0], B.Ns)
-					i=repeat(bond[1], B.Ns)
-					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:B.findSz(J,st,i,j),J,st,i,j))
-		elif List[0] == 'xy':
-			for bond in List[1]:
-				if bond[0] != 0:
-					J=repeat(bond[0], B.Ns)
-					i=repeat(bond[1], B.Ns)
-					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:B.findSxy(J,st,i,j),J,st,i,j))
-		elif List[0] == 'h':
-			for H in enumerate(List[1]):
-				if H[1][2] != 0:
-					i=repeat(H[0], B.Ns)
-					h=repeat(H[1][2], B.Ns)
-					ME_list.extend(map(lambda h,st,i:B.findhz(h,st,i),h,st,i))
-				if B.Mcon == False:
-					if H[1][0] != 0 or H[1][1] != 0:
-						i=repeat(H[0], B.Ns)
-						hx=repeat(H[1][0], B.Ns)
-						hy=repeat(H[1][1], B.Ns)
-						ME_list.extend(map(lambda hx,hy,st,i:B.findhxy(hx,hy,st,i),hx,hy,st,i))
-		elif List[0] == 'const':
-			for H in List[1]:
-				ME_list.extend([[H,s,s] for s in st])
-		else:
-			raise StaticHError("StaticH doesn't support symbol: "+str(List[0])) 
+		opstr=List[0]
+		bonds=List[1]
+		for bond in bonds:
+			J=bond[0]
+			indx=bond[1:]
+			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
 
 	if static:
 		ME_list=asarray(ME_list).T.tolist()
@@ -102,38 +56,11 @@ def DynamicHs(B,dynamic,dtype):
 	for i in xrange(len(dynamic)):
 		ME_list=[]
 		List=dynamic[i]
-		if List[0] == "z":
-			for bond in List[1]:
-				if bond[0] != 0:
-					J=repeat(bond[0], B.Ns)
-					i=repeat(bond[1], B.Ns)
-					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:B.findSz(J,st,i,j),J,st,i,j))
-		elif List[0] == 'xy':
-			for bond in List[1]:
-				if bond[0] != 0:
-					J=repeat(bond[0], B.Ns)
-					i=repeat(bond[1], B.Ns)
-					j=repeat(bond[2], B.Ns)
-					ME_list.extend(map(lambda J,st,i,j:B.findSxy(J,st,i,j),J,st,i,j))
-		elif List[0] == 'h':
-			for H in enumerate(List[1]):
-				if H[1][2] != 0:
-					i=repeat(H[0], B.Ns)
-					h=repeat(H[1][2], B.Ns)
-					ME_list.extend(map(lambda h,st,i:B.findhz(h,st,i),h,st,i))
-				if B.Mcon == False:
-					if H[1][0] != 0 or H[1][1] != 0:
-						i=repeat(H[0], B.Ns)
-						hx=repeat(H[1][0], B.Ns)
-						hy=repeat(H[1][1], B.Ns)
-						ME_list.extend(map(lambda hx,hy,st,i:B.findhxy(hx,hy,st,i),hx,hy,st,i))
-		elif List[0] == 'const':
-			for H in enumerate(List[1]):
-				ME_list.extend([[H[1],s,s] for s in st])
-		else:
-			raise DynamicHError("DynamicHs doesn't support symbol: "+str(List[0])) 
-
+		opstr=List[0]
+		for bond in bonds:
+			J=bond[0]
+			indx=bond[1:]
+			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
 	
 		ME_list=asarray(ME_list).T.tolist()
 		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
@@ -179,8 +106,8 @@ class Hamiltonian1D:
 		
 		self.Ns=self.B.Ns
 		if self.Ns > 0:
-			self.Static_H=StaticH(self.B,static,dtype=dtype)
-			self.Dynamic_Hs=DynamicHs(self.B,dynamic,dtype=dtype)
+			self.Static_H=StaticH(self.B,static,dtype)
+			self.Dynamic_Hs=DynamicHs(self.B,dynamic,dtype)
 
 	def return_H(self,time=0):
 		if self.Ns**2 > sys.maxsize:

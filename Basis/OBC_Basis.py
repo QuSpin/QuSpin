@@ -1,4 +1,5 @@
 from BitOps import * # loading modules for bit operations.
+from SpinOps import SpinOp
 from Z_Basis import Basis, BasisError
 
 from array import array as vec
@@ -159,70 +160,28 @@ class OpenBasisPZ(Basis):
 		return r,q,g,qg
 
 
-	def findSxy(self,J,st,i,j):
+	def Op(self,J,st,opstr,indx):
 		if self.Pcon or self.Zcon or self.PZcon:
 			s1=self.basis[st]
-			s2=exchangeBits(s1,i,j)
-			if s1 == s2:
-				ME=0; stt=st
-			else:
-				s2,q,g,qg=self.RefState(s2)
-				stt=self.FindZstate(s2)
-				#print st,int2bin(s1,self.L),int2bin(exchangeBits(s1,i,j),self.L), stt,int2bin(s2,self.L), q, g, [i,j]
-				if stt >= 0:
-					if self.Pcon and self.Zcon:
-						ME = sqrt( float(self.Npz[stt])/self.Npz[st]   )*0.5*J*self.p**(q)*self.z**(g)
-					elif self.Pcon:
-							ME = sqrt( float(self.Np[stt])/(self.Np[st]) )*0.5*J*self.p**(q)
-					elif self.Zcon:
-						ME =  0.5*J*self.z**(g)
-					elif self.PZcon:
-						ME = sqrt( float(self.Npz[stt])/self.Npz[st]   )*0.5*J*self.pz**(qg)		
-				else:
-					ME = 0.0
-					stt = 0	
-			return [ME,st,stt]	
-		else:
-			return Basis.findSxy(self,J,st,i,j)
-
-
-
-	def findhxy(self,hx,hy,st,i):
-		if self.Mcon:
-			raise BasisError('transverse field terms present when Magnetization is conserved.')
-		if self.Pcon or self.Zcon or self.PZcon:
-			s1=self.basis[st]
-			s2=flipBit(s1,i)
-			updown=testBit(s2,i)
+			ME,s2=SpinOp(s1,opstr,indx)
 			s2,q,g,qg=self.RefState(s2)
 			stt=self.FindZstate(s2)
+			#print st,int2bin(s1,self.L),int2bin(exchangeBits(s1,i,j),self.L), stt,int2bin(s2,self.L), q, g, [i,j]
 			if stt >= 0:
 				if self.Pcon and self.Zcon:
-					if updown==1:
-						ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx-1j*hy)*self.p**(q)*self.z**(g)
-					else:
-						ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx+1j*hy)*self.p**(q)*self.z**(g)
+					ME *= sqrt( float(self.Npz[stt])/self.Npz[st])*J*self.p**(q)*self.z**(g)
 				elif self.Pcon:
-					if updown==1:
-						ME=-sqrt(float(self.Np[stt])/(self.Np[st]))*0.5*(hx-1j*hy)*self.p**(q)
-					else:
-						ME=-sqrt(float(self.Np[stt])/(self.Np[st]))*0.5*(hx+1j*hy)*self.p**(q)
+					ME *= sqrt( float(self.Np[stt])/(self.Np[st]))*J*self.p**(q)
 				elif self.Zcon:
-					if updown==1:
-						ME=-0.5*(hx-1j*hy)*self.z**(g)
-					else:
-						ME=-0.5*(hx+1j*hy)*self.z**(g)
+					ME *=  0.5*J*self.z**(g)
 				elif self.PZcon:
-					if updown==1:
-				 		ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx-1j*hy)*self.pz**(qg)
-					else:
-						ME=-sqrt( float(self.Npz[stt])/self.Npz[st] )*0.5*(hx+1j*hy)*self.pz**(qg)
+					ME *= sqrt( float(self.Npz[stt])/self.Npz[st] )*J*self.pz**(qg)		
 			else:
 				ME = 0.0
-				stt=0
-			return [ME,st,stt]
+				stt = st
+			return [ME,st,stt]	
 		else:
-			return Basis.findhxy(self,hx,hy,st,i)
+			return Basis.Op(self,J,st,opstr,indx)
 
 
 
