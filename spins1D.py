@@ -127,45 +127,30 @@ class Hamiltonian1D:
 				H=H+J*self.Dynamic_Hs[i]
 
 		return H.todense()
-	
-	def MatrixElement(self,Vl,Vr,time=0):
-		if self.Ns <= 0:
-			return None
-		if self.Static: # if there is a static Hamiltonian...
-			H=self.Static_H	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
-		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
-
-		HVr=csr_matrix.dot(H,Vr)
-		ME=dot(Vl.T.conj(),HVr)
-		return ME
-
 
 	def dot(self,V,time=0):
 		if self.Ns <= 0:
 			return array([])
 		if self.Static: # if there is a static Hamiltonian...
-			H=self.Static_H	
+			V=self.Static_H.dot(V)	
 			for i in xrange(len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+				V+=J*self.Dynamic_Hs[i].dot(V)
 		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
+			V=J*self.Dynamic_Hs[i].dot(V)
 			for i in xrange(1,len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+				V+=J*self.Dynamic_Hs[i].dot(V)
 		return csr_matrix.dot(H,V)
+	
+	def MatrixElement(self,Vl,Vr,time=0):
+		HVr=self.dot(Vr,time=time)
+		ME=dot(Vl.T.conj(),HVr)
+		return ME
 
 
-	def SparseEV(self,time=0,n=6,sigma=None,which='SA',tol=0,maxiter=None):
+	def SparseEV(self,time=0,n=6,sigma=None,which='SA',maxiter=None):
 		if self.Ns <= 0:
 			return array([]), matrix([])
 		if self.Static: # if there is a static Hamiltonian...
@@ -180,7 +165,7 @@ class Hamiltonian1D:
 				J=self.Dynamic[i][2](time)
 				H=H+J*self.Dynamic_Hs[i]
 
-		return sla.eigsh(H,k=n,sigma=sigma,which=which,tol=tol,maxiter=maxiter)
+		return sla.eigsh(H,k=n,sigma=sigma,which=which,maxiter=maxiter)
 	
 
 
