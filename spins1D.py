@@ -57,6 +57,7 @@ def DynamicHs(B,dynamic,dtype):
 		ME_list=[]
 		List=dynamic[i]
 		opstr=List[0]
+		bonds=List[1]
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
@@ -132,21 +133,21 @@ class Hamiltonian1D:
 		if self.Ns <= 0:
 			return array([])
 		if self.Static: # if there is a static Hamiltonian...
-			V=self.Static_H.dot(V)	
+			Vnew = self.Static_H.dot(V)	
 			for i in xrange(len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
-				V+=J*self.Dynamic_Hs[i].dot(V)
+				Vnew += J*self.Dynamic_Hs[i].dot(V)
 		else: # if there isn't...
 			J=self.Dynamic[0][2](time)
-			V=J*self.Dynamic_Hs[i].dot(V)
+			Vnew=J*self.Dynamic_Hs[i].dot(V)
 			for i in xrange(1,len(self.Dynamic)):
 				J=self.Dynamic[i][2](time)
-				V+=J*self.Dynamic_Hs[i].dot(V)
-		return csr_matrix.dot(H,V)
+				Vnew += J*self.Dynamic_Hs[i].dot(V)
+		return Vnew
 	
 	def MatrixElement(self,Vl,Vr,time=0):
 		HVr=self.dot(Vr,time=time)
-		ME=dot(Vl.T.conj(),HVr)
+		ME=dot(Vl.H,HVr)
 		return ME
 
 
