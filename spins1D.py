@@ -146,8 +146,9 @@ class Hamiltonian1D:
 		return Vnew
 	
 	def MatrixElement(self,Vl,Vr,time=0):
+		
 		HVr=self.dot(Vr,time=time)
-		ME=dot(Vl.H,HVr)
+		ME=dot(Vl.T.conj(),HVr)
 		return ME
 
 
