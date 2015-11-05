@@ -1,6 +1,5 @@
 import sys # needed for sys.stop('error message')
 #local modules:
-
 from Basis import *
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
@@ -9,6 +8,7 @@ from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse.linalg  as sla	# needed for the sparse linear algebra packages
+from scipy.integrate import odeint	# ode solver used in evolve function.
 
 from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128
 
@@ -84,14 +84,14 @@ class Hamiltonian1D:
 		# testing blocks for basis
 		if (type(kblock) is int):
 			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-				raise BasisError("Hamiltonian1D: Translation, spin inversion, and parity symmetries are not compatible at this time.")
+				raise BasisError("Translation, spin inversion, and parity symmetries are not implimented at this time.")
 			else:
-				self.B=PeriodicBasisT(Length,Nup=Nup,kblock=kblock,a=a)
+				self.B=PeriodicBasis1D(Length,Nup=Nup,kblock=kblock,a=a)
 				if (dtype != complex128) and (dtype != complex64):
 					print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
 					dtype=complex64
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-			self.B=OpenBasisPZ(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
+			self.B=OpenBasis1D(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
 		else:
 			self.B=Basis(Length,Nup=Nup)
 
@@ -138,6 +138,8 @@ class Hamiltonian1D:
 				Vnew += J*self.Dynamic_Hs[i].dot(V)
 		return Vnew
 	
+
+
 	def MatrixElement(self,Vl,Vr,time=0):
 		
 		HVr=self.dot(Vr,time=time)
@@ -204,9 +206,13 @@ class Hamiltonian1D:
 
 
 
+	def evolve(self,v0,time,full_output=0, rtol=None, atol=None, h0=0.0, hmax=0.0, hmin=0.0,
+						 ixpr=0, mxstep=0, mxhnil=0, mxordn=12, mxords=5, printmessg=0):
+		return odeint(self.dot,v0,time,full_output=full_output, rtol=rtol, atol=atol, h0=h0, hmax=hmax, hmin=hmin,
+						 ixpr=ixpr, mxstep=mxstep, mxhnil=mxhnil, mxordn=mxordn, mxords=mxords, printmessg=printmessg)
 
 
-	def Evolve(self,V,dt,time=0,n=1,error=10**(-15)):
+	def Exponential(self,V,dt,time=0,n=1,error=10**(-15)):
 		if self.Ns <= 0:
 			return array([])
 		if self.Static: # if there is a static Hamiltonian...
