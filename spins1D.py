@@ -5,19 +5,12 @@ from Basis import *
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
-#from memory_profiler import profile # needed for the @profile functions which profile the memory usage of a particular function.
-from itertools import repeat
-
-from scipy import linalg as la # imported this for use of eigenvalue functions
+from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse.linalg  as sla	# needed for the sparse linear algebra packages
 
-from numpy import pi 
-from numpy import asarray, sqrt, array, dot
-from numpy.linalg import norm # imported this to calculate the norm of vectors when doing error analysis
-from numpy import int32, int64, float32, float64, complex64, complex128
-
+from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128
 
 
 
@@ -189,7 +182,6 @@ class Hamiltonian1D:
 				H=H+J*self.Dynamic_Hs[i]
 
 		return eigh(H.todense(),JOBZ='N')
-		#return la.eigvalsh(H.todense())
 
 	def DenseEV(self,time=0):
 		if self.Ns**2 > sys.maxsize:
@@ -209,7 +201,6 @@ class Hamiltonian1D:
 				H=H+J*self.Dynamic_Hs[i]
 
 		return eigh(H.todense())
-		#return la.eigh(H.todense())
 
 
 

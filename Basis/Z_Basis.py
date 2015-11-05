@@ -1,11 +1,23 @@
-from SpinOps import SpinOp
-from BitOps import * # loading modules for bit operations.
+# python 2.7 modules
 import operator as op # needed to calculate n choose r in function ncr(n,r).
+# array is a very nice data structure which stores values in a c or fortran like array, saving memory, but has all features of a list.
+# it is not good for array type operations like multiplication, for those use numpy arrays.
 from array import array as vec
+
+# local modules
+from SpinOps import SpinOp # needed to act with opstr
+from BitOps import * # loading modules for bit operations.
+
+# References:
+# [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
+
+
 
 
 
 class BasisError(Exception):
+	# this class defines an exception which can be raised whenever there is some sort of error which we can
+	# see will obviously break the code. 
 	def __init__(self,message):
 		self.message=message
 	def __str__(self):
@@ -20,17 +32,18 @@ def ncr(n, r):
     denom = reduce(op.mul, xrange(1, r+1))
     return numer//denom
 
-
-
 # Parent Class Basis: This class is the basic template for all other basis classes. It only has Magnetization symmetry as an option.
 # all 'child' classes will inherit its functionality, but that functionality can be overwritten in the child class.
 # Basis classes must have the functionality of finding the matrix elements built in. This way, the function for constructing 
 # the hamiltonian is universal and the basis object takes care of constructing the correct matrix elements based on its internal symmetry. 
 class Basis:
 	def __init__(self,L,Nup=None):
+		# This is the constructor of the class Basis:
+		#		L: length of chain
+		#		Nup: number of up spins if restricting magnetization sector. 
 		self.L=L
 		if type(Nup) is int:
-			if Nup <=0 or Nup >= L: sys.exit("Basis1D error: Nup must fall inbetween 0 and L")
+			if Nup <=0 or Nup >= L: raise BasisError("Nup must fall inbetween 0 and L")
 			self.Nup=Nup
 			self.Mcon=True 
 			self.symm=True # Symmetry exsists so one must use the search functionality when calculating matrix elements

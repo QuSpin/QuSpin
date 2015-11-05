@@ -40,6 +40,7 @@ def SpinOp(s,opstr,indx):
 			else: r=flipBit(r,indx[i])
 		else:
 			raise SpinOpError("operator symbol "+opstr[i]+" not recognized")
+
 #	print opstr, indx, ME
 	if ME.imag == 0.0:
 		ME=ME.real

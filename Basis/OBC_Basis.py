@@ -1,12 +1,13 @@
+# python 2.7 modules
+from array import array as vec
+from numpy import sqrt
+# local modules
 from BitOps import * # loading modules for bit operations.
 from SpinOps import SpinOp
 from Z_Basis import Basis, BasisError
 
-from array import array as vec
-from numpy import sqrt
-
-
-
+# References:
+# [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
 
 
 def CheckStatePZ(pz,s,L,rpz=2):
@@ -53,12 +54,27 @@ def CheckStateZ(z,s,L,rz=2):
 
 
 
-class OpenBasisPZ(Basis):
+class OpenBasis1D(Basis):
 	def __init__(self,L,Nup=None,pblock=None,zblock=None,pzblock=None):
-		Basis.__init__(self,L,Nup)
-		zbasis=self.basis
+		# This function in the constructor of the class:
+		#		L: length of the chain
+		#		Nup: number of up spins if restricting magnetization sector. 
+		#		pblock: the number associated with parity quantum number of the block
+		#		zblock: the number associated with spin inversion quantum number of the block
+		#		pzblock: the number associated with parity + spin inversion quantum number of the block
+
+		#	Note: the PZ block assumes the Hamiltonian is invariant under the total transformation PZ, 
+		#				but not each transformation separately.
+
+		Basis.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
+		zbasis=self.basis # take initialized basis from Basis class and store in separate array to access, then overwrite basis.
 
 
+		# if symmetry is needed, the reference states must be found.
+		# This is done through the CheckState function. Depending on
+		# the symmetry, a different function must be used. Also if multiple
+		# symmetries are used, the Checkstate functions be called
+		# sequentially in order to check the state for all symmetries used.
 		if (type(pblock) is int) and (type(zblock) is int):
 			self.Pcon = True
 			self.Zcon = True
@@ -68,7 +84,7 @@ class OpenBasisPZ(Basis):
 			self.z = zblock
 			self.pz = pblock*zblock
 			if (type(pzblock) is int) and (self.pz != self.p*self.z):
-				print "OpenBasisPZ wanring: contradiction between pzblock and pblock*zblock, assuming the block denoted by pblock and zblock" 
+				print "OpenBasis1D wanring: contradiction between pzblock and pblock*zblock, assuming the block denoted by pblock and zblock" 
 			self.Npz = []
 			self.basis = []
 			for s in zbasis:
@@ -131,6 +147,12 @@ class OpenBasisPZ(Basis):
 
 
 	def RefState(self,s):
+		# this function takes an integer s which represents a spin configuration in the Sz basis, then tries to find its 
+		# reference state depending on the symmetries specified by the user. it does this by applying the various symmetry 
+		# operations on the state and seeing whether a smaller integer is produced. This smaller integer by definition is the
+		# reference state.
+		# it returns r which is the reference state. g,q, and qg are the number of times the P,Z and PZ operators had to act.
+		# This information is needed to calculate the matrix element s between states in this basis [1].
 		t=s; r=s; g=0; q=0; qg=0;
 		if self.Pcon and self.Zcon:
 			t = flip_all(t,self.L)
@@ -161,13 +183,19 @@ class OpenBasisPZ(Basis):
 
 
 	def Op(self,J,st,opstr,indx):
-		if self.Pcon or self.Zcon or self.PZcon:
+		# This function find the matrix elemement and state which opstr creates
+		# after acting on an inputed state index.
+		#		J: coupling in front of opstr
+		#		st: index of a local state in the basis for which the opstor will act on
+		#		opstr: string which contains a list of operators which  
+		#		indx: a list of ordered indices which tell which operator in opstr live on the lattice.
+		if self.Pcon or self.Zcon or self.PZcon: # if the user wants to use any symmetries, special care must be taken [1]
 			s1=self.basis[st]
 			ME,s2=SpinOp(s1,opstr,indx)
 			s2,q,g,qg=self.RefState(s2)
 			stt=self.FindZstate(s2)
 			#print st,int2bin(s1,self.L),int2bin(exchangeBits(s1,i,j),self.L), stt,int2bin(s2,self.L), q, g, [i,j]
-			if stt >= 0:
+			if stt >= 0: 
 				if self.Pcon and self.Zcon:
 					ME *= sqrt( float(self.Npz[stt])/self.Npz[st])*J*self.p**(q)*self.z**(g)
 				elif self.Pcon:
@@ -180,7 +208,7 @@ class OpenBasisPZ(Basis):
 				ME = 0.0
 				stt = st
 			return [ME,st,stt]	
-		else:
+		else: # else just use method from parent class.
 			return Basis.Op(self,J,st,opstr,indx)
 
 
