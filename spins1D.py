@@ -13,6 +13,8 @@ from scipy.integrate import odeint	# ode solver used in evolve function.
 from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128
 
 
+supported_dtypes=(float32, float64, complex64, complex128)
+
 
 def StaticH(B,static,dtype):
 	ME_list=[]
@@ -35,6 +37,8 @@ def StaticH(B,static,dtype):
 		H.sum_duplicates()
 		H.eliminate_zeros()
 		return H
+	else:
+		return None
 
 
 
@@ -63,9 +67,9 @@ def DynamicHs(B,dynamic,dtype):
 		H=H.tocsr()
 		H.sum_duplicates()
 		H.eliminate_zeros()
-		Dynamic_Hs.append(H)
+		Dynamic_Hs.append((List[2],H))
 
-	return Dynamic_Hs
+	return tuple(Dynamic_Hs)
 
 
 
@@ -78,7 +82,7 @@ def DynamicHs(B,dynamic,dtype):
 
 class Hamiltonian1D:
 	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,zblock=None,pblock=None,pzblock=None,dtype=complex64):
-		if dtype not in [float32, float64, complex64, complex128]:
+		if dtype not in supported_dtypes:
 			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
 
 		# testing blocks for basis
@@ -86,121 +90,119 @@ class Hamiltonian1D:
 			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
 				raise BasisError("Translation, spin inversion, and parity symmetries are not implimented at this time.")
 			else:
-				self.B=PeriodicBasis1D(Length,Nup=Nup,kblock=kblock,a=a)
+				B=PeriodicBasis1D(Length,Nup=Nup,kblock=kblock,a=a)
 				if (dtype != complex128) and (dtype != complex64):
 					print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
 					dtype=complex64
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-			self.B=OpenBasis1D(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
+			B=OpenBasis1D(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
 		else:
-			self.B=Basis(Length,Nup=Nup)
-
-		self.Static=static
-		self.Dynamic=dynamic
+			B=Basis(Length,Nup=Nup)
 		
-		self.Ns=self.B.Ns
+		self.Ns=B.Ns
 		if self.Ns > 0:
-			self.Static_H=StaticH(self.B,static,dtype)
-			self.Dynamic_Hs=DynamicHs(self.B,dynamic,dtype)
+			self.Static_H=StaticH(B,static,dtype)
+			self.Dynamic_Hs=DynamicHs(B,dynamic,dtype)
 
-	def return_H(self,time=0):
-		if self.Ns**2 > sys.maxsize:
-			raise MemoryError
+
+
+
+
+	def todense(self,time=0):
+
 		if self.Ns <= 0:
 			return matrix([])
-		if self.Static: # if there is a static Hamiltonian...
+
+		if self.Static_H != None: # if there is a static Hamiltonian...
 			H=self.Static_H	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
 		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
 
 		return H.todense()
+
+
+
+
 
 	def dot(self,V,time=0):
 		if self.Ns <= 0:
 			return array([])
-		if self.Static: # if there is a static Hamiltonian...
+
+		if self.Static_H != None: # if there is a static Hamiltonian...
 			Vnew = self.Static_H.dot(V)	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				Vnew += J*self.Dynamic_Hs[i].dot(V)
+			for ele in self.Dynamic_Hs:
+				J=ele[0](time)
+				Vnew += J*(ele[1].dot(Vnew))
 		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			Vnew=J*self.Dynamic_Hs[i].dot(V)
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				Vnew += J*self.Dynamic_Hs[i].dot(V)
+			for ele in self.Dynamic_Hs:
+				J=ele[0](time)
+				Vnew += J*(ele[1].dot(Vnew))
+
 		return Vnew
 	
 
 
+
+
+
 	def MatrixElement(self,Vl,Vr,time=0):
-		
+		Vl=asarray(Vl)
+		Vr=asarray(Vr)
 		HVr=self.dot(Vr,time=time)
 		ME=dot(Vl.T.conj(),HVr)
 		return ME
 
 
-	def SparseEV(self,time=0,n=6,sigma=None,which='SA',maxiter=None):
+	def SparseEV(self,time=0,k=6,sigma=None,which='SA',maxiter=None):
+
 		if self.Ns <= 0:
 			return array([]), matrix([])
-		if self.Static: # if there is a static Hamiltonian...
-			H=self.Static_H	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
-		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
 
-		return sla.eigsh(H,k=n,sigma=sigma,which=which,maxiter=maxiter)
+		if self.Static_H != None: # if there is a static Hamiltonian...
+			H=self.Static_H	
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
+		else: # if there isn't...
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
+
+		return sla.eigsh(H,k=k,sigma=sigma,which=which,maxiter=maxiter)
 	
 
 
 	def DenseEE(self,time=0):
-		if self.Ns**2 > sys.maxsize:
-			raise MemoryError
+
 		if self.Ns <= 0:
 			return array([])
-		if self.Static: # if there is a static Hamiltonian...
+
+		if self.Static_H != None: # if there is a static Hamiltonian...
 			H=self.Static_H	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
 		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
 
 		return eigh(H.todense(),JOBZ='N')
 
+
+
+
 	def DenseEV(self,time=0):
-		if self.Ns**2 > sys.maxsize:
-			raise MemoryError
+
 		if self.Ns <= 0:
 			return array([]), matrix([])
-		if self.Static: # if there is a static Hamiltonian...
+
+		if self.Static_H != None: # if there is a static Hamiltonian...
 			H=self.Static_H	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
 		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
+			for ele in self.Dynamic_Hs:
+				H += J*ele[1]*ele[0](time)
 
 		return eigh(H.todense())
 
@@ -215,27 +217,14 @@ class Hamiltonian1D:
 	def Exponential(self,V,dt,time=0,n=1,error=10**(-15)):
 		if self.Ns <= 0:
 			return array([])
-		if self.Static: # if there is a static Hamiltonian...
-			H=self.Static_H	
-			for i in xrange(len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
-		else: # if there isn't...
-			J=self.Dynamic[0][2](time)
-			H=J*self.Dynamic_Hs[0]
-			for i in xrange(1,len(self.Dynamic)):
-				J=self.Dynamic[i][2](time)
-				H=H+J*self.Dynamic_Hs[i]
 
-		if n <= 0: n=1
-		for i in xrange(len(self.Dynamic)):
-			J=self.Dynamic[i][2](time)
-			H=H+J*self.Dynamic_Hs[i]
+		if n <= 0: raise Exception("n must be >= 0")
+
 		for j in xrange(n):
 			V1=V
 			e=1.0; i=1		
 			while e > error:
-				V1=(-1j*dt/(n*i))*csr_matrix.dot(H,V1)
+				V1=(-1j*dt/(n*i))*self.dot(V1,time=time)
 				V+=V1
 
 				if i%2 == 0:
