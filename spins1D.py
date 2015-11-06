@@ -8,9 +8,9 @@ from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse.linalg  as sla	# needed for the sparse linear algebra packages
-from scipy.integrate import odeint	# ode solver used in evolve function.
+from scipy.integrate import complex_ode	# ode solver used in evolve function.
 
-from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128
+from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128, dot
 
 
 supported_dtypes=(float32, float64, complex64, complex128)
@@ -208,10 +208,21 @@ class Hamiltonian1D:
 
 
 
-	def evolve(self,v0,time,full_output=0, rtol=None, atol=None, h0=0.0, hmax=0.0, hmin=0.0,
-						 ixpr=0, mxstep=0, mxhnil=0, mxordn=12, mxords=5, printmessg=0):
-		return odeint(self.dot,v0,time,full_output=full_output, rtol=rtol, atol=atol, h0=h0, hmax=hmax, hmin=hmin,
-						 ixpr=ixpr, mxstep=mxstep, mxhnil=mxhnil, mxordn=mxordn, mxords=mxords, printmessg=printmessg)
+	def evolve(self,v0,t0,t,real_time=True,**integrator_params):
+		if real_time:
+			solver=complex_ode(lambda t,y:-1j*self.dot(y,time=t))
+		else:
+			solver=complex_ode(lambda t,y:-self.dot(y,time=t))
+
+		solver.set_initial_value(v0,t=t0)
+		solver.set_integrator('dop853', **integrator_params)
+		solver.integrate(t)
+		if solver.successful():
+			return solver.y
+		else:
+			raise Exception('failed to integrate')
+
+		
 
 
 	def Exponential(self,V,dt,time=0,n=1,error=10**(-15)):
