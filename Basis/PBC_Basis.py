@@ -40,6 +40,12 @@ class PeriodicBasis1D(Basis):
 
 		Basis.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
 		zbasis=self.basis # take initialized basis from Basis class and store in separate array to access, then overwrite basis.
+		self.Pcon=False
+		self.Zcon=False
+		self.PZcon=False
+		self.pblock=None
+		self.zblock=None
+		self.pzblock=None
 
 
 		# if symmetry is needed, the reference states must be found.

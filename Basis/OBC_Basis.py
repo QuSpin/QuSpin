@@ -68,6 +68,9 @@ class OpenBasis1D(Basis):
 
 		Basis.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
 		zbasis=self.basis # take initialized basis from Basis class and store in separate array to access, then overwrite basis.
+		self.Kcon=False # is false by definition
+		self.kblock=None
+		self.a=1
 
 
 		# if symmetry is needed, the reference states must be found.
@@ -80,10 +83,10 @@ class OpenBasis1D(Basis):
 			self.Zcon = True
 			self.PZcon = True
 			self.symm = True
-			self.p = pblock
-			self.z = zblock
-			self.pz = pblock*zblock
-			if (type(pzblock) is int) and (self.pz != self.p*self.z):
+			self.pblock = pblock
+			self.zblock = zblock
+			self.pzblock = pblock*zblock
+			if (type(pzblock) is int) and (self.pzblock != self.pblock*self.z):
 				print "OpenBasis1D wanring: contradiction between pzblock and pblock*zblock, assuming the block denoted by pblock and zblock" 
 			self.Npz = []
 			self.basis = []
@@ -101,7 +104,7 @@ class OpenBasis1D(Basis):
 			self.Zcon = False
 			self.PZcon = False
 			self.symm = True
-			self.p = pblock
+			self.pblock = pblock
 			self.z = zblock
 			self.Np = []
 			self.basis = []
@@ -130,7 +133,7 @@ class OpenBasis1D(Basis):
 			self.Zcon = False
 			self.Pcon = False
 			self.symm = True
-			self.pz = pzblock
+			self.pzblock = pzblock
 			self.Npz = []
 			self.basis = []
 			for s in zbasis:
@@ -197,13 +200,13 @@ class OpenBasis1D(Basis):
 			#print st,int2bin(s1,self.L),int2bin(exchangeBits(s1,i,j),self.L), stt,int2bin(s2,self.L), q, g, [i,j]
 			if stt >= 0: 
 				if self.Pcon and self.Zcon:
-					ME *= sqrt( float(self.Npz[stt])/self.Npz[st])*J*self.p**(q)*self.z**(g)
+					ME *= sqrt( float(self.Npz[stt])/self.Npz[st])*J*self.pblock**(q)*self.z**(g)
 				elif self.Pcon:
-					ME *= sqrt( float(self.Np[stt])/(self.Np[st]))*J*self.p**(q)
+					ME *= sqrt( float(self.Np[stt])/(self.Np[st]))*J*self.pblock**(q)
 				elif self.Zcon:
 					ME *=  0.5*J*self.z**(g)
 				elif self.PZcon:
-					ME *= sqrt( float(self.Npz[stt])/self.Npz[st] )*J*self.pz**(qg)		
+					ME *= sqrt( float(self.Npz[stt])/self.Npz[st] )*J*self.pzblock**(qg)		
 			else:
 				ME = 0.0
 				stt = st

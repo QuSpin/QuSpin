@@ -1,6 +1,6 @@
 import sys # needed for sys.stop('error message')
 #local modules:
-from Basis import *
+from Basis import Basis1D
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
@@ -13,7 +13,10 @@ from scipy.integrate import complex_ode	# ode solver used in evolve function.
 from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128, dot
 from collections import Iterable
 
+
+#global names:
 supported_dtypes=(float32, float64, complex64, complex128)
+
 
 
 def StaticH(B,static,dtype):
@@ -32,7 +35,6 @@ def StaticH(B,static,dtype):
 		sorted or even unique) and creates a coo_matrix from the scipy.sparse library. It then converts this coo_matrix
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
-
 	ME_list=[] # this is a list which stores the matrix elements as lists [[row,col,ME],...] for the whole hamiltonian. 
 	st=xrange(B.Ns) # iterator which loops over the index of the reference states of the basis B.
 	for i in xrange(len(static)): 
@@ -82,8 +84,6 @@ def DynamicHs(B,dynamic,dtype):
 		representation of all the different driven parts. This way one can construct the time dependent 
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
-
-
 	Dynamic_Hs=[]
 	st=[ k for k in xrange(B.Ns) ]
 	for i in xrange(len(dynamic)):
@@ -117,29 +117,33 @@ def DynamicHs(B,dynamic,dtype):
 
 
 class Hamiltonian1D:
+	# initialize with given symmetries
 	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,zblock=None,pblock=None,pzblock=None,dtype=complex64):
 		if dtype not in supported_dtypes:
 			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
 
-		# testing blocks for basis
-		if (type(kblock) is int):
-			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-				raise BasisError("Translation, spin inversion, and parity symmetries are not implimented at this time.")
-			else:
-				B=PeriodicBasis1D(Length,Nup=Nup,kblock=kblock,a=a)
-				if (dtype != complex128) and (dtype != complex64):
-					print "Hamiltonian1D: using momentum states requires complex values: setting dtype to complex64"
-					dtype=complex64
-		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-			B=OpenBasis1D(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
-		else:
-			B=Basis(Length,Nup=Nup)
-		
+		B=Basis1D(Length,Nup=Nup,kblock=kblock,a=a,zblock=zblock,pblock=pblock,pzblock=pzblock)
+
 		self.Ns=B.Ns
 		self.dtype=dtype
 		if self.Ns > 0:
 			self.Static_H=StaticH(B,static,dtype)
 			self.Dynamic_Hs=DynamicHs(B,dynamic,dtype)
+
+
+
+
+	# initialize with a basis B
+	def __init__(self,static,dynamic,B,dtype=complex64):
+		if dtype not in supported_dtypes:
+			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
+			
+		self.Ns=B.Ns
+		self.dtype=dtype
+		if self.Ns > 0:
+			self.Static_H=StaticH(B,static,dtype)
+			self.Dynamic_Hs=DynamicHs(B,dynamic,dtype)
+
 
 
 
@@ -152,7 +156,6 @@ class Hamiltonian1D:
 		description:
 			this function simply returns a copy of the Hamiltonian as a csr_matrix evaluated at the desired time.
 		"""
-
 		if self.Ns <= 0:
 			return csr_matrix(asarray([[]]))
 
@@ -165,6 +168,9 @@ class Hamiltonian1D:
 				H += ele[1]*ele[0](time)
 
 		return H
+
+
+
 
 
 	def todense(self,time=0):
@@ -182,7 +188,9 @@ class Hamiltonian1D:
 		return self.tocsr(time=time).todense()
 
 
-  
+
+
+
 	def dot(self,V,time=0):
 		"""
 		args:
@@ -210,7 +218,10 @@ class Hamiltonian1D:
 				Vnew += J*(ele[1].dot(V))
 
 		return Vnew
-	
+
+
+
+
 
 	def MatrixElement(self,Vl,Vr,time=0):
 		"""
@@ -232,7 +243,10 @@ class Hamiltonian1D:
 		ME=dot(Vl.T.conj(),HVr)
 		return ME
 
-	
+
+
+
+
 	def SparseEV(self,time=0,k=6,sigma=None,which='SA',maxiter=10000):
 		"""
 		args:
@@ -248,7 +262,9 @@ class Hamiltonian1D:
 			return array([]), array([[]])
 
 		return eigsh(self.tocsr(time=time),k=k,sigma=sigma,which=which,maxiter=maxiter)
-	
+
+
+
 
 
 	def DenseEE(self,time=0):
@@ -260,11 +276,14 @@ class Hamiltonian1D:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
 			uses wrapped lapack functions which are contained in module py_lapack
 		"""
-
+		
 		if self.Ns <= 0:
 			return array([])
 
-			return eigh(self.todense(time=time),JOBZ='N')
+		return eigh(self.todense(time=time),JOBZ='N')
+
+
+
 
 
 	def DenseEV(self,time=0):
@@ -280,6 +299,8 @@ class Hamiltonian1D:
 			return array([]), array([[]])
 
 		return eigh(self.todense(time=time))
+
+
 
 
 
@@ -331,11 +352,9 @@ class Hamiltonian1D:
 				return solver.y
 			else:
 				raise Exception('failed to integrate')
-		
 
-		
 
-		
+
 
 
 	def Exponential(self,V,a,time=0,n=1,error=10**(-15)):
