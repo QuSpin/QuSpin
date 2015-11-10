@@ -133,20 +133,6 @@ class Hamiltonian1D:
 
 
 
-	# initialize with a basis B
-	def __init__(self,static,dynamic,B,dtype=complex64):
-		if dtype not in supported_dtypes:
-			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
-			
-		self.Ns=B.Ns
-		self.dtype=dtype
-		if self.Ns > 0:
-			self.Static_H=StaticH(B,static,dtype)
-			self.Dynamic_Hs=DynamicHs(B,dynamic,dtype)
-
-
-
-
 
 	def tocsr(self,time=0):
 		"""
