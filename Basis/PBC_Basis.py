@@ -54,6 +54,7 @@ class PeriodicBasis1D(Basis):
 		# symmetries are used, the Checkstate functions be called
 		# sequentially in order to check the state for all symmetries used.
 		if type(kblock) is int:
+			if kblock < 0 or kblock >= L: raise BasisError("0<= kblock < "+str(L))
 			self.a=a
 			self.kblock=kblock
 			self.k=2*pi*a*kblock/L

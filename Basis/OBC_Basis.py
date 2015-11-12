@@ -72,13 +72,16 @@ class OpenBasis1D(Basis):
 		self.kblock=None
 		self.a=1
 
-
 		# if symmetry is needed, the reference states must be found.
 		# This is done through the CheckState function. Depending on
 		# the symmetry, a different function must be used. Also if multiple
 		# symmetries are used, the Checkstate functions be called
 		# sequentially in order to check the state for all symmetries used.
 		if (type(pblock) is int) and (type(zblock) is int):
+			if abs(pblock) != 1:
+				raise BasisError("pblock must be either +/- 1")
+			if abs(zblock) != 1:
+				raise BasisError("zblock must be either +/- 1")
 			self.Pcon = True
 			self.Zcon = True
 			self.PZcon = True
@@ -86,7 +89,7 @@ class OpenBasis1D(Basis):
 			self.pblock = pblock
 			self.zblock = zblock
 			self.pzblock = pblock*zblock
-			if (type(pzblock) is int) and (self.pzblock != self.pblock*self.z):
+			if (type(pzblock) is int) and (self.pzblock != self.pblock*self.zblock):
 				print "OpenBasis1D wanring: contradiction between pzblock and pblock*zblock, assuming the block denoted by pblock and zblock" 
 			self.Npz = []
 			self.basis = []
@@ -100,6 +103,8 @@ class OpenBasis1D(Basis):
 					self.Npz.append(rpz)
 			self.Ns=len(self.basis)
 		elif type(pblock) is int:
+			if abs(pblock) != 1:
+				raise BasisError("pblock must be either +/- 1")
 			self.Pcon = True
 			self.Zcon = False
 			self.PZcon = False
@@ -116,6 +121,8 @@ class OpenBasis1D(Basis):
 					self.Np.append(rp)
 			self.Ns=len(self.basis)
 		elif type(zblock) is int:
+			if abs(zblock) != 1:
+				raise BasisError("zblock must be either +/- 1")
 			self.Pcon = False
 			self.Zcon = True
 			self.PZcon = False
@@ -129,6 +136,8 @@ class OpenBasis1D(Basis):
 					self.basis.append(s)
 			self.Ns=len(self.basis)
 		elif type(pzblock) is int:
+			if abs(pzblock) != 1:
+				raise BasisError("pzblock must be either +/- 1")
 			self.PZcon = True
 			self.Zcon = False
 			self.Pcon = False

@@ -7,11 +7,10 @@ from py_lapack import eigh # used to diagonalize hermitian and symmetric matrici
 from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
-from scipy.sparse.linalg  import eigsh, LinearOperator	# needed for the sparse linear algebra packages
-from scipy.integrate import complex_ode	# ode solver used in evolve function.
-
-from numpy import pi, asarray, array, int32, int64, float32, float64, complex64, complex128, dot
-from collections import Iterable
+from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
+from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
+from numpy import asarray, array, int32, int64, float32, float64, complex64, complex128, isscalar
+from copy import deepcopy
 
 
 #global names:
@@ -117,18 +116,40 @@ def DynamicHs(B,dynamic,dtype):
 
 
 class Hamiltonian1D:
-	# initialize with given symmetries
-	def __init__(self,static,dynamic,Length,Nup=None,kblock=None,a=1,zblock=None,pblock=None,pzblock=None,dtype=complex64):
+	def __init__(self,static,dynamic,L,**init_params):
+		"""
+		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
+		Note that if you initialize with a basis it will ignore all symmetry inputs.
+		"""
+		Nup=init_params.get("Nup")
+		kblock=init_params.get("kblock")
+		zblock=init_params.get("zblock")
+		pblock=init_params.get("pblock")
+		pzblock=init_params.get("pzblock")
+		dtype=init_params.get("dtype")
+		a=init_params.get("a")
+		basis=init_params.get("basis")
+		if a == None:
+			a=1
+		if dtype == None:
+			dtype=complex128
+		if basis == None:  
+			basis=Basis1D(L,Nup=Nup,a=a,kblock=kblock,zblock=zblock,pblock=pblock,pzblock=pzblock)
+		if not isinstance(basis,Basis1D):
+			raise TypeError("basis is not instance of Basis1D")
 		if dtype not in supported_dtypes:
 			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
 
-		B=Basis1D(Length,Nup=Nup,kblock=kblock,a=a,zblock=zblock,pblock=pblock,pzblock=pzblock)
 
-		self.Ns=B.Ns
+		self.static=static
+		self.dynamic=dynamic
+		self.L=L
+		self.Ns=basis.Ns
 		self.dtype=dtype
 		if self.Ns > 0:
-			self.Static_H=StaticH(B,static,dtype)
-			self.Dynamic_Hs=DynamicHs(B,dynamic,dtype)
+			self.Static_H=StaticH(basis,static,dtype)
+			self.Dynamic_Hs=DynamicHs(basis,dynamic,dtype)
+			self.shape=(Ns,Ns)
 
 
 
@@ -144,6 +165,8 @@ class Hamiltonian1D:
 		"""
 		if self.Ns <= 0:
 			return csr_matrix(asarray([[]]))
+		if not isscalar(time):
+			raise Exception("time must be a scaler")
 
 		if self.Static_H != None: # if there is a static Hamiltonian...
 			H=self.Static_H	
@@ -170,6 +193,8 @@ class Hamiltonian1D:
 		"""
 		if self.Ns <= 0:
 			return matrix([])
+		if not isscalar(time):
+			raise Exception("time must be a scaler")
 
 		return self.tocsr(time=time).todense()
 
@@ -191,19 +216,21 @@ class Hamiltonian1D:
 
 		if self.Ns <= 0:
 			return array([])
+		if not isscalar(time):
+			raise Exception("time must be a scaler")
 
 		V=asarray(V)
 		if self.Static_H != None: # if there is a static Hamiltonian...
-			Vnew = self.Static_H.dot(V)	
+			V_dot = self.Static_H.dot(V)	
 			for ele in self.Dynamic_Hs:
 				J=ele[0](time)
-				Vnew += J*(ele[1].dot(V))
+				V_dot += J*(ele[1].dot(V))
 		else: # if there isn't...
 			for ele in self.Dynamic_Hs:
 				J=ele[0](time)
-				Vnew += J*(ele[1].dot(V))
+				V_dot += J*(ele[1].dot(V))
 
-		return Vnew
+		return V_dot
 
 
 
@@ -290,16 +317,15 @@ class Hamiltonian1D:
 
 
 
-	def evolve(self,v0,t0,time,real_time=True,verbose=False,integrator='dop853',**integrator_params):
+	def evolve(self,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 		"""
 		args:
 			v0, intial wavefunction to evolve.
 			t0, intial time 
-			time, iterable, or time to evolve v0 to
+			time, iterable or scalar, or time to evolve v0 to
 			real_time, evolve real or imaginary time
 			verbose, print times out as you evolve
-			integrator, the type of integrator to use for complex_ode
-			**integrator_params, the parameters used for the particular integrator
+			**integrator_params, the parameters used for the particular vode or zvode integrators.
 			see documentation http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.integrate.ode.html
 
 		description:
@@ -309,15 +335,24 @@ class Hamiltonian1D:
 		if self.Ns <= 0:
 			return array([])
 
-		if real_time:
-			solver=complex_ode(lambda t,y:-1j*self.dot(y,time=t))
-		else:
-			solver=complex_ode(lambda t,y:-self.dot(y,time=t))
+		v0=asarray(v0)
 
+		if real_time:
+			solver=ode(lambda t,y:-1j*self.dot(y,time=t))
+		else:
+			solver=ode(lambda t,y:-self.dot(y,time=t))
+
+		solver.set_integrator("zvode", **integrator_params)
 		solver.set_initial_value(v0,t=t0)
-		solver.set_integrator(integrator, **integrator_params)
 		
-		if isinstance(time,Iterable):
+		if isscalar(time):
+			if time==t0: return v0
+			solver.integrate(time)
+			if solver.successful():
+				return solver.y
+			else:
+				raise Exception('failed to integrate')		
+		else:
 			sol=[]
 			for t in time:
 				if verbose: print t
@@ -331,19 +366,11 @@ class Hamiltonian1D:
 					raise Exception('failed to integrate')
 			return sol
 
-		else:
-			if time==t0: return v0
-			solver.integrate(time)
-			if solver.successful():
-				return solver.y
-			else:
-				raise Exception('failed to integrate')
 
 
 
 
-
-	def Exponential(self,V,a,time=0,n=1,error=10**(-15)):
+	def Exponential(self,V,z,time=0,n=1,atol=10**(-8)):
 		"""
 		args:
 			V, vector to apply the matrix exponential on.
@@ -354,19 +381,22 @@ class Hamiltonian1D:
 			then the taylor series is truncated.
 
 		description:
-			this function computes exp(aH)V as a taylor series in aH.
+			this function computes exp(zH)V as a taylor series in aH.
 
 		"""
 		if self.Ns <= 0:
 			return array([])
+		if not isscaler(time):
+			raise Exception("time must be a scaler")
 
 		if n <= 0: raise Exception("n must be >= 0")
 
+		V=asarray(V)
 		for j in xrange(n):
-			V1=V
+			V1=array(V)
 			e=1.0; i=1		
 			while e > error:
-				V1=(a/(n*i))*self.dot(V1,time=time)
+				V1=(z/(n*i))*self.dot(V1,time=time)
 				V+=V1
 				if i%2 == 0:
 					e=norm(V1)
@@ -375,14 +405,30 @@ class Hamiltonian1D:
 
 
 
+	def __add__(self,other):
+		if isinstance(other,Hamiltonian1D):
+			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			new=deepcopy(other)
+			new.Static_H+=self.Static+H
+			new.Dynamic_Hs+=self.Dynamic+Hs
+			return new
+		else:
+			raise Exception("Not Implimented")
 
 
+	def __sub__(self,other):
+		if isinstance(other,Hamiltonian1D):
+			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			new=deepcopy(other)
+			new.StaticH-=self.Static_H
+			for ele in self.Dynamic_Hs:
+				new.DynamicHs.append((ele[0],-ele[1]))
+			return new
+		else:
+			raise Exception("Not Implimented")
 
 
-
-
-
-
+	
 
 
 
