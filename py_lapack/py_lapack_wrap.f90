@@ -145,31 +145,19 @@ integer(kind=4) :: LWORK, LDVL, LDVR
 
 
 
-<<<<<<< HEAD
 if(JOBR.eq.'V'.and. JOBL.eq.'V') then
-=======
-if(JOBR.eq.'V'.and.JOBL.eq.'V') then
->>>>>>> OBC
 info=2790
 return
 end if
 
 if(JOBL.eq.'V') then
-<<<<<<< HEAD
 LDVL=N; allocate(VL(N,LDVL))
-=======
-LDVL=N; allocate(VL(LDVL,N))
->>>>>>> OBC
 else
 LDVL=1; allocate(VL(1,1))
 end if
 
 if(JOBR.eq.'V') then
-<<<<<<< HEAD
 LDVR=N; allocate(VR(N,LDVR))
-=======
-LDVR=N; allocate(VR(LDVR,N))
->>>>>>> OBC
 else
 LDVR=1; allocate(VR(1,1))
 end if
@@ -222,32 +210,19 @@ complex(kind=8), allocatable, dimension(:) :: WORK
 integer(kind=4) :: LWORK, LDVL, LDVR
 
 
-<<<<<<< HEAD
 if(JOBR.eq.'V'.and. JOBL.eq.'V') then
-=======
-
-if(JOBR.eq.'V'.and.JOBL.eq.'V') then
->>>>>>> OBC
 info=2790
 return
 end if
 
 if(JOBL.eq.'V') then
-<<<<<<< HEAD
 LDVL=N; allocate(VL(N,LDVL))
-=======
-LDVL=N; allocate(VL(LDVL,N))
->>>>>>> OBC
 else
 LDVL=1; allocate(VL(1,1))
 end if
 
 if(JOBR.eq.'V') then
-<<<<<<< HEAD
 LDVR=N; allocate(VR(N,LDVR))
-=======
-LDVR=N; allocate(VR(LDVR,N))
->>>>>>> OBC
 else
 LDVR=1; allocate(VR(1,1))
 end if
@@ -259,13 +234,10 @@ allocate(WORK(1))
 call zgeev(JOBL,JOBR,N,A,N,W,VL,LDVL,VR,LDVR,WORK,-1,RWORK,INFO)
 if(info.eq.0) then
 LWORK=int(WORK(1))
-<<<<<<< HEAD
 if(LWORK.le.0) then
 INFO=-N-1
 return
 end if
-=======
->>>>>>> OBC
 deallocate(WORK)
 allocate(WORK(LWORK))
 else
