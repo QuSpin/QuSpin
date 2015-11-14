@@ -4,3 +4,5 @@
 *.so
 # backup files from gedit #
 *~
+# invisible files
+.*

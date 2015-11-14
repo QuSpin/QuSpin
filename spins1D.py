@@ -325,7 +325,7 @@ class Hamiltonian1D:
 			time, iterable or scalar, or time to evolve v0 to
 			real_time, evolve real or imaginary time
 			verbose, print times out as you evolve
-			**integrator_params, the parameters used for the particular vode or zvode integrators.
+			**integrator_params, the parameters used for the dop853 explicit rung-kutta solver.
 			see documentation http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.integrate.ode.html
 
 		description:
@@ -338,11 +338,11 @@ class Hamiltonian1D:
 		v0=asarray(v0)
 
 		if real_time:
-			solver=ode(lambda t,y:-1j*self.dot(y,time=t))
+			solver=complex_ode(lambda t,y:-1j*self.dot(y,time=t))
 		else:
-			solver=ode(lambda t,y:-self.dot(y,time=t))
+			solver=complex_ode(lambda t,y:-self.dot(y,time=t))
 
-		solver.set_integrator("zvode", **integrator_params)
+		solver.set_integrator("dop853", **integrator_params)
 		solver.set_initial_value(v0,t=t0)
 		
 		if isscalar(time):
