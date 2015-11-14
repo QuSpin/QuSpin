@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, arange
 
 class BitOpsError(Exception):
 	def __init__(self,message):
@@ -14,7 +14,7 @@ def int2bin(n,L):
 	""" Convert an integer n to a binary vector 
 	padded with zeros up to the appropriate length L """
 
-	return (((fliplr(n,L) & (1 << np.arange(L)))) > 0).astype(int)
+	return (((fliplr(n,L) & (1 << arange(L)))) > 0).astype(int)
 
 def bin2int(v):
 	""" Convert a binary vector v to an integer """

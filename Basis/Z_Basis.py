@@ -43,7 +43,7 @@ class Basis:
 		#		Nup: number of up spins if restricting magnetization sector. 
 		self.L=L
 		if type(Nup) is int:
-			if Nup <=0 or Nup >= L: raise BasisError("Nup must fall inbetween 0 and L")
+			if Nup < 0 or Nup > L: raise BasisError("0 <= Nup <= "+str(L))
 			self.Nup=Nup
 			self.Mcon=True 
 			self.symm=True # Symmetry exsists so one must use the search functionality when calculating matrix elements
