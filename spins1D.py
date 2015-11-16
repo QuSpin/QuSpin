@@ -149,7 +149,7 @@ class Hamiltonian1D:
 		if self.Ns > 0:
 			self.Static_H=StaticH(basis,static,dtype)
 			self.Dynamic_Hs=DynamicHs(basis,dynamic,dtype)
-			self.shape=(Ns,Ns)
+			self.shape=(self.Ns,self.Ns)
 
 
 
