@@ -9,7 +9,7 @@ from scipy.sparse import coo_matrix	# needed as the initial format that the Hami
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
 from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
-from numpy import asarray, array, int32, int64, float32, float64, complex64, complex128, isscalar
+from numpy import isscalar,dot,asarray, array, int32, int64, float32, float64, complex64, complex128
 from copy import deepcopy
 
 
@@ -149,7 +149,7 @@ class Hamiltonian1D:
 		if self.Ns > 0:
 			self.Static_H=StaticH(basis,static,dtype)
 			self.Dynamic_Hs=DynamicHs(basis,dynamic,dtype)
-			self.shape=(Ns,Ns)
+			self.shape=(self.Ns,self.Ns)
 
 
 
