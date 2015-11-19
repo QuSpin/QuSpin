@@ -369,7 +369,8 @@ class Hamiltonian1D:
 
 
 
-
+	# possiply impliment this in fortran using naive csr matrix vector dot product, might speed things up,
+	# but maybe not since the exponential taylor converges pretty quickly. 
 	def Exponential(self,V,z,time=0,n=1,atol=10**(-8)):
 		"""
 		args:
@@ -381,7 +382,7 @@ class Hamiltonian1D:
 			then the taylor series is truncated.
 
 		description:
-			this function computes exp(zH)V as a taylor series in aH.
+			this function computes exp(zH)V as a taylor series in zH. not useful for long time evolution.
 
 		"""
 		if self.Ns <= 0:
@@ -395,7 +396,7 @@ class Hamiltonian1D:
 		for j in xrange(n):
 			V1=array(V)
 			e=1.0; i=1		
-			while e > error:
+			while e > atol:
 				V1=(z/(n*i))*self.dot(V1,time=time)
 				V+=V1
 				if i%2 == 0:
@@ -404,7 +405,8 @@ class Hamiltonian1D:
 		return V
 
 
-
+	# special methods to be added later
+	"""
 	def __add__(self,other):
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
@@ -426,7 +428,7 @@ class Hamiltonian1D:
 			return new
 		else:
 			raise Exception("Not Implimented")
-
+	"""
 
 	
 
