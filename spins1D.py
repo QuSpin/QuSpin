@@ -146,17 +146,23 @@ class Hamiltonian1D:
 
 	def sum_duplicates(self):
 		self.Dynamic_Hs=list(self.Dynamic_Hs)
-		for ele1 in self.Dynamic_Hs:
-			for ele2 in self.Dynamic_Hs:
-				if ele1 != ele2:
+		l=len(self.Dynamic_Hs)
+		i=j=0;
+		while i < l:
+#			print i,l
+			while j < l:
+#				print "\t",i,j,l
+				if i != j:
+					ele1=self.Dynamic_Hs[i]; ele2=self.Dynamic_Hs[j]
 					if ele1[0] == ele2[0]:
-						self.Dynamic_Hs.remove(ele2)
+						self.Dynamic_Hs.pop(j)
 						i=self.Dynamic_Hs.index(ele1)
-						self.Dynamic_Hs.remove(ele1)
+						self.Dynamic_Hs.pop(i)
 						ele1=list(ele1)
 						ele1[1]+=ele2[1]
 						self.Dynamic_Hs.insert(i,tuple(ele1))
-
+				l=len(self.Dynamic_Hs); j+=1
+			i+=1;j=0
 		self.Dynamic_Hs=tuple(self.Dynamic_Hs)
 
 
@@ -426,7 +432,7 @@ class Hamiltonian1D:
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=deepcopy(other)
-			new.StaticH-=self.Static_H
+			new.Static_H-=self.Static_H
 			for ele in self.Dynamic_Hs:
 				new.Dynamic_Hs.append((ele1[0],-ele[1]))
 			new.sum_duplicates()
