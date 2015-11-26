@@ -4,21 +4,27 @@ from Basis import Basis1D
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
+#from memory_profiler import profile
+#from pympler.asizeof import asizeof
+
 from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
 from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
-from numpy import isscalar,vdot,asarray, array, int32, int64, float32, float64, complex64, complex128
+from numpy import concatenate, isscalar, real, vdot, asarray, array, int32, int64, float32, float64, complex64, complex128
 from copy import deepcopy
 from sys import maxint
+from functools import partial
+from multiprocessing import Pool,cpu_count
+
 
 
 #global names:
 supported_dtypes=(float32, float64, complex64, complex128)
 
 
-
+#@profile
 def StaticH(B,static,dtype):
 	"""
 	args:
@@ -35,7 +41,9 @@ def StaticH(B,static,dtype):
 		sorted or even unique) and creates a coo_matrix from the scipy.sparse library. It then converts this coo_matrix
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
-	ME_list=[] # this is a list which stores the matrix elements as lists [[row,col,ME],...] for the whole hamiltonian. 
+
+	p=Pool(processes=cpu_count())
+	H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
 	st=xrange(B.Ns) # iterator which loops over the index of the reference states of the basis B.
 	for i in xrange(len(static)): 
 		List=static[i]
@@ -44,14 +52,17 @@ def StaticH(B,static,dtype):
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
+			Op=partial(B,J,opstr,indx)
+			ME_list=p.map(Op,st)
+			ME_list=asarray(ME_list)
+			H.data=concatenate((H.data,ME_list[:,0]))
+			H.row=concatenate((H.row,real(ME_list[:,1])))
+			H.col=concatenate((H.col,real(ME_list[:,2])))
+			H.sum_duplicates() # sum duplicate matrix elements
+			print H.data.nbytes/(1024.0)**2
+			
 
-	if static: # if static is not an empty list []:
-		# there is no way to tranpose a list so we must convert to array, this process will convert all parts of the list to the most compatible type.
-		ME_list=asarray(ME_list).T.tolist() # transpose list so that it is now [[row,...],[col,...],[ME,...]] which is how coo_matrix is constructed.
-		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1]) # convert the indices back to integers 
-		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])	# convert the indices back to integers
-		H=coo_matrix((ME_list[0],(ME_list[1],ME_list[2])),shape=(B.Ns,B.Ns),dtype=dtype) # construct coo_matrix
+	if static:
 		H=H.tocsr() # convert to csr_matrix
 		H.sum_duplicates() # sum duplicate matrix elements
 		H.eliminate_zeros() # remove all zero matrix elements
@@ -84,22 +95,24 @@ def DynamicHs(B,dynamic,dtype):
 		representation of all the different driven parts. This way one can construct the time dependent 
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
+
+	p=Pool(processes=cpu_count())
 	Dynamic_Hs=[]
 	st=[ k for k in xrange(B.Ns) ]
 	for i in xrange(len(dynamic)):
-		ME_list=[]
+		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
 		List=dynamic[i]
 		opstr=List[0]
 		bonds=List[1]
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
+			Op=partial(B,J,opstr,indx)
+			ME_list=asarray(p.map(Op,st))
+			H.data=concatenate((H.data,ME_list[:,0]))
+			H.row=concatenate((H.row,real(ME_list[:,1])))
+			H.col=concatenate((H.col,real(ME_list[:,2])))
 	
-		ME_list=asarray(ME_list).T.tolist()
-		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
-		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])
-		H=coo_matrix((ME_list[0],(ME_list[1],ME_list[2])),shape=(B.Ns,B.Ns),dtype=dtype)
 		H=H.tocsr()
 		H.sum_duplicates()
 		H.eliminate_zeros()

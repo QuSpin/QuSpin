@@ -3,6 +3,8 @@ import operator as op # needed to calculate n choose r in function ncr(n,r).
 # array is a very nice data structure which stores values in a c or fortran like array, saving memory, but has all features of a list.
 # it is not good for array type operations like multiplication, for those use numpy arrays.
 from array import array as vec
+from multiprocessing import Manager
+from functools import partial
 
 # local modules
 from SpinOps import SpinOp # needed to act with opstr
@@ -80,11 +82,22 @@ class Basis:
 		else: return s
 
 
-	def Op(self,J,st,opstr,indx):
+
+
+	def Op(self,J,opstr,indx,st):
 		s1=self.basis[st]
 		ME,s2=SpinOp(s1,opstr,indx)
 		stt=self.FindZstate(s2)
 		return [J*ME,st,stt]
+
+
+
+
+
+
+
+
+
 
 
 

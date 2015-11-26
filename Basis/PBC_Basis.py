@@ -89,14 +89,13 @@ class PeriodicBasis1D(Basis):
 
 
 	
-	def Op(self,J,st,opstr,indx):	
+	def Op(self,J,opstr,indx,st):	
 		# This function find the matrix elemement and state which opstr creates
 		# after acting on an inputed state index.
 		#		J: coupling in front of opstr
 		#		st: index of a local state in the basis for which the opstor will act on
 		#		opstr: string which contains a list of operators which  
 		#		indx: a list of ordered indices which tell which operator in opstr live on the lattice.
-
 		if self.Kcon: # if the user wants to use momentum basis, special care must be taken [1]
 			s1=self.basis[st]
 			ME,s2=SpinOp(s1,opstr,indx)
@@ -108,7 +107,7 @@ class PeriodicBasis1D(Basis):
 				ME=0.0;	stt=st
 			return [ME,st,stt]
 		else: # else, no special care is needed, just use the equivilant method from Basis class 
-			return Basis.Op(self,J,st,opstr,indx)
+			return Basis.Op(self,J,opstr,indx,st)
 		
 		
 

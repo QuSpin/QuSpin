@@ -194,7 +194,7 @@ class OpenBasis1D(Basis):
 		return r,q,g,qg
 
 
-	def Op(self,J,st,opstr,indx):
+	def Op(self,J,opstr,indx,st):
 		# This function find the matrix elemement and state which opstr creates
 		# after acting on an inputed state index.
 		#		J: coupling in front of opstr
@@ -221,7 +221,7 @@ class OpenBasis1D(Basis):
 				stt = st
 			return [ME,st,stt]	
 		else: # else just use method from parent class.
-			return Basis.Op(self,J,st,opstr,indx)
+			return Basis.Op(self,J,opstr,indx,st)
 
 
 

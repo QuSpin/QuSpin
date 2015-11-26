@@ -35,11 +35,11 @@ class Basis1D:
 		self.pzblock=pzblock
 		self.Ns=self.B.Ns
 
-	def RefState(self,s):
-		return self.B.RefState(s)
+	def Op(self,J,opstr,indx,st):
+		return self.B.Op(J,opstr,indx,st)
 
-	def Op(self,J,st,opstr,indx):
-		return self.B.Op(J,st,opstr,indx)
+	def __call__(self,J,opstr,indx,st):
+		return self.B.Op(J,opstr,indx,st)
 
 
 
