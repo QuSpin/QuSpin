@@ -1,4 +1,3 @@
-
 from numpy import asarray, asarray_chkfinite, array, int32, int64, float32, float64, complex64, complex128
 import py_lapack_wrap 
 

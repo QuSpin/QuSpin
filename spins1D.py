@@ -4,7 +4,7 @@ from Basis import Basis1D
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
-#from memory_profiler import profile
+from memory_profiler import profile
 #from pympler.asizeof import asizeof
 
 from scipy.linalg import norm
@@ -12,7 +12,7 @@ from scipy.sparse import coo_matrix	# needed as the initial format that the Hami
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
 from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
-from numpy import concatenate, isscalar, real, vdot, asarray, array, int32, int64, float32, float64, complex64, complex128
+from numpy import concatenate,matrix, isscalar, real, vdot, asarray, array, int32, int64, float32, float64, complex64, complex128
 from copy import deepcopy
 from sys import maxint
 from functools import partial
@@ -21,7 +21,7 @@ from multiprocessing import Pool,cpu_count
 
 
 #global names:
-supported_dtypes=(float32, float64, complex64, complex128)
+supported_dtypes=(int32, int64, float32, float64, complex64, complex128)
 
 
 #@profile
@@ -42,30 +42,29 @@ def StaticH(B,static,dtype):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 
-	p=Pool(processes=cpu_count())
-	H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
-	st=xrange(B.Ns) # iterator which loops over the index of the reference states of the basis B.
-	for i in xrange(len(static)): 
-		List=static[i]
-		opstr=List[0]
-		bonds=List[1]
-		for bond in bonds:
-			J=bond[0]
-			indx=bond[1:]
-			Op=partial(B,J,opstr,indx)
-			ME_list=p.map(Op,st)
-			ME_list=asarray(ME_list)
-			H.data=concatenate((H.data,ME_list[:,0]))
-			H.row=concatenate((H.row,real(ME_list[:,1])))
-			H.col=concatenate((H.col,real(ME_list[:,2])))
-			H.sum_duplicates() # sum duplicate matrix elements
-			print H.data.nbytes/(1024.0)**2
-			
-
 	if static:
+		p=Pool(processes=cpu_count())
+		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
+		st=xrange(B.Ns) # iterator which loops over the index of the reference states of the basis B.
+		for i in xrange(len(static)): 
+			List=static[i]
+			opstr=List[0]
+			bonds=List[1]
+			for bond in bonds:
+				J=bond[0]
+				indx=bond[1:]
+				Op=partial(B,J,opstr,indx)
+				ME_list=map(Op,st)
+				ME_list=asarray(ME_list)
+				H.data=concatenate((H.data,ME_list[:,0]))
+				H.row=concatenate((H.row,real(ME_list[:,1])))
+				H.col=concatenate((H.col,real(ME_list[:,2])))
+				H.sum_duplicates() # sum duplicate matrix elements
+
 		H=H.tocsr() # convert to csr_matrix
 		H.sum_duplicates() # sum duplicate matrix elements
 		H.eliminate_zeros() # remove all zero matrix elements
+		del p
 		return H 
 	else: # else return None which indicates there is no static part of Hamiltonian.
 		return None
@@ -76,7 +75,7 @@ def StaticH(B,static,dtype):
 
 
 
-
+#@profile
 def DynamicHs(B,dynamic,dtype):
 	"""
 	args:
@@ -96,28 +95,28 @@ def DynamicHs(B,dynamic,dtype):
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
 
-	p=Pool(processes=cpu_count())
 	Dynamic_Hs=[]
-	st=[ k for k in xrange(B.Ns) ]
-	for i in xrange(len(dynamic)):
-		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
-		List=dynamic[i]
-		opstr=List[0]
-		bonds=List[1]
-		for bond in bonds:
-			J=bond[0]
-			indx=bond[1:]
-			Op=partial(B,J,opstr,indx)
-			ME_list=asarray(p.map(Op,st))
-			H.data=concatenate((H.data,ME_list[:,0]))
-			H.row=concatenate((H.row,real(ME_list[:,1])))
-			H.col=concatenate((H.col,real(ME_list[:,2])))
-	
-		H=H.tocsr()
-		H.sum_duplicates()
-		H.eliminate_zeros()
-		Dynamic_Hs.append((List[2],H))
-
+	if dynamic:
+		p=Pool(processes=cpu_count())
+		st=xrange(B.Ns)
+		for i in xrange(len(dynamic)):
+			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
+			List=dynamic[i]
+			opstr=List[0]
+			bonds=List[1]
+			for bond in bonds:
+				J=bond[0]
+				indx=bond[1:]
+				Op=partial(B,J,opstr,indx)
+				ME_list=asarray(map(Op,st))
+				H.data=concatenate((H.data,ME_list[:,0]))
+				H.row=concatenate((H.row,real(ME_list[:,1])))
+				H.col=concatenate((H.col,real(ME_list[:,2])))
+		
+			H=H.tocsr()
+			H.sum_duplicates()
+			H.eliminate_zeros()
+			Dynamic_Hs.append((List[2],H))
 
 	return tuple(Dynamic_Hs)
 
@@ -131,6 +130,7 @@ def DynamicHs(B,dynamic,dtype):
 
 
 class Hamiltonian1D:
+#	@profile
 	def __init__(self,static,dynamic,L,dtype=complex128,**basis_params):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
@@ -217,7 +217,7 @@ class Hamiltonian1D:
 			This function can overflow memory if not careful.
 		"""
 		if self.Ns <= 0:
-			return matrix([])
+			return array([[]])
 		if not isscalar(time):
 			raise NotImplementedError
 
@@ -314,9 +314,9 @@ class Hamiltonian1D:
 			uses wrapped lapack functions which are contained in module py_lapack
 		"""
 		if self.Ns <= 0:
-			return array([])
+			return array([]),array([[]])
 
-		return eigh(self.todense(time=time),JOBZ='N')
+		return eigh(self.todense(time=time))
 
 
 
@@ -332,9 +332,9 @@ class Hamiltonian1D:
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
 		if self.Ns <= 0:
-			return array([]), array([[]])
+			return array([])
 
-		return eigh(self.todense(time=time))
+		return eigh(self.todense(time=time),JOBZ='N')
 
 
 

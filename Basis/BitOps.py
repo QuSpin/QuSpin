@@ -14,7 +14,7 @@ def int2bin(n,L):
 	""" Convert an integer n to a binary vector 
 	padded with zeros up to the appropriate length L """
 
-	return (((fliplr(n,L) & (1 << arange(L)))) > 0).astype(int)
+	return (((flip_lr(n,L) & (1 << arange(L)))) > 0).astype(int)
 
 def bin2int(v):
 	""" Convert a binary vector v to an integer """
@@ -61,7 +61,7 @@ def fliplrup(int_type,length,axis):
 			
 
 
-def fliplr(int_type,length):
+def flip_lr(int_type,length):
 # this function flips the bits of an integer around the centre, e.g. 1010 -> 0101
 # (generator of) parity symmetry
     return sum(1<<(length-1-i) for i in xrange(length) if int_type>>i&1)

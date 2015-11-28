@@ -5,10 +5,12 @@ import operator as op # needed to calculate n choose r in function ncr(n,r).
 from array import array as vec
 from multiprocessing import Manager
 from functools import partial
+from bisect import bisect_left
 
 # local modules
 from SpinOps import SpinOp # needed to act with opstr
 from BitOps import * # loading modules for bit operations.
+from Basis_fortran import *
 
 # References:
 # [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
@@ -42,43 +44,41 @@ class Basis:
 	def __init__(self,L,Nup=None):
 		# This is the constructor of the class Basis:
 		#		L: length of chain
-		#		Nup: number of up spins if restricting magnetization sector. 
+		#		Nup: number of up spins if restricting magnetization sector.
+		if L>30: raise BasisError("L must be less than 31") 
 		self.L=L
 		if type(Nup) is int:
 			if Nup < 0 or Nup > L: raise BasisError("0 <= Nup <= "+str(L))
 			self.Nup=Nup
-			self.Mcon=True 
-			self.symm=True # Symmetry exsists so one must use the search functionality when calculating matrix elements
+			self.conserved="M"
 			self.Ns=ncr(L,Nup) 
-			zbasis=vec('L')
-			s=sum([2**i for i in xrange(0,Nup)])
-			zbasis.append(s)
-			for i in xrange(self.Ns-1):
-				t = (s | (s - 1)) + 1
-				s = t | ((((t & -t) / (s & -s)) >> 1) - 1) 
-				zbasis.append(s)
+			s0=sum([2**i for i in xrange(0,Nup)])
+			mbasis=make_m_basis(s0,self.Ns)
+			
+#			mbasis=vec("l")			
+#			s=sum([2**i for i in xrange(0,Nup)])
+#			mbasis.append(s)
+#			for i in xrange(self.Ns-1):
+#				t = (s | (s - 1)) + 1
+#				s = t | ((((t & -t) / (s & -s)) >> 1) - 1) 
+#				mbasis.append(s)
 		else:
+			self.conserved=""
 			self.Ns=2**L
 			self.Mcon=False
 			self.symm=False # No symmetries here. at all so each integer corresponds to the number in the hilbert space.
-			zbasis=xrange(self.Ns)
+			mbasis=xrange(self.Ns)
 
-		self.basis=zbasis
+		self.basis=mbasis
 
 
-	def FindZstate(self,s):
-		if self.symm:
-			bmin=0;bmax=self.Ns-1
-			while True:
-				b=(bmin+bmax)/2
-				if s < self.basis[b]:
-					bmax=b-1
-				elif s > self.basis[b]:
-					bmin=b+1
-				else:
-					return b
-				if bmin > bmax:
-					return -1
+	def FindZstate(self,s):	
+		if self.conserved:
+			i = bisect_left(self.basis, s)
+			if i != self.Ns and self.basis[i] == s:
+				return i
+			else:
+				return -1
 		else: return s
 
 
@@ -88,9 +88,10 @@ class Basis:
 		s1=self.basis[st]
 		ME,s2=SpinOp(s1,opstr,indx)
 		stt=self.FindZstate(s2)
-		return [J*ME,st,stt]
-
-
+		if stt >= 0:
+			return [J*ME,st,stt]
+		else:
+			return [0,st,st]
 
 
 

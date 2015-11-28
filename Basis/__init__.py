@@ -1,4 +1,4 @@
-from Z_Basis import BasisError, Basis
+from Basis import BasisError, Basis
 from PBC_Basis import PeriodicBasis1D
 from OBC_Basis import OpenBasis1D
 import BitOps

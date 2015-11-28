@@ -1,0 +1,1 @@
+For compiling the fortran wrapper use command: make py_lapack_wrap
