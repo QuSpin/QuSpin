@@ -1,7 +1,7 @@
-from Basis import BasisError, Basis
-from PBC_Basis import PeriodicBasis1D
+from numpy import *
+from Basis import Basis
 from OBC_Basis import OpenBasis1D
-import BitOps
+
 
 class Basis1D:
 	def __init__(self,Length,**basis_params):
@@ -18,10 +18,7 @@ class Basis1D:
 
 		# testing blocks for basis
 		if (type(kblock) is int):
-			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-				raise BasisError("Translation, spin inversion, and parity symmetries are not implimented at this time.")
-			else:
-				self.B=PeriodicBasis1D(Length,Nup=Nup,kblock=kblock,a=a)
+			raise NotImplementedError
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
 			self.B=OpenBasis1D(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
 		else:

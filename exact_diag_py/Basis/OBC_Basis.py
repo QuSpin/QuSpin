@@ -1,8 +1,6 @@
 # python 2.7 modules
 from numpy import sqrt,ones,asarray,int32,vstack
 # local modules
-from BitOps import * # loading modules for bit operations.
-#from SpinOps import SpinOp
 from Basis import Basis, BasisError
 from Basis_fortran import *
 

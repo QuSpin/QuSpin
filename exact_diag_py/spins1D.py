@@ -41,10 +41,10 @@ def static(B,static_list,dtype):
 	if static_list:
 		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
 		row=array(xrange(B.Ns),dtype=int32)
-		for i in xrange(len(static)): 
-			List=static[i]
-			opstr=List[0]
-			bonds=List[1]
+		for alist in static_list:
+			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
+			opstr=alist[0]
+			bonds=alist[1]
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
@@ -85,15 +85,13 @@ def dynamic(B,dynamic_list,dtype):
 		representation of all the different driven parts. This way one can construct the time dependent 
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
-
-	dynamic=[]
+	dyn=[]
 	if dynamic_list:
 		row=array(xrange(B.Ns),dtype=int32)
-		for i in xrange(len(dynamic)):
+		for alist in dynamic_list:
 			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
-			List=dynamic[i]
-			opstr=List[0]
-			bonds=List[1]
+			opstr=alist[0]
+			bonds=alist[1]
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
@@ -106,9 +104,9 @@ def dynamic(B,dynamic_list,dtype):
 			H=H.tocsr()
 			H.sum_duplicates()
 			H.eliminate_zeros()
-			dynamic.append((List[2],H))
+			dyn.append((alist[2],H))
 
-	return tuple(dynamic)
+	return tuple(dyn)
 
 
 
@@ -138,8 +136,8 @@ class hamiltonian:
 		self.Ns=basis.Ns
 		self.dtype=dtype
 		if self.Ns > 0:
-			self.static=static(basis,static_list,dtype)
-			self.dynamic=dynamic(basis,dynamic,dtype)
+			self.stc=static(basis,static_list,dtype)
+			self.dyn=dynamic(basis,dynamic_list,dtype)
 			self.shape=(self.Ns,self.Ns)
 			self.sum_duplicates()
 
@@ -150,23 +148,23 @@ class hamiltonian:
 		description:
 			This function consolidates the list of dynamic, combining matrices which have the same driving function.
 		"""
-		self.dynamic=list(self.dynamic)
-		l=len(self.dynamic)
+		self.dyn=list(self.dyn)
+		l=len(self.dyn)
 		i=j=0;
 		while i < l:
 			while j < l:
 				if i != j:
-					ele1=self.dynamic[i]; ele2=self.dynamic[j]
+					ele1=self.dyn[i]; ele2=self.dyn[j]
 					if ele1[0] == ele2[0]:
-						self.dynamic.pop(j)
-						i=self.dynamic.index(ele1)
-						self.dynamic.pop(i)
+						self.dyn.pop(j)
+						i=self.dyn.index(ele1)
+						self.dyn.pop(i)
 						ele1=list(ele1)
 						ele1[1]+=ele2[1]
-						self.dynamic.insert(i,tuple(ele1))
-				l=len(self.dynamic); j+=1
+						self.dyn.insert(i,tuple(ele1))
+				l=len(self.dyn); j+=1
 			i+=1;j=0
-		self.dynamic=tuple(self.dynamic)
+		self.dyn=tuple(self.dyn)
 
 
 
@@ -183,12 +181,12 @@ class hamiltonian:
 		if not isscalar(time):
 			raise NotImplementedError
 
-		if self.static is None: # if there isn't a static Hamiltonian...
-			for ele in self.dynamic:
+		if self.stc is None: # if there isn't a static Hamiltonian...
+			for ele in self.dyn:
 				H += ele[1]*ele[0](time)
 		else: # if there is..
-			H=self.static	
-			for ele in self.dynamic:
+			H=self.stc	
+			for ele in self.dyn:
 				H += ele[1]*ele[0](time)
 
 		return H
@@ -231,13 +229,13 @@ class hamiltonian:
 			raise NotImplementedError
 
 		V=asarray(V)
-		if self.static is None: # if there isn't a static Hamiltonian...
-			for ele in self.dynamic:
+		if self.stc is None: # if there isn't a static Hamiltonian...
+			for ele in self.dyn:
 				J=ele[0](time)
 				V_dot += J*(ele[1].dot(V))
 		else: # if there is...
-			V_dot = self.static.dot(V)	
-			for ele in self.dynamic:
+			V_dot = self.stc.dot(V)	
+			for ele in self.dyn:
 				J=ele[0](time)
 				V_dot += J*(ele[1].dot(V))
 
@@ -424,8 +422,8 @@ class hamiltonian:
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise ValueError('dimension mismatch')
 			new=deepcopy(other)
-			new.static+=self.static
-			new.dynamic+=self.dynamic
+			new.static+=self.stc
+			new.dynamic+=self.dyn
 			new.sum_duplicates()
 			return new
 		else:
@@ -436,8 +434,8 @@ class hamiltonian:
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise ValueError('dimension mismatch')
 			new=deepcopy(other)
-			new.static-=self.static
-			for ele in self.dynamic:
+			new.static-=self.stc
+			for ele in self.dyn:
 				new.dynamic.append((ele1[0],-ele[1]))
 			new.sum_duplicates()
 			return new

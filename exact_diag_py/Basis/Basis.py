@@ -1,16 +1,8 @@
 # python 2.7 modules
 import operator as op # needed to calculate n choose r in function ncr(n,r).
-# array is a very nice data structure which stores values in a c or fortran like array, saving memory, but has all features of a list.
-# it is not good for array type operations like multiplication, for those use numpy arrays.
-from multiprocessing import Manager
-from functools import partial
-from bisect import bisect_left
 
 # local modules
-#from SpinOps import SpinOp # needed to act with opstr
-from BitOps import * # loading modules for bit operations.
 from Basis_fortran import RefState_M,SpinOp,make_m_basis
-from numpy import vstack,asarray,int32
 
 # References:
 # [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
@@ -62,17 +54,6 @@ class Basis:
 			mbasis=xrange(self.Ns)
 
 		self.basis=mbasis
-
-
-	def FindZstate(self,s):	
-		if self.conserved:
-			i = bisect_left(self.basis, s)
-			if i != self.Ns and self.basis[i] == s:
-				return i
-			else:
-				return -1
-		else: return s
-
 
 
 	def Op(self,J,dtype,opstr,indx):
