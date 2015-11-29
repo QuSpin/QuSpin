@@ -17,7 +17,6 @@ def SpinOp(s,opstr,indx):
 	ME=1.0; r=s
 	Nops=len(opstr)
 	for i in xrange(Nops-1,-1,-1): #string is written left to right, but operators act in reverse order.
-		t=r;a=1
 		if opstr[i] == "c":
 			continue
 		elif opstr[i] == "z":

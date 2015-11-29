@@ -43,9 +43,8 @@ def StaticH(B,static,dtype):
 	"""
 
 	if static:
-		p=Pool(processes=cpu_count())
 		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
-		st=xrange(B.Ns) # iterator which loops over the index of the reference states of the basis B.
+		row=array(xrange(B.Ns),dtype=int32)
 		for i in xrange(len(static)): 
 			List=static[i]
 			opstr=List[0]
@@ -53,18 +52,15 @@ def StaticH(B,static,dtype):
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				Op=partial(B,J,opstr,indx)
-				ME_list=map(Op,st)
-				ME_list=asarray(ME_list)
-				H.data=concatenate((H.data,ME_list[:,0]))
-				H.row=concatenate((H.row,real(ME_list[:,1])))
-				H.col=concatenate((H.col,real(ME_list[:,2])))
+				ME,col = B.Op(J,dtype,opstr,indx)
+				H.data=concatenate((H.data,ME))
+				H.row=concatenate((H.row,row))
+				H.col=concatenate((H.col,col))
 				H.sum_duplicates() # sum duplicate matrix elements
 
 		H=H.tocsr() # convert to csr_matrix
 		H.sum_duplicates() # sum duplicate matrix elements
 		H.eliminate_zeros() # remove all zero matrix elements
-		del p
 		return H 
 	else: # else return None which indicates there is no static part of Hamiltonian.
 		return None
@@ -97,8 +93,7 @@ def DynamicHs(B,dynamic,dtype):
 
 	Dynamic_Hs=[]
 	if dynamic:
-		p=Pool(processes=cpu_count())
-		st=xrange(B.Ns)
+		row=array(xrange(B.Ns),dtype=int32)
 		for i in xrange(len(dynamic)):
 			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
 			List=dynamic[i]
@@ -107,11 +102,11 @@ def DynamicHs(B,dynamic,dtype):
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				Op=partial(B,J,opstr,indx)
-				ME_list=asarray(map(Op,st))
-				H.data=concatenate((H.data,ME_list[:,0]))
-				H.row=concatenate((H.row,real(ME_list[:,1])))
-				H.col=concatenate((H.col,real(ME_list[:,2])))
+				ME,col = B.Op(J,dtype,opstr,indx)
+				H.data=concatenate((H.data,ME))
+				H.row=concatenate((H.row,row))
+				H.col=concatenate((H.col,col))
+				H.sum_duplicates() # sum duplicate matrix element
 		
 			H=H.tocsr()
 			H.sum_duplicates()
