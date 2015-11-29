@@ -9,16 +9,19 @@ from scipy.sparse import coo_matrix	# needed as the initial format that the Hami
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
 from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
-from numpy import isscalar,dot,asarray, array, int32, int64, float32, float64, complex64, complex128
+from numpy import concatenate,matrix, isscalar, real, vdot, asarray, array, int32, int64, float32, float64, complex64, complex128
 from copy import deepcopy
+from sys import maxint
+from functools import partial
+from multiprocessing import Pool,cpu_count
+
 
 
 #global names:
 supported_dtypes=(float32, float64, complex64, complex128)
 
 
-
-def StaticH(B,static,dtype):
+def static(B,static_list,dtype):
 	"""
 	args:
 		static=[[opstr_1,indx_1],...,[opstr_n,indx_n]], list of opstr,indx to add up for static piece of Hamiltonian.
@@ -29,28 +32,28 @@ def StaticH(B,static,dtype):
 	description:
 		this function takes the list static and creates a list of matrix elements is coordinate format. it does
 		this by calling the basis method Op which takes a state in the basis, acts with opstr and returns a matrix 
-		element and the state which it is connected to. This function is called for ever opstr in static and for every 
+		element and the state which it is connected to. This function is called for every opstr in list static and for every 
 		state in the basis until the entire hamiltonian is mapped out. It takes those matrix elements (which need not be 
 		sorted or even unique) and creates a coo_matrix from the scipy.sparse library. It then converts this coo_matrix
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
-	ME_list=[] # this is a list which stores the matrix elements as lists [[row,col,ME],...] for the whole hamiltonian. 
-	st=xrange(B.Ns) # iterator which loops over the index of the reference states of the basis B.
-	for i in xrange(len(static)): 
-		List=static[i]
-		opstr=List[0]
-		bonds=List[1]
-		for bond in bonds:
-			J=bond[0]
-			indx=bond[1:]
-			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
 
-	if static: # if static is not an empty list []:
-		# there is no way to tranpose a list so we must convert to array, this process will convert all parts of the list to the most compatible type.
-		ME_list=asarray(ME_list).T.tolist() # transpose list so that it is now [[row,...],[col,...],[ME,...]] which is how coo_matrix is constructed.
-		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1]) # convert the indices back to integers 
-		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])	# convert the indices back to integers
-		H=coo_matrix((ME_list[0],(ME_list[1],ME_list[2])),shape=(B.Ns,B.Ns),dtype=dtype) # construct coo_matrix
+	if static_list:
+		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
+		row=array(xrange(B.Ns),dtype=int32)
+		for i in xrange(len(static)): 
+			List=static[i]
+			opstr=List[0]
+			bonds=List[1]
+			for bond in bonds:
+				J=bond[0]
+				indx=bond[1:]
+				ME,col = B.Op(J,dtype,opstr,indx)
+				H.data=concatenate((H.data,ME))
+				H.row=concatenate((H.row,row))
+				H.col=concatenate((H.col,col))
+				H.sum_duplicates() # sum duplicate matrix elements
+
 		H=H.tocsr() # convert to csr_matrix
 		H.sum_duplicates() # sum duplicate matrix elements
 		H.eliminate_zeros() # remove all zero matrix elements
@@ -64,8 +67,7 @@ def StaticH(B,static,dtype):
 
 
 
-
-def DynamicHs(B,dynamic,dtype):
+def dynamic(B,dynamic_list,dtype):
 	"""
 	args:
 	dynamic=[[opstr_1,indx_1,func_1],...,[opstr_n,indx_n,func_1]], list of opstr,indx and functions to drive with
@@ -83,75 +85,88 @@ def DynamicHs(B,dynamic,dtype):
 		representation of all the different driven parts. This way one can construct the time dependent 
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
-	Dynamic_Hs=[]
-	st=[ k for k in xrange(B.Ns) ]
-	for i in xrange(len(dynamic)):
-		ME_list=[]
-		List=dynamic[i]
-		opstr=List[0]
-		bonds=List[1]
-		for bond in bonds:
-			J=bond[0]
-			indx=bond[1:]
-			ME_list.extend(map(lambda x:B.Op(J,x,opstr,indx),st))
-	
-		ME_list=asarray(ME_list).T.tolist()
-		ME_list[1]=map( lambda a:int(abs(a)), ME_list[1])
-		ME_list[2]=map( lambda a:int(abs(a)), ME_list[2])
-		H=coo_matrix((ME_list[0],(ME_list[1],ME_list[2])),shape=(B.Ns,B.Ns),dtype=dtype)
-		H=H.tocsr()
-		H.sum_duplicates()
-		H.eliminate_zeros()
-		Dynamic_Hs.append((List[2],H))
 
-	return tuple(Dynamic_Hs)
+	dynamic=[]
+	if dynamic_list:
+		row=array(xrange(B.Ns),dtype=int32)
+		for i in xrange(len(dynamic)):
+			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
+			List=dynamic[i]
+			opstr=List[0]
+			bonds=List[1]
+			for bond in bonds:
+				J=bond[0]
+				indx=bond[1:]
+				ME,col = B.Op(J,dtype,opstr,indx)
+				H.data=concatenate((H.data,ME))
+				H.row=concatenate((H.row,row))
+				H.col=concatenate((H.col,col))
+				H.sum_duplicates() # sum duplicate matrix element
+		
+			H=H.tocsr()
+			H.sum_duplicates()
+			H.eliminate_zeros()
+			dynamic.append((List[2],H))
 
-
-
-
+	return tuple(dynamic)
 
 
 
 
 
 
-class Hamiltonian1D:
-	def __init__(self,static,dynamic,L,**init_params):
+
+
+
+
+class hamiltonian:
+	def __init__(self,static_list,dynamic_list,l,dtype=complex128,**basis_params):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
-		Nup=init_params.get("Nup")
-		kblock=init_params.get("kblock")
-		zblock=init_params.get("zblock")
-		pblock=init_params.get("pblock")
-		pzblock=init_params.get("pzblock")
-		dtype=init_params.get("dtype")
-		a=init_params.get("a")
-		basis=init_params.get("basis")
-		if a == None:
-			a=1
-		if dtype == None:
-			dtype=complex128
-		if basis == None:  
-			basis=Basis1D(L,Nup=Nup,a=a,kblock=kblock,zblock=zblock,pblock=pblock,pzblock=pzblock)
+		basis=basis_params.get('basis')
+		if basis is None: basis=Basis1D(l,**basis_params)
+
 		if not isinstance(basis,Basis1D):
-			raise TypeError("basis is not instance of Basis1D")
-		if dtype not in supported_dtypes:
-			raise TypeError("Hamiltonian1D doesn't support type: "+str(dtype))
+			raise TypeError('basis is not instance of Basis1D')
+		if not (dtype in supported_dtypes):
+			raise TypeError('Hamiltonian1D does not support type: '+str(dtype))
 
 
-		self.static=static
-		self.dynamic=dynamic
-		self.L=L
+		self.l=l
 		self.Ns=basis.Ns
 		self.dtype=dtype
 		if self.Ns > 0:
-			self.Static_H=StaticH(basis,static,dtype)
-			self.Dynamic_Hs=DynamicHs(basis,dynamic,dtype)
+			self.static=static(basis,static_list,dtype)
+			self.dynamic=dynamic(basis,dynamic,dtype)
 			self.shape=(self.Ns,self.Ns)
+			self.sum_duplicates()
 
 
+
+	def sum_duplicates(self):
+		"""
+		description:
+			This function consolidates the list of dynamic, combining matrices which have the same driving function.
+		"""
+		self.dynamic=list(self.dynamic)
+		l=len(self.dynamic)
+		i=j=0;
+		while i < l:
+			while j < l:
+				if i != j:
+					ele1=self.dynamic[i]; ele2=self.dynamic[j]
+					if ele1[0] == ele2[0]:
+						self.dynamic.pop(j)
+						i=self.dynamic.index(ele1)
+						self.dynamic.pop(i)
+						ele1=list(ele1)
+						ele1[1]+=ele2[1]
+						self.dynamic.insert(i,tuple(ele1))
+				l=len(self.dynamic); j+=1
+			i+=1;j=0
+		self.dynamic=tuple(self.dynamic)
 
 
 
@@ -166,20 +181,17 @@ class Hamiltonian1D:
 		if self.Ns <= 0:
 			return csr_matrix(asarray([[]]))
 		if not isscalar(time):
-			raise Exception("time must be a scaler")
+			raise NotImplementedError
 
-		if self.Static_H != None: # if there is a static Hamiltonian...
-			H=self.Static_H	
-			for ele in self.Dynamic_Hs:
+		if self.static is None: # if there isn't a static Hamiltonian...
+			for ele in self.dynamic:
 				H += ele[1]*ele[0](time)
-		else: # if there isn't...
-			for ele in self.Dynamic_Hs:
+		else: # if there is..
+			H=self.static	
+			for ele in self.dynamic:
 				H += ele[1]*ele[0](time)
 
 		return H
-
-
-
 
 
 	def todense(self,time=0):
@@ -192,9 +204,9 @@ class Hamiltonian1D:
 			This function can overflow memory if not careful.
 		"""
 		if self.Ns <= 0:
-			return matrix([])
+			return array([[]])
 		if not isscalar(time):
-			raise Exception("time must be a scaler")
+			raise NotImplementedError
 
 		return self.tocsr(time=time).todense()
 
@@ -213,20 +225,19 @@ class Hamiltonian1D:
 			the specified time. It is faster in this case to multiple each individual parts of the Hamiltonian 
 			first, then add all those vectors together.
 		"""
-
 		if self.Ns <= 0:
 			return array([])
 		if not isscalar(time):
-			raise Exception("time must be a scaler")
+			raise NotImplementedError
 
 		V=asarray(V)
-		if self.Static_H != None: # if there is a static Hamiltonian...
-			V_dot = self.Static_H.dot(V)	
-			for ele in self.Dynamic_Hs:
+		if self.static is None: # if there isn't a static Hamiltonian...
+			for ele in self.dynamic:
 				J=ele[0](time)
 				V_dot += J*(ele[1].dot(V))
-		else: # if there isn't...
-			for ele in self.Dynamic_Hs:
+		else: # if there is...
+			V_dot = self.static.dot(V)	
+			for ele in self.dynamic:
 				J=ele[0](time)
 				V_dot += J*(ele[1].dot(V))
 
@@ -236,7 +247,7 @@ class Hamiltonian1D:
 
 
 
-	def MatrixElement(self,Vl,Vr,time=0):
+	def me(self,Vl,Vr,time=0):
 		"""
 		args:
 			Vl, the vector to multiple with on left side
@@ -247,20 +258,20 @@ class Hamiltonian1D:
 			This function takes the matrix element of the Hamiltonian at the specified time
 			between Vl and Vr.
 		"""
-		if self.Ns <=0:
-			return array([])
+		if self.Ns <= 0:
+			return None
 
 		Vl=asarray(Vl)
 		Vr=asarray(Vr)
 		HVr=self.dot(Vr,time=time)
-		ME=dot(Vl.T.conj(),HVr)
-		return ME
+		ME=vdot(Vl,HVr)
+		return ME[0]
 
 
 
 
 
-	def SparseEV(self,time=0,k=6,sigma=None,which='SA',maxiter=10000):
+	def sp_eigh(self,time=0,k=6,sigma=None,which='SA',maxiter=maxint/100):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -280,7 +291,7 @@ class Hamiltonian1D:
 
 
 
-	def DenseEE(self,time=0):
+	def eigh(self,time=0):
 		"""
 		args:
 			time=0, time to evaluate drive at.
@@ -289,17 +300,16 @@ class Hamiltonian1D:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
 			uses wrapped lapack functions which are contained in module py_lapack
 		"""
-		
 		if self.Ns <= 0:
-			return array([])
+			return array([]),array([[]])
 
-		return eigh(self.todense(time=time),JOBZ='N')
-
-
+		return eigh(self.todense(time=time))
 
 
 
-	def DenseEV(self,time=0):
+
+
+	def eigvalsh(self,time=0):
 		"""
 		args:
 			time=0, time to evaluate drive at.
@@ -309,15 +319,15 @@ class Hamiltonian1D:
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
 		if self.Ns <= 0:
-			return array([]), array([[]])
+			return array([])
 
-		return eigh(self.todense(time=time))
-
-
+		return eigh(self.todense(time=time),JOBZ='N')
 
 
 
-	def evolve(self,v0,t0,time,real_time=True,verbose=False,**integrator_params):
+
+
+	def evolve(self,v0,t0,time,real_time=True,verbose=False,atol=10**(-15),rtol=10**(-15),nsteps=maxint/100,**integrator_params):
 		"""
 		args:
 			v0, intial wavefunction to evolve.
@@ -330,7 +340,6 @@ class Hamiltonian1D:
 
 		description:
 			This function uses complex_ode to evolve an input wavefunction.
-
 		"""
 		if self.Ns <= 0:
 			return array([])
@@ -342,7 +351,7 @@ class Hamiltonian1D:
 		else:
 			solver=complex_ode(lambda t,y:-self.dot(y,time=t))
 
-		solver.set_integrator("dop853", **integrator_params)
+		solver.set_integrator("dop853",atol=atol,rtol=rtol,nsteps=nsteps,**integrator_params)
 		solver.set_initial_value(v0,t=t0)
 		
 		if isscalar(time):
@@ -351,7 +360,7 @@ class Hamiltonian1D:
 			if solver.successful():
 				return solver.y
 			else:
-				raise Exception('failed to integrate')		
+				raise RuntimeError('failed to integrate')		
 		else:
 			sol=[]
 			for t in time:
@@ -363,7 +372,7 @@ class Hamiltonian1D:
 				if solver.successful():
 					sol.append(solver.y)
 				else:
-					raise Exception('failed to integrate')
+					raise RuntimeError('failed to integrate')
 			return sol
 
 
@@ -388,9 +397,11 @@ class Hamiltonian1D:
 		if self.Ns <= 0:
 			return array([])
 		if not isscaler(time):
-			raise Exception("time must be a scaler")
+			raise NotImplementedError
 
-		if n <= 0: raise Exception("n must be >= 0")
+		if n <= 0: raise ValueError('n must be > 0')
+
+		H=self.tocsr(time=time)
 
 		V=asarray(V)
 		for j in xrange(n):
@@ -405,30 +416,34 @@ class Hamiltonian1D:
 		return V
 
 
-	# special methods to be added later
-	"""
+	def __call__(self,time):
+		return self.tocsr(time=time)
+
+
 	def __add__(self,other):
 		if isinstance(other,Hamiltonian1D):
-			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			if self.Ns != other.Ns: raise ValueError('dimension mismatch')
 			new=deepcopy(other)
-			new.Static_H+=self.Static+H
-			new.Dynamic_Hs+=self.Dynamic+Hs
+			new.static+=self.static
+			new.dynamic+=self.dynamic
+			new.sum_duplicates()
 			return new
 		else:
-			raise Exception("Not Implimented")
+			raise NotImplementedError
 
 
 	def __sub__(self,other):
 		if isinstance(other,Hamiltonian1D):
-			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			if self.Ns != other.Ns: raise ValueError('dimension mismatch')
 			new=deepcopy(other)
-			new.StaticH-=self.Static_H
-			for ele in self.Dynamic_Hs:
-				new.DynamicHs.append((ele[0],-ele[1]))
+			new.static-=self.static
+			for ele in self.dynamic:
+				new.dynamic.append((ele1[0],-ele[1]))
+			new.sum_duplicates()
 			return new
 		else:
-			raise Exception("Not Implimented")
-	"""
+			raise NotImplementedError
+
 
 	
 

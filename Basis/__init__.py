@@ -1,10 +1,20 @@
-from Z_Basis import BasisError, Basis
+from Basis import BasisError, Basis
 from PBC_Basis import PeriodicBasis1D
 from OBC_Basis import OpenBasis1D
 import BitOps
 
 class Basis1D:
-	def __init__(self,Length,Nup=None,kblock=None,a=1,zblock=None,pblock=None,pzblock=None):
+	def __init__(self,Length,**basis_params):
+
+		# if arguement is not passed, then the get function returns None which should be handled by the lower basis classes.
+		Nup=basis_params.get("Nup")
+		kblock=basis_params.get("kblock")
+		zblock=basis_params.get("zblock")
+		pblock=basis_params.get("pblock")
+		pzblock=basis_params.get("pzblock")
+		a=basis_params.get("a")
+
+		if a == None: a=1
 
 		# testing blocks for basis
 		if (type(kblock) is int):
@@ -25,11 +35,11 @@ class Basis1D:
 		self.pzblock=pzblock
 		self.Ns=self.B.Ns
 
-	def RefState(self,s):
-		return self.B.RefState(s)
+	def Op(self,J,dtype,opstr,indx):
+		return self.B.Op(J,dtype,opstr,indx)
 
-	def Op(self,J,st,opstr,indx):
-		return self.B.Op(J,st,opstr,indx)
+	def __call__(self,J,dtype,opstr,indx):
+		return self.B.Op(J,dtype,opstr,indx)
 
 
 
