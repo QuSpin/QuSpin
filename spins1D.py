@@ -4,9 +4,6 @@ from Basis import Basis1D
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
-from memory_profiler import profile
-#from pympler.asizeof import asizeof
-
 from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
@@ -21,11 +18,10 @@ from multiprocessing import Pool,cpu_count
 
 
 #global names:
-supported_dtypes=(int32, int64, float32, float64, complex64, complex128)
+supported_dtypes=(float32, float64, complex64, complex128)
 
 
-#@profile
-def StaticH(B,static,dtype):
+def static(B,static_list,dtype):
 	"""
 	args:
 		static=[[opstr_1,indx_1],...,[opstr_n,indx_n]], list of opstr,indx to add up for static piece of Hamiltonian.
@@ -42,7 +38,7 @@ def StaticH(B,static,dtype):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 
-	if static:
+	if static_list:
 		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
 		row=array(xrange(B.Ns),dtype=int32)
 		for i in xrange(len(static)): 
@@ -71,8 +67,7 @@ def StaticH(B,static,dtype):
 
 
 
-#@profile
-def DynamicHs(B,dynamic,dtype):
+def dynamic(B,dynamic_list,dtype):
 	"""
 	args:
 	dynamic=[[opstr_1,indx_1,func_1],...,[opstr_n,indx_n,func_1]], list of opstr,indx and functions to drive with
@@ -91,8 +86,8 @@ def DynamicHs(B,dynamic,dtype):
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
 
-	Dynamic_Hs=[]
-	if dynamic:
+	dynamic=[]
+	if dynamic_list:
 		row=array(xrange(B.Ns),dtype=int32)
 		for i in xrange(len(dynamic)):
 			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
@@ -111,11 +106,9 @@ def DynamicHs(B,dynamic,dtype):
 			H=H.tocsr()
 			H.sum_duplicates()
 			H.eliminate_zeros()
-			Dynamic_Hs.append((List[2],H))
+			dynamic.append((List[2],H))
 
-	return tuple(Dynamic_Hs)
-
-
+	return tuple(dynamic)
 
 
 
@@ -124,28 +117,29 @@ def DynamicHs(B,dynamic,dtype):
 
 
 
-class Hamiltonian1D:
-#	@profile
-	def __init__(self,static,dynamic,L,dtype=complex128,**basis_params):
+
+
+class hamiltonian:
+	def __init__(self,static_list,dynamic_list,l,dtype=complex128,**basis_params):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
 		basis=basis_params.get('basis')
-		if basis is None: basis=Basis1D(L,**basis_params)
+		if basis is None: basis=Basis1D(l,**basis_params)
 
 		if not isinstance(basis,Basis1D):
 			raise TypeError('basis is not instance of Basis1D')
-		if dtype not in supported_dtypes:
+		if not (dtype in supported_dtypes):
 			raise TypeError('Hamiltonian1D does not support type: '+str(dtype))
 
 
-		self.L=L
+		self.l=l
 		self.Ns=basis.Ns
 		self.dtype=dtype
 		if self.Ns > 0:
-			self.Static_H=StaticH(basis,static,dtype)
-			self.Dynamic_Hs=DynamicHs(basis,dynamic,dtype)
+			self.static=static(basis,static_list,dtype)
+			self.dynamic=dynamic(basis,dynamic,dtype)
 			self.shape=(self.Ns,self.Ns)
 			self.sum_duplicates()
 
@@ -154,27 +148,25 @@ class Hamiltonian1D:
 	def sum_duplicates(self):
 		"""
 		description:
-			This function consolidates the list of Dynamic_Hs, combining matrices which have the same driving function.
+			This function consolidates the list of dynamic, combining matrices which have the same driving function.
 		"""
-		self.Dynamic_Hs=list(self.Dynamic_Hs)
-		l=len(self.Dynamic_Hs)
+		self.dynamic=list(self.dynamic)
+		l=len(self.dynamic)
 		i=j=0;
 		while i < l:
-#			print i,l
 			while j < l:
-#				print "\t",i,j,l
 				if i != j:
-					ele1=self.Dynamic_Hs[i]; ele2=self.Dynamic_Hs[j]
+					ele1=self.dynamic[i]; ele2=self.dynamic[j]
 					if ele1[0] == ele2[0]:
-						self.Dynamic_Hs.pop(j)
-						i=self.Dynamic_Hs.index(ele1)
-						self.Dynamic_Hs.pop(i)
+						self.dynamic.pop(j)
+						i=self.dynamic.index(ele1)
+						self.dynamic.pop(i)
 						ele1=list(ele1)
 						ele1[1]+=ele2[1]
-						self.Dynamic_Hs.insert(i,tuple(ele1))
-				l=len(self.Dynamic_Hs); j+=1
+						self.dynamic.insert(i,tuple(ele1))
+				l=len(self.dynamic); j+=1
 			i+=1;j=0
-		self.Dynamic_Hs=tuple(self.Dynamic_Hs)
+		self.dynamic=tuple(self.dynamic)
 
 
 
@@ -191,12 +183,12 @@ class Hamiltonian1D:
 		if not isscalar(time):
 			raise NotImplementedError
 
-		if self.Static_H is None: # if there isn't a static Hamiltonian...
-			for ele in self.Dynamic_Hs:
+		if self.static is None: # if there isn't a static Hamiltonian...
+			for ele in self.dynamic:
 				H += ele[1]*ele[0](time)
 		else: # if there is..
-			H=self.Static_H	
-			for ele in self.Dynamic_Hs:
+			H=self.static	
+			for ele in self.dynamic:
 				H += ele[1]*ele[0](time)
 
 		return H
@@ -239,13 +231,13 @@ class Hamiltonian1D:
 			raise NotImplementedError
 
 		V=asarray(V)
-		if self.Static_H is None: # if there isn't a static Hamiltonian...
-			for ele in self.Dynamic_Hs:
+		if self.static is None: # if there isn't a static Hamiltonian...
+			for ele in self.dynamic:
 				J=ele[0](time)
 				V_dot += J*(ele[1].dot(V))
 		else: # if there is...
-			V_dot = self.Static_H.dot(V)	
-			for ele in self.Dynamic_Hs:
+			V_dot = self.static.dot(V)	
+			for ele in self.dynamic:
 				J=ele[0](time)
 				V_dot += J*(ele[1].dot(V))
 
@@ -279,7 +271,7 @@ class Hamiltonian1D:
 
 
 
-	def SparseEV(self,time=0,k=6,sigma=None,which='SA',maxiter=maxint/100):
+	def sp_eigh(self,time=0,k=6,sigma=None,which='SA',maxiter=maxint/100):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -299,7 +291,7 @@ class Hamiltonian1D:
 
 
 
-	def DenseEV(self,time=0):
+	def eigh(self,time=0):
 		"""
 		args:
 			time=0, time to evaluate drive at.
@@ -317,7 +309,7 @@ class Hamiltonian1D:
 
 
 
-	def DenseEE(self,time=0):
+	def eigvalsh(self,time=0):
 		"""
 		args:
 			time=0, time to evaluate drive at.
@@ -430,8 +422,8 @@ class Hamiltonian1D:
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise ValueError('dimension mismatch')
 			new=deepcopy(other)
-			new.Static_H+=self.Static_H
-			new.Dynamic_Hs+=self.Dynamic_Hs
+			new.static+=self.static
+			new.dynamic+=self.dynamic
 			new.sum_duplicates()
 			return new
 		else:
@@ -442,9 +434,9 @@ class Hamiltonian1D:
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise ValueError('dimension mismatch')
 			new=deepcopy(other)
-			new.Static_H-=self.Static_H
-			for ele in self.Dynamic_Hs:
-				new.Dynamic_Hs.append((ele1[0],-ele[1]))
+			new.static-=self.static
+			for ele in self.dynamic:
+				new.dynamic.append((ele1[0],-ele[1]))
 			new.sum_duplicates()
 			return new
 		else:
