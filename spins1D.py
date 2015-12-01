@@ -56,7 +56,7 @@ def StaticH(B,static,dtype):
 		H.eliminate_zeros() # remove all zero matrix elements
 		return H 
 	else: # else return None which indicates there is no static part of Hamiltonian.
-		return None
+		return csr_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
 
 
 
@@ -143,7 +143,6 @@ class Hamiltonian1D:
 			self.sum_duplicates()
 
 
-
 	def sum_duplicates(self):
 		self.Dynamic_Hs=list(self.Dynamic_Hs)
 		l=len(self.Dynamic_Hs)
@@ -163,6 +162,17 @@ class Hamiltonian1D:
 						self.Dynamic_Hs.insert(i,tuple(ele1))
 				l=len(self.Dynamic_Hs); j+=1
 			i+=1;j=0
+
+
+
+		l=len(self.Dynamic_Hs)
+		for i in xrange(l):
+			ele=self.Dynamic_Hs[i]
+			ele[1].sum_duplicates()
+			ele[1].eliminate_zeros()
+			if ele[1].nnz == 0:
+				self.Dynamic_Hs.pop(i)
+
 		self.Dynamic_Hs=tuple(self.Dynamic_Hs)
 
 
@@ -180,14 +190,11 @@ class Hamiltonian1D:
 		if not isscalar(time):
 			raise Exception("time must be a scaler")
 
-		if not (self.Static_H is None): # if there is a static Hamiltonian...
-			H=self.Static_H	
-			for ele in self.Dynamic_Hs:
-				H += ele[1]*ele[0](time)
-		else: # if there isn't...
-			for ele in self.Dynamic_Hs:
-				H += ele[1]*ele[0](time)
-
+		
+		H=self.Static_H	
+		for ele in self.Dynamic_Hs:
+			H += ele[1]*ele[0](time)
+		
 		return H
 
 
@@ -232,15 +239,10 @@ class Hamiltonian1D:
 			raise TypeError("time must be a scaler")
 
 		V=asarray(V)
-		if not (self.Static_H is None): # if there is a static Hamiltonian...
-			V_dot = self.Static_H.dot(V)	
-			for ele in self.Dynamic_Hs:
-				J=ele[0](time)
-				V_dot += J*(ele[1].dot(V))
-		else: # if there isn't...
-			for ele in self.Dynamic_Hs:
-				J=ele[0](time)
-				V_dot += J*(ele[1].dot(V))
+		V_dot = self.Static_H.dot(V)	
+		for ele in self.Dynamic_Hs:
+			J=ele[0](time)
+			V_dot += J*(ele[1].dot(V))
 
 		return V_dot
 
@@ -420,11 +422,30 @@ class Hamiltonian1D:
 	def __add__(self,other):
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
-			new=deepcopy(other)
-			new.Static_H+=self.Static_H
-			new.Dynamic_Hs+=self.Dynamic_Hs
+			new=deepcopy(self)
+
+			new.Static_H+=other.Static_H
+			new.Static_H.sum_duplicates()
+			new.Static_H.eliminate_zeros()
+
+			new.Dynamic_Hs+=other.Dynamic_Hs
 			new.sum_duplicates()
 			return new
+		else:
+			raise Exception("Not Implimented")
+
+
+	def __iadd__(self,other):
+		if isinstance(other,Hamiltonian1D):
+			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+
+			self.Static_H+=other.Static_H
+			self.Static_H.sum_duplicates()
+			self.Static_H.eliminate_zeros()
+
+			self.Dynamic_Hs+=other.Dynamic_Hs
+			self.sum_duplicates()
+			return self
 		else:
 			raise Exception("Not Implimented")
 
@@ -432,12 +453,36 @@ class Hamiltonian1D:
 	def __sub__(self,other):
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
-			new=deepcopy(other)
-			new.Static_H-=self.Static_H
-			for ele in self.Dynamic_Hs:
-				new.Dynamic_Hs.append((ele1[0],-ele[1]))
+			new=deepcopy(self)
+
+			new.Static_H-=other.Static_H
+			new.Static_H.sum_duplicates()
+			new.Static_H.eliminate_zeros()
+
+
+			
+			a=tuple([(ele[0],-ele[1]) for ele in other.Dynamic_Hs])
+			new.Dynamic_Hs+=a
 			new.sum_duplicates()
 			return new
+		else:
+			raise Exception("Not Implimented")
+
+
+	def __isub__(self,other):
+		if isinstance(other,Hamiltonian1D):
+			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+
+			self.Static_H-=other.Static_H
+			self.Static_H.sum_duplicates()
+			self.Static_H.eliminate_zeros()
+
+
+			
+			a=tuple([(ele[0],-ele[1]) for ele in other.Dynamic_Hs])
+			self.Dynamic_Hs+=a
+			self.sum_duplicates()
+			return self
 		else:
 			raise Exception("Not Implimented")
 
