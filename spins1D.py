@@ -104,6 +104,7 @@ def DynamicHs(B,dynamic,dtype):
 		H.eliminate_zeros()
 		Dynamic_Hs.append((List[2],H))
 
+
 	return tuple(Dynamic_Hs)
 
 
@@ -116,25 +117,14 @@ def DynamicHs(B,dynamic,dtype):
 
 
 class Hamiltonian1D:
-	def __init__(self,static,dynamic,L,**init_params):
+	def __init__(self,static,dynamic,L,dtype=complex128,**basis_params):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
-		Nup=init_params.get("Nup")
-		kblock=init_params.get("kblock")
-		zblock=init_params.get("zblock")
-		pblock=init_params.get("pblock")
-		pzblock=init_params.get("pzblock")
-		dtype=init_params.get("dtype")
-		a=init_params.get("a")
-		basis=init_params.get("basis")
-		if a == None:
-			a=1
-		if dtype == None:
-			dtype=complex128
-		if basis == None:  
-			basis=Basis1D(L,Nup=Nup,a=a,kblock=kblock,zblock=zblock,pblock=pblock,pzblock=pzblock)
+		basis=basis_params.get("basis")
+		if basis is None: basis=Basis1D(L,**basis_params)
+
 		if not isinstance(basis,Basis1D):
 			raise TypeError("basis is not instance of Basis1D")
 		if dtype not in supported_dtypes:
@@ -150,8 +140,30 @@ class Hamiltonian1D:
 			self.Static_H=StaticH(basis,static,dtype)
 			self.Dynamic_Hs=DynamicHs(basis,dynamic,dtype)
 			self.shape=(self.Ns,self.Ns)
+			self.sum_duplicates()
 
 
+
+	def sum_duplicates(self):
+		self.Dynamic_Hs=list(self.Dynamic_Hs)
+		l=len(self.Dynamic_Hs)
+		i=j=0;
+		while i < l:
+#			print i,l
+			while j < l:
+#				print "\t",i,j,l
+				if i != j:
+					ele1=self.Dynamic_Hs[i]; ele2=self.Dynamic_Hs[j]
+					if ele1[0] == ele2[0]:
+						self.Dynamic_Hs.pop(j)
+						i=self.Dynamic_Hs.index(ele1)
+						self.Dynamic_Hs.pop(i)
+						ele1=list(ele1)
+						ele1[1]+=ele2[1]
+						self.Dynamic_Hs.insert(i,tuple(ele1))
+				l=len(self.Dynamic_Hs); j+=1
+			i+=1;j=0
+		self.Dynamic_Hs=tuple(self.Dynamic_Hs)
 
 
 
@@ -168,7 +180,7 @@ class Hamiltonian1D:
 		if not isscalar(time):
 			raise Exception("time must be a scaler")
 
-		if self.Static_H != None: # if there is a static Hamiltonian...
+		if not (self.Static_H is None): # if there is a static Hamiltonian...
 			H=self.Static_H	
 			for ele in self.Dynamic_Hs:
 				H += ele[1]*ele[0](time)
@@ -194,7 +206,7 @@ class Hamiltonian1D:
 		if self.Ns <= 0:
 			return matrix([])
 		if not isscalar(time):
-			raise Exception("time must be a scaler")
+			raise TypeError("time must be a scaler")
 
 		return self.tocsr(time=time).todense()
 
@@ -217,10 +229,10 @@ class Hamiltonian1D:
 		if self.Ns <= 0:
 			return array([])
 		if not isscalar(time):
-			raise Exception("time must be a scaler")
+			raise TypeError("time must be a scaler")
 
 		V=asarray(V)
-		if self.Static_H != None: # if there is a static Hamiltonian...
+		if not (self.Static_H is None): # if there is a static Hamiltonian...
 			V_dot = self.Static_H.dot(V)	
 			for ele in self.Dynamic_Hs:
 				J=ele[0](time)
@@ -405,14 +417,13 @@ class Hamiltonian1D:
 		return V
 
 
-	# special methods to be added later
-	"""
 	def __add__(self,other):
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=deepcopy(other)
-			new.Static_H+=self.Static+H
-			new.Dynamic_Hs+=self.Dynamic+Hs
+			new.Static_H+=self.Static_H
+			new.Dynamic_Hs+=self.Dynamic_Hs
+			new.sum_duplicates()
 			return new
 		else:
 			raise Exception("Not Implimented")
@@ -422,13 +433,13 @@ class Hamiltonian1D:
 		if isinstance(other,Hamiltonian1D):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=deepcopy(other)
-			new.StaticH-=self.Static_H
+			new.Static_H-=self.Static_H
 			for ele in self.Dynamic_Hs:
-				new.DynamicHs.append((ele[0],-ele[1]))
+				new.Dynamic_Hs.append((ele1[0],-ele[1]))
+			new.sum_duplicates()
 			return new
 		else:
 			raise Exception("Not Implimented")
-	"""
 
 	
 
