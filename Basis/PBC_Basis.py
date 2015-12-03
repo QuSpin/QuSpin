@@ -1,6 +1,6 @@
 from BitOps import * # loading modules for bit operations.
 from SpinOps import SpinOp
-from Z_Basis import Basis, BasisError
+from Basis import Basis, BasisError
 from array import array as vec
 from numpy import pi,exp, sqrt
 

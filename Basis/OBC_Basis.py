@@ -4,7 +4,7 @@ from numpy import sqrt
 # local modules
 from BitOps import * # loading modules for bit operations.
 from SpinOps import SpinOp
-from Z_Basis import Basis, BasisError
+from Basis import Basis, BasisError
 
 # References:
 # [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
