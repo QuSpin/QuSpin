@@ -4,12 +4,15 @@ from Basis import Basis1D
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
+from memory_profiler import profile
+
+import numpy as np
 from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
 from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
-from numpy import concatenate,matrix, isscalar, real, vdot, asarray, array, int32, int64, float32, float64, complex64, complex128
+from numpy import append,matrix, isscalar, real, vdot, asarray, array, int32, int64, float32, float64, complex64, complex128
 from copy import deepcopy
 from sys import maxint
 from functools import partial
@@ -39,24 +42,24 @@ def static(B,static_list,dtype):
 	"""
 
 	if static_list:
-		H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) #
+		H=csr_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) 
 		row=array(xrange(B.Ns),dtype=int32)
 		for alist in static_list:
-			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
+			Ht=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) 
 			opstr=alist[0]
 			bonds=alist[1]
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
 				ME,col = B.Op(J,dtype,opstr,indx)
-				H.data=concatenate((H.data,ME))
-				H.row=concatenate((H.row,row))
-				H.col=concatenate((H.col,col))
+				mask=col>=0
+				Ht=csr_matrix((ME[mask],(row[mask],col[mask])),shape=(B.Ns,B.Ns),dtype=dtype) 
+				H+=Ht
+				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
-
-		H=H.tocsr() # convert to csr_matrix
-		H.sum_duplicates() # sum duplicate matrix elements
-		H.eliminate_zeros() # remove all zero matrix elements
+				H.eliminate_zeros() # remove all zero matrix elements
+				print (H.data.nbytes+H.indices.nbytes+H.indptr.nbytes)/(3.8*float(1024**3))
+			
 		return H 
 	else: # else return None which indicates there is no static part of Hamiltonian.
 		return None
@@ -96,9 +99,9 @@ def dynamic(B,dynamic_list,dtype):
 				J=bond[0]
 				indx=bond[1:]
 				ME,col = B.Op(J,dtype,opstr,indx)
-				H.data=concatenate((H.data,ME))
-				H.row=concatenate((H.row,row))
-				H.col=concatenate((H.col,col))
+				H.data=append(H.data,ME)
+				H.row=append(H.row,row)
+				H.col=append(H.col,col)
 				H.sum_duplicates() # sum duplicate matrix element
 		
 			H=H.tocsr()

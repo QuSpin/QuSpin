@@ -32,7 +32,8 @@ M_E = M_E * (-1)**(a)*cmplx(0.0,0.5)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 
-col(i)=basis(i); ME=0.0;
+col(i)=basis(i)
+M_E=0.0
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -40,7 +41,8 @@ end if
 
 else if(opstr(j) .eq. "-") then
 if (a .eq. 0) then 
-col(i)=basis(i); ME=0.0;
+col(i)=basis(i)
+M_E=0.0
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -59,7 +61,7 @@ ME=0;col=0;error=-1
 return 
 end if
 
-!print*, opstr,M_E,r
+!print*, opstr,basis(i),col(i),M_E
 ME(i)=real(M_E)
 col(i)=r
 end do
@@ -106,7 +108,7 @@ M_E = M_E * (-1)**(a)*dcmplx(0.0,0.5d0)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 
-col(i)=i; ME=0.0d0;
+col(i)=basis(i); M_E=0.0d0;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -114,7 +116,7 @@ end if
 
 else if(opstr(j) .eq. "-") then
 if (a .eq. 0) then 
-col(i)=i; ME=0.0d0;
+col(i)=basis(i); M_E=0.0d0;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -179,7 +181,7 @@ M_E = M_E * (-1)**(a)*cmplx(0.0,0.5)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 
-col(i)=i; ME=0.0;
+col(i)=basis(i); M_E=0.0;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -187,7 +189,7 @@ end if
 
 else if(opstr(j) .eq. "-") then
 if (a .eq. 0) then 
-col(i)=i; ME=0.0;
+col(i)=basis(i); M_E=0.0;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -245,7 +247,7 @@ M_E = M_E * (-1)**(a)*dcmplx(0.0,0.5d0)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 
-col(i)=i; ME=0.0d0;
+col(i)=basis(i); M_E=0.0d0;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -253,7 +255,7 @@ end if
 
 else if(opstr(j) .eq. "-") then
 if (a .eq. 0) then 
-col(i)=i; ME=0.0d0;
+col(i)=basis(i); M_E=0.0d0;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))

@@ -60,11 +60,11 @@ class Basis:
 		if self.conserved:
 			ME,col=SpinOp(self.basis,opstr,indx,dtype)
 			RefState_M(self.basis,col)
-			col=col-1 # fortran routines by default start at index 1 while here we start at 0.
-			ME=J*ME
+			col-=1 # fortran routines by default start at index 1 while here we start at 0.
+			ME*=J
 		else:
 			ME,col=SpinOp(self.basis,opstr,indx,dtype)
-			ME=J*ME
+			ME*=J
 		return ME,col
 			
 
