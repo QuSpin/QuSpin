@@ -49,8 +49,6 @@ class base:
 		else:
 			self.conserved=""
 			self.Ns=2**L
-			self.Mcon=False
-			self.symm=False # No symmetries here. at all so each integer corresponds to the number in the hilbert space.
 			self.basis=_array(xrange(self.Ns),dtype=_index_type)
 
 
