@@ -4,7 +4,7 @@ from numpy import int32 as _index_type
 from numpy import array as _array
 
 # local modules
-from Basis_fortran import RefState_M,SpinOp,make_m_basis
+from constructors import RefState_M,SpinOp,make_m_basis
 
 # References:
 # [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
@@ -32,7 +32,7 @@ def ncr(n, r):
 # all 'child' classes will inherit its functionality, but that functionality can be overwritten in the child class.
 # Basis classes must have the functionality of finding the matrix elements built in. This way, the function for constructing 
 # the hamiltonian is universal and the basis object takes care of constructing the correct matrix elements based on its internal symmetry. 
-class Basis:
+class base:
 	def __init__(self,L,Nup=None):
 		# This is the constructor of the class Basis:
 		#		L: length of chain

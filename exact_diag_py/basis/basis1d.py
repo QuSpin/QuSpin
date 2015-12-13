@@ -1,9 +1,8 @@
-from numpy import *
-from Basis import Basis
-from OBC_Basis import OpenBasis1D
+from base import base
+from obc import obc
 
 
-class Basis1D:
+class basis1d:
 	def __init__(self,Length,**basis_params):
 
 		# if arguement is not passed, then the get function returns None which should be handled by the lower basis classes.
@@ -20,9 +19,9 @@ class Basis1D:
 		if (type(kblock) is int):
 			raise NotImplementedError
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-			self.B=OpenBasis1D(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
+			self.B=obc(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
 		else:
-			self.B=Basis(Length,Nup=Nup)
+			self.B=base(Length,Nup=Nup)
 		
 		self.Nup=Nup
 		self.kblock=kblock
@@ -37,8 +36,3 @@ class Basis1D:
 
 	def __call__(self,J,dtype,opstr,indx):
 		return self.B.Op(J,dtype,opstr,indx)
-
-
-
-
-

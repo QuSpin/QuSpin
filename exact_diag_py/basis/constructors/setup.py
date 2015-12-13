@@ -13,8 +13,8 @@ def get_sources():
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
-    config = Configuration('Basis_fortran',parent_package, top_path)
-    config.add_extension('Basis_fortran', sources=get_sources())
+    config = Configuration('constructors',parent_package, top_path)
+    config.add_extension('fortran_wrap', sources=get_sources())
     return config
 
 if __name__ == '__main__':

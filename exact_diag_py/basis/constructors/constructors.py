@@ -1,12 +1,12 @@
-from Basis_fortran import *
-from numpy import array,asarray,ones,int32
+from basis_fortran import *
+from numpy import dtype as _dtype
 
 fortran_RefState_P={"float32":s_refstate_p,"Float64":d_refstate_p,"complex64":c_refstate_p,"complex128":z_refstate_p}
 fortran_RefState_Z={"float32":s_refstate_z,"Float64":d_refstate_z,"complex64":c_refstate_z,"complex128":z_refstate_z}
 fortran_RefState_PZ={"float32":s_refstate_pz,"Float64":d_refstate_pz,"complex64":c_refstate_pz,"complex128":z_refstate_pz}
 fortran_RefState_P_Z={"float32":s_refstate_p_z,"Float64":d_refstate_p_z,"complex64":c_refstate_p_z,"complex128":z_refstate_p_z}
 
-fortran_SpinOp={"<type 'numpy.float32'>":s_spinop,"<type 'numpy.float64'>":d_spinop,"<type 'numpy.complex64'>":c_spinop,"<type 'numpy.complex128'>":z_spinop}
+fortran_SpinOp={"float32":s_spinop,"float64":d_spinop,"complex64":c_spinop,"complex128":z_spinop}
 
 class BasisFortranError(Exception):
 	# this class defines an exception which can be raised whenever there is some sort of error which we can
@@ -42,7 +42,7 @@ def RefState_P_Z(basis,col,L,N,ME,pblock,zblock,pzblock):
 
 
 def SpinOp(basis,opstr,indx,dtype):
-	dtype=str(dtype)
+	dtype=str(_dtype(dtype))
 	ME,col,error=fortran_SpinOp[dtype](basis,opstr,indx)
 	if error != 0:
 		if error == 1:

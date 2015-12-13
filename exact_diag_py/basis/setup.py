@@ -1,7 +1,9 @@
 def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
-	config = Configuration('Basis', parent_package, top_path)
-	config.add_subpackage('Basis_fortran')
+	import os
+	config = Configuration('basis', parent_package, top_path)
+	config.add_subpackage('basis1d',subpackage_path=os.path.sep)
+	config.add_subpackage('constructors')
 	return config
 
 if __name__ == '__main__':

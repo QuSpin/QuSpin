@@ -17,15 +17,14 @@ def setup_package():
 	except:
 		raise ImportError("build requires numpy for fortran extensions")
 
+
 	metadata = dict(
 		name='exact_diag_py',
 		maintainer="Phillip Weinberg, Marin Bukov",
 		maintainer_email="weinbe58@bu.edu,mbukov.bu.edu",
 		download_url="https://github.com/weinbe58/exact_diag_py",
 		license='MIT',
-		platforms=["Unix"],
-		test_suite='nose.collector',
-		setup_requires=['numpy>=1.5.1','scipy>=0.14.0'],
+		platforms=["Unix"]
 	)
 
 	from numpy.distutils.core import setup

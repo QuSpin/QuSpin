@@ -1,14 +1,14 @@
 # python 2.7 modules
 from numpy import int32 as _index_type
 # local modules
-from Basis import Basis, BasisError
+from base import base, BasisError
 
-from Basis_fortran import RefState_M
-from Basis_fortran import RefState_Z
-from Basis_fortran import RefState_P
-from Basis_fortran import RefState_PZ
-from Basis_fortran import RefState_P_Z
-from Basis_fortran import	SpinOp
+from constructors import RefState_M
+from constructors import RefState_Z
+from constructors import RefState_P
+from constructors import RefState_PZ
+from constructors import RefState_P_Z
+from constructors import SpinOp
 
 
 
@@ -32,7 +32,7 @@ RefState={"M":RefState_M,
 
 
 
-class OpenBasis1D(Basis):
+class obc(base):
 	def __init__(self,L,Nup=None,pblock=None,zblock=None,pzblock=None):
 		# This function in the constructor of the class:
 		#		L: length of the chain
