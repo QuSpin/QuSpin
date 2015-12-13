@@ -80,7 +80,7 @@ integer(kind=4), intent(in) :: Ns,N_indx
 integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=4), intent(in), dimension(N_indx) :: indx
 character, intent(in), dimension(N_indx) :: opstr
-complex(kind=8), intent(out), dimension(Ns) :: ME
+real(kind=8), intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out), dimension(Ns) :: col
 integer(kind=4), intent(out) :: error
 integer(kind=4), external :: FindZstate
