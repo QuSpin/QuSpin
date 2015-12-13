@@ -4,7 +4,7 @@ from basis import basis1d
 from py_lapack import eigh # used to diagonalize hermitian and symmetric matricies
 
 #python 2.7 modules
-from scipy.linalg import norm as _norm
+from scipy.linalg import norm
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
 from scipy.sparse.linalg  import eigsh	# needed for the sparse linear algebra packages
 from scipy.integrate import complex_ode,ode	# ode solver used in evolve wave function.
