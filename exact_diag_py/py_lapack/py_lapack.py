@@ -45,8 +45,6 @@ try:
 		return eig(a,copy_a=copy_a,check_finite=check_finite,JOBL=JOBL,JOBR=JOBR)
 
 
-
-
 	def eigh(a,copy_a=False,check_finite=True,JOBZ='V',UPLO='L'):
 		if check_finite:
 			if copy_a:
@@ -83,8 +81,8 @@ try:
 		elif JOBZ=='N':
 			return v
 
-		def eigvalsh(a,copy_a=False,check_finite=True,JOBZ='N',UPLO='L'):
-			return eigh(a,copy_a=copy_a,check_finite=check_finite,JOBZ=JOBZ,UPLO=UPLO)
+	def eigvalsh(a,copy_a=False,check_finite=True,JOBZ='N',UPLO='L'):
+		return eigh(a,copy_a=copy_a,check_finite=check_finite,JOBZ=JOBZ,UPLO=UPLO)
 
 
 except ImportError:

@@ -1,4 +1,4 @@
-from basis_fortran import *
+from fortran_wrap import *
 from numpy import dtype as _dtype
 
 fortran_RefState_P={"float32":s_refstate_p,"Float64":d_refstate_p,"complex64":c_refstate_p,"complex128":z_refstate_p}
