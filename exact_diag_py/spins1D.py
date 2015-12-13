@@ -6,7 +6,6 @@ from py_lapack import eigh # used to diagonalize hermitian and symmetric matrici
 #python 2.7 modules
 from memory_profiler import profile
 
-import numpy as np
 from scipy.linalg import norm
 from scipy.sparse import coo_matrix	# needed as the initial format that the Hamiltonian matrices are stored as
 from scipy.sparse import csr_matrix	# the final version the sparse matrices are stored as, good format for dot produces with vectors.
@@ -43,7 +42,6 @@ def static(B,static_list,dtype):
 
 	if static_list:
 		H=csr_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) 
-		row=array(xrange(B.Ns),dtype=int32)
 		for alist in static_list:
 			Ht=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) 
 			opstr=alist[0]
@@ -51,14 +49,12 @@ def static(B,static_list,dtype):
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				ME,col = B.Op(J,dtype,opstr,indx)
-				mask=col>=0
-				Ht=csr_matrix((ME[mask],(row[mask],col[mask])),shape=(B.Ns,B.Ns),dtype=dtype) 
+				ME,row,col = B.Op(J,dtype,opstr,indx)
+				Ht=csr_matrix((ME,(row,col)),shape=(B.Ns,B.Ns),dtype=dtype) 
 				H+=Ht
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
-				print (H.data.nbytes+H.indices.nbytes+H.indptr.nbytes)/(3.8*float(1024**3))
 			
 		return H 
 	else: # else return None which indicates there is no static part of Hamiltonian.
@@ -90,23 +86,21 @@ def dynamic(B,dynamic_list,dtype):
 	"""
 	dyn=[]
 	if dynamic_list:
-		row=array(xrange(B.Ns),dtype=int32)
+		H=csr_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
 		for alist in dynamic_list:
-			H=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
+			Ht=coo_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) 
 			opstr=alist[0]
 			bonds=alist[1]
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				ME,col = B.Op(J,dtype,opstr,indx)
-				H.data=append(H.data,ME)
-				H.row=append(H.row,row)
-				H.col=append(H.col,col)
-				H.sum_duplicates() # sum duplicate matrix element
+				ME,row,col = B.Op(J,dtype,opstr,indx)
+				Ht=csr_matrix((ME,(row,col)),shape=(B.Ns,B.Ns),dtype=dtype) 
+				H+=Ht
+				del Ht
+				H.sum_duplicates() # sum duplicate matrix elements
+				H.eliminate_zeros() # remove all zero matrix elements
 		
-			H=H.tocsr()
-			H.sum_duplicates()
-			H.eliminate_zeros()
 			dyn.append((alist[2],H))
 
 	return tuple(dyn)

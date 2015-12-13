@@ -1,13 +1,13 @@
 # python 2.7 modules
-import operator as op # needed to calculate n choose r in function ncr(n,r).
+import operator as _op # needed to calculate n choose r in function ncr(n,r).
+from numpy import int32 as _index_type
+from numpy import array as _array
 
 # local modules
 from Basis_fortran import RefState_M,SpinOp,make_m_basis
 
 # References:
 # [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
-
-
 
 
 
@@ -24,8 +24,8 @@ def ncr(n, r):
 # this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
     r = min(r, n-r)
     if r == 0: return 1
-    numer = reduce(op.mul, xrange(n, n-r, -1))
-    denom = reduce(op.mul, xrange(1, r+1))
+    numer = reduce(_op.mul, xrange(n, n-r, -1))
+    denom = reduce(_op.mul, xrange(1, r+1))
     return numer//denom
 
 # Parent Class Basis: This class is the basic template for all other basis classes. It only has Magnetization symmetry as an option.
@@ -45,27 +45,35 @@ class Basis:
 			self.conserved="M"
 			self.Ns=ncr(L,Nup) 
 			s0=sum([2**i for i in xrange(0,Nup)])
-			mbasis=make_m_basis(s0,self.Ns)
+			self.basis=make_m_basis(s0,self.Ns)
 		else:
 			self.conserved=""
 			self.Ns=2**L
 			self.Mcon=False
 			self.symm=False # No symmetries here. at all so each integer corresponds to the number in the hilbert space.
-			mbasis=xrange(self.Ns)
-
-		self.basis=mbasis
+			self.basis=_array(xrange(self.Ns),dtype=_index_type)
 
 
 	def Op(self,J,dtype,opstr,indx):
+		row=_array(xrange(self.Ns),dtype=_index_type)
 		if self.conserved:
 			ME,col=SpinOp(self.basis,opstr,indx,dtype)
 			RefState_M(self.basis,col)
+			
+			# remove any states that give matrix elements which are no in the basis.
+			mask=col>=0
+			col=col[mask]
+			row=row[mask]
+			ME=ME[mask]
+
 			col-=1 # fortran routines by default start at index 1 while here we start at 0.
 			ME*=J
+
 		else:
 			ME,col=SpinOp(self.basis,opstr,indx,dtype)
 			ME*=J
-		return ME,col
+
+		return ME,row,col
 			
 
 

@@ -1,15 +1,22 @@
-import glob,os
-from numpy.distutils.core import Extension, setup
+def get_sources():
+	import os,glob
+	package_dir = os.path.dirname(os.path.realpath(__file__))
+	sources_dir = os.path.join(package_dir,'sources')
+	sources=[]
+	for Dir,subDir,files in os.walk(sources_dir):
+		fortran_files=glob.glob(os.path.join(Dir,"*.f90"))
+		sources.extend(fortran_files)
 
+	return sources
+		
+	
 
-m_src=glob.glob(os.path.join('sources', 'm', '*.f90'))
-z_src=glob.glob(os.path.join('sources', 'z', '*.f90'))
-p_src=glob.glob(os.path.join('sources', 'p', '*.f90'))
-pz_src=glob.glob(os.path.join('sources', 'pz', '*.f90'))
-p_z_src=glob.glob(os.path.join('sources', 'p_z', '*.f90'))
-sources=glob.glob(os.path.join('sources','*.f90'))+m_src+z_src+p_src+pz_src+p_z_src
+def configuration(parent_package='', top_path=None):
+    from numpy.distutils.misc_util import Configuration
+    config = Configuration('Basis_fortran',parent_package, top_path)
+    config.add_extension('Basis_fortran', sources=get_sources())
+    return config
 
-setup(name='Basis_fortran',
-       ext_modules=[Extension(name='Basis_fortran', sources=sources)],
-       )
-
+if __name__ == '__main__':
+    from numpy.distutils.core import setup
+    setup(**configuration(top_path='').todict())

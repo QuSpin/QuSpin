@@ -1,8 +1,18 @@
 # python 2.7 modules
-from numpy import sqrt,ones,asarray,int32,vstack
+from numpy import int32 as _index_type
 # local modules
 from Basis import Basis, BasisError
-from Basis_fortran import *
+
+from Basis_fortran import RefState_M
+from Basis_fortran import RefState_Z
+from Basis_fortran import RefState_P
+from Basis_fortran import RefState_PZ
+from Basis_fortran import RefState_P_Z
+from Basis_fortran import	SpinOp
+
+
+
+
 
 # References:
 # [1]: A. W. Sandvik, AIP Conf. Proc. 1297, 135 (2010)
@@ -37,7 +47,6 @@ class OpenBasis1D(Basis):
 		Basis.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
 		self.kblock=None
 		self.a=1
-		self.basis=asarray(self.basis,dtype=int32)
 
 		# if symmetry is needed, the reference states must be found.
 		# This is done through the CheckState function. Depending on
@@ -55,12 +64,8 @@ class OpenBasis1D(Basis):
 
 			self.pblock = pblock
 			self.zblock = zblock
-			self.pzblock = 1
-
+			self.pzblock = 0
 			self.N=make_p_z_basis(L,self.basis,pblock,zblock)
-			self.basis=self.basis[self.basis != -1]
-			self.N=self.N[self.N != -1]
-			self.Ns=len(self.basis)
 
 		elif type(pblock) is int:
 			if abs(pblock) != 1:
@@ -70,13 +75,9 @@ class OpenBasis1D(Basis):
 			else: self.conserved = "P"
 
 			self.pblock = pblock
-			self.zblock = 1
-			self.pzblock = 1
-
+			self.zblock = 0
+			self.pzblock = 0
 			self.N=make_p_basis(L,self.basis,pblock)
-			self.basis=self.basis[self.basis != -1]
-			self.N=self.N[self.N != -1]
-			self.Ns=len(self.basis)
 
 		elif type(zblock) is int:
 			if abs(zblock) != 1:
@@ -85,13 +86,10 @@ class OpenBasis1D(Basis):
 			if self.conserved: self.conserved += " & Z"
 			else: self.conserved += "Z"
 
-			self.pblock = 1
+			self.pblock = 0
 			self.zblock = zblock
-			self.pzblock = 1
+			self.pzblock = 0
 			self.N=make_z_basis(L,self.basis)
-			self.basis=self.basis[self.basis != -1]
-			self.N=self.N[self.N != -1]
-			self.Ns=len(self.basis)
 
 		elif type(pzblock) is int:
 			if abs(pzblock) != 1:
@@ -100,24 +98,35 @@ class OpenBasis1D(Basis):
 			if self.conserved: self.conserved += " & PZ"
 			else: self.conserved += "PZ"
 
-			self.pblock = 1
-			self.zblock = 1
+			self.pblock = 0
+			self.zblock = 0
 			self.pzblock = pzblock
 			self.N=make_pz_basis(L,self.basis,pzblock)
-			self.basis=self.basis[self.basis != -1]
-			self.N=self.N[self.N != -1]
-			self.Ns=len(self.basis)	
-
 		else: 
 			raise BasisError("if no symmetries are used use Basis class")
 
 
+		self.basis=self.basis[self.basis != -1]
+		self.N=self.N[self.N != -1]
+		self.Ns=len(self.basis)	
+
+
 	def Op(self,J,dtype,opstr,indx):
+		row=array(xrange(self.Ns),dtype=_index_type)
+
 		ME,col=SpinOp(self.basis,opstr,indx,dtype)
 		RefState[self.conserved](self.basis,col,self.L,self.N,ME,self.pblock,self.zblock,self.pzblock)
-		col=col-1 # fortran routines by default start at index 1 while here we start at 0.
-		ME=J*ME
-		return ME,col
+
+		# remove any states that give matrix elements which are no in the basis.
+		mask=col>=0
+		ME=ME[mask]
+		col=col[mask]
+		row=row[mask]
+
+		col-=1 # fortran routines by default start at index 1 while here we start at 0.
+		ME*=J
+
+		return ME,row,col
 		
 
 
