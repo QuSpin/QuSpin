@@ -67,7 +67,7 @@ end if
 j=FindZstate(basis,Ns,s)
 
 if(j.ge.0) then
-ME(i)=ME(i)*(pzblock**gq)*sqrt(float(N(j))/float(N(i)))
+ME(i)=ME(i)*(pzblock**gq)*dsqrt(dble(N(j))/dble(N(i)))
 col(i)=j
 else
 ME(i)=0.0
@@ -158,7 +158,7 @@ end if
 j=FindZstate(basis,Ns,s)
 
 if(j.ge.0) then
-ME(i)=ME(i)*(pzblock**gq)*sqrt(float(N(j))/float(N(i)))
+ME(i)=ME(i)*(pzblock**gq)*dsqrt(dble(N(j))/dble(N(i)))
 col(i)=j
 else
 ME(i)=0.0

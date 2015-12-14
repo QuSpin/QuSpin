@@ -6,25 +6,32 @@ integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=1), intent(in), dimension(Ns) :: N
 real(kind=4), intent(inout), dimension(Ns) :: ME
 integer(kind=4), external :: FindZstate
-integer(kind=4) :: i,g,q,r,s,j
+integer(kind=4) :: i,g,q,r,s,t,j
 
 do i=1,Ns
 g=0;q=0;
-r=col(i)
 s=col(i)
-call flip_all(r,L)
+r=s
+t=s
+call flip_all(t,L)
 
-if(r.lt.s) then
-g=1;s=r;
+if(t.lt.r) then
+g=1;q=0;r=t;
 end if
 
-call flip_lr(r,L)
+t=s
+call flip_lr(t,L)
 
-if(r.lt.s) then
-q=1;s=r;
+if(t.lt.r) then
+q=1;g=0;r=t;
 end if
 
-j=FindZstate(basis,Ns,s)
+call flip_all(t,L)
+if(t.lt.r) then
+q=1;g=1;r=t;
+end if
+
+j=FindZstate(basis,Ns,r)
 
 if(j.ge.0) then
 ME(i)=ME(i)*(zblock**g)*(pblock**q)*sqrt(float(N(j))/float(N(i)))
@@ -54,29 +61,34 @@ integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=1), intent(in), dimension(Ns) :: N
 real(kind=8), intent(inout), dimension(Ns) :: ME
 integer(kind=4), external :: FindZstate
-integer(kind=4) :: i,g,q,r,s,j
+integer(kind=4) :: i,g,q,r,s,t,j
 
 do i=1,Ns
-
 g=0;q=0;
-r=col(i)
 s=col(i)
-call flip_all(r,L)
+r=s
+t=s
+call flip_all(t,L)
 
-if(r.lt.s) then
-g=1;s=r;
+if(t.lt.r) then
+g=1;q=0;r=t;
 end if
 
-call flip_lr(r,L)
+t=s
+call flip_lr(t,L)
 
-if(r.lt.s) then
-q=1;s=r;
+if(t.lt.r) then
+q=1;g=0;r=t;
 end if
 
-j=FindZstate(basis,Ns,s)
+call flip_all(t,L)
+if(t.lt.r) then
+q=1;g=1;r=t;
+end if
 
+j=FindZstate(basis,Ns,r)
 if(j.ge.0) then
-ME(i)=ME(i)*(zblock**g)*(pblock**q)*sqrt(float(N(j))/float(N(i)))
+ME(i)=ME(i)*(zblock**g)*(pblock**q)*dsqrt(dble(N(j))/dble(N(i)))
 col(i)=j
 else
 ME(i)=0.0
@@ -102,26 +114,32 @@ integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=1), intent(in), dimension(Ns) :: N
 complex(kind=4), intent(inout), dimension(Ns) :: ME
 integer(kind=4), external :: FindZstate
-integer(kind=4) :: i,g,q,r,s,j
+integer(kind=4) :: i,g,q,r,s,t,j
 
 do i=1,Ns
-
 g=0;q=0;
-r=col(i)
 s=col(i)
-call flip_all(r,L)
+r=s
+t=s
+call flip_all(t,L)
 
-if(r.lt.s) then
-g=1;s=r;
+if(t.lt.r) then
+g=1;q=0;r=t;
 end if
 
-call flip_lr(r,L)
+t=s
+call flip_lr(t,L)
 
-if(r.lt.s) then
-q=1;s=r;
+if(t.lt.r) then
+q=1;g=0;r=t;
 end if
 
-j=FindZstate(basis,Ns,s)
+call flip_all(t,L)
+if(t.lt.r) then
+q=1;g=1;r=t;
+end if
+
+j=FindZstate(basis,Ns,r)
 
 if(j.ge.0) then
 ME(i)=ME(i)*(zblock**g)*(pblock**q)*sqrt(float(N(j))/float(N(i)))
@@ -155,29 +173,35 @@ integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=1), intent(in), dimension(Ns) :: N
 complex(kind=8), intent(inout), dimension(Ns) :: ME
 integer(kind=4), external :: FindZstate
-integer(kind=4) :: i,g,q,r,s,j
+integer(kind=4) :: i,g,q,r,s,t,j
 
 do i=1,Ns
-
 g=0;q=0;
-r=col(i)
 s=col(i)
-call flip_all(r,L)
+r=s
+t=s
+call flip_all(t,L)
 
-if(r.lt.s) then
-g=1;s=r;
+if(t.lt.r) then
+g=1;q=0;r=t;
 end if
 
-call flip_lr(r,L)
+t=s
+call flip_lr(t,L)
 
-if(r.lt.s) then
-q=1;s=r;
+if(t.lt.r) then
+q=1;g=0;r=t;
 end if
 
-j=FindZstate(basis,Ns,s)
+call flip_all(t,L)
+if(t.lt.r) then
+q=1;g=1;r=t;
+end if
+
+j=FindZstate(basis,Ns,r)
 
 if(j.ge.0) then
-ME(i)=ME(i)*(zblock**g)*(pblock**q)*sqrt(float(N(j))/float(N(i)))
+ME(i)=ME(i)*(zblock**g)*(pblock**q)*dsqrt(dble(N(j))/dble(N(i)))
 col(i)=j
 else
 ME(i)=0.0

@@ -17,6 +17,9 @@ requirements:
     - scipy
 
 test:
+  imports:
+    - numpy
+    - scipy
 
 about:
   home: https://github.com/weinbe58/exact_diag_py

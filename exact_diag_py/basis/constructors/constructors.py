@@ -1,10 +1,10 @@
 from fortran_wrap import *
 from numpy import dtype as _dtype
 
-fortran_RefState_P={"float32":s_refstate_p,"Float64":d_refstate_p,"complex64":c_refstate_p,"complex128":z_refstate_p}
-fortran_RefState_Z={"float32":s_refstate_z,"Float64":d_refstate_z,"complex64":c_refstate_z,"complex128":z_refstate_z}
-fortran_RefState_PZ={"float32":s_refstate_pz,"Float64":d_refstate_pz,"complex64":c_refstate_pz,"complex128":z_refstate_pz}
-fortran_RefState_P_Z={"float32":s_refstate_p_z,"Float64":d_refstate_p_z,"complex64":c_refstate_p_z,"complex128":z_refstate_p_z}
+fortran_RefState_P={"float32":s_refstate_p,"float64":d_refstate_p,"complex64":c_refstate_p,"complex128":z_refstate_p}
+fortran_RefState_Z={"float32":s_refstate_z,"float64":d_refstate_z,"complex64":c_refstate_z,"complex128":z_refstate_z}
+fortran_RefState_PZ={"float32":s_refstate_pz,"float64":d_refstate_pz,"complex64":c_refstate_pz,"complex128":z_refstate_pz}
+fortran_RefState_P_Z={"float32":s_refstate_p_z,"float64":d_refstate_p_z,"complex64":c_refstate_p_z,"complex128":z_refstate_p_z}
 
 fortran_SpinOp={"float32":s_spinop,"float64":d_spinop,"complex64":c_spinop,"complex128":z_spinop}
 

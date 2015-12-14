@@ -36,10 +36,14 @@ subroutine flip_all(s,L)
 implicit none
 integer(kind=4), intent(inout) :: s
 integer(kind=4), intent(in) :: L
-integer(kind=4) :: upper, lower, i1, i2
+integer(kind=4) :: upper, lower, i1, i2, i3
 lower = 0
 upper = L
 i1 = ishft(1,upper)-1
 i2 = not(ishft(1,lower)-1)
-s=ieor(s,iand(i1,i2))
-end subroutine
+i3 = iand(i1,i2)
+s=ieor(s,i3)
+end subroutine 
+
+
+

@@ -3,6 +3,7 @@ implicit none
 integer(kind=4), intent(in) :: s,L
 integer(kind=1), intent(out) :: r
 integer(kind=4) :: t
+character(32), external :: bits
 t=s 
 call flip_all(t,L)
 if(t .gt. s) then
@@ -23,6 +24,7 @@ integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
 integer(kind=1), intent(out), dimension(Ns_m) :: N
 integer(kind=4) :: i
 integer(kind=1) :: r
+
 
 
 

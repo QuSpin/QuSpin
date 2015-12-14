@@ -1,5 +1,6 @@
 # python 2.7 modules
 from numpy import int32 as _index_type
+from numpy import array as _array
 # local modules
 from base import base, BasisError
 
@@ -9,6 +10,11 @@ from constructors import RefState_P
 from constructors import RefState_PZ
 from constructors import RefState_P_Z
 from constructors import SpinOp
+
+from constructors import make_z_basis
+from constructors import make_p_basis
+from constructors import make_pz_basis
+from constructors import make_p_z_basis
 
 
 
@@ -44,7 +50,7 @@ class obc(base):
 		#	Note: the PZ block assumes the Hamiltonian is invariant under the total transformation PZ, 
 		#				but not each transformation separately.
 
-		Basis.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
+		base.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
 		self.kblock=None
 		self.a=1
 
@@ -105,14 +111,13 @@ class obc(base):
 		else: 
 			raise BasisError("if no symmetries are used use Basis class")
 
-
 		self.basis=self.basis[self.basis != -1]
 		self.N=self.N[self.N != -1]
 		self.Ns=len(self.basis)	
 
 
 	def Op(self,J,dtype,opstr,indx):
-		row=array(xrange(self.Ns),dtype=_index_type)
+		row=_array(xrange(self.Ns),dtype=_index_type)
 
 		ME,col=SpinOp(self.basis,opstr,indx,dtype)
 		RefState[self.conserved](self.basis,col,self.L,self.N,ME,self.pblock,self.zblock,self.pzblock)
