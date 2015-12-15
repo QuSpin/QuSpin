@@ -8,12 +8,15 @@ seed()
 
 def check_opstr():
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
-		for L in xrange(2,8):
-			J1=[[random(),i,(i+1)%L] for i in xrange(L)]
-			J2=[[J1[i][0]/2,i,(i+1)%L] for i in xrange(L)]
+		for L in xrange(2,11):
+			print "checking opstr L={0:3d}, {1}".format(L,np.dtype(dtype))
+			h=[[2.0*random()-1.0,i] for i in xrange(L)]
+			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+			J3=[[J2[i][0]*0.5,i,(i+1)%L] for i in xrange(L)]
 
-			static1=[['zz',J1],['yy',J1],['xx',J1]]
-			static2=[['zz',J1],['+-',J2],['-+',J2]]
+			static1=[['zz',J1],['yy',J2],['xx',J2],['x',h]]
+			static2=[['zz',J1],['+-',J3],['-+',J3],['x',h]]
 
 			eps=np.finfo(dtype).eps
 
@@ -24,17 +27,8 @@ def check_opstr():
 			E2=H2.eigvalsh()
 
 			if np.sum(E1-E2)/Ns > eps:
-				return False
-			
-			for Nup in xrange(L+1):
-				H1=hamiltonian(static1,[],L,Nup=Nup,dtype=dtype)
-				H2=hamiltonian(static2,[],L,Nup=Nup,dtype=dtype)
-				Ns=H1.Ns
-				E1=H1.eigvalsh()
-				E2=H2.eigvalsh()
-				if np.sum(np.abs(E1-E2))/Ns > 10*eps:
-					raise Exception( "test failed opstr at L={0} with dtype {1}".format(L,str(np.dtype(dtype))) )
-	return True
+				raise Exception( "test failed opstr at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
+
 
 
 
@@ -42,10 +36,13 @@ def check_opstr():
 
 def check_m():
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
-		for L in xrange(2,8):
-			J=[[random(),i,(i+1)%L] for i in xrange(L)]
+		for L in xrange(2,11):
+			print "checking magnetization conservation L={0:3d}, {1}".format(L,np.dtype(dtype))
+			h=[[2.0*random()-1.0,i] for i in xrange(L)]
+			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
 
-			static=[['zz',J],['yy',J],['xx',J]]
+			static=[['zz',J1],['yy',J2],['xx',J2],['z',h]]
 
 			H=hamiltonian(static,[],L,dtype=dtype)
 			Ns=H.Ns
@@ -61,19 +58,24 @@ def check_m():
 			Em.sort()
 			
 			eps=np.finfo(dtype).eps
-			if np.sum(np.abs(Em-E))/Ns > 10*eps:
-				raise Exception( "test failed m symmetry at L={0} with dtype {1}".format(L,str(np.dtype(dtype))) )
+			if np.sum(np.abs(Em-E))/Ns > 100*eps:
+				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1:2d}".format(L,np.dtype(dtype)) )
 
 
-	return True
+def check_z(L,dtype,Nup=None):
+
+	if type(Nup) is int:
+		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		static=[['zz',J1],['yy',J2],['xx',J2]]
+	else:
+		h=[[2.0*random()-1.0,i] for i in xrange(L)]
+		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		static=[['zz',J1],['x',h]]
 
 
-def check_z(L,dtype):
-	Nup=L/2
-
-	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
-
-	static=[['zz',J],['yy',J],['xx',J]]
+	
 
 	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
@@ -89,16 +91,24 @@ def check_z(L,dtype):
 	Ez.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Ez-E))/Ns > 10*eps:
-		raise Exception( "test failed z symmetry at L={0} with dtype {1}".format(L,str(np.dtype(dtype))) )
+	if np.sum(np.abs(Ez-E))/Ns > 100*eps:
+		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
 
 
-def check_p(L,dtype):
-	Nup=L/2
 
+def check_p(L,dtype,Nup=None):
+	hr=[2.0*random()-1.0 for i in xrange(L/2)]
+	hi=[hr[i] for i in xrange(L/2)]
+	hi.reverse()
+	hi.extend(hr)
+	
+	h=[[hi[i],i] for i in xrange(L)]
 	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
 
-	static=[['zz',J],['yy',J],['xx',J]]
+	if type(Nup) is int:
+		static=[['zz',J],['yy',J],['xx',J],['z',h]]
+	else:
+		static=[['zz',J],['x',h]]
 
 	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
@@ -114,18 +124,22 @@ def check_p(L,dtype):
 	Ep.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Ep-E)/Ns) > 10*eps:
-		raise Exception( "test failed p symmetry at L={0} with dtype {1}".format(L,str(np.dtype(dtype))) )
+	if np.sum(np.abs(Ep-E)/Ns) > 100*eps:
+		raise Exception( "test failed p symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
 
 
-def check_pz(L,dtype):
-	Nup=L/2
+def check_pz(L,dtype,Nup=None):
+	hr=[(i+0.1)**2/float(L**2) for i in xrange(L/2)]
+	hi=[-(i+0.1)**2/float(L**2) for i in xrange(L/2)]
+	hi.reverse()
+	hi.extend(hr)
 
+	h=[[hi[i],i] for i in xrange(L)]
 	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
 
-	static=[['zz',J],['yy',J],['xx',J]]
+	static=[['zz',J],['yy',J],['xx',J],['z',h]]
 
 	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
@@ -141,18 +155,22 @@ def check_pz(L,dtype):
 	Epz.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Epz-E)/Ns) > 10*eps:
-		raise Exception( "test failed pz symmetry at L={0} with dtype {1}".format(L,str(np.dtype(dtype))) )
+	if np.sum(np.abs(Epz-E)/Ns) > 100*eps:
+		raise Exception( "test failed pz symmetry at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
 
 
 
 
-def check_p_z(L,dtype):
+def check_p_z(L,dtype,Nup=None):
 	Nup=L/2
 
+	h=[[1.0,i] for i in xrange(L)]
 	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
 
-	static=[['zz',J],['yy',J],['xx',J]]
+	if type(Nup) is int:
+		static=[['zz',J],['yy',J],['xx',J],['z',h]]
+	else:
+		static=[['zz',J],['x',h]]
 
 	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
@@ -173,27 +191,50 @@ def check_p_z(L,dtype):
 	Epz.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Epz-E)/Ns) > 10*eps:
-		raise Exception( "test failed p z symmetry at L={0} with dtype {1}".format(L,str(np.dtype(dtype))) )
+	if np.sum(np.abs(Epz-E)/Ns) > 100*eps:
+		raise Exception( "test failed p z symmetry at L={0:3d} with dtype {1} and Nup {2:2d}".format(L,np.dtype(dtype),Nup) )
+
+
+
+
+
+
 
 
 
 
 def check_obc():
+	print "checking spin inversion:"
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,11,2):
+			print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
+			check_z(L,dtype,Nup=L/2)
 			check_z(L,dtype)
-			check_p(L,dtype)	
+	print "checking parity:"
+	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+		for L in xrange(2,11,2):
+			print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
+			check_p(L,dtype,Nup=L/2)
+			check_p(L,dtype)
+	print "checking (parity)*(spin inversion):"
+	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+		for L in xrange(2,11,2):
+			print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
+			check_pz(L,dtype,Nup=L/2)
 			check_pz(L,dtype)
-			check_p_z(L,dtype)
+	print "checking parity, spin inversion:"
+	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+		for L in xrange(2,11,2):
+			print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
+			check_p_z(L,dtype,Nup=L/2)
+			check_p_z(L,dtype) 
 
 
 
-
-
-check_obc()
 check_m()
 check_opstr()
+check_obc()
+
 
 
 
