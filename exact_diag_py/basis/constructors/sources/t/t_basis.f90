@@ -17,7 +17,7 @@ r=-1
 return
 end if
 
-r=i
+r=int(i,1)
 return
 
 end if
