@@ -1,10 +1,6 @@
 #local modules:
 from basis import basis1d as _basis1d
 
-# used to diagonalize hermitian and symmetric matricies
-from py_lapack import eigh as _eigh
-from py_lapack import eigvalsh as _eigvalsh
-
 #python 2.7 modules
 from scipy.linalg import norm as _norm
 
@@ -13,6 +9,8 @@ from scipy.sparse import csr_matrix as _csr_matrix
 
 # needed for the sparse linear algebra packages
 from scipy.sparse.linalg  import eigsh as _eigsh
+from scipy.linalg import eigh as _eigh
+from scipy.linalg import eigvalsh as _eigvalsh
 
 # ode solver used in evolve wave function.
 from scipy.integrate import complex_ode as _complex_ode
@@ -65,12 +63,12 @@ def _make_static(basis,static_list,dtype):
 
 
 def _test_function(func,func_args):
-	t=1.0
-	func_val=func(t,*func_args)
-	if not _np.isscalar(func_val):
-		raise TypeError("function must return scaler values")
-	if type(func_val) is complex:
-		warnings.warn("driving function returing complex value, dynamic hamiltonian will no longer be hermitian object.",UserWarning) 
+	for t in _np.linspace(-10,10):
+		func_val=func(t,*func_args)
+		if not _np.isscalar(func_val):
+			raise TypeError("function must return scaler values")
+		if type(func_val) is complex:
+			warnings.warn("driving function returing complex value, dynamic hamiltonian will no longer be hermitian object.",UserWarning) 
 
 
 
@@ -78,11 +76,11 @@ def _test_function(func,func_args):
 def _make_dynamic(basis,dynamic_list,dtype):
 	"""
 	args:
-	dynamic=[[opstr_1,indx_1,func_1,func_1_args],...,[opstr_n,indx_n,func_1,func_2_args]], list of opstr,indx and functions to drive with
+	dynamic=[[opstr_1,indx_1,func_1,func_1_args],...,[opstr_n,indx_n,func_n,func_n_args]], list of opstr,indx and functions to drive with
 	dtype = the low level C-type which the matrix should store its values with.
 
 	returns:
-	tuple((func_1,H_1),...,(func_n,H_n))
+	tuple((func_1,func_1_args,H_1),...,(func_n_func_n_args,H_n))
 
 	H_i: a csr_matrix representation of opstr_i,indx_i
 	func_i: callable function of time which is the drive term in front of H_i
@@ -152,7 +150,7 @@ class hamiltonian:
 	def sum_duplicates(self):
 		"""
 		description:
-			This function consolidates the list of dynamic, combining matrices which have the same driving function.
+			This function consolidates the list of dynamic, combining matrices which have the same driving function and function arguements.
 		"""
 		self.dynamic=list(self.dynamic)
 		l=len(self.dynamic)
@@ -194,7 +192,7 @@ class hamiltonian:
 		return H
 
 
-	def todense(self,time=0):
+	def todense(self,time=0,order=None, out=None):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -208,7 +206,7 @@ class hamiltonian:
 		if not _np.isscalar(time):
 			raise NotImplementedError
 
-		return self.tocsr(time=time).todense()
+		return self.tocsr(time=time).todense(order=order,out=out)
 
 
 
@@ -307,7 +305,6 @@ class hamiltonian:
 
 
 
-
 	def eigh(self,time=0):
 		"""
 		args:
@@ -320,7 +317,11 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _np.asarray([]),_np.asarray([[]])
 
-		return _eigh(self.todense(time=time))
+		H_dense=_np.zeros((self.Ns,self.Ns),dtype=self.dtype)
+		self.todense(time=time,out=H_dense)
+
+		E,H_dense = _eigh(H_dense,overwrite_a=True)
+		return E,H_dense
 
 
 
@@ -338,7 +339,14 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _np.asarray([])
 
-		return _eigvalsh(self.todense(time=time),JOBZ='N')
+		if self.Ns <= 0:
+			return _np.asarray([]),_np.asarray([[]])
+
+		H_dense=_np.zeros((self.Ns,self.Ns),dtype=self.dtype)
+		self.todense(time=time,out=H_dense)
+
+		E = _eigvalsh(H_dense,overwrite_a=True)
+		return E
 
 	def __add__(self,other):
 		if isinstance(other,hamiltonian):
