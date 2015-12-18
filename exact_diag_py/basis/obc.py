@@ -40,7 +40,7 @@ RefState={"M":RefState_M,
 
 
 class obc(base):
-	def __init__(self,L,Nup=None,pblock=None,zblock=None,pzblock=None):
+	def __init__(self,L,**blocks):
 		# This function in the constructor of the class:
 		#		L: length of the chain
 		#		Nup: number of up spins if restricting magnetization sector. 
@@ -50,9 +50,13 @@ class obc(base):
 
 		#	Note: the PZ block assumes the Hamiltonian is invariant under the total transformation PZ, 
 		#				but not each transformation separately.
+		Nup=blocks.get("Nup")
+		pblock=blocks.get("pblock")
+		zblock=blocks.get("zblock")
+		pzblock=blocks.get("pzblock")
+		self.blocks=blocks
 
 		base.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
-		self.Ns=len(self.basis)
 
 		if (type(pblock) is int) and (abs(pblock) != 1):
 			raise BasisError("pblock must be either +/- 1")
@@ -73,18 +77,12 @@ class obc(base):
 			if (type(Nup) is int) and (Nup != L/2):
 				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
 
-			self.pblock = pblock
-			self.zblock = zblock
-			self.pzblock = 0
 			self.N=make_p_z_basis(L,self.basis,pblock,zblock)
 
 		elif type(pblock) is int:
 			if self.conserved: self.conserved += " & P"
 			else: self.conserved = "P"
 
-			self.pblock = pblock
-			self.zblock = 0
-			self.pzblock = 0
 			self.N=make_p_basis(L,self.basis,pblock)
 
 		elif type(zblock) is int:
@@ -94,10 +92,6 @@ class obc(base):
 			if (type(Nup) is int) and (Nup != L/2):
 				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
 
-
-			self.pblock = 0
-			self.zblock = zblock
-			self.pzblock = 0
 			self.N=make_z_basis(L,self.basis)
 
 		elif type(pzblock) is int:
@@ -107,13 +101,10 @@ class obc(base):
 			if (type(Nup) is int) and (Nup != L/2):
 				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
 
-
-			self.pblock = 0
-			self.zblock = 0
-			self.pzblock = pzblock
 			self.N=make_pz_basis(L,self.basis,pzblock)
 		else: 
-			self.N=_np.ones((Ns,),dtype=_np.int8)
+			# any other ideas for this?
+			raise BasisError("if no symmetries used use base class")
 
 		self.basis=self.basis[self.basis != -1]
 		self.N=self.N[self.N != -1]
@@ -124,7 +115,7 @@ class obc(base):
 		row=_array(xrange(self.Ns),dtype=_index_type)
 
 		ME,col=SpinOp(self.basis,opstr,indx,dtype)
-		RefState[self.conserved](self.basis,col,self.L,self.N,ME,pblock=self.pblock,zblock=self.zblock,pzblock=self.pzblock)
+		RefState[self.conserved](self.basis,col,self.L,self.N,ME,**self.blocks)
 
 		# remove any states that give matrix elements which are no in the basis.
 		mask=col>=0

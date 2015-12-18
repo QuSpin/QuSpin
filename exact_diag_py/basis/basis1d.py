@@ -9,33 +9,21 @@ class basis1d:
 		# if arguement is not passed, then the get function returns None which should be handled by the lower basis classes.
 		Nup=basis_params.get("Nup")
 		kblock=basis_params.get("kblock")
-		zblock=basis_params.get("zblock")
 		pblock=basis_params.get("pblock")
+		zblock=basis_params.get("zblock")
 		pzblock=basis_params.get("pzblock")
-		a=basis_params.get("a")
-
-		if type(a) is None: a=1
 
 		# testing blocks for basis
 		if (type(kblock) is int):
 			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
 				raise NotImplementedError
-			self.B=pbc(Length,Nup=Nup,kblock=kblock)
+			self.B=pbc(Length,**basis_params)
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-			self.B=obc(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
+			self.B=obc(Length,**basis_params)
 		else:
 			self.B=base(Length,Nup=Nup)
 		
-		self.Nup=Nup
-		self.kblock=kblock
-		self.a=a
-		self.zblock=zblock
-		self.pblock=pblock
-		self.pzblock=pzblock
 		self.Ns=self.B.Ns
 
 	def Op(self,J,dtype,opstr,indx):
-		return self.B.Op(J,dtype,opstr,indx)
-
-	def __call__(self,J,dtype,opstr,indx):
 		return self.B.Op(J,dtype,opstr,indx)

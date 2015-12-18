@@ -30,26 +30,32 @@ RefState={"M":RefState_M,
 
 
 class pbc(base):
-	def __init__(self,L,Nup=None,a=1,kblock=None):
+	def __init__(self,L,**blocks):
 		# This function in the constructor of the class:
 		#		L: length of the chain
 		#		Nup: number of up spins if restricting magnetization sector. 
 		#		kblock: number which represents the momentum block 
+		Nup=blocks.get("Nup")
+		kblock=blocks.get("kblock")
+		a=blocks.get("a")
+		if a is None:
+			a=1
+			blocks["a"]=1
+
 
 		base.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
-		self.blocks={}
+		self.blocks=blocks
 		# if symmetry is needed, the reference states must be found.
 		# This is done through via the fortran constructors.
 		if type(kblock) is int:
-			if kblock < 0 or kblock >= L: raise BasisError("0<= kblock < "+str(L))
-			self.a=a
-			self.blocks["kblock"]=kblock
+			if kblock < 0 or kblock >= L: raise BasisError("0 <= kblock < "+str(L))
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T"
 			else: self.conserved = "T"
 			self.N=make_t_basis(L,self.basis,kblock,a)
 		else: 
-			self.N=_np.ones((Ns,),dtype=_np.int8)
+			# any other ideas for this?
+			raise BasisError("if no symmetries used use base class")
 
 		self.basis=self.basis[self.basis != -1]
 		self.N=self.N[self.N != -1]
@@ -60,9 +66,9 @@ class pbc(base):
 		row=_array(xrange(self.Ns),dtype=_index_type)
 
 		ME,col=SpinOp(self.basis,opstr,indx,dtype)
-		RefState[self.conserved](self.basis,col,self.L,self.N,ME,a=self.a,**self.blocks)
+		RefState[self.conserved](self.basis,col,self.L,self.N,ME,**self.blocks)
 
-		# remove any states that give matrix elements which are no in the basis.
+		# remove any states that give matrix elements which are not in the basis.
 		mask=col>=0
 		ME=ME[mask]
 		col=col[mask]

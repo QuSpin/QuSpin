@@ -1,9 +1,9 @@
 #local modules:
-from .basis import basis1d as _basis1d
+from basis import basis1d as _basis1d
 
 # used to diagonalize hermitian and symmetric matricies
-from .py_lapack import eigh as _eigh
-from .py_lapack import eigvalsh as _eigvalsh
+from py_lapack import eigh as _eigh
+from py_lapack import eigvalsh as _eigvalsh
 
 #python 2.7 modules
 from scipy.linalg import norm as _norm
@@ -20,16 +20,17 @@ from scipy.integrate import ode as _ode
 
 import numpy as _np
 
-
 from copy import deepcopy as _deepcopy
 
+import warnings
 
 
 #global names:
+
 supported_dtypes=(_np.float32, _np.float64, _np.complex64, _np.complex128)
 
 
-def _make_static(B,static_list,dtype):
+def _make_static(basis,static_list,dtype):
 	"""
 	args:
 		static=[[opstr_1,indx_1],...,[opstr_n,indx_n]], list of opstr,indx to add up for static piece of Hamiltonian.
@@ -45,16 +46,14 @@ def _make_static(B,static_list,dtype):
 		sorted or even unique) and creates a coo_matrix from the scipy.sparse library. It then converts this coo_matrix
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
-
-	H=_csr_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype) 
-	for alist in static_list:
-		opstr=alist[0]
-		bonds=alist[1]
+	Ns=basis.Ns
+	H=_csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype) 
+	for opstr,bonds in static_list:
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			ME,row,col = B.Op(J,dtype,opstr,indx)
-			Ht=_csr_matrix((ME,(row,col)),shape=(B.Ns,B.Ns),dtype=dtype) 
+			ME,row,col = basis.Op(J,dtype,opstr,indx)
+			Ht=_csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 			H+=Ht
 			del Ht
 			H.sum_duplicates() # sum duplicate matrix elements
@@ -65,14 +64,21 @@ def _make_static(B,static_list,dtype):
 
 
 
+def _test_function(func,func_args):
+	t=1.0
+	func_val=func(t,*func_args)
+	if not _np.isscalar(func_val):
+		raise TypeError("function must return scaler values")
+	if type(func_val) is complex:
+		warnings.warn("driving function returing complex value, dynamic hamiltonian will no longer be hermitian object.",UserWarning) 
 
 
 
 
-def _make_dynamic(B,dynamic_list,dtype):
+def _make_dynamic(basis,dynamic_list,dtype):
 	"""
 	args:
-	dynamic=[[opstr_1,indx_1,func_1],...,[opstr_n,indx_n,func_1]], list of opstr,indx and functions to drive with
+	dynamic=[[opstr_1,indx_1,func_1,func_1_args],...,[opstr_n,indx_n,func_1,func_2_args]], list of opstr,indx and functions to drive with
 	dtype = the low level C-type which the matrix should store its values with.
 
 	returns:
@@ -87,23 +93,24 @@ def _make_dynamic(B,dynamic_list,dtype):
 		representation of all the different driven parts. This way one can construct the time dependent 
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
+	Ns=basis.Ns
 	dynamic=[]
 	if dynamic_list:
-		H=_csr_matrix(([],([],[])),shape=(B.Ns,B.Ns),dtype=dtype)
-		for alist in dynamic_list:
-			opstr=alist[0]
-			bonds=alist[1]
+		H=_csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
+		for opstr,bonds,f,f_args in dynamic_list:
+			if _np.isscalar(f_args): raise TypeError("function arguements must be iterable")
+			_test_function(f,f_args)
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				ME,row,col = B.Op(J,dtype,opstr,indx)
-				Ht=_csr_matrix((ME,(row,col)),shape=(B.Ns,B.Ns),dtype=dtype) 
+				ME,row,col = basis.Op(J,dtype,opstr,indx)
+				Ht=_csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 				H+=Ht
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
 		
-			dynamic.append((alist[2],H))
+			dynamic.append((f,f_args,H))
 
 	return tuple(dynamic)
 
@@ -154,12 +161,12 @@ class hamiltonian:
 			while j < l:
 				if i != j:
 					ele1=self.dynamic[i]; ele2=self.dynamic[j]
-					if ele1[0] == ele2[0]:
+					if (ele1[0] == ele2[0]) and (ele1[1] == ele2[1]):
 						self.dynamic.pop(j)
 						i=self.dynamic.index(ele1)
 						self.dynamic.pop(i)
 						ele1=list(ele1)
-						ele1[1]+=ele2[1]
+						ele1[2]+=ele2[2]
 						self.dynamic.insert(i,tuple(ele1))
 				l=len(self.dynamic); j+=1
 			i+=1;j=0
@@ -181,8 +188,8 @@ class hamiltonian:
 			raise NotImplementedError
 
 		H=self.static	
-		for ele in self.dynamic:
-			H += ele[1]*ele[0](time)
+		for f,f_args,Hd in self.dynamic:
+			H += Hd*f(time,*f_args)
 
 		return H
 
@@ -205,6 +212,25 @@ class hamiltonian:
 
 
 
+	def __dot_nocheck(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. it is private and the implimentation below is recomended 
+			for external use. 
+		"""
+
+		V=_np.asarray(V)
+		V_dot = self.static.dot(V)	
+		for f,f_args,Hd in self.dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return V_dot
+
+
 
 
 	def dot(self,V,time=0):
@@ -223,38 +249,10 @@ class hamiltonian:
 		if not _np.isscalar(time):
 			raise NotImplementedError
 
-		V=_np.asarray(V)
-		V_dot = self.static.dot(V)	
-		for ele in self.dynamic:
-			J=ele[0](time)
-			V_dot += J*(ele[1].dot(V))
-
-		return V_dot
+		return self.__dot_nocheck(time,V)
 
 
 
-	def __dot_ode(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. it is private and the above implimentation is recomended 
-			for external use. 
-		"""
-		if self.Ns <= 0:
-			return _np.asarray([])
-		if not _np.isscalar(time):
-			raise NotImplementedError
-
-		V=_np.asarray(V)
-		V_dot = self.static.dot(V)	
-		for ele in self.dynamic:
-			J=ele[0](time)
-			V_dot += J*(ele[1].dot(V))
-
-		return V_dot
 
 
 
@@ -276,10 +274,13 @@ class hamiltonian:
 		"""
 		if self.Ns <= 0:
 			return None
+		if not _np.isscalar(time):
+			raise NotImplementedError
+
 
 		Vl=_np.asarray(Vl)
 		Vr=_np.asarray(Vr)
-		HVr=self.dot(Vr,time=time)
+		HVr=self.__dot_nocheck(time,Vr)
 		me=_np.vdot(Vl,HVr)
 		return _np.asscalar(me)
 
@@ -339,103 +340,6 @@ class hamiltonian:
 
 		return _eigvalsh(self.todense(time=time),JOBZ='N')
 
-
-
-
-
-	def evolve(self,v0,t0,time,real_time=True,verbose=False,**integrator_params):
-		"""
-		args:
-			v0, intial wavefunction to evolve.
-			t0, intial time 
-			time, iterable or scalar, or time to evolve v0 to
-			real_time, evolve real or imaginary time
-			verbose, print times out as you evolve
-			**integrator_params, the parameters used for the dop853 explicit rung-kutta solver.
-			see documentation http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.integrate.ode.html
-
-		description:
-			This function uses complex_ode to evolve an input wavefunction.
-		"""
-		if self.Ns <= 0:
-			return _np.asarray([])
-
-		v0=_np.asarray(v0)
-
-		if real_time:
-			solver=_complex_ode(-1j*self.dot_ode)
-		else:
-			if dtype in [_np.float32,_np.float64]:
-				solver=_ode(-self.dot_ode)
-			else:
-				solver=_complex_ode(-self.dot_ode)
-
-		solver.set_integrator("dop853",**integrator_params)
-		solver.set_initial_value(v0,t=t0)
-		
-		if _np.isscalar(time):
-			if time==t0: return v0
-			solver.integrate(time)
-			if solver.successful():
-				return solver.y
-			else:
-				raise RuntimeError('failed to integrate')		
-		else:
-			sol=[]
-			for t in time:
-				if verbose: print t
-				if t==t0: 
-					sol.append(v0)
-					continue
-				solver.integrate(t)
-				if solver.successful():
-					sol.append(solver.y)
-				else:
-					raise RuntimeError('failed to integrate')
-			return sol
-
-
-
-
-	# possiply impliment this in fortran using naive csr matrix vector dot product, might speed things up,
-	# but maybe not since the exponential taylor converges pretty quickly. 
-	def exp(self,V,z,time=0,n=1,atol=10**(-8)):
-		"""
-		args:
-			V, vector to apply the matrix exponential on.
-			a, the parameter in the exponential exp(aH)V
-			time, time to evaluate drive at.
-			n, the number of steps to break the expoential into exp(aH/n)^n V
-			error, if the norm the vector of the taylor series is less than this number
-			then the taylor series is truncated.
-
-		description:
-			this function computes exp(zH)V as a taylor series in zH. not useful for long time evolution.
-
-		"""
-		if self.Ns <= 0:
-			return _np.asarray([])
-		if not _np.isscalar(time):
-			raise NotImplementedError
-
-		if n <= 0: raise ValueError('n must be > 0')
-
-		H=self.tocsr(time=time)
-
-		V=_np.asarray(V)
-		for j in xrange(n):
-			V1=_np.array(V)
-			e=1.0; i=1		
-			while e > atol:
-				V1=(z/(n*i))*self.dot(V1,time=time)
-				V+=V1
-				if i%2 == 0:
-					e=_norm(V1)
-				i+=1
-		return V
-
-
-
 	def __add__(self,other):
 		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
@@ -493,8 +397,6 @@ class hamiltonian:
 			self.static-=other.static
 			self.static.sum_duplicates()
 			self.static.eliminate_zeros()
-
-
 			
 			a=tuple([(ele[0],-ele[1]) for ele in other.dynamic])
 			self.dynamic+=a
@@ -509,13 +411,30 @@ class hamiltonian:
 		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns:
 				return False
-			if not(self.static==other.static):
+
+			compare = self.static != other.static			
+			if compare.nnz > 0:
 				return False
-			if not(self.dynamic==other.dynamic):
-				return False
+
+			for e1,e2 in zip(self.dynamic,other.dynamic):
+				f1,f1_args,Hd1=e1
+				f2,f2_args,Hd2=e2
+
+				if f1 != f2:
+					return False
+				if f1_args != f2_args:
+					return False
+
+				compare = Hd1 != Hd2
+				if compare.nnz > 0:
+					return False		
+
 			return True
 		else:
 			return False
+
+	def __ne__(self,other):
+		return not self.__eq__(other)
 	
 
 	

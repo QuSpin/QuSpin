@@ -30,7 +30,7 @@ end do
 j=FindZstate(basis,Ns,s)
 
 if(j.ge.0) then
-ME(i1)=ME(i1)*sqrt(float(N(i1))/float(N(j)))*exp(-i*k*ll)
+ME(i1)=real(ME(i1)*sqrt(float(N(i1))/float(N(j)))*exp(-i*k*ll))
 col(i1)=j
 else
 ME(i1)=0.0
@@ -53,7 +53,7 @@ end subroutine
 subroutine d_RefState_T(N,basis,col,ME,Ns,L,kblock,a)
 implicit none
 real(kind=8), parameter :: pi=3.14159265359d0
-complex(kind=8), parameter :: i=cmplx(0.0,1.0d0)
+complex(kind=8), parameter :: i=dcmplx(0.0,1.0d0)
 integer(kind=4), intent(in) :: Ns, L, kblock, a
 integer(kind=4), intent(inout), dimension(Ns) :: col
 integer(kind=4), intent(in), dimension(Ns) :: basis
@@ -82,7 +82,7 @@ end do
 j=FindZstate(basis,Ns,s)
 
 if(j.ge.0) then
-ME(i1)=ME(i1)*dsqrt(dble(N(i1))/dble(N(j)))*zexp(-i*k*ll)
+ME(i1)=dble(ME(i1)*dsqrt(dble(N(i1))/dble(N(j)))*zexp(-i*k*ll))
 col(i1)=j
 else
 ME(i1)=0.0d0
@@ -157,7 +157,7 @@ end subroutine
 subroutine z_RefState_T(N,basis,col,ME,Ns,L,kblock,a)
 implicit none
 real(kind=8), parameter :: pi=3.14159265359d0
-complex(kind=8), parameter :: i=cmplx(0.0,1.0d0)
+complex(kind=8), parameter :: i=dcmplx(0.0,1.0d0)
 integer(kind=4), intent(in) :: Ns, L, kblock, a
 integer(kind=4), intent(inout), dimension(Ns) :: col
 integer(kind=4), intent(in), dimension(Ns) :: basis

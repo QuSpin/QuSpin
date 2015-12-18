@@ -14,7 +14,7 @@ def get_sources():
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     config = Configuration('py_lapack',parent_package, top_path)
-    config.add_extension('_py_lapack_wrap', sources=get_sources(), extra_link_args=['-llapack'])
+    config.add_extension('_py_lapack_wrap', sources=get_sources(),f2py_options=["--quiet"], extra_link_args=['-llapack'])
     return config
 
 if __name__ == '__main__':
