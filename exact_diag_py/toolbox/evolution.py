@@ -1,4 +1,4 @@
-from spins import hamiltonian as _hamiltonian
+from ..spins import hamiltonian as _hamiltonian
 from scipy.sparse import issparse as _issparse
 
 from scipy.integrate import complex_ode as _complex_ode

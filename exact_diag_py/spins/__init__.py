@@ -1,0 +1,1 @@
+from spins import hamiltonian

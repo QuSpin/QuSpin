@@ -1,6 +1,6 @@
-from base import base
-from obc import obc
-from pbc import pbc
+from base import base as _base
+from obc import obc as _obc
+from pbc import pbc as _pbc
 
 
 class basis1d:
@@ -17,11 +17,11 @@ class basis1d:
 		if (type(kblock) is int):
 			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
 				raise NotImplementedError
-			self.B=pbc(Length,**basis_params)
+			self.B=_pbc(Length,**basis_params)
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
-			self.B=obc(Length,**basis_params)
+			self.B=_obc(Length,**basis_params)
 		else:
-			self.B=base(Length,Nup=Nup)
+			self.B=_base(Length,Nup=Nup)
 		
 		self.Ns=self.B.Ns
 
