@@ -22,11 +22,8 @@ def check_opstr(Lmax):
 
 			H1=hamiltonian(static1,[],L,dtype=dtype)
 			H2=hamiltonian(static2,[],L,dtype=dtype)
-			Ns=H1.Ns
-			E1=H1.eigvalsh()
-			E2=H2.eigvalsh()
 
-			if np.sum(E1-E2)/Ns > eps:
+			if H1 != H2:
 				raise Exception( "test failed opstr at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -37,7 +34,6 @@ def check_opstr(Lmax):
 def check_m(Lmax):
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1):
-			#print "checking magnetization conservation L={0:3d}, {1}".format(L,np.dtype(dtype))
 			h=[[2.0*random()-1.0,i] for i in xrange(L)]
 			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
 			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
@@ -201,28 +197,23 @@ def check_p_z(L,dtype,Nup=None):
 
 
 def check_obc(Lmax):
-	#print "checking spin inversion:"
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1,2):
-			#print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
 			check_z(L,dtype,Nup=L/2)
 			check_z(L,dtype)
-	#print "checking parity:"
+
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1,2):
-			#print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
 			check_p(L,dtype,Nup=L/2)
 			check_p(L,dtype)
-	#print "checking (parity)*(spin inversion):"
+
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1,2):
-			#print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
 			check_pz(L,dtype,Nup=L/2)
 			check_pz(L,dtype)
-	#print "checking parity, spin inversion:"
+
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1,2):
-			#print "\t L={0:3d}, {1}".format(L,np.dtype(dtype))
 			check_p_z(L,dtype,Nup=L/2)
 			check_p_z(L,dtype) 
 
