@@ -1,5 +1,6 @@
 from base import base
 from obc import obc
+from pbc import pbc
 
 
 class basis1d:
@@ -13,11 +14,13 @@ class basis1d:
 		pzblock=basis_params.get("pzblock")
 		a=basis_params.get("a")
 
-		if a == None: a=1
+		if type(a) is None: a=1
 
 		# testing blocks for basis
 		if (type(kblock) is int):
-			raise NotImplementedError
+			if (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
+				raise NotImplementedError
+			self.B=pbc(Length,Nup=Nup,kblock=kblock)
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
 			self.B=obc(Length,Nup=Nup,zblock=zblock,pblock=pblock,pzblock=pzblock)
 		else:

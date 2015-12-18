@@ -40,7 +40,7 @@ class base:
 		if L>30: raise BasisError("L must be less than 31") 
 		self.L=L
 		if type(Nup) is int:
-			if Nup < 0 or Nup > L: raise BasisError("0 <= Nup <= "+str(L))
+			if Nup < 0 or Nup > L: raise BasisError("0 <= Nup <= %d" % L)
 			self.Nup=Nup
 			self.conserved="M"
 			self.Ns=ncr(L,Nup) 

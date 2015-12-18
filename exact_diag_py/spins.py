@@ -437,7 +437,7 @@ class hamiltonian:
 
 
 	def __add__(self,other):
-		if isinstance(other,Hamiltonian1D):
+		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=_deepcopy(self)
 
@@ -453,7 +453,7 @@ class hamiltonian:
 
 
 	def __iadd__(self,other):
-		if isinstance(other,Hamiltonian1D):
+		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 
 			self.static+=other.static
@@ -468,7 +468,7 @@ class hamiltonian:
 
 
 	def __sub__(self,other):
-		if isinstance(other,Hamiltonian1D):
+		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=deepcopy(self)
 
@@ -487,7 +487,7 @@ class hamiltonian:
 
 
 	def __isub__(self,other):
-		if isinstance(other,Hamiltonian1D):
+		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 
 			self.static-=other.static
@@ -503,6 +503,20 @@ class hamiltonian:
 		else:
 			raise Exception("Not Implimented")
 
+
+	
+	def __eq__(self,other):
+		if isinstance(other,hamiltonian):
+			if self.Ns != other.Ns:
+				return False
+			if not(self.static==other.static):
+				return False
+			if not(self.dynamic==other.dynamic):
+				return False
+			return True
+		else:
+			return False
+	
 
 	
 

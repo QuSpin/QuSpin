@@ -1,6 +1,7 @@
 # python 2.7 modules
 from numpy import int32 as _index_type
 from numpy import array as _array
+import numpy as _np
 # local modules
 from base import base, BasisError
 
@@ -51,8 +52,14 @@ class obc(base):
 		#				but not each transformation separately.
 
 		base.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
-		self.kblock=None
-		self.a=1
+		self.Ns=len(self.basis)
+
+		if (type(pblock) is int) and (abs(pblock) != 1):
+			raise BasisError("pblock must be either +/- 1")
+		if (type(zblock) is int) and (abs(zblock) != 1):
+			raise BasisError("zblock must be either +/- 1")
+		if (type(pzblock) is int) and (abs(pzblock) != 1):
+			raise BasisError("pzblock must be either +/- 1")
 
 		# if symmetry is needed, the reference states must be found.
 		# This is done through the CheckState function. Depending on
@@ -60,13 +67,11 @@ class obc(base):
 		# symmetries are used, the Checkstate functions be called
 		# sequentially in order to check the state for all symmetries used.
 		if (type(pblock) is int) and (type(zblock) is int):
-			if abs(pblock) != 1:
-				raise BasisError("pblock must be either +/- 1")
-			if abs(zblock) != 1:
-				raise BasisError("zblock must be either +/- 1")
-
 			if self.conserved: self.conserved += " & P & Z"
 			else: self.conserved += "P & Z"
+
+			if (type(Nup) is int) and (Nup != L/2):
+				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
 
 			self.pblock = pblock
 			self.zblock = zblock
@@ -74,9 +79,6 @@ class obc(base):
 			self.N=make_p_z_basis(L,self.basis,pblock,zblock)
 
 		elif type(pblock) is int:
-			if abs(pblock) != 1:
-				raise BasisError("pblock must be either +/- 1")
-
 			if self.conserved: self.conserved += " & P"
 			else: self.conserved = "P"
 
@@ -86,11 +88,12 @@ class obc(base):
 			self.N=make_p_basis(L,self.basis,pblock)
 
 		elif type(zblock) is int:
-			if abs(zblock) != 1:
-				raise BasisError("zblock must be either +/- 1")
-
 			if self.conserved: self.conserved += " & Z"
 			else: self.conserved += "Z"
+
+			if (type(Nup) is int) and (Nup != L/2):
+				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
+
 
 			self.pblock = 0
 			self.zblock = zblock
@@ -98,18 +101,19 @@ class obc(base):
 			self.N=make_z_basis(L,self.basis)
 
 		elif type(pzblock) is int:
-			if abs(pzblock) != 1:
-				raise BasisError("pzblock must be either +/- 1")
-
 			if self.conserved: self.conserved += " & PZ"
 			else: self.conserved += "PZ"
+
+			if (type(Nup) is int) and (Nup != L/2):
+				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
+
 
 			self.pblock = 0
 			self.zblock = 0
 			self.pzblock = pzblock
 			self.N=make_pz_basis(L,self.basis,pzblock)
 		else: 
-			raise BasisError("if no symmetries are used use Basis class")
+			self.N=_np.ones((Ns,),dtype=_np.int8)
 
 		self.basis=self.basis[self.basis != -1]
 		self.N=self.N[self.N != -1]
@@ -120,7 +124,7 @@ class obc(base):
 		row=_array(xrange(self.Ns),dtype=_index_type)
 
 		ME,col=SpinOp(self.basis,opstr,indx,dtype)
-		RefState[self.conserved](self.basis,col,self.L,self.N,ME,self.pblock,self.zblock,self.pzblock)
+		RefState[self.conserved](self.basis,col,self.L,self.N,ME,pblock=self.pblock,zblock=self.zblock,pzblock=self.pzblock)
 
 		# remove any states that give matrix elements which are no in the basis.
 		mask=col>=0
