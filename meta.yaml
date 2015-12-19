@@ -9,18 +9,18 @@ source:
 requirements:
   build:
     - python
-    - numpy
+    - numpy >=1.8
 
   run:
     - python
-    - numpy
-    - scipy
+    - numpy >=1.8
+    - scipy >=0.14
 
 test:
   imports:
-    - numpy
-    - scipy
+    - numpy >=1.8
+    - scipy >=0.14
 
 about:
   home: https://github.com/weinbe58/exact_diag_py
-  license: MIT
+  license: MET
