@@ -24,7 +24,7 @@ def check_opstr(Lmax):
 			H2=hamiltonian(static2,[],L,dtype=dtype)
 
 			if H1 != H2:
-				raise Exception( "test failed opstr at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
+				raise Exception( "test failed opstr at L={0:3d} with dtype {1}".format(L,np.dtype(dtype)) )
 
 
 
