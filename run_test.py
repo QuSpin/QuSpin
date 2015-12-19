@@ -1,6 +1,7 @@
 from exact_diag_py.spins import hamiltonian
 from exact_diag_py.basis import basis1d
 import numpy as np
+from scipy.linalg import norm
 from numpy.random import random,seed
 
 seed()
@@ -21,9 +22,9 @@ def check_opstr(Lmax):
 			eps=np.finfo(dtype).eps
 
 			H1=hamiltonian(static1,[],L,dtype=dtype)
-			H2=hamiltonian(static2,[],L,dtype=dtype)
+			H2=hamiltonian(static2,[],L,dtype=dtype) 
 
-			if H1 != H2:
+			if norm(H1.todense()-H2.todense()) > eps:
 				raise Exception( "test failed opstr at L={0:3d} with dtype {1}".format(L,np.dtype(dtype)) )
 
 

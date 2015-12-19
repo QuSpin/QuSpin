@@ -35,12 +35,12 @@ def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 	v0=_np.asarray(v0)
 
 	if real_time:
-		solver=_complex_ode(-1j*H._hamiltonian__dot_nocheck)
+		solver=_complex_ode(H._hamiltonian__SO)
 	else:
 		if H.dtype in [_np.float32,_np.float64]:
-			solver=_ode(-H._hamiltonian__dot_nocheck)
+			solver=_ode(H._hamiltonian__ISO)
 		else:
-			solver=_complex_ode(-H._hamiltonian__dot_nocheck)
+			solver=_complex_ode(H._hamiltonian__ISO)
 
 	solver.set_integrator("dop853",**integrator_params)
 	solver.set_initial_value(v0,t=t0)
