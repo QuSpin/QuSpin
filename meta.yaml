@@ -18,8 +18,8 @@ requirements:
 
 test:
   imports:
-    - numpy >=1.8
-    - scipy >=0.14
+    - numpy 
+    - scipy 
 
 about:
   home: https://github.com/weinbe58/exact_diag_py
