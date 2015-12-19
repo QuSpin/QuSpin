@@ -3,7 +3,7 @@ package:
   version: "0.0.1a"
 
 source:
-  git_rev: "0.0.1-alpha"
+#  git_rev: "0.0.1-alpha"
   git_url: https://github.com/weinbe58/exact_diag_py.git
 
 requirements:
