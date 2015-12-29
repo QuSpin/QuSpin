@@ -81,11 +81,8 @@ The hamiltonian class has built in methods which are useful for doing ED calcula
 ```python
 eigenvalues,eigenvectors=H.eigh(time=time)
 ```
-* sparse diagonalization:
+* sparse diagonalization, which uses ARPACK (see scipy.sparse.linalg docs):
 ```python
 eigenvalues,eigenvectors=H.eigsh(time=time)
 ```
-and other functionalities coming from the toolbox
-
-
-
+For more information, see the toolbox section for more functionalities. 
