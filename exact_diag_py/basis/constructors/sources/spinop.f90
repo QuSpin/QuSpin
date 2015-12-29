@@ -110,7 +110,7 @@ M_E = M_E * 0.5d0
 
 else if(opstr(j) .eq. "y") then
 r = ieor(r,ishft(1,indx(j)))
-M_E = M_E * cmplx(0.0d0,-1.0d0) * sp_st
+M_E = M_E * dcmplx(0.0d0,-1.0d0) * sp_st
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 

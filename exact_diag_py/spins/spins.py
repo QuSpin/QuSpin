@@ -289,7 +289,7 @@ class hamiltonian:
 		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 
-			self.static = .static + other.static
+			self.static = self.static + other.static
 			self.static.sum_duplicates()
 			self.static.eliminate_zeros()
 
