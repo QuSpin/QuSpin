@@ -11,11 +11,11 @@
 /*.egg-info
 
 # build directories
-build/
-bin/
-dist/
+/build/
+/bin/
+/dist/
 
 
 
 # test script
-test.py
+/test.py
