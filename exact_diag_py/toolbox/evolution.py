@@ -25,16 +25,17 @@ def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 	description:
 		This function uses complex_ode to evolve an input wavefunction.
 	"""
-	if isinstance(H,_hamiltonian):
-		H=H.tocsr(time=time)
-	else:
+	if not isinstance(H,_hamiltonian):
 		raise TypeError("H must be hamiltonian object")
 
 	if H.Ns <= 0:
 		return _np.asarray([])
 
 	v0=_np.asarray(v0)
-
+	
+	# SO = -i*H(t)*y
+	# ISO = -H(t)*y
+	
 	if real_time:
 		solver=_complex_ode(H._hamiltonian__SO)
 	else:
@@ -76,6 +77,11 @@ def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 
 
 def step_drive(H_list,t_list,v0,Nsteps=1,krylov=False,tol=10**(-15),hermitian=True):
+	# tolerance does give good estimate of error for times which are O(1)
+	# tolerance has no real guage on the error large times, the accuracy caps out at 10**(-10) roughly.
+	
+	# The krylov exponential is much faster then the scipy expoentnal 
+	# at large times and large matrices. In fact for small matricies its better to use scipy exponential.
 	if krylov:
 		for i in xrange(Nsteps):
 			for t,H in zip(H_list,t_list):
