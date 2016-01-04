@@ -4,8 +4,8 @@ def get_sources():
 	sources_dir = os.path.join(package_dir,'sources')
 	sources=[]
 	for Dir,subDir,files in os.walk(sources_dir):
-		fortran_files=glob.glob(os.path.join(Dir,"*.f90"))
-		sources.extend(fortran_files)
+		src_files=glob.glob(os.path.join(Dir,"*.src"))
+		sources.extend(src_files)
 
 	return sources
 		

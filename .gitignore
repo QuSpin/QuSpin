@@ -2,10 +2,16 @@
 *.pyc
 *.pyf
 *.so
+
+# pure fortran source files #
+*.f90
+
 # backup files from gedit #
 *~
 # invisible files
 .*
+
+
 
 # Python egg metadata, regenerated from source files by setuptools.
 /*.egg-info
