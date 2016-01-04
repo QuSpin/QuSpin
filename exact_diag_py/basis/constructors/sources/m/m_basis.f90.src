@@ -14,7 +14,3 @@ zbasis(i)=s
 end do
 
 end subroutine
-
-
-
-

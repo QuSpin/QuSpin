@@ -26,32 +26,32 @@ class FortranError(Exception):
 def RefState_M(basis,col,*args):
 	refstate(basis,col)
 
-def RefState_Z(basis,col,L,N,ME,**blocks):
+def RefState_Z(N,basis,col,ME,L,**blocks):
 	zblock=blocks.get("zblock")
 	dtype=str(ME.dtype)
 	fortran_RefState_Z[dtype](N,basis,col,ME,L,zblock)
 
 
-def RefState_P(basis,col,L,N,ME,**blocks):
+def RefState_P(N,basis,col,ME,L,**blocks):
 	pblock=blocks.get("pblock")
 	dtype=str(ME.dtype)
 	fortran_RefState_P[dtype](N,basis,col,ME,L,pblock)
 
 
-def RefState_PZ(basis,col,L,N,ME,**blocks):
+def RefState_PZ(N,basis,col,ME,L,**blocks):
 	pzblock=blocks.get("pzblock")
 	dtype=str(ME.dtype)
 	fortran_RefState_PZ[dtype](N,basis,col,ME,L,pzblock)
 
 
-def RefState_P_Z(basis,col,L,N,ME,**blocks):
+def RefState_P_Z(N,basis,col,ME,L,**blocks):
 	zblock=blocks.get("zblock")
 	pblock=blocks.get("pblock")
 	dtype=str(ME.dtype)
 	fortran_RefState_P_Z[dtype](N,basis,col,ME,L,pblock,zblock)
 
 
-def RefState_T(basis,col,L,N,ME,**blocks):
+def RefState_T(N,basis,col,ME,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	dtype=str(ME.dtype)

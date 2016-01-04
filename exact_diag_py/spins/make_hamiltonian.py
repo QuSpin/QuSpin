@@ -42,7 +42,7 @@ def test_function(func,func_args):
 		func_val=func(t,*func_args)
 		if not _np.isscalar(func_val):
 			raise TypeError("function must return scaler values")
-		if type(func_val) is complex:
+		if _np.iscomplexobj(func_val):
 			warnings.warn("driving function returing complex value, dynamic hamiltonian will no longer be hermitian object.",UserWarning) 
 
 

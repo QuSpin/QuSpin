@@ -111,15 +111,14 @@ class hamiltonian:
 
 
 
-	def __dot_nocheck(self,time,V):
+	def __SO(self,time,V):
 		"""
 		args:
 			V, the vector to multiple with
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. it is private and the implimentation below is recomended 
-			for external use. 
+			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -i*H(t)*|V >
 		"""
 
 		V=_np.asarray(V)
@@ -127,7 +126,25 @@ class hamiltonian:
 		for f,f_args,Hd in self.dynamic:
 			V_dot += f(time,*f_args)*(Hd.dot(V))
 
-		return V_dot
+		return -1j*V_dot
+
+	def __ISO(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
+		"""
+
+		V=_np.asarray(V)
+		V_dot = self.static.dot(V)	
+		for f,f_args,Hd in self.dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return -V_dot
+
 
 
 
@@ -148,7 +165,12 @@ class hamiltonian:
 		if not _np.isscalar(time):
 			raise NotImplementedError
 
-		return self.__dot_nocheck(time,V)
+		V=_np.asarray(V)
+		V_dot = self.static.dot(V)	
+		for f,f_args,Hd in self.dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return V_dot
 
 
 
@@ -252,7 +274,7 @@ class hamiltonian:
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=_deepcopy(self)
 
-			new.static+=other.static
+			new.static = new.static + other.static
 			new.static.sum_duplicates()
 			new.static.eliminate_zeros()
 
@@ -267,7 +289,7 @@ class hamiltonian:
 		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 
-			self.static+=other.static
+			self.static = self.static + other.static
 			self.static.sum_duplicates()
 			self.static.eliminate_zeros()
 
@@ -283,7 +305,7 @@ class hamiltonian:
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 			new=deepcopy(self)
 
-			new.static-=other.static
+			new.static = new.static - other.static
 			new.static.sum_duplicates()
 			new.static.eliminate_zeros()
 
@@ -301,7 +323,7 @@ class hamiltonian:
 		if isinstance(other,hamiltonian):
 			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
 
-			self.static-=other.static
+			self.static = self.static - other.static
 			self.static.sum_duplicates()
 			self.static.eliminate_zeros()
 			

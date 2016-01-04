@@ -1,12 +1,13 @@
 from ..spins import hamiltonian as _hamiltonian
-from scipy.sparse import issparse as _issparse
 
+from krylov import expm_krylov as _expm_krylov
+
+from scipy.sparse import issparse as _issparse
+from scipy.sparse.linalg import expm_multiply as _expm_multiply
 from scipy.integrate import complex_ode as _complex_ode
 from scipy.integrate import ode as _ode
 
 import numpy as _np
-
-
 
 
 def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
@@ -24,23 +25,24 @@ def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 	description:
 		This function uses complex_ode to evolve an input wavefunction.
 	"""
-	if isinstance(H,_hamiltonian):
-		H=H.tocsr(time=time)
-	else:
+	if not isinstance(H,_hamiltonian):
 		raise TypeError("H must be hamiltonian object")
 
 	if H.Ns <= 0:
 		return _np.asarray([])
 
 	v0=_np.asarray(v0)
-
+	
+	# SO = -i*H(t)*y
+	# ISO = -H(t)*y
+	
 	if real_time:
-		solver=_complex_ode(-1j*H._hamiltonian__dot_nocheck)
+		solver=_complex_ode(H._hamiltonian__SO)
 	else:
 		if H.dtype in [_np.float32,_np.float64]:
-			solver=_ode(-H._hamiltonian__dot_nocheck)
+			solver=_ode(H._hamiltonian__ISO)
 		else:
-			solver=_complex_ode(-H._hamiltonian__dot_nocheck)
+			solver=_complex_ode(H._hamiltonian__ISO)
 
 	solver.set_integrator("dop853",**integrator_params)
 	solver.set_initial_value(v0,t=t0)
@@ -74,46 +76,41 @@ def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 
 
 
-def exp(H,V,z,time=0,n=1,atol=10**(-15)):
-	"""
-	args:
-		H, either hamiltonian or sparse matrix
-		V, vector to apply the matrix exponential on.
-		a, the parameter in the exponential exp(aH)V
-		time, time to evaluate drive at.
-		n, the number of steps to break the expoential into exp(aH/n)^n V
-		error, if the norm the vector of the taylor series is less than this number
-		then the taylor series is truncated.
-
-	description:
-		this function computes exp(zH)V as a taylor series in zH. not useful for long time evolution.
-
-	"""
-	if self.Ns <= 0:
-		return _np.asarray([])
-	if not _np.isscalar(time):
-		raise NotImplementedError
-	if n <= 0: raise ValueError('n must be > 0')
-
-
-	if isinstance(H,_hamiltonian):
-		H=H.tocsr(time=time)
-	elif issparse(H):
-		H=H.tocsr()
+def step_drive(H_list,t_list,v0,Nsteps=1,krylov=False,tol=10**(-15),hermitian=True):
+	# tolerance does give good estimate of error for times which are O(1)
+	# tolerance has no real guage on the error large times, the accuracy caps out at 10**(-10) roughly.
+	
+	# The krylov exponential is much faster then the scipy expoentnal 
+	# at large times and large matrices. In fact for small matricies its better to use scipy exponential.
+	if krylov:
+		for i in xrange(Nsteps):
+			for t,H in zip(H_list,t_list):
+				v0 = _expm_krylov(H,v0,z=-1j*t,tol=10**(-15),hermitian=True)
 	else:
-		raise TypeError("H must be either scipy.sparse or hamiltonian objects")
+		for i in xrange(Nsteps):
+			for t,H in zip(H_list,t_list):
+				v0 = _expm_multiply(-1j*t*H,v0)
+		
+
+	return v0
 
 
-	V=_np.asarray(V)
-	for j in xrange(n):
-		V1=_np.array(V)
-		e=1.0; i=1		
-		while e > atol:
-			V1=(z/(n*i))*H.dot(V1)
-			V+=V1
-			if i%2 == 0:
-				e=_norm(V1)
-			i+=1
-	return V
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

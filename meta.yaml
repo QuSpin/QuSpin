@@ -1,26 +1,26 @@
 package:
   name: exact_diag_py
-  version: "0.0.0"
+  version: "0.0.1a"
 
 source:
-  git_rev: "0.0.0"
-  path: ../exact_diag_py
+#  git_rev: "0.0.1-alpha"
+  git_url: https://github.com/weinbe58/exact_diag_py.git
 
 requirements:
   build:
     - python
-    - numpy
+    - numpy >=1.8
 
   run:
     - python
-    - numpy
-    - scipy
+    - numpy >=1.8
+    - scipy >=0.14
 
 test:
   imports:
-    - numpy
-    - scipy
+    - numpy 
+    - scipy 
 
 about:
   home: https://github.com/weinbe58/exact_diag_py
-  license: MIT
+  license: MET

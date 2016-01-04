@@ -115,7 +115,7 @@ class obc(base):
 		row=_array(xrange(self.Ns),dtype=_index_type)
 
 		ME,col=SpinOp(self.basis,opstr,indx,dtype)
-		RefState[self.conserved](self.basis,col,self.L,self.N,ME,**self.blocks)
+		RefState[self.conserved](self.N,self.basis,col,ME,self.L,**self.blocks)
 
 		# remove any states that give matrix elements which are no in the basis.
 		mask=col>=0

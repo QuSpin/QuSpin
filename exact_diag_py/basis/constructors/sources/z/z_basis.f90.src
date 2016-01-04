@@ -25,9 +25,6 @@ integer(kind=1), intent(out), dimension(Ns_m) :: N
 integer(kind=4) :: i
 integer(kind=1) :: r
 
-
-
-
 do i=1,Ns_m
 call CheckState_Z(mbasis(i),L,r)
 N(i)=r
