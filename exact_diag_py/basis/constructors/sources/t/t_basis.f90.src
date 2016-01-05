@@ -39,14 +39,12 @@ integer(kind=4), intent(in) :: L, kblock, Ns_m,a
 integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
 integer(kind=1), intent(out), dimension(Ns_m) :: N
 integer(kind=4) :: i
-integer(kind=1) :: r
 
 
 do i=1,Ns_m
-call CheckState_T(mbasis(i),L,kblock,a,r)
-N(i)=r
-if(r .lt. 0) then
-mbasis(i)=-1
+call CheckState_T(mbasis(i),L,kblock,a,N(i))
+if(N(i) .lt. 0) then
+mbasis(i) = -1
 end if
 end do
 

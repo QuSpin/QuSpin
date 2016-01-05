@@ -35,7 +35,7 @@ integer(kind=4), external :: FindZstate
 integer(kind=4) :: i,q,s
 
 
-call <name>_spinop(basis,Ns,opstr,indx,N_indx,ME,col,error)
+call <name>_spinop(basis,Ns,opstr,indx,N_indx,col,ME,error)
 
 if(error .ne. 0) return
 

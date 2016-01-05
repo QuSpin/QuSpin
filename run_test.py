@@ -239,7 +239,7 @@ def check_t(L,dtype,Nup=None):
 	E=H.eigvalsh()
 
 	Et=np.array([])
-	for kblock in xrange(0,L):
+	for kblock in xrange(-L/2+1,L/2+1):
 		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock)
 		Et=np.append(Et,Hk.eigvalsh())
 	
@@ -254,6 +254,34 @@ def check_t(L,dtype,Nup=None):
 
 
 
+def check_t_z(L,dtype,Nup=None):
+	if type(Nup) is int:
+		J1=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		J2=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		static=[["zz",J1],["yy",J2],["xx",J2]]
+	else:
+		h=[[1.0,i] for i in xrange(L)]
+		J1=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		J2=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		static=[["zz",J1],["x",h]]
+
+
+	
+	for kblock in xrange(-L/2+1,L/2+1):
+		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock)
+		Ns=Hk.Ns
+		Ek=Hk.eigvalsh()
+
+		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,zblock=+1)
+		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,zblock=-1)	
+		Ek1=Hk1.eigvalsh()
+		Ek2=Hk2.eigvalsh()
+		Ekz=np.append(Ek1,Ek2)
+		Ekz.sort()
+
+		eps=np.finfo(dtype).eps
+		if np.sum(np.abs(Ek-Ekz))/Ns > 1000*eps:
+			raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
 
@@ -276,10 +304,15 @@ def check_t(L,dtype,Nup=None):
 
 
 
-#check_m(10)
-#check_opstr(10)
-#check_obc(10)
-check_t(10,np.complex64,Nup=None)
+
+check_m(10)
+check_opstr(10)
+check_obc(10)
+L=10
+check_t(L,np.complex128,Nup=None)
+check_t(L,np.complex128,Nup=L/2)
+check_t_z(L,np.complex128,Nup=None)
+check_t_z(L,np.complex128,Nup=L/2)
 
 
 

@@ -22,7 +22,6 @@ _type_conv = {'f': 's', 'd': 'd', 'F': 'c', 'D': 'z'}
 def _expm_krylov_vector(A,v0,hermitian,tol,z,dtype):
 
 	char = _type_conv[dtype.char]
-	char = _type_conv[dtype.char]
 	if hermitian:
 
 

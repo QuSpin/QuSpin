@@ -3,7 +3,7 @@ implicit none
 integer(kind=4), intent(in) :: s,L
 integer(kind=1), intent(out) :: r
 integer(kind=4) :: t
-character(32), external :: bits
+
 t=s 
 call flip_all(t,L)
 if(t .gt. s) then

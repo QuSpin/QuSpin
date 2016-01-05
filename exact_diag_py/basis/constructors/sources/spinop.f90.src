@@ -1,5 +1,5 @@
 
-subroutine <name=s,d,c,z>_SpinOp(basis,Ns,opstr,indx,N_indx,ME,col,error)
+subroutine <name=s,d,c,z>_SpinOp(basis,Ns,opstr,indx,N_indx,col,ME,error)
 implicit none
 integer(kind=4), intent(in) :: Ns,N_indx
 integer(kind=4), intent(in), dimension(Ns) :: basis
