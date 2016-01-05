@@ -1,18 +1,58 @@
+import fortran_wrap
 from fortran_wrap import *
 from numpy import dtype as _dtype
 
 
 # open boundary conditions
-fortran_RefState_P={"float32":s_refstate_p,"float64":d_refstate_p,"complex64":c_refstate_p,"complex128":z_refstate_p}
-fortran_RefState_Z={"float32":s_refstate_z,"float64":d_refstate_z,"complex64":c_refstate_z,"complex128":z_refstate_z}
-fortran_RefState_PZ={"float32":s_refstate_pz,"float64":d_refstate_pz,"complex64":c_refstate_pz,"complex128":z_refstate_pz}
-fortran_RefState_P_Z={"float32":s_refstate_p_z,"float64":d_refstate_p_z,"complex64":c_refstate_p_z,"complex128":z_refstate_p_z}
+fortran_op_m={"float32":fortran_wrap.s_m_op,
+							"float64":fortran_wrap.d_m_op,
+							"complex64":fortran_wrap.c_m_op,
+							"complex128":fortran_wrap.z_m_op}
+
+fortran_op_p={"float32":fortran_wrap.s_p_op,
+							"float64":fortran_wrap.d_p_op,
+							"complex64":fortran_wrap.c_p_op,
+							"complex128":fortran_wrap.z_p_op}
+
+fortran_op_z={"float32":fortran_wrap.s_z_op,
+							"float64":fortran_wrap.d_z_op,
+							"complex64":fortran_wrap.c_z_op,
+							"complex128":fortran_wrap.z_z_op}
+
+fortran_op_pz={"float32":fortran_wrap.s_pz_op,
+							 "float64":fortran_wrap.d_pz_op,
+							 "complex64":fortran_wrap.c_pz_op,
+							 "complex128":fortran_wrap.z_pz_op}
+
+fortran_op_p_z={"float32":fortran_wrap.s_p_z_op,
+								"float64":fortran_wrap.d_p_z_op,
+								"complex64":fortran_wrap.c_p_z_op,
+								"complex128":fortran_wrap.z_p_z_op}
 
 # periodic boundary conditions
-fortran_RefState_T={"float32":s_refstate_t,"float64":d_refstate_t,"complex64":c_refstate_t,"complex128":z_refstate_t}
+
+fortran_op_t={"float32":fortran_wrap.s_t_op,
+							"float64":fortran_wrap.d_t_op,
+							"complex64":fortran_wrap.c_t_op,
+							"complex128":fortran_wrap.z_t_op}
 
 
-fortran_SpinOp={"float32":s_spinop,"float64":d_spinop,"complex64":c_spinop,"complex128":z_spinop}
+
+#SpinOp for no symmetries
+
+fortran_SpinOp={"float32":s_spinop,
+								"float64":d_spinop,
+								"complex64":c_spinop,
+								"complex128":z_spinop}
+
+
+__all__=['op_m','op_z','op_p','op_pz','op_p_z','op_t','SpinOp']
+
+
+
+
+
+
 
 class FortranError(Exception):
 	# this class defines an exception which can be raised whenever there is some sort of error which we can
@@ -23,43 +63,94 @@ class FortranError(Exception):
 		return self.message
 
 
-def RefState_M(basis,col,*args):
-	refstate(basis,col)
 
-def RefState_Z(N,basis,col,ME,L,**blocks):
+
+def op_m(basis,opstr,indx,dtype):
+	dtype=str(_dtype(dtype))
+	col,ME,error = fortran_op_m[dtype](basis,opstr,indx)
+	if error != 0:
+		if error == 1:
+			raise FortranError("opstr character not recognized.")
+		elif error == -1:
+			raise FortranError("attemping to use real hamiltonian with complex matrix elements.")
+
+
+	return ME,col
+		
+
+
+
+def op_z(N,basis,opstr,indx,L,dtype,**blocks):
 	zblock=blocks.get("zblock")
-	dtype=str(ME.dtype)
-	fortran_RefState_Z[dtype](N,basis,col,ME,L,zblock)
+	dtype=str(_dtype(dtype))
+	col,ME,error = fortran_op_z[dtype](N,basis,opstr,indx,L,zblock)
+	if error != 0:
+		if error == 1:
+			raise FortranError("opstr character not recognized.")
+		elif error == -1:
+			raise FortranError("attemping to use real hamiltonian with complex matrix elements.")
+
+	return ME,col
 
 
-def RefState_P(N,basis,col,ME,L,**blocks):
+
+def op_p(N,basis,opstr,indx,L,dtype,**blocks):
 	pblock=blocks.get("pblock")
-	dtype=str(ME.dtype)
-	fortran_RefState_P[dtype](N,basis,col,ME,L,pblock)
+	dtype=str(_dtype(dtype))
+	col,ME,error = fortran_op_p[dtype](N,basis,opstr,indx,L,pblock)
+	if error != 0:
+		if error == 1:
+			raise FortranError("opstr character not recognized.")
+		elif error == -1:
+			raise FortranError("attemping to use real hamiltonian with complex matrix elements.")
+
+	return ME,col
 
 
-def RefState_PZ(N,basis,col,ME,L,**blocks):
+
+def op_pz(N,basis,opstr,indx,L,dtype,**blocks):
 	pzblock=blocks.get("pzblock")
-	dtype=str(ME.dtype)
-	fortran_RefState_PZ[dtype](N,basis,col,ME,L,pzblock)
+	dtype=str(_dtype(dtype))
+	col,ME,error = fortran_op_pz[dtype](N,basis,opstr,indx,L,pzblock)
+	if error != 0:
+		if error == 1:
+			raise FortranError("opstr character not recognized.")
+		elif error == -1:
+			raise FortranError("attemping to use real hamiltonian with complex matrix elements.")
+
+	return ME,col
 
 
-def RefState_P_Z(N,basis,col,ME,L,**blocks):
+
+def op_p_z(N,basis,opstr,indx,L,dtype,**blocks):
 	zblock=blocks.get("zblock")
 	pblock=blocks.get("pblock")
-	dtype=str(ME.dtype)
-	fortran_RefState_P_Z[dtype](N,basis,col,ME,L,pblock,zblock)
+	dtype=str(_dtype(dtype))
+	col,ME,error = fortran_op_p_z[dtype](N,basis,opstr,indx,L,pblock,zblock)
+	if error != 0:
+		if error == 1:
+			raise FortranError("opstr character not recognized.")
+		elif error == -1:
+			raise FortranError("attemping to use real hamiltonian with complex matrix elements.")
+
+	return ME,col
 
 
-def RefState_T(N,basis,col,ME,L,**blocks):
+
+
+
+def op_t(N,basis,opstr,indx,L,dtype,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
-	dtype=str(ME.dtype)
-	if (kblock != 0) and (dtype in ["float32","float64"]):
-		raise FortranError("complex type needed if kblock != 0")
+	dtype=str(_dtype(dtype))
+	col,ME,error = fortran_op_t[dtype](N,basis,opstr,indx,L,kblock,a)
+	if error != 0:
+		if error == 1:
+			raise FortranError("opstr character not recognized.")
+		elif error == -1:
+			raise FortranError("attemping to use real hamiltonian with complex matrix elements.")
 
-	fortran_RefState_T[dtype](N,basis,col,ME,L,kblock,a)
-	
+	return ME,col
 
 
 

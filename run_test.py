@@ -10,7 +10,6 @@ seed()
 def check_opstr(Lmax):
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1):
-			#print "checking opstr L={0:3d}, {1}".format(L,np.dtype(dtype))
 			h=[[2.0*random()-1.0,i] for i in xrange(L)]
 			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
 			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
@@ -61,13 +60,13 @@ def check_m(Lmax):
 
 def check_z(L,dtype,Nup=None):
 	if type(Nup) is int:
-		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
 		static=[["zz",J1],["yy",J2],["xx",J2]]
 	else:
 		h=[[2.0*random()-1.0,i] for i in xrange(L)]
-		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
 		static=[["zz",J1],["x",h]]
 
 
@@ -80,6 +79,7 @@ def check_z(L,dtype,Nup=None):
 	H1=hamiltonian(static,[],L,Nup=Nup,zblock=1,dtype=dtype)
 	H2=hamiltonian(static,[],L,Nup=Nup,zblock=-1,dtype=dtype)
 
+
 	E1=H1.eigvalsh()
 	E2=H2.eigvalsh()
 	
@@ -88,7 +88,7 @@ def check_z(L,dtype,Nup=None):
 
 	eps=np.finfo(dtype).eps
 	if np.sum(np.abs(Ez-E))/Ns > 100*eps:
-		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
+		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
 
@@ -99,7 +99,7 @@ def check_p(L,dtype,Nup=None):
 	hi.extend(hr)
 	
 	h=[[hi[i],i] for i in xrange(L)]
-	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
+	J=[[1.0,i,(i+1)%L] for i in xrange(L-1)]
 
 	if type(Nup) is int:
 		static=[["zz",J],["yy",J],["xx",J],["z",h]]
@@ -133,7 +133,7 @@ def check_pz(L,dtype,Nup=None):
 	hi.extend(hr)
 
 	h=[[hi[i],i] for i in xrange(L)]
-	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
+	J=[[1.0,i,(i+1)%L] for i in xrange(L-1)]
 
 	static=[["zz",J],["yy",J],["xx",J],["z",h]]
 
@@ -159,7 +159,7 @@ def check_pz(L,dtype,Nup=None):
 
 def check_p_z(L,dtype,Nup=None):
 	h=[[1.0,i] for i in xrange(L)]
-	J=[[1.0,i,(i+1)%L] for i in xrange(L)]
+	J=[[1.0,i,(i+1)%L] for i in xrange(L-1)]
 
 	if type(Nup) is int:
 		static=[["zz",J],["yy",J],["xx",J],["z",h]]
@@ -220,9 +220,66 @@ def check_obc(Lmax):
 
 
 
-check_m(6)
-check_opstr(6)
-check_obc(6)
+def check_t(L,dtype,Nup=None):
+	if type(Nup) is int:
+		J1=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		J2=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		static=[["zz",J1],["yy",J2],["xx",J2]]
+	else:
+		h=[[1.0,i] for i in xrange(L)]
+		J1=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		J2=[[1.0,i,(i+1)%L] for i in xrange(L)]
+		static=[["zz",J1],["x",h]]
+
+
+	
+
+	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+	Ns=H.Ns
+	E=H.eigvalsh()
+
+	Et=np.array([])
+	for kblock in xrange(0,L):
+		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock)
+		Et=np.append(Et,Hk.eigvalsh())
+	
+	Et.sort()
+	
+
+	eps=np.finfo(dtype).eps
+	if np.sum(np.abs(Et-E))/Ns > 1000*eps:
+		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#check_m(10)
+#check_opstr(10)
+#check_obc(10)
+check_t(10,np.complex64,Nup=None)
 
 
 

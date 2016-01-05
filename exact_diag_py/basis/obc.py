@@ -5,12 +5,7 @@ import numpy as _np
 # local modules
 from base import base, BasisError
 
-from constructors import RefState_M
-from constructors import RefState_Z
-from constructors import RefState_P
-from constructors import RefState_PZ
-from constructors import RefState_P_Z
-from constructors import SpinOp
+from constructors.constructors import *
 
 from constructors import make_z_basis
 from constructors import make_p_basis
@@ -26,15 +21,14 @@ from constructors import make_p_z_basis
 
 
 # this is a dictionary which given a set of symmetries links to a function which does the correction actino for that set of symmtries.
-RefState={"M":RefState_M,
-					"Z":RefState_Z,
-					"M & Z":RefState_Z,
-					"P":RefState_P,
-					"M & P":RefState_P,
-					"PZ":RefState_PZ,
-					"M & PZ":RefState_PZ,
-					"P & Z":RefState_P_Z,
-					"M & P & Z":RefState_P_Z}
+op={"Z":op_z,
+		"M & Z":op_z,
+		"P":op_p,
+		"M & P":op_p,
+		"PZ":op_pz,
+		"M & PZ":op_pz,
+		"P & Z":op_p_z,
+		"M & P & Z":op_p_z}
 
 
 
@@ -109,23 +103,22 @@ class obc(base):
 		self.basis=self.basis[self.basis != -1]
 		self.N=self.N[self.N != -1]
 		self.Ns=len(self.basis)	
-
+		
 
 	def Op(self,J,dtype,opstr,indx):
+		if len(opstr) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
 		row=_array(xrange(self.Ns),dtype=_index_type)
-
-		ME,col=SpinOp(self.basis,opstr,indx,dtype)
-		RefState[self.conserved](self.N,self.basis,col,ME,self.L,**self.blocks)
-
-		# remove any states that give matrix elements which are no in the basis.
-		mask=col>=0
-		ME=ME[mask]
-		col=col[mask]
-		row=row[mask]
-
-		col-=1 # fortran routines by default start at index 1 while here we start at 0.
+		ME,col = op[self.conserved](self.N,self.basis,opstr,indx,self.L,dtype,**self.blocks)
+		mask = col >= 0
+		row = row[ mask ]
+		col = col[ mask ]
+		ME = ME[ mask ]
+		col -= 1 #convert from fortran index to c index.
 		ME*=J
-
+		
+		
 		return ME,row,col
 		
 
