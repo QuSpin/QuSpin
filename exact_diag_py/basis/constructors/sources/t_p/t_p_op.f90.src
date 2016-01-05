@@ -1,0 +1,107 @@
+subroutine refstate_t_p(s,L,a,ll,g)
+implicit none
+integer(kind=4), intent(in) :: L,a
+integer(kind=4), intent(inout) :: s
+integer(kind=4), intent(out) :: ll,q
+integer(kind=4) :: r,t,i
+
+ll = 0; g = 0
+r = s; t = s
+
+do i=1,L/a
+t=ishftc(t,-a,L)
+if(t.lt.r) then
+ll = i; r = t
+end if
+end do
+
+t = s
+call flip_all(t,L)
+
+do i=1,L/a
+t=ishftc(t,-a,L)
+if(t.lt.r) then
+q = 1; ll = i; r = t
+end if
+end do
+
+s = r
+
+end subroutine
+
+
+
+
+
+
+
+
+subroutine <name=s,d,c,z>_t_p_op(N,m,basis,Ns,opstr,indx,N_indx,L,pblock,kblock,a,col,ME,error)
+implicit none
+<re_type=real(kind=4),real(kind=8),real(kind=4),real(kind=8)>, parameter :: pi=4.0<d0=,d0,,d0>*<d=,d,,d>atan(1.0<d0>)
+<cp_type=complex(kind=4),complex(kind=8),complex(kind=4),complex(kind=8)>, parameter :: i=<d>cmplx(0.0,1.0<d0>)
+integer(kind=4), intent(in) :: Ns, N_indx, L, pblock, kblock, a
+integer(kind=4), intent(in), dimension(N_indx) :: indx
+character, intent(in), dimension(N_indx) :: opstr
+integer(kind=4), intent(in), dimension(Ns) :: basis
+integer(kind=1), intent(in), dimension(Ns) :: N,m
+integer(kind=4), intent(out), dimension(Ns) :: col
+<type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
+integer(kind=4), intent(out) :: error
+integer(kind=4), external :: FindZstate
+<re_type>, external :: <name>_norm
+<re_type> :: k,N2,N1
+<cp_type> :: M_E
+integer(kind=4) :: j,s,ll,g
+
+
+call <name>_spinop(basis,Ns,opstr,indx,N_indx,col,ME,error)
+
+if(error .ne. 0) return
+
+k=(2*pi*a*kblock)/L
+
+do j=1,Ns
+
+s = col(j)
+call refstate_t_z(s,L,a,ll,g)
+s = FindZstate(basis,Ns,s)
+col(j)=s
+
+if(s.ge.0) then
+
+N1 = <name>_norm(k,zblock,N(j),m(j))
+N2 = <name>_norm(k,zblock,N(s),m(s))
+
+M_E = ME(j)*(zblock**g)*<d=,d,,d>sqrt(N2/N1)*<c,z,c,z>exp(-i*k*ll)
+
+if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
+ME = 0.0<d0>; col=1 ;error=-1
+return 
+else
+ME(j) = <real,dble,cmplx,dcmplx>(M_E)
+end if
+
+end if
+
+end do
+
+end subroutine
+
+
+
+
+function <name>_norm(k,zblock,N,m)
+implicit none
+<re_type> :: <name>_norm
+integer(kind=1), intent(in) :: N,m
+integer(kind=4), intent(in) :: zblock
+<re_type>, intent(in) :: k
+
+if(m .ge. 0) then
+<name>_norm = (zblock*<d>cos(k*m) + 1.0<d0>)/N
+else
+<name>_norm =  1.0<d0>/N
+end if
+
+end function
