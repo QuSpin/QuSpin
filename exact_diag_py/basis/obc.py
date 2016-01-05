@@ -7,10 +7,10 @@ from base import base, BasisError
 
 from constructors.constructors import *
 
-from constructors import make_z_basis
-from constructors import make_p_basis
-from constructors import make_pz_basis
-from constructors import make_p_z_basis
+from constructors import make_z_basis,make_m_z_basis
+from constructors import make_p_basis,make_m_p_basis
+from constructors import make_pz_basis,make_m_pz_basis
+from constructors import make_p_z_basis,make_m_p_z_basis
 
 
 
@@ -29,7 +29,6 @@ op={"Z":op_z,
 		"M & PZ":op_pz,
 		"P & Z":op_p_z,
 		"M & P & Z":op_p_z}
-
 
 
 
@@ -59,6 +58,10 @@ class obc(base):
 		if (type(pzblock) is int) and (abs(pzblock) != 1):
 			raise BasisError("pzblock must be either +/- 1")
 
+		if (type(zblock) is int) and (type(Nup) is int) and (Nup != L/2):
+			raise BasisError("Spin inversion symmetry only works for Nup=L/2")
+
+
 		# if symmetry is needed, the reference states must be found.
 		# This is done through the CheckState function. Depending on
 		# the symmetry, a different function must be used. Also if multiple
@@ -68,26 +71,45 @@ class obc(base):
 			if self.conserved: self.conserved += " & P & Z"
 			else: self.conserved += "P & Z"
 
-			if (type(Nup) is int) and (Nup != L/2):
-				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_p_z_basis(L,Nup,pblock,zblock,self.N,self.basis)
+			else:
+				self.Ns = make_p_z_basis(L,pblock,zblock,self.N,self.basis)
 
-			self.N=make_p_z_basis(L,self.basis,pblock,zblock)
+			self.N = self.N[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+
+
 
 		elif type(pblock) is int:
 			if self.conserved: self.conserved += " & P"
 			else: self.conserved = "P"
 
-			self.N=make_p_basis(L,self.basis,pblock)
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_p_basis(L,Nup,pblock,self.N,self.basis)
+			else:
+				self.Ns = make_p_basis(L,pblock,self.N,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+
+
 
 		elif type(zblock) is int:
 			if self.conserved: self.conserved += " & Z"
 			else: self.conserved += "Z"
 
-			if (type(Nup) is int) and (Nup != L/2):
-				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_z_basis(L,Nup,self.N,self.basis)
+			else:
+				self.Ns = make_z_basis(L,self.N,self.basis)
 
-			self.N=make_z_basis(L,self.basis)
-
+			self.N = self.N[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+				
 		elif type(pzblock) is int:
 			if self.conserved: self.conserved += " & PZ"
 			else: self.conserved += "PZ"
@@ -95,15 +117,19 @@ class obc(base):
 			if (type(Nup) is int) and (Nup != L/2):
 				raise BasisError("Spin inversion symmetry only works for Nup=L/2")
 
-			self.N=make_pz_basis(L,self.basis,pzblock)
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_pz_basis(L,Nup,pzblock,self.N,self.basis)
+			else:
+				self.Ns = make_pz_basis(L,pzblock,self.N,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+
+
 		else: 
 			# any other ideas for this?
-			raise BasisError("if no symmetries used use base class")
-
-		self.basis=self.basis[self.basis != -1]
-		self.N=self.N[self.N != -1]
-		self.Ns=len(self.basis)	
-		
+			raise BasisError("if no symmetries used use base class")		
 
 	def Op(self,J,dtype,opstr,indx):
 		if len(opstr) != len(indx):

@@ -2,6 +2,7 @@
 import operator as _op # needed to calculate n choose r in function ncr(n,r).
 from numpy import int32 as _index_type
 from numpy import array as _array
+import numpy as _np
 
 # local modules
 from constructors import op_m,make_m_basis,SpinOp

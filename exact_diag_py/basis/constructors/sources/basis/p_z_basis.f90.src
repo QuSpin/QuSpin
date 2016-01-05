@@ -1,0 +1,153 @@
+subroutine checkstate_p_z(s,L,p,z,r)
+implicit none
+integer(kind=4), intent(in) :: s,L,p,z
+integer(kind=1), intent(out) :: r
+integer(kind=1) :: rz,rp,rpz
+
+
+call CheckState_Z(s,L,rz)
+if(rz.lt.0) then
+r=-1
+return
+end if
+
+call CheckState_P(s,L,p,rp)
+if(rp.lt.0) then
+r=-1
+return
+end if
+
+call CheckState_PZ(s,L,p*z,rpz)
+if(rpz.lt.0) then
+r=-1
+return
+end if
+
+r=rp*rpz
+
+end subroutine
+
+
+
+
+
+
+
+
+
+
+
+!subroutine make_p_z_basis(L,mbasis,Ns_m,pblock,zblock,N)
+!implicit none
+!integer(kind=4), intent(in) :: L, pblock,zblock, Ns_m
+!integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
+!integer(kind=1), intent(out), dimension(Ns_m) :: N
+!integer(kind=4) :: i
+!integer(kind=1) :: r
+
+!do i=1,Ns_m
+!call checkstate_p_z(mbasis(i),L,pblock,zblock,r)
+!N(i)=r
+!if(r .lt. 0) then
+!mbasis(i)=-1
+!end if
+!end do
+
+!end subroutine
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+subroutine make_p_z_basis(L,pblock,zblock,N,basis,Ns,Ns_out)
+implicit none
+integer(kind=4), intent(in) :: L,pblock,zblock,Ns
+integer(kind=4), intent(inout), dimension(Ns) :: basis
+integer(kind=1), intent(inout), dimension(Ns) :: N
+integer(kind=4), intent(out) :: Ns_out
+integer(kind=4) :: s
+integer(kind=1) :: r
+
+
+Ns_out = 0
+do s=0,2**L - 1
+call CheckState_p_z(s,L,pblock,zblock,r)
+if(r.ge.0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = r
+end if
+end do 
+
+end subroutine
+
+
+
+
+
+
+
+
+
+
+
+subroutine make_m_p_z_basis(L,Nup,pblock,zblock,N,basis,Ns,Ns_out)
+implicit none
+integer(kind=4), intent(in) :: L,Nup,pblock,zblock,Ns
+integer(kind=4), intent(inout) ,dimension(Ns) :: basis
+integer(kind=1), intent(inout), dimension(Ns) :: N
+integer(kind=4), intent(out) :: Ns_out
+integer(kind=4), dimension(Nup) :: i_bits
+Integer(kind=4) :: s,t
+integer(kind=1) :: r
+
+i_bits=0
+do s=1,Nup
+i_bits(s)=2**(s-1)
+end do
+
+
+Ns_out = 0
+s=sum(i_bits)
+
+if(Nup.eq.0) then
+
+call CheckState_p_z(s,L,pblock,zblock,r)
+if(r.ge.0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = r
+end if
+
+return
+
+end if
+
+
+do while(.not.btest(s,L))
+
+call CheckState_p_z(s,L,pblock,zblock,r)
+if(r.ge.0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = r
+end if
+
+t=ior(s,s-1)+1
+s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+end do
+
+
+end subroutine
+
+
+

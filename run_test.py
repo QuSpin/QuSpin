@@ -55,7 +55,7 @@ def check_m(Lmax):
 			
 			eps=np.finfo(dtype).eps
 			if np.sum(np.abs(Em-E))/Ns > 100*eps:
-				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1:2d}".format(L,np.dtype(dtype)) )
+				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1}".format(L,np.dtype(dtype)) )
 
 
 def check_z(L,dtype,Nup=None):
@@ -305,14 +305,14 @@ def check_t_z(L,dtype,Nup=None):
 
 
 
-check_m(10)
-check_opstr(10)
+#check_m(10)
+#check_opstr(10)
 check_obc(10)
-L=10
-check_t(L,np.complex128,Nup=None)
-check_t(L,np.complex128,Nup=L/2)
-check_t_z(L,np.complex128,Nup=None)
-check_t_z(L,np.complex128,Nup=L/2)
+#L=10
+#check_t(L,np.complex128,Nup=None)
+#check_t(L,np.complex128,Nup=L/2)
+#check_t_z(L,np.complex128,Nup=None)
+#check_t_z(L,np.complex128,Nup=L/2)
 
 
 
