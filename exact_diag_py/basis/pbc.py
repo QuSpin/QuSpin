@@ -7,7 +7,8 @@ from base import base, BasisError
 
 from constructors import op_t,op_t_z
 
-from constructors import make_t_basis,make_t_z_basis
+from constructors import make_t_basis,make_m_t_basis
+from constructors import make_t_z_basis,make_m_t_z_basis
 
 
 
@@ -67,21 +68,52 @@ class pbc(base):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & Z"
 			else: self.conserved = "T & Z"
-			self.N,self.m = make_t_z_basis(L,self.basis,zblock,kblock,a)
+
+#			self.N,self.m = make_t_z_basis(L,self.basis,zblock,kblock,a)
+#			self.m = self.m[self.basis != -1]
+#			self.N = self.N[self.basis != -1]
+#			self.basis = self.basis[self.basis != -1]
+#			self.Ns = len(self.basis)
+
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_t_z_basis(L,Nup,zblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = make_t_z_basis(L,zblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+	
+
+
 		elif type(kblock) is int:
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T"
 			else: self.conserved = "T"
-			self.N = make_t_basis(L,self.basis,kblock,a)
+
+#			self.N = make_t_basis(L,self.basis,kblock,a)
+#			self.m = -_np.ones((self.Ns,),dtype=_np.int8)
+#			self.m = self.m[self.basis != -1]
+#			self.N = self.N[self.basis != -1]
+#			self.basis = self.basis[self.basis != -1]
+#			self.Ns = len(self.basis)	
+
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_t_basis(L,Nup,kblock,a,self.N,self.basis)
+			else:
+				self.Ns = make_t_basis(L,kblock,a,self.N,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.basis = self.basis[:self.Ns]
 			self.m = -_np.ones((self.Ns,),dtype=_np.int8)
+
+
 		else: 
 			# any other ideas for this?
 			raise BasisError("if no symmetries used use base class")
-
-		self.m = self.m[self.basis != -1]
-		self.N = self.N[self.basis != -1]
-		self.basis = self.basis[self.basis != -1]
-		self.Ns = len(self.basis)	
 		
 	def Op(self,J,dtype,opstr,indx):
 		if len(opstr) != len(indx):

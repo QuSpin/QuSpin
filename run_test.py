@@ -307,12 +307,12 @@ def check_t_z(L,dtype,Nup=None):
 
 #check_m(10)
 #check_opstr(10)
-check_obc(10)
-#L=10
-#check_t(L,np.complex128,Nup=None)
-#check_t(L,np.complex128,Nup=L/2)
-#check_t_z(L,np.complex128,Nup=None)
-#check_t_z(L,np.complex128,Nup=L/2)
+#check_obc(10)
+L=10
+check_t(L,np.complex128,Nup=None)
+check_t(L,np.complex128,Nup=L/2)
+check_t_z(L,np.complex128,Nup=None)
+check_t_z(L,np.complex128,Nup=L/2)
 
 
 

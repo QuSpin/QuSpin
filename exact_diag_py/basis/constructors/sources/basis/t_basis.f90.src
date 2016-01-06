@@ -33,20 +33,114 @@ end subroutine
 
 
 
-subroutine make_t_basis(L,mbasis,Ns_m,kblock,a,N)
+!subroutine make_t_basis(L,mbasis,Ns_m,kblock,a,N)
+!implicit none
+!integer(kind=4), intent(in) :: L, kblock, Ns_m,a
+!integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
+!integer(kind=1), intent(out), dimension(Ns_m) :: N
+!integer(kind=4) :: i
+
+
+!do i=1,Ns_m
+!call CheckState_T(mbasis(i),L,kblock,a,N(i))
+!if(N(i) .lt. 0) then
+!mbasis(i) = -1
+!end if
+!end do
+
+!end subroutine
+
+
+
+
+
+
+
+
+
+
+
+
+
+subroutine make_t_basis(L,kblock,a,N,basis,Ns,Ns_out)
 implicit none
-integer(kind=4), intent(in) :: L, kblock, Ns_m,a
-integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
-integer(kind=1), intent(out), dimension(Ns_m) :: N
-integer(kind=4) :: i
+integer(kind=4), intent(in) :: L,kblock,a,Ns
+integer(kind=4), intent(inout), dimension(Ns) :: basis
+integer(kind=1), intent(inout), dimension(Ns) :: N
+integer(kind=4), intent(out) :: Ns_out
+integer(kind=4) :: s
+integer(kind=1) :: r
 
 
-do i=1,Ns_m
-call CheckState_T(mbasis(i),L,kblock,a,N(i))
-if(N(i) .lt. 0) then
-mbasis(i) = -1
+Ns_out = 0
+do s=0,2**L - 1
+call CheckState_t(s,L,kblock,a,r)
+if(r.ge.0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = r
 end if
-end do
+end do 
 
 end subroutine
+
+
+
+
+
+
+
+
+
+
+
+subroutine make_m_t_basis(L,Nup,kblock,a,N,basis,Ns,Ns_out)
+implicit none
+integer(kind=4), intent(in) :: L,Nup,kblock,a,Ns
+integer(kind=4), intent(inout) ,dimension(Ns) :: basis
+integer(kind=1), intent(inout), dimension(Ns) :: N
+integer(kind=4), intent(out) :: Ns_out
+integer(kind=4), dimension(L) :: i_bits
+Integer(kind=4) :: s,t
+integer(kind=1) :: r
+
+i_bits=0
+do s=1,Nup
+i_bits(s)=2**(s-1)
+end do
+
+
+Ns_out = 0
+s=sum(i_bits)
+
+if(Nup.eq.0) then
+
+call CheckState_t(s,L,kblock,a,r)
+if(r.ge.0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = r
+end if
+
+return
+
+end if
+
+
+do while(.not.btest(s,L))
+
+call CheckState_t(s,L,kblock,a,r)
+if(r.ge.0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = r
+end if
+
+t=ior(s,s-1)+1
+s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+end do
+
+
+end subroutine
+
 

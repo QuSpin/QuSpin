@@ -87,7 +87,7 @@ integer(kind=4), intent(in) :: L,Nup,pblock,Ns
 integer(kind=4), intent(inout) ,dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4), dimension(Nup) :: i_bits
+integer(kind=4), dimension(L) :: i_bits
 Integer(kind=4) :: s,t
 integer(kind=1) :: r
 
