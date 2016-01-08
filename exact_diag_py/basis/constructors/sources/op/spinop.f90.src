@@ -15,7 +15,7 @@ integer(kind=4) :: i,j,r,a
 error=0
 do i=1,Ns
 M_E=1.0<d0=,d0,,d0>; r=basis(i)
-do j=1,N_indx
+do j=N_indx,1,-1
 a = iand(ishft(r,-indx(j)),1)
 if(opstr(j) .eq. "c") then
 cycle
@@ -33,7 +33,7 @@ M_E = M_E * (-1)**(a)*<complex=cmplx,dcmplx,cmplx,dcmplx>(0.0,0.5<d0>)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 
-col(i)=basis(i); M_E=0.0<d0>;
+r=basis(i); M_E=0.0<d0>;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -41,7 +41,7 @@ end if
 
 else if(opstr(j) .eq. "-") then
 if (a .eq. 0) then 
-col(i)=basis(i); M_E=0.0<d0>;
+r=basis(i); M_E=0.0<d0>;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
@@ -62,6 +62,7 @@ end if
 
 ME(i)=<convert=real,dble,cmplx,dcmplx>(M_E)
 col(i)=r
+
 end do
 
 end subroutine

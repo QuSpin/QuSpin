@@ -135,8 +135,9 @@ class obc(base):
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 
+		"""
 		row=_array(xrange(self.Ns),dtype=_index_type)
-		ME,col = op[self.conserved](self.N,self.basis,opstr,indx,self.L,dtype,**self.blocks)
+		ME,col = op[self.conserved](self.N,self.basis,opstr,indx,J,self.L,dtype,**self.blocks)
 		mask = col >= 0
 		row = row[ mask ]
 		col = col[ mask ]
@@ -146,6 +147,9 @@ class obc(base):
 		
 		
 		return ME,row,col
+		"""
+
+		return  op[self.conserved](self.N,self.basis,opstr,indx,J,self.L,dtype,**self.blocks)
 		
 
 

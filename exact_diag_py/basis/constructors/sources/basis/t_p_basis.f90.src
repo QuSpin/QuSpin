@@ -1,0 +1,195 @@
+subroutine checkstate_t_p(s,L,k,a,N,m)
+implicit none
+integer(kind=4), intent(in) :: s,L,k,a
+integer(kind=1), intent(out) :: N,m
+integer(kind=4) :: t,i,NN
+
+t=s
+N=-1
+m=-1
+
+do i=1,L/a
+t=ishftc(t,-a,L)
+if ( t .lt. s ) then
+return
+else if ( t .eq. s) then 
+if ( modulo(k,(L/(a*int(i)))) .ne. 0) then
+return
+end if
+N=int(i,1)
+
+exit
+end if
+end do
+
+NN = i
+t = s
+call flip_lr(t,L)
+
+do i=0,NN-1
+if (t .lt. s) then
+N = -1
+return
+else if(t .eq. s) then
+m = int(i,1)
+return
+end if
+t = ishftc(t,-a,L)
+end do
+
+
+
+
+end subroutine
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+subroutine make_t_p_basis(L,pblock,kblock,a,N,m,basis,Ns,Ns_out)
+implicit none
+real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
+integer(kind=4), intent(in) :: L,pblock,kblock,a,Ns
+integer(kind=4), intent(inout), dimension(Ns) :: basis
+integer(kind=1), intent(inout), dimension(Ns) :: N,m
+integer(kind=4), intent(out) :: Ns_out
+integer(kind=4) :: s
+integer(kind=1) :: NN_temp,NN,mm,sigma,b,f
+
+
+if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
+b=1
+f=1
+else
+b=-1
+f=1
+end if
+
+Ns_out = 0
+do s=0,2**L - 1
+
+call CheckState_t_p(s,L,kblock,a,NN,mm)
+
+do sigma=b,f,2
+NN_temp = NN
+
+if(mm .ge. 0) then
+if ( (1.0d0 + sigma*pblock*dcos(2*kblock*mm*a*pi/L)) .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos(2*kblock*mm*a*pi/L)) .ne. 0.0d0)) NN_temp = -1
+end if
+
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mm
+end if
+
+end do
+
+end do 
+
+end subroutine
+
+
+
+
+
+
+
+
+
+
+
+subroutine make_m_t_p_basis(L,Nup,pblock,kblock,a,N,m,basis,Ns,Ns_out)
+implicit none
+real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
+integer(kind=4), intent(in) :: L,Nup,pblock,kblock,a,Ns
+integer(kind=4), intent(inout) ,dimension(Ns) :: basis
+integer(kind=1), intent(inout), dimension(Ns) :: N,m
+integer(kind=4), intent(out) :: Ns_out
+integer(kind=4), dimension(L) :: i_bits
+integer(kind=4) :: s,t
+integer(kind=1) :: NN_temp,NN,mm,sigma,b,f
+
+if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
+b=1
+f=1
+else
+b=-1
+f=1
+end if
+
+i_bits=0
+do s=1,Nup
+i_bits(s)=2**(s-1)
+end do
+
+
+Ns_out = 0
+s=sum(i_bits)
+
+if(Nup.eq.0) then
+
+call CheckState_t_p(s,L,kblock,a,NN,mm)
+
+do sigma=b,f,2
+NN_temp = NN
+
+if(mm .ge. 0) then
+if ( (1.0d0 + sigma*pblock*dcos(2*kblock*mm*a*pi/L)) .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos(2*kblock*mm*a*pi/L)) .ne. 0.0d0)) NN_temp = -1
+end if
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mm
+end if
+
+end do
+
+return
+
+end if
+
+
+do while(.not.btest(s,L))
+
+call CheckState_t_p(s,L,kblock,a,NN,mm)
+
+do sigma=b,f,2
+NN_temp = NN
+
+if(mm .ge. 0) then
+if ( (1.0d0 + sigma*pblock*dcos((2*kblock*mm)*(pi/L))) .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos((2*kblock*mm)*(pi/L))) .ne. 0.0d0)) NN_temp = -1
+end if
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mm
+end if
+
+end do
+
+t=ior(s,s-1)+1
+s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+end do
+
+
+end subroutine
+

@@ -5,10 +5,11 @@ import numpy as _np
 # local modules
 from base import base, BasisError
 
-from constructors import op_t,op_t_z
+from constructors import op_t,op_t_z,op_t_p
 
 from constructors import make_t_basis,make_m_t_basis
 from constructors import make_t_z_basis,make_m_t_z_basis
+from constructors import make_t_p_basis,make_m_t_p_basis
 
 
 
@@ -23,7 +24,9 @@ from constructors import make_t_z_basis,make_m_t_z_basis
 op={"T":op_t,
 		"M & T":op_t,
 		"T & Z":op_t_z,
-		"M & T & Z":op_t_z}
+		"M & T & Z":op_t_z,
+		"T & P":op_t_p,
+		"M & T & P":op_t_p}
 
 
 
@@ -64,16 +67,29 @@ class pbc(base):
 		# if symmetry is needed, the reference states must be found.
 		# This is done through via the fortran constructors.
 
-		if (type(kblock) is int) and (type(zblock) is int):
+		if (type(kblock) is int) and (type(pblock) is int):
+			self.k=2*(_np.pi)*a*kblock/L
+			if self.conserved: self.conserved += " & T & P"
+			else: self.conserved = "T & P"
+
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_t_p_basis(L,Nup,pblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = make_t_p_basis(L,pblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+#			print self.basis
+#			print self.N
+#			print self.m
+
+		elif (type(kblock) is int) and (type(zblock) is int):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & Z"
 			else: self.conserved = "T & Z"
-
-#			self.N,self.m = make_t_z_basis(L,self.basis,zblock,kblock,a)
-#			self.m = self.m[self.basis != -1]
-#			self.N = self.N[self.basis != -1]
-#			self.basis = self.basis[self.basis != -1]
-#			self.Ns = len(self.basis)
 
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
@@ -86,19 +102,10 @@ class pbc(base):
 			self.m = self.m[:self.Ns]
 			self.basis = self.basis[:self.Ns]
 	
-
-
 		elif type(kblock) is int:
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T"
 			else: self.conserved = "T"
-
-#			self.N = make_t_basis(L,self.basis,kblock,a)
-#			self.m = -_np.ones((self.Ns,),dtype=_np.int8)
-#			self.m = self.m[self.basis != -1]
-#			self.N = self.N[self.basis != -1]
-#			self.basis = self.basis[self.basis != -1]
-#			self.Ns = len(self.basis)	
 
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
@@ -118,19 +125,7 @@ class pbc(base):
 	def Op(self,J,dtype,opstr,indx):
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
-
-		row=_array(xrange(self.Ns),dtype=_index_type)
-		ME,col = op[self.conserved](self.N,self.m,self.basis,opstr,indx,self.L,dtype,**self.blocks)
-		mask = col >= 0
-		row = row[ mask ]
-		col = col[ mask ]
-		ME = ME[ mask ]
-		col -= 1 #convert from fortran index to c index.
-		ME*=J
-		
-		
-		return ME,row,col
-		
+		return op[self.conserved](self.N,self.m,self.basis,opstr,indx,J,self.L,dtype,**self.blocks)
 
 
 

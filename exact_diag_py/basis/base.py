@@ -56,18 +56,9 @@ class base:
 	def Op(self,J,dtype,opstr,indx):
 		row=_array(xrange(self.Ns),dtype=_index_type)
 		if self.conserved:
-			ME,col=op_m(self.basis,opstr,indx,dtype)
-			mask = col > 0
-			row = row[ mask ]
-			col = col[ mask ]
-			ME = ME[ mask ]
-			col -= 1 #convert from fortran index to c index.
+			return op_m(self.basis,opstr,indx,J,dtype)
 		else:
-			ME,col=SpinOp(self.basis,opstr,indx,dtype)
-
-	
-		ME*=J
-		return ME,row,col
+			return SpinOp(self.basis,opstr,indx,J,dtype)
 			
 
 
