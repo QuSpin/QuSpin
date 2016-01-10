@@ -70,6 +70,7 @@ from exact_diag_py.basis import basis1d
 basis=basis1d(L,Nup=Nup,pblock=pblock,...)
 H=hamiltonian(static_list,dynamic_list,L,basis=basis)
 ```
+NOTE: Using symmetry reduction on hamiltonians which do not have said symmetry will cause the code to behave incorrectly. later we will impliment checks to see which symmetries are allowed based on the user input.
 
 # Numpy dtype:
 The user can specify the numpy data type to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128.
