@@ -5,11 +5,13 @@ import numpy as _np
 # local modules
 from base import base, BasisError
 
-from constructors import op_t,op_t_z,op_t_p
+from constructors import op_t,op_t_z,op_t_p,op_t_pz,op_t_p_z
 
 from constructors import make_t_basis,make_m_t_basis
 from constructors import make_t_z_basis,make_m_t_z_basis
 from constructors import make_t_p_basis,make_m_t_p_basis
+from constructors import make_t_pz_basis,make_m_t_pz_basis
+from constructors import make_t_p_z_basis,make_m_t_p_z_basis
 
 
 
@@ -26,7 +28,11 @@ op={"T":op_t,
 		"T & Z":op_t_z,
 		"M & T & Z":op_t_z,
 		"T & P":op_t_p,
-		"M & T & P":op_t_p}
+		"M & T & P":op_t_p,
+		"T & PZ":op_t_pz,
+		"M & T & PZ":op_t_pz,
+		"T & P & Z":op_t_p_z,
+		"M & T & P & Z":op_t_p_z}
 
 
 
@@ -56,7 +62,7 @@ class pbc(base):
 		if (type(pzblock) is int) and (abs(pzblock) != 1):
 			raise ValueError("pzblock must be +/- 1.")
 
-		if (type(Nup) is int) and (type(zblock) is int):
+		if (type(Nup) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
 			if (L % 2) != 0:
 				raise ValueError("spin inversion symmetry must be used with even number of sites.")
 			if Nup != L/2:
@@ -66,8 +72,39 @@ class pbc(base):
 		self.blocks=blocks
 		# if symmetry is needed, the reference states must be found.
 		# This is done through via the fortran constructors.
+		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
+			self.k=2*(_np.pi)*a*kblock/L
+			if self.conserved: self.conserved += " & T & P & Z"
+			else: self.conserved = "T & P & Z"
 
-		if (type(kblock) is int) and (type(pblock) is int):
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int16)
+			if (type(Nup) is int):
+				self.Ns = make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = make_t_p_z_basis(L,pblock,zblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+
+		elif (type(kblock) is int) and (type(pzblock) is int):
+			self.k=2*(_np.pi)*a*kblock/L
+			if self.conserved: self.conserved += " & T & PZ"
+			else: self.conserved = "T & PZ"
+
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = make_m_t_pz_basis(L,Nup,pzblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = make_t_pz_basis(L,pzblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+
+		elif (type(kblock) is int) and (type(pblock) is int):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & P"
 			else: self.conserved = "T & P"
@@ -82,9 +119,6 @@ class pbc(base):
 			self.N = self.N[:self.Ns]
 			self.m = self.m[:self.Ns]
 			self.basis = self.basis[:self.Ns]
-#			print self.basis
-#			print self.N
-#			print self.m
 
 		elif (type(kblock) is int) and (type(zblock) is int):
 			self.k=2*(_np.pi)*a*kblock/L

@@ -4,7 +4,7 @@ from numpy import int32 as _index_type
 from numpy import array as _array
 import numpy as _np
 
-__all__=['op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','SpinOp']
+__all__=['op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','op_t_pz','op_t_p_z','SpinOp']
 
 
 
@@ -221,11 +221,57 @@ def op_t_p(N,m,basis,opstr,indx,J,L,dtype,**blocks):
 	col -= 1 #convert from fortran index to c index.
 	ME*=J
 
-#	print opstr,indx
-#	for i in xrange(len(row)):
-#		print row[i],col[i],ME[i].real
-#	print
+	return ME,row,col
 
+
+
+def op_t_pz(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	pzblock=blocks.get("pzblock")
+
+	dtype = _dtype(dtype)
+	char = _type_conv[dtype.char]
+	fortran_op = basis_ops.__dict__[char+"_t_pz_op"]
+	col,ME,error = fortran_op(N,m,basis,opstr,indx,L,pzblock,kblock,a)
+
+	if error != 0: raise FortranError(_basis_op_errors[error])
+
+	row=_array(xrange(len(basis)),dtype=_index_type)
+	row=_np.concatenate((row,row))
+
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+	col -= 1 #convert from fortran index to c index.
+	ME*=J
+
+	return ME,row,col
+
+
+def op_t_p_z(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	pblock=blocks.get("pblock")
+	zblock=blocks.get("zblock")
+
+	dtype = _dtype(dtype)
+	char = _type_conv[dtype.char]
+	fortran_op = basis_ops.__dict__[char+"_t_p_z_op"]
+	col,ME,error = fortran_op(N,m,basis,opstr,indx,L,pblock,zblock,kblock,a)
+
+	if error != 0: raise FortranError(_basis_op_errors[error])
+
+	row=_array(xrange(len(basis)),dtype=_index_type)
+	row=_np.concatenate((row,row))
+
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+	col -= 1 #convert from fortran index to c index.
+	ME*=J
 
 	return ME,row,col
 

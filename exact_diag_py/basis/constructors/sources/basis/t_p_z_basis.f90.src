@@ -1,15 +1,18 @@
-subroutine checkstate_t_p_z(s,L,k,a,N,m)
+subroutine checkstate_t_p_z(s,L,k,a,N,mp,mz,mpz)
 implicit none
 integer(kind=4), intent(in) :: s,L,k,a
-integer(kind=1), intent(out) :: N,m
+integer(kind=1), intent(out) :: N
+integer(kind=2), intent(out) :: mz,mp,mpz
 integer(kind=4) :: t,i,NN
 
 t=s
 N=-1
-m=-1
+mp=-1
+mz=-1
+mpz=-1
 
 do i=1,L/a
-t=ishftc(t,a,L)
+t=ishftc(t,-a,L)
 if ( t .lt. s ) then
 return
 else if ( t .eq. s) then 
@@ -17,12 +20,29 @@ if ( modulo(k,(L/(a*int(i)))) .ne. 0) then
 return
 end if
 N=int(i,1)
-
 exit
 end if
 end do
 
+
+
 NN = i
+t = s
+call flip_lr(t,L)
+
+do i=0,NN-1
+if (t .lt. s) then
+N = -1
+return
+else if(t .eq. s) then
+mp = int(i,2)
+exit
+end if
+t = ishftc(t,-a,L)
+end do
+
+
+
 t = s
 call flip_all(t,L)
 
@@ -31,13 +51,27 @@ if (t .lt. s) then
 N = -1
 return
 else if(t .eq. s) then
-m = int(i,1)
-return
+mz = int(i,2)
+exit
 end if
-t = ishftc(t,a,L)
+t = ishftc(t,-a,L)
 end do
 
 
+t = s
+call flip_lr(t,L)
+call flip_all(t,L)
+
+do i=0,NN-1
+if (t .lt. s) then
+N = -1
+return
+else if(t .eq. s) then
+mpz = int(i,2)
+return
+end if
+t = ishftc(t,-a,L)
+end do
 
 
 end subroutine
@@ -46,34 +80,6 @@ end subroutine
 
 
 
-!subroutine make_t_p_z_basis(L,mbasis,Ns_m,zblock,kblock,a,N,m)
-!implicit none
-!real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
-!integer(kind=4), intent(in) :: L, kblock, zblock, Ns_m,a
-!integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
-!integer(kind=1), intent(out), dimension(Ns_m) :: N,m
-!integer(kind=4) :: i
-
-!do i=1,Ns_m
-!call checkstate_t_z(mbasis(i),L,kblock,a,N(i),m(i))
-
-!if(m(i) .ge. 0)then
-!if( zblock*dcos(2*kblock*m(i)*pi/L) .eq. -1.0d0) then
-!N(i) = 0
-!m(i) = 0
-!mbasis(i) = -1
-!end if
-!end if
-
-!if(N(i) .lt. 0) then
-!m(i)=0
-!N(i)=0
-!mbasis(i)=-1
-!end if
-
-!end do
-
-!end subroutine
 
 
 
@@ -83,37 +89,122 @@ end subroutine
 
 
 
-
-
-
-
-
-
-subroutine make_t_p_z_basis(L,zblock,kblock,a,N,m,basis,Ns,Ns_out)
+subroutine make_t_p_z_basis(L,pblock,zblock,kblock,a,N,m,basis,Ns,Ns_out)
 implicit none
 real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
-integer(kind=4), intent(in) :: L,zblock,kblock,a,Ns
+integer(kind=4), intent(in) :: L,pblock,zblock,kblock,a,Ns
 integer(kind=4), intent(inout), dimension(Ns) :: basis
-integer(kind=1), intent(inout), dimension(Ns) :: N,m
+integer(kind=1), intent(inout), dimension(Ns) :: N
+integer(kind=2), intent(inout), dimension(Ns) :: m
 integer(kind=4), intent(out) :: Ns_out
+real(kind=8) :: n1,n2,n3,n4
 integer(kind=4) :: s
-integer(kind=1) :: NN,mm
+integer(kind=2) :: mp,mz,mpz
+integer(kind=1) :: NN_temp,NN,sigma,b,f
+
+if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
+b=1
+f=1
+else
+b=-1
+f=1
+end if
 
 
 Ns_out = 0
 do s=0,2**L - 1
-call CheckState_t_z(s,L,kblock,a,NN,mm)
 
-if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*pi/L) .eq. -1.0d0)) then
-NN = -1
-end if
+call CheckState_t_p_z(s,L,kblock,a,NN,mp,mz,mpz)
 
-if(NN .ge. 0) then
+if (NN .ge. 0) then
+if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
+
+do sigma=b,f,2
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
-N(Ns_out) = NN
-m(Ns_out) = mm
+N(Ns_out) = sigma*NN
+m(Ns_out) = int((L+1)**2,2)
+end do
+
+else if((mp .ne. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
+
+do sigma=b,f,2
+NN_temp = NN
+
+n1=1.0d0 + sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+n2=1.0d0 - sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+
+if (n1  .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. (n2 .ne. 0.0d0)) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mp + int(2*(L+1)**2,2)
 end if
+end do
+
+else if((mp .eq. -1) .and. (mz .ne. -1) .and. (mpz .eq. -1)) then
+
+do sigma=b,f,2
+NN_temp=NN
+n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
+if ( n1 .eq. 0.0d0) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mz*int(L+1,2) + int(3*(L+1)**2,2)
+end if
+end do
+
+else if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .ne. -1)) then
+
+do sigma=b,f,2
+NN_temp = NN
+
+n1=1.0d0 + sigma*zblock*pblock*dcos(2*kblock*mpz*a*pi/L)
+n2=1.0d0 - sigma*zblock*pblock*dcos(2*kblock*mpz*a*pi/L)
+if (n1  .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. (n2 .ne. 0.0d0)) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mpz + int(4*(L+1)**2,2)
+end if
+end do
+
+else if((mp .ne. -1) .and. (mz .ne. -1)) then
+
+do sigma=b,f,2
+NN_temp = NN
+
+n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
+n2=1.0d0 + sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+n3=1.0d0 - zblock*dcos(2*kblock*mz*a*pi/L)
+n4=1.0d0 - sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+
+if((n1  .eq. 0.0d0) .or. (n2  .eq. 0.0d0)) NN_temp = -1
+if((sigma .eq. -1) .and. ((n3 .ne. 0.0d0) .or. (n4 .ne. 0.0d0))) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mp + mz * int((L+1),2) + int(5*(L+1)**2,2)
+end if
+
+end do
+
+
+end if
+end if
+
+
 
 end do 
 
@@ -129,16 +220,27 @@ end subroutine
 
 
 
-subroutine make_m_t_p_z_basis(L,Nup,zblock,kblock,a,N,m,basis,Ns,Ns_out)
+subroutine make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,N,m,basis,Ns,Ns_out)
 implicit none
 real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
-integer(kind=4), intent(in) :: L,Nup,zblock,kblock,a,Ns
+integer(kind=4), intent(in) :: L,Nup,pblock,zblock,kblock,a,Ns
 integer(kind=4), intent(inout) ,dimension(Ns) :: basis
-integer(kind=1), intent(inout), dimension(Ns) :: N,m
+integer(kind=1), intent(inout), dimension(Ns) :: N
+integer(kind=2), intent(inout), dimension(Ns) :: m
 integer(kind=4), intent(out) :: Ns_out
+real(kind=8) :: n1,n2,n3,n4
 integer(kind=4), dimension(L) :: i_bits
-Integer(kind=4) :: s,t
-integer(kind=1) :: NN,mm
+integer(kind=4) :: s,t
+integer(kind=2) :: mp,mz,mpz
+integer(kind=1) :: NN_temp,NN,sigma,b,f
+
+if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
+b=1
+f=1
+else
+b=-1
+f=1
+end if
 
 i_bits=0
 do s=1,Nup
@@ -149,39 +251,96 @@ end do
 Ns_out = 0
 s=sum(i_bits)
 
-if(Nup.eq.0) then
-
-call CheckState_t_z(s,L,kblock,a,NN,mm)
-
-if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*pi/L) .eq. -1.0d0)) then
-NN = -1
-end if
-
-if(NN .ge. 0) then
-Ns_out = Ns_out + 1
-basis(Ns_out) = s
-N(Ns_out) = NN
-m(Ns_out) = mm
-end if
-
-return
-
-end if
-
-
 do while(.not.btest(s,L))
 
-call CheckState_t_z(s,L,kblock,a,NN,mm)
+call CheckState_t_p_z(s,L,kblock,a,NN,mp,mz,mpz)
 
-if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*pi/L) .eq. -1.0d0)) then
-NN = -1
-end if
+if (NN .ge. 0) then
+if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
 
-if(NN .ge. 0) then
+do sigma=b,f,2
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
-N(Ns_out) = NN
-m(Ns_out) = mm
+N(Ns_out) = sigma*NN
+m(Ns_out) = int((L+1)**2,2)
+end do
+
+else if((mp .ne. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
+
+do sigma=b,f,2
+NN_temp = NN
+
+n1=1.0d0 + sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+n2=1.0d0 - sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+
+if (n1  .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. (n2 .ne. 0.0d0)) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mp + int(2*(L+1)**2,2)
+end if
+end do
+
+else if((mp .eq. -1) .and. (mz .ne. -1) .and. (mpz .eq. -1)) then
+
+do sigma=b,f,2
+NN_temp=NN
+n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
+if ( n1 .eq. 0.0d0) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mz*int(L+1,2) + int(3*(L+1)**2,2)
+end if
+end do
+
+else if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .ne. -1)) then
+
+do sigma=b,f,2
+NN_temp = NN
+
+n1=1.0d0 + sigma*zblock*pblock*dcos(2*kblock*mpz*a*pi/L)
+n2=1.0d0 - sigma*zblock*pblock*dcos(2*kblock*mpz*a*pi/L)
+if (n1  .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. (n2 .ne. 0.0d0)) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mpz + int(4*(L+1)**2,2)
+end if
+end do
+
+else if((mp .ne. -1) .and. (mz .ne. -1)) then
+
+do sigma=b,f,2
+NN_temp = NN
+
+n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
+n2=1.0d0 + sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+n3=1.0d0 - zblock*dcos(2*kblock*mz*a*pi/L)
+n4=1.0d0 - sigma*pblock*dcos(2*kblock*mp*a*pi/L)
+
+if((n1  .eq. 0.0d0) .or. (n2  .eq. 0.0d0)) NN_temp = -1
+if((sigma .eq. -1) .and. ((n3 .ne. 0.0d0) .or. (n4 .ne. 0.0d0))) NN_temp = -1
+
+if(NN_temp .ge. 0) then
+Ns_out = Ns_out + 1
+basis(Ns_out) = s
+N(Ns_out) = sigma*NN_temp
+m(Ns_out) = mp + mz * int((L+1),2) + int(5*(L+1)**2,2)
+end if
+
+end do
+
+
+end if
 end if
 
 t=ior(s,s-1)+1

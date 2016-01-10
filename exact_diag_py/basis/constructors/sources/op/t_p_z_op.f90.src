@@ -1,13 +1,12 @@
-subroutine refstate_t_p_z(s,L,a,ll,g)
+subroutine refstate_t_p_z(s,L,a,ll,q,g)
 implicit none
 integer(kind=4), intent(in) :: L,a
 integer(kind=4), intent(inout) :: s
-integer(kind=4), intent(out) :: ll,g
+integer(kind=4), intent(out) :: ll,g,q
 integer(kind=4) :: r,t,i
 
-ll = 0; g = 0
+ll = 0; q = 0; g = 0;
 r = s; t = s
-
 do i=1,L/a
 t=ishftc(t,-a,L)
 if(t.lt.r) then
@@ -17,11 +16,29 @@ end do
 
 t = s
 call flip_all(t,L)
-
 do i=1,L/a
 t=ishftc(t,-a,L)
 if(t.lt.r) then
-g = 1; ll = i; r = t
+g = 1; q = 0; ll = i; r = t
+end if
+end do
+
+t = s
+call flip_lr(t,L)
+do i=1,L/a
+t=ishftc(t,-a,L)
+if(t.lt.r) then
+g = 0; q = 1; ll = i; r = t
+end if
+end do
+
+t = s
+call flip_lr(t,L)
+call flip_all(t,L)
+do i=1,L/a
+t=ishftc(t,-a,L)
+if(t.lt.r) then
+g = 1; q = 1; ll = i; r = t
 end if
 end do
 
@@ -35,73 +52,238 @@ end subroutine
 
 
 
-
-subroutine <name=s,d,c,z>_t_p_z_op(N,m,basis,Ns,opstr,indx,N_indx,L,zblock,kblock,a,col,ME,error)
+subroutine <name=s,d,c,z>_t_p_z_op(N,m,basis,Ns,opstr,indx,N_indx,L,pblock,zblock,kblock,a,col,ME,error)
 implicit none
 <re_type=real(kind=4),real(kind=8),real(kind=4),real(kind=8)>, parameter :: pi=4.0<d0=,d0,,d0>*<d=,d,,d>atan(1.0<d0>)
 <cp_type=complex(kind=4),complex(kind=8),complex(kind=4),complex(kind=8)>, parameter :: i=<d>cmplx(0.0,1.0<d0>)
-integer(kind=4), intent(in) :: Ns, N_indx, L, zblock, kblock, a
+integer(kind=4), intent(in) :: Ns,N_indx,L,pblock,zblock,kblock,a
 integer(kind=4), intent(in), dimension(N_indx) :: indx
 character, intent(in), dimension(N_indx) :: opstr
+integer(kind=1), intent(in), dimension(Ns) :: N
+integer(kind=2), intent(in), dimension(Ns) :: m
 integer(kind=4), intent(in), dimension(Ns) :: basis
-integer(kind=1), intent(in), dimension(Ns) :: N,m
-integer(kind=4), intent(out), dimension(Ns) :: col
-<type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
+integer(kind=4), intent(out), dimension(2*Ns) :: col
+<type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(2*Ns) :: ME
 integer(kind=4), intent(out) :: error
 integer(kind=4), external :: FindZstate
-<re_type>, external :: <name>_norm_p_z
-<re_type> :: k,N2,N1
+<re_type>, external :: <name2=s,d,s,d>_helement_p_z
+<re_type> :: k
 <cp_type> :: M_E
-integer(kind=4) :: j,s,ll,g
+integer(kind=4) :: j,s,ll,q,g
+integer(kind=4) :: jj,b,c,o,p
 
-
+ME = 0.0<d0>
+col = -1
 call <name>_spinop(basis,Ns,opstr,indx,N_indx,col,ME,error)
+
+ME(Ns+1:2*Ns)=ME(1:Ns)
+
 
 if(error .ne. 0) return
 
 k=(2*pi*a*kblock)/L
 
+if(<d>abs(<d>sin(k)) .le. epsilon(1.0<d0>)) then ! if in k=0 or pi block
+
 do j=1,Ns
-
 s = col(j)
-call refstate_t_z(s,L,a,ll,g)
+call refstate_t_p_z(s,L,a,ll,q,g)
 s = FindZstate(basis,Ns,s)
-col(j)=s
 
-if(s.ge.0) then
+if(s.lt.0) then
+col(j) = -1
+cycle
+end if
 
-N1 = <name>_norm_p_z(k,zblock,N(j),m(j))
-N2 = <name>_norm_p_z(k,zblock,N(s),m(s))
 
-M_E = ME(j)*(zblock**g)*<d=,d,,d>sqrt(N2/N1)*<c,z,c,z>exp(-i*k*ll)
+
+M_E = ME(j)*<name2>_helement_p_z(N(j),m(j),N(s),m(s),L,pblock,zblock,k,q,g,ll)
 
 if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
 ME = 0.0<d0>; col=1 ;error=-1
 return 
 else
 ME(j) = <real,dble,cmplx,dcmplx>(M_E)
-end if
-
+col(j) = s
 end if
 
 end do
+
+else ! not in k=0 or pi block
+
+do j=1,Ns
+
+if((j .gt. 1) .and. (basis(j) .eq. basis(j-1))) then ! checking to see if this is the first representative of a pair of semi-momentum states
+cycle
+else if((j .lt. Ns) .and. (basis(j) .eq. basis(j+1))) then
+o=2
+else
+o=1
+end if
+
+s = col(j)
+call refstate_t_p_z(s,L,a,ll,q,g)
+s = FindZstate(basis,Ns,s)
+
+
+if(s .lt. 0) then
+do jj=j,j+o-1
+col(jj)=-1
+end do
+cycle
+end if
+
+if((s.eq.j).and.(q.eq.0).and.(g.eq.0).and.(ll.eq.0)) then ! if matrix element is diagonal
+
+do jj=j,j+o-1
+M_E = <name2>_helement_p_z(N(jj),m(jj),N(jj),m(jj),L,pblock,zblock,k,q,g,ll) * ME(jj)
+
+if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
+ME = 0.0<d0>; col=1 ;error=-1
+return
+end if 
+ME(jj) = <real,dble,cmplx,dcmplx>(M_E)
+col(jj) = jj
+
+end do
+
+else ! not diagonal
+
+
+
+! checking to see if this is the first representative of a pair of semi-momentum states
+if((s .gt. 1) .and. (basis(s) .eq. basis(s-1))) then 
+s = s - 1
+p = 2
+else if((s .lt. Ns) .and. (basis(s) .eq. basis(s+1))) then
+p = 2
+else
+p = 1
+end if
+
+
+do c=0,o-1
+do b=0,p-1
+
+jj=j+c+b*Ns
+M_E = <name2>_helement_p_z(N(j+c),m(j+c),N(s+b),m(s+b),L,pblock,zblock,k,q,g,ll) * ME(jj)
+
+if(isnan(real(M_E)))then
+print*, j+c,s+b,q,g,ll
+end if
+
+if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
+ME=0.0<d0>; col=1 ;error=-1
+return 
+end if
+
+col(jj)=s+b
+ME(jj) = <real,dble,cmplx,dcmplx>(M_E)
+
+end do
+end do
+
+
+end if ! end matrix element is diagonal
+end do
+end if ! end in k=0 or pi block
+
+!print*, col
+
 
 end subroutine
 
 
 
-
-function <name>_norm_p_z(k,zblock,N,m)
+function <name=s,d>_helement_p_z(N_a,m_a,N_b,m_b,L,pblock,zblock,k,q,g,ll)
 implicit none
-<re_type> :: <name>_norm_p_z
-integer(kind=1), intent(in) :: N,m
-integer(kind=4), intent(in) :: zblock
-<re_type>, intent(in) :: k
+! i: row index
+! j: col index
+<re_type=real(kind=4),real(kind=8)> :: <name>_helement_p_z
+integer(kind=4), intent(in) :: L,pblock,zblock,q,g,ll
+integer(kind=1), intent(in) :: N_a,N_b
+integer(kind=2), intent(in) :: m_a,m_b
+<re_type>,intent(in) :: k
+integer(kind=4) :: sigma_a,c_a,mz_a,mp_a
+integer(kind=4) :: sigma_b,c_b,mz_b,mp_b
+<re_type> :: norm_a,norm_b,bc,N_ratio
+<re_type>, external :: <name>_norm_p_z
 
-if(m .ge. 0) then
-<name>_norm_p_z = (zblock*<d>cos(k*m) + 1.0<d0>)/N
+
+sigma_a = sign(1,int(N_a,4))
+c_a = int(m_a,4)/(L+1)**2
+mz_a = modulo(int(m_a,4)/(L+1),L+1)
+mp_a = modulo(int(m_a,4),L+1)
+norm_a = <name>_norm_p_z(k,pblock,zblock,N_a,mp_a,mz_a,c_a)
+
+sigma_b = sign(1,int(N_b,4))
+c_b = int(m_b,4)/(L+1)**2
+mz_b = modulo(int(m_b,4)/(L+1),L+1)
+mp_b = modulo(int(m_b,4),L+1)
+norm_b = <name>_norm_p_z(k,pblock,zblock,N_b,mp_b,mz_b,c_b)
+
+N_ratio = <d=,d>sqrt(<d>abs(norm_b/norm_a))
+
+bc = 1.0<d0=,d0>
+
+if(sigma_a .eq. sigma_b) then
+
+if((c_b .eq. 1) .or. (c_b .eq. 3))then
+bc=<d>cos(k*ll)
+else if((c_b .eq. 2) .or. (c_b .eq. 5))then
+bc=(<d>cos(k*ll) + sigma_a*pblock*<d>cos(k*(ll-mp_b)))/(1.0<d0>+ sigma_a*pblock*<d>cos(k*mp_b))
+else if(c_b .eq. 4) then
+bc=(<d>cos(k*ll) + sigma_a*zblock*pblock*<d>cos(k*(ll-mp_b)))/(1.0<d0> + sigma_a*zblock*pblock*<d>cos(k*mp_b))
+end if
+
+else
+
+if((c_b .eq. 1) .or. (c_b .eq. 3))then
+bc = -sigma_a*<d>sin(k*ll)
+else if((c_b .eq. 2) .or. (c_b .eq. 5))then
+bc=(-sigma_a*<d>sin(k*ll) + pblock*<d>sin(k*(ll-mp_b)))/(1.0<d0> - sigma_a*pblock*<d>cos(k*mp_b))
+else if(c_b .eq. 4) then
+bc=(-sigma_a*<d>sin(k*ll) + zblock*pblock*<d>sin(k*(ll-mp_b)))/(1.0<d0> - sigma_a*zblock*pblock*<d>cos(k*mp_b))
+end if
+
+end if
+
+if(isnan(real(N_ratio)))then
+print*, c_a,c_b,norm_a,norm_b
+end if
+
+<name>_helement_p_z = ((sigma_a*pblock)**q)*(zblock**g)*N_ratio*bc
+
+end function
+
+
+
+
+
+function <name=s,d>_norm_p_z(k,pblock,zblock,N,mm,nn,c)
+implicit none
+<re_type=real(kind=4),real(kind=8)> :: <name>_norm_p_z
+<re_type>, intent(in) :: k
+integer(kind=1), intent(in) :: N
+integer(kind=4), intent(in) :: mm,nn,c,pblock,zblock
+integer(kind=4) :: sigma
+
+sigma = sign(1,int(N,4))
+if(c .eq. 1) then
+<name>_norm_p_z =  1.0<d0=,d0>/N
+else if(c .eq. 2) then
+<name>_norm_p_z = (1.0<d0> + sigma*pblock*<d=,d>cos(k*mm))/N
+else if(c .eq. 3) then
+<name>_norm_p_z = (1.0<d0> + zblock*<d>cos(k*nn))/N
+else if(c .eq. 4) then
+<name>_norm_p_z = (1.0<d0> + sigma*pblock*zblock*<d>cos(k*mm))/N
+else if(c .eq. 5) then
+<name>_norm_p_z = (1.0<d0> + sigma*pblock*<d>cos(k*mm))*(1.0<d0> + zblock*<d>cos(k*nn))/N
 else
 <name>_norm_p_z =  1.0<d0>/N
 end if
 
 end function
+
+
+

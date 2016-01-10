@@ -15,9 +15,6 @@ class basis1d:
 
 		# testing blocks for basis
 		if (type(kblock) is int):
-			if (type(pblock) is int) and (type(zblock) is int):
-				raise NotImplementedError
-
 			self.B=_pbc(Length,**basis_params)
 		elif (type(zblock) is int) or (type(pblock) is int) or (type(pzblock) is int):
 			self.B=_obc(Length,**basis_params)

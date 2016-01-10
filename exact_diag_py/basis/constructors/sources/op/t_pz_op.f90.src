@@ -114,6 +114,13 @@ end do
 cycle
 end if
 
+if(<z=,d,c,z>abs(ME(j)) .le. epsilon(1.0<d0>))then
+do jj=j,j+o-1
+col(jj)=-1
+end do
+cycle
+end if
+
 if((s.eq.j).and.(qg.eq.0).and.(ll.eq.0)) then ! if matrix element is diagonal
 
 do jj=j,j+o-1
@@ -149,18 +156,14 @@ do b=0,p-1
 jj=j+c+b*Ns
 M_E = <name2>_helement_pz(N(j+c),m(j+c),N(s+b),m(s+b),pzblock,k,qg,ll) * ME(jj)
 
+
 if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
 ME=0.0<d0>; col=1 ;error=-1
-return 
+return
 end if
 
 col(jj)=s+b
 ME(jj) = <real,dble,cmplx,dcmplx>(M_E)
-!if(((j+c).eq.1.and.(s+b).eq.3).or.((j+c).eq.3.and.(s+b).eq.1))then
-!print*, o,p,N(j+c),N(s+b),m(s+b),qg,ll
-!print*, j+c,s+b,ME(jj)
-!print*,
-!end if
 
 end do
 end do
@@ -234,3 +237,5 @@ else
 end if
 
 end function
+
+
