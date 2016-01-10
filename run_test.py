@@ -591,10 +591,10 @@ def check_pbc(Lmax):
 
 
 
-check_m(8)
-check_opstr(8)
-check_obc(8)
-check_pbc(8)
+#check_m(8)
+#check_opstr(8)
+#check_obc(10)
+check_pbc(10)
 
 
 

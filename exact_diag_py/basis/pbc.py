@@ -3,7 +3,7 @@ from numpy import int32 as _index_type
 from numpy import array as _array
 import numpy as _np
 # local modules
-from base import base, BasisError
+from base import base, BasisError,ncr
 
 from constructors import op_t,op_t_z,op_t_p,op_t_pz,op_t_p_z
 
@@ -49,9 +49,22 @@ class pbc(base):
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
 		a=blocks.get("a")
+		self.blocks=blocks
 		if a is None:
 			a=1
 			blocks["a"]=1
+
+		if L>30: raise NotImplementedError('basis can only be constructed for L<31')
+		self.L=L
+		if type(Nup) is int:
+			if Nup < 0 or Nup > L: raise BasisError("0 <= Nup <= %d" % L)
+			self.Nup=Nup
+			self.conserved="M"
+			self.Ns=ncr(L,Nup) 
+		else:
+			self.conserved=""
+			self.Ns=2**L
+
 
 		if (type(zblock) is int) and (abs(zblock) != 1):
 			raise ValueError("zblock must be +/- 1.")
@@ -68,15 +81,22 @@ class pbc(base):
 			if Nup != L/2:
 				raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector.")
 
-		base.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
-		self.blocks=blocks
+		if(L >= 10): frac = 0.6
+		else: frac = 0.7
+
+		if L > 1: L_m = L-1
+		else: L_m = 1
+
+		#base.__init__(self,L,Nup) # this calls the initialization of the basis class which initializes the basis list given Nup and Mcon/symm
 		# if symmetry is needed, the reference states must be found.
 		# This is done through via the fortran constructors.
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & P & Z"
 			else: self.conserved = "T & P & Z"
+			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m)))
 
+			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			self.m=_np.empty(self.basis.shape,dtype=_np.int16)
 			if (type(Nup) is int):
@@ -92,7 +112,9 @@ class pbc(base):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & PZ"
 			else: self.conserved = "T & PZ"
+			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m)))
 
+			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
@@ -108,7 +130,10 @@ class pbc(base):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & P"
 			else: self.conserved = "T & P"
+			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m)))
 
+
+			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
@@ -124,7 +149,9 @@ class pbc(base):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & Z"
 			else: self.conserved = "T & Z"
+			self.Ns = int(_np.ceil((frac*self.Ns*a)/float(L_m)))
 
+			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
@@ -140,7 +167,9 @@ class pbc(base):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T"
 			else: self.conserved = "T"
+			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m)))
 
+			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
 				self.Ns = make_m_t_basis(L,Nup,kblock,a,self.N,self.basis)

@@ -38,7 +38,7 @@ class base:
 		# This is the constructor of the class Basis:
 		#		L: length of chain
 		#		Nup: number of up spins if restricting magnetization sector.
-		if L>30: raise BasisError("L must be less than 31") 
+		if L>30: raise NotImplementedError('basis can only be constructed for L<31')
 		self.L=L
 		if type(Nup) is int:
 			if Nup < 0 or Nup > L: raise BasisError("0 <= Nup <= %d" % L)
