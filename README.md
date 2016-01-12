@@ -22,7 +22,7 @@ example, transverse field ising model with time dependent field for L=10 chain:
 
 ```python
 # python script
-from exact_diag_py.spins import hamiltonian
+from exact_diag_py.hamiltonian import hamiltonian
 
 L=10
 v=0.01
