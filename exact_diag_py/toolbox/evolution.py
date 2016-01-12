@@ -31,7 +31,8 @@ def evolve(H,v0,t0,time,real_time=True,verbose=False,**integrator_params):
 	if H.Ns <= 0:
 		return _np.asarray([])
 
-	v0=_np.asarray(v0)
+	v0 = _np.asarray(v0)
+	v0 = _np.reshape(v0,(-1,))
 	
 	# SO = -i*H(t)*y
 	# ISO = -H(t)*y
