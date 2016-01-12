@@ -3,41 +3,70 @@ from ..basis import basis1d as _basis1d
 from make_hamiltonian import make_static as _make_static
 from make_hamiltonian import make_dynamic as _make_dynamic
 
-#python 2.7 modules
-from scipy.linalg import norm as _norm
-
 # need linear algebra packages
 from scipy.sparse.linalg  import eigsh as _eigsh
 from scipy.linalg import eigh as _eigh
 from scipy.linalg import eigvalsh as _eigvalsh
 
 import numpy as _np
-from copy import deepcopy as _deepcopy
 
-import warnings
+from inspect import isfunction as _isfunction
+from copy import deepcopy as _deepcopy
 
 
 #global names:
 supported_dtypes=(_np.float32, _np.float64, _np.complex64, _np.complex128)
 
-
-
 class hamiltonian:
-	def __init__(self,static_list,dynamic_list,l,dtype=_np.complex128,**basis_params):
+	def __init__(self,static_list,dynamic_list,L,dtype=_np.complex128,**basis_params):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
+
 		basis=basis_params.get('basis')
-		if basis is None: basis=_basis1d(l,**basis_params)
+		if basis is None: basis=_basis1d(L,**basis_params)
+
+		if type(L) is not int:
+			raise TypeError('expecting integer for L')
 
 		if not isinstance(basis,_basis1d):
-			raise TypeError('basis is not instance of Basis1D')
+			raise TypeError('basis is not instance of basis1d')
 		if not (dtype in supported_dtypes):
 			raise TypeError('Hamiltonian1D does not support type: '+str(dtype))
 
+		if type(static_list) in [list,tuple]:
+			for sub_list in static_list:
+				if (type(sub_list) in [list,tuple]) and (len(sub_list) == 2):
+					if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
+					if type(sub_list[1]) in [list,tuple]:
+						for sub_sub_list in sub_list[1]:
+							if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 1):
+								for element in sub_sub_list:
+									if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
+							else: raise TypeError('expecting list for indx') 
+					else: raise TypeError('expecting a list of one or more indx')
+				else: raise TypeError('expecting list containing opstr and list of indx')
+		else: raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
 
-		self.l=l
+		if type(dynamic_list) in [list,tuple]:
+			for sub_list in dynamic_list:
+				if (type(sub_list) in [list,tuple]) and (len(sub_list) == 4):
+					if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
+					if type(sub_list[1]) in [list,tuple]:
+						for sub_sub_list in sub_list[1]:
+							if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 1):
+								for element in sub_sub_list:
+									if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
+							else: raise TypeError('expecting list for indx') 
+					else: raise TypeError('expecting a list of one or more indx')
+					if not _isfunction(sub_list[2]): raise TypeError('expecting callable object for driving function')
+					if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
+				else: raise TypeError('expecting list containing opstr, list of one or more indx, and callable function')
+		else: raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
+
+
+		self.L=L
 		self.Ns=basis.Ns
 		self.dtype=dtype
 		if self.Ns > 0:
@@ -84,7 +113,7 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _csr_matrix(_np.asarray([[]]))
 		if not _np.isscalar(time):
-			raise NotImplementedError
+			raise TypeError('expecting scalar arguement for time')
 
 		H=self.static	
 		for f,f_args,Hd in self.dynamic:
@@ -105,7 +134,7 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _np.asarray([[]])
 		if not _np.isscalar(time):
-			raise NotImplementedError
+			raise TypeError('expecting scalar arguement for time')
 
 		return self.tocsr(time=time).todense(order=order,out=out)
 
@@ -163,7 +192,7 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _np.asarray([])
 		if not _np.isscalar(time):
-			raise NotImplementedError
+			raise TypeError('expecting scalar arguement for time')
 
 		V=_np.asarray(V)
 		V_dot = self.static.dot(V)	
@@ -190,7 +219,7 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return None
 		if not _np.isscalar(time):
-			raise NotImplementedError
+			raise TypeError('expecting scalar arguement for time')
 
 
 		Vl=_np.asarray(Vl)
@@ -214,6 +243,9 @@ class hamiltonian:
 			solves for eigen values and eigen vectors, but can only solve for a few of them accurately.
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar arguement for time')
+
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
@@ -231,6 +263,9 @@ class hamiltonian:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
 			uses wrapped lapack functions which are contained in module py_lapack
 		"""
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar arguement for time')
+
 		if self.Ns <= 0:
 			return _np.asarray([]),_np.asarray([[]])
 
@@ -253,11 +288,11 @@ class hamiltonian:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values 
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
-		if self.Ns <= 0:
-			return _np.asarray([])
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar arguement for time')
 
 		if self.Ns <= 0:
-			return _np.asarray([]),_np.asarray([[]])
+			return _np.asarray([])
 
 		H_dense=_np.zeros((self.Ns,self.Ns),dtype=self.dtype)
 		self.todense(time=time,out=H_dense)

@@ -1,5 +1,6 @@
 from exact_diag_py.spins import hamiltonian
 from exact_diag_py.basis import basis1d
+from inspect import isfunction
 import numpy as np
 from scipy.linalg import norm
 from numpy.random import random,seed
@@ -545,17 +546,17 @@ def check_t_p_z(L,dtype,Nup=None):
 		Ekpz2.sort()
 			
 		if np.sum(np.abs(Ekp1-Ekpz1)) > Ns*eps:
-			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
+			raise Exception( "test failed t z p+  symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 		if np.sum(np.abs(Ekp2-Ekpz2)) > Ns*eps:
-			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
+			raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 		if(kblock not in [0,L_2]):
 			if np.sum(np.abs(Ekp2-Ekpz1)) > Ns*eps:
-				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
+				raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 			if np.sum(np.abs(Ekp1-Ekpz2)) > Ns*eps:
-				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
+				raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 
 def check_pbc(Lmax):
@@ -591,14 +592,9 @@ def check_pbc(Lmax):
 
 
 
-#check_m(8)
-#check_opstr(8)
-#check_obc(10)
-check_pbc(10)
-
-
-
-
-
+check_m(4)
+check_opstr(4)
+check_obc(4)
+check_pbc(4)
 
 

@@ -4,19 +4,12 @@ from numpy import int32 as _index_type
 from numpy import array as _array
 import numpy as _np
 
-__all__=['op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','op_t_pz','op_t_p_z','SpinOp']
-
-
+__all__=['op','op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','op_t_pz','op_t_p_z']
 
 _type_conv = {'f': 's', 'd': 'd', 'F': 'c', 'D': 'z'}
 
 _basis_op_errors={1:"opstr character not recognized.",
 									-1:"attemping to use real hamiltonian with complex matrix elements."}
-
-
-
-
-
 
 
 
@@ -30,8 +23,23 @@ class FortranError(Exception):
 
 
 
+def op(opstr,indx,J,dtype,basis,**blocks):
 
-def op_m(basis,opstr,indx,J,dtype):
+	dtype = _dtype(dtype)
+	char = _type_conv[dtype.char]
+	fortran_op = basis_ops.__dict__[char+"_spinop"]
+	col,ME,error = fortran_op(basis,opstr,indx)
+
+	if error != 0: raise FortranError(_basis_op_errors[error])
+	row=_array(xrange(len(basis)),dtype=_index_type)
+	ME*=J
+
+
+	return ME,row,col
+
+
+
+def op_m(opstr,indx,J,dtype,basis,**blocks):
 
 	dtype = _dtype(dtype)
 	char = _type_conv[dtype.char]
@@ -54,7 +62,7 @@ def op_m(basis,opstr,indx,J,dtype):
 
 
 
-def op_z(N,basis,opstr,indx,J,L,dtype,**blocks):
+def op_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 
 	dtype = _dtype(dtype)
@@ -79,7 +87,7 @@ def op_z(N,basis,opstr,indx,J,L,dtype,**blocks):
 
 
 
-def op_p(N,basis,opstr,indx,J,L,dtype,**blocks):
+def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
 	pblock=blocks.get("pblock")
 
 	dtype = _dtype(dtype)
@@ -103,7 +111,7 @@ def op_p(N,basis,opstr,indx,J,L,dtype,**blocks):
 
 
 
-def op_pz(N,basis,opstr,indx,J,L,dtype,**blocks):
+def op_pz(opstr,indx,J,dtype,N,basis,L,**blocks):
 	pzblock=blocks.get("pzblock")
 
 	dtype = _dtype(dtype)
@@ -126,7 +134,7 @@ def op_pz(N,basis,opstr,indx,J,L,dtype,**blocks):
 
 
 
-def op_p_z(N,basis,opstr,indx,J,L,dtype,**blocks):
+def op_p_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 	pblock=blocks.get("pblock")
 
@@ -151,7 +159,7 @@ def op_p_z(N,basis,opstr,indx,J,L,dtype,**blocks):
 
 
 
-def op_t(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 
@@ -176,7 +184,7 @@ def op_t(N,m,basis,opstr,indx,J,L,dtype,**blocks):
 
 
 
-def op_t_z(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+def op_t_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	zblock=blocks.get("zblock")
@@ -199,7 +207,7 @@ def op_t_z(N,m,basis,opstr,indx,J,L,dtype,**blocks):
 	return ME,row,col
 
 
-def op_t_p(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+def op_t_p(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pblock=blocks.get("pblock")
@@ -225,7 +233,7 @@ def op_t_p(N,m,basis,opstr,indx,J,L,dtype,**blocks):
 
 
 
-def op_t_pz(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+def op_t_pz(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pzblock=blocks.get("pzblock")
@@ -250,7 +258,7 @@ def op_t_pz(N,m,basis,opstr,indx,J,L,dtype,**blocks):
 	return ME,row,col
 
 
-def op_t_p_z(N,m,basis,opstr,indx,J,L,dtype,**blocks):
+def op_t_p_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pblock=blocks.get("pblock")
@@ -272,23 +280,6 @@ def op_t_p_z(N,m,basis,opstr,indx,J,L,dtype,**blocks):
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
 	ME*=J
-
-	return ME,row,col
-
-
-
-def SpinOp(basis,opstr,indx,J,dtype):
-
-	dtype = _dtype(dtype)
-	char = _type_conv[dtype.char]
-	fortran_op = basis_ops.__dict__[char+"_spinop"]
-	col,ME,error = fortran_op(basis,opstr,indx)
-
-	if error != 0: raise FortranError(_basis_op_errors[error])
-
-	row=_array(xrange(len(basis)),dtype=_index_type)
-	ME*=J
-
 
 	return ME,row,col
 
