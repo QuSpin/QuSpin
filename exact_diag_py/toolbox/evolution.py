@@ -1,4 +1,4 @@
-from ..spins import hamiltonian as _hamiltonian
+from ..hamiltonian import hamiltonian as _hamiltonian
 
 from krylov import expm_krylov as _expm_krylov
 

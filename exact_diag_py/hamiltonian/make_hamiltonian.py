@@ -1,5 +1,5 @@
 # the final version the sparse matrices are stored as, good format for dot produces with vectors.
-from scipy.sparse import csr_matrix as _csr_matrix
+import scipy.sparse as _sp
 
 import numpy as _np
 
@@ -20,13 +20,13 @@ def make_static(basis,static_list,dtype):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 	Ns=basis.Ns
-	H=_csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype) 
+	H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype) 
 	for opstr,bonds in static_list:
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
 			ME,row,col = basis.Op(J,dtype,opstr,indx)
-			Ht=_csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+			Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 			H+=Ht
 			del Ht
 			H.sum_duplicates() # sum duplicate matrix elements
@@ -69,7 +69,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 	Ns=basis.Ns
 	dynamic=[]
 	if dynamic_list:
-		H=_csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
+		H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
 		for opstr,bonds,f,f_args in dynamic_list:
 			if _np.isscalar(f_args): raise TypeError("function arguements must be iterable")
 			test_function(f,f_args)
@@ -77,7 +77,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 				J=bond[0]
 				indx=bond[1:]
 				ME,row,col = basis.Op(J,dtype,opstr,indx)
-				Ht=_csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+				Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 				H+=Ht
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements

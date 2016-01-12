@@ -1,6 +1,6 @@
 def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
-	config = Configuration('spins', parent_package, top_path)
+	config = Configuration('hamiltonian', parent_package, top_path)
 	return config
 
 if __name__ == '__main__':

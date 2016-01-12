@@ -1,5 +1,5 @@
 # local modules
-import spins
+import hamiltonian
 import basis
 import toolbox
 

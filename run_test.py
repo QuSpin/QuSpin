@@ -1,8 +1,7 @@
-from exact_diag_py.spins import hamiltonian
+from exact_diag_py.hamiltonian import hamiltonian
 from exact_diag_py.basis import basis1d
-from inspect import isfunction
 import numpy as np
-from scipy.linalg import norm
+from numpy.linalg import norm
 from numpy.random import random,seed
 
 seed()
@@ -55,7 +54,7 @@ def check_m(Lmax):
 			Em.sort()
 			
 			eps=np.finfo(dtype).eps
-			if np.sum(np.abs(Em-E))/Ns > 100*eps:
+			if norm(Em-E) > Ns*100*eps:
 				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1}".format(L,np.dtype(dtype)) )
 
 
@@ -88,7 +87,7 @@ def check_z(L,dtype,Nup=None):
 	Ez.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Ez-E))/Ns > 100*eps:
+	if norm(Ez-E) > Ns*100*eps:
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -122,7 +121,7 @@ def check_p(L,dtype,Nup=None):
 	Ep.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Ep-E)/Ns) > 100*eps:
+	if norm(Ep-E) > Ns*100*eps:
 		raise Exception( "test failed p symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -154,7 +153,7 @@ def check_pz(L,dtype,Nup=None):
 	Epz.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Epz-E)/Ns) > 100*eps:
+	if norm(Epz-E) > Ns*100*eps:
 		raise Exception( "test failed pz symmetry at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -188,7 +187,8 @@ def check_p_z(L,dtype,Nup=None):
 	Epz.sort()
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Epz-E)/Ns) > 100*eps:
+
+	if norm(Epz-E) > Ns*100*eps:
 		raise Exception( "test failed p z symmetry at L={0:3d} with dtype {1} and Nup {2:2d}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -249,7 +249,7 @@ def check_t(L,dtype,Nup=None):
 	
 
 	eps=np.finfo(dtype).eps
-	if np.sum(np.abs(Et-E))/Ns > 1000*eps:
+	if norm(Et-E) > Ns*10*eps:
 		raise Exception( "test failed t symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -282,7 +282,7 @@ def check_t_z(L,dtype,Nup=None):
 		Ekz.sort()
 
 
-		if np.sum(np.abs(Ek-Ekz))/Ns > 1000*eps:
+		if norm(Ek-Ekz) > Ns*10*eps:
 			raise Exception( "test failed t z symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup) )
 
 
@@ -299,7 +299,7 @@ def check_t_p(L,dtype,Nup=None):
 		static=[["zz",J1],["x",h]]
 
 	L_2=int(L/2)
-	eps=1000*np.finfo(dtype).eps
+	eps=10*np.finfo(dtype).eps
 
 	if dtype is np.float32:
 		kdtype = np.complex64
@@ -321,10 +321,10 @@ def check_t_p(L,dtype,Nup=None):
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		
-		if np.sum(np.abs(Ek-Ek1)) > Ns*eps:
+		if norm(Ek-Ek1) > Ns*eps:
 			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
-		if np.sum(np.abs(Ek-Ek2)) > Ns*eps:
+		if norm(Ek-Ek2) > Ns*eps:
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 	Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=0)
@@ -339,7 +339,7 @@ def check_t_p(L,dtype,Nup=None):
 	Ekp.sort()
 
 
-	if np.sum(np.abs(Ek-Ekp)) > Ns*eps:
+	if norm(Ek-Ekp) > Ns*eps:
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
 
 
@@ -356,10 +356,10 @@ def check_t_p(L,dtype,Nup=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if np.sum(np.abs(Ek-Ek1)) > Ns*eps:
+			if norm(Ek-Ek1) > Ns*eps:
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
-			if np.sum(np.abs(Ek-Ek2)) > Ns*eps:
+			if norm(Ek-Ek2) > Ns*eps:
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 	
@@ -374,7 +374,7 @@ def check_t_p(L,dtype,Nup=None):
 		Ekp=np.append(Ek1,Ek2)
 		Ekp.sort()
 
-		if np.sum(np.abs(Ek-Ekp)) > Ns*eps:
+		if norm(Ek-Ekp) > Ns*eps:
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,int(L/2),np.dtype(dtype),Nup) )
 
 	else:
@@ -390,10 +390,10 @@ def check_t_p(L,dtype,Nup=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if np.sum(np.abs(Ek-Ek1)) > Ns*eps:
+			if norm(Ek-Ek1) > Ns*eps:
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
-			if np.sum(np.abs(Ek-Ek2)) > Ns*eps:
+			if norm(Ek-Ek2) > Ns*eps:
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
 
@@ -420,7 +420,7 @@ def check_t_pz(L,dtype,Nup=None):
 	else:
 		kdtype = dtype
 
-	eps=1000*np.finfo(dtype).eps
+	eps=10*np.finfo(dtype).eps
 	
 	a=2
 	L_2=int(L/(a*2))
@@ -433,11 +433,10 @@ def check_t_pz(L,dtype,Nup=None):
 		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
-		
-		if np.sum(np.abs(Ek-Ek1)) > Ns*eps:
+		if norm(Ek-Ek1) > Ns*eps:
 			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
-		if np.sum(np.abs(Ek-Ek2)) > Ns*eps:
+		if norm(Ek-Ek2) > Ns*eps:
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 	Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=0,a=a)
@@ -452,7 +451,7 @@ def check_t_pz(L,dtype,Nup=None):
 	Ekp.sort()
 
 
-	if np.sum(np.abs(Ek-Ekp)) > Ns*eps:
+	if norm(Ek-Ekp) > Ns*eps:
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
 
 	if((L/a)%2 == 0):
@@ -468,10 +467,10 @@ def check_t_pz(L,dtype,Nup=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if np.sum(np.abs(Ek-Ek1)) > Ns*eps:
+			if norm(Ek-Ek1) > Ns*eps:
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
-			if np.sum(np.abs(Ek-Ek2)) > Ns*eps:
+			if norm(Ek-Ek2) > Ns*eps:
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=L_2,a=a)
@@ -500,10 +499,10 @@ def check_t_pz(L,dtype,Nup=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if np.sum(np.abs(Ek-Ek1)) > Ns*eps:
+			if norm(Ek-Ek1) > Ns*eps:
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
-			if np.sum(np.abs(Ek-Ek2)) > Ns*eps:
+			if norm(Ek-Ek2) > Ns*eps:
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 
@@ -520,7 +519,7 @@ def check_t_p_z(L,dtype,Nup=None):
 	else:
 		static=[["zz",J1],["x",h]]
 
-	eps=1000*np.finfo(dtype).eps
+	eps=10*np.finfo(dtype).eps
 	L_2=int(L/2)
 	for kblock in xrange(-L_2+1,L_2+1):
 		Hkp1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1)
@@ -545,17 +544,17 @@ def check_t_p_z(L,dtype,Nup=None):
 		Ekpz2=np.concatenate((Ekpz21,Ekpz22))
 		Ekpz2.sort()
 			
-		if np.sum(np.abs(Ekp1-Ekpz1)) > Ns*eps:
+		if norm(Ekp1-Ekpz1) > Ns*eps:
 			raise Exception( "test failed t z p+  symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
-		if np.sum(np.abs(Ekp2-Ekpz2)) > Ns*eps:
+		if norm(Ekp2-Ekpz2) > Ns*eps:
 			raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 		if(kblock not in [0,L_2]):
-			if np.sum(np.abs(Ekp2-Ekpz1)) > Ns*eps:
+			if norm(Ekp2-Ekpz1) > Ns*eps:
 				raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
-			if np.sum(np.abs(Ekp1-Ekpz2)) > Ns*eps:
+			if norm(Ekp1-Ekpz2) > Ns*eps:
 				raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 

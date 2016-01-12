@@ -4,10 +4,8 @@ from make_hamiltonian import make_static as _make_static
 from make_hamiltonian import make_dynamic as _make_dynamic
 
 # need linear algebra packages
-from scipy.sparse.linalg  import eigsh as _eigsh
-from scipy.linalg import eigh as _eigh
-from scipy.linalg import eigvalsh as _eigvalsh
-
+import scipy.sparse.linalg as _sla
+import scipy.linalg as _la
 import numpy as _np
 
 from inspect import isfunction as _isfunction
@@ -31,9 +29,9 @@ class hamiltonian:
 			raise TypeError('expecting integer for L')
 
 		if not isinstance(basis,_basis1d):
-			raise TypeError('basis is not instance of basis1d')
+			raise TypeError('expecting instance of basis class for basis')
 		if not (dtype in supported_dtypes):
-			raise TypeError('Hamiltonian1D does not support type: '+str(dtype))
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
 		if type(static_list) in [list,tuple]:
 			for sub_list in static_list:
@@ -62,13 +60,14 @@ class hamiltonian:
 					else: raise TypeError('expecting a list of one or more indx')
 					if not _isfunction(sub_list[2]): raise TypeError('expecting callable object for driving function')
 					if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
-				else: raise TypeError('expecting list containing opstr, list of one or more indx, and callable function')
-		else: raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
+				else: raise TypeError('expecting list containing opstr, list of one or more indx, a callable function, and list function args')
+		else: raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx, functions, and function args')
 
 
-		self.L=L
-		self.Ns=basis.Ns
-		self.dtype=dtype
+		self.L = L
+		self.Ns = basis.Ns
+		self.blocks = basis.blocks
+		self.dtype = dtype
 		if self.Ns > 0:
 			self.static=_make_static(basis,static_list,dtype)
 			self.dynamic=_make_dynamic(basis,dynamic_list,dtype)
@@ -249,7 +248,7 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
-		return _eigsh(self.tocsr(time=time),k=k,sigma=sigma,which=which,maxiter=maxiter)
+		return _sla.eigsh(self.tocsr(time=time),k=k,sigma=sigma,which=which,maxiter=maxiter)
 
 
 
@@ -272,11 +271,8 @@ class hamiltonian:
 		H_dense=_np.zeros((self.Ns,self.Ns),dtype=self.dtype)
 		self.todense(time=time,out=H_dense)
 
-		E,H_dense = _eigh(H_dense,overwrite_a=True)
+		E,H_dense = _la.eigh(H_dense,overwrite_a=True)
 		return E,H_dense
-
-
-
 
 
 	def eigvalsh(self,time=0):
@@ -297,7 +293,7 @@ class hamiltonian:
 		H_dense=_np.zeros((self.Ns,self.Ns),dtype=self.dtype)
 		self.todense(time=time,out=H_dense)
 
-		E = _eigvalsh(H_dense,overwrite_a=True)
+		E = _la.eigvalsh(H_dense,overwrite_a=True)
 		return E
 
 
@@ -306,7 +302,10 @@ class hamiltonian:
 
 	def __add__(self,other):
 		if isinstance(other,hamiltonian):
-			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			if self.Ns != other.Ns: 
+				raise ValueError("cannot add Hamiltonians of dimensions: {0} {1}".format(self.shape,other.shape))
+			if not _np.can_cast(other.dtype,self.dtype): 
+				raise TypeError("cannot cast to proper type")
 			new=_deepcopy(self)
 
 			new.static = new.static + other.static
@@ -317,12 +316,15 @@ class hamiltonian:
 			new.sum_duplicates()
 			return new
 		else:
-			raise Exception("Not Implimented")
+			raise NotImplementedError
 
 
 	def __iadd__(self,other):
 		if isinstance(other,hamiltonian):
-			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			if self.Ns != other.Ns: 
+				raise ValueError("cannot add Hamiltonians of dimensions: {0} {1}".format(self.shape,other.shape))
+			if not _np.can_cast(other.dtype,self.dtype): 
+				raise TypeError("cannot cast to proper type")
 
 			self.static = self.static + other.static
 			self.static.sum_duplicates()
@@ -332,12 +334,15 @@ class hamiltonian:
 			self.sum_duplicates()
 			return self
 		else:
-			raise Exception("Not Implimented")
+			raise NotImplementedError
 
 
 	def __sub__(self,other):
 		if isinstance(other,hamiltonian):
-			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			if self.Ns != other.Ns: 
+				raise ValueError("cannot add Hamiltonians of dimensions: {0} {1}".format(self.shape,other.shape))
+			if not _np.can_cast(other.dtype,self.dtype): 
+				raise TypeError("cannot cast to proper type")
 			new=deepcopy(self)
 
 			new.static = new.static - other.static
@@ -351,12 +356,15 @@ class hamiltonian:
 			new.sum_duplicates()
 			return new
 		else:
-			raise Exception("Not Implimented")
+			raise NotImplementedError
 
 
 	def __isub__(self,other):
 		if isinstance(other,hamiltonian):
-			if self.Ns != other.Ns: raise Exception("cannot add Hamiltonians of different dimensions")
+			if self.Ns != other.Ns: 
+				raise ValueError("cannot add Hamiltonians of dimensions: {0} {1}".format(self.shape,other.shape))
+			if not _np.can_cast(other.dtype,self.dtype): 
+				raise TypeError("cannot cast to proper type")
 
 			self.static = self.static - other.static
 			self.static.sum_duplicates()
@@ -367,8 +375,7 @@ class hamiltonian:
 			self.sum_duplicates()
 			return self
 		else:
-			raise Exception("Not Implimented")
-
+			raise NotImplementedError
 
 	
 	def __eq__(self,other):
