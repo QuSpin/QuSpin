@@ -223,7 +223,7 @@ class hamiltonian:
 
 		Vl=_np.asarray(Vl)
 		Vr=_np.asarray(Vr)
-		Vr=self.dot(time,Vr)
+		Vr=self.dot(Vr,time=time)
 		me=_np.vdot(Vl,Vr)
 		return _np.asscalar(me)
 
