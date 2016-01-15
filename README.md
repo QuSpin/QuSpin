@@ -82,14 +82,66 @@ NOTE: Using symmetry reduction on hamiltonians which do not have said symmetry w
 The user can specify the numpy data type to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128.
 
 # Using hamiltonian:
-The hamiltonian class has built in methods which are useful for doing ED calculations:
+We've included some basic functionality into the hamiltonian class.
+* addition/subtraction:
+
+  ```python
+  +,-,+=,-=
+  ```
+* equality/inequality:
+
+  ```python 
+  == , !=
+  ```
+We've also included some functions useful for quantum calculations:
+
+* sparse matrix vector product:
+
+  usage:
+    ```python
+    v = H.dot(u,time=time)
+    ```
+  where time is the time to evaluate the Hamiltonian at for the product, by default time=0.
+  
+* matrix elements:
+
+  usage:
+    ```python
+    Huv = H.me(u,v,time=time)
+    ```
+  which evaluates <u|H(time)|v>.
+  
+There are also some methods which are useful if you need other functionality from other packages:
+
+* return copy of hamiltonian as csr matrix: 
+  ```python
+  H_csr = H.tocsr(time=time)
+  ```
+  
+* return copy of hamiltonian as dense matrix: 
+  ```python
+  H_dense = H.todense(time=time)
+  ```
+
+The hamiltonian class also has built in methods which are useful for doing ED calculations:
 
 * Full diagonalization:
-```python
-eigenvalues,eigenvectors=H.eigh(time=time)
-```
-* sparse diagonalization, which uses ARPACK (see scipy.sparse.linalg docs):
-```python
-eigenvalues,eigenvectors=H.eigsh(time=time)
-```
-For more information, see the toolbox section for more functionalities. 
+
+  usage:
+    ```python
+    eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
+    eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
+    ```
+  where **eigh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh) and [eigvalsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.linalg.eigvalsh.html#scipy.linalg.eigvalsh). 
+  
+  NOTE: overwrite_a=True always for memory conservation
+
+* Sparse diagonalization, which uses ARPACK:
+
+  usage:
+    ```python
+    eigenvalues,eigenvectors=H.eigsh(time=time)
+    ```
+  where **eigsh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html)
+
+
