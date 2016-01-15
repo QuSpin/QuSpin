@@ -1,6 +1,12 @@
 # exact_diag_py
 public repository for a simple python library used for ED calculations of quantum many particle systems.
 
+to install download source code either from the [release](https://github.com/weinbe58/exact_diag_py/releases/tag/0.0.2-beta) section or cloning the git repository. In the top directory of the source code you can run:
+
+```bash
+$ python setup.py install
+```
+
 # Basic usage:
 
 many-spin operators are represented by string of letters representing the type of operator:
