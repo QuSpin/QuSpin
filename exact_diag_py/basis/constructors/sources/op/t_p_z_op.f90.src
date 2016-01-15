@@ -168,10 +168,6 @@ do b=0,p-1
 jj=j+c+b*Ns
 M_E = <name2>_helement_p_z(N(j+c),m(j+c),N(s+b),m(s+b),L,pblock,zblock,k,q,g,ll) * ME(jj)
 
-if(isnan(real(M_E)))then
-print*, j+c,s+b,q,g,ll
-end if
-
 if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
 ME=0.0<d0>; col=1 ;error=-1
 return 
@@ -246,10 +242,6 @@ else if(c_b .eq. 4) then
 bc=(-sigma_a*<d>sin(k*ll) + zblock*pblock*<d>sin(k*(ll-mp_b)))/(1.0<d0> - sigma_a*zblock*pblock*<d>cos(k*mp_b))
 end if
 
-end if
-
-if(isnan(real(N_ratio)))then
-print*, c_a,c_b,norm_a,norm_b
 end if
 
 <name>_helement_p_z = ((sigma_a*pblock)**q)*(zblock**g)*N_ratio*bc
