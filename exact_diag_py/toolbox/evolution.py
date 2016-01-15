@@ -84,6 +84,7 @@ def step_drive(H_list,t_list,v0,Nsteps=1,krylov=False,tol=10**(-15),hermitian=Tr
 	# The krylov exponential is much faster then the scipy expoentnal 
 	# at large times and large matrices. In fact for small matricies its better to use scipy exponential.
 	if krylov:
+		raise NotImplementedError("expm_krylov is still in developement")
 		for i in xrange(Nsteps):
 			for t,H in zip(H_list,t_list):
 				v0 = _expm_krylov(H,v0,z=-1j*t,tol=10**(-15),hermitian=True)
