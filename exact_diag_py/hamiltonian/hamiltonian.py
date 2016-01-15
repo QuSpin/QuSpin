@@ -231,7 +231,7 @@ class hamiltonian:
 
 
 
-	def eigsh(self,time=0,k=6,sigma=None,which='SA',maxiter=10000):
+	def eigsh(self,time=0,**eigsh_args):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -248,12 +248,12 @@ class hamiltonian:
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
-		return _sla.eigsh(self.tocsr(time=time),k=k,sigma=sigma,which=which,maxiter=maxiter)
+		return _sla.eigsh(self.tocsr(time=time),**eigsh_args)
 
 
 
 
-	def eigh(self,time=0):
+	def eigh(self,time=0,**eigh_args):
 		"""
 		args:
 			time=0, time to evaluate drive at.
@@ -262,6 +262,9 @@ class hamiltonian:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
 			uses wrapped lapack functions which are contained in module py_lapack
 		"""
+		eigh_args("overwrite_a") = True
+		eigh_args("check_finite") = False
+		
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar arguement for time')
 
@@ -271,11 +274,11 @@ class hamiltonian:
 		H_dense=_np.zeros((self.Ns,self.Ns),dtype=self.dtype)
 		self.todense(time=time,out=H_dense)
 
-		E,H_dense = _la.eigh(H_dense,overwrite_a=True)
+		E,H_dense = _la.eigh(H_dense,**eigh_args)
 		return E,H_dense
 
 
-	def eigvalsh(self,time=0):
+	def eigvalsh(self,time=0,**eigvalsh_args):
 		"""
 		args:
 			time=0, time to evaluate drive at.
@@ -284,6 +287,9 @@ class hamiltonian:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values 
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
+		eigvalsh_args("overwrite_a") = True
+		eigvalsh_args("check_finite") = False
+		
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar arguement for time')
 
