@@ -263,7 +263,6 @@ class hamiltonian:
 			uses wrapped lapack functions which are contained in module py_lapack
 		"""
 		eigh_args("overwrite_a") = True
-		eigh_args("check_finite") = False
 		
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar arguement for time')
@@ -288,7 +287,6 @@ class hamiltonian:
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
 		eigvalsh_args("overwrite_a") = True
-		eigvalsh_args("check_finite") = False
 		
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar arguement for time')
