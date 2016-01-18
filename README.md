@@ -3,10 +3,16 @@ exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran l
 
 The package requires scipy v0.14.0 or later, a compatible version of numpy, and the proper fortran compilers.
 
-to install download source code either from the latest [release](https://github.com/weinbe58/exact_diag_py/releases) section or cloning the git repository. In the top directory of the source code you can run:
+to install download source code either from the latest [release](https://github.com/weinbe58/exact_diag_py/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands:
 
-```bash
-$ python setup.py install
+unix:
+```
+python setup.py install
+```
+
+windows:
+```
+setup.py install
 ```
 
 # Basic usage:
