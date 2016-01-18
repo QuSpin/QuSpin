@@ -591,9 +591,9 @@ def check_pbc(Lmax):
 
 
 
-check_m(4)
-check_opstr(4)
-check_obc(4)
-check_pbc(4)
+#check_m(4)
+#check_opstr(4)
+#check_obc(4)
+#check_pbc(4)
 
 

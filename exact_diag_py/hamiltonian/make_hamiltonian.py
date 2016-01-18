@@ -31,8 +31,6 @@ def make_static(basis,static_list,dtype):
 			del Ht
 			H.sum_duplicates() # sum duplicate matrix elements
 			H.eliminate_zeros() # remove all zero matrix elements
-
-	check_herm(H,"static_list")
 	return H 
 
 
@@ -44,13 +42,6 @@ def test_function(func,func_args):
 			raise TypeError("function must return scaler values")
 		if _np.iscomplexobj(func_val):
 			warnings.warn("driving function returing complex value, dynamic hamiltonian will no longer be hermitian object.",UserWarning) 
-
-
-
-def check_herm(A,name):
-	H_chk = (A != A.H)
-	if H_chk.nnz > 0: 
-		raise RuntimeError("expecting hermitian operator, check "+name)
 
 
 
@@ -88,7 +79,6 @@ def make_dynamic(basis,dynamic_list,dtype):
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
-				check_herm(H,"dynamic_list")
 			dynamic.append((f,f_args,H))
 
 	return tuple(dynamic)
