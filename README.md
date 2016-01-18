@@ -140,7 +140,7 @@ The hamiltonian class also has built in methods which are useful for doing ED ca
 
   usage:
     ```python
-    eigenvalues,eigenvectors=H.eigsh(time=time)
+    eigenvalues,eigenvectors=H.eigsh(time=time,**eigsh_args)
     ```
   where **eigsh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html)
 
