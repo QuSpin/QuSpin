@@ -27,7 +27,7 @@ def make_static(basis,static_list,dtype):
 			indx=bond[1:]
 			ME,row,col = basis.Op(J,dtype,opstr,indx)
 			Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-			H+=Ht
+			H=H+Ht
 			del Ht
 			H.sum_duplicates() # sum duplicate matrix elements
 			H.eliminate_zeros() # remove all zero matrix elements
@@ -75,7 +75,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 				indx=bond[1:]
 				ME,row,col = basis.Op(J,dtype,opstr,indx)
 				Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-				H+=Ht
+				H=H+Ht
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
