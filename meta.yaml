@@ -1,10 +1,10 @@
 package:
   name: exact_diag_py
-  version: "0.0.1b"
+  version: "0.0.2b"
 
 source:
   git_url: https://github.com/weinbe58/exact_diag_py.git
-  git_tag: 0.0.1b
+  git_tag: 0.0.2b
 
 requirements:
   build:
