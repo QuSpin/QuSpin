@@ -114,7 +114,7 @@ We've included some basic functionality into the hamiltonian class.
   ```
 We've also included some functions useful for quantum calculations:
 
-* sparse matrix vector product:
+* sparse matrix vector product / dense matrix:
 
   usage:
     ```python
@@ -128,7 +128,7 @@ We've also included some functions useful for quantum calculations:
     ```python
     Huv = H.me(u,v,time=time)
     ```
-  which evaluates < u|H(time)|v >.
+  which evaluates < u|H(time)|v > if u and v are vectors but can also handle u and v as dense matrices.
   
 There are also some methods which are useful if you need other functionality from other packages:
 
