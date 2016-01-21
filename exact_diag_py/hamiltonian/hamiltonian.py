@@ -221,11 +221,11 @@ class hamiltonian:
 			raise TypeError('expecting scalar arguement for time')
 
 
-		Vl=_np.asarray(Vl)
+		Vl=_np.asarray(Vl).T.conj()
 		Vr=_np.asarray(Vr)
 		Vr=self.dot(Vr,time=time)
-		me=_np.vdot(Vl,Vr)
-		return _np.asscalar(me)
+		me=Vl.dot(Vr)
+		return me
 
 
 

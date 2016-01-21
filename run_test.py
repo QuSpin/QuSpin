@@ -21,7 +21,7 @@ def check_opstr(Lmax):
 			eps=np.finfo(dtype).eps
 
 			H1=hamiltonian(static1,[],L,dtype=dtype)
-			H2=hamiltonian(static2,[],L,dtype=dtype) 
+			H2=hamiltonian(static2,[],L,dtype=dtype)
 
 			if norm(H1.todense()-H2.todense()) > eps:
 				raise Exception( "test failed opstr at L={0:3d} with dtype {1}".format(L,np.dtype(dtype)) )
