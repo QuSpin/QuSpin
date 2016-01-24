@@ -1,5 +1,5 @@
 # exact_diag_py
-exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of spcifying the time dependence of operators in the hamiltonian as well, which can be easily interfaced with Scipy [ode solvers](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.ode.html) to solve the time dependent Schrodinger equation numerically for these systems. All the hamiltonian data is stored using Scipy's [spare matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library which allows the user to access the powerful sparse linear algebra tools. 
+exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of spcifying the time dependence of operators in the hamiltonian as well, which can be easily interfaced with Scipy [ode solvers](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.ode.html) to solve the time dependent Schrodinger equation numerically for these systems. All the hamiltonian data is stored using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library which allows the user to access the powerful sparse linear algebra tools. 
 
 The package requires scipy v0.14.0 or later, a compatible version of numpy, and the proper fortran compilers.
 
@@ -64,6 +64,11 @@ static_list=[['-z+',op_indx],['+z-',op_indx_cc]]
 ```
 Notice that I need to include both '-z+' and '+z-' operators to make sure our Hamiltonian is hermitian.
 
+One can also specify which types of operators to use with the option pauli: 
+```python 
+H=hamiltonian(...,pauli=True,...) 
+``` 
+If pauli is set to True then the hamiltonian will be created assuming you have Pauli matrices while for pauli set to False you use spin 1/2 matrices. By default pauli is set to True.
 
 # Using symmetries:
 Adding symmetries is easy, either you can just add extra keyword arguements (by default all are set to None):
@@ -98,7 +103,11 @@ H=hamiltonian(static_list,dynamic_list,L,basis=basis)
 NOTE: Using symmetry reduction on hamiltonians which do not have said symmetry will cause the code to behave incorrectly. later we will impliment checks to see which symmetries are allowed based on the user input.
 
 # Numpy dtype:
-The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128.
+The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128. To specify the dtype use the dtype keyword arguement:
+
+```python
+H=hamiltonian(...,dtype=np.float32,...)
+```
 
 # Using hamiltonian:
 We've included some basic functionality into the hamiltonian class.
