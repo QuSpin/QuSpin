@@ -15,10 +15,72 @@ from copy import deepcopy as _deepcopy
 #global names:
 supported_dtypes=(_np.float32, _np.float64, _np.complex64, _np.complex128)
 
+"""
+def static_opstr(sub_list):
+	if (type(sub_list) in [list,tuple]) and (len(sub_list) == 2):
+		if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
+		if type(sub_list[1]) in [list,tuple]:
+			for sub_sub_list in sub_list[1]:
+				if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 1):
+					for element in sub_sub_list:
+						if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
+				else: raise TypeError('expecting list for indx') 
+		else: raise TypeError('expecting a list of one or more indx')
+		return True
+	else:
+		if _isspmatrix(sub_list[0]:
+			A = sub_list[0]
+		else:
+			A = _np.asarray(sub_list[0])
+		
+		if A.ndim != 2: raise ValueError('expecting square matrix')
+		if A.shape[0] != A.shape[1]: raise ValueError('expecting square matrix')
+		if not _isfunction(sub_list[1]): raise TypeError('expecting callable object for driving function')
+		if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
+		return False
+
+
+def dynamic_opstr(sub_list):
+	if (type(sub_list) in [list,tuple]):
+		if len(sub_list) == 4:
+			if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
+			if type(sub_list[1]) in [list,tuple]:
+				for sub_sub_list in sub_list[1]:
+					if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 1):
+						for element in sub_sub_list:
+							if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
+				else: raise TypeError('expecting list for indx') 
+			else: raise TypeError('expecting a list of one or more indx')
+			if not _isfunction(sub_list[2]): raise TypeError('expecting callable object for driving function')
+			if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
+			return True
+		if len(sub_list) == 3:
+			if _isspmatrix(sub_list[0]:
+				A = sub_list[0]
+			else:
+				A = _np.asarray(sub_list[0])
+			
+			if A.ndim != 2: raise ValueError('expecting square matrix')
+			if A.shape[0] != A.shape[1]: raise ValueError('expecting square matrix')
+			if not _isfunction(sub_list[1]): raise TypeError('expecting callable object for driving function')
+			if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
+			return False
+		else:
+			raise ValueError('unrecognized hamiltonian constructor usage')
+	else: 
+"""
+
+
+
+	
+
+
+
+
 class hamiltonian:
-	def __init__(self,static_list,dynamic_list,L,dtype=_np.complex128,**basis_params):
+	def __init__(self,static_list,dynamic_list,L,pauli=True,dtype=_np.complex128,**basis_params):
 		"""
-		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of Basis1D.
+		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis1d.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
 
@@ -69,8 +131,8 @@ class hamiltonian:
 		self.blocks = basis.blocks
 		self.dtype = dtype
 		if self.Ns > 0:
-			self.static=_make_static(basis,static_list,dtype)
-			self.dynamic=_make_dynamic(basis,dynamic_list,dtype)
+			self.static=_make_static(basis,static_list,dtype,pauli)
+			self.dynamic=_make_dynamic(basis,dynamic_list,dtype,pauli)
 			self.shape=(self.Ns,self.Ns)
 			self.sum_duplicates()
 

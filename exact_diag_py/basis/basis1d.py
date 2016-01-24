@@ -292,13 +292,13 @@ class basis1d:
 
 
 
-	def Op(self,J,dtype,opstr,indx):
+	def Op(self,opstr,indx,J,dtype,pauli):
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast coupling to proper dtype")
 
-		return  op[self.conserved](opstr,indx,J,dtype,*self.op_args,**self.blocks)		
+		return  op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
 
 
 

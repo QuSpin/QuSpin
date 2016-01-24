@@ -3,7 +3,7 @@ import scipy.sparse as _sp
 
 import numpy as _np
 
-def make_static(basis,static_list,dtype):
+def make_static(basis,static_list,dtype,pauli):
 	"""
 	args:
 		static=[[opstr_1,indx_1],...,[opstr_n,indx_n]], list of opstr,indx to add up for static piece of Hamiltonian.
@@ -25,7 +25,7 @@ def make_static(basis,static_list,dtype):
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			ME,row,col = basis.Op(J,dtype,opstr,indx)
+			ME,row,col = basis.Op(opstr,indx,J,dtype,pauli)
 			Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 			H=H+Ht
 			del Ht
@@ -45,7 +45,7 @@ def test_function(func,func_args):
 
 
 
-def make_dynamic(basis,dynamic_list,dtype):
+def make_dynamic(basis,dynamic_list,dtype,pauli):
 	"""
 	args:
 	dynamic=[[opstr_1,indx_1,func_1,func_1_args],...,[opstr_n,indx_n,func_n,func_n_args]], list of opstr,indx and functions to drive with
@@ -73,7 +73,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				ME,row,col = basis.Op(J,dtype,opstr,indx)
+				ME,row,col = basis.Op(opstr,indx,J,dtype,pauli)
 				Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 				H=H+Ht
 				del Ht

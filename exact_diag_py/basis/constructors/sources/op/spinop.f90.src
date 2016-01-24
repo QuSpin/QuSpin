@@ -5,10 +5,10 @@ integer(kind=4), intent(in) :: Ns,N_indx
 integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=4), intent(in), dimension(N_indx) :: indx
 character, intent(in), dimension(N_indx) :: opstr
-<ME_type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
+<real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out), dimension(Ns) :: col
 integer(kind=4), intent(out) :: error
-<M_E_type=complex(kind=4),complex(kind=8),complex(kind=4),complex(kind=8)> :: M_E
+<complex(kind=4),complex(kind=8),complex(kind=4),complex(kind=8)> :: M_E
 integer(kind=4) :: i,j,r,a
 
 
@@ -21,15 +21,14 @@ if(opstr(j) .eq. "c") then
 cycle
 
 else if(opstr(j) .eq. "z") then
-M_E = M_E * (-1)**(a+1)*0.5<d0>
+M_E = M_E * (-1.0<d0>)**(a+1)
 
 else if(opstr(j) .eq. "x") then
 r = ieor(r,ishft(1,indx(j)))
-M_E = M_E * 0.5<d0>
 
 else if(opstr(j) .eq. "y") then
 r = ieor(r,ishft(1,indx(j)))
-M_E = M_E * (-1)**(a)*<complex=cmplx,dcmplx,cmplx,dcmplx>(0.0,0.5<d0>)
+M_E = M_E * (-1.0<d0>)**(a)*<cmplx,dcmplx,cmplx,dcmplx>(0.0,1.0<d0>)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 
@@ -37,6 +36,7 @@ r=basis(i); M_E=0.0<d0>;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
+M_E = M_E * 2.0<d0>
 end if
 
 else if(opstr(j) .eq. "-") then
@@ -45,6 +45,7 @@ r=basis(i); M_E=0.0<d0>;
 exit
 else
 r = ieor(r,ishft(1,indx(j)))
+M_E = M_E * 2.0<d0>
 end if
 
 else
@@ -55,12 +56,12 @@ end if
 
 end do
 
-if(<imag=aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <real_check=.true.,.true.,.false.,.false.>) then
+if(<aimag,dimag,aimag,dimag>(M_E) .ne. 0.0<d0> .and. <.true.,.true.,.false.,.false.>) then
 ME=0<d0>;col=0;error=-1
 return 
 end if
 
-ME(i)=<convert=real,dble,cmplx,dcmplx>(M_E)
+ME(i)=<real,dble,cmplx,dcmplx>(M_E)
 col(i)=r
 
 end do
@@ -68,73 +69,5 @@ end do
 end subroutine
 
 
-
-
-
-
-subroutine <name>_SpinOp_state(s,opstr,indx,N_indx,ME,r,error)
-implicit none
-integer(kind=4), intent(in) :: N_indx
-integer(kind=4), intent(in), dimension(N_indx) :: indx
-integer(kind=4), intent(in) :: s
-character, intent(in), dimension(N_indx) :: opstr
-<ME_type>, intent(out) :: ME
-integer(kind=4), intent(out) :: r
-integer(kind=4), intent(out) :: error
-<M_E_type> :: M_E
-integer(kind=4) :: j,a
-
-r = s
-error = 0
-M_E=1.0<d0>
-do j=1,N_indx
-a = iand(ishft(r,-indx(j)),1)
-if(opstr(j) .eq. "c") then
-cycle
-
-else if(opstr(j) .eq. "z") then
-M_E = M_E * (-1)**(a+1)*0.5<d0>
-
-else if(opstr(j) .eq. "x") then
-r = ieor(r,ishft(1,indx(j)))
-M_E = M_E * 0.5<d0>
-
-else if(opstr(j) .eq. "y") then
-r = ieor(r,ishft(1,indx(j)))
-M_E = M_E * (-1)**(a)*<complex>(0.0,0.5<d0>)
-
-else if(opstr(j) .eq. "+") then
-if (a .eq. 1) then 
-r = s; M_E = 0.0<d0>;
-exit
-else
-r = ieor(r,ishft(1,indx(j)))
-end if
-
-else if(opstr(j) .eq. "-") then
-if (a .eq. 0) then 
-r = s; M_E = 0.0<d0>;
-exit
-else
-r = ieor(r,ishft(1,indx(j)))
-end if
-
-else
-ME = 0<d0>;r = s;error = 1
-return 
-
-end if
-
-end do
-
-if(<imag>(M_E) .ne. 0.0<d0> .and. <real_check>) then
-ME=0<d0>;r=s;error=-1
-return 
-end if
-
-ME=<convert>(M_E)
-
-
-end subroutine
 
 

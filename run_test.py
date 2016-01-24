@@ -20,8 +20,9 @@ def check_opstr(Lmax):
 
 			eps=np.finfo(dtype).eps
 
-			H1=hamiltonian(static1,[],L,dtype=dtype)
-			H2=hamiltonian(static2,[],L,dtype=dtype)
+			H1=hamiltonian(static1,[],L,dtype=dtype,pauli=False)
+			H2=hamiltonian(static2,[],L,dtype=dtype,pauli=False)
+
 
 			if norm(H1.todense()-H2.todense()) > eps:
 				raise Exception( "test failed opstr at L={0:3d} with dtype {1}".format(L,np.dtype(dtype)) )
@@ -40,13 +41,13 @@ def check_m(Lmax):
 
 			static=[["zz",J1],["yy",J2],["xx",J2],["z",h]]
 
-			H=hamiltonian(static,[],L,dtype=dtype)
+			H=hamiltonian(static,[],L,dtype=dtype,pauli=False)
 			Ns=H.Ns
 			E=H.eigvalsh()
 
 			Em=[]
 			for Nup in xrange(L+1):
-				H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+				H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,pauli=False)
 				Etemp=H.eigvalsh()
 				Em.append(Etemp)
 
@@ -299,7 +300,7 @@ def check_t_p(L,dtype,Nup=None):
 		static=[["zz",J1],["x",h]]
 
 	L_2=int(L/2)
-	eps=10*np.finfo(dtype).eps
+	eps=20*np.finfo(dtype).eps
 
 	if dtype is np.float32:
 		kdtype = np.complex64
@@ -420,7 +421,7 @@ def check_t_pz(L,dtype,Nup=None):
 	else:
 		kdtype = dtype
 
-	eps=10*np.finfo(dtype).eps
+	eps=20*np.finfo(dtype).eps
 	
 	a=2
 	L_2=int(L/(a*2))
@@ -519,7 +520,7 @@ def check_t_p_z(L,dtype,Nup=None):
 	else:
 		static=[["zz",J1],["x",h]]
 
-	eps=10*np.finfo(dtype).eps
+	eps=20*np.finfo(dtype).eps
 	L_2=int(L/2)
 	for kblock in xrange(-L_2+1,L_2+1):
 		Hkp1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1)

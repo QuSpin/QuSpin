@@ -23,7 +23,7 @@ class FortranError(Exception):
 
 
 
-def op(opstr,indx,J,dtype,basis,**blocks):
+def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 
 	dtype = _dtype(dtype)
 	char = _type_conv[dtype.char]
@@ -32,14 +32,17 @@ def op(opstr,indx,J,dtype,basis,**blocks):
 
 	if error != 0: raise FortranError(_basis_op_errors[error])
 	row=_array(xrange(len(basis)),dtype=_index_type)
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
 
 
 
-def op_m(opstr,indx,J,dtype,basis,**blocks):
+def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 
 	dtype = _dtype(dtype)
 	char = _type_conv[dtype.char]
@@ -54,7 +57,10 @@ def op_m(opstr,indx,J,dtype,basis,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
@@ -62,7 +68,7 @@ def op_m(opstr,indx,J,dtype,basis,**blocks):
 
 
 
-def op_z(opstr,indx,J,dtype,N,basis,L,**blocks):
+def op_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 
 	dtype = _dtype(dtype)
@@ -79,7 +85,10 @@ def op_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
@@ -87,7 +96,7 @@ def op_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 
 
 
-def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
+def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	pblock=blocks.get("pblock")
 
 	dtype = _dtype(dtype)
@@ -103,7 +112,10 @@ def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
@@ -111,7 +123,7 @@ def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
 
 
 
-def op_pz(opstr,indx,J,dtype,N,basis,L,**blocks):
+def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	pzblock=blocks.get("pzblock")
 
 	dtype = _dtype(dtype)
@@ -127,14 +139,17 @@ def op_pz(opstr,indx,J,dtype,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
 
 
 
-def op_p_z(opstr,indx,J,dtype,N,basis,L,**blocks):
+def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 	pblock=blocks.get("pblock")
 
@@ -150,7 +165,10 @@ def op_p_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
@@ -159,7 +177,7 @@ def op_p_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 
 
 
-def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
+def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 
@@ -176,7 +194,10 @@ def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 
 	return ME,row,col
@@ -184,7 +205,7 @@ def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
 
 
 
-def op_t_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	zblock=blocks.get("zblock")
@@ -202,12 +223,15 @@ def op_t_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 	return ME,row,col
 
 
-def op_t_p(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pblock=blocks.get("pblock")
@@ -227,13 +251,16 @@ def op_t_p(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 	return ME,row,col
 
 
 
-def op_t_pz(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pzblock=blocks.get("pzblock")
@@ -253,12 +280,15 @@ def op_t_pz(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 	return ME,row,col
 
 
-def op_t_p_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pblock=blocks.get("pblock")
@@ -279,7 +309,10 @@ def op_t_p_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 	col -= 1 #convert from fortran index to c index.
-	ME*=J
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr)))
 
 	return ME,row,col
 
