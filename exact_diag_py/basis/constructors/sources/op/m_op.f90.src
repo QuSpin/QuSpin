@@ -31,14 +31,18 @@ implicit none
 integer(kind=4) :: FindZstate
 integer(kind=4), intent(in) :: N, s
 integer(kind=4), intent(in), dimension(N) :: A
+integer(kind=8), external :: zext ! converts the 32 bit configuration to 64 bit for comparisons
+integer(kind=8) :: s_l,A_l
 integer(kind=4) :: bmin,bmax,b
 
 bmin=1;bmax=N
+s_l = zext(s)
 do while(bmin .le. bmax)
 b=(bmin+bmax)/2
-if(s < A(b)) then
+A_l = zext(A(b))
+if(s_l < A_l) then
 bmax=b-1
-else if(s > A(b)) then
+else if(s_l > A_l) then
 bmin=b+1
 else
 FindZstate=b
@@ -47,3 +51,21 @@ end if
 end do
 FindZstate=-1
 end function
+
+
+
+
+
+function zext(b)
+implicit none
+integer(kind=4), intent(in) :: b
+integer(kind=8) :: zext
+integer(kind=1) :: i
+
+zext = 0_8
+do i=0,31
+if(btest(b,i)) zext = zext + ishft(1_8,i)
+end do 
+
+
+end function zext
