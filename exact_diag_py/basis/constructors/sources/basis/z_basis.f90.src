@@ -43,7 +43,7 @@ end if
 
 Ns_out = 0
 
-do s=0,f
+do s=i,f
 s_8 = zext(s)
 call CheckState_Z(s_8,L,r)
 if(r.ge.0) then
@@ -51,17 +51,7 @@ Ns_out = Ns_out + 1
 basis(Ns_out) = s
 N(Ns_out) = r
 end if
-end do 
-
-do s=i,-1
-s_8 = zext(s)
-call CheckState_Z(s_8,L,r)
-if(r.ge.0) then
-Ns_out = Ns_out + 1
-basis(Ns_out) = s
-N(Ns_out) = r
-end if
-end do 
+end do  
 
 end subroutine
 
@@ -109,6 +99,7 @@ end if
 
 a=.false.
 do while(.not.a)
+
 s_8 = zext(s)
 call CheckState_Z(s_8,L,r)
 if(r.ge.0) then
@@ -117,13 +108,13 @@ basis(Ns_out) = s
 N(Ns_out) = r
 end if
 
+a = btest(s,L-1)
+do i=1,Nup-1
+a = a .and. btest(s,L-1-i)
+end do
+
 t=ior(s,s-1)
 s=ior(t+1,ishft(iand(not(t),-not(t))-1,-trailz(s)-1))
-
-a = btest(s,L-Nup)
-do i=L-Nup+1,L-1
-a = a .and. btest(s,i)
-end do
 
 end do
 

@@ -1,8 +1,10 @@
 subroutine checkstate_t_pz(s,L,k,a,N,m)
 implicit none
-integer(kind=4), intent(in) :: s,L,k,a
+integer(kind=8), intent(in) :: s
+integer(kind=4), intent(in) :: L,k,a
 integer(kind=1), intent(out) :: N,m
-integer(kind=4) :: t,i,NN
+integer(kind=8) :: t
+integer(kind=4) :: i,NN
 
 t=s
 N=-1
@@ -24,8 +26,8 @@ end do
 
 NN = i
 t = s
-call flip_lr(t,L)
-call flip_all(t,L)
+call flip_lr_64(t,L)
+call flip_all_64(t,L)
 
 do i=0,NN-1
 if (t .lt. s) then
@@ -56,36 +58,47 @@ end subroutine
 
 
 
-subroutine make_t_pz_basis(L,pblock,kblock,a,N,m,basis,Ns,Ns_out)
+
+subroutine make_t_pz_basis(L,pzblock,kblock,a,N,m,basis,Ns,Ns_out)
 implicit none
 real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
-integer(kind=4), intent(in) :: L,pblock,kblock,a,Ns
+integer(kind=4), intent(in) :: L,pzblock,kblock,a,Ns
 integer(kind=4), intent(inout), dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N,m
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4) :: s
-integer(kind=1) :: NN_temp,NN,mm,sigma,b,f
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
+integer(kind=4) :: s,i,f
+integer(kind=1) :: NN_temp,NN,mm,sigma,sigma_i,sigma_f
 
+if(L == 32) then
+i = -huge(1) -1
+f = huge(1)
+else
+i = 0
+f = ishft(1,L) - 1
+end if
 
 if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
-b=1
-f=1
+sigma_i=1
+sigma_f=1
 else
-b=-1
-f=1
+sigma_i=-1
+sigma_f=1
 end if
 
 Ns_out = 0
-do s=0,2**L - 1
+do s=i,f
 
-call CheckState_t_pz(s,L,kblock,a,NN,mm)
+s_8 = zext(s)
+call CheckState_t_pz(s_8,L,kblock,a,NN,mm)
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 if(mm .ge. 0) then
-if ( (1.0d0 + sigma*pblock*dcos(2*kblock*mm*a*pi/L)) .eq. 0.0d0) NN_temp = -1
-if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos(2*kblock*mm*a*pi/L)) .ne. 0.0d0)) NN_temp = -1
+if ( (1.0d0 + sigma*pzblock*dcos(2*kblock*mm*a*pi/L)) .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pzblock*dcos(2*kblock*mm*a*pi/L)) .ne. 0.0d0)) NN_temp = -1
 end if
 
 
@@ -112,44 +125,48 @@ end subroutine
 
 
 
-subroutine make_m_t_pz_basis(L,Nup,pblock,kblock,a,N,m,basis,Ns,Ns_out)
+subroutine make_m_t_pz_basis(L,Nup,pzblock,kblock,a,N,m,basis,Ns,Ns_out)
 implicit none
 real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0)
-integer(kind=4), intent(in) :: L,Nup,pblock,kblock,a,Ns
+integer(kind=4), intent(in) :: L,Nup,pzblock,kblock,a,Ns
 integer(kind=4), intent(inout) ,dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N,m
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4), dimension(L) :: i_bits
-integer(kind=4) :: s,t
-integer(kind=1) :: NN_temp,NN,mm,sigma,b,f
+integer(kind=8), external :: zext
+logical(kind=4) :: stp
+integer(kind=8) :: s_8
+integer(kind=4) :: s,t,i
+integer(kind=1) :: NN_temp,NN,mm,sigma,sigma_i,sigma_f
+
 
 if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
-b=1
-f=1
+sigma_i=1
+sigma_f=1
 else
-b=-1
-f=1
+sigma_i=-1
+sigma_f=1
 end if
 
-i_bits=0
-do s=1,Nup
-i_bits(s)=2**(s-1)
+
+s=0
+do i=0,Nup-1
+s = ibset(s,i)
 end do
 
-
 Ns_out = 0
-s=sum(i_bits)
 
-do while(.not.btest(s,L))
+stp=.false.
+do while(.not.stp)
 
-call CheckState_t_pz(s,L,kblock,a,NN,mm)
+s_8 = zext(s)
+call CheckState_t_pz(s_8,L,kblock,a,NN,mm)
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 if(mm .ge. 0) then
-if ( (1.0d0 + sigma*pblock*dcos((2*kblock*mm*a)*(pi/L))) .eq. 0.0d0) NN_temp = -1
-if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos((2*kblock*mm*a)*(pi/L))) .ne. 0.0d0)) NN_temp = -1
+if ( (1.0d0 + sigma*pzblock*dcos((2*kblock*mm)*(pi/L))) .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pzblock*dcos((2*kblock*mm)*(pi/L))) .ne. 0.0d0)) NN_temp = -1
 end if
 
 if(NN_temp .ge. 0) then
@@ -161,10 +178,14 @@ end if
 
 end do
 
-t=ior(s,s-1)+1
-s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+stp = btest(s,L-1)
+do i=1,Nup-1
+stp = stp .and. btest(s,L-1-i)
+end do
+
+t=ior(s,s-1)
+s=ior(t+1,ishft(iand(not(t),-not(t))-1,-trailz(s)-1))
 end do
 
 
 end subroutine
-

@@ -1,11 +1,12 @@
 subroutine CheckState_PZ(s,L,pz,r)
 implicit none
-integer(kind=4), intent(in) :: s,L,pz
+integer(kind=8), intent(in) :: s
+integer(kind=4), intent(in) :: L,pz
 integer(kind=1), intent(out) :: r
-integer(kind=4) :: t
+integer(kind=8) :: t
 t=s
-call flip_lr(t,L)
-call flip_all(t,L)
+call flip_lr_64(t,L)
+call flip_all_64(t,L)
 if(t .eq. s) then
 if(pz .ne. -1) then
 r=4; return
@@ -26,29 +27,6 @@ end subroutine
 
 
 
-!subroutine make_pz_basis(L,mbasis,Ns_m,pzblock,N)
-!implicit none
-!integer(kind=4), intent(in) :: L, pzblock, Ns_m
-!integer(kind=4), intent(inout) ,dimension(Ns_m) :: mbasis
-!integer(kind=1), intent(out), dimension(Ns_m) :: N
-!integer(kind=4) :: i
-!integer(kind=1) :: r
-
-
-!do i=1,Ns_m
-!call CheckState_PZ(mbasis(i),L,pzblock,r)
-!N(i)=r
-!if(r .lt. 0) then
-!mbasis(i)=-1
-!end if
-!end do
-
-
-!end subroutine
-
-
-
-
 
 
 subroutine make_pz_basis(L,pzblock,N,basis,Ns,Ns_out)
@@ -57,13 +35,24 @@ integer(kind=4), intent(in) :: L,pzblock,Ns
 integer(kind=4), intent(inout), dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4) :: s
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
+integer(kind=4) :: s,i,f
 integer(kind=1) :: r
+
+if(L == 32) then
+i = -huge(1) -1
+f = huge(1)
+else
+i = 0
+f = ishft(1,L) - 1
+end if
 
 
 Ns_out = 0
-do s=0,2**L - 1
-call CheckState_pz(s,L,pzblock,r)
+do s=i,f
+s_8 = zext(s)
+call CheckState_pz(s_8,L,pzblock,r)
 if(r.ge.0) then
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
@@ -89,26 +78,28 @@ integer(kind=4), intent(in) :: L,Nup,pzblock,Ns
 integer(kind=4), intent(inout) ,dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4), dimension(L) :: i_bits
-Integer(kind=4) :: s,t
+integer(kind=8), external :: zext
+logical(kind=4) :: a
+integer(kind=4) :: s,t,i
+integer(kind=8) :: s_8
 integer(kind=1) :: r
 
-i_bits=0
-do s=1,Nup
-i_bits(s)=2**(s-1)
+s=0
+do i=0,Nup-1
+s = ibset(s,i)
 end do
 
 
 Ns_out = 0
-s=sum(i_bits)
+if(Nup.eq.0.or.Nup.eq.L) then
 
-if(Nup.eq.0) then
-
-call CheckState_pz(s,L,pzblock,r)
+s_8 = zext(s)
+call CheckState_pz(s_8,L,pzblock,r)
 if(r.ge.0) then
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
 N(Ns_out) = r
+
 end if
 
 return
@@ -116,17 +107,25 @@ return
 end if
 
 
-do while(.not.btest(s,L))
+a=.false.
+do while(.not.a)
+s_8 = zext(s)
 
-call CheckState_pz(s,L,pzblock,r)
+call CheckState_pz(s_8,L,pzblock,r)
 if(r.ge.0) then
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
 N(Ns_out) = r
 end if
 
-t=ior(s,s-1)+1
-s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+a = btest(s,L-1)
+do i=1,Nup-1
+a = a .and. btest(s,L-1-i)
+end do
+
+t=ior(s,s-1)
+s=ior(t+1,ishft(iand(not(t),-not(t))-1,-trailz(s)-1))
+
 end do
 
 

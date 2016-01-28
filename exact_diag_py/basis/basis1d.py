@@ -63,7 +63,7 @@ class basis1d:
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-		if L>31: raise NotImplementedError('basis can only be constructed for L<32')
+		if L>32: raise NotImplementedError('basis can only be constructed for L<=32')
 
 
 		# checking type, and value of blocks

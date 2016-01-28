@@ -1,8 +1,10 @@
 subroutine CheckState_T(s,L,k,a,r)
 implicit none
-integer(kind=4), intent(in) :: s,L,k,a
+integer(kind=8), intent(in) :: s
+integer(kind=4), intent(in) :: L,k,a
 integer(kind=1), intent(out) :: r
-integer(kind=4) :: t,i
+integer(kind=8) :: t
+integer(kind=4) :: i
 t=s
 r=-1
 do i=1,L/a
@@ -43,13 +45,23 @@ integer(kind=4), intent(in) :: L,kblock,a,Ns
 integer(kind=4), intent(inout), dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4) :: s
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
+integer(kind=4) :: s,i,f
 integer(kind=1) :: r
 
+if(L == 32) then
+i = -huge(1) -1
+f = huge(1)
+else
+i = 0
+f = ishft(1,L) - 1
+end if
 
 Ns_out = 0
-do s=0,2**L - 1
-call CheckState_t(s,L,kblock,a,r)
+do s=i,f
+s_8 = zext(s)
+call CheckState_t(s_8,L,kblock,a,r)
 if(r.ge.0) then
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
@@ -75,22 +87,22 @@ integer(kind=4), intent(in) :: L,Nup,kblock,a,Ns
 integer(kind=4), intent(inout) ,dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=4), intent(out) :: Ns_out
-integer(kind=4), dimension(L) :: i_bits
-Integer(kind=4) :: s,t
+integer(kind=8), external :: zext
+logical(kind=4) :: stp
+integer(kind=4) :: s,t,i
+integer(kind=8) :: s_8
 integer(kind=1) :: r
 
-i_bits=0
-do s=1,Nup
-i_bits(s)=2**(s-1)
+s=0
+do i=0,Nup-1
+s = ibset(s,i)
 end do
 
 
 Ns_out = 0
-s=sum(i_bits)
-
-if(Nup.eq.0) then
-
-call CheckState_t(s,L,kblock,a,r)
+if(Nup.eq.0.or.Nup.eq.L) then
+s_8 = zext(s)
+call CheckState_t(s_8,L,kblock,a,r)
 if(r.ge.0) then
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
@@ -101,18 +113,24 @@ return
 
 end if
 
+stp=.false.
+do while(.not.stp)
 
-do while(.not.btest(s,L))
-
-call CheckState_t(s,L,kblock,a,r)
+s_8 = zext(s)
+call CheckState_t(s_8,L,kblock,a,r)
 if(r.ge.0) then
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
 N(Ns_out) = r
 end if
 
-t=ior(s,s-1)+1
-s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+stp = btest(s,L-1)
+do i=1,Nup-1
+stp = stp .and. btest(s,L-1-i)
+end do
+
+t=ior(s,s-1)
+s=ior(t+1,ishft(iand(not(t),-not(t))-1,-trailz(s)-1))
 end do
 
 

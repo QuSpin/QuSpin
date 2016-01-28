@@ -1,9 +1,11 @@
 subroutine checkstate_t_p_z(s,L,k,a,N,mp,mz,mpz)
 implicit none
-integer(kind=4), intent(in) :: s,L,k,a
+integer(kind=8), intent(in) :: s
+integer(kind=4), intent(in) :: L,k,a
 integer(kind=1), intent(out) :: N
 integer(kind=2), intent(out) :: mz,mp,mpz
-integer(kind=4) :: t,i,NN
+integer(kind=8) :: t
+integer(kind=4) :: i,NN
 
 t=s
 N=-1
@@ -28,7 +30,7 @@ end do
 
 NN = i
 t = s
-call flip_lr(t,L)
+call flip_lr_64(t,L)
 
 do i=0,NN-1
 if (t .lt. s) then
@@ -44,7 +46,7 @@ end do
 
 
 t = s
-call flip_all(t,L)
+call flip_all_64(t,L)
 
 do i=0,NN-1
 if (t .lt. s) then
@@ -59,8 +61,8 @@ end do
 
 
 t = s
-call flip_lr(t,L)
-call flip_all(t,L)
+call flip_lr_64(t,L)
+call flip_all_64(t,L)
 
 do i=0,NN-1
 if (t .lt. s) then
@@ -97,29 +99,40 @@ integer(kind=4), intent(inout), dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=2), intent(inout), dimension(Ns) :: m
 integer(kind=4), intent(out) :: Ns_out
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
 real(kind=8) :: n1,n2,n3,n4
-integer(kind=4) :: s
+integer(kind=4) :: s,i,f
 integer(kind=2) :: mp,mz,mpz
-integer(kind=1) :: NN_temp,NN,sigma,b,f
+integer(kind=1) :: NN_temp,NN,sigma,sigma_i,sigma_f
+
+if(L == 32) then
+i = -huge(1) -1
+f = huge(1)
+else
+i = 0
+f = ishft(1,L) - 1
+end if
 
 if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
-b=1
-f=1
+sigma_i=1
+sigma_f=1
 else
-b=-1
-f=1
+sigma_i=-1
+sigma_f=1
 end if
 
 
 Ns_out = 0
-do s=0,2**L - 1
+do s=i,f
 
-call CheckState_t_p_z(s,L,kblock,a,NN,mp,mz,mpz)
+s_8 = zext(s)
+call CheckState_t_p_z(s_8,L,kblock,a,NN,mp,mz,mpz)
 
 if (NN .ge. 0) then
 if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
 N(Ns_out) = sigma*NN
@@ -128,7 +141,7 @@ end do
 
 else if((mp .ne. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 n1=1.0d0 + sigma*pblock*dcos(2*kblock*mp*a*pi/L)
@@ -147,7 +160,7 @@ end do
 
 else if((mp .eq. -1) .and. (mz .ne. -1) .and. (mpz .eq. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp=NN
 n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
 if ( n1 .eq. 0.0d0) NN_temp = -1
@@ -162,7 +175,7 @@ end do
 
 else if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .ne. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 n1=1.0d0 + sigma*zblock*pblock*dcos(2*kblock*mpz*a*pi/L)
@@ -180,7 +193,7 @@ end do
 
 else if((mp .ne. -1) .and. (mz .ne. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
@@ -228,37 +241,41 @@ integer(kind=4), intent(inout) ,dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=2), intent(inout), dimension(Ns) :: m
 integer(kind=4), intent(out) :: Ns_out
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
+logical(kind=4) :: stp
 real(kind=8) :: n1,n2,n3,n4
-integer(kind=4), dimension(L) :: i_bits
-integer(kind=4) :: s,t
+integer(kind=4) :: s,t,i
 integer(kind=2) :: mp,mz,mpz
-integer(kind=1) :: NN_temp,NN,sigma,b,f
+integer(kind=1) :: NN_temp,NN,sigma,sigma_i,sigma_f
 
 if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
-b=1
-f=1
+sigma_i=1
+sigma_f=1
 else
-b=-1
-f=1
+sigma_i=-1
+sigma_f=1
 end if
 
-i_bits=0
-do s=1,Nup
-i_bits(s)=2**(s-1)
+
+s=0
+do i=0,Nup-1
+s = ibset(s,i)
 end do
 
 
 Ns_out = 0
-s=sum(i_bits)
 
-do while(.not.btest(s,L))
+stp=.false.
+do while(.not.stp)
 
-call CheckState_t_p_z(s,L,kblock,a,NN,mp,mz,mpz)
+s_8 = zext(s)
+call CheckState_t_p_z(s_8,L,kblock,a,NN,mp,mz,mpz)
 
 if (NN .ge. 0) then
 if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 Ns_out = Ns_out + 1
 basis(Ns_out) = s
 N(Ns_out) = sigma*NN
@@ -267,7 +284,7 @@ end do
 
 else if((mp .ne. -1) .and. (mz .eq. -1) .and. (mpz .eq. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 n1=1.0d0 + sigma*pblock*dcos(2*kblock*mp*a*pi/L)
@@ -286,7 +303,7 @@ end do
 
 else if((mp .eq. -1) .and. (mz .ne. -1) .and. (mpz .eq. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp=NN
 n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
 if ( n1 .eq. 0.0d0) NN_temp = -1
@@ -301,7 +318,7 @@ end do
 
 else if((mp .eq. -1) .and. (mz .eq. -1) .and. (mpz .ne. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 n1=1.0d0 + sigma*zblock*pblock*dcos(2*kblock*mpz*a*pi/L)
@@ -319,7 +336,7 @@ end do
 
 else if((mp .ne. -1) .and. (mz .ne. -1)) then
 
-do sigma=b,f,2
+do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 n1=1.0d0 + zblock*dcos(2*kblock*mz*a*pi/L)
@@ -343,8 +360,13 @@ end do
 end if
 end if
 
-t=ior(s,s-1)+1
-s=ior(t,ishft(iand(t,-t)/iand(s,-s),-1)-1)
+stp = btest(s,L-1)
+do i=1,Nup-1
+stp = stp .and. btest(s,L-1-i)
+end do
+
+t=ior(s,s-1)
+s=ior(t+1,ishft(iand(not(t),-not(t))-1,-trailz(s)-1))
 end do
 
 

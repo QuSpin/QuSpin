@@ -153,6 +153,7 @@ def check_pz(L,dtype,Nup=None):
 	Epz=np.concatenate((E1,E2))
 	Epz.sort()
 
+
 	eps=np.finfo(dtype).eps
 	if norm(Epz-E) > Ns*100*eps:
 		raise Exception( "test failed pz symmetry at L={0:3d} with dtype {1} and Nup={2:2d}".format(L,np.dtype(dtype),Nup) )
@@ -217,10 +218,10 @@ def check_obc(Lmax):
 			check_pz(L,dtype,Nup=int(L/2))
 			check_pz(L,dtype)
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
-		for L in xrange(2,Lmax+1,2):
-			check_p_z(L,dtype,Nup=int(L/2))
-			check_p_z(L,dtype) 
+#	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+#		for L in xrange(2,Lmax+1,2):
+#			check_p_z(L,dtype,Nup=int(L/2))
+#			check_p_z(L,dtype) 
 
 
 
@@ -594,7 +595,7 @@ def check_pbc(Lmax):
 
 #check_m(4)
 #check_opstr(4)
-check_obc(4)
+check_obc(8)
 #check_pbc(4)
 
 
