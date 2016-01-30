@@ -68,14 +68,14 @@ def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 
 
 
-def op_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 
 	dtype = _dtype(dtype)
 	char = _type_conv[dtype.char]
 	fortran_op = basis_ops.__dict__[char+"_z_op"]
 
-	col,ME,error = fortran_op(N,basis,opstr,indx,L,zblock)
+	col,ME,error = fortran_op(basis,opstr,indx,L,zblock)
 
 	if error != 0: raise FortranError(_basis_op_errors[error])
 
@@ -279,6 +279,7 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	row = row[ mask ]
 	col = col[ mask ]
 	ME = ME[ mask ]
+#	print col,ME
 	col -= 1 #convert from fortran index to c index.
 	if pauli:
 		ME*=J

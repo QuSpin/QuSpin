@@ -72,7 +72,7 @@ integer(kind=4), intent(inout) ,dimension(Ns) :: basis
 integer(kind=1), intent(inout), dimension(Ns) :: N
 integer(kind=4), intent(out) :: Ns_out
 integer(kind=8), external :: zext
-logical(kind=4) :: a
+logical(kind=4) :: stp
 integer(kind=4) :: s,t,i
 integer(kind=8) :: s_8
 integer(kind=1) :: r
@@ -98,8 +98,8 @@ return
 end if
 
 
-a=.false.
-do while(.not.a)
+stp=.false.
+do while(.not.stp)
 s_8 = zext(s)
 
 call CheckState_p(s_8,L,pblock,r)
@@ -109,9 +109,9 @@ basis(Ns_out) = s
 N(Ns_out) = r
 end if
 
-a = btest(s,L-1)
+stp = btest(s,L-1)
 do i=1,Nup-1
-a = a .and. btest(s,L-1-i)
+stp = stp .and. btest(s,L-1-i)
 end do
 
 t=ior(s,s-1)

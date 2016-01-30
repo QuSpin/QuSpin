@@ -86,7 +86,7 @@ do s=i,f
 s_8 = zext(s)
 call CheckState_t_z(s_8,L,kblock,a,NN,mm)
 
-if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*pi/L) .eq. -1.0d0)) then
+if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*a*pi/L) .eq. -1.0d0)) then
 NN = -1
 end if
 
@@ -138,7 +138,7 @@ do while(.not.stp)
 s_8 = zext(s)
 call CheckState_t_z(s_8,L,kblock,a,NN,mm)
 
-if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*pi/L) .eq. -1.0d0)) then
+if((mm .ge. 0) .and. ( zblock*dcos(2*kblock*mm*a*pi/L) .eq. -1.0d0)) then
 NN = -1
 end if
 

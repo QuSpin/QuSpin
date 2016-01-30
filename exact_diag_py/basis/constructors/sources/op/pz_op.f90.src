@@ -2,14 +2,14 @@
 subroutine refstate_pz(s,L,qg)
 implicit none
 integer(kind=4), intent(in) :: L
-integer(kind=4), intent(inout) :: s
+integer(kind=8), intent(inout) :: s
 integer(kind=4), intent(out) :: qg
-integer(kind=4) :: r
+integer(kind=8) :: r
 
 qg=0
 r = s
-call flip_lr(r,L)
-call flip_all(r,L)
+call flip_lr_64(r,L)
+call flip_all_64(r,L)
 if(r.lt.s) then
 qg = 1;s = r;
 end if
@@ -34,7 +34,9 @@ integer(kind=1), intent(in), dimension(Ns) :: N
 integer(kind=4), intent(out), dimension(Ns) :: col
 <real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out) :: error
-integer(kind=4), external :: FindZstate
+integer(kind=4), external :: FindZstate,zrm
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
 integer(kind=4) :: i,qg,s
 
 
@@ -47,8 +49,9 @@ end if
 
 do i=1,Ns
 
-s = col(i)
-call refstate_pz(s,L,qg)
+s_8 = zext(col(i))
+call refstate_pz(s_8,L,qg)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 col(i)=s
 if(s .gt. 0) then

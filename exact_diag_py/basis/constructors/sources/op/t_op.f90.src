@@ -1,9 +1,10 @@
 subroutine refstate_t(s,L,a,ll)
 implicit none
 integer(kind=4), intent(in) :: L,a
-integer(kind=4), intent(inout) :: s
+integer(kind=8), intent(inout) :: s
 integer(kind=4), intent(out) :: ll
-integer(kind=4) :: r,t,i
+integer(kind=8) :: r,t
+integer(kind=4) :: i
 
 ll=0
 r = s
@@ -35,7 +36,9 @@ integer(kind=1), intent(in), dimension(Ns) :: N
 integer(kind=4), intent(out), dimension(Ns) :: col
 <type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out) :: error
-integer(kind=4), external :: FindZstate
+integer(kind=4), external :: FindZstate,zrm
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
 <re_type> :: k
 <cp_type> :: M_E
 integer(kind=4) :: j,s,ll
@@ -49,8 +52,9 @@ k=(2*pi*a*kblock)/L
 
 do j=1,Ns
 
-s = col(j)
-call refstate_t(s,L,a,ll)
+s_8 = zext(col(j))
+call refstate_t(s_8,L,a,ll)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 col(j)=s
 

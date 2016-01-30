@@ -189,8 +189,8 @@ do sigma=sigma_i,sigma_f,2
 NN_temp = NN
 
 if(mm .ge. 0) then
-if ( (1.0d0 + sigma*pblock*dcos((2*kblock*mm)*(pi/L))) .eq. 0.0d0) NN_temp = -1
-if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos((2*kblock*mm)*(pi/L))) .ne. 0.0d0)) NN_temp = -1
+if ( (1.0d0 + sigma*pblock*dcos((2*kblock*mm*a)*(pi/L))) .eq. 0.0d0) NN_temp = -1
+if((sigma .eq. -1) .and. ( (1.0d0 - sigma*pblock*dcos((2*kblock*mm*a)*(pi/L))) .ne. 0.0d0)) NN_temp = -1
 end if
 
 if(NN_temp .ge. 0) then

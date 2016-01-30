@@ -239,15 +239,13 @@ class basis1d:
 
 			
 			self.basis = _np.empty((self.Ns,),dtype=_np.int32)
-			self.N=_np.empty((self.Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_z_basis(L,Nup,self.N,self.basis)
+				self.Ns = _cn.make_m_z_basis(L,Nup,self.basis)
 			else:
-				self.Ns = _cn.make_z_basis(L,self.N,self.basis)
+				self.Ns = _cn.make_z_basis(L,self.basis)
 
-			self.N = self.N[:self.Ns]
 			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.basis,self.L]
+			self.op_args=[self.basis,self.L]
 				
 		elif type(pzblock) is int:
 			if self.conserved: self.conserved += " & PZ"

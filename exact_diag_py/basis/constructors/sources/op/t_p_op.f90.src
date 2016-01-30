@@ -1,9 +1,10 @@
 subroutine refstate_t_p(s,L,a,ll,q)
 implicit none
 integer(kind=4), intent(in) :: L,a
-integer(kind=4), intent(inout) :: s
+integer(kind=8), intent(inout) :: s
 integer(kind=4), intent(out) :: ll,q
-integer(kind=4) :: r,t,i
+integer(kind=8) :: r,t
+integer(kind=4) :: i
 
 ll = 0; q = 0
 r = s; t = s
@@ -45,7 +46,9 @@ integer(kind=4), intent(in), dimension(Ns) :: basis
 integer(kind=4), intent(out), dimension(2*Ns) :: col
 <type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(2*Ns) :: ME
 integer(kind=4), intent(out) :: error
-integer(kind=4), external :: FindZstate
+integer(kind=4), external :: FindZstate,zrm
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
 <re_type>, external :: <name2=s,d,s,d>_helement_p
 <re_type> :: k
 <cp_type> :: M_E
@@ -66,8 +69,9 @@ k=(2*pi*a*kblock)/L
 if(<d>abs(<d>sin(k)) .le. epsilon(1.0<d0>)) then ! if in k=0 or pi block
 
 do j=1,Ns
-s = col(j)
-call refstate_t_p(s,L,a,ll,q)
+s_8 = zext(col(j))
+call refstate_t_p(s_8,L,a,ll,q)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 
 if(s.lt.0) then
@@ -101,8 +105,9 @@ else
 o=1
 end if
 
-s = col(j)
-call refstate_t_p(s,L,a,ll,q)
+s_8 = zext(col(j))
+call refstate_t_p(s_8,L,a,ll,q)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 
 

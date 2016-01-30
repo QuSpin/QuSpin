@@ -2,13 +2,13 @@
 subroutine refstate_z(s,L,g)
 implicit none
 integer(kind=4), intent(in) :: L
-integer(kind=4), intent(inout) :: s
+integer(kind=8), intent(inout) :: s
 integer(kind=4), intent(out) :: g
-integer(kind=4) :: r
+integer(kind=8) :: r
 
 g = 0
 r = s
-call flip_all(r,L)
+call flip_all_64(r,L)
 if(r.lt.s) then
 g=1; s = r
 end if
@@ -20,18 +20,19 @@ end subroutine
 
 
 
-subroutine <name=s,d,c,z>_z_op(N,basis,Ns,opstr,indx,N_indx,L,zblock,col,ME,error)
+subroutine <name=s,d,c,z>_z_op(basis,Ns,opstr,indx,N_indx,L,zblock,col,ME,error)
 implicit none
 integer(kind=4), intent(in) :: Ns, N_indx, L, zblock
 integer(kind=4), intent(in), dimension(N_indx) :: indx
 character, intent(in), dimension(N_indx) :: opstr
 integer(kind=4), intent(in), dimension(Ns) :: basis
-integer(kind=1), intent(in), dimension(Ns) :: N
 integer(kind=4), intent(out), dimension(Ns) :: col
 <real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out) :: error
-integer(kind=4), external :: FindZstate
+integer(kind=4), external :: FindZstate, zrm
+integer(kind=8), external :: zext
 integer(kind=4) :: i,g,s
+integer(kind=8) :: s_8
 
 
 call <name>_spinop(basis,Ns,opstr,indx,N_indx,col,ME,error)
@@ -43,12 +44,13 @@ end if
 
 do i=1,Ns
 
-s = col(i)
-call refstate_z(s,L,g)
+s_8 = zext(col(i))
+call refstate_z(s_8,L,g)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 col(i)=s
 if(s .gt. 0) then
-ME(i)=ME(i)*(zblock**g)*<,d,,d>sqrt(<convert=float,dble,float,dble>(N(s))/<convert>(N(i)))
+ME(i)=ME(i)*(zblock**g)
 end if
 
 

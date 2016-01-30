@@ -69,3 +69,18 @@ end do
 
 
 end function zext
+
+
+function zrm(b)
+implicit none
+integer(kind=8), intent(in) :: b
+integer(kind=4) :: zrm
+integer(kind=1) :: i
+
+zrm = 0
+do i=0,31
+if(btest(b,i)) zrm = zrm + ishft(1,i)
+end do 
+
+
+end function zrm

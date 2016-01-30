@@ -2,9 +2,9 @@
 subroutine refstate_p_z(s,L,q,g)
 implicit none
 integer(kind=4), intent(in) :: L
-integer(kind=4), intent(inout) :: s
+integer(kind=8), intent(inout) :: s
 integer(kind=4), intent(out) :: q,g
-integer(kind=4) :: r,t
+integer(kind=8) :: r,t
 
 q=0;g=0
 r=s
@@ -53,7 +53,9 @@ integer(kind=1), intent(in), dimension(Ns) :: N
 integer(kind=4), intent(out), dimension(Ns) :: col
 <real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out) :: error
-integer(kind=4), external :: FindZstate
+integer(kind=4), external :: FindZstate,zrm
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
 integer(kind=4) :: i,q,g,s
 
 
@@ -65,8 +67,9 @@ end if
 
 do i=1,Ns
 
-s = col(i)
-call refstate_p_z(s,L,q,g)
+s_8 = zext(col(i))
+call refstate_p_z(s_8,L,q,g)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 col(i)=s
 if(s .gt. 0) then

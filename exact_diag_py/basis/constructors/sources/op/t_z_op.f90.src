@@ -1,9 +1,10 @@
 subroutine refstate_t_z(s,L,a,ll,g)
 implicit none
 integer(kind=4), intent(in) :: L,a
-integer(kind=4), intent(inout) :: s
+integer(kind=8), intent(inout) :: s
 integer(kind=4), intent(out) :: ll,g
-integer(kind=4) :: r,t,i
+integer(kind=8) :: r,t
+integer(kind=4) :: i
 
 ll = 0; g = 0
 r = s; t = s
@@ -16,7 +17,7 @@ end if
 end do
 
 t = s
-call flip_all(t,L)
+call flip_all_64(t,L)
 
 do i=1,L/a
 t=ishftc(t,-a,L)
@@ -48,7 +49,9 @@ integer(kind=1), intent(in), dimension(Ns) :: N,m
 integer(kind=4), intent(out), dimension(Ns) :: col
 <type=real(kind=4),real(kind=8),complex(kind=4),complex(kind=8)>, intent(out), dimension(Ns) :: ME
 integer(kind=4), intent(out) :: error
-integer(kind=4), external :: FindZstate
+integer(kind=4), external :: FindZstate,zrm
+integer(kind=8), external :: zext
+integer(kind=8) :: s_8
 <re_type>, external :: <name>_norm_z
 <re_type> :: k,N2,N1
 <cp_type> :: M_E
@@ -63,8 +66,9 @@ k=(2*pi*a*kblock)/L
 
 do j=1,Ns
 
-s = col(j)
-call refstate_t_z(s,L,a,ll,g)
+s_8 = zext(col(j))
+call refstate_t_z(s_8,L,a,ll,g)
+s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 col(j)=s
 

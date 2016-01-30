@@ -7,6 +7,24 @@ from numpy.random import random,seed
 seed()
 
 
+L=32
+
+print "making basis"
+b = basis1d(L,Nup=L/2,kblock=0,pblock=+1,zblock=+1)
+
+h=[[2.0*random()-1.0,i] for i in xrange(L)]
+J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+J3=[[J2[i][0]*0.5,i,(i+1)%L] for i in xrange(L)]
+
+static1=[["zz",J1],["yy",J2],["xx",J2],["x",h]]
+print "making hamiltonian"
+H = hamiltonian(static1,[],L,dtype=np.float32,basis=b)
+
+
+
+
+
 def check_opstr(Lmax):
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1):
@@ -218,10 +236,10 @@ def check_obc(Lmax):
 			check_pz(L,dtype,Nup=int(L/2))
 			check_pz(L,dtype)
 
-#	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
-#		for L in xrange(2,Lmax+1,2):
-#			check_p_z(L,dtype,Nup=int(L/2))
-#			check_p_z(L,dtype) 
+	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+		for L in xrange(2,Lmax+1,2):
+			check_p_z(L,dtype,Nup=int(L/2))
+			check_p_z(L,dtype) 
 
 
 
@@ -342,7 +360,7 @@ def check_t_p(L,dtype,Nup=None):
 
 
 	if norm(Ek-Ekp) > Ns*eps:
-			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
+			raise Exception( "test failed t p symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
 
 
 	if L%2 == 0:	
@@ -377,7 +395,7 @@ def check_t_p(L,dtype,Nup=None):
 		Ekp.sort()
 
 		if norm(Ek-Ekp) > Ns*eps:
-				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,int(L/2),np.dtype(dtype),Nup) )
+				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,int(L/2),np.dtype(dtype),Nup) )
 
 	else:
 		for kblock in xrange(1,L_2+1):
@@ -398,6 +416,10 @@ def check_t_p(L,dtype,Nup=None):
 			if norm(Ek-Ek2) > Ns*eps:
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
+
+
+
+
 
 
 
@@ -433,6 +455,7 @@ def check_t_pz(L,dtype,Nup=None):
 
 		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
 		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)
+
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		if norm(Ek-Ek1) > Ns*eps:
@@ -446,7 +469,8 @@ def check_t_pz(L,dtype,Nup=None):
 	Ek=Hk.eigvalsh()
 
 	Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pzblock=+1,a=a)
-	Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pzblock=-1,a=a)	
+	Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pzblock=-1,a=a)
+	
 	Ek1=Hk1.eigvalsh()
 	Ek2=Hk2.eigvalsh()
 	Ekp=np.append(Ek1,Ek2)
@@ -454,7 +478,7 @@ def check_t_pz(L,dtype,Nup=None):
 
 
 	if norm(Ek-Ekp) > Ns*eps:
-			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
+			raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
 
 	if((L/a)%2 == 0):
 		for kblock in xrange(1,L_2):
@@ -487,7 +511,7 @@ def check_t_pz(L,dtype,Nup=None):
 		Ekp.sort()
 
 		if np.sum(np.abs(Ek-Ekp)) > Ns*eps:
-				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,int(L/2),np.dtype(dtype),Nup) )
+				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,int(L/2),np.dtype(dtype),Nup) )
 	else:
 		for kblock in xrange(1,L_2+1):
 			Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
@@ -595,7 +619,7 @@ def check_pbc(Lmax):
 
 #check_m(4)
 #check_opstr(4)
-check_obc(8)
-#check_pbc(4)
+#check_obc(8)
+#check_pbc(8)
 
 
