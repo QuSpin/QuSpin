@@ -1,8 +1,19 @@
 import constructors as _cn
 import numpy as _np
+from numpy import array,asarray
+from numpy import shift_right,shift_left,invert,bitwise_and,bitwise_or
+from numpy import cos,sin,exp,pi
+from numpy.linalg import norm
+
+import scipy.sparse as _sm
 
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string
+dtypes={"f":_np.float32,
+				"F":_np.complex64,
+				"d":_np.float64,
+				"D":_np.complex128}
+
 op={"":_cn.op,
 		"M":_cn.op_m,
 		"Z":_cn.op_z,
@@ -24,26 +35,6 @@ op={"":_cn.op,
 		"T & P & Z":_cn.op_t_p_z,
 		"M & T & P & Z":_cn.op_t_p_z}
 
-
-
-
-class BasisError(Exception):
-	# this class defines an exception which can be raised whenever there is some sort of error which we can
-	# see will obviously break the code. 
-	def __init__(self,message):
-		self.message=message
-	def __str__(self):
-		return self.message
-
-
-def ncr(n, r):
-	import operator as _op
-# this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
-	r = min(r, n-r)
-	if r == 0: return 1
-	numer = reduce(_op.mul, xrange(n, n-r, -1))
-	denom = reduce(_op.mul, xrange(1, r+1))
-	return numer//denom
 
 
 class basis1d:
@@ -123,6 +114,8 @@ class basis1d:
 			self.k=2*(_np.pi)*a*kblock/L
 			if self.conserved: self.conserved += " & T & P & Z"
 			else: self.conserved = "T & P & Z"
+			self.blocks["pzblock"] = pblock*zblock
+
 			self.Ns = int(_np.ceil(self.Ns*a*(0.55)/float(L_m))) # estimate fraction of basis needed for sector.
 
 			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
@@ -301,6 +294,50 @@ class basis1d:
 		return  op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
 
 
+	def get_vec(self,v0,sparse=True):
+		v0 = asarray(v0)
+		if v0.ndim == 1:
+			shape = (2**L,1)
+		elif v0.ndim == 2:
+			shape = (2**L,v0.shape[1])
+		else:
+			raise ValueError("excpecting v0 to have ndim at most 2")
+
+
+		a = blocks.get("a")
+		kblock = blocks.get("kblock")
+		pblock = blocks.get("pblock")
+		zblock = blocks.get("zblock")
+		pzblock = blocks.get("pzblock")
+
+		if self.Ns <= 0:
+			return np.array([])
+
+		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
+			mask = (self.N < 1)
+			ind_neg, = _np.nonzero(mask)
+			mask = (self.N > 1)
+			ind_pos, = _np.nonzero(mask)
+			del mask
+			def C(r,k,c,dtype,ind_neg,ind_pos):
+				c[ind_pos] = cos(dtype(k*r))
+				c[ind_neg] = sin(dtype(k*r))
+		else:
+			ind_pos = np.fromiter(xrange(v0.shape[0]),count=v0.shape[0],dtype=np.int32)
+			ind_neg = np.array([],dtype=np.int32)
+			def C(r,k,c,dtype,*args):
+				if k == 0.0:
+					c[:] = 1.0
+				elif k == _np.pi
+					c[:] = (-1.0)**r
+				else
+					c[:] = exp(dtype(-1.0j*k*r))
+
+			
+		if sparse:
+			return _get_vec_sparse(v0,self.basis,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
+		else:
+			return _get_vec_dense(v0,self.basis,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
 
 
 
@@ -315,8 +352,211 @@ class basis1d:
 
 
 
+def _get_vec_dense(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
+	dtype=dtypes[v0.dtype.char]
+
+	a = blocks.get("a")
+	kblock = blocks.get("kblock")
+	pblock = blocks.get("pblock")
+	zblock = blocks.get("zblock")
+	pzblock = blocks.get("pzblock")
+
+	c = _np.zeros(basis.shape,dtype=v0.dtype)	
+	v = _np.zeros(shape,dtype=v0.dtype)
+
+	if type(kblock) is int:
+		k = 2*_np.pi*kblock*a/L
+	else:
+		k = 0.0
+		a = L
+
+	for r in xrange(0,L,a):
+		C(r,k,c,dtype,ind_neg,ind_pos)
+
+		vc = (v0.T*c).T
+		v[basis[ind_pos]] += (v0.T*c).T[ind_pos]
+		v[basis[ind_neg]] += (v0.T*c).T[ind_neg]
+		
+		
+		if type(zblock) is int:
+			flipall(basis,L)
+			v[basis[ind_pos]] += vc[ind_pos]*zblock
+			v[basis[ind_neg]] += vc[ind_neg]*zblock
+			flipall(basis,L)
+
+		if type(pblock) is int:
+			fliplr(basis,L)
+			v[basis[ind_pos]] += vc[ind_pos]*pblock
+			v[basis[ind_neg]] += vc[ind_neg]*pblock
+			fliplr(basis,L)
+
+		if type(pzblock) is int:
+			fliplr(basis,L)
+			flipall(basis,L)
+			v[basis[ind_pos]] += vc[ind_pos]*pzblock
+			v[basis[ind_neg]] += vc[ind_neg]*pzblock
+			fliplr(basis,L)
+			flipall(basis,L)
+		
+		shiftc(basis,a,L)
+		
+	v /= np.linalg.norm(v,axis=0)
+	return v
 
 
+
+
+
+
+def _get_vec_sparse(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
+	dtype=dtypes[v0.dtype.char]
+
+	a = blocks.get("a")
+	kblock = blocks.get("kblock")
+	pblock = blocks.get("pblock")
+	zblock = blocks.get("zblock")
+	pzblock = blocks.get("pzblock")
+
+	m = shape[1]
+	n = ind_neg.shape[0]
+	neg = _np.resize(ind_neg,(n*m,))
+	col_neg = _np.fromiter(xrange(m),count=m,dtype=_np.int32)
+	col_neg = _np.broadcast_to(col_neg,(n,m)).T.ravel()
+
+
+
+	n = ind_pos.shape[0]
+	pos = _np.resize(ind_pos,(n*m,))
+	col_pos = _np.fromiter(xrange(m),count=m,dtype=_np.int32)
+	col_pos = _np.broadcast_to(col_pos,(n,m)).T.ravel()
+
+
+
+	c = np.zeros(basis.shape,dtype=v0.dtype)	
+	v = sm.csr_matrix(([],([],[])),shape,dtype=v0.dtype)
+
+	if type(kblock) is int:
+		k = 2*_np.pi*kblock*a/L
+	else:
+		k = 0.0
+		a = L
+
+
+	for r in xrange(0,L,a):
+		C(r,k,c,dtype,ind_neg,ind_pos)
+
+		data_pos = (v0.T*c).T[ind_pos].ravel()
+		data_neg = (v0.T*c).T[ind_neg].ravel()
+		v = v + sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
+		v = v + sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+
+		if type(zblock) is int:
+			flipall(basis,L)
+			data_pos *= zblock
+			data_neg *= zblock
+			v += sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
+			v += sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+			data_pos *= zblock
+			data_neg *= zblock
+			flipall(basis,L)
+
+		if type(pblock) is int:
+			fliplr(basis,L)
+			data = (v0.T*c).T[ind_pos].ravel()
+			data_pos *= pblock
+			data_neg *= pblock
+			v += sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
+			v += sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+			data_pos *= pblock
+			data_neg *= pblock
+			fliplr(basis,L)
+
+		if type(pzblock) is int:
+			fliplr(basis,L)
+			flipall(basis,L)
+			data_pos *= pzblock
+			data_neg *= pzblock
+			v += sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
+			v += sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+			data_pos *= pzblock
+			data_neg *= pzblock
+			fliplr(basis,L)
+			flipall(basis,L)
+
+		shiftc(basis,a,L)
+
+		
+
+
+	av = v.multiply(v.conj())
+	norm = av.sum(axis=0)
+	del av
+	np.sqrt(norm,out=norm)
+	np.divide(1.0,norm,out=norm)
+	norm = sm.csr_matrix(norm)
+	v = v.multiply(norm)
+
+	return v
+
+
+
+
+
+def ncr(n, r):
+	import operator as _op
+# this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
+	r = min(r, n-r)
+	if r == 0: return 1
+	numer = reduce(_op.mul, xrange(n, n-r, -1))
+	denom = reduce(_op.mul, xrange(1, r+1))
+	return numer//denom
+
+
+
+
+def fliplr(x,length):
+	x1 = array(x)
+	x[:] = 0
+	for i in xrange(length):
+		x2 = array(x1)
+		x2 = right_shift(x2,i)
+		bitwise_and(x2,1,out=x2)
+		left_shift(x2,length-1-i,out=x2)
+		x += x2
+
+
+def flipall(x,length):
+	mask = 2**length-1
+	invert(x,out=x)
+	bitwise_and(x,mask,out=x)
+	
+
+
+
+def shiftc(x,shift,period):
+	Imax=2**period-1
+
+	bitwise_and(x,Imax,x)
+	x1 = array(x)
+	if shift < 0:	
+		shift=abs(shift)
+		shift = shift % period
+		m_shift = period - shift
+
+		right_shift(x,shift,out=x)
+		left_shift(x1,m_shift,out=x1)
+		bitwise_and(x1,Imax,out=x1)
+		bitwise_or(x,x1,out=x)
+	else:
+		shift = shift % period
+		m_shift = period - shift
+
+		left_shift(x,shift,out=x)
+		bitwise_and(x,Imax,out=x)
+		right_shift(x1,m_shift,out=x1)
+		bitwise_or(x,x1,out=x)
+
+	del x1
 
 
 
