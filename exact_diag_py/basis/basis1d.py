@@ -1,7 +1,7 @@
 import constructors as _cn
 import numpy as _np
 from numpy import array,asarray
-from numpy import shift_right,shift_left,invert,bitwise_and,bitwise_or
+from numpy import right_shift,left_shift,invert,bitwise_and,bitwise_or
 from numpy import cos,sin,exp,pi
 from numpy.linalg import norm
 
@@ -326,9 +326,9 @@ class basis1d:
 			def C(r,k,c,dtype,*args):
 				if k == 0.0:
 					c[:] = 1.0
-				elif k == _np.pi
+				elif k == _np.pi:
 					c[:] = (-1.0)**r
-				else
+				else:
 					c[:] = exp(dtype(-1.0j*k*r))
 
 			

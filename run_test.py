@@ -7,24 +7,6 @@ from numpy.random import random,seed
 seed()
 
 
-L=32
-
-print "making basis"
-b = basis1d(L,Nup=L/2,kblock=0,pblock=+1,zblock=+1)
-
-h=[[2.0*random()-1.0,i] for i in xrange(L)]
-J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-J3=[[J2[i][0]*0.5,i,(i+1)%L] for i in xrange(L)]
-
-static1=[["zz",J1],["yy",J2],["xx",J2],["x",h]]
-print "making hamiltonian"
-H = hamiltonian(static1,[],L,dtype=np.float32,basis=b)
-
-
-
-
-
 def check_opstr(Lmax):
 	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
 		for L in xrange(2,Lmax+1):
@@ -342,9 +324,11 @@ def check_t_p(L,dtype,Nup=None):
 		Ek2=Hk2.eigvalsh()
 		
 		if norm(Ek-Ek1) > Ns*eps:
+			print norm(Ek-Ek1)
 			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 		if norm(Ek-Ek2) > Ns*eps:
+			print norm(Ek-Ek2)
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 	Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=0)
@@ -360,6 +344,7 @@ def check_t_p(L,dtype,Nup=None):
 
 
 	if norm(Ek-Ekp) > Ns*eps:
+			print norm(Ek-Ekp)
 			raise Exception( "test failed t p symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,0,np.dtype(dtype),Nup) )
 
 
@@ -377,9 +362,11 @@ def check_t_p(L,dtype,Nup=None):
 			Ek2=Hk2.eigvalsh()
 	
 			if norm(Ek-Ek1) > Ns*eps:
+				print norm(Ek-Ek1)
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
 			if norm(Ek-Ek2) > Ns*eps:
+				print norm(Ek-Ek2)
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 
 	
@@ -395,6 +382,7 @@ def check_t_p(L,dtype,Nup=None):
 		Ekp.sort()
 
 		if norm(Ek-Ekp) > Ns*eps:
+				print norm(Ek-Ekp)
 				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,int(L/2),np.dtype(dtype),Nup) )
 
 	else:
@@ -411,9 +399,11 @@ def check_t_p(L,dtype,Nup=None):
 			Ek2=Hk2.eigvalsh()
 	
 			if norm(Ek-Ek1) > Ns*eps:
+				print norm(Ek-Ek1)
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
 			if norm(Ek-Ek2) > Ns*eps:
+				print norm(Ek-Ek2)
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3}".format(L,kblock,np.dtype(dtype),Nup) )
 	
 
@@ -620,6 +610,6 @@ def check_pbc(Lmax):
 #check_m(4)
 #check_opstr(4)
 #check_obc(8)
-#check_pbc(8)
+check_pbc(8)
 
 
