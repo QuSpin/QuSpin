@@ -35,7 +35,7 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -60,7 +60,7 @@ def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -88,7 +88,7 @@ def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -115,7 +115,7 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -142,7 +142,7 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -168,7 +168,7 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -197,7 +197,7 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 
 	return ME,row,col
@@ -226,7 +226,7 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 	return ME,row,col
 
@@ -254,7 +254,7 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 	return ME,row,col
 
@@ -284,7 +284,7 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 	return ME,row,col
 
@@ -313,7 +313,7 @@ def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr)))
+		ME*=(J*0.5**(len(opstr.replace("c",""))))
 
 	return ME,row,col
 

@@ -289,7 +289,7 @@ class basis1d:
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast coupling to proper dtype")
 
-		return  op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
+		return op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
 
 
 	def get_vec(self,v0,sparse=True):
