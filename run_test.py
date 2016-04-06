@@ -1,6 +1,7 @@
 from exact_diag_py.hamiltonian import hamiltonian
 from exact_diag_py.basis import basis1d
 import numpy as np
+import scipy.sparse as sm
 from numpy.linalg import norm
 from numpy.random import random,seed
 
@@ -607,9 +608,136 @@ def check_pbc(Lmax):
 
 
 
-#check_m(4)
-#check_opstr(4)
-#check_obc(8)
+def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1):
+	J1 = [[1.0,i,(i+1)%L] for i in xrange(L)]
+	J2 = [[0.5,i,(i+1)%L] for i in xrange(L)]
+	J3 = [[0.5,i,(i+1)%L,(i+2)%L,(i+3)%L] for i in xrange(L)]
+	h = [[0.5,i] for i in xrange(L)]
+	dtype=np.complex128
+#	print "basis"
+	b = basis1d(L,Nup=Nup,kblock=kblock,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
+	Ns = b.Ns
+
+	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in xrange(len(b.basis))])
+	norms = b.get_norms(np.float32)
+#	for s,n,m,norm in zip(b.basis,b.N,b.m,norms):
+#		print ("{0:0"+str(L)+"b} {1:d} {2:d} {3:6.3f}").format(s,n,m,norm)
+	
+
+	static = [['xxzz',J3],['zzxx',J3],['yyzz',J3],['zzyy',J3],['xxyy',J3],['yyxx',J3]]
+#	static = [["zz",J1],['x',h]]
+#	static = [["xx",J2],['yy',J2],['zz',J1]]
+#	print "Make H"
+	H1 = hamiltonian(static,[],L,dtype=dtype)
+	H2 = hamiltonian(static,[],L,basis=b,dtype=dtype)
+
+	E,v0=H2.eigh()
+	v = b.get_vec(v0,sparse=False)
+#	v = b.get_vec(v0,sparse=True)
+
+	if sm.issparse(v):
+		v = v.todense()
+
+
+	H1 = H1.todense()
+	H2 = H2.todense()
+	H2 = v0.T.conj() * (H2 * v0)
+	if v.shape[0] != 0:
+		H1 = v.T.conj() * ( H1 * v)
+		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
+			print Nup,pblock,zblock,kblock
+#			print b.m,b.basis,b.N
+#			print H1
+#			print H2.real
+	else: 
+		pass	
+
+
+
+def check_getvec(L,a=1):
+	for k in xrange(-L/a,L/a):
+			getvec(L,kblock=k,a=a)
+
+	for j in xrange(-1,2,2):
+		getvec(L,pblock=j,a=a)
+		for k in xrange(-L/a,L/a):
+			getvec(L,kblock=k,pblock=j,a=a)
+
+	Nup=None
+
+	for i in xrange(-1,2,2):
+		for j in xrange(-1,2,2):
+			getvec(L,Nup=Nup,pblock=i,zblock=j,a=a)
+			for k in xrange(-L/a,L/a):
+				getvec(L,kblock=k,Nup=Nup,pblock=i,zblock=j,a=a)
+
+	for j in xrange(-1,2,2):
+			getvec(L,Nup=L/2,pzblock=j,a=a)
+			for k in xrange(-L/a,L/a):
+				getvec(L,kblock=k,Nup=Nup,pzblock=j,a=a)
+
+	for j in xrange(-1,2,2):
+		getvec(L,Nup=Nup,zblock=j,a=a)
+		for k in xrange(-L/a,L/a):
+			getvec(L,kblock=k,Nup=Nup,zblock=j,a=a)
+
+	for Nup in xrange(L+1):
+		for k in xrange(-L/a,L/a):
+				getvec(L,Nup=Nup,kblock=k,a=a)
+
+	for Nup in xrange(0,L+1):
+		for j in xrange(-1,2,2):
+			getvec(L,Nup=Nup,pblock=j,a=a)
+			for k in xrange(-L/a,L/a):
+				getvec(L,kblock=k,Nup=Nup,pblock=j,a=a)
+
+	Nup=L/2
+
+	for i in xrange(-1,2,2):
+		for j in xrange(-1,2,2):
+			getvec(L,Nup=Nup,pblock=i,zblock=j,a=a)
+			for k in xrange(-L/a,L/a):
+				getvec(L,kblock=k,Nup=Nup,pblock=i,zblock=j,a=a)
+
+	for j in xrange(-1,2,2):
+			getvec(L,Nup=L/2,pzblock=j,a=a)
+			for k in xrange(-L/a,L/a):
+				getvec(L,kblock=k,Nup=Nup,pzblock=j,a=a)
+
+	for j in xrange(-1,2,2):
+		getvec(L,Nup=Nup,zblock=j,a=a)
+		for k in xrange(-L/a,L/a):
+			getvec(L,kblock=k,Nup=Nup,zblock=j,a=a)
+
+
+
+
+
+
+check_m(4)
+check_opstr(4)
+check_obc(8)
 check_pbc(8)
+check_getvec(8)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

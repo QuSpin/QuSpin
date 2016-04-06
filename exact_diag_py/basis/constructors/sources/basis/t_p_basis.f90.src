@@ -15,7 +15,7 @@ t=ishftc(t,-a,L)
 if ( t .lt. s ) then
 return
 else if ( t .eq. s) then 
-if ( modulo(k,(L/(a*int(i)))) .ne. 0) then
+if ( modulo(k,(L/(a*i))) .ne. 0) then
 return
 end if
 N=int(i,1)
@@ -77,7 +77,8 @@ i = 0
 f = ishft(1,L) - 1
 end if
 
-if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
+
+if(dabs(dsin(2*kblock*a*pi/L)) .le.  1.0d0/L**2) then
 sigma_i=1
 sigma_f=1
 else
@@ -137,7 +138,7 @@ integer(kind=4) :: s,t,i
 integer(kind=1) :: NN_temp,NN,mm,sigma,sigma_i,sigma_f
 
 
-if(dabs(dsin(2*kblock*a*pi/L)) .le. epsilon(1.0d0)) then
+if(dabs(dsin(2*kblock*a*pi/L)) .le.  1.0d0/L**2) then
 sigma_i=1
 sigma_f=1
 else

@@ -28,7 +28,7 @@ r = ieor(r,ishft(1,indx(j)))
 
 else if(opstr(j) .eq. "y") then
 r = ieor(r,ishft(1,indx(j)))
-M_E = M_E * (-1.0<d0>)**(a)*<cmplx,dcmplx,cmplx,dcmplx>(0.0,1.0<d0>)
+M_E = M_E * (-1.0<d0>)**(a+1)*<cmplx,dcmplx,cmplx,dcmplx>(0.0,1.0<d0>)
 
 else if(opstr(j) .eq. "+") then
 if (a .eq. 1) then 

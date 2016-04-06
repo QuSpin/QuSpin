@@ -81,18 +81,18 @@ call <name>_spinop(basis,Ns,opstr,indx,N_indx,col,ME,error)
 
 ME(Ns+1:2*Ns)=ME(1:Ns)
 
-
 if(error .ne. 0) return
 
 k=(2*pi*a*kblock)/L
 
-if(<d>abs(<d>sin(k)) .le. epsilon(1.0<d0>)) then ! if in k=0 or pi block
+if(<d>abs(<d>sin(k)) .le. 1.0<d0>/L**2) then ! if in k=0 or pi block
 
 do j=1,Ns
 s_8 = zext(col(j))
 call refstate_t_p_z(s_8,L,a,ll,q,g)
 s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
+
 
 if(s.lt.0) then
 col(j) = -1

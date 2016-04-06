@@ -76,6 +76,8 @@ class basis1d:
 
 		if kblock is not None:
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
+			kblock = kblock % (L/a)
+			blocks["kblock"] = kblock
 
 		if type(a) is not int:
 			raise TypeError('a must be integer')
@@ -116,7 +118,7 @@ class basis1d:
 			else: self.conserved = "T & P & Z"
 			self.blocks["pzblock"] = pblock*zblock
 
-			self.Ns = int(_np.ceil(self.Ns*a*(0.55)/float(L_m))) # estimate fraction of basis needed for sector.
+			self.Ns = int(_np.ceil(self.Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
 
 			self.basis=_np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
@@ -193,6 +195,7 @@ class basis1d:
 			if self.conserved: self.conserved += " & P & Z"
 			else: self.conserved += "P & Z"
 			self.Ns = int(_np.ceil(self.Ns*0.5*frac)) # estimate fraction of basis needed for sector.
+			self.blocks["pzblock"] = pblock*zblock
 			
 			self.basis = _np.empty((self.Ns,),dtype=_np.int32)
 			self.N=_np.empty((self.Ns,),dtype=_np.int8)
@@ -292,50 +295,141 @@ class basis1d:
 		return op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
 
 
+
+
+	def get_norms(self,dtype):
+		a = self.blocks.get("a")
+		kblock = self.blocks.get("kblock")
+		pblock = self.blocks.get("pblock")
+		zblock = self.blocks.get("zblock")
+		pzblock = self.blocks.get("pzblock")
+
+
+		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
+			c = _np.empty(self.m.shape,dtype=_np.int8)
+			nn = _np.array(c)
+			mm = _np.array(c)
+			_np.divide(self.m,(self.L+1)**2,c)
+			_np.divide(self.m,self.L+1,nn)
+			_np.mod(nn,self.L+1,nn)
+			_np.mod(self.m,self.L+1,mm)
+			if _np.abs(_np.sin(self.k)) < 1.0/self.L:
+				norm = _np.full(self.basis.shape,4*(self.L/a)**2,dtype=dtype)
+			else:
+				norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
+			norm *= _np.sign(self.N)
+			norm /= self.N
+			# c = 2
+			mask = (c == 2)
+			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pblock*_np.cos(self.k*mm[mask]))
+			# c = 3
+			mask = (c == 3)
+			norm[mask] *= (1.0 + zblock*_np.cos(self.k*nn[mask]))	
+			# c = 4
+			mask = (c == 4)
+			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pzblock*_np.cos(self.k*mm[mask]))	
+			# c = 5
+			mask = (c == 5)
+			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pblock*_np.cos(self.k*mm[mask]))
+			norm[mask] *= (1.0 + zblock*_np.cos(self.k*nn[mask]))	
+			del mask
+		elif (type(kblock) is int) and (type(pblock) is int):
+			if _np.abs(_np.sin(self.k)) < 1.0/self.L:
+				norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
+			else:
+				norm = _np.full(self.basis.shape,(self.L/a)**2,dtype=dtype)
+			norm *= _np.sign(self.N)
+			norm /= self.N
+			# m >= 0 
+			mask = (self.m >= 0)
+			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pblock*_np.cos(self.k*self.m[mask]))
+			del mask
+		elif (type(kblock) is int) and (type(pzblock) is int):
+			if _np.abs(_np.sin(self.k)) < 1.0/self.L:
+				norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
+			else:
+				norm = _np.full(self.basis.shape,(self.L/a)**2,dtype=dtype)
+			norm *= _np.sign(self.N)
+			norm /= self.N
+			# m >= 0 
+			mask = (self.m >= 0)
+			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pzblock*_np.cos(self.k*self.m[mask]))
+			del mask
+		elif (type(kblock) is int) and (type(zblock) is int):
+			norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
+			norm /= self.N
+			# m >= 0 
+			mask = (self.m >= 0)
+			norm[mask] *= (1.0 + zblock*_np.cos(self.k*self.m[mask]))
+			del mask
+		elif (type(pblock) is int) and (type(zblock) is int):
+			norm = _np.array(self.N,dtype=dtype)
+		elif (type(pblock) is int):
+			norm = _np.array(self.N,dtype=dtype)
+		elif (type(pzblock) is int):
+			norm = _np.array(self.N,dtype=dtype)
+		elif (type(zblock) is int):
+			norm = _np.full(self.basis.shape,2.0,dtype=dtype)
+		elif (type(kblock) is int):
+			norm = _np.full(self.basis.shape,(self.L/a)**2,dtype=dtype)
+			norm /= self.N
+		else:
+			norm = _np.ones(self.basis.shape,dtype=dtype)
+	
+		_np.sqrt(norm,norm)
+
+		return norm
+
+
+
+
 	def get_vec(self,v0,sparse=True):
-		v0 = asarray(v0)
+		if self.Ns <= 0:
+			return _np.array([])
 		if v0.ndim == 1:
-			shape = (2**L,1)
+			shape = (2**self.L,1)
+			v0 = v0.reshape((-1,1))
 		elif v0.ndim == 2:
-			shape = (2**L,v0.shape[1])
+			shape = (2**self.L,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
 
-		a = blocks.get("a")
-		kblock = blocks.get("kblock")
-		pblock = blocks.get("pblock")
-		zblock = blocks.get("zblock")
-		pzblock = blocks.get("pzblock")
+		norms = self.get_norms(v0.dtype)
 
-		if self.Ns <= 0:
-			return np.array([])
+		a = self.blocks.get("a")
+		kblock = self.blocks.get("kblock")
+		pblock = self.blocks.get("pblock")
+		zblock = self.blocks.get("zblock")
+		pzblock = self.blocks.get("pzblock")
+
 
 		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
-			mask = (self.N < 1)
+			mask = (self.N < 0)
 			ind_neg, = _np.nonzero(mask)
-			mask = (self.N > 1)
+			mask = (self.N > 0)
 			ind_pos, = _np.nonzero(mask)
 			del mask
-			def C(r,k,c,dtype,ind_neg,ind_pos):
+			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = sin(dtype(k*r))
+				c[ind_neg] = -sin(dtype(k*r))
+				_np.divide(c,norms,c)
 		else:
-			ind_pos = np.fromiter(xrange(v0.shape[0]),count=v0.shape[0],dtype=np.int32)
-			ind_neg = np.array([],dtype=np.int32)
-			def C(r,k,c,dtype,*args):
+			ind_pos = _np.fromiter(xrange(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
+			ind_neg = _np.array([],dtype=_np.int32)
+			def C(r,k,c,norms,dtype,*args):
 				if k == 0.0:
 					c[:] = 1.0
 				elif k == _np.pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(dtype(-1.0j*k*r))
+					c[:] = exp(-dtype(1.0j*k*r))
+				_np.divide(c,norms,c)
 
-			
 		if sparse:
-			return _get_vec_sparse(v0,self.basis,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
+			return _get_vec_sparse(v0,self.basis,norms,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
 		else:
-			return _get_vec_dense(v0,self.basis,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
+			return _get_vec_dense(v0,self.basis,norms,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
 
 
 
@@ -348,9 +442,7 @@ class basis1d:
 
 
 
-
-
-def _get_vec_dense(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
+def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=dtypes[v0.dtype.char]
 
 	a = blocks.get("a")
@@ -362,18 +454,20 @@ def _get_vec_dense(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
 	c = _np.zeros(basis.shape,dtype=v0.dtype)	
 	v = _np.zeros(shape,dtype=v0.dtype)
 
+	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in xrange(len(basis))])
+
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
 	else:
 		k = 0.0
 		a = L
 
-	for r in xrange(0,L,a):
-		C(r,k,c,dtype,ind_neg,ind_pos)
-
+	for r in xrange(0,L/a):
+#		print bits.format(*basis)
+		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
 		vc = (v0.T*c).T
-		v[basis[ind_pos]] += (v0.T*c).T[ind_pos]
-		v[basis[ind_neg]] += (v0.T*c).T[ind_neg]
+		v[basis[ind_pos]] += vc[ind_pos]
+		v[basis[ind_neg]] += vc[ind_neg]
 		
 		
 		if type(zblock) is int:
@@ -398,7 +492,7 @@ def _get_vec_dense(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
 		
 		shiftc(basis,a,L)
 		
-	v /= np.linalg.norm(v,axis=0)
+#	v /= _np.linalg.norm(v,axis=0)
 	return v
 
 
@@ -406,7 +500,7 @@ def _get_vec_dense(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
 
 
 
-def _get_vec_sparse(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
+def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=dtypes[v0.dtype.char]
 
 	a = blocks.get("a")
@@ -416,22 +510,18 @@ def _get_vec_sparse(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
 	pzblock = blocks.get("pzblock")
 
 	m = shape[1]
+
 	n = ind_neg.shape[0]
-	neg = _np.resize(ind_neg,(n*m,))
+	row_neg = _np.broadcast_to(ind_neg,(m,n)).T.flatten()
 	col_neg = _np.fromiter(xrange(m),count=m,dtype=_np.int32)
-	col_neg = _np.broadcast_to(col_neg,(n,m)).T.ravel()
-
-
+	col_neg = _np.broadcast_to(col_neg,(n,m)).flatten()
 
 	n = ind_pos.shape[0]
-	pos = _np.resize(ind_pos,(n*m,))
+	row_pos = _np.broadcast_to(ind_pos,(m,n)).T.flatten()
 	col_pos = _np.fromiter(xrange(m),count=m,dtype=_np.int32)
-	col_pos = _np.broadcast_to(col_pos,(n,m)).T.ravel()
+	col_pos = _np.broadcast_to(col_pos,(n,m)).flatten()
 
 
-
-	c = np.zeros(basis.shape,dtype=v0.dtype)	
-	v = sm.csr_matrix(([],([],[])),shape,dtype=v0.dtype)
 
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
@@ -439,32 +529,36 @@ def _get_vec_sparse(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
 		k = 0.0
 		a = L
 
+	c = _np.zeros(basis.shape,dtype=v0.dtype)	
+	v = _sm.csr_matrix(shape,dtype=v0.dtype)
 
-	for r in xrange(0,L,a):
-		C(r,k,c,dtype,ind_neg,ind_pos)
 
-		data_pos = (v0.T*c).T[ind_pos].ravel()
-		data_neg = (v0.T*c).T[ind_neg].ravel()
-		v = v + sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
-		v = v + sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+
+	for r in xrange(0,L/a):
+		C(r,k,c,norms,dtype,ind_neg,ind_pos)
+
+		vc = (v0.T*c).T
+		data_pos = (v0.T*c).T[ind_pos].flatten()
+		data_neg = (v0.T*c).T[ind_neg].flatten()
+		v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
 		if type(zblock) is int:
 			flipall(basis,L)
 			data_pos *= zblock
 			data_neg *= zblock
-			v += sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
-			v += sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
 			flipall(basis,L)
 
 		if type(pblock) is int:
 			fliplr(basis,L)
-			data = (v0.T*c).T[ind_pos].ravel()
 			data_pos *= pblock
 			data_neg *= pblock
-			v += sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
-			v += sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
 			fliplr(basis,L)
@@ -474,25 +568,25 @@ def _get_vec_sparse(v0,basis,ind_neg,ind_pos,shape,C,L,**blocks):
 			flipall(basis,L)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			v += sm.csr_matrix((data_pos,(basis[pos],col_pos)),shape,dtype=v.dtype)
-			v += sm.csr_matrix((data_neg,(basis[neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			fliplr(basis,L)
 			flipall(basis,L)
 
-		shiftc(basis,a,L)
+		shiftc(basis,-a,L)
 
 		
 
 
-	av = v.multiply(v.conj())
-	norm = av.sum(axis=0)
-	del av
-	np.sqrt(norm,out=norm)
-	np.divide(1.0,norm,out=norm)
-	norm = sm.csr_matrix(norm)
-	v = v.multiply(norm)
+#	av = v.multiply(v.conj())
+#	norm = av.sum(axis=0)
+#	del av
+#	_np.sqrt(norm,out=norm)
+#	_np.divide(1.0,norm,out=norm)
+#	norm = _sm.csr_matrix(norm)
+#	v = v.multiply(norm)
 
 	return v
 
@@ -555,6 +649,26 @@ def shiftc(x,shift,period):
 		bitwise_or(x,x1,out=x)
 
 	del x1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

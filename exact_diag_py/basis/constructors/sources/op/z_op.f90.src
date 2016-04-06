@@ -49,6 +49,8 @@ call refstate_z(s_8,L,g)
 s = zrm(s_8)
 s = FindZstate(basis,Ns,s)
 col(i)=s
+
+
 if(s .gt. 0) then
 ME(i)=ME(i)*(zblock**g)
 end if

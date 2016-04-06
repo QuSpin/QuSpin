@@ -11,7 +11,7 @@ N=-1
 m=-1
 
 do i=1,L/a
-t=ishftc(t,a,L)
+t=ishftc(t,-a,L)
 if ( t .lt. s ) then
 return
 else if ( t .eq. s) then 
@@ -36,7 +36,7 @@ else if(t .eq. s) then
 m = int(i,1)
 return
 end if
-t = ishftc(t,a,L)
+t = ishftc(t,-a,L)
 end do
 
 

@@ -3,6 +3,8 @@
 *.pyf
 *.so
 
+getvec_check.py
+
 # pure fortran source files #
 *.f90
 
