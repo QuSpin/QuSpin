@@ -490,7 +490,7 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			fliplr(basis,L)
 			flipall(basis,L)
 		
-		shiftc(basis,a,L)
+		shiftc(basis,-a,L)
 		
 #	v /= _np.linalg.norm(v,axis=0)
 	return v
@@ -635,17 +635,17 @@ def shiftc(x,shift,period):
 		shift = shift % period
 		m_shift = period - shift
 
-		right_shift(x,shift,out=x)
-		left_shift(x1,m_shift,out=x1)
-		bitwise_and(x1,Imax,out=x1)
+		left_shift(x,shift,out=x)
+		bitwise_and(x,Imax,out=x)
+		right_shift(x1,m_shift,out=x1)
 		bitwise_or(x,x1,out=x)
 	else:
 		shift = shift % period
 		m_shift = period - shift
 
-		left_shift(x,shift,out=x)
-		bitwise_and(x,Imax,out=x)
-		right_shift(x1,m_shift,out=x1)
+		right_shift(x,shift,out=x)
+		left_shift(x1,m_shift,out=x1)
+		bitwise_and(x1,Imax,out=x1)
 		bitwise_or(x,x1,out=x)
 
 	del x1
