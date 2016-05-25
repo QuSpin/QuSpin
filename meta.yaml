@@ -1,19 +1,19 @@
 package:
   name: exact_diag_py
-  version: "0.0.4b"
+  version: "0.0.5b"
 
 source:
   git_url: https://github.com/weinbe58/exact_diag_py.git
-  git_tag: 0.0.4b
+  git_tag: 0.0.5b
 
 requirements:
   build:
     - python
-    - numpy >=1.8
+    - numpy >=1.10
 
   run:
     - python
-    - numpy >=1.8
+    - numpy >=1.10
     - scipy >=0.14
 
 test:
