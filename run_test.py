@@ -656,7 +656,7 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	if v.shape[0] != 0:
 		H1 = v.T.conj() * ( H1 * v)
 		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
-			print L,Nup,pblock,zblock,pzblock,kblock,np.linalg.norm(H1-H1.T)
+			raise Exception("get_vec() failed")
 	else: 
 		pass	
 
@@ -721,17 +721,16 @@ def check_getvec(L,a=1,sparse=True):
 
 
 
-
+"""
 check_m(4)
 check_opstr(4)
 check_obc(8)
 check_pbc(8)
 for L in xrange(4,7):
-	print L
 	check_getvec(L,sparse=True)
 	check_getvec(L,sparse=False)
 
-
+"""
 
 
 
