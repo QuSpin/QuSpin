@@ -32,8 +32,8 @@ def check_opstr(Lmax):
 			static1=[["zz",J1],["yy",J2],["xx",J2],["x",h]]
 			static2=[["zz",J1],["+-",J3],["-+",J3],["x",h]]
 
-			H1=hamiltonian(static1,[],L,dtype=dtype,pauli=False)
-			H2=hamiltonian(static2,[],L,dtype=dtype,pauli=False)
+			H1=hamiltonian(static1,[],L=L,dtype=dtype,pauli=False)
+			H2=hamiltonian(static2,[],L=L,dtype=dtype,pauli=False)
 
 
 			if norm(H1.todense()-H2.todense()) > eps(dtype):
@@ -53,13 +53,13 @@ def check_m(Lmax):
 
 			static=[["zz",J1],["yy",J2],["xx",J2],["z",h]]
 
-			H=hamiltonian(static,[],L,dtype=dtype,pauli=False)
+			H=hamiltonian(static,[],L=L,dtype=dtype,pauli=False)
 			Ns=H.Ns
 			E=H.eigvalsh()
 
 			Em=[]
 			for Nup in xrange(L+1):
-				H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,pauli=False)
+				H=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,pauli=False)
 				Etemp=H.eigvalsh()
 				Em.append(Etemp)
 
@@ -85,12 +85,12 @@ def check_z(L,dtype,Nup=None):
 
 	
 
-	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+	H=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
 	E=H.eigvalsh()
 
-	H1=hamiltonian(static,[],L,Nup=Nup,zblock=1,dtype=dtype)
-	H2=hamiltonian(static,[],L,Nup=Nup,zblock=-1,dtype=dtype)
+	H1=hamiltonian(static,[],L=L,Nup=Nup,zblock=1,dtype=dtype)
+	H2=hamiltonian(static,[],L=L,Nup=Nup,zblock=-1,dtype=dtype)
 
 
 	E1=H1.eigvalsh()
@@ -120,12 +120,12 @@ def check_p(L,dtype,Nup=None):
 	else:
 		static=[["zz",J],["x",h]]
 
-	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+	H=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
 	E=H.eigvalsh()
 
-	H1=hamiltonian(static,[],L,Nup=Nup,pblock=1,dtype=dtype)
-	H2=hamiltonian(static,[],L,Nup=Nup,pblock=-1,dtype=dtype)
+	H1=hamiltonian(static,[],L=L,Nup=Nup,pblock=1,dtype=dtype)
+	H2=hamiltonian(static,[],L=L,Nup=Nup,pblock=-1,dtype=dtype)
 
 	E1=H1.eigvalsh()
 	E2=H2.eigvalsh()
@@ -151,12 +151,12 @@ def check_pz(L,dtype,Nup=None):
 
 	static=[["zz",J],["yy",J],["xx",J],["z",h]]
 
-	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+	H=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
 	E=H.eigvalsh()
 
-	H1=hamiltonian(static,[],L,Nup=Nup,pzblock=1,dtype=dtype)
-	H2=hamiltonian(static,[],L,Nup=Nup,pzblock=-1,dtype=dtype)
+	H1=hamiltonian(static,[],L=L,Nup=Nup,pzblock=1,dtype=dtype)
+	H2=hamiltonian(static,[],L=L,Nup=Nup,pzblock=-1,dtype=dtype)
 
 	E1=H1.eigvalsh()
 	E2=H2.eigvalsh()
@@ -180,14 +180,14 @@ def check_p_z(L,dtype,Nup=None):
 	else:
 		static=[["zz",J],["x",h]]
 
-	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+	H=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
 	E=H.eigvalsh()
 
-	H1=hamiltonian(static,[],L,Nup=Nup,pblock=1,zblock=1,dtype=dtype)
-	H2=hamiltonian(static,[],L,Nup=Nup,pblock=-1,zblock=1,dtype=dtype)
-	H3=hamiltonian(static,[],L,Nup=Nup,pblock=1,zblock=-1,dtype=dtype)
-	H4=hamiltonian(static,[],L,Nup=Nup,pblock=-1,zblock=-1,dtype=dtype)
+	H1=hamiltonian(static,[],L=L,Nup=Nup,pblock=1,zblock=1,dtype=dtype)
+	H2=hamiltonian(static,[],L=L,Nup=Nup,pblock=-1,zblock=1,dtype=dtype)
+	H3=hamiltonian(static,[],L=L,Nup=Nup,pblock=1,zblock=-1,dtype=dtype)
+	H4=hamiltonian(static,[],L=L,Nup=Nup,pblock=-1,zblock=-1,dtype=dtype)
 
 	E1=H1.eigvalsh()
 	E2=H2.eigvalsh()
@@ -245,13 +245,13 @@ def check_t(L,dtype,Nup=None):
 
 
 	
-	H=hamiltonian(static,[],L,Nup=Nup,dtype=dtype)
+	H=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype)
 	Ns=H.Ns
 	E=H.eigvalsh()
 
 	Et=np.array([])
 	for kblock in xrange(0,L):
-		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock)
+		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock)
 		Et=np.append(Et,Hk.eigvalsh())
 		
 	
@@ -277,12 +277,12 @@ def check_t_z(L,dtype,Nup=None):
 	L_2=int(L/2)
 
 	for kblock in xrange(-L_2+1,L_2+1):
-		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock)
+		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
 
-		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,zblock=+1)
-		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,zblock=-1)	
+		Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,zblock=+1)
+		Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,zblock=-1)	
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		Ekz=np.append(Ek1,Ek2)
@@ -316,13 +316,13 @@ def check_t_p(L,dtype,Nup=None):
 		
 
 	for kblock in xrange(-L_2+1,0):
-		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock)
+		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=kblock)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
 
-		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1) 
+		Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1) 
 
-		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)	
+		Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)	
 
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
@@ -333,12 +333,12 @@ def check_t_p(L,dtype,Nup=None):
 		if norm(Ek-Ek2) > Ns*eps(dtype):
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
-	Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=0)
+	Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=0)
 	Ns=Hk.Ns
 	Ek=Hk.eigvalsh()
 
-	Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pblock=+1)
-	Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pblock=-1)	
+	Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=0,pblock=+1)
+	Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=0,pblock=-1)	
 	Ek1=Hk1.eigvalsh()
 	Ek2=Hk2.eigvalsh()
 	Ekp=np.append(Ek1,Ek2)
@@ -351,13 +351,13 @@ def check_t_p(L,dtype,Nup=None):
 
 	if L%2 == 0:	
 		for kblock in xrange(1,L_2):
-			Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock)
+			Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=kblock)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
 	
-			Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1) 
+			Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1) 
 	
-			Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)	
+			Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)	
 	
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
@@ -369,12 +369,12 @@ def check_t_p(L,dtype,Nup=None):
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
 
 	
-		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=L_2)
+		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=L_2)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
 
-		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=L_2,pblock=+1)
-		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=L_2,pblock=-1)	
+		Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=L_2,pblock=+1)
+		Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=L_2,pblock=-1)	
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		Ekp=np.append(Ek1,Ek2)
@@ -385,13 +385,13 @@ def check_t_p(L,dtype,Nup=None):
 
 	else:
 		for kblock in xrange(1,L_2+1):
-			Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock)
+			Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=kblock)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
 	
-			Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1) 
+			Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1) 
 	
-			Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)	
+			Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)	
 	
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
@@ -434,12 +434,12 @@ def check_t_pz(L,dtype,Nup=None):
 	a=2
 	L_2=int(L/(a*2))
 	for kblock in xrange(-L_2+1,0):
-		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
+		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
 
-		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
-		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)
+		Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
+		Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)
 
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
@@ -449,12 +449,12 @@ def check_t_pz(L,dtype,Nup=None):
 		if norm(Ek-Ek2) > Ns*eps(dtype):
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
-	Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=0,a=a)
+	Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=0,a=a)
 	Ns=Hk.Ns
 	Ek=Hk.eigvalsh()
 
-	Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pzblock=+1,a=a)
-	Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=0,pzblock=-1,a=a)
+	Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=0,pzblock=+1,a=a)
+	Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=0,pzblock=-1,a=a)
 	
 	Ek1=Hk1.eigvalsh()
 	Ek2=Hk2.eigvalsh()
@@ -467,13 +467,13 @@ def check_t_pz(L,dtype,Nup=None):
 
 	if((L/a)%2 == 0):
 		for kblock in xrange(1,L_2):
-			Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
+			Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
 	
-			Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
+			Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
 	
-			Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)	
+			Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)	
 	
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
@@ -484,12 +484,12 @@ def check_t_pz(L,dtype,Nup=None):
 			if norm(Ek-Ek2) > Ns*eps(dtype):
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
-		Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=L_2,a=a)
+		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=L_2,a=a)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
 
-		Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=L_2,pzblock=+1,a=a)
-		Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=L_2,pzblock=-1,a=a)	
+		Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=L_2,pzblock=+1,a=a)
+		Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=L_2,pzblock=-1,a=a)	
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		Ekp=np.append(Ek1,Ek2)
@@ -499,13 +499,13 @@ def check_t_pz(L,dtype,Nup=None):
 				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,int(L/2),np.dtype(dtype),Nup,norm(Ek-Ekp)) )
 	else:
 		for kblock in xrange(1,L_2+1):
-			Hk=hamiltonian(static,[],L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
+			Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
 	
-			Hk1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
+			Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=+1,a=a) 
 	
-			Hk2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)	
+			Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pzblock=-1,a=a)	
 	
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
@@ -533,22 +533,22 @@ def check_t_p_z(L,dtype,Nup=None):
 	
 	L_2=int(L/2)
 	for kblock in xrange(-L_2+1,L_2+1):
-		Hkp1=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1)
-		Hkp2=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)
+		Hkp1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1)
+		Hkp2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)
 		Ns=Hkp1.Ns
 		Ekp1=Hkp1.eigvalsh()
 		Ekp2=Hkp2.eigvalsh()
 
-		Hkpz11=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1,zblock=+1) 
-		Hkpz12=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1,zblock=-1)	
+		Hkpz11=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1,zblock=+1) 
+		Hkpz12=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1,zblock=-1)	
 		Ekpz11=Hkpz11.eigvalsh()
 		Ekpz12=Hkpz12.eigvalsh()
 
 		Ekpz1=np.concatenate((Ekpz11,Ekpz12))
 		Ekpz1.sort()
 
-		Hkpz21=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1,zblock=+1) 
-		Hkpz22=hamiltonian(static,[],L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1,zblock=-1)	
+		Hkpz21=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1,zblock=+1) 
+		Hkpz22=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1,zblock=-1)	
 		Ekpz21=Hkpz21.eigvalsh()
 		Ekpz22=Hkpz22.eigvalsh()
 
@@ -639,8 +639,8 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 						['-+-+',J(L,jb,4)],
 					]
 
-	H1 = hamiltonian(static,[],L,dtype=dtype)
-	H2 = hamiltonian(static,[],L,basis=b,dtype=dtype)
+	H1 = hamiltonian(static,[],L=L,dtype=dtype)
+	H2 = hamiltonian(static,[],L=L,basis=b,dtype=dtype)
 
 
 	E,v0=H2.eigh()
@@ -730,10 +730,6 @@ for L in xrange(4,7):
 	print L
 	check_getvec(L,sparse=True)
 	check_getvec(L,sparse=False)
-
-
-
-
 
 
 

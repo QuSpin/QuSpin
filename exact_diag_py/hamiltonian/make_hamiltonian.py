@@ -1,6 +1,6 @@
 # the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse as _sp
-
+import warnings
 import numpy as _np
 
 def make_static(basis,static_list,dtype,pauli):
@@ -20,7 +20,7 @@ def make_static(basis,static_list,dtype,pauli):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 	Ns=basis.Ns
-	H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype) 
+	H = _sp.csr_matrix((Ns,Ns),dtype=dtype)
 	for opstr,bonds in static_list:
 		for bond in bonds:
 			J=bond[0]
@@ -36,12 +36,15 @@ def make_static(basis,static_list,dtype,pauli):
 
 
 def test_function(func,func_args):
-	for t in _np.linspace(-10,10):
+	maxf=10.0
+	minf=-10.0
+	numbers = (maxf-minf)*_np.random.ranf(1000) + minf
+	for t in numbers:
 		func_val=func(t,*func_args)
 		if not _np.isscalar(func_val):
 			raise TypeError("function must return scaler values")
 		if _np.iscomplexobj(func_val):
-			warnings.warn("driving function returing complex value, dynamic hamiltonian will no longer be hermitian object.",UserWarning) 
+			warnings.warn("driving function returning complex value.",UserWarning,stacklevel=4) 
 
 
 
@@ -79,6 +82,6 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
-			dynamic.append((f,f_args,H))
+			dynamic.append((H,f,f_args))
 
 	return tuple(dynamic)

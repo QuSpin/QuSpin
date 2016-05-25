@@ -106,8 +106,8 @@ class basis1d:
 			self.conserved=""
 			self.Ns=2**L
 
+		frac = 1.0
 		if(L >= 10): frac = 0.6
-		else: frac = 0.7
 
 		if L > 1: L_m = L-1
 		else: L_m = 1
@@ -291,6 +291,9 @@ class basis1d:
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast coupling to proper dtype")
+
+		if self.Ns <= 0:
+			return [],[],[]
 
 		return op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
 
