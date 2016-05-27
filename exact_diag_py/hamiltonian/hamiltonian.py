@@ -1035,7 +1035,7 @@ class hamiltonian(object):
 			self._static.eliminate_zeros()
 		except: pass
 
-		return new	
+		return self	
 	
 
 
@@ -1072,7 +1072,7 @@ class hamiltonian(object):
 			self._static.eliminate_zeros()
 		except: pass
 
-		return new
+		return self
 
 
 
