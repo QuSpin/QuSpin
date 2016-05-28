@@ -799,7 +799,7 @@ class hamiltonian(object):
 			return self._iadd_hamiltonian(other)
 
 		elif _sp.issparse(other):
-			return self._sub_sparse(other)
+			return self._iadd_sparse(other)
 
 		elif _np.isscalar(other):
 			raise NotImplementedError('hamiltonian does not support addition by scalar')
@@ -866,7 +866,7 @@ class hamiltonian(object):
 	##########################################################################################
 
 
-
+	# checks
 	def _mat_checks(self,other,casting="same_kind"):
 			if other.shape != self._shape: # only accepts square matricies 
 				raise ValueError('shapes do not match')
@@ -1062,9 +1062,9 @@ class hamiltonian(object):
 	def _isub_sparse(self,other):
 		self._mat_checks(other)
 		try:
-			self._static += other
+			self._static -= other
 		except NotImplementedError:
-			self._static = self._static + other
+			self._static = self._static - other
 
 		try:
 			self._static.tocsr()
@@ -1413,7 +1413,6 @@ class hamiltonian(object):
 		"""Method for compatibility with NumPy's ufuncs and dot
 		functions.
 		"""
-
 
 		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:
