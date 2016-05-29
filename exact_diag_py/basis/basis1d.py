@@ -278,10 +278,9 @@ class basis1d:
 
 		else: 
 			if type(Nup) is int:
-				s0=sum([2**i for i in xrange(0,Nup)])
-				self.basis=_cn.make_m_basis(s0,self.Ns)
+				self.basis = _cn.make_m_basis(L,Nup,self.Ns)
 			else:
-				self.basis=_np.array(xrange(self.Ns),dtype=_np.int32)
+				self.basis = _np.arange(0,2**L,1,dtype=_np.int32)
 			self.op_args=[self.basis]
 
 
