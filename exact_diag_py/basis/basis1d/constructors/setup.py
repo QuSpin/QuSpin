@@ -26,10 +26,10 @@ def basis_ops_gen():
 				]
 
 	matrix_types = [
-									{"type_code":"s","c_matrix_type":"NP_FLOAT32_t","np_matrix_type":"NP_FLOAT32","c_complex_type":"NP_COMPLEX64_t","c_float_type":"NP_FLOAT64_t","check_imag":"True"},
-									{"type_code":"d","c_matrix_type":"NP_FLOAT64_t","np_matrix_type":"NP_FLOAT64","c_complex_type":"NP_COMPLEX128_t","c_float_type":"NP_FLOAT64_t","check_imag":"True"},
-									{"type_code":"c","c_matrix_type":"NP_COMPLEX64_t","np_matrix_type":"NP_COMPLEX64","c_complex_type":"NP_COMPLEX64_t","c_float_type":"NP_FLOAT64_t","check_imag":"False"},
-									{"type_code":"z","c_matrix_type":"NP_COMPLEX128_t","np_matrix_type":"NP_COMPLEX128","c_complex_type":"NP_COMPLEX128_t","c_float_type":"NP_FLOAT64_t","check_imag":"False"},
+									{"type_code":"s","c_matrix_type":"float","np_matrix_type":"NP_FLOAT32","c_complex_type":"float complex","c_float_type":"float","check_imag":"True"},
+									{"type_code":"d","c_matrix_type":"double","np_matrix_type":"NP_FLOAT64","c_complex_type":"double complex","c_float_type":"double","check_imag":"True"},
+									{"type_code":"c","c_matrix_type":"float complex","np_matrix_type":"NP_COMPLEX64","c_complex_type":"float complex","c_float_type":"float","check_imag":"False"},
+									{"type_code":"z","c_matrix_type":"double complex","np_matrix_type":"NP_COMPLEX128","c_complex_type":"double complex","c_float_type":"double","check_imag":"False"},
 								]
 
 	op_templates = get_templates(['sources','op'],".tmp")

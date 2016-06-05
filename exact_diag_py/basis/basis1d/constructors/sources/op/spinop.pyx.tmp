@@ -1,12 +1,12 @@
 
 
-def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx):
+def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1,mode='c'] indx):
 
 	cdef {c_basis_type} i,Ns
 	cdef {c_basis_type} r,b
 
-	cdef j,error
-	cdef char a,z,x,y,p,m,I
+	cdef int j,error
+	cdef char a
 
 	cdef {c_complex_type} M_E
 
@@ -16,12 +16,12 @@ def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _
 	cdef char *c_opstr = <char *>malloc(N_indx * sizeof(char))
 	c_opstr = PyString_AsString(opstr)
 
-	x = "x"
-	y = "y"
-	z = "z"
-	p = "+"
-	m = "-"
-	I = "I"
+	cdef char I = "I"
+	cdef char x = "x"
+	cdef char y = "y"
+	cdef char z = "z"
+	cdef char p = "+"
+	cdef char m = "-"
 
 
 	cdef _np.ndarray[{np_basis_type}_t, ndim=1] col = _np.zeros(Ns,dtype={np_basis_type})

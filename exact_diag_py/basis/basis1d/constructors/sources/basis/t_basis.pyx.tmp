@@ -55,7 +55,7 @@ def make_m_t_basis(int L, int Nup, int kblock, int a, _np.ndarray[NP_INT8_t,ndim
 
 
 	while True:
-		r=CheckState_T(kblock,L,s,T=a)
+		r=CheckState_T(kblock,L,s,a)
 
 		if r > 0:
 			N[Ns] = r				

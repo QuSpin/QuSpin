@@ -17,8 +17,8 @@ def ncr(n, r):
 
 L=10
 Nup = L/2
-kblock = 5
-pblock = 1
+kblock = 0
+pblock = None
 zblock = None
 pzblock = None
 a=1
