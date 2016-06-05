@@ -223,6 +223,8 @@ mz_b = modulo(int(m_b,4)/(L+1),L+1)
 mp_b = modulo(int(m_b,4),L+1)
 norm_b = <name>_norm_p_z(k,pblock,zblock,N_b,mp_b,mz_b,c_b)
 
+
+
 N_ratio = <d=,d>sqrt(<d>abs(norm_b/norm_a))
 
 bc = 1.0<d0=,d0>

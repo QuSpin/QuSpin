@@ -169,6 +169,7 @@ end if
 
 col(jj)=s+b
 ME(jj) = <real,dble,cmplx,dcmplx>(M_E)
+!print*, j+c,N(j+c),s+b,N(s+b),ME(jj)
 
 end do
 end do
@@ -200,6 +201,8 @@ integer(kind=4) :: sigma_a,sigma_b
 
 sigma_a = sign(1,int(N_a,4))
 sigma_b = sign(1,int(N_b,4))
+
+
 
 norm_a = <name>_norm_pz(k,pzblock,N_a,m_a)
 norm_b = <name>_norm_pz(k,pzblock,N_b,m_b)

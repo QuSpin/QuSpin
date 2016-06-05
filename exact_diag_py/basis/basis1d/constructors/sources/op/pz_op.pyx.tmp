@@ -1,0 +1,40 @@
+
+
+def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int pzblock):
+	cdef {c_basis_type} i,s,qg
+	cdef {c_basis_type} Ns = basis.shape[0]
+	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(2,{np_basis_type})
+	cdef _np.ndarray[{np_basis_type}_t,ndim=1] col
+	cdef _np.ndarray[{np_matrix_type}_t,ndim=1] ME
+	cdef int error
+	cdef {c_float_type} n
+
+	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+
+	if error != 0:
+		return col,ME,error
+
+	for i in range(Ns):
+		s = col[i]
+		RefState_PZ(s,L,R)
+
+		s = R[0]
+		qg = R[1]
+		
+		s = findzstate(basis,Ns,s)
+
+		col[i] = s
+		if s == -1: continue
+
+		n = N[s]
+		n /= N[i]
+
+
+		ME[i] *= (pzblock**qg)*sqrt(n)
+
+	return col,ME,error
+
+
+
+
+

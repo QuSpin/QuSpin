@@ -1,0 +1,147 @@
+
+
+
+cdef {np_matrix_type}_t {type_code}_MatrixElement_PZ(int L,int pzblock, int kblock, int a, {c_basis_type} l, {c_float_type} k, {c_basis_type} qg,NP_INT8_t Nr,NP_INT8_t Nc,NP_INT8_t mr,NP_INT8_t mc):
+	cdef {c_float_type} nr,nc
+	cdef {np_matrix_type}_t ME
+	cdef NP_INT8_t sr,sc
+
+
+
+	if Nr > 0:
+		sr = 1
+	else:
+		sr = -1
+
+	if Nc > 0:
+		sc = 1
+	else:
+		sc = -1
+
+
+
+
+	if mr >= 0:
+		nr = (1 + sr*pzblock*cos(k*mr))/Nr
+	else:
+		nr = 1.0/Nr
+	nr *= sr
+
+	if mc >= 0:
+		nc = (1 + sc*pzblock*cos(k*mc))/Nc
+	else:
+		nc = 1.0/Nc
+	nc *= sc
+
+	ME=sqrt(nc/nr)*(sr*pzblock)**qg
+
+	if sr == sc :
+		if mc < 0:
+			ME *= cos(k*l)
+		else:
+			ME *= (cos(k*l)+sr*pzblock*cos((l-mc)*k))/(1+sr*pzblock*cos(k*mc))
+	else:
+		if mc < 0:
+			ME *= -sr*sin(k*l)
+		else:
+			ME *= (-sr*sin(k*l)+pzblock*sin((l-mc)*k))/(1-sr*pzblock*cos(k*mc))		
+
+
+	return ME
+
+
+
+
+
+
+def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int pzblock, int kblock, int a):
+	cdef {c_basis_type} i,j,s,l,qg
+	cdef {c_basis_type} o,p,c,b
+	cdef {c_basis_type} Ns = basis.shape[0]
+	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(3,{np_basis_type})
+	cdef _np.ndarray[{np_basis_type}_t,ndim=1] col
+	cdef _np.ndarray[{np_matrix_type}_t,ndim=1] ME
+	cdef int error
+	cdef {c_float_type} k = (2.0*_np.pi*kblock*a)/L
+
+	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+
+	if error != 0:
+		return col,ME,error
+
+	col = _np.resize(col,(2*Ns,))
+	col[Ns:] = -1
+	ME = _np.resize(ME,(2*Ns,))
+
+	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
+		for i in range(Ns):
+			s = col[i]
+			RefState_T_PZ(s,L,a,R)
+
+			s = R[0]
+			l = R[1]
+			qg = R[2]
+
+			t = s
+			s = findzstate(basis,Ns,s)
+			col[i] = s
+
+			if s == -1:
+				continue
+
+
+
+			ME[i] *= {type_code}_MatrixElement_PZ(L,pzblock,kblock,a,l,k,qg,N[i],N[s],m[i],m[s])
+
+
+	else:
+		for i in range(Ns):
+			if (i > 0) and (basis[i] == basis[i-1]): continue
+			if (i < (Ns - 1)) and (basis[i] == basis[i+1]):
+				o = 2
+			else:
+				o = 1
+
+			s = col[i]
+			RefState_T_PZ(s,L,a,R)
+
+			s = R[0]
+			l = R[1]
+			qg = R[2]
+
+			s = findzstate(basis,Ns,s)
+
+			if s == -1:
+				for j in range(i,i+o,1):
+					col[j] = -1
+				continue
+
+
+			if (s == i) and (qg == 0) and (l == 0): #diagonal ME
+
+				for j in range(i,i+o,1):
+					col[j] = j
+					ME[j] *= {type_code}_MatrixElement_PZ(L,pzblock,kblock,a,l,k,qg,N[j],N[j],m[j],m[j])
+
+			else: # off diagonal ME
+
+				if (s > 0) and (basis[s] == basis[s-1]):
+					s = s-1; p = 2
+				elif (s < (Ns - 1)) and (basis[s] == basis[s+1]):
+					p = 2
+				else:
+					p = 1
+
+				for c in range(0,o,1):
+					for b in range(0,p,1):
+						j = i + c + Ns*b
+						col[j] = s + b
+						ME[j] *= {type_code}_MatrixElement_PZ(L,pzblock,kblock,a,l,k,qg,N[i+c],N[s+b],m[i+c],m[s+b])
+#						print i+c,N[i+c],s+b,N[s+b],ME[j]
+		
+		
+	return col,ME,error
+
+
+
+

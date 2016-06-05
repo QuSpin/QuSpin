@@ -411,8 +411,8 @@ def check_t_p(L,dtype,Nup=None):
 
 
 def check_t_pz(L,dtype,Nup=None):
-	hx=random()
-	hz=random()
+	hx=random()*0.0
+	hz=random()*0.0
 	J=random()
 	h1=[[hx,i] for i in xrange(L)]
 	J1=[[J,i,(i+1)%L] for i in xrange(L)]
@@ -444,10 +444,10 @@ def check_t_pz(L,dtype,Nup=None):
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		if norm(Ek-Ek1) > Ns*eps(dtype):
-			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
+			raise Exception( "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
 
 		if norm(Ek-Ek2) > Ns*eps(dtype):
-			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
+			raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
 	Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=0,a=a)
 	Ns=Hk.Ns
@@ -479,10 +479,10 @@ def check_t_pz(L,dtype,Nup=None):
 			Ek2=Hk2.eigvalsh()
 	
 			if norm(Ek-Ek1) > Ns*eps(dtype):
-				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
+				raise Exception( "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
 	
 			if norm(Ek-Ek2) > Ns*eps(dtype):
-				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
+				raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
 		Hk=hamiltonian(static,[],L=L,Nup=Nup,dtype=kdtype,kblock=L_2,a=a)
 		Ns=Hk.Ns
@@ -490,6 +490,7 @@ def check_t_pz(L,dtype,Nup=None):
 
 		Hk1=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=L_2,pzblock=+1,a=a)
 		Hk2=hamiltonian(static,[],L=L,Nup=Nup,dtype=dtype,kblock=L_2,pzblock=-1,a=a)	
+
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		Ekp=np.append(Ek1,Ek2)
@@ -511,10 +512,10 @@ def check_t_pz(L,dtype,Nup=None):
 			Ek2=Hk2.eigvalsh()
 	
 			if norm(Ek-Ek1) > Ns*eps(dtype):
-				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
+				raise Exception( "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
 	
 			if norm(Ek-Ek2) > Ns*eps(dtype):
-				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
+				raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
 
 
@@ -721,16 +722,13 @@ def check_getvec(L,a=1,sparse=True):
 
 
 
-"""
-check_m(4)
-check_opstr(4)
-check_obc(8)
-check_pbc(8)
-for L in xrange(4,7):
-	check_getvec(L,sparse=True)
-	check_getvec(L,sparse=False)
-
-"""
+#check_m(4)
+#check_opstr(4)
+#check_obc(8)
+#check_pbc(8)
+#for L in xrange(4,7):
+#	check_getvec(L,sparse=True)
+#	check_getvec(L,sparse=False)
 
 
 

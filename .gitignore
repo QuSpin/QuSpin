@@ -1,12 +1,16 @@
 # compliled python code #
 *.pyc
 *.pyf
+
 *.so
 
 getvec_check.py
 
 # pure fortran source files #
 *.f90
+
+# cython source file #
+*.pyx
 
 # backup files from gedit #
 *~

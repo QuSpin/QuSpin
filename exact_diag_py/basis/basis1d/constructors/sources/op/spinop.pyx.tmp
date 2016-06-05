@@ -1,0 +1,86 @@
+
+
+def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx):
+
+	cdef {c_basis_type} i,Ns
+	cdef {c_basis_type} r,b
+
+	cdef j,error
+	cdef char a,z,x,y,p,m,I
+
+	cdef {c_complex_type} M_E
+
+	cdef int N_indx = indx.shape[0]
+	Ns = basis.shape[0]
+
+	cdef char *c_opstr = <char *>malloc(N_indx * sizeof(char))
+	c_opstr = PyString_AsString(opstr)
+
+	x = "x"
+	y = "y"
+	z = "z"
+	p = "+"
+	m = "-"
+	I = "I"
+
+
+	cdef _np.ndarray[{np_basis_type}_t, ndim=1] col = _np.zeros(Ns,dtype={np_basis_type})
+	cdef _np.ndarray[{np_matrix_type}_t, ndim=1] ME = _np.ones(Ns,dtype={np_matrix_type})
+
+	error = 0
+
+	for i in range(Ns):
+		M_E = 1.0
+		r = basis[i]
+		
+		for j in range(N_indx-1,-1,-1):
+
+			b = ( 1ull << indx[j] )
+			a = ( r >> indx[j] ) & 1
+
+			if c_opstr[j] == I:
+				continue
+			elif c_opstr[j] == z:
+				M_E *= (-1.0)**(a+1)
+			elif c_opstr[j] == x:
+				r = r ^ b
+			elif c_opstr[j] == y:
+				r = r ^ b
+				M_E *= 1.0j*(-1.0)**(a+1)
+			elif c_opstr[j] == p:
+				if a == 1:
+					r = -1
+					M_E = 0.0
+					break
+				r = r ^ b
+				M_E *= 2
+				
+			elif c_opstr[j] == m:
+				if a == 0:
+					r = -1
+					M_E = 0.0
+					break
+				r = r ^ b
+				M_E *= 2
+		
+			else:
+				error = 1
+
+				return col,ME,error
+
+		if {check_imag}:
+			if M_E.imag != 0.0:
+				error = -1
+				return col,ME,error
+
+			ME[i] = M_E.real
+			col[i] = r
+		else:
+			ME[i] = M_E
+			col[i] = r
+		
+	return col,ME,error
+
+
+
+			

@@ -13,7 +13,7 @@ def get_sources():
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
-    config = Configuration('constructors',parent_package, top_path)
+    config = Configuration('fortran_constructors',parent_package, top_path)
     config.add_extension('basis_ops', sources=get_sources(),f2py_options=["--quiet"])
     return config
 
