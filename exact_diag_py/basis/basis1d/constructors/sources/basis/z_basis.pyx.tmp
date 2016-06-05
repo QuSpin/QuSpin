@@ -13,8 +13,7 @@ def make_m_z_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 		s += ( 1ull << j )
 
 	if (Nup == L) or (Nup == 0):
-		basis[0] = s
-		return 1
+		return 0
 
 	stp = 0
 	Ns = 0

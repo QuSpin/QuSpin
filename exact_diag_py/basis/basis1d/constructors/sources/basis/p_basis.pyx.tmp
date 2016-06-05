@@ -15,13 +15,18 @@ def make_m_p_basis(int L, int Nup, int pblock, _np.ndarray[NP_INT8_t,ndim=1] N, 
 	for j in range(Nup):
 		s += ( 1ull << j )
 
-	if (Nup == L) or (Nup == 0):
-		basis[0] = s
-		return 1
-
-
 	stp = 0
 	Ns = 0
+
+	if (Nup == L) or (Nup == 0):
+		rp = CheckState_P(pblock,s,L)
+		if rp > 0:
+			basis[Ns] = s
+			N[Ns] = rp
+			Ns += 1
+		return Ns
+
+
 	while True:
 		rp = CheckState_P(pblock,s,L)
 		if rp > 0:

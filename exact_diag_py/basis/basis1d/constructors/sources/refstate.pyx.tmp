@@ -89,6 +89,8 @@ cdef int RefState_P_Z({c_basis_type} s,{c_basis_type} L, _np.ndarray[{np_basis_t
 	cdef {c_basis_type} t,r
 
 	R[0] = s
+	R[1] = 0
+	R[2] = 0
 
 	r = s
 	t = fliplr(s,L)

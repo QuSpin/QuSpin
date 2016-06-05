@@ -188,7 +188,7 @@ def check_p_z(L,dtype,Nup=None):
 	H2=hamiltonian(static,[],L=L,Nup=Nup,pblock=-1,zblock=1,dtype=dtype)
 	H3=hamiltonian(static,[],L=L,Nup=Nup,pblock=1,zblock=-1,dtype=dtype)
 	H4=hamiltonian(static,[],L=L,Nup=Nup,pblock=-1,zblock=-1,dtype=dtype)
-
+	
 	E1=H1.eigvalsh()
 	E2=H2.eigvalsh()
 	E3=H3.eigvalsh()
@@ -657,7 +657,8 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	if v.shape[0] != 0:
 		H1 = v.T.conj() * ( H1 * v)
 		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
-			raise Exception("get_vec() failed")
+#			print "failed"
+			raise Exception("get_vec() failed {0}")
 	else: 
 		pass	
 
@@ -726,7 +727,7 @@ def check_getvec(L,a=1,sparse=True):
 #check_opstr(4)
 #check_obc(8)
 #check_pbc(8)
-#for L in xrange(4,7):
+#for L in xrange(4,8):
 #	check_getvec(L,sparse=True)
 #	check_getvec(L,sparse=False)
 

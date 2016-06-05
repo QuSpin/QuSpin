@@ -66,7 +66,7 @@ cdef NP_INT8_t CheckState_P_Z(int p,int z,{c_basis_type} s,int L):
 	if rpz < 0:
 		return -1	
 
-	return p*rpz
+	return rp*rpz
 
 
 

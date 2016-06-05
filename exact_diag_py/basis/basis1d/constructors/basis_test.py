@@ -15,11 +15,11 @@ def ncr(n, r):
 
 
 
-L=10
-Nup = L/2
-kblock = 0
-pblock = None
-zblock = None
+L=2
+Nup = None
+kblock = None
+pblock = 1
+zblock = 1
 pzblock = None
 a=1
 if Nup is None:
@@ -104,7 +104,8 @@ if Nup is None:
 		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_p_z_op"](N,basis,opstr,indx,L,pblock,zblock)
 		print b.basis-basis
 		print 
-		print b.N-N
+		print b.N
+		print N
 		print 
 
 	elif (type(kblock) is int):
@@ -217,8 +218,6 @@ else:
 		print b.basis-basis
 		print 
 		print b.N-N
-		print 
-		print b.m-m
 		print 
 
 
