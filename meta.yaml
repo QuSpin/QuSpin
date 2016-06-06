@@ -3,7 +3,9 @@ package:
   version: "0.1.0"
 
 source:
-  path: ./
+  git_rev: "0.1.0"
+  git_url: "https://github.com/weinbe58/exact_diag_py"
+  
 
 requirements:
   build:
@@ -21,5 +23,5 @@ test:
     - scipy 
 
 about:
-  home: https://github.com/weinbe58/exact_diag_py
-  license: MET
+  home: "https://github.com/weinbe58/exact_diag_py"
+  license: "MET"
