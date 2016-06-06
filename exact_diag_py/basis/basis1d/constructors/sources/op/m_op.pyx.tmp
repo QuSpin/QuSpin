@@ -1,17 +1,20 @@
 
 def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx):
 
-	cdef {c_basis_type} i
-	cdef {c_basis_type} Ns = basis.shape[0]
+	cdef int i,Ns 
+	cdef {c_basis_type} s
+	cdef _np.ndarray[NP_INT32_t,ndim=1] col
+	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 
-
+	Ns = basis.shape[0]
 	col,ME,error = {type_code}_spinop(basis,opstr,indx)
 
 	if error != 0:
 		return col,ME,error
 
 	for i in range(Ns):
-		col[i] = findzstate(basis,Ns,col[i])
+		s = col[i]
+		col[i] = findzstate(basis,Ns,s)
 
 
 		

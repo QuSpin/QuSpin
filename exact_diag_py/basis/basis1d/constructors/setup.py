@@ -22,7 +22,7 @@ def get_templates(folder,ext):
 
 def basis_ops_gen():
 	basis_types = [
-					{"np_basis_type":"NP_INT32","c_basis_type":"int"},
+					{"np_basis_type":"NP_UINT32","c_basis_type":"unsigned int"},
 				]
 
 	matrix_types = [

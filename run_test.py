@@ -68,7 +68,7 @@ def check_m(Lmax):
 			
 
 			if norm(Em-E) > Ns*eps(dtype):
-				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,np.dtype(dtype)),norm(Em-E) )
+				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype.name,norm(Em-E) ) )
 
 
 def check_z(L,dtype,Nup=None):
@@ -92,7 +92,6 @@ def check_z(L,dtype,Nup=None):
 	H1=hamiltonian(static,[],L=L,Nup=Nup,zblock=1,dtype=dtype)
 	H2=hamiltonian(static,[],L=L,Nup=Nup,zblock=-1,dtype=dtype)
 
-
 	E1=H1.eigvalsh()
 	E2=H2.eigvalsh()
 	
@@ -101,7 +100,7 @@ def check_z(L,dtype,Nup=None):
 
 
 	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup), norm(Ez-E))
+		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
 
 
 
@@ -718,7 +717,6 @@ def check_getvec(L,a=1,sparse=True):
 			getvec(L,Nup=Nup,zblock=j,a=a,sparse=sparse)
 			for k in xrange(-L/a,L/a):
 				getvec(L,kblock=k,Nup=Nup,zblock=j,a=a,sparse=sparse)
-
 
 
 

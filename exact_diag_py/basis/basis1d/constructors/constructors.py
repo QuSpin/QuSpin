@@ -1,12 +1,11 @@
 import basis_ops
 from numpy import dtype as _dtype
 from numpy import int32 as _index_type
-from numpy import array as _array
 import numpy as _np
 
 __all__=['op','op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','op_t_pz','op_t_p_z']
 
-_type_conv = {'f': 's', 'd': 'd', 'F': 'c', 'D': 'z'}
+_type_conv = {'f':'s', 'd':'d', 'F':'c', 'D':'z'}
 
 _basis_op_errors={1:"opstr character not recognized.",
 									-1:"attemping to use real hamiltonian with complex matrix elements."}

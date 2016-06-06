@@ -1,11 +1,12 @@
 
 def {type_code}_z_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int zblock):
-	cdef {c_basis_type} i,s,g
-	cdef {c_basis_type} Ns = basis.shape[0]
+	cdef {c_basis_type} s
+	cdef int error,ss,i,Ns,g
 	cdef _np.ndarray[{np_basis_type}_t,ndim = 1,mode='c'] R = _np.zeros(2,{np_basis_type})
-	cdef _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] col
-	cdef _np.ndarray[{np_matrix_type}_t,ndim=1,mode='c'] ME
-	cdef int error
+	cdef _np.ndarray[NP_INT32_t,ndim=1] col
+	cdef _np.ndarray[{c_matrix_type},ndim=1,mode='c'] ME
+
+	Ns = basis.shape[0]
 
 	col,ME,error = {type_code}_spinop(basis,opstr,indx)
 
@@ -19,10 +20,9 @@ def {type_code}_z_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np
 		s = R[0]
 		g = R[1]
 
-		s = findzstate(basis,Ns,s)
-		col[i] = s
-		if s == -1: continue
-
+		ss = findzstate(basis,Ns,s)
+		col[i] = ss
+		if ss == -1: continue
 		ME[i] *= (zblock)**g
 
 

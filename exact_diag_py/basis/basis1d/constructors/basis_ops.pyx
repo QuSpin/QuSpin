@@ -24,8 +24,10 @@ NP_UINT8 = _np.uint8
 
 NP_FLOAT32 = _np.float32
 NP_FLOAT64 = _np.float64
+NP_FLOAT128 = _np.float128
 NP_COMPLEX64 = _np.complex64
 NP_COMPLEX128 = _np.complex128
+NP_COMPLEX256 = _np.complex256
 
 
 ctypedef _np.int64_t NP_INT64_t
@@ -37,11 +39,6 @@ ctypedef _np.uint64_t NP_UINT64_t
 ctypedef _np.uint32_t NP_UINT32_t
 ctypedef _np.uint16_t NP_UINT16_t
 ctypedef _np.uint8_t NP_UINT8_t
-
-ctypedef _np.float32_t NP_FLOAT32_t
-ctypedef _np.float64_t NP_FLOAT64_t
-ctypedef _np.complex64_t NP_COMPLEX64_t
-ctypedef _np.complex128_t NP_COMPLEX128_t
 
 
 

@@ -1,6 +1,7 @@
 
-cdef {c_basis_type} findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,{c_basis_type} N, {c_basis_type} s):
-	cdef {c_basis_type} bmin, bmax, b, A_1
+cdef int findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,int N, {c_basis_type} s):
+	cdef {c_basis_type}  A_1
+	cdef int bmin, bmax, b
 
 	bmin = 0
 	bmax = N-1
@@ -20,7 +21,7 @@ cdef {c_basis_type} findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,{c_basis_
 
 
 
-cdef int RefState_P({c_basis_type} s,{c_basis_type} L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef int RefState_P({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef {c_basis_type} t
 
 	R[0] = s
@@ -44,7 +45,7 @@ cdef int RefState_P({c_basis_type} s,{c_basis_type} L,_np.ndarray[{np_basis_type
 
 
 
-cdef int RefState_Z({c_basis_type} s,{c_basis_type} L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef int RefState_Z({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	R[0] = s
 	R[1] = 0
 
@@ -64,7 +65,7 @@ cdef int RefState_Z({c_basis_type} s,{c_basis_type} L,_np.ndarray[{np_basis_type
 
 
 
-cdef int RefState_PZ({c_basis_type} s,{c_basis_type} L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef int RefState_PZ({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef {c_basis_type} t
 
 	R[0] = s
@@ -85,7 +86,7 @@ cdef int RefState_PZ({c_basis_type} s,{c_basis_type} L, _np.ndarray[{np_basis_ty
 
 
 
-cdef int RefState_P_Z({c_basis_type} s,{c_basis_type} L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef int RefState_P_Z({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef {c_basis_type} t,r
 
 	R[0] = s
