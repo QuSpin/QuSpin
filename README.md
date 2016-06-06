@@ -3,7 +3,16 @@ exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran l
 
 The package requires scipy v0.14.0 or later, a compatible version of numpy, and the proper fortran compilers.
 
-to install download source code either from the latest [release](https://github.com/weinbe58/exact_diag_py/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
+This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more protible across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
+
+```
+$ conda install -c weinbe58 exact_diag_py
+```
+
+This will install the latest version on to your computer. If this fails for whatever reason this means that either your OS is not supported or your compiler is too old. In this case one can also manually install the package using two methods:
+
+
+1) Manual install: to install manually download source code either from the latest [release](https://github.com/weinbe58/exact_diag_py/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
 
 unix:
 ```
@@ -14,17 +23,17 @@ or windows command line:
 ```
 setup.py install
 ```
+NOTE: you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. This is why we recommend way 2) using anaconda as it is a standard for scientific computing with python.
 
-If you don't have write permission to the standard python directories, the packaged can be installed via Anaconda to a local environment. To learn more about Anaconda and local environments visit http://conda.pydata.org/docs/using/envs.html. The beauty of Anaconda is that it will automatically install all the neccesary libraries needed for the package to function.
-
-Unfortunately because of compatilbility issues with fortran compilers we have not figured out a way of distributing this code with the precompiled fortran libraries and so and so one must build the packaged locally first before installing.  This is, however, pretty striaght forward. Once you have the source code downloaded, un-zip/tar the folder. Then to build the package first switch to your local python environment using the ```source activate <env name>``` and then run the command in either windows or unix:
+2) Install via Anaconda: If you don't have write permission to the standard python directories, the packaged can be installed via Anaconda to a local environment. To learn more about Anaconda and local environments visit http://conda.pydata.org/docs/using/envs.html. The beauty of Anaconda is that it will automatically install all the neccesary libraries needed for the package to function. Before you can install the package you must first build it. To build the package first switch to your local python environment using the ```source activate <env name>``` and then run the command in either windows or unix:
 ```
-conda build exact_diag_py-x,x,x
+conda build exact_diag_py-x.x.x
 ```
 This will then run though and build the package from the source. Then to install the package run
 ```
 conda install exact_diag_py --use-local 
 ```
+This way of installing preserves the versioning for anaconda but you can also run the normal setup.py file to install the package as well but as with way 1) the appropriate prerequisite packages must be installed first.
 
 
 # Basic usage:
