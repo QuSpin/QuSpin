@@ -6,7 +6,7 @@ def configuration(parent_package='', top_path=None):
 		from numpy.distutils.misc_util import Configuration
 		config = Configuration('basis1d',parent_package, top_path)
 		config.add_subpackage('constructors')
-		config.add_subpackage('fortran_constructors')
+#		config.add_subpackage('fortran_constructors')
 		return config
 
 if __name__ == '__main__':
