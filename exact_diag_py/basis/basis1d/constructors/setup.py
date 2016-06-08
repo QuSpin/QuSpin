@@ -171,7 +171,7 @@ def configuration(parent_package='', top_path=None):
 		from numpy.distutils.misc_util import Configuration
 		config = Configuration('constructors',parent_package, top_path)
 		config.add_extension('basis_ops',sources=cython_files(),include_dirs=[numpy.get_include()],
-								extra_compile_args=["--fno-strict-aliasing"],
+								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 		return config
 
