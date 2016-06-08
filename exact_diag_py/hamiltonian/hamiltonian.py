@@ -19,7 +19,12 @@ class HamiltonianEfficiencyWarning(Warning):
 
 
 #global names:
-supported_dtypes=(_np.float32, _np.float64, _np.complex64, _np.complex128)
+supported_dtypes=[_np.float32, _np.float64, _np.complex64, _np.complex128]
+
+if hasattr(_np,"float128"): supported_dtypes.append(_np.float128)
+if hasattr(_np,"complex256"): supported_dtypes.append(_np.complex256)
+
+supported_dtypes = tuple(supported_dtypes)
 
 def check_static(sub_list):
 	if (type(sub_list) in [list,tuple]) and (len(sub_list) == 2):
@@ -128,7 +133,29 @@ class hamiltonian(object):
 
 		if static_other_list or dynamic_other_list:
 			if not hasattr(self,"_shape"):
-				if shape is None:
+				shape = kwargs.get("shape")
+				found = False
+				if shape is None: # if no shape arguement found, search to see if the inputs have shapes.
+					for O in static_other_list:
+						try: # take the first shape found
+							shape = O.shape
+							found = True
+							break
+						except AttributeError: 
+							continue
+
+					if not found:
+						for O,f,fargs in dynamic_other_list:
+							try:
+								shape = O.shape
+								found = True
+								break
+							except AttributeError:
+								continue
+				else:
+					found = True
+
+				if not found:
 					raise ValueError('missing arguement shape')
 				if shape[0] != shape[1]:
 					raise ValueError('hamiltonian must be square matrix')
@@ -309,10 +336,17 @@ class hamiltonian(object):
 
 
 		remove=[]
-		atol = 0.5*(10**3)*_np.finfo(self._dtype).eps
+		atol = 10*_np.finfo(self._dtype).eps
 
-		if _np.allclose(self._static.data,0,atol=atol):
-			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+
+		if _sp.issparse(self._static):
+			if _np.allclose(self._static.data,0,atol=atol):
+				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+		else:
+			if _np.allclose(self._static,0,atol=atol):
+				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+
+
 
 		for i,(Hd,f,f_args) in enumerate(self._dynamic):
 			if _sp.issparse(Hd):
@@ -1019,6 +1053,8 @@ class hamiltonian(object):
 			new._static.eliminate_zeros()
 		except: pass
 
+		new.sum_duplicates()
+
 		return new	
 
 
@@ -1034,6 +1070,8 @@ class hamiltonian(object):
 			self._static.sum_duplicates()
 			self._static.eliminate_zeros()
 		except: pass
+
+		self.sum_duplicates()
 
 		return self	
 	
@@ -1056,6 +1094,8 @@ class hamiltonian(object):
 			new._static.eliminate_zeros()
 		except: pass
 
+		new.sum_duplicates()
+
 		return new	
 
 
@@ -1071,6 +1111,8 @@ class hamiltonian(object):
 			self._static.sum_duplicates()
 			self._static.eliminate_zeros()
 		except: pass
+
+		self.sum_duplicates()
 
 		return self
 
@@ -1107,6 +1149,8 @@ class hamiltonian(object):
 
 		new._dynamic = tuple(new._dynamic)
 
+		new.sum_duplicates()
+
 		return new
 
 
@@ -1140,6 +1184,7 @@ class hamiltonian(object):
 			new._dynamic[i] = tuple(new._dynamic[i])
 
 		new._dynamic = tuple(new._dynamic)
+		new.sum_duplicates()
 
 		return new
 
@@ -1172,6 +1217,8 @@ class hamiltonian(object):
 			self._dynamic[i] = tuple(self._dynamic[i])
 
 		self._dynamic = tuple(self._dynamic)
+
+		self.sum_duplicates()
 
 		return self
 
@@ -1211,6 +1258,8 @@ class hamiltonian(object):
 
 		new._dynamic = tuple(new._dynamic)
 
+		new.sum_duplicates()
+
 		return new
 
 
@@ -1245,6 +1294,8 @@ class hamiltonian(object):
 
 		self._dynamic = tuple(self._dynamic)
 
+		self.sum_duplicates()
+
 		return self
 
 
@@ -1267,6 +1318,8 @@ class hamiltonian(object):
 			new._static += other
 		except:
 			new._static = new._static + other
+
+		new.sum_duplicates()
 		
 		return new	
 
@@ -1284,6 +1337,8 @@ class hamiltonian(object):
 			self._static += other
 		except:
 			self._static = new._static + other
+
+		self.sum_duplicates()
 		
 		return self
 
@@ -1304,6 +1359,8 @@ class hamiltonian(object):
 			new._static -= other
 		except:
 			new._static = new._static - other
+
+		new.sum_duplicates()
 		
 		return new
 
@@ -1321,6 +1378,8 @@ class hamiltonian(object):
 			self._static -= other
 		except:
 			self._static = self._static - other
+
+		self.sum_duplicates()
 		
 		return self
 
@@ -1348,6 +1407,8 @@ class hamiltonian(object):
 			new._dynamic[i] = tuple(new._dynamic[i])
 
 		new._dynamic = tuple(new._dynamic)
+
+		new.sum_duplicates()
 
 		return new
 
@@ -1379,6 +1440,8 @@ class hamiltonian(object):
 
 		new._dynamic = tuple(new._dynamic)
 
+		new.sum_duplicates()
+
 		return new
 
 
@@ -1404,6 +1467,8 @@ class hamiltonian(object):
 
 
 		self._dynamic = tuple(self._dynamic)
+
+		self.sum_duplicates()
 
 		return self
 

@@ -1,9 +1,59 @@
 
 
+float_type={
+			"type_code":"f",
+			"c_matrix_type":"float",
+			"np_matrix_type":"NP_FLOAT32",
+			"c_complex_type":"float complex",
+			"c_float_type":"float",
+			"check_imag":"True"
+			}
+
+double_type={
+				"type_code":"d",
+				"c_matrix_type":"double",
+				"np_matrix_type":"NP_FLOAT64",
+				"c_complex_type":"double complex",
+				"c_float_type":"double",
+				"check_imag":"True"
+			}
+
+long_double_type={
+					"type_code":"g",
+					"c_matrix_type":"long double",
+					"np_matrix_type":"NP_FLOAT128",
+					"c_complex_type":"long double complex",
+					"c_float_type":"long double",
+					"check_imag":"True"
+				}
 
 
+float_complex_type={
+					"type_code":"F",
+					"c_matrix_type":"float complex",
+					"np_matrix_type":"NP_COMPLEX64",
+					"c_complex_type":"float complex",
+					"c_float_type":"float",
+					"check_imag":"False"
+					}
 
+double_complex_type={
+					"type_code":"D",
+					"c_matrix_type":"double complex",
+					"np_matrix_type":"NP_COMPLEX128",
+					"c_complex_type":"double complex",
+					"c_float_type":"double",
+					"check_imag":"False"
+					}
 
+long_double_complex_type={
+						"type_code":"G",
+						"c_matrix_type":"long double complex",
+						"np_matrix_type":"NP_COMPLEX256",
+						"c_complex_type":"long double complex",
+						"c_float_type":"long double",
+						"check_imag":"False"
+						}
 
 
 
@@ -21,16 +71,16 @@ def get_templates(folder,ext):
 
 
 def basis_ops_gen():
+	import numpy
 	basis_types = [
 					{"np_basis_type":"NP_UINT32","c_basis_type":"unsigned int"},
 				]
 
-	matrix_types = [
-									{"type_code":"s","c_matrix_type":"float","np_matrix_type":"NP_FLOAT32","c_complex_type":"float complex","c_float_type":"float","check_imag":"True"},
-									{"type_code":"d","c_matrix_type":"double","np_matrix_type":"NP_FLOAT64","c_complex_type":"double complex","c_float_type":"double","check_imag":"True"},
-									{"type_code":"c","c_matrix_type":"float complex","np_matrix_type":"NP_COMPLEX64","c_complex_type":"float complex","c_float_type":"float","check_imag":"False"},
-									{"type_code":"z","c_matrix_type":"double complex","np_matrix_type":"NP_COMPLEX128","c_complex_type":"double complex","c_float_type":"double","check_imag":"False"},
-								]
+	matrix_types = [float_type,double_type,float_complex_type,double_complex_type]
+	if hasattr(numpy,"float128"): # architecture supports long double
+		matrix_types.append(long_double_type)
+	if hasattr(numpy,"complex256"): # architecture supports long double complex
+		matrix_types.append(long_double_complex_type)
 
 	op_templates = get_templates(['sources','op'],".tmp")
 
@@ -120,7 +170,9 @@ def configuration(parent_package='', top_path=None):
 		import numpy
 		from numpy.distutils.misc_util import Configuration
 		config = Configuration('constructors',parent_package, top_path)
-		config.add_extension('basis_ops',sources=cython_files(),include_dirs=[numpy.get_include()],language="c++")
+		config.add_extension('basis_ops',sources=cython_files(),include_dirs=[numpy.get_include()],
+								extra_compile_args=["--fno-strict-aliasing"],
+								language="c++")
 		return config
 
 if __name__ == '__main__':

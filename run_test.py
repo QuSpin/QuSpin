@@ -1,4 +1,5 @@
 from exact_diag_py.hamiltonian import hamiltonian
+from exact_diag_py.hamiltonian import supported_dtypes
 from exact_diag_py.basis import basis1d
 import numpy as np
 import scipy.sparse as sm
@@ -8,7 +9,7 @@ from numpy.random import random,seed
 seed()
 
 def eps(dtype):
-	return 1000*np.finfo(dtype).eps
+	return 1.15*10.0**(-5)
 
 
 def J(L,jb,l):
@@ -22,7 +23,7 @@ def J(L,jb,l):
 
 
 def check_opstr(Lmax):
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1):
 			h=[[2.0*random()-1.0,i] for i in xrange(L)]
 			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
@@ -45,7 +46,7 @@ def check_opstr(Lmax):
 
 
 def check_m(Lmax):
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1):
 			h=[[2.0*random()-1.0,i] for i in xrange(L)]
 			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
@@ -68,7 +69,7 @@ def check_m(Lmax):
 			
 
 			if norm(Em-E) > Ns*eps(dtype):
-				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype.name,norm(Em-E) ) )
+				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype,norm(Em-E) ) )
 
 
 def check_z(L,dtype,Nup=None):
@@ -210,22 +211,22 @@ def check_p_z(L,dtype,Nup=None):
 
 
 def check_obc(Lmax):
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
 			check_z(L,dtype,Nup=int(L/2))
 			check_z(L,dtype)
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
 			check_p(L,dtype,Nup=int(L/2))
 			check_p(L,dtype)
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
 			check_pz(L,dtype,Nup=int(L/2))
 			check_pz(L,dtype)
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
 			check_p_z(L,dtype,Nup=int(L/2))
 			check_p_z(L,dtype) 
@@ -582,18 +583,18 @@ def check_pbc(Lmax):
 			check_t_z(L,dtype)
 
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,1):
 			check_t_p(L,dtype)
 			for Nup in xrange(L+1):
 				check_t_p(L,dtype,Nup=Nup)
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
 			check_t_pz(L,dtype,Nup=int(L/2))
 			check_t_pz(L,dtype)
 
-	for dtype in (np.float32,np.float64,np.complex64,np.complex128):
+	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
 			check_t_p_z(L,dtype,Nup=int(L/2))
 			check_t_p_z(L,dtype) 

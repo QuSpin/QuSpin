@@ -2,15 +2,21 @@
 #cython: boundscheck=False
 #cython: wraparound=False
 
-import numpy as _np
 cimport numpy as _np
-cimport cython
+
+import numpy as _np
 from libc.math cimport sin,cos,abs,sqrt
 from libc.stdlib cimport malloc, free
 from cpython.string cimport PyString_AsString
 
 
 _np.import_array()
+
+if hasattr(_np,"float128"):
+	NP_FLOAT128 = _np.float128
+
+if hasattr(_np,"complex256"):
+	NP_COMPLEX256 = _np.complex256
 
 NP_INT64 = _np.int64
 NP_INT32 = _np.int32
@@ -24,10 +30,9 @@ NP_UINT8 = _np.uint8
 
 NP_FLOAT32 = _np.float32
 NP_FLOAT64 = _np.float64
-NP_FLOAT128 = _np.float128
 NP_COMPLEX64 = _np.complex64
 NP_COMPLEX128 = _np.complex128
-NP_COMPLEX256 = _np.complex256
+
 
 
 ctypedef _np.int64_t NP_INT64_t
