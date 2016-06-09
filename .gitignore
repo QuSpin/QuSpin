@@ -2,6 +2,8 @@
 *.pyc
 *.pyf
 
+photon_test.py
+compile.py
 *.so
 
 getvec_check.py
