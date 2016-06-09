@@ -7,6 +7,7 @@ cdef {c_float_type} {type_code}_MatrixElement_P_Z(int L,int pblock, int zblock, 
 	cdef NP_INT8_t sr,sc
 	cdef NP_INT16_t nnr,mmr,cr,nnc,mmc,cc
 
+	# define sign function
 	if Nr > 0:
 		sr = 1
 	else:
@@ -17,7 +18,7 @@ cdef {c_float_type} {type_code}_MatrixElement_P_Z(int L,int pblock, int zblock, 
 	else:
 		sc = -1
 
-
+	# unpack long integer, cf Anders' notes
 	mmc = mc % (L+1)
 	nnc = (mc/(L+1)) % (L+1)
 	cc = mc/((L+1)*(L+1))
