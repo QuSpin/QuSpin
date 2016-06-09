@@ -106,6 +106,7 @@ class basis1d:
 			self.conserved=""
 			self.Ns=2**L
 
+		# allocates memory for number of basis states
 		frac = 1.0
 		if(L >= 10): frac = 0.6
 
@@ -121,13 +122,14 @@ class basis1d:
 			self.Ns = int(_np.ceil(self.Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
 
 			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
-			self.m=_np.empty(self.basis.shape,dtype=_np.int16)
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8) # normalisation*sigma
+			self.m=_np.empty(self.basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 			if (type(Nup) is int):
+				# arguments get overwritten by _cn.make_...  
 				self.Ns = _cn.make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self.N,self.m,self.basis)
 			else:
 				self.Ns = _cn.make_t_p_z_basis(L,pblock,zblock,kblock,a,self.N,self.m,self.basis)
-
+			# cut off extra memory for overestimated state number
 			self.N = self.N[:self.Ns]
 			self.m = self.m[:self.Ns]
 			self.basis = self.basis[:self.Ns]
@@ -141,7 +143,7 @@ class basis1d:
 
 			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
 			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
-			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int8) #mpz
 			if (type(Nup) is int):
 				self.Ns = _cn.make_m_t_pz_basis(L,Nup,pzblock,kblock,a,self.N,self.m,self.basis)
 			else:

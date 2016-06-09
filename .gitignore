@@ -4,6 +4,9 @@
 
 *.so
 
+
+photon_test.py
+compile.py
 getvec_check.py
 
 # pure fortran source files #

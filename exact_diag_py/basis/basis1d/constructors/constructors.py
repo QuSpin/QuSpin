@@ -3,6 +3,7 @@ from numpy import dtype as _dtype
 from numpy import int32 as _index_type
 import numpy as _np
 
+# from constructor import * imports only __all__
 __all__=['op','op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','op_t_pz','op_t_p_z']
 
 
@@ -25,6 +26,9 @@ class OpstrError(Exception):
 def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_spinop"]
+	# col: resilting basis states; -1: state is thrown out (cf FindZState)
+	# ME: array of dtype with matrix elements
+	# error: see line 11 above
 	col,ME,error = compiled_op(basis,opstr,indx)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
@@ -40,7 +44,7 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -64,7 +68,7 @@ def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -91,7 +95,7 @@ def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -117,7 +121,7 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -143,7 +147,7 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -168,7 +172,7 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -196,7 +200,7 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 
 	return ME,row,col
@@ -224,7 +228,7 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 	return ME,row,col
 
@@ -251,7 +255,7 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 	return ME,row,col
 
@@ -280,7 +284,7 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 	return ME,row,col
 
@@ -308,7 +312,7 @@ def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if pauli:
 		ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("c",""))))
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 	return ME,row,col
 
