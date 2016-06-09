@@ -9,10 +9,17 @@ import scipy.sparse as _sm
 
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string
+
+
 dtypes={"f":_np.float32,
 				"F":_np.complex64,
 				"d":_np.float64,
 				"D":_np.complex128}
+
+if hasattr(_np,"float128"): dtypes["g"]=_np.float128
+if hasattr(_np,"complex256"): dtypes["G"]=_np.complex256
+
+
 
 op={"":_cn.op,
 		"M":_cn.op_m,
@@ -386,6 +393,12 @@ class basis1d:
 
 
 	def get_vec(self,v0,sparse=True):
+		if _sm.issparse(v0):
+			raise TypeError("expecting v0 to be dense array")
+
+		if not hasattr(v0,"shape"):
+			v0 = _np.asanyarray(v0)
+
 		if self.Ns <= 0:
 			return _np.array([])
 		if v0.ndim == 1:
@@ -395,6 +408,9 @@ class basis1d:
 			shape = (2**self.L,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
+
+		if v0.shape[0] != self.Ns:
+			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self.Ns))
 
 
 		norms = self.get_norms(v0.dtype)
@@ -432,6 +448,65 @@ class basis1d:
 			return _get_vec_sparse(v0,self.basis,norms,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
 		else:
 			return _get_vec_dense(v0,self.basis,norms,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
+
+
+
+
+
+
+
+
+
+
+	def get_proj(self,dtype):
+		if self.Ns <= 0:
+			return _np.array([])
+
+		norms = self.get_norms(dtype)
+
+		a = self.blocks.get("a")
+		kblock = self.blocks.get("kblock")
+		pblock = self.blocks.get("pblock")
+		zblock = self.blocks.get("zblock")
+		pzblock = self.blocks.get("pzblock")
+
+
+		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
+			mask = (self.N < 0)
+			ind_neg, = _np.nonzero(mask)
+			mask = (self.N > 0)
+			ind_pos, = _np.nonzero(mask)
+			del mask
+			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
+				c[ind_pos] = cos(dtype(k*r))
+				c[ind_neg] = -sin(dtype(k*r))
+				_np.divide(c,norms,c)
+		else:
+			if (type(kblock) is int):
+				if ((2*kblock*a) % L != 0) and _np.iscomplexobj(dtype(1.0)):
+					raise TypeError("symmetries give complex vector, requested dtype is not complex")
+
+			ind_pos = _np.arange(0,self.Ns,1)
+			ind_neg = _np.array([],dtype=_np.int32)
+			def C(r,k,c,norms,dtype,*args):
+				if k == 0.0:
+					c[:] = 1.0
+				elif k == _np.pi:
+					c[:] = (-1.0)**r
+				else:
+					c[:] = exp(-dtype(1.0j*k*r))
+				_np.divide(c,norms,c)
+
+		return _get_proj_sparse(self.basis,norms,ind_neg,ind_pos,dtype,C,self.L,**self.blocks)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -514,14 +589,14 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	m = shape[1]
 
 	n = ind_neg.shape[0]
-	row_neg = _np.broadcast_to(ind_neg,(m,n)).T.flatten()
-	col_neg = _np.fromiter(xrange(m),count=m,dtype=_np.int32)
-	col_neg = _np.broadcast_to(col_neg,(n,m)).flatten()
+	row_neg = _np.broadcast_to(ind_neg,(m,n)).T.ravel()
+	col_neg = _np.arange(0,m,1)
+	col_neg = _np.broadcast_to(col_neg,(n,m)).ravel()
 
 	n = ind_pos.shape[0]
-	row_pos = _np.broadcast_to(ind_pos,(m,n)).T.flatten()
-	col_pos = _np.fromiter(xrange(m),count=m,dtype=_np.int32)
-	col_pos = _np.broadcast_to(col_pos,(n,m)).flatten()
+	row_pos = _np.broadcast_to(ind_pos,(m,n)).T.ravel()
+	col_pos = _np.arange(0,m,1)
+	col_pos = _np.broadcast_to(col_pos,(n,m)).ravel()
 
 
 
@@ -540,8 +615,8 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 
 		vc = (v0.T*c).T
-		data_pos = (v0.T*c).T[ind_pos].flatten()
-		data_neg = (v0.T*c).T[ind_neg].flatten()
+		data_pos = vc[ind_pos].flatten()
+		data_neg = vc[ind_neg].flatten()
 		v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
@@ -591,6 +666,110 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 #	v = v.multiply(norm)
 
 	return v
+
+
+
+
+
+
+
+
+
+
+
+
+
+def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
+
+	a = blocks.get("a")
+	kblock = blocks.get("kblock")
+	pblock = blocks.get("pblock")
+	zblock = blocks.get("zblock")
+	pzblock = blocks.get("pzblock")
+
+
+	if type(kblock) is int:
+		k = 2*_np.pi*kblock*a/L
+	else:
+		k = 0.0
+		a = L
+
+	shape = (2**L,basis.shape[0])
+
+	c = _np.zeros(basis.shape,dtype=dtype)	
+	v = _sm.csr_matrix(shape,dtype=dtype)
+
+
+
+	for r in xrange(0,L/a):
+		C(r,k,c,norms,dtype,ind_neg,ind_pos)
+		data_pos = c[ind_pos]
+		data_neg = c[ind_neg]
+		v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+		v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+
+		if type(zblock) is int:
+			flipall(basis,L)
+			data_pos *= zblock
+			data_neg *= zblock
+			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			data_pos *= zblock
+			data_neg *= zblock
+			flipall(basis,L)
+
+		if type(pblock) is int:
+			fliplr(basis,L)
+			data_pos *= pblock
+			data_neg *= pblock
+			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			data_pos *= pblock
+			data_neg *= pblock
+			fliplr(basis,L)
+
+		if type(pzblock) is int:
+			fliplr(basis,L)
+			flipall(basis,L)
+			data_pos *= pzblock
+			data_neg *= pzblock
+			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col)),shape,dtype=v.dtype)
+			data_pos *= pzblock
+			data_neg *= pzblock
+			fliplr(basis,L)
+			flipall(basis,L)
+
+		shiftc(basis,-a,L)
+
+		
+
+
+#	av = v.multiply(v.conj())
+#	norm = av.sum(axis=0)
+#	del av
+#	_np.sqrt(norm,out=norm)
+#	_np.divide(1.0,norm,out=norm)
+#	norm = _sm.csr_matrix(norm)
+#	v = v.multiply(norm)
+
+	return v
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
