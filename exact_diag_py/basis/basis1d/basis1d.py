@@ -1,3 +1,4 @@
+from ..base import basis
 import constructors as _cn
 import numpy as _np
 from numpy import array,asarray
@@ -42,9 +43,9 @@ op={"":_cn.op,
 		"T & P & Z":_cn.op_t_p_z,
 		"M & T & P & Z":_cn.op_t_p_z}
 
+MAXPRINT = 50
 
-
-class basis1d:
+class basis1d(basis):
 	def __init__(self,L,**blocks):
 		# getting arguements which are used in basis.
 		Nup=blocks.get("Nup")
@@ -53,7 +54,7 @@ class basis1d:
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
 		a=blocks.get("a")
-		self.blocks=blocks
+		self._blocks=blocks
 		if a is None: # by default a = 1
 			a=1
 			blocks["a"]=1
@@ -104,14 +105,22 @@ class basis1d:
 
 
 
-		self.L=L
+		self._L=L
 		if type(Nup) is int:
 			self.Nup=Nup
-			self.conserved="M"
-			self.Ns=ncr(L,Nup) 
+			self._conserved="M"
+			self._Ns=ncr(L,Nup) 
 		else:
-			self.conserved=""
-			self.Ns=2**L
+			self._conserved=""
+			self._Ns=2**L
+
+		self._operators = ("availible operators for this basis:"+
+							"\n\tI: identity "+
+							"\n\t+: raising operator"+
+							"\n\t-: lowering operator"+
+							"\n\tx: x pauli/spin operator"+
+							"\n\ty: y pauli/spin operator"+
+							"\n\tz: z pauli/spin operator")
 
 		# allocates memory for number of basis states
 		frac = 1.0
@@ -121,176 +130,224 @@ class basis1d:
 		else: L_m = 1
 
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
-			if self.conserved: self.conserved += " & T & P & Z"
-			else: self.conserved = "T & P & Z"
-			self.blocks["pzblock"] = pblock*zblock
+			self._k=2*(_np.pi)*a*kblock/L
+			if self._conserved: self._conserved += " & T & P & Z"
+			else: self._conserved = "T & P & Z"
+			self._blocks["pzblock"] = pblock*zblock
 
-			self.Ns = int(_np.ceil(self.Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._Ns = int(_np.ceil(self._Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
 
-			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty(self.basis.shape,dtype=_np.int8) # normalisation*sigma
-			self.m=_np.empty(self.basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
+			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
+			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 			if (type(Nup) is int):
 				# arguments get overwritten by _cn.make_...  
-				self.Ns = _cn.make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self.Ns = _cn.make_t_p_z_basis(L,pblock,zblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 			# cut off extra memory for overestimated state number
-			self.N = self.N[:self.Ns]
-			self.m = self.m[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.m,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._m = self._m[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._m,self._basis,self._L]
 
 		elif (type(kblock) is int) and (type(pzblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
-			if self.conserved: self.conserved += " & T & PZ"
-			else: self.conserved = "T & PZ"
-			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._k=2*(_np.pi)*a*kblock/L
+			if self._conserved: self._conserved += " & T & PZ"
+			else: self._conserved = "T & PZ"
+			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
 
-			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
-			self.m=_np.empty(self.basis.shape,dtype=_np.int8) #mpz
+			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+			self._m=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_t_pz_basis(L,Nup,pzblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_m_t_pz_basis(L,Nup,pzblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self.Ns = _cn.make_t_pz_basis(L,pzblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_t_pz_basis(L,pzblock,kblock,a,self._N,self._m,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.m = self.m[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.m,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._m = self._m[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._m,self._basis,self._L]
 
 		elif (type(kblock) is int) and (type(pblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
-			if self.conserved: self.conserved += " & T & P"
-			else: self.conserved = "T & P"
-			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._k=2*(_np.pi)*a*kblock/L
+			if self._conserved: self._conserved += " & T & P"
+			else: self._conserved = "T & P"
+			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
 
 
-			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
-			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_t_p_basis(L,Nup,pblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_m_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self.Ns = _cn.make_t_p_basis(L,pblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.m = self.m[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.m,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._m = self._m[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._m,self._basis,self._L]
 
 		elif (type(kblock) is int) and (type(zblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
-			if self.conserved: self.conserved += " & T & Z"
-			else: self.conserved = "T & Z"
-			self.Ns = int(_np.ceil((frac*self.Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._k=2*(_np.pi)*a*kblock/L
+			if self._conserved: self._conserved += " & T & Z"
+			else: self._conserved = "T & Z"
+			self._Ns = int(_np.ceil((frac*self._Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
 
-			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
-			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_t_z_basis(L,Nup,zblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_m_t_z_basis(L,Nup,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self.Ns = _cn.make_t_z_basis(L,zblock,kblock,a,self.N,self.m,self.basis)
+				self._Ns = _cn.make_t_z_basis(L,zblock,kblock,a,self._N,self._m,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.m = self.m[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.m,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._m = self._m[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._m,self._basis,self._L]
 
 		elif (type(pblock) is int) and (type(zblock) is int):
-			if self.conserved: self.conserved += " & P & Z"
-			else: self.conserved += "P & Z"
-			self.Ns = int(_np.ceil(self.Ns*0.5*frac)) # estimate fraction of basis needed for sector.
-			self.blocks["pzblock"] = pblock*zblock
+			if self._conserved: self._conserved += " & P & Z"
+			else: self._conserved += "P & Z"
+			self._Ns = int(_np.ceil(self._Ns*0.5*frac)) # estimate fraction of basis needed for sector.
+			self._blocks["pzblock"] = pblock*zblock
 			
-			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty((self.Ns,),dtype=_np.int8)
+			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_p_z_basis(L,Nup,pblock,zblock,self.N,self.basis)
+				self._Ns = _cn.make_m_p_z_basis(L,Nup,pblock,zblock,self._N,self._basis)
 			else:
-				self.Ns = _cn.make_p_z_basis(L,pblock,zblock,self.N,self.basis)
+				self._Ns = _cn.make_p_z_basis(L,pblock,zblock,self._N,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._basis,self._L]
 
 
 
 		elif type(pblock) is int:
-			if self.conserved: self.conserved += " & P"
-			else: self.conserved = "P"
-			self.Ns = int(_np.ceil(self.Ns*frac)) # estimate fraction of basis needed for sector.
+			if self._conserved: self._conserved += " & P"
+			else: self._conserved = "P"
+			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 			
-			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty((self.Ns,),dtype=_np.int8)
+			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_p_basis(L,Nup,pblock,self.N,self.basis)
+				self._Ns = _cn.make_m_p_basis(L,Nup,pblock,self._N,self._basis)
 			else:
-				self.Ns = _cn.make_p_basis(L,pblock,self.N,self.basis)
+				self._Ns = _cn.make_p_basis(L,pblock,self._N,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._basis,self._L]
 
 
 
 		elif type(zblock) is int:
-			if self.conserved: self.conserved += " & Z"
-			else: self.conserved += "Z"
-			self.Ns = int(_np.ceil(self.Ns*frac)) # estimate fraction of basis needed for sector.
+			if self._conserved: self._conserved += " & Z"
+			else: self._conserved += "Z"
+			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 
 			
-			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
+			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_z_basis(L,Nup,self.basis)
+				self._Ns = _cn.make_m_z_basis(L,Nup,self._basis)
 			else:
-				self.Ns = _cn.make_z_basis(L,self.basis)
+				self._Ns = _cn.make_z_basis(L,self._basis)
 
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.basis,self.L]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._basis,self._L]
 				
 		elif type(pzblock) is int:
-			if self.conserved: self.conserved += " & PZ"
-			else: self.conserved += "PZ"
-			self.Ns = int(_np.ceil(self.Ns*frac)) # estimate fraction of basis needed for sector.
+			if self._conserved: self._conserved += " & PZ"
+			else: self._conserved += "PZ"
+			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 			
-			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty((self.Ns,),dtype=_np.int8)
+			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_pz_basis(L,Nup,pzblock,self.N,self.basis)
+				self._Ns = _cn.make_m_pz_basis(L,Nup,pzblock,self._N,self._basis)
 			else:
-				self.Ns = _cn.make_pz_basis(L,pzblock,self.N,self.basis)
+				self._Ns = _cn.make_pz_basis(L,pzblock,self._N,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._basis,self._L]
 	
 		elif type(kblock) is int:
-			self.k=2*(_np.pi)*a*kblock/L
-			if self.conserved: self.conserved += " & T"
-			else: self.conserved = "T"
-			self.Ns = int(_np.ceil(self.Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._k=2*(_np.pi)*a*kblock/L
+			if self._conserved: self._conserved += " & T"
+			else: self._conserved = "T"
+			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
 
-			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
-			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
+			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self.Ns = _cn.make_m_t_basis(L,Nup,kblock,a,self.N,self.basis)
+				self._Ns = _cn.make_m_t_basis(L,Nup,kblock,a,self._N,self._basis)
 			else:
-				self.Ns = _cn.make_t_basis(L,kblock,a,self.N,self.basis)
+				self._Ns = _cn.make_t_basis(L,kblock,a,self._N,self._basis)
 
-			self.N = self.N[:self.Ns]
-			self.basis = self.basis[:self.Ns]
-			self.op_args=[self.N,self.basis,self.L]
+			self._N = self._N[:self._Ns]
+			self._basis = self._basis[:self._Ns]
+			self._op_args=[self._N,self._basis,self._L]
 
 		else: 
 			if type(Nup) is int:
-				self.basis = _cn.make_m_basis(L,Nup,self.Ns)
+				self._basis = _cn.make_m_basis(L,Nup,self._Ns)
 			else:
-				self.basis = _np.arange(0,2**L,1,dtype=_np.uint32)
-			self.op_args=[self.basis]
+				self._basis = _np.arange(0,2**L,1,dtype=_np.uint32)
+			self._op_args=[self._basis]
+
+
+
+
+	@property
+	def description(self):
+		blocks = ""
+		lat_space = "lattice spacing: a = {a}".format(**self._blocks)
+
+		for symm in self._blocks:
+			if symm != "a":
+				blocks += symm+" = {"+symm+"}, "
+
+		blocks = blocks.format(**self._blocks)
+
+		if len(self._conserved) == 0:
+			symm = "no symmetry"
+		elif len(self._conserved) == 1:
+			symm = "symmetry"
+		else:
+			symm = "symmetries"
+
+		string = """1d spin 1/2 basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
+		string += self.operators
+		return string 
+
+
+
+	def __str__(self):
+		n_digits = int(_np.ceil(_np.log10(self._Ns)))
+		temp = "\t{0:"+str(n_digits)+"d}  "+"|{1:0"+str(self._L)+"b}>"
+		string = "reference states: \n"
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			t = temp.format(0,0)
+			t = t.replace("0"," ").replace("|"," ").replace(">"," ")
+			t = "\n"+t[:self._L/2]+":\n"
+			string += "\n".join([temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])])
+			string += t
+			string += "\n".join([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			string += "\n".join([temp.format(i,b) for i,b in enumerate(self._basis)])
+
+		return string 
+
+
+
+
 
 
 
@@ -300,92 +357,92 @@ class basis1d:
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast coupling to proper dtype")
 
-		if self.Ns <= 0:
+		if self._Ns <= 0:
 			return [],[],[]
 
-		return op[self.conserved](opstr,indx,J,dtype,pauli,*self.op_args,**self.blocks)		
+		return op[self._conserved](opstr,indx,J,dtype,pauli,*self._op_args,**self._blocks)		
 
 
 
 
 	def get_norms(self,dtype):
-		a = self.blocks.get("a")
-		kblock = self.blocks.get("kblock")
-		pblock = self.blocks.get("pblock")
-		zblock = self.blocks.get("zblock")
-		pzblock = self.blocks.get("pzblock")
+		a = self._blocks.get("a")
+		kblock = self._blocks.get("kblock")
+		pblock = self._blocks.get("pblock")
+		zblock = self._blocks.get("zblock")
+		pzblock = self._blocks.get("pzblock")
 
 
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
-			c = _np.empty(self.m.shape,dtype=_np.int8)
+			c = _np.empty(self._m.shape,dtype=_np.int8)
 			nn = _np.array(c)
 			mm = _np.array(c)
-			_np.divide(self.m,(self.L+1)**2,c)
-			_np.divide(self.m,self.L+1,nn)
-			_np.mod(nn,self.L+1,nn)
-			_np.mod(self.m,self.L+1,mm)
-			if _np.abs(_np.sin(self.k)) < 1.0/self.L:
-				norm = _np.full(self.basis.shape,4*(self.L/a)**2,dtype=dtype)
+			_np.divide(self._m,(self._L+1)**2,c)
+			_np.divide(self._m,self._L+1,nn)
+			_np.mod(nn,self._L+1,nn)
+			_np.mod(self._m,self._L+1,mm)
+			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
+				norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			else:
-				norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
-			norm *= _np.sign(self.N)
-			norm /= self.N
+				norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
+			norm *= _np.sign(self._N)
+			norm /= self._N
 			# c = 2
 			mask = (c == 2)
-			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pblock*_np.cos(self.k*mm[mask]))
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
 			# c = 3
 			mask = (c == 3)
-			norm[mask] *= (1.0 + zblock*_np.cos(self.k*nn[mask]))	
+			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
 			# c = 4
 			mask = (c == 4)
-			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pzblock*_np.cos(self.k*mm[mask]))	
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*mm[mask]))	
 			# c = 5
 			mask = (c == 5)
-			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pblock*_np.cos(self.k*mm[mask]))
-			norm[mask] *= (1.0 + zblock*_np.cos(self.k*nn[mask]))	
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
+			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(pblock) is int):
-			if _np.abs(_np.sin(self.k)) < 1.0/self.L:
-				norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
+			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
+				norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			else:
-				norm = _np.full(self.basis.shape,(self.L/a)**2,dtype=dtype)
-			norm *= _np.sign(self.N)
-			norm /= self.N
+				norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
+			norm *= _np.sign(self._N)
+			norm /= self._N
 			# m >= 0 
-			mask = (self.m >= 0)
-			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pblock*_np.cos(self.k*self.m[mask]))
+			mask = (self._m >= 0)
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*self._m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(pzblock) is int):
-			if _np.abs(_np.sin(self.k)) < 1.0/self.L:
-				norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
+			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
+				norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			else:
-				norm = _np.full(self.basis.shape,(self.L/a)**2,dtype=dtype)
-			norm *= _np.sign(self.N)
-			norm /= self.N
+				norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
+			norm *= _np.sign(self._N)
+			norm /= self._N
 			# m >= 0 
-			mask = (self.m >= 0)
-			norm[mask] *= (1.0 + _np.sign(self.N[mask])*pzblock*_np.cos(self.k*self.m[mask]))
+			mask = (self._m >= 0)
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*self._m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zblock) is int):
-			norm = _np.full(self.basis.shape,2*(self.L/a)**2,dtype=dtype)
-			norm /= self.N
+			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
+			norm /= self._N
 			# m >= 0 
-			mask = (self.m >= 0)
-			norm[mask] *= (1.0 + zblock*_np.cos(self.k*self.m[mask]))
+			mask = (self._m >= 0)
+			norm[mask] *= (1.0 + zblock*_np.cos(self._k*self._m[mask]))
 			del mask
 		elif (type(pblock) is int) and (type(zblock) is int):
-			norm = _np.array(self.N,dtype=dtype)
+			norm = _np.array(self._N,dtype=dtype)
 		elif (type(pblock) is int):
-			norm = _np.array(self.N,dtype=dtype)
+			norm = _np.array(self._N,dtype=dtype)
 		elif (type(pzblock) is int):
-			norm = _np.array(self.N,dtype=dtype)
+			norm = _np.array(self._N,dtype=dtype)
 		elif (type(zblock) is int):
-			norm = _np.full(self.basis.shape,2.0,dtype=dtype)
+			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
 		elif (type(kblock) is int):
-			norm = _np.full(self.basis.shape,(self.L/a)**2,dtype=dtype)
-			norm /= self.N
+			norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
+			norm /= self._N
 		else:
-			norm = _np.ones(self.basis.shape,dtype=dtype)
+			norm = _np.ones(self._basis.shape,dtype=dtype)
 	
 		_np.sqrt(norm,norm)
 
@@ -401,33 +458,33 @@ class basis1d:
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
 
-		if self.Ns <= 0:
+		if self._Ns <= 0:
 			return _np.array([])
 		if v0.ndim == 1:
-			shape = (2**self.L,1)
+			shape = (2**self._L,1)
 			v0 = v0.reshape((-1,1))
 		elif v0.ndim == 2:
-			shape = (2**self.L,v0.shape[1])
+			shape = (2**self._L,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
-		if v0.shape[0] != self.Ns:
-			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self.Ns))
+		if v0.shape[0] != self._Ns:
+			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
 
 
 		norms = self.get_norms(v0.dtype)
 
-		a = self.blocks.get("a")
-		kblock = self.blocks.get("kblock")
-		pblock = self.blocks.get("pblock")
-		zblock = self.blocks.get("zblock")
-		pzblock = self.blocks.get("pzblock")
+		a = self._blocks.get("a")
+		kblock = self._blocks.get("kblock")
+		pblock = self._blocks.get("pblock")
+		zblock = self._blocks.get("zblock")
+		pzblock = self._blocks.get("pzblock")
 
 
 		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
-			mask = (self.N < 0)
+			mask = (self._N < 0)
 			ind_neg, = _np.nonzero(mask)
-			mask = (self.N > 0)
+			mask = (self._N > 0)
 			ind_pos, = _np.nonzero(mask)
 			del mask
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
@@ -447,9 +504,9 @@ class basis1d:
 				_np.divide(c,norms,c)
 
 		if sparse:
-			return _get_vec_sparse(v0,self.basis,norms,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
+			return _get_vec_sparse(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
 		else:
-			return _get_vec_dense(v0,self.basis,norms,ind_neg,ind_pos,shape,C,self.L,**self.blocks)
+			return _get_vec_dense(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
 
 
 
@@ -461,22 +518,22 @@ class basis1d:
 
 
 	def get_proj(self,dtype):
-		if self.Ns <= 0:
+		if self._Ns <= 0:
 			return _np.array([])
 
 		norms = self.get_norms(dtype)
 
-		a = self.blocks.get("a")
-		kblock = self.blocks.get("kblock")
-		pblock = self.blocks.get("pblock")
-		zblock = self.blocks.get("zblock")
-		pzblock = self.blocks.get("pzblock")
+		a = self._blocks.get("a")
+		kblock = self._blocks.get("kblock")
+		pblock = self._blocks.get("pblock")
+		zblock = self._blocks.get("zblock")
+		pzblock = self._blocks.get("pzblock")
 
 
 		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
-			mask = (self.N < 0)
+			mask = (self._N < 0)
 			ind_neg, = _np.nonzero(mask)
-			mask = (self.N > 0)
+			mask = (self._N > 0)
 			ind_pos, = _np.nonzero(mask)
 			del mask
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
@@ -488,7 +545,7 @@ class basis1d:
 				if ((2*kblock*a) % L != 0) and _np.iscomplexobj(dtype(1.0)):
 					raise TypeError("symmetries give complex vector, requested dtype is not complex")
 
-			ind_pos = _np.arange(0,self.Ns,1)
+			ind_pos = _np.arange(0,self._Ns,1)
 			ind_neg = _np.array([],dtype=_np.int32)
 			def C(r,k,c,norms,dtype,*args):
 				if k == 0.0:
@@ -499,7 +556,7 @@ class basis1d:
 					c[:] = exp(-dtype(1.0j*k*r))
 				_np.divide(c,norms,c)
 
-		return _get_proj_sparse(self.basis,norms,ind_neg,ind_pos,dtype,C,self.L,**self.blocks)
+		return _get_proj_sparse(self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks)
 
 
 

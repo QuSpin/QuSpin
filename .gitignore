@@ -8,6 +8,9 @@
 photon_test.py
 compile.py
 getvec_check.py
+TFIM_imag_time.py
+
+
 
 # pure fortran source files #
 *.f90

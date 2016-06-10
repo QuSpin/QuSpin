@@ -1,5 +1,6 @@
 #local modules:
-from ..basis import basis1d as _basis1d
+from ..basis import basis1d as _default_basis
+from ..basis import isbasis as _isbasis
 from make_hamiltonian import make_static as _make_static
 from make_hamiltonian import make_dynamic as _make_dynamic
 from make_hamiltonian import test_function as _test_function
@@ -120,10 +121,10 @@ class hamiltonian(object):
 				if type(L) is not int: # if L is not int
 					raise TypeError('arguement L must be integer')
 
-				basis=_basis1d(L,**kwargs)
+				basis=_default_basis(L,**kwargs)
 
-			elif not isinstance(basis,_basis1d):
-				raise TypeError('expecting instance of basis class for basis')
+			elif not _isbasis(basis):
+				raise TypeError('expecting instance of basis class for arguement: basis')
 
 			self._static=_make_static(basis,static_opstr_list,dtype,pauli)
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype,pauli)
@@ -288,7 +289,6 @@ class hamiltonian(object):
 	def dynamic(self):
 		return self._dynamic
 
-
 	def sum_duplicates(self):
 #		print self._dynamic
 		"""
@@ -366,7 +366,7 @@ class hamiltonian(object):
 
 
 
-	def tocsr(self,time=0):
+	def tocsr(self,time=0,dtype=None):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -379,7 +379,15 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar arguement for time')
 
-		H=self._static.tocsr(copy=True)	
+		if dtype is None:
+			dtype = self._dtype
+
+
+		if _sp.issparse(self._static):
+			H=self._static.tocsr(copy=True)
+		else:
+			H = _sp.csr_matrix(self._static)	
+
 		for Hd,f,f_args in self._dynamic:
 			if _sp.issparse(Hd):
 				try:
@@ -594,7 +602,13 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
-		return _sla.eigsh(self.tocsr(time=time),**eigsh_args)
+		char = _np.dtype(self._dtype).char
+		if char == "g":
+			H = self.tocsr(time=time).astype(_np.float64)
+		if char == "G": 
+			H = self.tocsr(time=time).astype(_np.complex128)
+
+		return _sla.eigsh(H,**eigsh_args)
 
 
 
@@ -691,11 +705,10 @@ class hamiltonian(object):
 		
 
 	def __repr__(self):
-		return "<{0}x{1} hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
-
-
-	def __call__(self,time=0): # self(...)
-		return self.tocsr(time)
+		if self.is_dense:
+			return "<{0}x{1} exact_diag_py dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+		else:
+			return "<{0}x{1} exact_diag_py sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,self._static.getformat()))
 
 
 	def __neg__(self): # -self

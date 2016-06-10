@@ -28,7 +28,7 @@ def {type_code}_t_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type
 
 		s = R[0]
 		l = R[1]
-		
+
 		ss = findzstate(basis,Ns,s)
 		col[i] = ss
 
