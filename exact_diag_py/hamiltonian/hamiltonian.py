@@ -605,8 +605,10 @@ class hamiltonian(object):
 		char = _np.dtype(self._dtype).char
 		if char == "g":
 			H = self.tocsr(time=time).astype(_np.float64)
-		if char == "G": 
+		elif char == "G": 
 			H = self.tocsr(time=time).astype(_np.complex128)
+		else:
+			H = self.tocsr(time=time)
 
 		return _sla.eigsh(H,**eigsh_args)
 
