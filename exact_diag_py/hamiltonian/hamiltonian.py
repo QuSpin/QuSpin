@@ -533,7 +533,7 @@ class hamiltonian(object):
 
 
 
-	def me(self,Vl,Vr):
+	def me(self,Vl,Vr,time=0):
 		"""
 		args:
 			Vl, the vector to multiple with on left side
