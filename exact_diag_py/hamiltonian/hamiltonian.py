@@ -246,7 +246,6 @@ class hamiltonian(object):
 
 		else:
 			if not hasattr(self,"_shape"):			
-				print shape
 				if shape is None:
 					raise ValueError('missing arguement shape')
 				if len(shape) != 2:
