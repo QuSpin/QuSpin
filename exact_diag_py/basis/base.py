@@ -36,8 +36,6 @@ class basis(object):
 
 
 
-
-
 def isbasis(x):
 	return isinstance(x,basis)
 

@@ -1,4 +1,5 @@
 from ..base import basis
+
 import constructors as _cn
 import numpy as _np
 from numpy import array,asarray
@@ -10,15 +11,6 @@ import scipy.sparse as _sm
 
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string
-
-
-dtypes={"f":_np.float32,
-				"F":_np.complex64,
-				"d":_np.float64,
-				"D":_np.complex128}
-
-if hasattr(_np,"float128"): dtypes["g"]=_np.float128
-if hasattr(_np,"complex256"): dtypes["G"]=_np.complex256
 
 
 
@@ -579,7 +571,7 @@ class basis1d(basis):
 
 
 def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
-	dtype=dtypes[v0.dtype.char]
+	dtype=_np.dtype[v0.dtype.char]
 
 	a = blocks.get("a")
 	kblock = blocks.get("kblock")
@@ -637,7 +629,7 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 
 
 def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
-	dtype=dtypes[v0.dtype.char]
+	dtype=_np.dtype[v0.dtype.char]
 
 	a = blocks.get("a")
 	kblock = blocks.get("kblock")

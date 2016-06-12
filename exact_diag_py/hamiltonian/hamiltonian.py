@@ -134,7 +134,6 @@ class hamiltonian(object):
 
 		if static_other_list or dynamic_other_list:
 			if not hasattr(self,"_shape"):
-				shape = kwargs.get("shape")
 				found = False
 				if shape is None: # if no shape arguement found, search to see if the inputs have shapes.
 					for O in static_other_list:
@@ -247,9 +246,11 @@ class hamiltonian(object):
 
 		else:
 			if not hasattr(self,"_shape"):			
-				shape = kwargs.get("shape")
+				print shape
 				if shape is None:
 					raise ValueError('missing arguement shape')
+				if len(shape) != 2:
+					raise ValueError('expecting ndim = 2')
 				if shape[0] != shape[1]:
 					raise ValueError('hamiltonian must be square matrix')
 

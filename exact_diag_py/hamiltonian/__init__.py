@@ -1,1 +1,3 @@
-from hamiltonian import hamiltonian,supported_dtypes
+from hamiltonian import hamiltonian
+
+__all__ = ["hamiltonian"]
