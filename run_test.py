@@ -1,5 +1,5 @@
 from exact_diag_py.hamiltonian import hamiltonian
-from exact_diag_py.hamiltonian import supported_dtypes
+from exact_diag_py.hamiltonian.hamiltonian import supported_dtypes
 from exact_diag_py.basis import basis1d
 import numpy as np
 import scipy.sparse as sm
