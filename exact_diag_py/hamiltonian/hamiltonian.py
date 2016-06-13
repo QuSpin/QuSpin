@@ -515,6 +515,12 @@ class hamiltonian(object):
 	
 			return self._dot_nocheck(V)
 
+		elif _sm.issparse(V):
+			if V.shape[0] != self._shape[1]:
+				raise ValueError('dimension mismatch')
+	
+			return self._dot_nocheck(V)			
+
 		elif V.__class__ is _np.matrix:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
@@ -550,29 +556,58 @@ class hamiltonian(object):
 			raise TypeError('expecting scalar arguement for time')
 
 		Vr=self.dot(Vr,time=time)
-
+		
 		if Vl.__class__ is _np.ndarray:
-			if Vl.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+			if Vl.ndim == 1:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
 
-			return Vl.T.conj().dot(Vr)
+				return Vl.conj().dot(Vr)
+			elif Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
+
+				return Vl.T.conj().dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
 
 		elif Vl.__class__ is _np.matrix:
-			if Vl.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+			if Vl.ndim == 1:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
 
+				return Vl.conj().dot(Vr)
+			elif Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
 
-			return Vl.H.dot(Vr)
+				return Vl.H.dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
+
+		elif _sm.issparse(Vl):
+			if Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
+
+				return Vl.H.dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
 
 		else:
 			Vl = _np.asanyarray(Vl)
+			if Vl.ndim == 1:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
 
-			if Vl.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+				return Vl.conj().dot(Vr)
+			elif Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
 
-
-			return Vl.T.conj().dot(Vr)
-
+				return Vl.T.conj().dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
 
 		
 	def _dot_nocheck(self,V):
