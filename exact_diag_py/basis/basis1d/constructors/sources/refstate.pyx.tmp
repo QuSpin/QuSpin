@@ -60,9 +60,60 @@ cdef int RefState_Z({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,
 
 
 
+cdef int RefState_ZA({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	R[0] = s
+	R[1] = 0
+
+	cdef {c_basis_type} t
+	t = flip_sublat_A(s,L)
+	if t < s:
+		R[0] = t
+		R[1] = 1
+
+	return 0
 
 
+cdef int RefState_ZB({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	R[0] = s
+	R[1] = 0
 
+	cdef {c_basis_type} t
+	t = flip_sublat_B(s,L)
+	if t < s:
+		R[0] = t
+		R[1] = 1
+
+	return 0
+
+
+cdef int RefState_ZA_ZB({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	R[0] = s
+	R[1] = 0
+	R[2] = 0
+
+	cdef {c_basis_type} t, r
+	r = s
+
+	t = flip_sublat_A(s,L)
+	if t < r:
+		r = t
+		R[1] = 1
+		R[2] = 0
+
+	t = flip_sublat_B(s,L)
+	if t < r:
+		r = t
+		R[1] = 0
+		R[2] = 1
+
+	t = flip_all(s,L)
+	if t < r:
+		r = t
+		R[1] = 1
+		R[2] = 1
+
+	R[0] = r
+	return 0
 
 
 cdef int RefState_PZ({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
@@ -174,7 +225,105 @@ cdef int RefState_T_Z({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t
 
 
 
+cdef int RefState_T_ZA({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	cdef int i,l,gA
+	cdef {c_basis_type} r,t
 
+	r = s
+	t = s
+
+	l = 0
+	gA = 0
+
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gA=0;
+
+	t = flip_sublat_A(s,L)
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gA=1;
+
+
+	R[0] = r
+	R[1] = l
+	R[2] = gA
+
+	return 0
+
+
+cdef int RefState_T_ZB({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	cdef int i,l,gB
+	cdef {c_basis_type} r,t
+
+	r = s
+	t = s
+
+	l = 0
+	gB = 0
+
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gB=0;
+
+	t = flip_sublat_B(s,L)
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gB=1;
+
+
+	R[0] = r
+	R[1] = l
+	R[2] = gB
+
+	return 0
+
+
+cdef int RefState_T_ZA_ZB({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	cdef int i,l,gA,gB
+	cdef {c_basis_type} r,t
+
+	r = s
+	t = s
+
+	l = 0
+	gA = 0
+	gB = 0
+	
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gA=0;gB=0;
+
+	t = flip_sublat_A(s,L)
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gA=1;gB=0;
+
+	t = flip_sublat_B(s,L)
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gA=0;gB=1;
+
+	t = flip_all(s,L)
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < r:
+			r=t; l=i; gA=1;gB=1;
+
+
+	R[0] = r
+	R[1] = l
+	R[2] = gA
+	R[3] = gB
+
+	return 0
 
 
 
@@ -257,7 +406,7 @@ cdef int RefState_T_PZ({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_
 
 
 cdef int RefState_T_P_Z({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
-	cdef int i,l,q
+	cdef int i,l,q,g
 	cdef {c_basis_type} r,t
 
 	r = s

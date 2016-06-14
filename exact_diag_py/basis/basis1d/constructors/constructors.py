@@ -3,8 +3,7 @@ from numpy import dtype as _dtype
 from numpy import int32 as _index_type
 import numpy as _np
 
-# from constructor import * imports only __all__
-__all__=['op','op_m','op_z','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_p','op_t_pz','op_t_p_z']
+__all__=['op','op_m','op_z','op_zA','op_zB','op_zA_zB','op_p','op_pz','op_p_z','op_t','op_t_z','op_t_zA','op_t_zB','op_t_zA_zB','op_t_p','op_t_pz','op_t_p_z']
 
 
 
@@ -97,10 +96,78 @@ def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	else:
 		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
+	return ME,row,col
+
+def op_zA(opstr,indx,J,dtype,pauli,basis,L,**blocks):
+	zAblock=blocks.get("zAblock")
+
+	char = _dtype(dtype).char
+	compiled_op = basis_ops.__dict__[char+"_zA_op"]
+
+	col,ME,error = compiled_op(basis,opstr,indx,L,zAblock)
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	row=_np.arange(len(basis),dtype=_index_type)
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
 
 	return ME,row,col
 
 
+def op_zB(opstr,indx,J,dtype,pauli,basis,L,**blocks):
+	zBblock=blocks.get("zBblock")
+
+	char = _dtype(dtype).char
+	compiled_op = basis_ops.__dict__[char+"_zB_op"]
+
+	col,ME,error = compiled_op(basis,opstr,indx,L,zBblock)
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	row=_np.arange(len(basis),dtype=_index_type)
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
+
+	return ME,row,col
+
+
+def op_zA_zB(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+	zAblock=blocks.get("zAblock")
+	zBblock=blocks.get("zBblock")
+
+	char = _dtype(dtype).char
+	compiled_op = basis_ops.__dict__[char+"_zA_zB_op"]
+	col,ME,error = compiled_op(N,basis,opstr,indx,L,zAblock,zBblock)
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	row=_np.arange(len(basis),dtype=_index_type)
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
+
+
+	return ME,row,col
 
 
 def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
@@ -220,6 +287,80 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
 	row=_np.arange(len(basis),dtype=_index_type)
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
+
+	return ME,row,col
+
+def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zAblock=blocks.get("zAblock")
+
+	char = _dtype(dtype).char
+	compiled_op = basis_ops.__dict__[char+"_t_zA_op"]
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zAblock,kblock,a)
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	row=_np.arange(len(basis),dtype=_index_type)
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
+
+	return ME,row,col
+
+def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zBblock=blocks.get("zBblock")
+
+	char = _dtype(dtype).char
+	compiled_op = basis_ops.__dict__[char+"_t_zB_op"]
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zBblock,kblock,a)
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	row=_np.arange(len(basis),dtype=_index_type)
+	mask = col >= 0
+	row = row[ mask ]
+	col = col[ mask ]
+	ME = ME[ mask ]
+
+	if pauli:
+		ME*=J
+	else:
+		ME*=(J*0.5**(len(opstr.replace("I",""))))
+
+	return ME,row,col
+
+def op_t_zA_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zAblock=blocks.get("zAblock")
+	zBblock=blocks.get("zBblock")
+
+	char = _dtype(dtype).char
+	compiled_op = basis_ops.__dict__[char+"_t_zA_zB_op"]
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zAblock,zBblock,kblock,a)
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	row=_np.arange(len(basis),dtype=_index_type)
+
 	mask = col >= 0
 	row = row[ mask ]
 	col = col[ mask ]

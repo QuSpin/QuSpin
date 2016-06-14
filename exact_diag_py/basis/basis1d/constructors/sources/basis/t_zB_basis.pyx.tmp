@@ -1,0 +1,81 @@
+def make_m_t_zB_basis(int L,int Nup,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
+	cdef double k 
+	
+	cdef {c_basis_type} Ns,s,t
+	cdef NP_INT8_t mzB,r
+	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef char stp
+	
+
+	k = 2.0*_np.pi*kblock*a/L
+
+	cdef int j
+
+	s = 0
+	for j in range(Nup):
+		s += ( 1ull << j )
+
+	stp = 0
+	Ns = 0
+	
+
+	while True:
+		CheckState_T_ZB(kblock,L,s,a,R)
+		r = R[0]
+		mzB = R[1]
+
+		if r > 0:
+			if mzB != -1:
+				if 1 + zBblock*cos(k*mzB) == 0:
+					r = -1				
+
+			if r > 0:
+				m[Ns] = mzB
+				N[Ns] = r			
+				basis[Ns] = s
+				Ns += 1	
+
+		stp = 1 & ( s >> (L-1) ) 
+		for i in range(1,Nup):
+			stp &= 1 & ( s >> (L-i-1) )
+
+		if stp:
+			break
+
+		
+		s = next_state(s)
+				
+
+	return Ns
+
+def make_t_zB_basis(int L,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
+	cdef double k 
+	
+	cdef {c_basis_type} Ns,s,t
+	cdef NP_INT8_t mzB,r
+	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef char stp
+
+	k = 2.0*_np.pi*kblock*a/L
+	stp = 0
+	Ns = 0
+
+	cdef {c_basis_type} Nsmax
+	Nsmax = 2ull**L
+
+	for s in range(Nsmax):
+		CheckState_T_ZB(kblock,L,s,a,R)
+		r = R[0]
+		mzB = R[1]
+		if r > 0:
+			if mzB != -1:
+				if 1 + zBblock*cos(k*mzB) == 0:
+					continue					
+
+			m[Ns] = mzB
+			N[Ns] = r			
+			basis[Ns] = s
+			Ns += 1	
+
+
+	return Ns

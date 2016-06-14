@@ -48,6 +48,25 @@ cdef NP_INT8_t CheckState_Z({c_basis_type} s,int L):
 		return -1
 
 
+cdef NP_INT8_t CheckState_ZA({c_basis_type} s,int L):
+	cdef {c_basis_type} t=s
+
+	t=flip_sublat_A(t,L)
+	if t > s:
+		return 2
+	else:
+		return -1
+
+cdef NP_INT8_t CheckState_ZB({c_basis_type} s,int L):
+	cdef {c_basis_type} t=s
+
+	t=flip_sublat_B(t,L)
+	if t > s:
+		return 2
+	else:
+		return -1
+
+
 
 
 
@@ -301,6 +320,80 @@ cdef int CheckState_T_Z(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_I
 
 
 
+cdef int CheckState_T_ZA(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	# this is a function defined in [1]
+	# It is used to check if the integer inputed is a reference state for a state with momentum k.
+	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
+	#		L: length of the system
+	#		s: integer which represents a spin config in Sz basis
+	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
+	cdef {c_basis_type} t=s
+	R[0] = -1
+	R[1] = -1
+	cdef int i,r
+
+	r = L
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < s:
+			return 0
+		elif t==s:
+			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
+				return 0
+			R[0] = i
+			r = i
+			break
+
+	t = s
+	t = flip_sublat_A(t,L)
+	for i in range(r):
+		if t < s:
+			R[0] = -1
+			return 0
+		elif t == s:
+			R[1] = i
+			break
+		t = shift(t,-T,L) 
+
+	return 0
+
+
+cdef int CheckState_T_ZB(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	# this is a function defined in [1]
+	# It is used to check if the integer inputed is a reference state for a state with momentum k.
+	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
+	#		L: length of the system
+	#		s: integer which represents a spin config in Sz basis
+	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
+	cdef {c_basis_type} t=s
+	R[0] = -1
+	R[1] = -1
+	cdef int i,r
+
+	r = L
+	for i in range(1,L/T+1):
+		t = shift(t,-T,L)
+		if t < s:
+			return 0
+		elif t==s:
+			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
+				return 0
+			R[0] = i
+			r = i
+			break
+
+	t = s
+	t = flip_sublat_B(t,L)
+	for i in range(r):
+		if t < s:
+			R[0] = -1
+			return 0
+		elif t == s:
+			R[1] = i
+			break
+		t = shift(t,-T,L) 
+
+	return 0
 
 
 

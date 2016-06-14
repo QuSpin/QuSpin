@@ -19,7 +19,9 @@ L=2
 Nup = None
 kblock = None
 pblock = 1
-zblock = 1
+zblock = 0
+zAblock = 1
+zBblock = 1
 pzblock = None
 a=1
 if Nup is None:
@@ -30,7 +32,7 @@ else:
 dtype = np.complex128
 
 
-b = basis1d(L,Nup=Nup,kblock=kblock,pblock=pblock,pzblock=pzblock,zblock=zblock,a=a)
+b = basis1d(L,Nup=Nup,kblock=kblock,pblock=pblock,pzblock=pzblock,zblock=zblock,zAblock=zAblock,zBblock=zBblock,a=a)
 N = np.zeros((Ns,),dtype=np.int8)
 
 indx = np.array([0,1,3,4],dtype=np.int32)
@@ -53,7 +55,21 @@ if Nup is None:
 		print b.N-N
 		print 
 		print b.m-m
+		print
+
+	elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
+		m = np.zeros((Ns,),dtype=np.int16)
+		Ns = basis_ops.make_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,N,m,basis)
+		m = m[:Ns]
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_t_zA_zB_op"](N,m,basis,opstr,indx,L,zAblock,zBblock,kblock,a)
+		print b.basis-basis
 		print 
+		print b.N-N
+		print 
+		print b.m-m
+		print  
 
 	elif (type(kblock) is int) and (type(pblock) is int):
 		m = np.zeros((Ns,),dtype=np.int8)
@@ -81,6 +97,34 @@ if Nup is None:
 		print b.N-N
 		print 
 		print b.m-m
+		print
+
+	elif (type(kblock) is int) and (type(zAblock) is int):
+		m = np.zeros((Ns,),dtype=np.int8)
+		Ns = basis_ops.make_t_z_basis(L,zAblock,kblock,a,N,m,basis)
+		m = m[:Ns]
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_t_zA_op"](N,m,basis,opstr,indx,L,zAblock,kblock,a)
+		print b.basis-basis
+		print 
+		print b.N-N
+		print 
+		print b.m-m
+		print 
+
+	elif (type(kblock) is int) and (type(zBblock) is int):
+		m = np.zeros((Ns,),dtype=np.int8)
+		Ns = basis_ops.make_t_z_basis(L,zBblock,kblock,a,N,m,basis)
+		m = m[:Ns]
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_t_zB_op"](N,m,basis,opstr,indx,L,zBblock,kblock,a)
+		print b.basis-basis
+		print 
+		print b.N-N
+		print 
+		print b.m-m
 		print 
 
 	elif (type(kblock) is int) and (type(pzblock) is int):
@@ -102,6 +146,17 @@ if Nup is None:
 		basis = basis[:Ns]
 		N = N[:Ns]
 		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_p_z_op"](N,basis,opstr,indx,L,pblock,zblock)
+		print b.basis-basis
+		print 
+		print b.N
+		print N
+		print
+
+	elif (type(zAblock) is int) and (type(zBblock) is int):
+		Ns = basis_ops.make_zA_zB_basis(L,zAblock,zBblock,N,basis)
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_zA_zB_op"](N,basis,opstr,indx,L,zAblock,zBblock)
 		print b.basis-basis
 		print 
 		print b.N
@@ -146,6 +201,23 @@ if Nup is None:
 		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_z_op"](basis,opstr,indx,L,zblock)
 		print b.basis-basis
 		print 
+
+	elif (type(zAblock) is int):
+		Ns = basis_ops.make_zA_basis(L,zAblock,basis)
+		basis = basis[:Ns]
+		func = basis_ops.__dict__[typecode[dtype]+"_t_op"]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_zA_op"](basis,opstr,indx,L,zAblock)
+		print b.basis-basis
+		print
+
+	elif (type(zBblock) is int):
+		Ns = basis_ops.make_zB_basis(L,zAblock,basis)
+		basis = basis[:Ns]
+		func = basis_ops.__dict__[typecode[dtype]+"_t_op"]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_zB_op"](basis,opstr,indx,L,zBblock)
+		print b.basis-basis
+		print 
+
 	else:
 		basis = np.arange(2**L,dtype=basis.dtype)
 		col_test,ME_test,error = col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_spinop"](basis,opstr,indx)
@@ -165,6 +237,21 @@ else:
 		print 
 		print b.m-m
 		print 
+
+	elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
+		m = np.zeros((Ns,),dtype=np.int16)
+		Ns = basis_ops.make_m_t_zA_zB_basis(L,Nup,pblock,zblock,kblock,a,N,m,basis)
+		m = m[:Ns]
+		basis = basis[:Ns]
+		N = N[:Ns]
+		print "may wanna use zABblock istaead of zAblock and zBblock separately, see pzblock"
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_t_zA_zB_op"](N,m,basis,opstr,indx,L,zAblock,zBblock,kblock,a)
+		print b.basis-basis
+		print 
+		print b.N-N
+		print 
+		print b.m-m
+		print
 
 	elif (type(kblock) is int) and (type(pblock) is int):
 		m = np.zeros((Ns,),dtype=np.int8)
@@ -192,7 +279,35 @@ else:
 		print b.N-N
 		print 
 		print b.m-m
+		print
+
+	elif (type(kblock) is int) and (type(zAblock) is int):
+		m = np.zeros((Ns,),dtype=np.int8)
+		Ns = basis_ops.make_m_t_z_basis(L,Nup,zAblock,kblock,a,N,m,basis)
+		m = m[:Ns]
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_t_zA_op"](N,m,basis,opstr,indx,L,zAblock,kblock,a)
+		print b.basis-basis
 		print 
+		print b.N-N
+		print 
+		print b.m-m
+		print
+
+	elif (type(kblock) is int) and (type(zBblock) is int):
+		m = np.zeros((Ns,),dtype=np.int8)
+		Ns = basis_ops.make_m_t_z_basis(L,Nup,zBblock,kblock,a,N,m,basis)
+		m = m[:Ns]
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_t_zA_op"](N,m,basis,opstr,indx,L,zBblock,kblock,a)
+		print b.basis-basis
+		print 
+		print b.N-N
+		print 
+		print b.m-m
+		print  
 
 
 	elif (type(kblock) is int) and (type(pzblock) is int):
@@ -215,6 +330,16 @@ else:
 		basis = basis[:Ns]
 		N = N[:Ns]
 		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_p_z_op"](N,basis,opstr,indx,L,pblock,zblock)
+		print b.basis-basis
+		print 
+		print b.N-N
+		print
+
+	elif (type(zAblock) is int) and (type(zBblock) is int):
+		Ns = basis_ops.make_m_p_z_basis(L,Nup,zAblock,zBblock,N,basis)
+		basis = basis[:Ns]
+		N = N[:Ns]
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_zA_zB_op"](N,basis,opstr,indx,L,zAblock,zBblock)
 		print b.basis-basis
 		print 
 		print b.N-N
@@ -264,8 +389,23 @@ else:
 
 		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_z_op"](basis,opstr,indx,zblock)
 		print b.basis-basis
+		print
+
+	elif (type(zAblock) is int):
+		Ns = basis_ops.make_m_z_basis(L,Nup,zAblock,basis)
+		basis = basis[:Ns]
+
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_zA_op"](basis,opstr,indx,zAblock)
+		print b.basis-basis
 		print 
 
+	elif (type(zBblock) is int):
+		Ns = basis_ops.make_m_z_basis(L,Nup,zBblock,basis)
+		basis = basis[:Ns]
+
+		col_test,ME_test,error = basis_ops.__dict__[typecode[dtype]+"_zB_op"](basis,opstr,indx,zBblock)
+		print b.basis-basis
+		print
 
 	else:
 		basis = basis_ops.make_m_basis(L,Nup,Ns)

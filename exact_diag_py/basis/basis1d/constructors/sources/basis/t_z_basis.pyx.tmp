@@ -62,6 +62,12 @@ def make_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a, _np.ndarray[NP_I
 
 
 
+
+
+
+
+
+
 def make_t_z_basis(int L,int zblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
 	
@@ -93,6 +99,16 @@ def make_t_z_basis(int L,int zblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim
 
 
 	return Ns	
+
+
+
+
+
+
+
+
+
+
 
 
 
