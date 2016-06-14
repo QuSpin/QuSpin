@@ -1,0 +1,35 @@
+
+def {type_code}_zB_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int zBblock):
+	cdef {c_basis_type} s
+	cdef int error,ss,i,Ns,gB
+	cdef _np.ndarray[{np_basis_type}_t,ndim = 1,mode='c'] R = _np.zeros(2,{np_basis_type})
+	cdef _np.ndarray[NP_INT32_t,ndim=1] col
+	cdef _np.ndarray[{c_matrix_type},ndim=1,mode='c'] ME
+
+	Ns = basis.shape[0]
+
+	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+
+	if error != 0:
+		return col,ME,error
+
+	for i in range(Ns):
+		s = col[i]
+		RefState_ZB(s,L,R)
+
+		s = R[0]
+		gB = R[1]
+
+		ss = findzstate(basis,Ns,s)
+		col[i] = ss
+		if ss == -1: continue
+		ME[i] *= (zBblock)**gB
+
+
+	return col,ME,error
+
+
+
+
+
+

@@ -31,7 +31,20 @@ cdef {c_basis_type} fliplr({c_basis_type} I, int length):
 
 
 cdef inline {c_basis_type} flip_all({c_basis_type} I, {c_basis_type} length):
-	return I ^ ( (1ull << length)-1 ) &~ 0
+	# flip all bits
+	return I^( (1ull << length)-1 ) &~ 0ull
+
+
+cdef inline {c_basis_type} flip_sublat_A({c_basis_type} I, {c_basis_type} length):
+	# flip all even bits: sublat A
+	# 24595658764946068821 = Sum[2^i, (i, 0, 64, 2)]
+	return I^( (1ull << length)-1) & 6148914691236517205ull
+	
+
+cdef inline {c_basis_type} flip_sublat_B({c_basis_type} I, {c_basis_type} length):
+	# flip all even bits: sublat B
+	# 12297829382473034410 = Sum[2^i, (i, 1, 64, 2)]
+	return I^( (1ull << length)-1) & 12297829382473034410ull
 
 
 

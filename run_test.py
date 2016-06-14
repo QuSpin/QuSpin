@@ -103,6 +103,85 @@ def check_z(L,dtype,Nup=None):
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
 
+def check_zA(L,dtype):
+	
+	h=[[2.0*random()-1.0,i] for i in xrange(L)]
+	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in xrange(L-1)]
+	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+	static=[["zz",J1],["xx",J2],["x",h]]
+
+
+	H=hamiltonian(static,[],L=L,dtype=dtype)
+	Ns=H.Ns
+	E=H.eigvalsh()
+
+	H1=hamiltonian(static,[],L=L,zAblock=1,dtype=dtype)
+	H2=hamiltonian(static,[],L=L,zAblock=-1,dtype=dtype)
+
+	E1=H1.eigvalsh()
+	E2=H2.eigvalsh()
+	
+	Ez=np.concatenate((E1,E2))
+	Ez.sort()
+
+
+	if norm(Ez-E) > Ns*eps(dtype):
+		raise Exception( "test failed zA symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
+
+
+def check_zB(L,dtype):
+	
+	h=[[2.0*random()-1.0,i] for i in xrange(L)]
+	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in xrange(L-1)]
+	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+	static=[["zz",J1],["xx",J2],["x",h]]
+
+
+	H=hamiltonian(static,[],L=L,dtype=dtype)
+	Ns=H.Ns
+	E=H.eigvalsh()
+
+	H1=hamiltonian(static,[],L=L,zBblock=1,dtype=dtype)
+	H2=hamiltonian(static,[],L=L,zBblock=-1,dtype=dtype)
+
+	E1=H1.eigvalsh()
+	E2=H2.eigvalsh()
+	
+	Ez=np.concatenate((E1,E2))
+	Ez.sort()
+
+
+	if norm(Ez-E) > Ns*eps(dtype):
+		raise Exception( "test failed zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
+
+
+def check_zA_zB(L,dtype):
+	
+	h=[[2.0*random()-1.0,i] for i in xrange(L)]
+	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in xrange(L-1)]
+	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+	static=[["zz",J1],["xx",J2],["x",h]]
+
+
+	H=hamiltonian(static,[],L=L,dtype=dtype)
+	Ns=H.Ns
+	E=H.eigvalsh()
+
+	H1=hamiltonian(static,[],L=L,dtype=dtype,zAblock=+1,zBblock=+1)
+	H2=hamiltonian(static,[],L=L,dtype=dtype,zAblock=+1,zBblock=-1)
+	H3=hamiltonian(static,[],L=L,dtype=dtype,zAblock=-1,zBblock=+1)
+	H4=hamiltonian(static,[],L=L,dtype=dtype,zAblock=-1,zBblock=-1)	
+	E1=H1.eigvalsh()
+	E2=H2.eigvalsh()
+	E3=H3.eigvalsh()
+	E4=H4.eigvalsh()
+
+	Ez=np.concatenate((E1,E2,E3,E4))
+	Ez.sort()
+
+	if norm(Ez-E) > Ns*eps(dtype):
+		raise Exception( "test failed zA zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
+
 
 
 def check_p(L,dtype,Nup=None):
@@ -218,6 +297,18 @@ def check_obc(Lmax):
 
 	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,2):
+			check_zA(L,dtype)
+
+	for dtype in supported_dtypes:
+		for L in xrange(2,Lmax+1,2):
+			check_zB(L,dtype)
+
+	for dtype in supported_dtypes:
+		for L in xrange(2,Lmax+1,2):
+			check_zA_zB(L,dtype)
+
+	for dtype in supported_dtypes:
+		for L in xrange(2,Lmax+1,2):
 			check_p(L,dtype,Nup=int(L/2))
 			check_p(L,dtype)
 
@@ -293,7 +384,90 @@ def check_t_z(L,dtype,Nup=None):
 			raise Exception( "test failed t z symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
 
 
+def check_t_zA(L,dtype,a=2):
+	hx=random()
+	J=random()
+	h=[[hx,i] for i in xrange(L)]
+	J1=[[J,i,(i+2)%L] for i in xrange(L)]
 
+	static=[["zz",J1],["x",h]]
+
+	L_2=int(L/a)
+
+	for kblock in xrange(-L_2+2,L_2+2):
+
+		Hk=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,a=2)
+		Ns=Hk.Ns
+		Ek=Hk.eigvalsh()
+
+		Hk1=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zAblock=+1,a=a)
+		Hk2=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zAblock=-1,a=a)	
+		Ek1=Hk1.eigvalsh()
+		Ek2=Hk2.eigvalsh()
+		Ekz=np.append(Ek1,Ek2)
+		Ekz.sort()
+
+		if norm(Ek-Ekz) > Ns*eps(dtype):
+			raise Exception( "test failed t zA symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
+
+
+def check_t_zB(L,dtype,a=2):
+	hx=random()
+	J=random()
+	h=[[hx,i] for i in xrange(L)]
+	J1=[[J,i,(i+2)%L] for i in xrange(L)]
+
+	static=[["zz",J1],["x",h]]
+
+	L_2=int(L/a)
+
+	for kblock in xrange(-L_2+2,L_2+2):
+		#print kblock
+		Hk=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,a=2)
+		Ns=Hk.Ns
+		Ek=Hk.eigvalsh()
+
+		Hk1=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zBblock=+1,a=a)
+		Hk2=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zBblock=-1,a=a)	
+		Ek1=Hk1.eigvalsh()
+		Ek2=Hk2.eigvalsh()
+		Ekz=np.append(Ek1,Ek2)
+		Ekz.sort()
+
+		if norm(Ek-Ekz) > Ns*eps(dtype):
+			raise Exception( "test failed t zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
+
+
+def check_t_zA_zB(L,dtype,a=2):
+	hx=random()
+	J=random()
+	h=[[hx,i] for i in xrange(L)]
+	J1=[[J,i,(i+2)%L] for i in xrange(L)]
+
+	static=[["zz",J1],["x",h]]
+	
+	L_2=int(L/a)
+
+	for kblock in xrange(0,L_2):
+
+		Hk=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,a=a)
+		Ns=Hk.Ns
+		Ek=Hk.eigvalsh()
+
+		Hk1=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zAblock=+1,zBblock=+1,a=a)
+		Hk2=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zAblock=+1,zBblock=-1,a=a)
+		Hk3=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zAblock=-1,zBblock=+1,a=a)
+		Hk4=hamiltonian(static,[],L=L,dtype=dtype,kblock=kblock,zAblock=-1,zBblock=-1,a=a)	
+		Ek1=Hk1.eigvalsh()
+		Ek2=Hk2.eigvalsh()
+		Ek3=Hk3.eigvalsh()
+		Ek4=Hk4.eigvalsh()
+		Ekz=np.concatenate((Ek1,Ek2,Ek3,Ek4))
+		Ekz.sort()
+
+
+		if norm(Ek-Ekz) > Ns*eps(dtype):
+			raise Exception( "test failed t zA zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
 
 def check_t_p(L,dtype,Nup=None):
 	hx=random()
@@ -582,6 +756,17 @@ def check_pbc(Lmax):
 			check_t_z(L,dtype,Nup=int(L/2))
 			check_t_z(L,dtype)
 
+	for dtype in (np.complex64,np.complex128):
+		for L in xrange(2,Lmax+1,2):
+			check_t_zA(L,dtype)
+
+	for dtype in (np.complex64,np.complex128):
+		for L in xrange(2,Lmax+1,2):
+			check_t_zB(L,dtype)
+
+	for dtype in (np.complex64,np.complex128):
+		for L in xrange(2,Lmax+1,2):
+			check_t_zA_zB(L,dtype)
 
 	for dtype in supported_dtypes:
 		for L in xrange(2,Lmax+1,1):
@@ -722,13 +907,13 @@ def check_getvec(L,a=1,sparse=True):
 
 
 
-#check_m(4)
-#check_opstr(4)
-#check_obc(8)
-#check_pbc(8)
-#for L in xrange(4,8):
-#	check_getvec(L,sparse=True)
-#	check_getvec(L,sparse=False)
+check_m(4)
+check_opstr(4)
+check_obc(8)
+check_pbc(8)
+for L in xrange(4,8):
+	check_getvec(L,sparse=True)
+	check_getvec(L,sparse=False)
 
 
 

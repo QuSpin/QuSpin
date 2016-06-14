@@ -10,14 +10,20 @@ import scipy.sparse as _sm
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string
 dtypes={"f":_np.float32,
-				"F":_np.complex64,
-				"d":_np.float64,
-				"D":_np.complex128}
+		"F":_np.complex64,
+		"d":_np.float64,
+		"D":_np.complex128}
 
 op={"":_cn.op,
 		"M":_cn.op_m,
 		"Z":_cn.op_z,
+		"ZA":_cn.op_zA,
+		"ZB":_cn.op_zB,
+		"ZA & ZB":_cn.op_zA_zB,
 		"M & Z":_cn.op_z,
+		"M & ZA":_cn.op_zA,
+		"M & ZB":_cn.op_zB,
+		"M & ZA & ZB":_cn.op_zA_zB,
 		"P":_cn.op_p,
 		"M & P":_cn.op_p,
 		"PZ":_cn.op_pz,
@@ -27,7 +33,13 @@ op={"":_cn.op,
 		"T":_cn.op_t,
 		"M & T":_cn.op_t,
 		"T & Z":_cn.op_t_z,
+		"T & ZA":_cn.op_t_zA,
+		"T & ZB":_cn.op_t_zB,
+		"T & ZA & ZB":_cn.op_t_zA_zB,
 		"M & T & Z":_cn.op_t_z,
+		"M & T & ZA":_cn.op_t_zA,
+		"M & T & ZB":_cn.op_t_zB,
+		"M & T & ZA & ZB":_cn.op_t_zA_zB,
 		"T & P":_cn.op_t_p,
 		"M & T & P":_cn.op_t_p,
 		"T & PZ":_cn.op_t_pz,
@@ -43,6 +55,8 @@ class basis1d:
 		Nup=blocks.get("Nup")
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
+		zAblock=blocks.get("zAblock")
+		zBblock=blocks.get("zBblock")
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
 		a=blocks.get("a")
@@ -70,6 +84,14 @@ class basis1d:
 			if type(zblock) is not int: raise TypeError('zblock must be integer')
 			if abs(zblock) != 1: raise ValueError("zblock must be +/- 1")
 
+		if zAblock is not None:
+			if type(zAblock) is not int: raise TypeError('zAblock must be integer')
+			if abs(zAblock) != 1: raise ValueError("zAblock must be +/- 1")
+
+		if zBblock is not None:
+			if type(zBblock) is not int: raise TypeError('zBblock must be integer')
+			if abs(zBblock) != 1: raise ValueError("zBblock must be +/- 1")
+
 		if pzblock is not None:
 			if type(pzblock) is not int: raise TypeError('pzblock must be integer')
 			if abs(pzblock) != 1: raise ValueError("pzblock must be +/- 1")
@@ -94,6 +116,14 @@ class basis1d:
 				raise ValueError("spin inversion symmetry must be used with even number of sites")
 			if Nup != L/2:
 				raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
+
+		if (type(Nup) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+			raise ValueError("zA and zB incompatible with magnetisation symmetry")
+
+		# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
+		if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+			if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
+				raise ValueError("unit cell size 'a' must be even")
 
 
 
@@ -127,6 +157,27 @@ class basis1d:
 				self.Ns = _cn.make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self.N,self.m,self.basis)
 			else:
 				self.Ns = _cn.make_t_p_z_basis(L,pblock,zblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+			self.op_args=[self.N,self.m,self.basis,self.L]
+
+		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
+			self.k=2*(_np.pi)*a*kblock/L
+			if self.conserved: self.conserved += " & T & ZA & ZB"
+			else: self.conserved = "T & ZA & ZB"
+			self.blocks["zblock"] = zAblock*zBblock
+			
+			self.Ns = int(_np.ceil(self.Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
+
+			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int16)
+			if (type(Nup) is int):
+				self.Ns = _cn.make_m_t_zA_zB_basis(L,Nup,zAblock,zBblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = _cn.make_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self.N,self.m,self.basis)
 
 			self.N = self.N[:self.Ns]
 			self.m = self.m[:self.Ns]
@@ -191,6 +242,45 @@ class basis1d:
 			self.basis = self.basis[:self.Ns]
 			self.op_args=[self.N,self.m,self.basis,self.L]
 
+
+		elif (type(kblock) is int) and (type(zAblock) is int):
+			self.k=2*(_np.pi)*a*kblock/L
+			if self.conserved: self.conserved += " & T & ZA"
+			else: self.conserved = "T & ZA"
+			self.Ns = int(_np.ceil((frac*self.Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
+
+			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = _cn.make_m_t_zA_basis(L,Nup,zAblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = _cn.make_t_zA_basis(L,zAblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+			self.op_args=[self.N,self.m,self.basis,self.L]
+
+		elif (type(kblock) is int) and (type(zBblock) is int):
+			self.k=2*(_np.pi)*a*kblock/L
+			if self.conserved: self.conserved += " & T & ZB"
+			else: self.conserved = "T & ZB"
+			self.Ns = int(_np.ceil((frac*self.Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
+
+			self.basis=_np.empty((self.Ns,),dtype=_np.uint32)
+			self.N=_np.empty(self.basis.shape,dtype=_np.int8)
+			self.m=_np.empty(self.basis.shape,dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = _cn.make_m_t_zB_basis(L,Nup,zBblock,kblock,a,self.N,self.m,self.basis)
+			else:
+				self.Ns = _cn.make_t_zB_basis(L,zBblock,kblock,a,self.N,self.m,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.m = self.m[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+			self.op_args=[self.N,self.m,self.basis,self.L]
+
 		elif (type(pblock) is int) and (type(zblock) is int):
 			if self.conserved: self.conserved += " & P & Z"
 			else: self.conserved += "P & Z"
@@ -203,6 +293,24 @@ class basis1d:
 				self.Ns = _cn.make_m_p_z_basis(L,Nup,pblock,zblock,self.N,self.basis)
 			else:
 				self.Ns = _cn.make_p_z_basis(L,pblock,zblock,self.N,self.basis)
+
+			self.N = self.N[:self.Ns]
+			self.basis = self.basis[:self.Ns]
+			self.op_args=[self.N,self.basis,self.L]
+
+
+		elif (type(zAblock) is int) and (type(zBblock) is int):
+			if self.conserved: self.conserved += " & ZA & ZB"
+			else: self.conserved += "ZA & ZB"
+			self.Ns = int(_np.ceil(self.Ns*0.5*frac)) # estimate fraction of basis needed for sector.
+			self.blocks["zblock"] = zAblock*zBblock
+			
+			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
+			self.N=_np.empty((self.Ns,),dtype=_np.int8)
+			if (type(Nup) is int):
+				self.Ns = _cn.make_m_zA_zB_basis(L,Nup,self.basis)
+			else:
+				self.Ns = _cn.make_zA_zB_basis(L,self.basis)
 
 			self.N = self.N[:self.Ns]
 			self.basis = self.basis[:self.Ns]
@@ -239,6 +347,37 @@ class basis1d:
 				self.Ns = _cn.make_m_z_basis(L,Nup,self.basis)
 			else:
 				self.Ns = _cn.make_z_basis(L,self.basis)
+
+			self.basis = self.basis[:self.Ns]
+			self.op_args=[self.basis,self.L]
+
+		elif type(zAblock) is int:
+			if self.conserved: self.conserved += " & ZA"
+			else: self.conserved += "ZA"
+			self.Ns = int(_np.ceil(self.Ns*frac)) # estimate fraction of basis needed for sector.
+
+			
+			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
+			if (type(Nup) is int):
+				self.Ns = _cn.make_m_zA_basis(L,Nup,self.basis)
+			else:
+				self.Ns = _cn.make_zA_basis(L,self.basis)
+
+			self.basis = self.basis[:self.Ns]
+			self.op_args=[self.basis,self.L]
+
+
+		elif type(zBblock) is int:
+			if self.conserved: self.conserved += " & ZB"
+			else: self.conserved += "ZB"
+			self.Ns = int(_np.ceil(self.Ns*frac)) # estimate fraction of basis needed for sector.
+
+			
+			self.basis = _np.empty((self.Ns,),dtype=_np.uint32)
+			if (type(Nup) is int):
+				self.Ns = _cn.make_m_zB_basis(L,Nup,self.basis)
+			else:
+				self.Ns = _cn.make_zB_basis(L,self.basis)
 
 			self.basis = self.basis[:self.Ns]
 			self.op_args=[self.basis,self.L]
