@@ -14,6 +14,15 @@ cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
 
 
 
+cdef NP_INT8_t bit_count({c_basis_type} I, int length):
+	cdef NP_INT8_t out = 0
+	cdef int i
+	for i in range(length):
+		out += ((I >> i) & 1) 
+
+	return out
+
+
 
 
 cdef {c_basis_type} fliplr({c_basis_type} I, int length):
