@@ -133,8 +133,8 @@ def _combine_get_vec(basis,v0,sparse):
 	else:
 		V1,S,V2=_sla.svds(v0,k=Ns-1,which='LM',maxiter=10**10)
 		V12,S,V22=_sla.svds(v0,k=1,which='SM',maxiter=10**10)
-		V1 = _sp.hstack(V1,V12)
-		V2 = _sp.hstack(V2,V22)
+		V1 = _np.hstack(V1,V12)
+		V2 = _np.hstack(V2,V22)
 	# svd returns V2.H so take the hc to reverse that
 	V2=V2.T.conj()
 	eps = _np.finfo(S.dtype).eps
