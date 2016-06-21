@@ -71,6 +71,14 @@ class tensor(basis):
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
 
+
+	def get_proj(self,dtype):
+		proj1 = self._b1.get_proj(dtype)
+		proj2 = self._b2.get_proj(dtype)
+
+		return _sp.kron(proj1,proj2)
+
+
 	def Op(self,dtype,J,opstr,indx,pauli):
 		n=opstr.count("|")
 		if n > 1: 

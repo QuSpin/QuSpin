@@ -26,6 +26,28 @@ class photon_basis(tensor):
 
 
 
+	def get_vec(self,v0,sparse=True):
+		if not self._pcon:
+			return tensor.get_vec(self,v0,sparse=sparse)
+		else:
+			raise NotImplementedError("get_vec not implimented for particle conservation symm.")
+			# ... impliment get_vec for particle conservation here
+
+
+
+	def get_proj(self,dtype):
+		if not self._pcon:
+			return tensor.get_proj(self,dtype)	
+		else:
+			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
+			# ... impliment get_proj for particle conservation here
+				
+
+
+
+
+
+
 
 
 
@@ -63,6 +85,10 @@ class ho_basis(basis):
 			return _sp.csr_matrix(v0)
 		else:
 			return v0
+
+
+	def get_proj(self,dtype):
+		return _sp.identity(self.Ns,dtype=dtype)
 
 
 	def Op(self,dtype,J,opstr,*args):
