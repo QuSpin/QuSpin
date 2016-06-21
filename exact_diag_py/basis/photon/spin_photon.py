@@ -176,7 +176,7 @@ class spin_photon(basis):
 
 	def __str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp = "\t{0:"+str(n_digits)+"d}  "+"|{1:0"+str(self._L)+"b}>"
+		temp = "\t{0:"+str(n_digits)+"d}  "+"|{1:0"+str(self._L)+"b}>|"
 		string = "reference states: \n"
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
