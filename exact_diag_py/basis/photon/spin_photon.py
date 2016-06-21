@@ -47,21 +47,25 @@ class spin_photon(basis):
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-		if L>32: raise NotImplementedError('basis can only be constructed for L<=32')
+		# handled by underlying class
+		#if L>32: raise NotImplementedError('basis can only be constructed for L<=32')
 
-		if Ntot>L: raise TypeError('basis can only be constructed for Ntot<=L') # otherwise, shift photon mode energies
-
-
-		# checking type, and value of blocks
+		# maybe allow for this to happen, shouldn't change the size of the basis overall.
+		#if Ntot>L: raise TypeError('basis can only be constructed for Ntot<=L') # otherwise, shift photon mode energies
+ 
+		# checking type, and value of blocks 
 		if Nup is not None:
 			raise TypeError('Hamiltonian does not feature magnetisation symmetry')
 
 		if (zblock is not None) or (zAblock is not None) or (zBblock is not None) or (pzblock is not None):
 			raise TypeError('Hamiltonian does not feature spin inversion symmetry of any kind')
 
+		# have this handled by basis1d class
+		"""
 		if pblock is not None:
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
 			if abs(pblock) != 1: raise ValueError("pblock must be +/- 1")
+
 
 		if kblock is not None:
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
@@ -76,6 +80,7 @@ class spin_photon(basis):
 		# checking if a is compatible with L
 		if(L%a != 0):
 			raise ValueError('L must be interger multiple of lattice spacing a')
+		"""
 
 
 
@@ -101,19 +106,34 @@ class spin_photon(basis):
 
 		spin_basis = basis1d(L,Nup=0,**blocks)
 		# preallocate memory for class objects
+
+		#  dtype = spin_basis._basis.dtype # use same dtype as the basis1d class.
+		#  self._basis = _np.empty((self._Ns,),dtype=dtype)
+
 		self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 		self._basis[0] = spin_basis._basis
+
+		# dtype = _np.min_scalar_type(n_ph) #check the smalleest type which will fit this integer inside it
+		# self._n = _np.empty((self._Ns,),dtype=dtype) #vector with photon occupations 
+
 		self._n = _np.empty((self._Ns,),dtype=_np.uint32) #vector with photon occupations
-		self._n[0] = self._Ntot
+		self._n[0] = self._Ntot 
 		if hasattr(spin_basis,"_N"):
-			self._N = _np.empty((self._Ns,),dtype=_np.uint8)
+			# dtype = spin_basis._N.dtype
+			# self._N = _np.empty((self._Ns,),dtype=dtype)
+
+			self._N = _np.empty((self._Ns,),dtype=_np.uint8) 
 			self._N[0] = spin_basis._N
 		if hasattr(spin_basis,"_m"):
+			# dtype = spin_basis._m.dtype
+			# self._N = _np.empty((self._Ns,),dtype=dtype)
+
 			self._m = _np.empty((self._Ns,),dtype=_np.uint8)
 			self._m[0] = spin_basis._m
 
 		# build the total particle-conserving spin_photon basis
-		for Nup in xrange(1,self._Ntot+1,1):
+		Nup_max = min(self._Ntot+1,self._L+1) #stop at Nup=L if N_tot > L
+		for Nup in xrange(1,Nup_max,1):
 
 			basis_tmp = basis1d(L,Nup=Nup,**blocks)
 			

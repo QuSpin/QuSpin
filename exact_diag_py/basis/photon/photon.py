@@ -15,8 +15,9 @@ class photon(basis):
 		self.n_ph = n_ph
 		self.Nho = Nho
 		self._Ns = Nho+1
-		self.dtype = _np.min_scalar_type(-self._Ns)
-		self.basis = _np.arange(self._Ns,dtype=self.dtype)
+		self.col_dtype = _np.min_scalar_type(-self._Ns)
+		self.basis_dtype = _np.min_scalar_type(self._Ns)
+		self.basis = _np.arange(self._Ns,dtype=self.basis_dtype)
 
 
 
@@ -41,8 +42,8 @@ class photon(basis):
 
 	def Op(self,dtype,J,opstr,*args):
 
-		row = _np.array(self.basis)
-		col = _np.array(self.basis)
+		row = _np.array(self.basis,dtype=self.col_dtype)
+		col = _np.array(self.basis,dtype=self.col_dtype)
 		ME = _np.ones((self._Ns,),dtype=dtype)
 		for o in opstr[::-1]:
 			if o == "I":

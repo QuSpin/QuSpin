@@ -5,15 +5,15 @@ from ..base import tensor
 
 
 class photon_basis(tensor):
-	def __init__(self,basis_constructor,L,**blocks)
+	def __init__(self,basis_constructor,*constructor_args,**blocks)
 		Ntot = blocks.get("Ntot")
-		Nho = blocks.get("Nho")
+		Hph = blocks.get("Hph")
 
 		if type(Ntot) is None:
 			self._pcon = False
-			basis = basis_constructor(L,**blocks)
-			ho = ho_basis
-			tensor.__init__(basis,ho)
+			other_basis = basis_constructor(*constructor_args,**blocks)
+			ph_basis = ho_basis(Nph)
+			tensor.__init__(other_basis,ph_basis)
 			self._blocks = blocks
 
 		else:
