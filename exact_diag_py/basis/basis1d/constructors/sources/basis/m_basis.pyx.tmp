@@ -1,9 +1,8 @@
 
 
 
-def make_m_basis(int L, int Nup, {c_basis_type} Ns):
+def make_m_basis(int L, int Nup, {c_basis_type} Ns,_np.ndarray[{np_basis_type}_t,ndim=1] basis):
 	cdef {c_basis_type} s,i
-	cdef _np.ndarray[{np_basis_type}_t,ndim=1] basis = _np.zeros(Ns,dtype={np_basis_type})
 	cdef int j
 
 	s = 0
@@ -17,6 +16,5 @@ def make_m_basis(int L, int Nup, {c_basis_type} Ns):
 	for i in range(Ns):
 		basis[i] = s
 		s = next_state(s)
-	return basis
 
 
