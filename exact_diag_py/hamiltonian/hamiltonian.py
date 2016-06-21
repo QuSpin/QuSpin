@@ -1,6 +1,9 @@
 #local modules:
 from ..basis import basis1d as _default_basis
+from ..basis import spin_photon as _spin_photon_basis
+
 from ..basis import isbasis as _isbasis
+
 from make_hamiltonian import make_static as _make_static
 from make_hamiltonian import make_dynamic as _make_dynamic
 from make_hamiltonian import test_function as _test_function
@@ -69,7 +72,7 @@ def check_dynamic(sub_list):
 
 
 class hamiltonian(object):
-	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,copy=True,dtype=_np.complex128,**kwargs):
+	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,photon=False,Ntot=None,n_ph=0,copy=True,dtype=_np.complex128,**kwargs):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis1d.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
@@ -111,7 +114,7 @@ class hamiltonian(object):
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
 			# check if user input basis
-			basis=kwargs.get('basis')
+			basis=kwargs.get('basis')	
 
 			# if not
 			if basis is None: 
@@ -119,9 +122,20 @@ class hamiltonian(object):
 					raise Exception('if opstrs in use, arguement L needed for basis class')
 
 				if type(L) is not int: # if L is not int
-					raise TypeError('arguement L must be integer')
+					raise TypeError('argument L must be integer')
 
-				basis=_default_basis(L,**kwargs)
+				if Ntot is not None:
+					if type(Ntot) is not int:
+						raise TypeError('argument Ntot must be integer')
+
+				if n_ph is not None:
+					if type(n_ph) is not int:
+						raise TypeError('argument Ntot must be integer')
+
+				if not photon:
+					basis=_default_basis(L,**kwargs)
+				else:
+					basis=_spin_photon_basis(L,Ntot,n_ph,**kwargs)
 
 			elif not _isbasis(basis):
 				raise TypeError('expecting instance of basis class for arguement: basis')
@@ -156,7 +170,7 @@ class hamiltonian(object):
 					found = True
 
 				if not found:
-					raise ValueError('missing arguement shape')
+					raise ValueError('missing argument shape')
 				if shape[0] != shape[1]:
 					raise ValueError('hamiltonian must be square matrix')
 

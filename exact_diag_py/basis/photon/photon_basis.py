@@ -1,9 +1,6 @@
 import numpy as _np
 from scipy import sparse as _sp
 from ..base import basis
-
-
-
 from ..base import tensor
 
 

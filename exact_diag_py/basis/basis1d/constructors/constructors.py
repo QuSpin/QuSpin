@@ -28,7 +28,9 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	# col: resilting basis states; -1: state is thrown out (cf FindZState)
 	# ME: array of dtype with matrix elements
 	# error: see line 11 above
+
 	col,ME,error = compiled_op(basis,opstr,indx)
+
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 

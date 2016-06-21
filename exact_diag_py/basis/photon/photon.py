@@ -4,57 +4,31 @@ from ..base import basis
 
 
 
-from ..base import tensor
 
+class photon(basis):
+	def __init__(self,Nho,n_ph=0):
+		if (type(Nho) is not int):
+			raise ValueError("expecting integer for Nho")
+		if (type(n_ph) is not int):
+			raise ValueError("expecting integer for n_ph")
 
-class photon_basis(tensor):
-	def __init__(self,basis_constructor,L,**blocks)
-		Ntot = blocks.get("Ntot")
-		Nho = blocks.get("Nho")
-
-		if type(Ntot) is None:
-			self._pcon = False
-			basis = basis_constructor(L,**blocks)
-			ho = ho_basis
-			tensor.__init__(basis,ho)
-			self._blocks = blocks
-
-		else:
-			pass
-			# ... do particle conserving constructor
-
-
-
-
-
-
-
-
-
-
-
-# helper class which calcualates ho matrix elements
-class ho_basis(basis):
-	def __init__(self,Np):
-		if (type(Np) is not int):
-			raise ValueError("expecting integer for Np")
-
-		self.Np = Np
-		self.Ns = Np+1
-		self.dtype = _np.min_scalar_type(-self.Ns)
-		self.basis = _np.arange(self.Ns,dtype=self.dtype)
+		self.n_ph = n_ph
+		self.Nho = Nho
+		self._Ns = Nho+1
+		self.dtype = _np.min_scalar_type(-self._Ns)
+		self.basis = _np.arange(self._Ns,dtype=self.dtype)
 
 
 
 	def get_vec(self,v0,sparse=True):
-		if self.Ns <= 0:
+		if self._Ns <= 0:
 			return _np.array([])
 		if v0.ndim == 1:
-			if v0.shape[0] != self.Ns:
+			if v0.shape[0] != self._Ns:
 				raise ValueError("v0 has incompatible dimensions with basis")
 			v0 = v0.reshape((-1,1))
 		elif v0.ndim == 2:
-			if v0.shape[0] != self.Ns:
+			if v0.shape[0] != self._Ns:
 				raise ValueError("v0 has incompatible dimensions with basis")
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
@@ -69,21 +43,22 @@ class ho_basis(basis):
 
 		row = _np.array(self.basis)
 		col = _np.array(self.basis)
-		ME = _np.ones((self.Ns,),dtype=dtype)
+		ME = _np.ones((self._Ns,),dtype=dtype)
 		for o in opstr[::-1]:
 			if o == "I":
 				continue
 			elif o == "+":
 				col += 1
-				ME *= _np.sqrt(dtype(_np.abs(col)))
+				ME *= _np.sqrt(self.n_ph + dtype(_np.abs(col)))
 			elif o == "-":
-				ME *= _np.sqrt(dtype(_np.abs(col)))
+				ME *= _np.sqrt(self.n_ph + dtype(_np.abs(col)))
 				col -= 1
+			elif o == "n":
+				ME *= dtype(_np.abs(col))
 			else:
 				raise Exception("operator symbol {0} not recognized".format(o))
-
 		mask = ( col < 0)
-		mask += (col > (self.Ns))
+		mask += (col > (self._Ns))
 		ME[mask] *= 0 
 		ME *= J
 
