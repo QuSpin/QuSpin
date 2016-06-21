@@ -43,10 +43,7 @@ def make_zA_basis(int L, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 
 	Ns = 0
 
-	cdef {c_basis_type} Nsmax
-	Nsmax = 2ull**L
-
-	for s in range(Nsmax):
+	for s in range(1ull << L):
 		rzA = CheckState_ZA(s,L)
 		if rzA > 0:
 			basis[Ns] = s

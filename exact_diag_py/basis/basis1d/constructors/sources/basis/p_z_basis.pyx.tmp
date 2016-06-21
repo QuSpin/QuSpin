@@ -45,10 +45,8 @@ def make_p_z_basis(int L, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] 
 	cdef NP_INT8_t rpz
 
 	Ns = 0
-	cdef {c_basis_type} Nsmax
-	Nsmax = 2ull**L
 
-	for s in range(Nsmax):
+	for s in range(1llu << L):
 		rpz = CheckState_P_Z(pblock,zblock,s,L)
 		if rpz > 0:
 			basis[Ns] = s

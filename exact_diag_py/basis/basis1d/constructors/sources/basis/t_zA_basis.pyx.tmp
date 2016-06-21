@@ -61,10 +61,7 @@ def make_t_zA_basis(int L,int zAblock,int kblock,int a, _np.ndarray[NP_INT8_t,nd
 	stp = 0
 	Ns = 0
 
-	cdef {c_basis_type} Nsmax
-	Nsmax = 2ull**L
-
-	for s in range(Nsmax):
+	for s in range(1ull << L):
 		CheckState_T_ZA(kblock,L,s,a,R)
 		r = R[0]
 		mzA = R[1]

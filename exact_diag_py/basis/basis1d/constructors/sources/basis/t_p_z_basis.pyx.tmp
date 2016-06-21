@@ -20,10 +20,8 @@ def make_t_p_z_basis(int L ,int pblock,int zblock,{c_basis_type} kblock,int a, _
 
 
 	Ns = 0
-	cdef {c_basis_type} Nsmax
-	Nsmax = 2ull**L
 
-	for s in range(Nsmax):
+	for s in range(1ull << L):
 		CheckState_T_P_Z(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]

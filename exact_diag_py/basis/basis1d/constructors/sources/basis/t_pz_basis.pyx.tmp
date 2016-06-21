@@ -98,7 +98,7 @@ def make_t_pz_basis(int L, int pzblock,int kblock,int a, _np.ndarray[NP_INT8_t,n
 		sigma_f = 1
 
 	Ns = 0
-	for s in xrange(2**L):
+	for s in range(1ull << L):
 		CheckState_T_PZ(kblock,L,s,a,R)
 		r = R[0]
 		mpz = R[1]
