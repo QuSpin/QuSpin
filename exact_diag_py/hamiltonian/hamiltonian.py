@@ -375,7 +375,7 @@ class hamiltonian(object):
 			this function simply returns a copy of the Hamiltonian as a csr_matrix evaluated at the desired time.
 		"""
 		if self.Ns <= 0:
-			return _csr_matrix(_np.asarray([[]]))
+			return _sp.csr_matrix(_np.asarray([[]]))
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar arguement for time')
 
