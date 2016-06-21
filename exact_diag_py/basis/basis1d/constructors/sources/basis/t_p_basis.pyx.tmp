@@ -110,7 +110,7 @@ def make_m_t_p_basis(int L, int Nup, int pblock, int kblock, int a, _np.ndarray[
 
 
 def make_t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t, ndim=1] basis):
-	cdef {c_basis_type} Ns,s
+	cdef {c_basis_type} s
 	cdef NP_INT8_t r_temp,r,mp
 	cdef int sigma,sigma_i,sigma_f
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
@@ -126,10 +126,7 @@ def make_t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndi
 		sigma_f = 1
 
 	Ns = 0
-	cdef {c_basis_type} Nsmax
-	Nsmax = 2ull**L
-
-	for s in range(Nsmax):
+	for s in range(1ull << L):
 		CheckState_T_P(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]

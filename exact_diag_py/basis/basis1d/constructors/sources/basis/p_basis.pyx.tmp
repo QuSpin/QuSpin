@@ -58,10 +58,8 @@ def make_p_basis(int L, int pblock,	_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray
 	cdef int rp
 
 	Ns = 0
-	cdef {c_basis_type} Nsmax
-	Nsmax = 2ull**L
 
-	for s in range(Nsmax):
+	for s in range(1llu << L):
 		rp = CheckState_P(pblock,s,L)
 		if rp > 0:
 			basis[Ns] = s

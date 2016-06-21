@@ -232,6 +232,7 @@ class basis1d(basis):
 				self._Ns = _cn.make_m_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.make_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
+				print self._Ns
 
 			self._N = self._N[:self._Ns]
 			self._m = self._m[:self._Ns]
