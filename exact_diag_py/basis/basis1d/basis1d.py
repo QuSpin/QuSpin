@@ -452,10 +452,10 @@ class basis1d(basis):
 
 		Ns = self._Ns + other._Ns
 
-		if self._conserved:
-			self._op_args=[self._L]
-		else:
+		if self._conserved == "" or self._conserved == "M":
 			self._op_args=[]
+		else:
+			self._op_args=[self._L]
 
 
 		self._basis.resize((Ns,),refcheck=False)
@@ -465,17 +465,17 @@ class basis1d(basis):
 
 		self._op_args.insert(0,self._basis)
 
-		if hasattr(self,"_N"):
-			self._N.resize((Ns,),refcheck=False)
-			self._N[self._Ns:] = other._N[:]
-			self._N = self._N[arg]
-			self._op_args.insert(0,self._N)
-
 		if hasattr(self,"_m"):
 			self._m.resize((Ns,),refcheck=False)
 			self._m[self._Ns:] = other._m[:]
 			self._m = self._m[arg]
 			self._op_args.insert(0,self._m)	
+
+		if hasattr(self,"_N"):
+			self._N.resize((Ns,),refcheck=False)
+			self._N[self._Ns:] = other._N[:]
+			self._N = self._N[arg]
+			self._op_args.insert(0,self._N)
 
 		self._Ns = Ns
 

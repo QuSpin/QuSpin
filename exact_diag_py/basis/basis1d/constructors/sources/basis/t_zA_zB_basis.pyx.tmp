@@ -29,7 +29,7 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 		if r > 0:
 
 			if mzA == -1 and mzB == -1 and mz == -1:
-				m[Ns] = (L+1)*(L+1)
+				m[Ns] = (L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1	
@@ -37,7 +37,7 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 			if mzA != -1 and mzB == -1 and mz == -1:
 				if 1 + zAblock*cos(k*mzA) == 0:
 					continue					
-				m[Ns] = mzA + 2*(L+1)*(L+1)
+				m[Ns] = mzA + 2*(L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1	
@@ -45,7 +45,7 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 			if mzA == -1 and mzB != -1 and mz == -1:
 				if 1 + zBblock*cos(k*mzB) == 0:
 					continue					
-				m[Ns] = mzB + 3*(L+1)*(L+1)
+				m[Ns] = mzB + 3*(L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1
@@ -54,7 +54,7 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 			if mzA == -1 and mzB == -1 and mz != -1:
 				if 1 + zAblock*zBblock*cos(k*mz) == 0:
 					continue					
-				m[Ns] = mz + 4*(L+1)*(L+1)
+				m[Ns] = mz + 4*(L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1
@@ -94,7 +94,7 @@ def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarr
 
 		if r > 0:
 			if mzA == -1 and mzB == -1 and mz == -1:
-				m[Ns] = (L+1)*(L+1)
+				m[Ns] = (L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1	

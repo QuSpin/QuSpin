@@ -143,7 +143,7 @@ cdef NP_INT8_t CheckState_T(int kblock,int L,{c_basis_type} s,int T):
 
 
 
-cdef int CheckState_T_P(int kblock,int pblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_P(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -156,7 +156,7 @@ cdef int CheckState_T_P(int kblock,int pblock,int L,{c_basis_type} s,int T,_np.n
 	R[1] = -1
 	r = 0
 
-	if CheckState_P(pblock,s,L) < 0:
+	if CheckState_P(1,s,L) < 0:
 		return 0
 
 	for i in range(1,L/T+1):
@@ -186,7 +186,7 @@ cdef int CheckState_T_P(int kblock,int pblock,int L,{c_basis_type} s,int T,_np.n
 
 
 
-cdef int CheckState_T_P_Z(int kblock,int pblock,int zblock,int L,{c_basis_type} s,int T, _np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_P_Z(int kblock,int L,{c_basis_type} s,int T, _np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -202,7 +202,7 @@ cdef int CheckState_T_P_Z(int kblock,int pblock,int zblock,int L,{c_basis_type} 
 	cdef int i,r
 	r = L
 
-	if CheckState_P_Z(pblock,zblock,s,L) < 0:
+	if CheckState_P_Z(1,1,s,L) < 0:
 		return 0
 
 	for i in range(1,L/T+1):
@@ -264,7 +264,7 @@ cdef int CheckState_T_P_Z(int kblock,int pblock,int zblock,int L,{c_basis_type} 
 
 
 
-cdef int CheckState_T_PZ(int kblock,int pzblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_PZ(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -276,7 +276,7 @@ cdef int CheckState_T_PZ(int kblock,int pzblock,int L,{c_basis_type} s,int T,_np
 	R[1] = -1 
 	cdef int i,r
 
-	if CheckState_PZ(pzblock,s,L) < 0:
+	if CheckState_PZ(1,s,L) < 0:
 		return 0
 
 	r = L
