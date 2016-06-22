@@ -203,7 +203,7 @@ class basis1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & PZ"
 			else: self._conserved = "T & PZ"
-			self._Ns = int(_np.ceil(self._Ns*a*(1.2)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -222,7 +222,7 @@ class basis1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P"
 			else: self._conserved = "T & P"
-			self._Ns = int(_np.ceil(self._Ns*a*(2)/float(L_m))) # estimate fraction of basis needed for sector.
+			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
 
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
