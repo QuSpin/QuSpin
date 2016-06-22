@@ -7,10 +7,10 @@ cdef {c_matrix_type} {type_code}_MatrixElement_ZA_ZB(int L,int zAblock,int zBblo
 
 
 	mmc = mc % (L+1)
-	cc = mc/((L+1)*(L+1))
+	cc = mc/(L+1)
 
 	mmr = mr % (L+1)
-	cr = mr/((L+1)*(L+1))
+	cr = mr/(L+1)
 
 	nr = 1.0
 	nc = 1.0

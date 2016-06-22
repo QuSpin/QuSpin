@@ -41,7 +41,8 @@ def make_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8
 
 
 def make_p_z_basis(int L, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
-	cdef {c_basis_type} s,Ns
+	cdef {c_basis_type} Ns
+	cdef unsigned long long s
 	cdef NP_INT8_t rpz
 
 	Ns = 0
