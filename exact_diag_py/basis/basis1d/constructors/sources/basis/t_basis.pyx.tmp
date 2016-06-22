@@ -2,8 +2,8 @@
 
 
 def make_t_basis(int L,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t ,ndim=1]  basis):
-
-	cdef {c_basis_type} Ns,s
+	cdef unsigned long long s
+	cdef int Ns
 	cdef NP_INT8_t r
 
 	Ns = 0

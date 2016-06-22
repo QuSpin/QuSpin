@@ -1,5 +1,5 @@
 
-cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
+cdef {c_basis_type} shift_2({c_basis_type} I,int shift,int period):
 # this functino is used to shift the bits of an integer by 'shift' bits.
 # it is used when constructing the momentum states
 	cdef {c_basis_type} Imax= (1ull << period) -1
@@ -12,6 +12,18 @@ cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
 		else:
 			return (I << shift%period) & Imax | ((I & Imax) >> (period-(shift%period)))
 
+cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
+# this functino is used to shift the bits of an integer by 'shift' bits.
+# it is used when constructing the momentum states
+	cdef {c_basis_type} Imax= (1ull << period) -1
+	cdef int l1,l2
+	if I==0 or I==Imax:
+		return I
+	else:
+		l1 = shift%period
+		l2 = period - l1
+		return ((I << l1) & Imax) | ((I & Imax) >> l2)
+
 
 
 
@@ -21,9 +33,11 @@ cdef {c_basis_type} fliplr({c_basis_type} I, int length):
 # (generator of) parity symmetry
 	cdef {c_basis_type} out = 0
 	cdef int i
+	cdef unsigned long long j
+	j = 1
 	for i in range(length):
-		if ( (I >> i) & 1 ) == 1:
-			out += (1llu << (length-1-i))
+		out += ((I >> (length-1-i)) & 1 )*j
+		j <<= 1
 		
 	return out
 
@@ -32,12 +46,12 @@ cdef {c_basis_type} fliplr({c_basis_type} I, int length):
 
 cdef inline {c_basis_type} flip_all({c_basis_type} I, {c_basis_type} length):
 	# flip all bits
-	return I^( (1llu << length)-1 ) &~ 0llu
+	return I^( (1llu << length)-1 ) & ~0llu
 
 
 cdef inline {c_basis_type} flip_sublat_A({c_basis_type} I, {c_basis_type} length):
 	# flip all even bits: sublat A
-	# 24595658764946068821 = Sum[2^i, (i, 0, 63, 2)]
+	# 6148914691236517205 = Sum[2^i, (i, 0, 63, 2)]
 	return I^( (1llu << length)-1) & 6148914691236517205llu
 	
 

@@ -4,8 +4,7 @@
 
 def make_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
-	
-	cdef {c_basis_type} Ns,s,t
+	cdef {c_basis_type}  s,Ns
 	cdef NP_INT8_t mz,r
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
 	cdef char stp
@@ -70,8 +69,8 @@ def make_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a, _np.ndarray[NP_I
 
 def make_t_z_basis(int L,int zblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
-	
-	cdef {c_basis_type} Ns,s,t
+	cdef unsigned long long s
+	cdef int Ns
 	cdef NP_INT8_t mz,r
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
 	cdef char stp

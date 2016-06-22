@@ -1,9 +1,8 @@
 def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
-	
 	cdef {c_basis_type} Ns,s
 	cdef NP_INT8_t mzA,mzB,mz,r,rzA,rzB
-	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
 	cdef char stp
 	
 
@@ -21,17 +20,13 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 
 	while True:
 		
-		CheckState_T_ZA(kblock,L,s,a,R)
-		rzA = R[0]
-		mzA = R[1]
-		CheckState_T_ZB(kblock,L,s,a,R)
-		rzB = R[0]
-		mzB = R[1]
-		CheckState_T_Z(kblock,L,s,a,R)
+		CheckState_T_ZA_ZB(kblock,L,s,a,R)
 		r = R[0]
-		mz = R[1]
+		mzA = R[1]
+		mzB = R[2]
+		mz = R[3]
 
-		if r > 0 and rzA > 0 and rzB > 0:
+		if r > 0:
 
 			if mzA == -1 and mzB == -1 and mz == -1:
 				m[Ns] = (L+1)*(L+1)
@@ -79,10 +74,10 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 
 def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
-	
-	cdef {c_basis_type} Ns,s
-	cdef NP_INT8_t mzA,mzB,mz,r,rzA,rzB
-	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef unsigned long long s
+	cdef int Ns
+	cdef NP_INT8_t mzA,mzB,mz,r
+	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
 	cdef char stp
 
 	k = 2.0*_np.pi*kblock*a/L
@@ -91,18 +86,13 @@ def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarr
 
 	for s in range(1ull << L):
 
-		CheckState_T_ZA(kblock,L,s,a,R)
-		rzA = R[0]
-		mzA = R[1]
-		CheckState_T_ZB(kblock,L,s,a,R)
-		rzB = R[0]
-		mzB = R[1]
-		CheckState_T_Z(kblock,L,s,a,R)
+		CheckState_T_ZA_ZB(kblock,L,s,a,R)
 		r = R[0]
-		mz = R[1]
+		mzA = R[1]
+		mzB = R[2]
+		mz = R[3]
 
-		if r > 0 and rzA > 0 and rzB > 0:
-
+		if r > 0:
 			if mzA == -1 and mzB == -1 and mz == -1:
 				m[Ns] = (L+1)*(L+1)
 				N[Ns] = r			
@@ -112,7 +102,7 @@ def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarr
 			if mzA != -1 and mzB == -1 and mz == -1:
 				if 1 + zAblock*cos(k*mzA) == 0:
 					continue					
-				m[Ns] = mzA + 2*(L+1)*(L+1)
+				m[Ns] = mzA + 2*(L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1	
@@ -120,7 +110,7 @@ def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarr
 			if mzA == -1 and mzB != -1 and mz == -1:
 				if 1 + zBblock*cos(k*mzB) == 0:
 					continue					
-				m[Ns] = mzB + 3*(L+1)*(L+1)
+				m[Ns] = mzB + 3*(L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1
@@ -129,7 +119,7 @@ def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarr
 			if mzA == -1 and mzB == -1 and mz != -1:
 				if 1 + zAblock*zBblock*cos(k*mz) == 0:
 					continue					
-				m[Ns] = mz + 4*(L+1)*(L+1)
+				m[Ns] = mz + 4*(L+1)
 				N[Ns] = r			
 				basis[Ns] = s
 				Ns += 1

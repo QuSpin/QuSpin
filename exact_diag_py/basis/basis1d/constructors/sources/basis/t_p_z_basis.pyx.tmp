@@ -2,11 +2,9 @@
 
 def make_t_p_z_basis(int L ,int pblock,int zblock,{c_basis_type} kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[{np_basis_type}_t, ndim=1] basis):
 	cdef double k = (2.0*_np.pi*kblock*a)/L
-
-	cdef {c_basis_type} s
-	cdef int Ns
+	cdef unsigned long long s
 	cdef NP_INT8_t r,r_temp,mp,mz,mpz
-	cdef int sigma,sigma_i,sigma_f
+	cdef int Ns,sigma,sigma_i,sigma_f
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
 
 	
@@ -22,7 +20,7 @@ def make_t_p_z_basis(int L ,int pblock,int zblock,{c_basis_type} kblock,int a, _
 	Ns = 0
 
 	for s in range(1ull << L):
-		CheckState_T_P_Z(kblock,L,s,a,R)
+		CheckState_T_P_Z(kblock,pblock,zblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		mz = R[2]
@@ -99,9 +97,8 @@ def make_m_t_p_z_basis(int L, int Nup, int pblock, int zblock, int kblock, int a
 	cdef double k = 2.0*_np.pi*kblock*a/L
 
 	cdef {c_basis_type} s
-	cdef int Ns
 	cdef NP_INT8_t r,r_temp,mp,mz,mpz
-	cdef int sigma,sigma_i,sigma_f
+	cdef int Ns,sigma,sigma_i,sigma_f
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
 	cdef char stp
 
@@ -124,7 +121,7 @@ def make_m_t_p_z_basis(int L, int Nup, int pblock, int zblock, int kblock, int a
 	stp = 0
 	Ns = 0
 	while True:
-		CheckState_T_P_Z(kblock,L,s,a,R)
+		CheckState_T_P_Z(kblock,pblock,zblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		mz = R[2]

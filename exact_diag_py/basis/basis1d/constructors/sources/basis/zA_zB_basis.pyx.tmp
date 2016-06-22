@@ -1,6 +1,6 @@
 def make_m_zA_zB_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 	cdef {c_basis_type} s,Ns
-	cdef NP_INT8_t rzA, rzB, rz
+	cdef NP_INT8_t r
 	cdef char stp
 	cdef int j
 
@@ -14,11 +14,8 @@ def make_m_zA_zB_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] bas
 	stp = 0
 	Ns = 0
 	while True:
-
-		rzA = CheckState_ZA(s,L)
-		rzB = CheckState_ZB(s,L)
-		rz  = CheckState_Z(s,L)
-		if rzA > 0 and rzB > 0 and rz > 0:
+		r = CheckState_ZA_ZB(s,L)
+		if r > 0:
 			basis[Ns] = s
 			Ns += 1
 
@@ -38,16 +35,15 @@ def make_m_zA_zB_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] bas
 
 
 def make_zA_zB_basis(int L, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
-	cdef {c_basis_type} Ns,s
-	cdef NP_INT8_t rz, rzA, rzB
+	cdef unsigned long long s
+	cdef int Ns
+	cdef NP_INT8_t r
 
 	Ns = 0
 
 	for s in range(1ull << L):
-		rzA = CheckState_ZA(s,L)
-		rzB = CheckState_ZB(s,L)
-		rz  = CheckState_Z(s,L)
-		if rz > 0 and rzA > 0 and rzB > 0:
+		r = CheckState_ZA_ZB(s,L)
+		if r > 0:
 			basis[Ns] = s
 			Ns += 1
 
