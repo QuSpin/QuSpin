@@ -55,26 +55,67 @@ op={"":_cn.op,
 MAXPRINT = 50
 
 class basis1d(basis):
-	def __init__(self,L,**blocks):
+	def __init__(self,L,Nup=None,_Np=None,**blocks):
+		if type(Nup) is int:
+			self._make_Nup_block(L,Nup=Nup,**blocks)
+	
+		elif Nup is None: # User hasn't specified Nup,
+			if _Np is not None: # check to see if photon_basis is wanting to create the particle sectors.
+
+				if type(_Np) is not int:
+					raise ValueError("Np must be integer")
+
+				blocks["count_spins"] = True
+
+				if Np+1 > L: # construct all the particle sectors is the same as just not having magnetization symmetry
+					self._make_Nup_block(L,Nup=None,**blocks)
+					
+				else: # loop over the first Np particle sectors (use the iterator initialization).
+					basis1d.__init__(self,L,Nup=xrange(_Np+1),Np=None,**blocks)
+
+			else: # if _Np is None then assume user wants to not specify Magnetization sector
+				self._make_Nup_block(L,Nup=Nup,**blocks)
+
+
+		else: # try to interate over Nup 
+			try:
+				Nup_iter = iter(Nup)
+			except TypeError:
+				raise TypeError("Nup must be integer or iterator.")
+
+			Nup = Nup_iter.next()
+			basis1d.__init__(self,L,Nup=Nup,**blocks)
+
+			for Nup in Nup_iter:
+				temp_basis = basis1d(L,Nup=Nup,**blocks)
+				self.append(temp_basis)	
+		
+
+
+				
+
+
+	def _make_Nup_block(self,L,Nup=None,**blocks):
 		# getting arguements which are used in basis.
-		Nup=blocks.get("Nup")
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
 		zAblock=blocks.get("zAblock")
 		zBblock=blocks.get("zBblock")
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
+		count_spins = blocks.get("count_spins")
 		a=blocks.get("a")
-		self._blocks=blocks
 		if a is None: # by default a = 1
 			a=1
 			blocks["a"]=1
+
+		if count_spins is None:
+			count_spins=False
 
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
 		if L>32: raise NotImplementedError('basis can only be constructed for L<=32')
-
 
 		# checking type, and value of blocks
 		if Nup is not None:
@@ -134,14 +175,13 @@ class basis1d(basis):
 
 		self._L=L
 		if type(Nup) is int:
-			self._Nup=Nup
-			del self._blocks["Nup"]
 			self._conserved="M"
 			self._Ns=ncr(L,Nup) 
 		else:
 			self._conserved=""
 			self._Ns=2**L
 
+		self._blocks=blocks
 		self._operators = ("availible operators for this basis:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -439,6 +479,8 @@ class basis1d(basis):
 				self._basis = _np.arange(0,2**L,1,dtype=_np.uint32)
 			self._op_args=[self._basis]
 
+		if count_spins: self._Np = _np.full_like(self._basis,Nup,dtype=_np.int8)
+
 
 
 	def append(self,other):
@@ -464,6 +506,11 @@ class basis1d(basis):
 		self._basis = self._basis[arg]
 
 		self._op_args.insert(0,self._basis)
+
+		if hasattr(self,"_Np"):
+			self.Np.resize((Ns,),refcheck=False)
+			self.Np[self._Ns:] = other.Np[:]
+			self.Np = self.Np[arg]
 
 		if hasattr(self,"_N"):
 			self._N.resize((Ns,),refcheck=False)
