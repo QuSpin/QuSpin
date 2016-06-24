@@ -31,7 +31,7 @@ def make_m_t_p_basis(int L, int Nup, int pblock, int kblock, int a, _np.ndarray[
 
 
 	if (Nup == L) or (Nup == 0):
-		CheckState_T_P(kblock,pblock,L,s,a,R)
+		CheckState_T_P(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		if r > 0:
@@ -58,7 +58,7 @@ def make_m_t_p_basis(int L, int Nup, int pblock, int kblock, int a, _np.ndarray[
 
 
 	while True:
-		CheckState_T_P(kblock,pblock,L,s,a,R)
+		CheckState_T_P(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		if r > 0:
@@ -126,8 +126,7 @@ def make_t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndi
 
 	Ns = 0
 	for s in range(1ull << L):
-		if s % (1llu << 22) == 0: print s/float(1ull << L),Ns
-		CheckState_T_P(kblock,pblock,L,s,a,R)
+		CheckState_T_P(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		if r > 0:

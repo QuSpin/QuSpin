@@ -127,7 +127,7 @@ def check_zA(L,dtype):
 
 
 	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed zA symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
+		raise Exception( "test failed zA symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
 
 
 def check_zB(L,dtype):
@@ -153,7 +153,7 @@ def check_zB(L,dtype):
 
 
 	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
+		raise Exception( "test failed zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
 
 
 def check_zA_zB(L,dtype):
@@ -181,7 +181,7 @@ def check_zA_zB(L,dtype):
 	Ez.sort()
 
 	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed zA zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
+		raise Exception( "test failed zA zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
 
 
 
@@ -214,7 +214,7 @@ def check_p(L,dtype,Nup=None):
 	Ep.sort()
 
 	if norm(Ep-E) > Ns*eps(dtype):
-		raise Exception( "test failed p symmetry at L={0:3d} with dtype {1} and Nup={2}".format(L,np.dtype(dtype),Nup),norm(Ep-E) )
+		raise Exception( "test failed p symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ep-E)) )
 
 
 
@@ -409,7 +409,7 @@ def check_t_zA(L,dtype,a=2):
 		Ekz.sort()
 
 		if norm(Ek-Ekz) > Ns*eps(dtype):
-			raise Exception( "test failed t zA symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
+			raise Exception( "test failed t zA symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
 
 
 def check_t_zB(L,dtype,a=2):
@@ -436,7 +436,7 @@ def check_t_zB(L,dtype,a=2):
 		Ekz.sort()
 
 		if norm(Ek-Ekz) > Ns*eps(dtype):
-			raise Exception( "test failed t zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
+			raise Exception( "test failed t zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
 
 
 def check_t_zA_zB(L,dtype,a=2):
@@ -468,7 +468,7 @@ def check_t_zA_zB(L,dtype,a=2):
 
 
 		if norm(Ek-Ekz) > Ns*eps(dtype):
-			raise Exception( "test failed t zA zB symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup,norm(Ek-Ekz)) )
+			raise Exception( "test failed t zA zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
 
 def check_t_p(L,dtype,Nup=None):
 	hx=random()
