@@ -8,7 +8,8 @@ __all__=['op','op_m','op_z','op_zA','op_zB','op_zA_zB','op_p','op_pz','op_p_z','
 
 
 _basis_op_errors={1:"opstr character not recognized.",
-									-1:"attemping to use real hamiltonian with complex matrix elements."}
+				-1:"attemping to use real hamiltonian with complex matrix elements.",
+				-2:"index of operator not between 0 <= index <= L-1"}
 
 
 

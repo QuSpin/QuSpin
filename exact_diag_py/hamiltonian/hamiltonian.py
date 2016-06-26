@@ -1,6 +1,5 @@
 #local modules:
 from ..basis import basis1d as _default_basis
-from ..basis import spin_photon as _spin_photon_basis
 
 from ..basis import isbasis as _isbasis
 
@@ -72,7 +71,7 @@ def check_dynamic(sub_list):
 
 
 class hamiltonian(object):
-	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,photon=False,Ntot=None,n_ph=0,copy=True,dtype=_np.complex128,**kwargs):
+	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,copy=True,dtype=_np.complex128,**kwargs):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis1d.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
@@ -124,18 +123,7 @@ class hamiltonian(object):
 				if type(L) is not int: # if L is not int
 					raise TypeError('argument L must be integer')
 
-				if Ntot is not None:
-					if type(Ntot) is not int:
-						raise TypeError('argument Ntot must be integer')
-
-				if n_ph is not None:
-					if type(n_ph) is not int:
-						raise TypeError('argument Ntot must be integer')
-
-				if not photon:
-					basis=_default_basis(L,**kwargs)
-				else:
-					basis=_spin_photon_basis(L,Ntot,n_ph,**kwargs)
+				basis=_default_basis(L,**kwargs)
 
 			elif not _isbasis(basis):
 				raise TypeError('expecting instance of basis class for arguement: basis')

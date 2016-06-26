@@ -60,9 +60,8 @@ def make_m_t_pz_basis(int L, int Nup, int pzblock, int kblock, int a, _np.ndarra
 		for i in range(1,Nup):
 			stp &= 1 & ( s >> (L-i-1) )
 
-		if stp:
+		if stp or (s == 0):
 			break
-
 
 		s = next_state(s)
 

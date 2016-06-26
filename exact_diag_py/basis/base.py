@@ -3,10 +3,12 @@ from scipy import sparse as _sp
 from scipy.sparse import linalg as _sla
 from scipy import linalg as _la
 
-
+MAXPRINT = 50
 # this file stores
 
 class basis(object):
+
+
 	def __init__(self):
 		self._Ns = 0
 		self._basis = _np.asarray([])
@@ -15,6 +17,23 @@ class basis(object):
 			raise ValueError("This class is not intended"
                              " to be instantiated directly.")
 
+
+	def __str__(self):
+		
+		string = "reference states: \n"
+		if self._Ns == 0:
+			return string
+		
+		
+		str_list = self._get__str__()
+		if self._Ns > MAXPRINT:
+			L_str = len(str_list[0])
+			t = (" ".join(["" for i in xrange(L_str/2)]))+":"
+			str_list.insert(MAXPRINT//2,t)
+		
+		string += "\n".join(str_list)
+
+		return string
 
 
 	@property
@@ -33,25 +52,26 @@ class basis(object):
 
 # gives the basis for the kronecker/Tensor product of two basis: b1 (x) b2
 class tensor(basis):
+
 	def __init__(self,b1,b2):
 		if not isbasis(b1):
 			raise ValueError("b1 must be instance of basis class")
 		if not isbasis(b2):
 			raise ValueError("b2 must be instance of basis class")
-
+		if isinstance(b1,tensor): 
+			raise TypeError("Can only create tensor basis with non-tensor type basis")
+		if isinstance(b2,tensor): 
+			raise TypeError("Can only create tensor basis with non-tensor type basis")
 		self._b1=b1
 		self._b2=b2
 
 		self._Ns = b1.Ns*b2.Ns
 		self.dtype = _np.min_scalar_type(-self._Ns)
 
-		self._operators = self._b1._operators + self._b2._operators
+		self._operators = self._b1._operators +"\n"+ self._b2._operators
 
 
-	def __str__(self):
-		return "basis 1:\n"+self._b1.__str__() + "\n basis 2: \n" + self._b2.__str__()
 
-		
 
 
 	def get_vec(self,v0,sparse=True):
@@ -71,6 +91,35 @@ class tensor(basis):
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
 
+	def _get__str__(self):
+		n_digits = int(_np.ceil(_np.log10(self._Ns)))
+		str_list_1 = self._b1._get__str__()
+		str_list_2 = self._b2._get__str__()
+		Ns2 = self._b2.Ns
+		temp = "\t{0:"+str(n_digits)+"d}  "
+		str_list=[]
+		for b1 in str_list_1:
+			b1 = b1.split()
+			s1 = b1[1]
+			i1 = int(b1[0])
+			for b2 in str_list_2:
+				b2 = b2.split()
+				s2 = b2[1]
+				i2 = int(b2[0])
+				print (temp.format(i2+Ns2*i1))+s1+s2
+				str_list.append((temp.format(i2+Ns2*i1))+"\t"+s1+s2)
+
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT//2
+			str_list_1 = str_list[:half]
+			str_list_2 = str_list[-half:]
+
+			str_list = str_list_1
+			str_list.extend(str_list_2)	
+
+		return str_list		
+
+
 
 	def get_proj(self,dtype):
 		proj1 = self._b1.get_proj(dtype)
@@ -79,7 +128,7 @@ class tensor(basis):
 		return _sp.kron(proj1,proj2)
 
 
-	def Op(self,dtype,J,opstr,indx,pauli):
+	def Op(self,opstr,indx,J,dtype,pauli):
 		n=opstr.count("|")
 		if n > 1: 
 			raise ValueError("only one '|' charactor allowed")
@@ -88,11 +137,9 @@ class tensor(basis):
 		indx2 = indx[i:]
 
 		opstr1,opstr2=opstr.split("|")
-#		print opstr1,indx1
-#		print opstr2,indx2
 
-		ME1,row1,col1 = self._b1.Op(dtype,1.0,opstr1,indx1,pauli)
-		ME2,row2,col2 = self._b2.Op(dtype,1.0,opstr2,indx2,pauli)
+		ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype,pauli)
+		ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
 
 		n1 = row1.shape[0]
 		n2 = row2.shape[0]

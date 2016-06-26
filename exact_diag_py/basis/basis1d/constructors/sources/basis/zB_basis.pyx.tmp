@@ -25,9 +25,8 @@ def make_m_zB_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] basis)
 		for i in range(1,Nup):
 			stp &= 1 & ( s >> (L-i-1) )
 
-		if stp:
+		if stp or (s == 0):
 			break
-
 
 		s = next_state(s)
 
