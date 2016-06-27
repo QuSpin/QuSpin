@@ -515,19 +515,19 @@ class hamiltonian(object):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 	
-			return self._dot_nocheck(V)
+			return self._dot_nocheck(V,time)
 
 		elif _sm.issparse(V):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 	
-			return self._dot_nocheck(V)			
+			return self._dot_nocheck(V,time)			
 
 		elif V.__class__ is _np.matrix:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 
-			return self._dot_nocheck(V)
+			return self._dot_nocheck(V,time)
 
 		else:
 			V = _np.asanyarray(V)
