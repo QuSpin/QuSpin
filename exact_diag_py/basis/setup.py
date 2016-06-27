@@ -3,7 +3,7 @@ def configuration(parent_package='',top_path=None):
 	import os
 	config = Configuration('basis', parent_package, top_path)
 	config.add_subpackage('basis1d')
-	config.add_subpackage('photon')
+#	config.add_subpackage('photon') # uncomment when photon is fully implimented
 	return config
 
 if __name__ == '__main__':

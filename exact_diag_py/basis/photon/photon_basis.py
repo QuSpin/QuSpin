@@ -46,13 +46,16 @@ class photon_basis(tensor):
 			i = opstr.index("|")
 			indx1 = indx[:i]
 			indx2 = indx[i:]
+
+			if not _np.can_cast(J,_np.dtype(dtype)):
+				raise TypeError("can't cast J to proper dtype")
 			
 
 			opstr1,opstr2=opstr.split("|")
 
 			# calculates matrix elements of spin and photon basis
 
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,J,dtype,pauli)
+			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
 			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
 
 			# calculate total matrix element
@@ -101,7 +104,21 @@ class photon_basis(tensor):
 			return tensor.get_vec(self,v0,sparse=sparse)
 		else:
 			raise NotImplementedError("get_vec not implimented for particle conservation symm.")
-			# ... impliment get_vec for particle conservation here
+			# still needs testing...
+			if v0.ndim == 1:
+				if v0.shape[0] != self._Ns:
+					raise ValueError("v0 has incompatible dimensions with basis")
+				v0 = v0.reshape((-1,1))
+				return _conserved_get_vec(self,v0,sparse).reshape((-1,))
+
+			elif v0.ndim == 2:
+				if v0.shape[0] != self._Ns:
+					raise ValueError("v0 has incompatible dimensions with basis")
+
+				return _conserved_get_vec(self,v0,sparse)
+			else:
+				raise ValueError("excpecting v0 to have ndim at most 2")
+
 
 
 
@@ -110,7 +127,8 @@ class photon_basis(tensor):
 			return tensor.get_proj(self,dtype)	
 		else:
 			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
-			# ... impliment get_proj for particle conservation here
+			# still needs testing...
+			return _conserved_get_proj(self,dtype)
 				
 
 
@@ -190,6 +208,8 @@ class ho_basis(basis):
 		ME = _np.ones((self._Ns,),dtype=dtype)
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
+		if not _np.can_cast(J,_np.dtype(dtype)):
+			raise TypeError("can't cast J to proper dtype")
 
 
 		for o in opstr[::-1]:
@@ -208,10 +228,112 @@ class ho_basis(basis):
 
 		mask = ( col < 0)
 		mask += (col > (self._Ns))
-		ME[mask] *= 0 
-		ME *= J
+		ME[mask] *= 0.0
+		
+		if J != 1.0: 
+			ME *= J
 
 		return ME,row,col		
+
+
+
+
+
+
+
+
+
+
+
+
+
+def _conserved_get_vec(p_basis,v0,sparse):
+	v0_mask = _np.zeros_like(v0)
+	np_min = p_basis._n.min()
+	np_max = p_basis._n.max()
+	v_ph = _np.zeros((np_max,1),dtype=_np.int32)
+	
+	v_ph[np_min] = 1
+	mask = p_basis._n == np_min
+	v0_mask[mask] = v0[mask]
+
+	v0_full = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+
+	if sparse:
+		v0_full = _sp.kron(v0_full,v_ph)
+	else:
+		v0_full = _np.kron(v0_full,v_ph)
+		
+	v_ph[np_min] = 1
+	v0_mask[mask] = 0.0
+
+	for np in xrange(np_min+1,np_max+1,1):
+		v_ph[np] = 1
+		mask = p_basis._n == np
+		v0_mask[mask] = v0[mask]
+
+		v0_full_1 = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+
+		if sparse:
+			v0_full = v0_full + _sp.kron(v0_full_1,v_ph)
+		else:
+			v0_full += _np.kron(v0_full_1,v_ph)
+		
+		v_ph[np] = 1
+		v0_mask[mask] = 0.0		
+
+
+
+	return v0_full
+
+
+
+
+def _conserved_get_proj(p_basis,dtype):
+	np_min = p_basis._n.min()
+	np_max = p_basis._n.max()
+	v_ph = _np.zeros((np_max,1),dtype=_np.int32)
+
+	proj_1 = p_basis._b1.get_proj(dtype).tocsc()
+	proj_1_mask = _sp.csc_matrix(proj_1.shape,dtype=dtype)
+
+	v_ph[np_min] = 1
+	mask = p_basis._n == np_min
+	proj_1_mask[:,mask] = proj_1[:,mask]
+
+	proj_1_full = _sp.kron(proj_1_mask,v_ph,format="csr")
+
+	proj_1_mask[:,mask]=0.0
+	proj_1_mask.eliminate_zeros()
+	v_ph[np_min] = 0
+
+
+	for np in xrange(np_min+1,np_max+1,1):
+		v_ph[np] = 1
+		mask = p_basis._n == np
+		proj_1_mask[:,mask] = proj_1[:,mask]
+
+		proj_1_full = proj_1_full + _sp.kron(proj_1_mask,v_ph,format="csr")
+
+		proj_1_mask[:,mask]=0.0
+		proj_1_mask.eliminate_zeros()
+		v_ph[np] = 0		
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
 
 
 

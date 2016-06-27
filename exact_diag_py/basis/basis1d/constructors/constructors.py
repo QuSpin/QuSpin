@@ -188,10 +188,13 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
+	
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -215,9 +218,11 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -240,9 +245,11 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -268,9 +275,11 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -296,9 +305,11 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -320,9 +331,11 @@ def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -344,9 +357,11 @@ def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -397,9 +412,11 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -426,9 +443,11 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 #	print col,ME
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -454,9 +473,11 @@ def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 

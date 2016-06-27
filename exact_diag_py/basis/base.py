@@ -66,29 +66,10 @@ class tensor(basis):
 		self._b2=b2
 
 		self._Ns = b1.Ns*b2.Ns
-		self.dtype = _np.min_scalar_type(-self._Ns)
+		self._dtype = _np.min_scalar_type(-self._Ns)
 
 		self._operators = self._b1._operators +"\n"+ self._b2._operators
 
-
-
-
-
-	def get_vec(self,v0,sparse=True):
-		if self._Ns <= 0:
-			return _np.array([])
-
-		if v0.ndim == 1:
-			if v0.shape[0] != self._Ns:
-				raise ValueError("v0 has incompatible dimensions with basis")
-			v0 = v0.reshape((-1,1))
-			return _combine_get_vec(self,v0,sparse)
-		elif v0.ndim == 2:
-			if v0.shape[0] != self._Ns:
-				raise ValueError("v0 has incompatible dimensions with basis")
-			return _combine_get_vecs(self,v0,sparse)
-		else:
-			raise ValueError("excpecting v0 to have ndim at most 2")
 
 
 	def _get__str__(self):
@@ -121,6 +102,27 @@ class tensor(basis):
 
 
 
+
+
+	def get_vec(self,v0,sparse=True):
+		if self._Ns <= 0:
+			return _np.array([])
+
+		if v0.ndim == 1:
+			if v0.shape[0] != self._Ns:
+				raise ValueError("v0 has incompatible dimensions with basis")
+			v0 = v0.reshape((-1,1))
+			return _combine_get_vec(self,v0,sparse)
+		elif v0.ndim == 2:
+			if v0.shape[0] != self._Ns:
+				raise ValueError("v0 has incompatible dimensions with basis")
+			return _combine_get_vecs(self,v0,sparse)
+		else:
+			raise ValueError("excpecting v0 to have ndim at most 2")
+
+
+
+
 	def get_proj(self,dtype):
 		proj1 = self._b1.get_proj(dtype)
 		proj2 = self._b2.get_proj(dtype)
@@ -137,29 +139,35 @@ class tensor(basis):
 		indx2 = indx[i:]
 
 		opstr1,opstr2=opstr.split("|")
+		if not _np.can_cast(J,_np.dtype(dtype)):
+			raise TypeError("can't cast J to proper dtype")
 
-		ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype,pauli)
-		ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
+		if self._b1._Ns < self._b2._Ns:
+			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype,pauli)
+			ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
+		else:
+			ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype,pauli)
+			ME2,row2,col2 = self._b2.Op(opstr2,indx2,J,dtype,pauli)
+			
 
 		n1 = row1.shape[0]
 		n2 = row2.shape[0]
 
-		row1 = _np.array(_np.broadcast_to(row1,(n2,n1)).T,dtype=self.dtype).ravel()
-		row2 = _np.array(_np.broadcast_to(row2,(n1,n2)),dtype=self.dtype).ravel()
+		row1 = row1.astype(self._dtype)
 		row1 *= self._b2.Ns
-		row = row1+row2
+		row = _np.kron(row1,_np.ones_like(row2))
+		row += _np.kron(_np.ones_like(row1),row2)
 
 		del row1,row2
 
-		col1 = _np.array(_np.broadcast_to(col1,(n2,n1)).T,dtype=self.dtype).ravel()
-		col2 = _np.array(_np.broadcast_to(col2,(n1,n2)),dtype=self.dtype).ravel()
+		col1 = col1.astype(self._dtype)
 		col1 *= self._b2.Ns
-		col = col1+col2
+		col = _np.kron(col1,_np.ones_like(col2))
+		col += _np.kron(_np.ones_like(col1),col2)
 
 		del col1,col2
 
 		ME = _np.kron(ME1,ME2)
-		ME = J*ME
 
 		del ME1,ME2
 
@@ -186,14 +194,21 @@ def _combine_get_vec(basis,v0,sparse):
 	if k<=0:
 		V1,S,V2=_la.svd(v0)
 	else:
-		V1,S,V2=_sla.svds(v0,k=Ns-1,which='LM',maxiter=10**10)
-		V12,S,V22=_sla.svds(v0,k=1,which='SM',maxiter=10**10)
-		V1 = _np.hstack(V1,V12)
-		V2 = _np.hstack(V2,V22)
+		V1,S,V2=_sla.svds(v0,k=Ns-1,which='SM',maxiter=10**10)
+		V12,[S2],V22=_sla.svds(v0,k=1,which='LM',maxiter=10**10)
+
+		S.resize((Ns,))
+		S[-1] = S2
+		V1.resize((Ns1,Ns))
+		V1[:,-1] = V12[:,0]
+		V2.resize((Ns,Ns2))
+		V2[-1,:] = V22[0,:]
+		
+		#V1 = _np.hstack(V1,V12)
+		#V2 = _np.hstack(V2,V22)
 	# svd returns V2.H so take the hc to reverse that
 	V2=V2.T.conj()
 	eps = _np.finfo(S.dtype).eps
-	print S
 	# for any values of s which are 0, remove those vectors because they do not contribute.
 	mask=(S >= 10*eps)
 	V1=V1[:,mask]

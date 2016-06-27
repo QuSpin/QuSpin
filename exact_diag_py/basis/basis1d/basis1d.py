@@ -596,7 +596,7 @@ class basis1d(basis):
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
-			raise TypeError("can't cast coupling to proper dtype")
+			raise TypeError("can't cast J to proper dtype")
 		if _np.any(indx >= self._L) or _np.any(indx < 0):
 			raise ValueError('value in indx falls outside of system')
 
@@ -899,15 +899,14 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 
 	m = shape[1]
 
-	n = ind_neg.shape[0]
-	row_neg = _np.broadcast_to(ind_neg,(m,n)).T.ravel()
 	col_neg = _np.arange(0,m,1)
-	col_neg = _np.broadcast_to(col_neg,(n,m)).ravel()
+	row_neg = _np.kron(ind_neg,_np.ones_like(col_neg))
+	col_neg = _np.kron(_np.ones_like(ind_neg),col_neg)
 
-	n = ind_pos.shape[0]
-	row_pos = _np.broadcast_to(ind_pos,(m,n)).T.ravel()
+
 	col_pos = _np.arange(0,m,1)
-	col_pos = _np.broadcast_to(col_pos,(n,m)).ravel()
+	row_pos = _np.kron(ind_pos,_np.ones_like(col_pos))
+	col_pos = _np.kron(_np.ones_like(ind_pos),col_pos)
 
 
 
