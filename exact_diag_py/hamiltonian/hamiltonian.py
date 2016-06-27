@@ -533,7 +533,7 @@ class hamiltonian(object):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 
-			return self._dot_nocheck(V)	
+			return self._dot_nocheck(V,time)	
 
 
 
@@ -610,7 +610,7 @@ class hamiltonian(object):
 				raise ValueError('Expecting Vl to have ndim < 3')
 
 		
-	def _dot_nocheck(self,V):
+	def _dot_nocheck(self,V,time):
 		V_dot = self._static.dot(V)	
 		for Hd,f,f_args in self._dynamic:
 			V_dot += f(time,*f_args)*(Hd.dot(V))
