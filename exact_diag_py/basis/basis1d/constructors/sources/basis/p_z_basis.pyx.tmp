@@ -11,9 +11,6 @@ def make_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8
 	for j in range(Nup):
 		s += ( 1ull << j )
 
-	if (Nup == L) or (Nup == 0):
-		return 0
-
 	stp = 0
 	Ns = 0
 	while True:
@@ -27,8 +24,9 @@ def make_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8
 		for i in range(1,Nup):
 			stp &= 1 & ( s >> (L-i-1) )
 
-		if stp:
+		if stp or (s == 0):
 			break
+
 
 		s = next_state(s)
 

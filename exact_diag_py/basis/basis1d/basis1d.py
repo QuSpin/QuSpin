@@ -1,4 +1,4 @@
-from ..base import basis
+from ..base import basis,MAXPRINT
 
 import constructors as _cn
 import numpy as _np
@@ -8,6 +8,7 @@ from numpy import cos,sin,exp,pi
 from numpy.linalg import norm
 
 import scipy.sparse as _sm
+from basis1d_Ns import spin_basis_1d_Ns
 
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string
@@ -52,33 +53,109 @@ op={"":_cn.op,
 		"T & P & Z":_cn.op_t_p_z,
 		"M & T & P & Z":_cn.op_t_p_z}
 
-MAXPRINT = 50
-
 class basis1d(basis):
-	def __init__(self,L,**blocks):
+	def __init__(self,L,Nup=None,_Np=None,**blocks):
+		if type(Nup) is int:
+			self._make_Nup_block(L,Nup=Nup,**blocks)
+	
+		elif Nup is None: # User hasn't specified Nup,
+			if _Np is not None: # check to see if photon_basis is wanting to create the particle sectors.
+
+				if type(_Np) is not int:
+					raise ValueError("Np must be integer")
+
+				blocks["count_spins"] = True
+
+				if _Np == -1: _Np = L
+				if _Np+1 > L: _Np = L
+
+				zblock = blocks.get("zblock")
+				zAblock = blocks.get("zAblock")
+				zBblock = blocks.get("zAblock")
+				
+				if (type(zblock) is int) or (type(zAblock) is int) or (type(zBblock) is int):
+					raise ValueError("spin inversion symmetry not compatible with photon_basis.")
+					
+				# loop over the first Np particle sectors (use the iterator initialization).
+				basis1d.__init__(self,L,Nup=xrange(_Np+1),Np=None,**blocks)
+
+			else: # if _Np is None then assume user wants to not specify Magnetization sector
+				self._make_Nup_block(L,Nup=Nup,**blocks)
+
+
+		else: # try to interate over Nup 
+			try:
+				Nup_iter = iter(Nup)
+			except TypeError:
+				raise TypeError("Nup must be integer or iteratable object.")
+
+			blocks["check_z_symm"] = False
+
+			Nup = Nup_iter.next()
+#			print Nup
+			basis1d.__init__(self,L,Nup=Nup,**blocks)
+
+			for Nup in Nup_iter:
+#				print Nup
+				temp_basis = basis1d(L,Nup=Nup,**blocks)
+				self.append(temp_basis)	
+		
+
+
+				
+
+
+	def _make_Nup_block(self,L,Nup=None,**blocks):
 		# getting arguements which are used in basis.
-		Nup=blocks.get("Nup")
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
 		zAblock=blocks.get("zAblock")
 		zBblock=blocks.get("zBblock")
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
+
 		a=blocks.get("a")
-		self._blocks=blocks
 		if a is None: # by default a = 1
 			a=1
 			blocks["a"]=1
+
+
+		count_spins = blocks.get("count_spins")
+		if count_spins is None:
+			count_spins=False
+
+		check_z_symm = blocks.get("check_z_symm")
+		if check_z_symm is None:
+			check_z_symm=True
+
 
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
 		if L>32: raise NotImplementedError('basis can only be constructed for L<=32')
 
+		if type(a) is not int:
+			raise TypeError('a must be integer')
+
+		# checking if a is compatible with L
+		if(L%a != 0):
+			raise ValueError('L must be interger multiple of lattice spacing a')
+
+
+
+		self._L=L
+		if type(Nup) is int:
+			self._conserved="M"
+			self._Ns=ncr(L,Nup) 
+		else:
+			self._conserved=""
+			self._Ns=2**L
+
+
 
 		# checking type, and value of blocks
 		if Nup is not None:
-			if type(Nup) is not int: raise TypeError('kblock must be integer')
+			if type(Nup) is not int: raise TypeError('Nup must be integer')
 			if Nup < 0 or Nup > L: raise ValueError("0 <= Nup <= %d" % L)
 
 		if pblock is not None:
@@ -101,48 +178,45 @@ class basis1d(basis):
 			if type(pzblock) is not int: raise TypeError('pzblock must be integer')
 			if abs(pzblock) != 1: raise ValueError("pzblock must be +/- 1")
 
-		if kblock is not None:
+		if kblock is not None and (a < L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L/a)
 			blocks["kblock"] = kblock
 
-		if type(a) is not int:
-			raise TypeError('a must be integer')
+			if Nup > L/2: Nup_tup = L - Nup
+			else: Nup_tup = Nup
+			if kblock > L/(2*a): kblock_tup = L/a - kblock
+			else: kblock_tup = kblock
+
+			self._Ns = spin_basis_1d_Ns.get((L,a,Nup_tup,kblock_tup))
+
+			if self._Ns is None:
+				self._Ns = 1
+		
+
+		
+
+		if check_z_symm:
+			# checking if spin inversion is compatible with Nup and L
+			if (type(Nup) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
+				if (L % 2) != 0:
+					raise ValueError("spin inversion symmetry with magnetization conservation must be used with even number of sites")
+				if Nup != L/2:
+					raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
+
+			if (type(Nup) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+				raise ValueError("zA and zB incompatible with magnetisation symmetry")
+
+			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
+			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+				if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
+					raise ValueError("unit cell size 'a' must be even")
 
 
 
-		# checking if a is compatible with L
-		if(L%a != 0):
-			raise ValueError('L must be interger multiple of lattice spacing a')
 
-		# checking if spin inversion is compatible with Nup and L
-		if (type(Nup) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
-			if (L % 2) != 0:
-				raise ValueError("spin inversion symmetry must be used with even number of sites")
-			if Nup != L/2:
-				raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
-
-		if (type(Nup) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-			raise ValueError("zA and zB incompatible with magnetisation symmetry")
-
-		# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
-		if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-			if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
-				raise ValueError("unit cell size 'a' must be even")
-
-
-
-		self._L=L
-		if type(Nup) is int:
-			self._Nup=Nup
-			del self._blocks["Nup"]
-			self._conserved="M"
-			self._Ns=ncr(L,Nup) 
-		else:
-			self._conserved=""
-			self._Ns=2**L
-
-		self._operators = ("availible operators for this basis:"+
+		self._blocks=blocks
+		self._operators = ("availible operators for basis1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
@@ -152,18 +226,13 @@ class basis1d(basis):
 
 		# allocates memory for number of basis states
 		frac = 1.0
-		if(L >= 10): frac = 0.6
 
-		if L > 1: L_m = L-1
-		else: L_m = 1
-
+		
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P & Z"
 			else: self._conserved = "T & P & Z"
 			self._blocks["pzblock"] = pblock*zblock
-
-			self._Ns = int(_np.ceil(self._Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
@@ -173,6 +242,7 @@ class basis1d(basis):
 				self._Ns = _cn.make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.make_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -184,8 +254,7 @@ class basis1d(basis):
 			if self._conserved: self._conserved += " & T & ZA & ZB"
 			else: self._conserved = "T & ZA & ZB"
 			self._blocks["zblock"] = zAblock*zBblock
-			
-			self._Ns = int(_np.ceil(self._Ns*a*(0.65)/float(L_m))) # estimate fraction of basis needed for sector.
+
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -204,7 +273,7 @@ class basis1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & PZ"
 			else: self._conserved = "T & PZ"
-			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
+
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -223,7 +292,6 @@ class basis1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P"
 			else: self._conserved = "T & P"
-			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
 
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
@@ -234,6 +302,7 @@ class basis1d(basis):
 			else:
 				self._Ns = _cn.make_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
+
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -243,7 +312,7 @@ class basis1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & Z"
 			else: self._conserved = "T & Z"
-			self._Ns = int(_np.ceil((frac*self._Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
+
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -263,7 +332,7 @@ class basis1d(basis):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZA"
 			else: self._conserved = "T & ZA"
-			self._Ns = int(_np.ceil((frac*self._Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
+
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -282,7 +351,7 @@ class basis1d(basis):
 			self.k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZB"
 			else: self._conserved = "T & ZB"
-			self._Ns = int(_np.ceil((frac*self._Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
+
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -300,8 +369,8 @@ class basis1d(basis):
 		elif (type(pblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & P & Z"
 			else: self._conserved += "P & Z"
-			self._Ns = int(_np.ceil(self._Ns*0.5*frac)) # estimate fraction of basis needed for sector.
 			self._blocks["pzblock"] = pblock*zblock
+
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
@@ -318,8 +387,8 @@ class basis1d(basis):
 		elif (type(zAblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & ZA & ZB"
 			else: self._conserved += "ZA & ZB"
-			self._Ns = int(_np.ceil(self._Ns*0.5*frac)) # estimate fraction of basis needed for sector.
 			self._blocks["zblock"] = zAblock*zBblock
+
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
@@ -337,7 +406,6 @@ class basis1d(basis):
 		elif type(pblock) is int:
 			if self._conserved: self._conserved += " & P"
 			else: self._conserved = "P"
-			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
@@ -355,7 +423,6 @@ class basis1d(basis):
 		elif type(zblock) is int:
 			if self._conserved: self._conserved += " & Z"
 			else: self._conserved += "Z"
-			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
@@ -370,7 +437,6 @@ class basis1d(basis):
 		elif type(zAblock) is int:
 			if self._conserved: self._conserved += " & ZA"
 			else: self._conserved += "ZA"
-			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
@@ -386,8 +452,6 @@ class basis1d(basis):
 		elif type(zBblock) is int:
 			if self._conserved: self._conserved += " & ZB"
 			else: self._conserved += "ZB"
-			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
-
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			if (type(Nup) is int):
@@ -401,7 +465,6 @@ class basis1d(basis):
 		elif type(pzblock) is int:
 			if self._conserved: self._conserved += " & PZ"
 			else: self._conserved += "PZ"
-			self._Ns = int(_np.ceil(self._Ns*frac)) # estimate fraction of basis needed for sector.
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
@@ -418,8 +481,7 @@ class basis1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T"
 			else: self._conserved = "T"
-			self._Ns = int(_np.ceil(self._Ns*a*(1.1)/float(L_m))) # estimate fraction of basis needed for sector.
-
+			
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
@@ -439,6 +501,8 @@ class basis1d(basis):
 				self._basis = _np.arange(0,2**L,1,dtype=_np.uint32)
 			self._op_args=[self._basis]
 
+		if count_spins: self._Np = _np.full_like(self._basis,Nup,dtype=_np.int8)
+
 
 
 	def append(self,other):
@@ -452,10 +516,10 @@ class basis1d(basis):
 
 		Ns = self._Ns + other._Ns
 
-		if self._conserved:
-			self._op_args=[self._L]
-		else:
+		if self._conserved == "" or self._conserved == "M":
 			self._op_args=[]
+		else:
+			self._op_args=[self._L]
 
 
 		self._basis.resize((Ns,),refcheck=False)
@@ -465,17 +529,22 @@ class basis1d(basis):
 
 		self._op_args.insert(0,self._basis)
 
-		if hasattr(self,"_N"):
-			self._N.resize((Ns,),refcheck=False)
-			self._N[self._Ns:] = other._N[:]
-			self._N = self._N[arg]
-			self._op_args.insert(0,self._N)
+		if hasattr(self,"_Np"):
+			self._Np.resize((Ns,),refcheck=False)
+			self._Np[self._Ns:] = other._Np[:]
+			self._Np = self._Np[arg]
 
 		if hasattr(self,"_m"):
 			self._m.resize((Ns,),refcheck=False)
 			self._m[self._Ns:] = other._m[:]
 			self._m = self._m[arg]
 			self._op_args.insert(0,self._m)	
+
+		if hasattr(self,"_N"):
+			self._N.resize((Ns,),refcheck=False)
+			self._N[self._Ns:] = other._N[:]
+			self._N = self._N[arg]
+			self._op_args.insert(0,self._N)
 
 		self._Ns = Ns
 
@@ -504,39 +573,46 @@ class basis1d(basis):
 
 
 
-	def __str__(self):
+
+
+	def _get__str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
 		temp = "\t{0:"+str(n_digits)+"d}  "+"|{1:0"+str(self._L)+"b}>"
-		string = "reference states: \n"
+
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			t = temp.format(0,0)
-			t = t.replace("0"," ").replace("|"," ").replace(">"," ")
-			t = "\n"+t[:self._L/2]+":\n"
-			string += "\n".join([temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])])
-			string += t
-			string += "\n".join([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])]
+			str_list.extend([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			string += "\n".join([temp.format(i,b) for i,b in enumerate(self._basis)])
+			str_list = (temp.format(i,b) for i,b in enumerate(self._basis))
 
-		return string 
-
-
-
+		return str_list
 
 
 
 
 	def Op(self,opstr,indx,J,dtype,pauli):
+		indx = _np.asarray(indx,dtype=_np.int32)
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
-			raise TypeError("can't cast coupling to proper dtype")
+			raise TypeError("can't cast J to proper dtype")
+		if _np.any(indx >= self._L) or _np.any(indx < 0):
+			raise ValueError('value in indx falls outside of system')
+
 
 		if self._Ns <= 0:
 			return [],[],[]
+		
 
-		return op[self._conserved](opstr,indx,J,dtype,pauli,*self._op_args,**self._blocks)		
+		ME,row,col = op[self._conserved](opstr,indx,J,dtype,pauli,*self._op_args,**self._blocks)
+
+		mask = ME != dtype(0.0)
+		row = row[mask]
+		col = col[mask]
+		ME = ME[mask]
+
+		return ME,row,col		
 
 
 
@@ -823,15 +899,14 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 
 	m = shape[1]
 
-	n = ind_neg.shape[0]
-	row_neg = _np.broadcast_to(ind_neg,(m,n)).T.ravel()
 	col_neg = _np.arange(0,m,1)
-	col_neg = _np.broadcast_to(col_neg,(n,m)).ravel()
+	row_neg = _np.kron(ind_neg,_np.ones_like(col_neg))
+	col_neg = _np.kron(_np.ones_like(ind_neg),col_neg)
 
-	n = ind_pos.shape[0]
-	row_pos = _np.broadcast_to(ind_pos,(m,n)).T.ravel()
+
 	col_pos = _np.arange(0,m,1)
-	col_pos = _np.broadcast_to(col_pos,(n,m)).ravel()
+	row_pos = _np.kron(ind_pos,_np.ones_like(col_pos))
+	col_pos = _np.kron(_np.ones_like(ind_pos),col_pos)
 
 
 
@@ -1015,6 +1090,7 @@ def ncr(n, r):
 # this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
 	r = min(r, n-r)
 	if r == 0: return 1
+	elif r < 0: return 0 
 	numer = reduce(_op.mul, xrange(n, n-r, -1))
 	denom = reduce(_op.mul, xrange(1, r+1))
 	return numer//denom

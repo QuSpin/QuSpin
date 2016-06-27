@@ -30,35 +30,8 @@ def make_m_t_p_basis(int L, int Nup, int pblock, int kblock, int a, _np.ndarray[
 	Ns = 0
 
 
-	if (Nup == L) or (Nup == 0):
-		CheckState_T_P(kblock,pblock,L,s,a,R)
-		r = R[0]
-		mp = R[1]
-		if r > 0:
-			if mp != -1:
-				for sigma in range(sigma_i,sigma_f+1,2):
-					r_temp = r
-					if 1 + sigma*pblock*cos(mp*k) == 0:
-						r_temp = -1
-					if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
-						r_temp = -1
-	
-					if r_temp > 0:
-						m[Ns] = mp
-						N[Ns] = (sigma*r)				
-						basis[Ns] = s
-						Ns += 1
-			else:
-				for sigma in range(sigma_i,sigma_f+1,2):
-					m[Ns] = -1
-					N[Ns] = (sigma*r)				
-					basis[Ns] = s
-					Ns += 1
-		return Ns
-
-
 	while True:
-		CheckState_T_P(kblock,pblock,L,s,a,R)
+		CheckState_T_P(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		if r > 0:
@@ -86,7 +59,7 @@ def make_m_t_p_basis(int L, int Nup, int pblock, int kblock, int a, _np.ndarray[
 		for i in range(1,Nup):
 			stp &= 1 & ( s >> (L-i-1) )
 
-		if stp:
+		if stp or (s == 0):
 			break
 
 		
@@ -126,8 +99,7 @@ def make_t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndi
 
 	Ns = 0
 	for s in range(1ull << L):
-		if s % (1llu << 22) == 0: print s/float(1ull << L),Ns
-		CheckState_T_P(kblock,pblock,L,s,a,R)
+		CheckState_T_P(kblock,L,s,a,R)
 		r = R[0]
 		mp = R[1]
 		if r > 0:

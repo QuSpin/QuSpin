@@ -1,6 +1,8 @@
 #local modules:
 from ..basis import basis1d as _default_basis
+
 from ..basis import isbasis as _isbasis
+
 from make_hamiltonian import make_static as _make_static
 from make_hamiltonian import make_dynamic as _make_dynamic
 from make_hamiltonian import test_function as _test_function
@@ -111,7 +113,7 @@ class hamiltonian(object):
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
 			# check if user input basis
-			basis=kwargs.get('basis')
+			basis=kwargs.get('basis')	
 
 			# if not
 			if basis is None: 
@@ -119,7 +121,7 @@ class hamiltonian(object):
 					raise Exception('if opstrs in use, arguement L needed for basis class')
 
 				if type(L) is not int: # if L is not int
-					raise TypeError('arguement L must be integer')
+					raise TypeError('argument L must be integer')
 
 				basis=_default_basis(L,**kwargs)
 
@@ -156,7 +158,7 @@ class hamiltonian(object):
 					found = True
 
 				if not found:
-					raise ValueError('missing arguement shape')
+					raise ValueError('missing argument shape')
 				if shape[0] != shape[1]:
 					raise ValueError('hamiltonian must be square matrix')
 

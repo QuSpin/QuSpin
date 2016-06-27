@@ -1,5 +1,5 @@
-
-cdef {c_basis_type} shift_2({c_basis_type} I,int shift,int period):
+"""
+cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
 # this functino is used to shift the bits of an integer by 'shift' bits.
 # it is used when constructing the momentum states
 	cdef {c_basis_type} Imax= (1ull << period) -1
@@ -11,6 +11,7 @@ cdef {c_basis_type} shift_2({c_basis_type} I,int shift,int period):
 			return ((I & Imax) >> shift%period) | (I << (period-(shift%period)) & Imax)
 		else:
 			return (I << shift%period) & Imax | ((I & Imax) >> (period-(shift%period)))
+"""
 
 cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
 # this functino is used to shift the bits of an integer by 'shift' bits.
@@ -24,6 +25,15 @@ cdef {c_basis_type} shift({c_basis_type} I,int shift,int period):
 		l2 = period - l1
 		return ((I << l1) & Imax) | ((I & Imax) >> l2)
 
+
+
+cdef NP_INT8_t bit_count({c_basis_type} I, int length):
+	cdef NP_INT8_t out = 0
+	cdef int i
+	for i in range(length):
+		out += ((I >> i) & 1) 
+
+	return out
 
 
 

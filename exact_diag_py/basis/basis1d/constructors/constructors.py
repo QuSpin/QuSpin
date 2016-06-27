@@ -8,7 +8,8 @@ __all__=['op','op_m','op_z','op_zA','op_zB','op_zA_zB','op_p','op_pz','op_p_z','
 
 
 _basis_op_errors={1:"opstr character not recognized.",
-									-1:"attemping to use real hamiltonian with complex matrix elements."}
+				-1:"attemping to use real hamiltonian with complex matrix elements.",
+				-2:"index of operator not between 0 <= index <= L-1"}
 
 
 
@@ -28,7 +29,9 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	# col: resilting basis states; -1: state is thrown out (cf FindZState)
 	# ME: array of dtype with matrix elements
 	# error: see line 11 above
+
 	col,ME,error = compiled_op(basis,opstr,indx)
+
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -185,10 +188,13 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
+	
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -212,9 +218,11 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -237,9 +245,11 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -265,9 +275,11 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 
 	return ME,row,col
@@ -293,9 +305,11 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -317,9 +331,11 @@ def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -341,9 +357,11 @@ def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -394,9 +412,11 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -423,9 +443,11 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 #	print col,ME
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 
@@ -451,9 +473,11 @@ def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	if pauli:
-		ME*=J
+		if J != 1.0:
+			ME*=J
 	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+		N_ops = len(opstr.replace("I",""))
+		ME*=(J/dtype(2**N_ops))
 
 	return ME,row,col
 

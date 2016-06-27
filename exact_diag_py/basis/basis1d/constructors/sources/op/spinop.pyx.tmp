@@ -78,7 +78,7 @@ def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str
 		else:
 			ME[i] = M_E
 			col[i] = r
-		
+
 	return col,ME,error
 
 

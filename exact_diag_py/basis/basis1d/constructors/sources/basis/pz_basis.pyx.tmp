@@ -32,8 +32,9 @@ def make_m_pz_basis(int L,int Nup,int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, 
 		for i in range(1,Nup):
 			stp &= 1 & ( s >> (L-i-1) )
 
-		if stp:
+		if stp or (s == 0):
 			break
+
 
 		
 		s = next_state(s)

@@ -1,0 +1,26 @@
+0. rename classes as needed
+
+1. clear Mac warning message:
+
+/Library/Python/2.7/site-packages/numpy-1.11.0rc1-py2.7-macosx-10.10-intel.egg/numpy/core/fromnumeric.py:2652: VisibleDeprecationWarning: `rank` is deprecated; use the `ndim` attribute or function instead. To find the rank of a matrix see `numpy.linalg.matrix_rank`.
+
+2. put # of states dictionary
+
+3. update get_vec to include ZA and ZB symmetries; put a get_vec for photon and spin sectors
+
+4. create the observables class (update S_ent to return each of the two DM’s on demand); Put correlators? Upgrade S_ent/DM to return the spin/photon subsystems.
+
+5. put a check on the hermitically of H returning ERROR with a possibility to suppress
+
+6. add this option to 'svd' function to entanglement entropy to get the padded matricies to get the reduced density matrix: 
+
+	full_matrices : bool, optional, 
+
+		If True, U and Vh are of shape (M,M), (N,N). If False, the shapes are (M,K) and (K,N), where K = min(M,N).
+
+7. put all three time evolution routines: (i) state-by-state eps-routine, (ii) expm_multiply, (iii) solver
+
+8. put a check on the symmetries of the Hamiltonian lists
+
+9. write paper on the package
+
