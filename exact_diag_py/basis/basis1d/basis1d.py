@@ -3,7 +3,7 @@ from ..base import basis
 import constructors as _cn
 import numpy as _np
 from numpy import array,asarray
-from numpy import right_shift,left_shift,invert,bitwise_and,bitwise_or
+from numpy import right_shift,left_shift,invert,bitwise_and,bitwise_or,bitwise_xor
 from numpy import cos,sin,exp,pi
 from numpy.linalg import norm
 
@@ -220,7 +220,7 @@ class basis1d(basis):
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
+			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZA & ZB"
 			else: self._conserved = "T & ZA & ZB"
 			self._blocks["zblock"] = zAblock*zBblock
@@ -300,7 +300,7 @@ class basis1d(basis):
 
 
 		elif (type(kblock) is int) and (type(zAblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
+			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZA"
 			else: self._conserved = "T & ZA"
 			self._Ns = int(_np.ceil((frac*self._Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
@@ -319,7 +319,7 @@ class basis1d(basis):
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
 		elif (type(kblock) is int) and (type(zBblock) is int):
-			self.k=2*(_np.pi)*a*kblock/L
+			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZB"
 			else: self._conserved = "T & ZB"
 			self._Ns = int(_np.ceil((frac*self._Ns*a)/float(L_m))) # estimate fraction of basis needed for sector.
@@ -507,7 +507,7 @@ class basis1d(basis):
 
 		self._op_args.insert(0,self._basis)
 
-<		if hasattr(self,"_Np"):
+		if hasattr(self,"_Np"):
 			self.Np.resize((Ns,),refcheck=False)
 			self.Np[self._Ns:] = other.Np[:]
 			self.Np = self.Np[arg]
@@ -598,6 +598,8 @@ class basis1d(basis):
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
 		zblock = self._blocks.get("zblock")
+		zAblock = self._blocks.get("zAblock")
+		zBblock = self._blocks.get("zBblock")
 		pzblock = self._blocks.get("pzblock")
 
 
@@ -605,10 +607,10 @@ class basis1d(basis):
 			c = _np.empty(self._m.shape,dtype=_np.int8)
 			nn = _np.array(c)
 			mm = _np.array(c)
-			_np.divide(self._m,(self._L+1)**2,c)
-			_np.divide(self._m,self._L+1,nn)
-			_np.mod(nn,self._L+1,nn)
-			_np.mod(self._m,self._L+1,mm)
+			_np.divide(self._m,(self._L+1)**2,out=c)
+			_np.divide(self._m,self._L+1,out=nn)
+			_np.mod(nn,self._L+1,out=nn)
+			_np.mod(self._m,self._L+1,out=mm)
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
 				norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			else:
@@ -628,6 +630,23 @@ class basis1d(basis):
 			mask = (c == 5)
 			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
+			del mask
+		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
+			c = _np.empty(self._m.shape,dtype=_np.int8)
+			mm = _np.array(c)
+			_np.divide(self._m,(self._L+1),c)
+			_np.mod(self._m,self._L+1,mm)
+			norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
+			norm /= self._N
+			# c = 2
+			mask = (c == 2)
+			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*mm[mask]))
+			# c = 3
+			mask = (c == 3)
+			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*mm[mask]))	
+			# c = 4
+			mask = (c == 4)
+			norm[mask] *= (1.0 + zblock*_np.cos(self._k*mm[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(pblock) is int):
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
@@ -658,13 +677,33 @@ class basis1d(basis):
 			mask = (self._m >= 0)
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*self._m[mask]))
 			del mask
+		elif (type(kblock) is int) and (type(zAblock) is int):
+			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
+			norm /= self._N
+			# m >= 0 
+			mask = (self._m >= 0)
+			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*self._m[mask]))
+			del mask
+		elif (type(kblock) is int) and (type(zBblock) is int):
+			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
+			norm /= self._N
+			# m >= 0 
+			mask = (self._m >= 0)
+			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*self._m[mask]))
+			del mask
 		elif (type(pblock) is int) and (type(zblock) is int):
 			norm = _np.array(self._N,dtype=dtype)
+		elif (type(zAblock) is int) and (type(zBblock) is int):
+			norm = _np.full(self._basis.shape,4.0,dtype=dtype)
 		elif (type(pblock) is int):
 			norm = _np.array(self._N,dtype=dtype)
 		elif (type(pzblock) is int):
 			norm = _np.array(self._N,dtype=dtype)
 		elif (type(zblock) is int):
+			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
+		elif (type(zAblock) is int):
+			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
+		elif (type(zBblock) is int):
 			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
 		elif (type(kblock) is int):
 			norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
@@ -706,6 +745,8 @@ class basis1d(basis):
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
 		zblock = self._blocks.get("zblock")
+		zAblock = self._blocks.get("zAblock")
+		zBblock = self._blocks.get("zBblock")
 		pzblock = self._blocks.get("pzblock")
 
 
@@ -734,15 +775,7 @@ class basis1d(basis):
 		if sparse:
 			return _get_vec_sparse(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
 		else:
-			return _get_vec_dense(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
-
-
-
-
-
-
-
-
+			return  _get_vec_dense(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
 
 
 	def get_proj(self,dtype):
@@ -755,6 +788,8 @@ class basis1d(basis):
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
 		zblock = self._blocks.get("zblock")
+		zAblock = self._blocks.get("zAblock")
+		zBblock = self._blocks.get("zBblock")
 		pzblock = self._blocks.get("pzblock")
 
 
@@ -791,21 +826,6 @@ class basis1d(basis):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
 
@@ -813,7 +833,10 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	kblock = blocks.get("kblock")
 	pblock = blocks.get("pblock")
 	zblock = blocks.get("zblock")
+	zAblock = blocks.get("zAblock")
+	zBblock = blocks.get("zBblock")
 	pzblock = blocks.get("pzblock")
+
 
 	c = _np.zeros(basis.shape,dtype=v0.dtype)	
 	v = _np.zeros(shape,dtype=v0.dtype)
@@ -832,7 +855,18 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		vc = (v0.T*c).T
 		v[basis[ind_pos]] += vc[ind_pos]
 		v[basis[ind_neg]] += vc[ind_neg]
+
+		if type(zAblock) is int:
+			flip_sublat_A(basis,L)
+			v[basis[ind_pos]] += vc[ind_pos]*zAblock
+			v[basis[ind_neg]] += vc[ind_neg]*zAblock
+			flip_sublat_A(basis,L)
 		
+		if type(zBblock) is int:
+			flip_sublat_B(basis,L)
+			v[basis[ind_pos]] += vc[ind_pos]*zBblock
+			v[basis[ind_neg]] += vc[ind_neg]*zBblock
+			flip_sublat_B(basis,L)
 		
 		if type(zblock) is int:
 			flipall(basis,L)
@@ -871,6 +905,8 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	kblock = blocks.get("kblock")
 	pblock = blocks.get("pblock")
 	zblock = blocks.get("zblock")
+	zAblock = blocks.get("zAblock")
+	zBblock = blocks.get("zBblock")
 	pzblock = blocks.get("pzblock")
 
 	m = shape[1]
@@ -907,6 +943,26 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
+		if type(zAblock) is int:
+			flip_sublat_A(basis,L)
+			data_pos *= zAblock
+			data_neg *= zAblock
+			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_pos *= zAblock
+			data_neg *= zAblock
+			flip_sublat_A(basis,L)
+
+		if type(zBblock) is int:
+			flip_sublat_B(basis,L)
+			data_pos *= zBblock
+			data_neg *= zBblock
+			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_pos *= zBblock
+			data_neg *= zBblock
+			flip_sublat_B(basis,L)
+
 		if type(zblock) is int:
 			flipall(basis,L)
 			data_pos *= zblock
@@ -941,27 +997,7 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 
 		shiftc(basis,-a,L)
 
-		
-
-
-#	av = v.multiply(v.conj())
-#	norm = av.sum(axis=0)
-#	del av
-#	_np.sqrt(norm,out=norm)
-#	_np.divide(1.0,norm,out=norm)
-#	norm = _sm.csr_matrix(norm)
-#	v = v.multiply(norm)
-
 	return v
-
-
-
-
-
-
-
-
-
 
 
 
@@ -972,6 +1008,8 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 	kblock = blocks.get("kblock")
 	pblock = blocks.get("pblock")
 	zblock = blocks.get("zblock")
+	zAblock = blocks.get("zAblock")
+	zBblock = blocks.get("zBblock")
 	pzblock = blocks.get("pzblock")
 
 
@@ -987,13 +1025,32 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 	v = _sm.csr_matrix(shape,dtype=dtype)
 
 
-
 	for r in xrange(0,L/a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 		data_pos = c[ind_pos]
 		data_neg = c[ind_neg]
 		v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 		v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+
+		if type(zAblock) is int:
+			flip_sublat_A(basis,L)
+			data_pos *= zAblock
+			data_neg *= zAblock
+			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			data_pos *= zAblock
+			data_neg *= zAblock
+			flip_sublat_A(basis,L)
+
+		if type(zBblock) is int:
+			flip_sublat_B(basis,L)
+			data_pos *= zBblock
+			data_neg *= zBblock
+			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			data_pos *= zBblock
+			data_neg *= zBblock
+			flip_sublat_B(basis,L)
 
 		if type(zblock) is int:
 			flipall(basis,L)
@@ -1029,16 +1086,6 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 
 		shiftc(basis,-a,L)
 
-		
-
-
-#	av = v.multiply(v.conj())
-#	norm = av.sum(axis=0)
-#	del av
-#	_np.sqrt(norm,out=norm)
-#	_np.divide(1.0,norm,out=norm)
-#	norm = _sm.csr_matrix(norm)
-#	v = v.multiply(norm)
 
 	return v
 
@@ -1090,8 +1137,17 @@ def flipall(x,length):
 	mask = 2**length-1
 	invert(x,out=x)
 	bitwise_and(x,mask,out=x)
-	
 
+
+def flip_sublat_A(x,length):
+	# flip all even bits: sublat A
+	mask = sum(2**i for i in xrange(0,length,2))
+	bitwise_xor(x,mask,out=x)
+	
+def flip_sublat_B(x,length):
+	# flip all odd bits: sublat B
+	mask = sum(2**i for i in xrange(1,length,2))
+	bitwise_xor(x,mask,out=x)
 
 
 def shiftc(x,shift,period):
