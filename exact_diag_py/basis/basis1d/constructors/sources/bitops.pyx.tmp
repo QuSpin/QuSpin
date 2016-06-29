@@ -66,7 +66,7 @@ cdef inline {c_basis_type} flip_sublat_A({c_basis_type} I, {c_basis_type} length
 	
 
 cdef inline {c_basis_type} flip_sublat_B({c_basis_type} I, {c_basis_type} length):
-	# flip all even bits: sublat B
+	# flip all odd bits: sublat B
 	# 12297829382473034410 = Sum[2^i, (i, 1, 63, 2)]
 	return I^( (1llu << length)-1) & 12297829382473034410llu
 
