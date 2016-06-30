@@ -9,6 +9,7 @@ compile.py
 
 photon_test.py
 compile.py
+compile_cython.py
 getvec_check.py
 TFIM_imag_time.py
 
