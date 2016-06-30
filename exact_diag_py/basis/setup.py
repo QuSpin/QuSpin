@@ -2,8 +2,7 @@ def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
 	import os
 	config = Configuration('basis', parent_package, top_path)
-	config.add_subpackage('basis1d')
-#	config.add_subpackage('photon') # uncomment when photon is fully implimented
+	config.add_subpackage('basis_1d')
 	return config
 
 if __name__ == '__main__':

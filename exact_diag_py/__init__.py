@@ -1,6 +1,6 @@
 # local modules
-import hamiltonian
-import basis
+from  . import hamiltonian
+from  . import basis
 
 __all__ = ["basis","hamiltonian"]
 

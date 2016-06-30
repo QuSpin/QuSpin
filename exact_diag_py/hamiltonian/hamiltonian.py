@@ -1,11 +1,10 @@
 #local modules:
-from ..basis import basis1d as _default_basis
-
+from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from make_hamiltonian import make_static as _make_static
-from make_hamiltonian import make_dynamic as _make_dynamic
-from make_hamiltonian import test_function as _test_function
+from .make_hamiltonian import make_static as _make_static
+from .make_hamiltonian import make_dynamic as _make_dynamic
+from .make_hamiltonian import test_function as _test_function
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla

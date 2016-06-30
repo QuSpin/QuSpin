@@ -1,5 +1,5 @@
 from exact_diag_py.hamiltonian import hamiltonian
-from exact_diag_py.basis import basis1d
+from exact_diag_py.basis import spin_basis_1d,photon_basis
 import numpy as np
 import scipy.sparse as sm
 from numpy.linalg import norm
@@ -18,6 +18,15 @@ def J(L,jb,l):
 	for i,j in jb:
 		b=[j]
 		b.extend([(i+j)%L for j in xrange(l)])
+		blist.append(b)
+
+	return blist
+
+def Jnn(L,jb,l):
+	blist=[]
+	for i,j in jb:
+		b=[j]
+		b.extend([(i+j)%L for j in xrange(0,l+1,2)])
 		blist.append(b)
 
 	return blist
@@ -792,13 +801,10 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	jb=[[i,1.0] for i in xrange(L)]
 	dtype=np.complex128
 
-	b = basis1d(L,Nup=Nup,kblock=kblock,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
-	Ns = b.Ns
-
-#	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in xrange(len(b.basis))])
-#	norms = b.get_norms(np.float64)
+	b = spin_basis_1d(L,Nup=Nup,kblock=kblock,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
 	
-#	static = [['xxzz',J3],['zzxx',J3],['yyzz',J3],['zzyy',J3],['xxyy',J3],['yyxx',J3]]
+	Ns = b.Ns
+	
 
 	static = [['xx',J(L,jb,2)],
 						['yy',J(L,jb,2)],
@@ -826,9 +832,10 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 						['-+-+',J(L,jb,4)],
 					]
 
+
 	H1 = hamiltonian(static,[],L=L,dtype=dtype)
 	H2 = hamiltonian(static,[],L=L,basis=b,dtype=dtype)
-
+	
 
 	E,v0=H2.eigh()
 	v = b.get_vec(v0,sparse=sparse)
@@ -837,22 +844,67 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 		v = v.todense()
 
 	H1 = H1.todense()
+
 	H2 = H2.todense()
 	H2 = v0.T.conj() * (H2 * v0)
 
 	if v.shape[0] != 0:
 		H1 = v.T.conj() * ( H1 * v)
 		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
-#			print "failed"
 			raise Exception("get_vec() failed {0}")
+	else: 
+		pass
+
+	
+def getvec_zA_zB(L,kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
+	jb=[[i,1.0] for i in xrange(L)]
+	dtype=np.complex128
+
+	b_zA_zB = spin_basis_1d(L,kblock=kblock,zAblock=zAblock,zBblock=zBblock,a=a)
+	
+	Ns_zA_zB = b_zA_zB.Ns
+
+	static_zA_zB = [	['xx',J(L,jb,2)],
+						['zz',Jnn(L,jb,2)],
+						['zxz',J(L,jb,3)],
+						['zxzx',J(L,jb,4)],
+						['xxxx',J(L,jb,4)],
+						['yyyy',J(L,jb,4)],
+						['xzxz',J(L,jb,4)],
+						['yzyz',J(L,jb,4)],
+						['zyzy',J(L,jb,4)],
+						['z+z-',J(L,jb,4)],
+						['z-z+',J(L,jb,4)],
+					]
+	
+	H1 = hamiltonian(static_zA_zB,[],L=L,dtype=dtype)
+	H2_zA_zB = hamiltonian(static_zA_zB,[],L=L,basis=b_zA_zB,dtype=dtype)
+	
+
+	E_zA_zB,v0_zA_zB=H2_zA_zB.eigh()
+	v_zA_zB = b_zA_zB.get_vec(v0_zA_zB,sparse=sparse)
+
+	if sm.issparse(v_zA_zB):
+		v_zA_zB = v_zA_zB.todense()
+
+	H1 = H1.todense()
+
+	H2_zA_zB = H2_zA_zB.todense()
+	H2_zA_zB = v0_zA_zB.T.conj() * (H2_zA_zB * v0_zA_zB)
+
+	if v_zA_zB.shape[0] != 0:
+		H1 = v_zA_zB.T.conj() * ( H1 * v_zA_zB)
+		#print "norm:", np.abs(np.linalg.norm(H1-H2_zA_zB))
+		if np.abs(np.linalg.norm(H1-H2_zA_zB)) > 10**(-10):
+			raise Exception("get_vec() zA_zB failed {0}")
 	else: 
 		pass	
 
 
-
 def check_getvec(L,a=1,sparse=True):
 	for k in xrange(-L/a,L/a):
-			getvec(L,kblock=k,a=a,sparse=sparse)
+		getvec(L,kblock=k,a=a,sparse=sparse)
+
 
 	for j in xrange(-1,2,2):
 		getvec(L,pblock=j,a=a,sparse=sparse)
@@ -905,9 +957,27 @@ def check_getvec(L,a=1,sparse=True):
 			for k in xrange(-L/a,L/a):
 				getvec(L,kblock=k,Nup=Nup,zblock=j,a=a,sparse=sparse)
 
+def check_getvec_zA_zB(L,a=2,sparse=True):
 
+	for k in xrange(-L/a,L/a):
+		getvec_zA_zB(L,kblock=k,a=a,sparse=sparse)
+	
+	for j in xrange(-1,2,2):
+		getvec_zA_zB(L,zAblock=j,a=a,sparse=sparse)
+		for k in xrange(-L/a,L/a):
+			getvec_zA_zB(L,kblock=k,zAblock=j,a=a,sparse=sparse)
+	
+	for j in xrange(-1,2,2):
+		getvec_zA_zB(L,zBblock=j,a=a,sparse=sparse)
+		for k in xrange(-L/a,L/a):
+			getvec_zA_zB(L,kblock=k,zBblock=j,a=a,sparse=sparse)
 
-
+	for i in xrange(-1,2,2):
+		for j in xrange(-1,2,2):
+			getvec_zA_zB(L,zAblock=i,zBblock=j,a=a,sparse=sparse)
+			for k in xrange(-L/a,L/a):
+				getvec_zA_zB(L,kblock=k,zAblock=i,zBblock=j,a=a,sparse=sparse)
+	
 #check_m(4)
 #check_opstr(4)
 #check_obc(8)
@@ -915,11 +985,9 @@ def check_getvec(L,a=1,sparse=True):
 #for L in xrange(4,8):
 #	check_getvec(L,sparse=True)
 #	check_getvec(L,sparse=False)
-
-
-
-
-
+#for L in xrange(4,8,2):
+#	check_getvec_zA_zB(L,sparse=True)
+#	check_getvec_zA_zB(L,sparse=False)
 
 
 

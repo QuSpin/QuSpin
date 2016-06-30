@@ -1,9 +1,9 @@
-from basis1d import basis1d
-from base import isbasis
-#from photon import ho_basis, photon_basis
+from .basis_1d import spin_basis_1d
+from .base import isbasis
+from .photon import ho_basis, photon_basis
+from .tensor import tensor_basis
 
 
-__all__ = ["basis1d","isbasis"]
-#__all__ = ["basis1d","isbasis","photon_basis","ho_basis"]
+__all__ = ["isbasis","tensor_basis","spin_basis_1d","photon_basis","ho_basis"]
 
 
