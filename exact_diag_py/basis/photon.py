@@ -1,7 +1,8 @@
-import numpy as _np
-from scipy import sparse as _sp
 from .base import basis,MAXPRINT
 from .tensor import tensor_basis
+
+import numpy as _np
+from scipy import sparse as _sp
 
 
 class photon_basis(tensor_basis):

@@ -1,5 +1,11 @@
 from .base import basis
 
+import numpy as _np
+from scipy import sparse as _sp
+from scipy.sparse import linalg as _sla
+from scipy import linalg as _la
+
+
 # gives the basis for the kronecker/Tensor product of two basis: b1 (x) b2
 class tensor_basis(basis):
 

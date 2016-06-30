@@ -1,4 +1,4 @@
-import basis_ops
+from . import basis_ops
 from numpy import dtype as _dtype
 from numpy import int32 as _index_type
 import numpy as _np

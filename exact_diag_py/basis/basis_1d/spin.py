@@ -1,6 +1,7 @@
 from ..base import basis,MAXPRINT
+from . import _constructors as _cn
+from ._1d_kblock_Ns import kblock_Ns
 
-import _constructors as _cn
 import numpy as _np
 from numpy import array,asarray
 from numpy import right_shift,left_shift,invert,bitwise_and,bitwise_or,bitwise_xor
@@ -8,7 +9,7 @@ from numpy import cos,sin,exp,pi
 from numpy.linalg import norm
 
 import scipy.sparse as _sm
-from _1d_kblock_Ns import kblock_Ns
+
 
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string

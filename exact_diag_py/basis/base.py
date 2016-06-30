@@ -1,7 +1,4 @@
 import numpy as _np
-from scipy import sparse as _sp
-from scipy.sparse import linalg as _sla
-from scipy import linalg as _la
 
 MAXPRINT = 50
 # this file stores
