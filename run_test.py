@@ -1,5 +1,5 @@
 from exact_diag_py.hamiltonian import hamiltonian
-from exact_diag_py.basis import basis1d
+from exact_diag_py.basis import spin_basis_1d,photon_basis
 import numpy as np
 import scipy.sparse as sm
 from numpy.linalg import norm
@@ -801,7 +801,7 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	jb=[[i,1.0] for i in xrange(L)]
 	dtype=np.complex128
 
-	b = basis1d(L,Nup=Nup,kblock=kblock,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
+	b = spin_basis_1d(L,Nup=Nup,kblock=kblock,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
 	
 	Ns = b.Ns
 	
@@ -860,7 +860,7 @@ def getvec_zA_zB(L,kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
 	jb=[[i,1.0] for i in xrange(L)]
 	dtype=np.complex128
 
-	b_zA_zB = basis1d(L,kblock=kblock,zAblock=zAblock,zBblock=zBblock,a=a)
+	b_zA_zB = spin_basis_1d(L,kblock=kblock,zAblock=zAblock,zBblock=zBblock,a=a)
 	
 	Ns_zA_zB = b_zA_zB.Ns
 
@@ -988,10 +988,6 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 #for L in xrange(4,8,2):
 #	check_getvec_zA_zB(L,sparse=True)
 #	check_getvec_zA_zB(L,sparse=False)
-
-
-
-
 
 
 
