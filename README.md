@@ -116,16 +116,52 @@ H=hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
 One can also use the basis1d class to construct the basis object with a particular set of symmetries, then pass that into the the constructor of the hamiltonian:
 
 ```python
-from exact_diag_py.basis import basis1d
+from exact_diag_py.basis import spin_basis_1d
 
-basis=basis1d(L,Nup=Nup,pblock=pblock,...)
+basis=spin_basis_1d(L,Nup=Nup,pblock=pblock,...)
 H=hamiltonian(static_list,dynamic_list,L,basis=basis)
 ```
-The current system size limits depend on the version: versions < 0.0.5b only support L < 32 and 0.0.5b has preliminary support of L=32 but it hasn't been thoroughly tested yet. 
+The current system size limits depend on the version: versions < 0.0.5b only support L < 32 and 0.0.5b has preliminary support of L=32 but it hasn't been thoroughly tested yet.
+
+NOTE: for beta versions spin_basis_1d is named as basis1d.
 
 NOTE: The current system does no checks on the inputs to see if the inputs have the symmetries specified. Using symmetry reduction on hamiltonians which do not have said symmetry will give unphysical results. later we will impliment checks to see which symmetries are allowed based on the user input.
 
+# Tensoring basis.
 
+In version 0.1.0 we have created new classes which allow basis to be tensored together. 
+
+* tensor_basis class: two basis objects b1 and b2 the tensor_basis class will combine them together to create a new basis objects which can be used to create the tensored hamiltonian of both basis:
+
+	```python
+	basis1 = spin_basis_1d(L,Nup=L/2)
+	basis2 = spin_basis_1d(L,Nup=L/2)
+	t_basis = tensor_basis(basis1,basis2)
+	```
+
+	The syntax for the operator strings are as follows. The operator strings are separated by a '|' while the index array has no splitting character.
+
+	```python
+	# tensoring two z spin operators at sites 1 for basis1 and 5 for basis2
+	opstr = "z|z" 
+	indx = [1,5] 
+	```
+
+	if there are no operator strings on one side of the '|' then an identity operator is assumed.
+
+* photon_basis class: This class allows the user to define a basis which couples to a single photon mode. There are two types of basis objects that one can create, a particle (magnetization + photon or particle + photon) conserving basis or a non-conserving basis.  In the former case one can specify the total number of quanta using the the Ntot keyword arguement:
+
+	```python
+	p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
+	```
+
+	while for for non-conserving basis you must specify the number of photon states with Nph:
+
+	```python
+	p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
+	```
+
+	For this basis class you can't pass not a basis object, but the constructor for you basis object. The operators for the photon sector are '+','-','n', and 'I'.
 
 # Numpy dtype:
 The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128. To specify the dtype use the dtype keyword arguement:
@@ -133,6 +169,9 @@ The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/nump
 ```python
 H=hamiltonian(...,dtype=np.float32,...)
 ```
+
+* New in verions 0.1.0
+We now let the user use quadruple precision dtypes float128 and complex256, but note that not all scipy and numpy functions support this dtypes.
 
 * New in version 0.0.5b 
 We now let the user initialize with scipy sparse matrices or dense numpy arrays. To do this just replace the opstr and indx tuple with your matrix. you can even mix them together in the same list:

@@ -20,10 +20,11 @@ def setup_package():
 
 	metadata = dict(
 		name='exact_diag_py',
+		version='0.1.0',
 		maintainer="Phillip Weinberg, Marin Bukov",
 		maintainer_email="weinbe58@bu.edu,mbukov.bu.edu",
 		download_url="https://github.com/weinbe58/exact_diag_py",
-		license='MIT',
+		license='MET',
 		platforms=["Unix"]
 	)
 

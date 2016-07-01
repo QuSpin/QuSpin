@@ -1,12 +1,12 @@
-0. rename classes as needed
+0. rename classes as needed # done
 
 1. clear Mac warning message:
 
 /Library/Python/2.7/site-packages/numpy-1.11.0rc1-py2.7-macosx-10.10-intel.egg/numpy/core/fromnumeric.py:2652: VisibleDeprecationWarning: `rank` is deprecated; use the `ndim` attribute or function instead. To find the rank of a matrix see `numpy.linalg.matrix_rank`.
 
-2. put # of states dictionary
+2. put # of states dictionary # done
 
-3. update get_vec to include ZA and ZB symmetries; put a get_vec for photon and spin sectors
+3. update get_vec to include ZA and ZB symmetries; put a get_vec for photon and spin sectors # done
 
 4. create the observables class (update S_ent to return each of the two DM’s on demand); Put correlators? Upgrade S_ent/DM to return the spin/photon subsystems.
 
