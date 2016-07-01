@@ -18,9 +18,19 @@ def setup_package():
 		raise ImportError("build requires numpy for fortran extensions")
 
 
+	io = open("meta.yaml","r")
+	meta_file = io.read()
+	io.close()
+
+	meta_file = meta_file.split()
+
+	ind = meta_file.index("version:")
+	version = meta_file[ind+1].replace('"','')
+	io
+
 	metadata = dict(
 		name='exact_diag_py',
-		version='0.1.0',
+		version=version,
 		maintainer="Phillip Weinberg, Marin Bukov",
 		maintainer_email="weinbe58@bu.edu,mbukov.bu.edu",
 		download_url="https://github.com/weinbe58/exact_diag_py",
