@@ -51,7 +51,7 @@ cdef {c_float_type} {type_code}_MatrixElement_P(int L,int pblock, int kblock, in
 
 
 
-def {type_code}_t_p_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int pblock, int kblock, int a):
+def {type_code}_t_p_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int pblock, int kblock, int a):
 	cdef {c_basis_type} s
 	cdef int error,ss,i,j,Ns,o,p,c,b,l,q
 	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(3,{np_basis_type})
@@ -62,7 +62,7 @@ def {type_code}_t_p_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndi
 
 	Ns = basis.shape[0]
 
-	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+	col,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
 		return col,ME,error

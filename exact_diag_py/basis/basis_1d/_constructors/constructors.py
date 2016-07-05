@@ -30,7 +30,7 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	# ME: array of dtype with matrix elements
 	# error: see line 11 above
 
-	col,ME,error = compiled_op(basis,opstr,indx)
+	col,ME,error = compiled_op(basis,opstr,indx,J)
 
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
@@ -43,10 +43,10 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 	ME = ME[ mask ]
 
 	
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -57,7 +57,7 @@ def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_m_op"]
-	col,ME,error = compiled_op(basis,opstr,indx)
+	col,ME,error = compiled_op(basis,opstr,indx,J)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -67,10 +67,10 @@ def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -84,7 +84,7 @@ def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_z_op"]
 
-	col,ME,error = compiled_op(basis,opstr,indx,L,zblock)
+	col,ME,error = compiled_op(basis,opstr,indx,J,L,zblock)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -94,10 +94,10 @@ def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -107,7 +107,7 @@ def op_zA(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_zA_op"]
 
-	col,ME,error = compiled_op(basis,opstr,indx,L,zAblock)
+	col,ME,error = compiled_op(basis,opstr,indx,J,L,zAblock)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -117,10 +117,10 @@ def op_zA(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -131,7 +131,7 @@ def op_zB(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_zB_op"]
 
-	col,ME,error = compiled_op(basis,opstr,indx,L,zBblock)
+	col,ME,error = compiled_op(basis,opstr,indx,J,L,zBblock)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -141,10 +141,10 @@ def op_zB(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -155,7 +155,7 @@ def op_zA_zB(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_zA_zB_op"]
-	col,ME,error = compiled_op(N,basis,opstr,indx,L,zAblock,zBblock)
+	col,ME,error = compiled_op(N,basis,opstr,indx,J,L,zAblock,zBblock)
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
 	row=_np.arange(len(basis),dtype=_index_type)
@@ -164,10 +164,10 @@ def op_zA_zB(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -178,7 +178,7 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_p_op"]
-	col,ME,error = compiled_op(N,basis,opstr,indx,L,pblock)
+	col,ME,error = compiled_op(N,basis,opstr,indx,J,L,pblock)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -189,12 +189,10 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	ME = ME[ mask ]
 
 	
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -207,7 +205,7 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_pz_op"]
-	col,ME,error = compiled_op(N,basis,opstr,indx,L,pzblock)
+	col,ME,error = compiled_op(N,basis,opstr,indx,J,L,pzblock)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -217,12 +215,10 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -235,7 +231,7 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_p_z_op"]
-	col,ME,error = compiled_op(N,basis,opstr,indx,L,pblock,zblock)
+	col,ME,error = compiled_op(N,basis,opstr,indx,J,L,pblock,zblock)
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
 	row=_np.arange(len(basis),dtype=_index_type)
@@ -244,12 +240,10 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -264,7 +258,7 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_op"]
-	col,ME,error = compiled_op(N,basis,opstr,indx,L,kblock,a)
+	col,ME,error = compiled_op(N,basis,opstr,indx,J,L,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -274,12 +268,10 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 
 	return ME,row,col
@@ -294,7 +286,7 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_z_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -304,12 +296,10 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -320,7 +310,7 @@ def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_zA_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zAblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zAblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -330,12 +320,10 @@ def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -346,7 +334,7 @@ def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_zB_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zBblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zBblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -356,12 +344,10 @@ def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -373,7 +359,7 @@ def op_t_zA_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_zA_zB_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,zAblock,zBblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zAblock,zBblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -384,10 +370,10 @@ def op_t_zA_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		ME*=J
-	else:
-		ME*=(J*0.5**(len(opstr.replace("I",""))))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -399,7 +385,7 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_p_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,pblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -411,12 +397,10 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -429,7 +413,7 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_pz_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,pzblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pzblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -442,12 +426,10 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	ME = ME[ mask ]
 #	print col,ME
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
 
 	return ME,row,col
 
@@ -460,7 +442,7 @@ def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_p_z_op"]
-	col,ME,error = compiled_op(N,m,basis,opstr,indx,L,pblock,zblock,kblock,a)
+	col,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pblock,zblock,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -472,12 +454,9 @@ def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	col = col[ mask ]
 	ME = ME[ mask ]
 
-	if pauli:
-		if J != 1.0:
-			ME*=J
-	else:
-		N_ops = len(opstr.replace("I",""))
-		ME*=(J/dtype(2**N_ops))
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
 
 	return ME,row,col
 

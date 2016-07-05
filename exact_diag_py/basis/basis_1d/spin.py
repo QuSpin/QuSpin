@@ -595,8 +595,6 @@ class spin_basis_1d(basis):
 		indx = _np.asarray(indx,dtype=_np.int32)
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
-		if not _np.can_cast(J,_np.dtype(dtype)):
-			raise TypeError("can't cast J to proper dtype")
 		if _np.any(indx >= self._L) or _np.any(indx < 0):
 			raise ValueError('value in indx falls outside of system')
 

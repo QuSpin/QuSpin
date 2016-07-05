@@ -1,5 +1,5 @@
 
-def {type_code}_zA_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int zAblock):
+def {type_code}_zA_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int zAblock):
 	cdef {c_basis_type} s
 	cdef int error,ss,i,Ns,gA
 	cdef _np.ndarray[{np_basis_type}_t,ndim = 1,mode='c'] R = _np.zeros(2,{np_basis_type})
@@ -8,7 +8,7 @@ def {type_code}_zA_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _n
 
 	Ns = basis.shape[0]
 
-	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+	col,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
 		return col,ME,error

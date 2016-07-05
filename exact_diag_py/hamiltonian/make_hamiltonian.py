@@ -70,8 +70,8 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 	Ns=basis.Ns
 	dynamic=[]
 	if dynamic_list:
-		H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
 		for opstr,bonds,f,f_args in dynamic_list:
+			H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
 			if _np.isscalar(f_args): raise TypeError("function arguements must be iterable")
 			test_function(f,f_args)
 			for bond in bonds:
