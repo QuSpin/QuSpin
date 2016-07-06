@@ -10,6 +10,8 @@ from numpy.linalg import norm
 
 import scipy.sparse as _sm
 
+import warnings
+
 
 # this is how we encode which fortran function to call when calculating 
 # the action of operator string
@@ -59,7 +61,7 @@ class spin_basis_1d(basis):
 			self._make_Nup_block(L,Nup=Nup,**blocks)
 	
 		elif Nup is None: # User hasn't specified Nup,
-			if _Np is not None: # check to see if photon_basis is wanting to create the particle sectors.
+			if _Np is not None: # check to see if photon_basis can create the particle sectors.
 
 				if type(_Np) is not int:
 					raise ValueError("Np must be integer")
@@ -194,7 +196,9 @@ class spin_basis_1d(basis):
 				self._Ns = 1
 		
 
-		
+		# shout out if pblock and zA/zB blocks defined simultaneously
+		if type(pblock) is int and ((type(zAblock) is int) or (type(zBblock) is int)):
+			raise ValueError("zA and zB symmetries incompatible with parity symmetry")
 
 		if check_z_symm:
 			# checking if spin inversion is compatible with Nup and L
@@ -205,7 +209,7 @@ class spin_basis_1d(basis):
 					raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
 
 			if (type(Nup) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-				raise ValueError("zA and zB incompatible with magnetisation symmetry")
+				raise ValueError("zA and zB symmetries incompatible with magnetisation symmetry")
 
 			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
 			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
@@ -612,6 +616,68 @@ class spin_basis_1d(basis):
 		ME = ME[mask]
 
 		return ME,row,col		
+
+
+
+	def check_hermitian(self,static_list,dynamic_list):
+		# assumes static and dynamic lists are ordered
+
+
+		# static list
+		if static_list:
+
+			static_expand = []
+			static_expand_hc = []
+			for opstr, bonds in static_list:
+				# calculate conjugate opstr
+				opstr_hc = opstr.replace('-','!')
+				opstr_hc = opstr_hc.replace('+','-')
+				opstr_hc = opstr_hc.replace('!','+')
+				for bond in bonds:
+					static_expand.append( (opstr,bond[0], tuple(bond[1:])) )
+					static_expand_hc.append( (opstr_hc, _np.conj(bond[0]),tuple(bond[1:]) ) )
+
+			# calculate non-hermitian elements
+			diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
+			if len(diff)!=0:
+				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+				warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
+				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+				if user_input == 'y':
+					print "   (opstr, coupling, indices)"
+					for i in xrange(len(diff)):
+						print "{}. {}".format(i+1, list(diff)[i])
+				raise TypeError("Hamiltonian not hermitian!")
+			
+			
+		if dynamic_list:
+			# define arbitrarily complicated weird-ass number
+			t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+
+			dynamic_expand = []
+			dynamic_expand_hc = []
+			for opstr, bonds, f, f_args in dynamic_list:
+				# calculate conjugate opstr
+				opstr_hc = opstr.replace('-','!')
+				opstr_hc = opstr_hc.replace('+','-')
+				opstr_hc = opstr_hc.replace('!','+')
+				for bond in bonds:
+					dynamic_expand.append( (opstr,bond[0]*f(t,*f_args), tuple(bond[1:])) )
+					dynamic_expand_hc.append( (opstr_hc, _np.conj(bond[0]*f(t,*f_args)),tuple(bond[1:]) ) )
+
+			# calculate non-hermitian elements
+			diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
+			if len(diff)!=0:
+				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+				warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
+				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+				if user_input == 'y':
+					print "   (opstr, coupling(t), indices)"
+					for i in xrange(len(diff)):
+						print "{}. {}".format(i+1, list(diff)[i])
+				raise TypeError("Hamiltonian not hermitian!")
+
+		print "Hermiticity check passed!"
 
 
 

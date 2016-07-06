@@ -16,6 +16,23 @@ from copy import deepcopy as _deepcopy
 import warnings
 
 
+# truncate float to n digits: used in method check_symm
+def truncate(f, n):
+    '''Truncates/pads a float f to n decimal places without rounding'''
+    s = '{}'.format(f)
+    if 'e' in s or 'E' in s:
+        return '{0:.{1}f}'.format(f, n)
+    i, p, d = s.partition('.')
+    return '.'.join([i, (d+'0'*n)[:n]])
+
+# find neares value in array: used in method check_symm
+def find_nearest(input_array,input_value):
+	#if not isinstance(input_array, _np.array):
+	#	input_array = _np.asarray(input_array)
+	idx = (_np.abs(input_array-input_value)).argmin()
+	return input_array[idx]
+
+
 class HamiltonianEfficiencyWarning(Warning):
     pass
 
@@ -54,14 +71,14 @@ def check_dynamic(sub_list):
 				else: raise TypeError('expecting list for indx') 
 		else: raise TypeError('expecting a list of one or more indx')
 		if not hasattr(sub_list[2],"__call__"): raise TypeError('expecting callable object for driving function')
-		if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
+		if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
 		return True
 	elif (type(sub_list) in [list,tuple]) and (len(sub_list) == 3): 
 		if not hasattr(sub_list[1],"__call__"): raise TypeError('expecting callable object for driving function')
-		if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguements')
+		if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
 		return False
 	else:
-		raise TypeError('expecting list with object, driving function, and function arguements')
+		raise TypeError('expecting list with object, driving function, and function arguments')
 
 
 	
@@ -76,8 +93,19 @@ class hamiltonian(object):
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
 
+		print "Marin: it might worthwhile mentioning online that dtype only affects the Hamiltonian opstrs, while the drive can still be complex even if dtype=real."
+		print "Marin: can we put a compulsory automatic check on the dynamic and static lists if some opstrs appear twice or more and concatenate them? This could lead to a big speed up for some users!! + warning for dynamic functions"
+		#print "Marin: I'm not sure it should be part of the hamiltonian class but can we put in similar diagonalisation routines for non-hermitian ops, like the evolution op U?"
+		print "Marin: can we merge the dot_no_check into dot but with an optional flag no_check=False?"
+		print "Marin: don't like the name of the function 'me' -- it's too cryptic; how about 'matrix_element'?"
+		print "Marin: not sure, but u may give it a check: when we print basis, do the pictorial representations |101....0> come out in the right order, i.e. is there a left <--> right flip needed?"
+
 		self._is_dense=False
 		self._ndim=2
+		self._symm_blocks = kwargs
+		self._L = L
+		self._dtype = dtype
+		self._pauli = pauli
 
 
 		if not (dtype in supported_dtypes):
@@ -109,6 +137,11 @@ class hamiltonian(object):
 		else: 
 			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx, functions, and function args')
 
+
+		# need for check_symm
+		self._static_opstr_list = static_opstr_list
+		self._dynamic_opstr_list = dynamic_opstr_list
+
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
 			# check if user input basis
@@ -117,26 +150,26 @@ class hamiltonian(object):
 			# if not
 			if basis is None: 
 				if L is None: # if L is missing 
-					raise Exception('if opstrs in use, arguement L needed for basis class')
+					raise Exception('if opstrs in use, argument L needed for basis class')
 
 				if type(L) is not int: # if L is not int
 					raise TypeError('argument L must be integer')
 
 				basis=_default_basis(L,**kwargs)
+#				print basis
 
 			elif not _isbasis(basis):
-				raise TypeError('expecting instance of basis class for arguement: basis')
+				raise TypeError('expecting instance of basis class for argument: basis')
 
 			self._static=_make_static(basis,static_opstr_list,dtype,pauli)
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype,pauli)
 			self._shape = self._static.shape
 
 
-
 		if static_other_list or dynamic_other_list:
 			if not hasattr(self,"_shape"):
 				found = False
-				if shape is None: # if no shape arguement found, search to see if the inputs have shapes.
+				if shape is None: # if no shape argument found, search to see if the inputs have shapes.
 					for O in static_other_list:
 						try: # take the first shape found
 							shape = O.shape
@@ -248,7 +281,7 @@ class hamiltonian(object):
 		else:
 			if not hasattr(self,"_shape"):			
 				if shape is None:
-					raise ValueError('missing arguement shape')
+					raise ValueError('missing argument shape')
 				if len(shape) != 2:
 					raise ValueError('expecting ndim = 2')
 				if shape[0] != shape[1]:
@@ -257,10 +290,12 @@ class hamiltonian(object):
 				self._shape=shape
 				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 				self._dynamic = ()
-			
 
 
 		self.sum_duplicates()
+
+		basis.check_hermitian(static_list, dynamic_list)
+
 
 	@property
 	def ndim(self):
@@ -291,10 +326,9 @@ class hamiltonian(object):
 		return self._dynamic
 
 	def sum_duplicates(self):
-#		print self._dynamic
 		"""
 		description:
-			This function consolidates the list of dynamic, combining matrices which have the same driving function and function arguements.
+			This function consolidates the list of dynamic, combining matrices which have the same driving function and function arguments.
 		"""
 		self._dynamic=list(self._dynamic)
 		l=len(self._dynamic)
@@ -378,7 +412,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _sp.csr_matrix(_np.asarray([[]]))
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 		if dtype is None:
 			dtype = self._dtype
@@ -419,7 +453,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([[]])
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 		if out is None:
 			if _sp.issparse(self._static):
@@ -485,9 +519,9 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 		if not _np.isscalar(a):
-			raise TypeError('expecting scalar arguement for a')
+			raise TypeError('expecting scalar argument for a')
 
 		return _sp.linalg.expm_multiply(a*self.tocsr(time),V,**linspace_args)
 
@@ -508,7 +542,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 		if V.__class__ is _np.ndarray:
 			if V.shape[0] != self._shape[1]:
@@ -558,7 +592,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return np.array([])
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 		Vr=self.dot(Vr,time=time)
 		
@@ -625,7 +659,7 @@ class hamiltonian(object):
 		"""
 		args:
 			time=0, the time to evalute drive at.
-			other arguements see documentation: http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html
+			other arguments see documentation: http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html
 			
 		description:
 			function which diagonalizes hamiltonian using sparse methods
@@ -633,7 +667,7 @@ class hamiltonian(object):
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
@@ -663,7 +697,7 @@ class hamiltonian(object):
 		eigh_args["overwrite_a"] = True
 		
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 
 		if self.Ns <= 0:
@@ -690,7 +724,7 @@ class hamiltonian(object):
 		eigvalsh_args["overwrite_a"] = True
 		
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
+			raise TypeError('expecting scalar argument for time')
 
 		if self.Ns <= 0:
 			return _np.asarray([])

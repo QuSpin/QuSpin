@@ -1,6 +1,6 @@
 0. rename classes as needed # done
 
-1. clear Mac warning message:
+1. clear Mac warning message: # seems like it doesn’t show up anymore :)
 
 /Library/Python/2.7/site-packages/numpy-1.11.0rc1-py2.7-macosx-10.10-intel.egg/numpy/core/fromnumeric.py:2652: VisibleDeprecationWarning: `rank` is deprecated; use the `ndim` attribute or function instead. To find the rank of a matrix see `numpy.linalg.matrix_rank`.
 
@@ -12,7 +12,7 @@
 
 5. put a check on the hermitically of H returning ERROR with a possibility to suppress
 
-6. add this option to 'svd' function to entanglement entropy to get the padded matricies to get the reduced density matrix: 
+6. add this option to 'svd' function to entanglement entropy to get the padded matrices to get the reduced density matrix: 
 
 	full_matrices : bool, optional, 
 

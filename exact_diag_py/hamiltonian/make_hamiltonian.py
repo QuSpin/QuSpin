@@ -3,6 +3,7 @@ import scipy.sparse as _sp
 import warnings
 import numpy as _np
 
+
 def make_static(basis,static_list,dtype,pauli):
 	"""
 	args:
@@ -32,6 +33,7 @@ def make_static(basis,static_list,dtype,pauli):
 			del Ht
 			H.sum_duplicates() # sum duplicate matrix elements
 			H.eliminate_zeros() # remove all zero matrix elements
+
 	return H 
 
 
@@ -45,7 +47,7 @@ def test_function(func,func_args):
 		if not _np.isscalar(func_val):
 			raise TypeError("function must return scaler values")
 		if _np.iscomplexobj(func_val):
-			warnings.warn("driving function returning complex value.",UserWarning,stacklevel=4) 
+			warnings.warn("driving function returning complex values",UserWarning,stacklevel=4) 
 
 
 
@@ -70,9 +72,9 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 	Ns=basis.Ns
 	dynamic=[]
 	if dynamic_list:
-		H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
 		for opstr,bonds,f,f_args in dynamic_list:
-			if _np.isscalar(f_args): raise TypeError("function arguements must be iterable")
+			H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
+			if _np.isscalar(f_args): raise TypeError("function arguments must be iterable")
 			test_function(f,f_args)
 			for bond in bonds:
 				J=bond[0]
@@ -85,5 +87,4 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
 			dynamic.append((H,f,f_args))
-
 	return tuple(dynamic)
