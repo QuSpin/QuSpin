@@ -86,9 +86,7 @@ class hamiltonian(object):
 
 		self._is_dense=False
 		self._ndim=2
-		self._symm_blocks = kwargs
-		self._L = L
-		self._dtype = dtype
+
 		self._pauli = pauli
 
 
@@ -716,7 +714,7 @@ class hamiltonian(object):
 		H_dense=_np.zeros(self._shape,dtype=self._dtype)
 		self.todense(time=time,out=H_dense)
 
-		E = _la.eigvalsh(H_dense,overwrite_a=True)
+		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
