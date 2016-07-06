@@ -16,22 +16,6 @@ from copy import deepcopy as _deepcopy
 import warnings
 
 
-# truncate float to n digits: used in method check_symm
-def truncate(f, n):
-    '''Truncates/pads a float f to n decimal places without rounding'''
-    s = '{}'.format(f)
-    if 'e' in s or 'E' in s:
-        return '{0:.{1}f}'.format(f, n)
-    i, p, d = s.partition('.')
-    return '.'.join([i, (d+'0'*n)[:n]])
-
-# find neares value in array: used in method check_symm
-def find_nearest(input_array,input_value):
-	#if not isinstance(input_array, _np.array):
-	#	input_array = _np.asarray(input_array)
-	idx = (_np.abs(input_array-input_value)).argmin()
-	return input_array[idx]
-
 
 class HamiltonianEfficiencyWarning(Warning):
     pass

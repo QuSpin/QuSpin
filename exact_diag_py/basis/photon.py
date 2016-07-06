@@ -4,6 +4,8 @@ from .tensor import tensor_basis
 import numpy as _np
 from scipy import sparse as _sp
 
+import warnings
+
 
 class photon_basis(tensor_basis):
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
@@ -58,7 +60,7 @@ class photon_basis(tensor_basis):
 
 			# calculates matrix elements of spin and photon basis
 
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
+			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,1.0,dtype,pauli)
 			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
 
 			# calculate total matrix element
@@ -72,6 +74,67 @@ class photon_basis(tensor_basis):
 			del ME_ph, row_ph, col_ph
 
 			return ME, row, col	
+
+
+	def check_hermitian(self,static_list,dynamic_list):
+		# assumes static and dynamic lists are ordered
+
+
+		# static list
+		if static_list:
+
+			static_expand = []
+			static_expand_hc = []
+			for opstr, bonds in static_list:
+				# calculate conjugate opstr
+				opstr_hc = opstr.replace('-','!')
+				opstr_hc = opstr_hc.replace('+','-')
+				opstr_hc = opstr_hc.replace('!','+')
+				for bond in bonds:
+					static_expand.append( (opstr,bond[0], tuple(bond[1:])) )
+					static_expand_hc.append( (opstr_hc, _np.conj(bond[0]),tuple(bond[1:]) ) )
+
+			# calculate non-hermitian elements
+			diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
+			if len(diff)!=0:
+				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+				warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
+				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+				if user_input == 'y':
+					print "   (opstr, coupling, indices)"
+					for i in xrange(len(diff)):
+						print "{}. {}".format(i+1, list(diff)[i])
+				raise TypeError("Hamiltonian not hermitian!")
+			
+			
+		if dynamic_list:
+			# define arbitrarily complicated weird-ass number
+			t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+
+			dynamic_expand = []
+			dynamic_expand_hc = []
+			for opstr, bonds, f, f_args in dynamic_list:
+				# calculate conjugate opstr
+				opstr_hc = opstr.replace('-','!')
+				opstr_hc = opstr_hc.replace('+','-')
+				opstr_hc = opstr_hc.replace('!','+')
+				for bond in bonds:
+					dynamic_expand.append( (opstr,bond[0]*f(t,*f_args), tuple(bond[1:])) )
+					dynamic_expand_hc.append( (opstr_hc, _np.conj(bond[0]*f(t,*f_args)),tuple(bond[1:]) ) )
+
+			# calculate non-hermitian elements
+			diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
+			if len(diff)!=0:
+				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+				warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
+				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+				if user_input == 'y':
+					print "   (opstr, coupling(t), indices)"
+					for i in xrange(len(diff)):
+						print "{}. {}".format(i+1, list(diff)[i])
+				raise TypeError("Hamiltonian not hermitian!")
+
+		print "Hermiticity check passed!"
 
 	def _get__str__(self):
 		if not self._pcon:
@@ -288,16 +351,18 @@ class ho_basis(basis):
 		return _sp.identity(self.Ns,dtype=dtype)
 
 
-	def Op(self,opstr,indx,J,dtype,*args):
+	def Op(self,opstr,J,dtype,*args):
 
 		row = _np.array(self._basis,dtype=self._dtype)
 		col = _np.array(self._basis,dtype=self._dtype)
 		ME = _np.ones((self._Ns,),dtype=dtype)
+
+		"""
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast J to proper dtype")
-
+		"""
 
 		for o in opstr[::-1]:
 			if o == "I":
