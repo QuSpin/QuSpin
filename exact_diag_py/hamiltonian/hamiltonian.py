@@ -300,6 +300,10 @@ class hamiltonian(object):
 	def dynamic(self):
 		return self._dynamic
 
+	@property
+	def pauli(self):
+		return self._pauli
+
 	def sum_duplicates(self):
 		"""
 		description:
@@ -798,7 +802,7 @@ class hamiltonian(object):
 		H_dense=_np.zeros(self._shape,dtype=self._dtype)
 		self.todense(time=time,out=H_dense)
 
-		E = _la.eigvalsh(H_dense,overwrite_a=True)
+		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
