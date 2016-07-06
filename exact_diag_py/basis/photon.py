@@ -46,13 +46,13 @@ class photon_basis(tensor_basis):
 			n=opstr.count("|")
 			if n > 1: 
 				raise ValueError("only one '|' charactor allowed")
+
+			if len(opstr)-1 != len(indx):
+				raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
+
 			i = opstr.index("|")
 			indx1 = indx[:i]
-			indx2 = indx[i:]
-
-			if not _np.can_cast(J,_np.dtype(dtype)):
-				raise TypeError("can't cast J to proper dtype")
-			
+			indx2 = indx[i:]			
 
 			opstr1,opstr2=opstr.split("|")
 
@@ -79,9 +79,10 @@ class photon_basis(tensor_basis):
 		else:
 			n_digits = int(_np.ceil(_np.log10(self._Ns)))
 			str_list_1 = self._b1._get__str__()
-			temp = "\t{0:"+str(n_digits)+"d}  "
+			temp = "\t{0:"+str(n_digits)+"d}.  "
 			str_list=[]
 			for b1 in str_list_1:
+				b1 = b1.replace(".","")
 				b1 = b1.split()
 				s1 = b1[1]
 				i1 = int(b1[0])

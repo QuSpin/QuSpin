@@ -16,22 +16,6 @@ from copy import deepcopy as _deepcopy
 import warnings
 
 
-# truncate float to n digits: used in method check_symm
-def truncate(f, n):
-    '''Truncates/pads a float f to n decimal places without rounding'''
-    s = '{}'.format(f)
-    if 'e' in s or 'E' in s:
-        return '{0:.{1}f}'.format(f, n)
-    i, p, d = s.partition('.')
-    return '.'.join([i, (d+'0'*n)[:n]])
-
-# find neares value in array: used in method check_symm
-def find_nearest(input_array,input_value):
-	#if not isinstance(input_array, _np.array):
-	#	input_array = _np.asarray(input_array)
-	idx = (_np.abs(input_array-input_value)).argmin()
-	return input_array[idx]
-
 
 class HamiltonianEfficiencyWarning(Warning):
     pass
@@ -89,23 +73,15 @@ def check_dynamic(sub_list):
 class hamiltonian(object):
 	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,copy=True,dtype=_np.complex128,**kwargs):
 		"""
-		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis1d.
+		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
 		"""
 
-		print "Marin: it might worthwhile mentioning online that dtype only affects the Hamiltonian opstrs, while the drive can still be complex even if dtype=real."
-		print "Marin: can we put a compulsory automatic check on the dynamic and static lists if some opstrs appear twice or more and concatenate them? This could lead to a big speed up for some users!! + warning for dynamic functions"
-		#print "Marin: I'm not sure it should be part of the hamiltonian class but can we put in similar diagonalisation routines for non-hermitian ops, like the evolution op U?"
-		print "Marin: can we merge the dot_no_check into dot but with an optional flag no_check=False?"
-		print "Marin: don't like the name of the function 'me' -- it's too cryptic; how about 'matrix_element'?"
-		print "Marin: not sure, but u may give it a check: when we print basis, do the pictorial representations |101....0> come out in the right order, i.e. is there a left <--> right flip needed?"
-
 		self._is_dense=False
 		self._ndim=2
-		self._symm_blocks = kwargs
-		self._L = L
-		self._dtype = dtype
 		self._pauli = pauli
+
+
 
 
 		if not (dtype in supported_dtypes):
@@ -137,10 +113,10 @@ class hamiltonian(object):
 		else: 
 			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx, functions, and function args')
 
-
 		# need for check_symm
 		self._static_opstr_list = static_opstr_list
 		self._dynamic_opstr_list = dynamic_opstr_list
+
 
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
@@ -156,10 +132,12 @@ class hamiltonian(object):
 					raise TypeError('argument L must be integer')
 
 				basis=_default_basis(L,**kwargs)
-#				print basis
 
 			elif not _isbasis(basis):
 				raise TypeError('expecting instance of basis class for argument: basis')
+
+			basis.check_hermitian(static_opstr_list, dynamic_opstr_list)
+			basis.check_symm(static_opstr_list,dynamic_opstr_list)
 
 			self._static=_make_static(basis,static_opstr_list,dtype,pauli)
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype,pauli)
@@ -294,9 +272,6 @@ class hamiltonian(object):
 
 		self.sum_duplicates()
 
-		basis.check_hermitian(static_list, dynamic_list)
-
-
 	@property
 	def ndim(self):
 		return self._ndim
@@ -372,6 +347,7 @@ class hamiltonian(object):
 
 		remove=[]
 		atol = 10*_np.finfo(self._dtype).eps
+		is_dense = False
 
 
 		if _sp.issparse(self._static):
@@ -399,7 +375,16 @@ class hamiltonian(object):
 
 		self._dynamic=tuple(self._dynamic)
 
+		self.check_is_dense()
 
+
+
+	def check_is_dense(self):
+		is_sparse = _sp.issparse(self._static)
+		for Hd,f,f_args in self._dynamic:
+			is_sparse *= _sp.issparse(Hd)
+
+		self._is_dense = not is_sparse
 
 	def tocsr(self,time=0,dtype=None):
 		"""
@@ -489,7 +474,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -i*H(t)*|V >
+			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 		"""
 
 		V_dot = self._static.dot(V)	
@@ -526,8 +511,77 @@ class hamiltonian(object):
 		return _sp.linalg.expm_multiply(a*self.tocsr(time),V,**linspace_args)
 
 
+	def comm(self,O,time=0,check=True,a=1): # H*O - O*H
+		O_out = a*self.rdot(O,time=time,check=check)
+		O_out = O_out - a*self.dot(O,time=time,check=check)
+		return O_out
 
-	def dot(self,V,time=0):
+
+
+	def rdot(self,V,time=0,check=True):
+		if self.Ns <= 0:
+			return _np.asarray([])
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar argument for time')
+
+		if not check:
+			V_dot = self._static.__rmul__(V)
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+			return V_dot
+
+
+
+		if V.__class__ is _np.ndarray:
+			if V.ndim != 2:
+				V = V.reshape((1,-1))
+				
+			if V.shape[1] != self._shape[0]:
+				raise ValueError('dimension mismatch')
+	
+			V_dot = self._static.__rmul__(V)
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+		elif _sm.issparse(V):
+			if V.shape[1] != self._shape[0]:
+				raise ValueError('dimension mismatch')
+	
+			V_dot = self._static.__rmul__(V)
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+
+		elif V.__class__ is _np.matrix:
+			if V.ndim != 2:
+				V = V.reshape((1,-1))
+
+			if V.shape[1] != self._shape[0]:
+				raise ValueError('dimension mismatch')
+
+			V_dot = self._static.__rmul__(V)
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+
+		else:
+			V = _np.asanyarray(V)
+
+			if V.ndim != 2:
+				V = V.reshape((1,-1))
+
+			if V.shape[1] != self._shape[0]:
+				raise ValueError('dimension mismatch')
+
+			V_dot = self._static.__rmul__(V)
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+		return V_dot
+
+		
+
+	def dot(self,V,time=0,check=True):
 		"""
 		args:
 			V, the vector to multiple with
@@ -544,23 +598,38 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
 
+		if not check:
+			V_dot = self._static.dot(V)	
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd.dot(V))
+			return V_dot
+
 		if V.__class__ is _np.ndarray:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 	
-			return self._dot_nocheck(V,time)
+			V_dot = self._static.dot(V)	
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd.dot(V))
+
 
 		elif _sm.issparse(V):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 	
-			return self._dot_nocheck(V,time)			
+			V_dot = self._static.dot(V)	
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd.dot(V))
+			return V_dot
 
 		elif V.__class__ is _np.matrix:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 
-			return self._dot_nocheck(V,time)
+			V_dot = self._static.dot(V)	
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd.dot(V))
+
 
 		else:
 			V = _np.asanyarray(V)
@@ -568,17 +637,14 @@ class hamiltonian(object):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 
-			return self._dot_nocheck(V,time)	
+			V_dot = self._static.dot(V)	
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd.dot(V))
 
-	def _dot_nocheck(self,V,time):
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
 		return V_dot
 
 
-
-	def me(self,Vl,Vr,time=0):
+	def matrix_ele(self,Vl,Vr,time=0):
 		"""
 		args:
 			Vl, the vector to multiple with on left side
