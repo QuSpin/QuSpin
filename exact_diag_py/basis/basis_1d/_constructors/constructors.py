@@ -440,7 +440,6 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	row = row[ mask ]
 	col = col[ mask ]
 	ME = ME[ mask ]
-#	print col,ME
 
 	if pauli:
 		if J != 1.0:

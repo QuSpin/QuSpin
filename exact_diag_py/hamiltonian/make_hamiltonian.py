@@ -4,6 +4,71 @@ import warnings
 import numpy as _np
 
 
+
+def _consolidate_bonds(bonds):
+	l = len(bonds)
+	i=0
+	while(i < l):
+		j = 0
+		while(j < l):
+			if i != j:
+				if bonds[i][1:] == bonds[j][1:]:
+					bonds[i][0] += bonds[j][0]
+					del bonds[j]
+					l = len(bonds)
+			j += 1
+		i += 1
+					
+
+
+
+def _consolidate_static(static_list):
+	l = len(static_list)
+	i=0
+	while(i < l):
+		j = 0
+		while(j < l):
+			if i != j:
+				opstr1,bonds1 = tuple(static_list[i])
+				opstr2,bonds2 = tuple(static_list[j])
+				if opstr1 == opstr2:
+					del static_list[j]
+					static_list[i][1].extend(bonds2)
+					_consolidate_bonds(static_list[i][1])
+					l = len(static_list)
+			j += 1
+		i += 1
+
+
+def _consolidate_dynamic(dynamic_list):
+	l = len(dynamic_list)
+	i = 0
+
+	while(i < l):
+		j = 0
+		while(j < l):
+			if i != j:
+				opstr1,bonds1,f1,f1_args = tuple(dynamic_list[i])
+				opstr2,bonds2,f2,f2_args = tuple(dynamic_list[j])
+				if (opstr1 == opstr2) and (f1 == f2) and (f1_args == f2_args):
+					del dynamic_list[j]
+					dynamic_list[i][1].extend(bonds2)
+					_consolidate_bonds(dynamic_list[i][1])
+					l = len(dynamic_list)
+			j += 1
+		i += 1
+
+
+
+def test_function(func,func_args):
+	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+	func_val=func(t,*func_args)
+	if not _np.isscalar(func_val):
+		raise TypeError("function must return scaler values")
+
+
+
+
 def make_static(basis,static_list,dtype,pauli):
 	"""
 	args:
@@ -22,6 +87,7 @@ def make_static(basis,static_list,dtype,pauli):
 	"""
 	Ns=basis.Ns
 	H = _sp.csr_matrix((Ns,Ns),dtype=dtype)
+	_consolidate_static(static_list)
 	for opstr,bonds in static_list:
 		for bond in bonds:
 			J=bond[0]
@@ -37,17 +103,6 @@ def make_static(basis,static_list,dtype,pauli):
 	return H 
 
 
-
-def test_function(func,func_args):
-	maxf=10.0
-	minf=-10.0
-	numbers = (maxf-minf)*_np.random.ranf(1000) + minf
-	for t in numbers:
-		func_val=func(t,*func_args)
-		if not _np.isscalar(func_val):
-			raise TypeError("function must return scaler values")
-		if _np.iscomplexobj(func_val):
-			warnings.warn("driving function returning complex values",UserWarning,stacklevel=4) 
 
 
 
@@ -71,10 +126,11 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 	"""
 	Ns=basis.Ns
 	dynamic=[]
+	_consolidate_dynamic(dynamic_list)
 	if dynamic_list:
 		for opstr,bonds,f,f_args in dynamic_list:
 			H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
-			if _np.isscalar(f_args): raise TypeError("function arguments must be iterable")
+			if _np.isscalar(f_args): raise TypeError("function arguments must be array type")
 			test_function(f,f_args)
 			for bond in bonds:
 				J=bond[0]
