@@ -1,6 +1,7 @@
 from ..base import basis,MAXPRINT
 from . import _constructors as _cn
 from ._1d_kblock_Ns import kblock_Ns
+from . import _check_spin_1d_symm as _check
 
 import numpy as _np
 from numpy import array,asarray
@@ -581,16 +582,17 @@ class spin_basis_1d(basis):
 
 	def _get__str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp = "\t{0:"+str(n_digits)+"d}  "+"|{1:0"+str(self._L)+"b}>"
+		temp1 = "\t{0:"+str(n_digits)+"d}.  "
+		temp2 = ">{0:0"+str(self._L)+"b}|"
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])]
-			str_list.extend([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(xrange(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(b)).reverse() for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = (temp.format(i,b) for i,b in enumerate(self._basis))
+			str_list = ((temp1.format(i))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis))
 
-		return str_list
+		return tuple(str_list)
 
 
 
@@ -599,10 +601,8 @@ class spin_basis_1d(basis):
 		indx = _np.asarray(indx,dtype=_np.int32)
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
-		if not _np.can_cast(J,_np.dtype(dtype)):
-			raise TypeError("can't cast J to proper dtype")
 		if _np.any(indx >= self._L) or _np.any(indx < 0):
-			raise ValueError('value in indx falls outside of system')
+			raise ValueError('values in indx falls outside of system')
 
 
 		if self._Ns <= 0:
@@ -618,6 +618,9 @@ class spin_basis_1d(basis):
 		return ME,row,col		
 
 
+	def check_symm(self,static_list,dynamic_list):
+		_check.check_symm(static_list,dynamic_list,self._L,**self._blocks)
+
 
 	def check_hermitian(self,static_list,dynamic_list):
 		# assumes static and dynamic lists are ordered
@@ -630,52 +633,51 @@ class spin_basis_1d(basis):
 			static_expand_hc = []
 			for opstr, bonds in static_list:
 				# calculate conjugate opstr
-				opstr_hc = opstr.replace('-','!')
-				opstr_hc = opstr_hc.replace('+','-')
-				opstr_hc = opstr_hc.replace('!','+')
+				opstr_hc = opstr.replace('-','#').replace('+','-').replace('#','+')
 				for bond in bonds:
-					static_expand.append( (opstr,bond[0], tuple(bond[1:])) )
-					static_expand_hc.append( (opstr_hc, _np.conj(bond[0]),tuple(bond[1:]) ) )
+					J = complex(bond[0])
+					indx = tuple(bond[1:])
+					new_opstr,new_indx = _check.sort_opstr(opstr,indx)
+					static_expand.append( (new_opstr,tuple(new_indx),J) )
+					new_opstr,new_indx = _check.sort_opstr(opstr_hc,indx)
+					static_expand_hc.append( (new_opstr,tuple(new_indx),J.conjugate()) )
 
 			# calculate non-hermitian elements
 			diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
-			if len(diff)!=0:
+			if diff:
 				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
 				warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
 				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
 				if user_input == 'y':
-					print "   (opstr, coupling, indices)"
+					print "   (opstr, indices, coupling)"
 					for i in xrange(len(diff)):
 						print "{}. {}".format(i+1, list(diff)[i])
 				raise TypeError("Hamiltonian not hermitian!")
 			
 			
-		if dynamic_list:
-			# define arbitrarily complicated weird-ass number
-			t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+		# define arbitrarily complicated weird-ass number
+		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 
-			dynamic_expand = []
-			dynamic_expand_hc = []
-			for opstr, bonds, f, f_args in dynamic_list:
-				# calculate conjugate opstr
-				opstr_hc = opstr.replace('-','!')
-				opstr_hc = opstr_hc.replace('+','-')
-				opstr_hc = opstr_hc.replace('!','+')
-				for bond in bonds:
-					dynamic_expand.append( (opstr,bond[0]*f(t,*f_args), tuple(bond[1:])) )
-					dynamic_expand_hc.append( (opstr_hc, _np.conj(bond[0]*f(t,*f_args)),tuple(bond[1:]) ) )
-
-			# calculate non-hermitian elements
-			diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
-			if len(diff)!=0:
-				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-				warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
-				if user_input == 'y':
-					print "   (opstr, coupling(t), indices)"
-					for i in xrange(len(diff)):
-						print "{}. {}".format(i+1, list(diff)[i])
-				raise TypeError("Hamiltonian not hermitian!")
+		dynamic_expand = []
+		dynamic_expand_hc = []
+		for opstr, bonds, f, f_args in dynamic_list:
+				J = complex(bond[0]*f(t,*f_args))
+				indx = tuple(bond[1:])
+				new_opstr,new_indx = _check.sort_opstr(opstr,indx)
+				static_expand.append( (new_opstr,tuple(new_indx),J) )
+				new_opstr,new_indx = _check.sort_opstr(opstr_hc,indx)
+				static_expand_hc.append( (new_opstr,tuple(new_indx),J.conjugate()) )
+		# calculate non-hermitian elements
+		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
+		if diff:
+			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
+			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			if user_input == 'y':
+				print "   (opstr, indices, coupling(t))"
+				for i in xrange(len(diff)):
+					print "{}. {}".format(i+1, list(diff)[i])
+			raise TypeError("Hamiltonian not hermitian!")
 
 		print "Hermiticity check passed!"
 

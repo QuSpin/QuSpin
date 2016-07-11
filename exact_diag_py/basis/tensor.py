@@ -89,13 +89,16 @@ class tensor_basis(basis):
 		n=opstr.count("|")
 		if n > 1: 
 			raise ValueError("only one '|' charactor allowed")
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
+
 		i = opstr.index("|")
 		indx1 = indx[:i]
 		indx2 = indx[i:]
 
 		opstr1,opstr2=opstr.split("|")
-		if not _np.can_cast(J,_np.dtype(dtype)):
-			raise TypeError("can't cast J to proper dtype")
+
 
 		if self._b1._Ns < self._b2._Ns:
 			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype,pauli)
