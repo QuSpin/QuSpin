@@ -1,4 +1,4 @@
-from .base import basis
+from .base import basis,MAXPRINT
 
 import numpy as _np
 from scipy import sparse as _sp

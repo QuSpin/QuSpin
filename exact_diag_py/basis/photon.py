@@ -11,6 +11,8 @@ class photon_basis(tensor_basis):
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
 		Ntot = blocks.get("Ntot")
 		Nph = blocks.get("Nph")
+		self.Nph = Nph
+		self.Ntot = Ntot
 		if Ntot is None:
 			self._pcon = False
 			if Nph is None: raise TypeError("If Ntot not specified, Nph must specify the number of photon states.")
@@ -18,9 +20,8 @@ class photon_basis(tensor_basis):
 			if type(Nph) is not int: raise TypeError("Nph must be integer")
 			b1 = basis_constructor(*constructor_args,**blocks)
 			b2 = ho_basis(Nph)
-			tensor.__init__(self,b1,b2)
+			tensor_basis.__init__(self,b1,b2)
 			self._blocks = blocks
-
 		else:
 			if type(Ntot) is not int: raise TypeError("Ntot must be integer")
 			del blocks["Ntot"]
@@ -42,7 +43,7 @@ class photon_basis(tensor_basis):
 			return [],[],[]
 
 		if not self._pcon:
-			return tensor.Op(self,opstr,indx,J,dtype,pauli)
+			return tensor_basis.Op(self,opstr,indx,J,dtype,pauli)
 		else:
 			# read off spin and photon operators
 			n=opstr.count("|")
@@ -60,7 +61,7 @@ class photon_basis(tensor_basis):
 
 			# calculates matrix elements of spin and photon basis
 
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,1.0,dtype,pauli)
+			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
 			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
 
 			# calculate total matrix element
@@ -138,7 +139,7 @@ class photon_basis(tensor_basis):
 
 	def _get__str__(self):
 		if not self._pcon:
-			return tensor._get__str__(self)
+			return tensor_basis._get__str__(self)
 		else:
 			n_digits = int(_np.ceil(_np.log10(self._Ns)))
 			str_list_1 = self._b1._get__str__()
@@ -167,7 +168,7 @@ class photon_basis(tensor_basis):
 
 	def get_vec(self,v0,sparse=True):
 		if not self._pcon:
-			return tensor.get_vec(self,v0,sparse=sparse)
+			return tensor_basis.get_vec(self,v0,sparse=sparse)
 		else:
 #			raise NotImplementedError("get_vec not implimented for particle conservation symm.")
 			# still needs testing...
@@ -193,7 +194,7 @@ class photon_basis(tensor_basis):
 
 	def get_proj(self,dtype):
 		if not self._pcon:
-			return tensor.get_proj(self,dtype)	
+			return tensor_basis.get_proj(self,dtype)	
 		else:
 			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
 			# still needs testing...
@@ -351,18 +352,18 @@ class ho_basis(basis):
 		return _sp.identity(self.Ns,dtype=dtype)
 
 
-	def Op(self,opstr,J,dtype,*args):
+	def Op(self,opstr,indx,J,dtype,*args):
 
 		row = _np.array(self._basis,dtype=self._dtype)
 		col = _np.array(self._basis,dtype=self._dtype)
 		ME = _np.ones((self._Ns,),dtype=dtype)
 
-		"""
+		
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast J to proper dtype")
-		"""
+		
 
 		for o in opstr[::-1]:
 			if o == "I":

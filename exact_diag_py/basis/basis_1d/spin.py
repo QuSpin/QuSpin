@@ -894,7 +894,7 @@ class spin_basis_1d(basis):
 				_np.divide(c,norms,c)
 		else:
 			if (type(kblock) is int):
-				if ((2*kblock*a) % L != 0) and _np.iscomplexobj(dtype(1.0)):
+				if ((2*kblock*a) % self._L != 0) and _np.iscomplexobj(dtype(1.0)):
 					raise TypeError("symmetries give complex vector, requested dtype is not complex")
 
 			ind_pos = _np.arange(0,self._Ns,1)
@@ -1176,8 +1176,8 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 			flipall(basis,L)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			fliplr(basis,L)

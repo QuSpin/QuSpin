@@ -4,14 +4,26 @@
 
 photon_test.py
 compile.py
-*.so
-
-
+compile_cython.sh
+test_photon.py
+photon_bug.py
+test_photon_old.py
+test_observables.py
+test.py
 photon_test.py
 compile.py
 compile_cython.py
 getvec_check.py
 TFIM_imag_time.py
+
+
+
+
+
+*.so
+
+
+
 
 
 
