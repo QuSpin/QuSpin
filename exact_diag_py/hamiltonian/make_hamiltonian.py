@@ -15,6 +15,9 @@ def _consolidate_bonds(bonds):
 				if bonds[i][1:] == bonds[j][1:]:
 					bonds[i][0] += bonds[j][0]
 					del bonds[j]
+					if bonds[i][0] == 0:
+						del bonds[i]
+
 					l = len(bonds)
 			j += 1
 		i += 1
@@ -92,7 +95,7 @@ def make_static(basis,static_list,dtype,pauli):
 		for bond in bonds:
 			J=bond[0]
 			indx=bond[1:]
-			indx = _np.asarray(indx,_np.int32)
+#			indx = _np.asarray(indx,_np.int32)
 			ME,row,col = basis.Op(opstr,indx,J,dtype,pauli)
 			Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 			H=H+Ht
@@ -135,7 +138,7 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 			for bond in bonds:
 				J=bond[0]
 				indx=bond[1:]
-				indx = _np.asarray(indx,_np.int32)
+#				indx = _np.asarray(indx,_np.int32)
 				ME,row,col = basis.Op(opstr,indx,J,dtype,pauli)
 				Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 				H=H+Ht

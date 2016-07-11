@@ -58,7 +58,13 @@ op={"":_cn.op,
 
 class spin_basis_1d(basis):
 	def __init__(self,L,Nup=None,_Np=None,**blocks):
+
+		if blocks.get("a") is None: # by default a = 1
+			a=1
+			blocks["a"]=1
+
 		if type(Nup) is int:
+			self._check_pcon=True
 			self._make_Nup_block(L,Nup=Nup,**blocks)
 	
 		elif Nup is None: # User hasn't specified Nup,
@@ -67,22 +73,27 @@ class spin_basis_1d(basis):
 				if type(_Np) is not int:
 					raise ValueError("Np must be integer")
 
-				blocks["count_spins"] = True
+				if _Np == -1: 
+					spin_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
+				elif _Np >= 0:
+					if _Np+1 > L: _Np = L
+					_Np = L
+					blocks["count_spins"] = True
 
-				if _Np == -1: _Np = L
-				if _Np+1 > L: _Np = L
-
-				zblock = blocks.get("zblock")
-				zAblock = blocks.get("zAblock")
-				zBblock = blocks.get("zAblock")
+					zblock = blocks.get("zblock")
+					zAblock = blocks.get("zAblock")
+					zBblock = blocks.get("zAblock")
 				
-				if (type(zblock) is int) or (type(zAblock) is int) or (type(zBblock) is int):
-					raise ValueError("spin inversion symmetry not compatible with photon_basis.")
+					if (type(zblock) is int) or (type(zAblock) is int) or (type(zBblock) is int):
+						raise ValueError("spin inversion symmetry not compatible with particle conserving photon_basis.")
 					
-				# loop over the first Np particle sectors (use the iterator initialization).
-				spin_basis_1d.__init__(self,L,Nup=xrange(_Np+1),Np=None,**blocks)
+					# loop over the first Np particle sectors (use the iterator initialization).
+					spin_basis_1d.__init__(self,L,Nup=xrange(_Np+1),_Np=None,**blocks)
+				else:
+					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 			else: # if _Np is None then assume user wants to not specify Magnetization sector
+				self._check_pcon = False
 				self._make_Nup_block(L,Nup=Nup,**blocks)
 
 
@@ -93,7 +104,6 @@ class spin_basis_1d(basis):
 				raise TypeError("Nup must be integer or iteratable object.")
 
 			blocks["check_z_symm"] = False
-
 			Nup = Nup_iter.next()
 #			print Nup
 			spin_basis_1d.__init__(self,L,Nup=Nup,**blocks)
@@ -116,11 +126,7 @@ class spin_basis_1d(basis):
 		zBblock=blocks.get("zBblock")
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
-
 		a=blocks.get("a")
-		if a is None: # by default a = 1
-			a=1
-			blocks["a"]=1
 
 
 		count_spins = blocks.get("count_spins")
@@ -202,6 +208,7 @@ class spin_basis_1d(basis):
 			raise ValueError("zA and zB symmetries incompatible with parity symmetry")
 
 		if check_z_symm:
+			blocks["Nup"] = Nup
 			# checking if spin inversion is compatible with Nup and L
 			if (type(Nup) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
 				if (L % 2) != 0:
@@ -577,28 +584,18 @@ class spin_basis_1d(basis):
 		return string 
 
 
+	def __type__(self):
+		return "<type 'exact_diag_py.basis.spin_basis_1d'>"
 
-
-
-	def _get__str__(self):
-		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp1 = "\t{0:"+str(n_digits)+"d}.  "
-		temp2 = ">{0:0"+str(self._L)+"b}|"
-
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(xrange(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(b)).reverse() for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = ((temp1.format(i))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis))
-
-		return tuple(str_list)
 
 
 
 
 	def Op(self,opstr,indx,J,dtype,pauli):
 		indx = _np.asarray(indx,dtype=_np.int32)
+
+		if opstr.count("|") > 0:
+			raise ValueError("charactor '|' not allowed in opstr: {0}".format(opstr)) 
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if _np.any(indx >= self._L) or _np.any(indx < 0):
@@ -616,71 +613,6 @@ class spin_basis_1d(basis):
 		ME = ME[mask]
 
 		return ME,row,col		
-
-
-	def check_symm(self,static_list,dynamic_list):
-		_check.check_symm(static_list,dynamic_list,self._L,**self._blocks)
-
-
-	def check_hermitian(self,static_list,dynamic_list):
-		# assumes static and dynamic lists are ordered
-
-
-		# static list
-		if static_list:
-
-			static_expand = []
-			static_expand_hc = []
-			for opstr, bonds in static_list:
-				# calculate conjugate opstr
-				opstr_hc = opstr.replace('-','#').replace('+','-').replace('#','+')
-				for bond in bonds:
-					J = complex(bond[0])
-					indx = tuple(bond[1:])
-					new_opstr,new_indx = _check.sort_opstr(opstr,indx)
-					static_expand.append( (new_opstr,tuple(new_indx),J) )
-					new_opstr,new_indx = _check.sort_opstr(opstr_hc,indx)
-					static_expand_hc.append( (new_opstr,tuple(new_indx),J.conjugate()) )
-
-			# calculate non-hermitian elements
-			diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
-			if diff:
-				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-				warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
-				if user_input == 'y':
-					print "   (opstr, indices, coupling)"
-					for i in xrange(len(diff)):
-						print "{}. {}".format(i+1, list(diff)[i])
-				raise TypeError("Hamiltonian not hermitian!")
-			
-			
-		# define arbitrarily complicated weird-ass number
-		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
-
-		dynamic_expand = []
-		dynamic_expand_hc = []
-		for opstr, bonds, f, f_args in dynamic_list:
-				J = complex(bond[0]*f(t,*f_args))
-				indx = tuple(bond[1:])
-				new_opstr,new_indx = _check.sort_opstr(opstr,indx)
-				static_expand.append( (new_opstr,tuple(new_indx),J) )
-				new_opstr,new_indx = _check.sort_opstr(opstr_hc,indx)
-				static_expand_hc.append( (new_opstr,tuple(new_indx),J.conjugate()) )
-		# calculate non-hermitian elements
-		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
-		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
-			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
-			if user_input == 'y':
-				print "   (opstr, indices, coupling(t))"
-				for i in xrange(len(diff)):
-					print "{}. {}".format(i+1, list(diff)[i])
-			raise TypeError("Hamiltonian not hermitian!")
-
-		print "Hermiticity check passed!"
-
 
 
 
@@ -911,6 +843,165 @@ class spin_basis_1d(basis):
 				_np.divide(c,norms,c)
 
 		return _get_proj_sparse(self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks)
+
+
+	"""
+	def check_pcon(self,static_list,dynamic_list,_pcon=False):
+		Nup = self._blocks.get("Nup")
+		if (type(Nup) is int) or (type(self._pcon_mod) is int):
+			base.check_pcon(self,static_list,dynamic_list)
+	"""
+
+	def check_symm(self,static_list,dynamic_list,basis=None):
+		if basis is None: 
+			basis = self
+		_check.check_symm(basis,static_list,dynamic_list,self._L)
+
+
+
+
+
+
+
+	# functions called in base class:
+
+
+	def _get__str__(self):
+		n_digits = int(_np.ceil(_np.log10(self._Ns)))
+		temp1 = "\t{0:"+str(n_digits)+"d}.  "
+		temp2 = ">{0:0"+str(self._L)+"b}|"
+
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i+1))+(temp2.format(b))[::-1] for i,b in zip(xrange(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i+1))+(temp2.format(b)).reverse() for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = ((temp1.format(i+1))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis))
+
+		return tuple(str_list)
+
+
+
+	def _sort_opstr(self,op):
+		if op[0].count("|") > 0:
+			raise ValueError("'|' character found in op: {0},{1}".format(op[0],op[1]))
+		if len(op[0]) != len(op[1]):
+			raise ValueError("number of operators in opstr: {0} not equal to length of indx {1}".format(op[0],op[1]))
+
+		op = list(op)
+		zipstr = list(zip(op[0],op[1]))
+		if zipstr:
+			zipstr.sort(key = lambda x:x[1])
+			op1,op2 = zip(*zipstr)
+			op[0] = "".join(op1)
+			op[1] = tuple(op2)
+		return tuple(op)
+
+	def _non_zero(self,op):
+		opstr = _np.array(list(op[0]))
+		indx = _np.array(op[1])
+		indx_p = indx[opstr == "+"].tolist()
+		p = not any(indx_p.count(x) > 1 for x in indx_p)
+		indx_p = indx[opstr == "-"].tolist()
+		m = not any(indx_p.count(x) > 1 for x in indx_p)
+		return (p and m)
+		
+
+
+	def _hc_opstr(self,op):
+		op = list(op)
+		# take h.c. + <--> - , reverse operator order , and conjugate coupling
+		op[0] = list(op[0].replace("+","%").replace("-","+").replace("%","-"))
+		op[0].reverse()
+		op[0] = "".join(op[0])
+		op[1] = list(op[1])
+		op[1].reverse()
+		op[1] = tuple(op[1])
+		op[2] = op[2].conjugate()
+		return self._sort_opstr(op) # return the sorted op.
+
+
+	def _expand_opstr(self,op,num):
+		opstr = str(op[0])
+		indx = list(op[1])
+		J = op[2]
+ 
+		if len(opstr) <= 1:
+			if opstr == "x":
+				op1 = list(op)
+				op1[0] = op1[0].replace("x","+")
+				op1[2] *= 0.5
+				op1.append(num)
+
+				op2 = list(op)
+				op2[0] = op2[0].replace("x","-")
+				op2[2] *= 0.5
+				op2.append(num)
+
+				return (tuple(op1),tuple(op2))
+			elif opstr == "y":
+				op1 = list(op)
+				op1[0] = op1[0].replace("y","+")
+				op1[2] *= -0.5j
+				op1.append(num)
+
+				op2 = list(op)
+				op2[0] = op2[0].replace("y","-")
+				op2[2] *= 0.5j
+				op2.append(num)
+
+				return (tuple(op1),tuple(op2))
+			else:
+				op = list(op)
+				op.append(num)
+				return [tuple(op)]	
+		else:
+	 
+			i = len(opstr)/2
+			op1 = list(op)
+			op1[0] = opstr[:i]
+			op1[1] = tuple(indx[:i])
+			op1[2] = complex(J)
+			op1 = tuple(op1)
+
+			op2 = list(op)
+			op2[0] = opstr[i:]
+			op2[1] = tuple(indx[i:])
+			op2[2] = complex(1)
+			op2 = tuple(op2)
+
+			l1 = self._expand_opstr(op1,num)
+			l2 = self._expand_opstr(op2,num)
+			l = []
+			for op1 in l1:
+				for op2 in l2:
+					op = list(op1)
+					op[0] += op2[0]
+					op[1] += op2[1]
+					op[2] *= op2[2]
+					l.append(tuple(op))
+				
+	
+			return tuple(l)
+
+
+	def symm_op(self,op,symm):
+		if symm == "T_symm": pass
+		elif symm == "P_symm": pass
+		elif symm == "Z_symm": pass
+		elif symm == "PZ_symm": pass
+		elif symm == "ZA_symm": pass
+		elif symm == "ZB_symm": pass
+		else:
+			raise ValueError("{0} is not a valid symmetry of spin_basis_1d")
+		
+
+
+
+
+
+
+
 
 
 

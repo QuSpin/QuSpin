@@ -1,9 +1,10 @@
-from .base import basis
+from .base import basis,MAXPRINT
 
 import numpy as _np
 from scipy import sparse as _sp
 from scipy.sparse import linalg as _sla
 from scipy import linalg as _la
+import warnings
 
 
 # gives the basis for the kronecker/Tensor product of two basis: b1 (x) b2
@@ -24,26 +25,282 @@ class tensor_basis(basis):
 		self._Ns = b1.Ns*b2.Ns
 		self._dtype = _np.min_scalar_type(-self._Ns)
 
+		self._blocks = self._b1._blocks.copy()
+		self._blocks.update(self._b2._blocks)
+
 		self._operators = self._b1._operators +"\n"+ self._b2._operators
+#		self._check_pcon = self._b1._check_pcon and self._b2._check_pcon
+
+
+	def Op(self,opstr,indx,J,dtype,pauli):
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx1 = indx[:i]
+		indx2 = indx[i:]
+
+		opstr1,opstr2=opstr.split("|")
+
+		if self._b1._Ns < self._b2._Ns:
+			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype,pauli)
+			ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
+		else:
+			ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype,pauli)
+			ME2,row2,col2 = self._b2.Op(opstr2,indx2,J,dtype,pauli)
+			
+
+		n1 = row1.shape[0]
+		n2 = row2.shape[0]
+
+
+		if n1 > 0 and n2 > 0:
+			row1 = row1.astype(self._dtype)
+			row1 *= self._b2.Ns
+			row = _np.kron(row1,_np.ones_like(row2))
+			row += _np.kron(_np.ones_like(row1),row2)
+
+			del row1,row2
+
+			col1 = col1.astype(self._dtype)
+			col1 *= self._b2.Ns
+			col = _np.kron(col1,_np.ones_like(col2))
+			col += _np.kron(_np.ones_like(col1),col2)
+
+			del col1,col2
+
+			ME = _np.kron(ME1,ME2)
+
+			del ME1,ME2
+		else:
+			row = _np.array([])
+			col = _np.array([])
+			ME = _np.array([])
+
+
+		return ME,row,col
+
+
+
+
+
+	def get_vec(self,v0,sparse=True,full_1=True,full_2=True):
+		if self._Ns <= 0:
+			return _np.array([])
+
+		if v0.ndim == 1:
+			if v0.shape[0] != self._Ns:
+				raise ValueError("v0 has incompatible dimensions with basis")
+			v0 = v0.reshape((-1,1))
+			return _combine_get_vec(self,v0,sparse,full_1,full_2)
+		elif v0.ndim == 2:
+			if v0.shape[0] != self._Ns:
+				raise ValueError("v0 has incompatible dimensions with basis")
+			return _combine_get_vecs(self,v0,sparse,full_1,full_2)
+		else:
+			raise ValueError("excpecting v0 to have ndim at most 2")
+
+
+
+
+	def get_proj(self,dtype,full_1=True,full_2=True):
+		if full_1:
+			proj1 = self._b1.get_proj(dtype)
+		else:
+			proj1 = _sp.identity(self._b1.Ns,dtype=dtype)
+
+		if full_2:
+			proj2 = self._b2.get_proj(dtype)
+		else:
+			proj2 = _sp.identity(self._b2.Ns,dtype=dtype)
+
+
+		return _sp.kron(proj1,proj2)
+
+
+
+	def __name__(self):
+		return "<type 'exact_diag_py.basis.tensor_basis'>"
+
+
+
+	def _sort_opstr(self,op):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+
+		if opstr.count("|") == 0: 
+			raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx1 = indx[:i]
+		indx2 = indx[i:]
+
+		opstr1,opstr2=opstr.split("|")
+
+		op1 = list(op)
+		op1[0] = opstr1
+		op1[1] = tuple(indx1)
+
+		op2 = list(op)
+		op2[0] = opstr2
+		op2[1] = tuple(indx2)
+		
+		op1 = self._b1.sort_opstr(op1)
+		op2 = self._b2.sort_opstr(op2)
+
+		op[0] = "|".join((op1[0],op2[0]))
+		op[1] = op1[1] + op2[1]
+		
+		return tuple(op)
+
+
+
+
+	def _hc_opstr(self,op):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx1 = indx[:i]
+		indx2 = indx[i:]
+
+		opstr1,opstr2=opstr.split("|")
+
+		op1 = list(op)
+		op1[0] = opstr1
+		op1[1] = indx1
+
+		op2 = list(op)
+		op2[0] = opstr2
+		op2[1] = indx2
+		
+		op1 = self._b1.hc_opstr(op1)
+		op2 = self._b2.hc_opstr(op2)
+
+		op[0] = "|".join((op1[0],op2[0]))
+		op[1] = op1[1] + op2[1]
+
+		op[2] = op[2].conjugate()
+
+		return tuple(op)
+	
+
+	def _non_zero(self,op):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx1 = indx[:i]
+		indx2 = indx[i:]
+
+		opstr1,opstr2=opstr.split("|")
+
+		op1 = list(op)
+		op1[0] = opstr1
+		op1[1] = indx1
+
+		op2 = list(op)
+		op2[0] = opstr2
+		op2[1] = indx2
+
+		return (self._b1.non_zero(op1) and self._b2.non_zero(op2))
+
+
+
+	def _expand_opstr(self,op,num):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx1 = indx[:i]
+		indx2 = indx[i:]
+
+		opstr1,opstr2=opstr.split("|")
+
+		op1 = list(op)
+		op1[0] = opstr1
+		op1[1] = indx1
+
+		op2 = list(op)
+		op2[0] = opstr2
+		op2[1] = indx2
+
+		op1_list = self._b1.expand_opstr(op1,num)
+		op2_list = self._b2.expand_opstr(op2,num)
+
+		op_list = []
+		for new_op1 in op1_list:
+			for new_op2 in op2_list:
+				new_op = list(new_op1)
+				new_op[0] = "|".join((new_op1[0],new_op2[0]))
+				new_op[1] += tuple(new_op2[1])
+				new_op[2] *= new_op2[2]
+
+
+				op_list.append(tuple(new_op))
+
+		return tuple(op_list)
+			
+
 
 
 
 	def _get__str__(self):
+		if not hasattr(self._b1,"_get__str__"):
+			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b1)),UserWarning,stacklevel=3)
+			return "reference states: \n\t not availible"
+
+		if not hasattr(self._b2,"_get__str__"):
+			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self_b2)),UserWarning,stacklevel=3)
+			return "reference states: \n\t not availible"
+
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
+
 		str_list_1 = self._b1._get__str__()
 		str_list_2 = self._b2._get__str__()
 		Ns2 = self._b2.Ns
-		temp = "\t{0:"+str(n_digits)+"d}  "
+		temp = "\t{0:"+str(n_digits)+"d}.  "
 		str_list=[]
 		for b1 in str_list_1:
-			b1 = b1.split()
+			b1 = b1.replace(".","").split()
 			s1 = b1[1]
-			i1 = int(b1[0])
+			i1 = int(b1[0])-1
 			for b2 in str_list_2:
-				b2 = b2.split()
+				b2 = b2.replace(".","").split()
 				s2 = b2[1]
-				i2 = int(b2[0])
-				str_list.append((temp.format(i2+Ns2*i1))+"\t"+s1+s2)
+				i2 = int(b2[0])-1
+				str_list.append((temp.format(i2+Ns2*i1+1))+"\t"+s1+s2)
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT//2
@@ -59,77 +316,13 @@ class tensor_basis(basis):
 
 
 
-	def get_vec(self,v0,sparse=True):
-		if self._Ns <= 0:
-			return _np.array([])
-
-		if v0.ndim == 1:
-			if v0.shape[0] != self._Ns:
-				raise ValueError("v0 has incompatible dimensions with basis")
-			v0 = v0.reshape((-1,1))
-			return _combine_get_vec(self,v0,sparse)
-		elif v0.ndim == 2:
-			if v0.shape[0] != self._Ns:
-				raise ValueError("v0 has incompatible dimensions with basis")
-			return _combine_get_vecs(self,v0,sparse)
-		else:
-			raise ValueError("excpecting v0 to have ndim at most 2")
 
 
 
 
-	def get_proj(self,dtype):
-		proj1 = self._b1.get_proj(dtype)
-		proj2 = self._b2.get_proj(dtype)
-
-		return _sp.kron(proj1,proj2)
 
 
-	def Op(self,opstr,indx,J,dtype,pauli):
-		n=opstr.count("|")
-		if n > 1: 
-			raise ValueError("only one '|' charactor allowed")
 
-		if len(opstr)-1 != len(indx):
-			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
-
-		i = opstr.index("|")
-		indx1 = indx[:i]
-		indx2 = indx[i:]
-
-		opstr1,opstr2=opstr.split("|")
-
-
-		if self._b1._Ns < self._b2._Ns:
-			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype,pauli)
-			ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
-		else:
-			ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype,pauli)
-			ME2,row2,col2 = self._b2.Op(opstr2,indx2,J,dtype,pauli)
-			
-
-		n1 = row1.shape[0]
-		n2 = row2.shape[0]
-
-		row1 = row1.astype(self._dtype)
-		row1 *= self._b2.Ns
-		row = _np.kron(row1,_np.ones_like(row2))
-		row += _np.kron(_np.ones_like(row1),row2)
-
-		del row1,row2
-
-		col1 = col1.astype(self._dtype)
-		col1 *= self._b2.Ns
-		col = _np.kron(col1,_np.ones_like(col2))
-		col += _np.kron(_np.ones_like(col1),col2)
-
-		del col1,col2
-
-		ME = _np.kron(ME1,ME2)
-
-		del ME1,ME2
-
-		return ME,row,col
 
 
 		
@@ -139,9 +332,9 @@ class tensor_basis(basis):
 
 
 
-def _combine_get_vec(basis,v0,sparse):
-	Ns1=basis.b1.Ns
-	Ns2=basis.b2.Ns
+def _combine_get_vec(basis,v0,sparse,full_1,full_2):
+	Ns1=basis._b1.Ns
+	Ns2=basis._b2.Ns
 
 	Ns = min(Ns1,Ns2)
 
@@ -175,8 +368,11 @@ def _combine_get_vec(basis,v0,sparse):
 
 
 	# Next thing to do is take those vectors and convert them to their full hilbert space
-	V1=basis.b1.get_vec(V1,sparse)
-	V2=basis.b2.get_vec(V2,sparse)
+	if full_1:
+		V1=basis._b1.get_vec(V1,sparse)
+
+	if full_2:
+		V2=basis._b2.get_vec(V2,sparse)
 
 
 	# calculate the dimension total hilbert space with no symmetries
@@ -211,11 +407,11 @@ def _combine_get_vec(basis,v0,sparse):
 
 
 
-def _combine_get_vecs(basis,V0,sparse):
+def _combine_get_vecs(basis,V0,sparse,full_1,full_2):
 	v0_list=[]
 	V0=V0.T
 	for v0 in V0:
-		v0_list.append(_combine_get_vec(basis,v0,sparse))
+		v0_list.append(_combine_get_vec(basis,v0,sparse,full_1,full_2))
 
 	if sparse:
 		V0=_sp.hstack(v0_list)

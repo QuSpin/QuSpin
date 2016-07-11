@@ -34,7 +34,7 @@ def check_static(sub_list):
 		if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
 		if type(sub_list[1]) in [list,tuple]:
 			for sub_sub_list in sub_list[1]:
-				if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 1):
+				if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 0):
 					for element in sub_sub_list:
 						if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
 				else: raise TypeError('expecting list for indx') 
@@ -49,7 +49,7 @@ def check_dynamic(sub_list):
 		if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
 		if type(sub_list[1]) in [list,tuple]:
 			for sub_sub_list in sub_list[1]:
-				if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 1):
+				if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 0):
 					for element in sub_sub_list:
 						if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
 				else: raise TypeError('expecting list for indx') 
@@ -71,7 +71,7 @@ def check_dynamic(sub_list):
 
 
 class hamiltonian(object):
-	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,copy=True,dtype=_np.complex128,**kwargs):
+	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
@@ -136,8 +136,22 @@ class hamiltonian(object):
 			elif not _isbasis(basis):
 				raise TypeError('expecting instance of basis class for argument: basis')
 
-			basis.check_hermitian(static_opstr_list, dynamic_opstr_list)
-			basis.check_symm(static_opstr_list,dynamic_opstr_list)
+			if check_herm:
+				basis.check_hermitian(static_opstr_list, dynamic_opstr_list)
+
+			if check_symm:
+				if hasattr(basis,"check_symm") :
+					basis.check_symm(static_opstr_list,dynamic_opstr_list)
+				else:
+					warnings.warn("basis {0} has no symmetry checks. To turn off this warning set check_symm=False".format(type(basis)),UserWarning,stacklevel=2)
+
+			if check_pcon:
+				if hasattr(basis,"check_pcon"):
+					basis.check_pcon(static_opstr_list,dynamic_opstr_list)
+				else:
+					warnings.warn("basis {0} has no check for particle consrevation. To turn off this warning set check_pcon=False".format(type(basis)),UserWarning,stacklevel=2)
+
+
 
 			self._static=_make_static(basis,static_opstr_list,dtype,pauli)
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype,pauli)

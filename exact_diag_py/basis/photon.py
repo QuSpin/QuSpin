@@ -11,44 +11,56 @@ class photon_basis(tensor_basis):
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
 		Ntot = blocks.get("Ntot")
 		Nph = blocks.get("Nph")
+		
+
 		if Ntot is None:
-			self._pcon = False
-			if Nph is None: raise TypeError("If Ntot not specified, Nph must specify the number of photon states.")
-			del blocks["Nph"]
+			if Nph is None: raise TypeError("If Ntot not specified, Nph must specify the cutoff on the number of photon states.")
 			if type(Nph) is not int: raise TypeError("Nph must be integer")
-			b1 = basis_constructor(*constructor_args,**blocks)
+			if Nph < 0: raise ValueError("Nph must be an integer >= 0.")
+
+			self._check_pcon=False
+			b1 = basis_constructor(*constructor_args,_Np=-1,**blocks)
 			b2 = ho_basis(Nph)
-			tensor.__init__(self,b1,b2)
-			self._blocks = blocks
+			tensor_basis.__init__(self,b1,b2)
+
 
 		else:
 			if type(Ntot) is not int: raise TypeError("Ntot must be integer")
-			del blocks["Ntot"]
-			self._pcon=True
+			if Ntot < 0: raise ValueError("Ntot must be an integer >= 0.")
+
+			self._check_pcon=True
 			self._b1 = basis_constructor(*constructor_args,_Np=Ntot,**blocks)
 			if isinstance(self._b1,tensor_basis): raise TypeError("Can only create photon basis with non-tensor type basis")
 			if not isinstance(self._b1,basis): raise TypeError("Can only create photon basis with basis type")
 			self._b2 = ho_basis(Ntot)
 			self._n = Ntot - self._b1._Np
-			self._blocks = blocks
+			self._blocks = self._b1._blocks
 			self._Ns = self._b1._Ns
 			self._operators = self._b1._operators +"\n"+ self._b2._operators
 			
-
 
 
 	def Op(self,opstr,indx,J,dtype,pauli):
 		if self._Ns <= 0:
 			return [],[],[]
 
-		if not self._pcon:
-			return tensor.Op(self,opstr,indx,J,dtype,pauli)
+		opstr1,opstr2=opstr.split("|")
+
+		if len(opstr1) != len(indx):
+			raise ValueError("The length of indx must be the same length as particle operators in {0},{1}".format(opstr,indx))
+
+
+		if not self._check_pcon:
+			n = len(opstr.replace("|","")) - len(indx)
+			indx.extend([min(indx) for i in xrange(n)])
+			return tensor_basis.Op(self,opstr,indx,J,dtype,pauli)
 		else:
 			# read off spin and photon operators
-			n=opstr.count("|")
-			if n > 1: 
-				raise ValueError("only one '|' charactor allowed")
+			n = len(opstr.replace("|","")) - len(indx)
+			indx.extend([min(indx) for i in xrange(n)])
 
+			if opstr.count("|") > 1: 
+				raise ValueError("only one '|' charactor allowed in opstr {0}".format(opstr))
 			if len(opstr)-1 != len(indx):
 				raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
 
@@ -60,7 +72,7 @@ class photon_basis(tensor_basis):
 
 			# calculates matrix elements of spin and photon basis
 
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,1.0,dtype,pauli)
+			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
 			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
 
 			# calculate total matrix element
@@ -76,71 +88,77 @@ class photon_basis(tensor_basis):
 			return ME, row, col	
 
 
-	def check_hermitian(self,static_list,dynamic_list):
-		# assumes static and dynamic lists are ordered
+	"""
+	def check_pcon(self,static_list,dynamic_list):
+		if hasattr(self._b1,"check_check_pcon"):
+			try:
+				self._b1.check_check_pcon(static_list,dynamic_list,_check_pcon=self._check_pcon)
+			except TypeError:
+				raise TypeError("Hamiltonian does not conserve particle number! To turn off this check set check_check_pcon=False in hamiltonian.")
+		else:
+			warnings.warn("particle basis in photon_basis has no check for particle consrevation. To turn off this check set check_check_pcon=False in hamiltonian.",UserWarning,stacklevel=3)
+	"""
+
+	def check_symm(self,static_list,dynamic_list):
+		if hasattr(self._b1,"check_symm"):
+			self._b1.check_symm(static_list,dynamic_list,basis=self)
+		else:
+			warnings.warn("particle basis {0} in photon_basis has no check for symmetries. To turn off this check set check_symm=False in hamiltonian.".format(type(self._b1)),UserWarning,stacklevel=3)
+		
 
 
-		# static list
-		if static_list:
+	def get_vec(self,v0,sparse=True,full_part=True):
+		if not self._check_pcon:
+			return tensor_basis.get_vec(self,v0,sparse=sparse,full_1=full_part)
+		else:
+#			raise NotImplementedError("get_vec not implimented for particle conservation symm.")
+			# still needs testing...
+			if v0.ndim == 1:
+				if v0.shape[0] != self._Ns:
+					raise ValueError("v0 has incompatible dimensions with basis")
+				v0 = v0.reshape((-1,1))
+				if sparse:
+					return _conserved_get_vec(self,v0,sparse,full_part)
+				else:
+					return _conserved_get_vec(self,v0,sparse,full_part).reshape((-1,))
 
-			static_expand = []
-			static_expand_hc = []
-			for opstr, bonds in static_list:
-				# calculate conjugate opstr
-				opstr_hc = opstr.replace('-','!')
-				opstr_hc = opstr_hc.replace('+','-')
-				opstr_hc = opstr_hc.replace('!','+')
-				for bond in bonds:
-					static_expand.append( (opstr,bond[0], tuple(bond[1:])) )
-					static_expand_hc.append( (opstr_hc, _np.conj(bond[0]),tuple(bond[1:]) ) )
+			elif v0.ndim == 2:
+				if v0.shape[0] != self._Ns:
+					raise ValueError("v0 has incompatible dimensions with basis")
 
-			# calculate non-hermitian elements
-			diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
-			if len(diff)!=0:
-				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-				warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
-				if user_input == 'y':
-					print "   (opstr, coupling, indices)"
-					for i in xrange(len(diff)):
-						print "{}. {}".format(i+1, list(diff)[i])
-				raise TypeError("Hamiltonian not hermitian!")
-			
-			
-		if dynamic_list:
-			# define arbitrarily complicated weird-ass number
-			t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+				return _conserved_get_vec(self,v0,sparse,full_part)
+			else:
+				raise ValueError("excpecting v0 to have ndim at most 2")
 
-			dynamic_expand = []
-			dynamic_expand_hc = []
-			for opstr, bonds, f, f_args in dynamic_list:
-				# calculate conjugate opstr
-				opstr_hc = opstr.replace('-','!')
-				opstr_hc = opstr_hc.replace('+','-')
-				opstr_hc = opstr_hc.replace('!','+')
-				for bond in bonds:
-					dynamic_expand.append( (opstr,bond[0]*f(t,*f_args), tuple(bond[1:])) )
-					dynamic_expand_hc.append( (opstr_hc, _np.conj(bond[0]*f(t,*f_args)),tuple(bond[1:]) ) )
 
-			# calculate non-hermitian elements
-			diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
-			if len(diff)!=0:
-				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-				warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
-				if user_input == 'y':
-					print "   (opstr, coupling(t), indices)"
-					for i in xrange(len(diff)):
-						print "{}. {}".format(i+1, list(diff)[i])
-				raise TypeError("Hamiltonian not hermitian!")
 
-		print "Hermiticity check passed!"
+
+	def get_proj(self,dtype,full_part=True):
+		if not self._check_pcon:
+			return tensor_basis.get_proj(self,dtype,full_1=full_part)	
+		else:
+			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
+			# still needs testing...
+			return _conserved_get_proj(self,dtype,full_part)
+
+
+
+
+
+	def __name__(self):
+		return "<type 'exact_diag_py.basis.photon_basis'>"
+
 
 	def _get__str__(self):
-		if not self._pcon:
-			return tensor._get__str__(self)
+		if not self._check_pcon:
+			return tensor_basis._get__str__(self)
 		else:
+			if not hasattr(self._b1,"_get__str__"):
+				warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b1)),UserWarning,stacklevel=3)
+				return "reference states: \n\t not availible"
+
 			n_digits = int(_np.ceil(_np.log10(self._Ns)))
+
 			str_list_1 = self._b1._get__str__()
 			temp = "\t{0:"+str(n_digits)+"d}.  "
 			str_list=[]
@@ -148,9 +166,9 @@ class photon_basis(tensor_basis):
 				b1 = b1.replace(".","")
 				b1 = b1.split()
 				s1 = b1[1]
-				i1 = int(b1[0])
+				i1 = int(b1[0])-1
 				s2 = "|{0}>".format(self._n[i1])
-				str_list.append((temp.format(i1))+"\t"+s1+s2)
+				str_list.append((temp.format(i1+1))+"\t"+s1+s2)
 
 			if self._Ns > MAXPRINT:
 				half = MAXPRINT//2
@@ -164,41 +182,61 @@ class photon_basis(tensor_basis):
 
 
 
+	def _sort_opstr(self,op):
+		return tensor_basis._sort_opstr(self,op)
+
+	def _hc_opstr(self,op):
+		return tensor_basis._hc_opstr(self,op)
 
 
-	def get_vec(self,v0,sparse=True):
-		if not self._pcon:
-			return tensor.get_vec(self,v0,sparse=sparse)
-		else:
-#			raise NotImplementedError("get_vec not implimented for particle conservation symm.")
-			# still needs testing...
-			if v0.ndim == 1:
-				if v0.shape[0] != self._Ns:
-					raise ValueError("v0 has incompatible dimensions with basis")
-				v0 = v0.reshape((-1,1))
-				if sparse:
-					return _conserved_get_vec(self,v0,sparse)
-				else:
-					return _conserved_get_vec(self,v0,sparse).reshape((-1,))
+	def _get_lists(self,static,dynamic): #overwrite the default get_lists from base.
+		static_list = []
+		for opstr,bonds in static:
+			for bond in bonds:
+				indx = list(bond[1:])
 
-			elif v0.ndim == 2:
-				if v0.shape[0] != self._Ns:
-					raise ValueError("v0 has incompatible dimensions with basis")
 
-				return _conserved_get_vec(self,v0,sparse)
-			else:
-				raise ValueError("excpecting v0 to have ndim at most 2")
+				if opstr.count("|") == 0: 
+					raise ValueError("missing '|' character in: {0}, {1}".format(opstr,indx))
+
+				opstr1,opstr2=opstr.split("|")
+				if len(opstr1) != len(indx):
+					raise ValueError("The length of indx must be the same length as particle operators in {0},{1}".format(opstr,indx))
+
+				# extend the operators such that the photon ops get an index.
+				# choose that the index is equal to the smallest indx of the spin operators
+				n = len(opstr.replace("|","")) - len(indx)
+				indx.extend([min(indx) for i in xrange(n)])
 
 
 
+				J = complex(bond[0])
+				static_list.append((opstr,tuple(indx),J))
 
-	def get_proj(self,dtype):
-		if not self._pcon:
-			return tensor.get_proj(self,dtype)	
-		else:
-			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
-			# still needs testing...
-			return _conserved_get_proj(self,dtype)
+		dynamic_list = []
+		for opstr,bonds,f,f_args in dynamic:
+			for bond in bonds:
+				indx = list(bond[1:])
+
+				if opstr.count("|") == 0: 
+					raise ValueError("missing '|' character in: {0}, {1}".format(opstr,indx))
+
+				opstr1,opstr2=opstr.split("|")
+				if len(opstr1) != len(indx):
+					raise ValueError("The length of indx must be the same length as particle operators in {0},{1}".format(opstr,indx))
+
+				# extend the operators such that the photon ops get an index.
+				# choose that the index is equal to the smallest indx of the spin operators
+				n = len(opstr.replace("|","")) - len(indx)
+				indx.extend([min(indx) for i in xrange(n)])
+
+				J = complex(bond[0])
+				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
+
+		return tensor_basis.sort_list(self,static_list),tensor_basis.sort_list(self,dynamic_list)
+
+
+
 				
 
 
@@ -208,7 +246,7 @@ class photon_basis(tensor_basis):
 
 
 
-def _conserved_get_vec(p_basis,v0,sparse):
+def _conserved_get_vec(p_basis,v0,sparse,full_part):
 	v0_mask = _np.zeros_like(v0)
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
@@ -218,7 +256,10 @@ def _conserved_get_vec(p_basis,v0,sparse):
 	mask = p_basis._n == np_min
 	v0_mask[mask] = v0[mask]
 
-	v0_full = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+	if full_part:
+		v0_full = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+	else:
+		v0_full = v0_mask
 
 	if sparse:
 		v0_full = _sp.kron(v0_full,v_ph,format="csr")
@@ -232,7 +273,11 @@ def _conserved_get_vec(p_basis,v0,sparse):
 		v_ph[np] = 1
 		mask = p_basis._n == np
 		v0_mask[mask] = v0[mask]
-		v0_full_1 = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+
+		if full_part:
+			v0_full_1 = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+		else:
+			v0_full_1 = v0_mask
 
 		if sparse:
 			v0_full = v0_full + _sp.kron(v0_full_1,v_ph,format="csr")
@@ -251,12 +296,16 @@ def _conserved_get_vec(p_basis,v0,sparse):
 
 
 
-def _conserved_get_proj(p_basis,dtype):
+def _conserved_get_proj(p_basis,dtype,full_part):
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
 	v_ph = _np.zeros((np_max+1,1),dtype=_np.int32)
 
-	proj_1 = p_basis._b1.get_proj(dtype).tocsc()
+	if full_part:
+		proj_1 = p_basis._b1.get_proj(dtype).tocsc()
+	else:
+		proj_1 = _sp.identity(p_basis.Ns,dtype=dtype,format="csc")
+
 	proj_1_mask = _sp.csc_matrix(proj_1.shape,dtype=dtype)
 
 	v_ph[np_min] = 1
@@ -310,6 +359,8 @@ class ho_basis(basis):
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator")
 
+		self._blocks = {}
+
 
 
 	def get_vec(self,v0,sparse=True):
@@ -334,36 +385,63 @@ class ho_basis(basis):
 
 	def _get__str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp = "\t{0:"+str(n_digits)+"d}  "+"|{0}>"
+		temp = "\t{0:"+str(n_digits)+"d}.  "+"|{0}>"
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])]
+			str_list = [temp.format(i+1,b) for i,b in zip(xrange(half),self._basis[:half])]
 			str_list.extend([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [temp.format(i,b) for i,b in enumerate(self._basis)]
+			str_list = [temp.format(i+1,b) for i,b in enumerate(self._basis)]
 
 		return str_list
 
 		
+	def _sort_opstr(self,op):
+		return tuple(op)
+
+
+	def _hc_opstr(self,op):
+		op = list(op)
+		op[0] = list(op[0].replace("+","%").replace("-","+").replace("%","-"))
+		op[0].reverse()
+		op[0] = "".join(op[0])
+
+		op[1] = list(op[1])
+		op[1].reverse()
+		op[1] = tuple(op[1])
+
+		op[2] = op[2].conjugate()
+		return self._sort_opstr(op)
+
+
+	def _non_zero(self,op):
+		m = (op[0].count("-") > self._Np)
+		p = (op[0].count("+") > self._Np)
+		return (p or m)
+
+
+	def _expand_opstr(self,op,num):
+		op = list(op)
+		op.append(num)
+		op = tuple(op)
+		return tuple([op])
 
 
 	def get_proj(self,dtype):
 		return _sp.identity(self.Ns,dtype=dtype)
 
 
-	def Op(self,opstr,J,dtype,*args):
+	def Op(self,opstr,indx,J,dtype,*args):
 
 		row = _np.array(self._basis,dtype=self._dtype)
 		col = _np.array(self._basis,dtype=self._dtype)
 		ME = _np.ones((self._Ns,),dtype=dtype)
 
-		"""
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 		if not _np.can_cast(J,_np.dtype(dtype)):
 			raise TypeError("can't cast J to proper dtype")
-		"""
 
 		for o in opstr[::-1]:
 			if o == "I":
@@ -380,8 +458,10 @@ class ho_basis(basis):
 				raise Exception("operator symbol {0} not recognized".format(o))
 
 		mask = ( col < 0)
-		mask += (col > (self._Ns))
-		ME[mask] *= 0.0
+		mask += (col >= (self._Ns))
+		col[mask] = row[mask]
+		ME[mask] = 0.0
+
 		
 		if J != 1.0: 
 			ME *= J
