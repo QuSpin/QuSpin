@@ -3,6 +3,7 @@ def configuration(parent_package='',top_path=None):
 	config = Configuration('exact_diag_py', parent_package, top_path)
 	config.add_subpackage('basis')
 	config.add_subpackage('hamiltonian')
+	#config.add_subpackage('tools')
 	return config
 
 if __name__ == '__main__':

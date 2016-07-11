@@ -10,9 +10,9 @@
 
 4. create the observables class (update S_ent to return each of the two DM’s on demand); Put correlators? Upgrade S_ent/DM to return the spin/photon subsystems.
 
-5. put a check on the hermitically of H returning ERROR with a possibility to suppress
+5. put a check on the hermitically of H returning ERROR with a possibility to suppress #done-ish
 
-6. add this option to 'svd' function to entanglement entropy to get the padded matrices to get the reduced density matrix: 
+6. add this option to 'svd' function to entanglement entropy to get the padded matrices to get the reduced density matrix:  # done
 
 	full_matrices : bool, optional, 
 
@@ -22,5 +22,7 @@
 
 8. put a check on the symmetries of the Hamiltonian lists
 
-9. write paper on the package
+8.1. In hamiltonian class add fn to project onto subspace
+
+9. write paper on the packages
 

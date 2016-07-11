@@ -11,8 +11,8 @@ class photon_basis(tensor_basis):
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
 		Ntot = blocks.get("Ntot")
 		Nph = blocks.get("Nph")
-		
-
+		self.Nph = Nph
+		self.Ntot = Ntot
 		if Ntot is None:
 			if Nph is None: raise TypeError("If Ntot not specified, Nph must specify the cutoff on the number of photon states.")
 			if type(Nph) is not int: raise TypeError("Nph must be integer")
@@ -22,8 +22,6 @@ class photon_basis(tensor_basis):
 			b1 = basis_constructor(*constructor_args,_Np=-1,**blocks)
 			b2 = ho_basis(Nph)
 			tensor_basis.__init__(self,b1,b2)
-
-
 		else:
 			if type(Ntot) is not int: raise TypeError("Ntot must be integer")
 			if Ntot < 0: raise ValueError("Ntot must be an integer >= 0.")
@@ -189,6 +187,7 @@ class photon_basis(tensor_basis):
 		return tensor_basis._hc_opstr(self,op)
 
 
+
 	def _get_lists(self,static,dynamic): #overwrite the default get_lists from base.
 		static_list = []
 		for opstr,bonds in static:
@@ -234,6 +233,7 @@ class photon_basis(tensor_basis):
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
 
 		return tensor_basis.sort_list(self,static_list),tensor_basis.sort_list(self,dynamic_list)
+
 
 
 
@@ -437,6 +437,7 @@ class ho_basis(basis):
 		row = _np.array(self._basis,dtype=self._dtype)
 		col = _np.array(self._basis,dtype=self._dtype)
 		ME = _np.ones((self._Ns,),dtype=dtype)
+
 
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
