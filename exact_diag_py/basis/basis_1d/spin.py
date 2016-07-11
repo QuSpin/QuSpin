@@ -1072,8 +1072,10 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		
 		shiftc(basis,-a,L)
 		
-#	v /= _np.linalg.norm(v,axis=0)
-	return v
+	if v.shape[1] == 1:
+		return v.ravel()
+	else:
+		return v
 
 
 
