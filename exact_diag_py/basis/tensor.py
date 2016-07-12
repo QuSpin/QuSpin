@@ -342,7 +342,7 @@ def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 	v0=_np.reshape(v0,(Ns1,Ns2))
 	# take singular value decomposition to get which decomposes the matrix into separate parts.
 	# the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector 
-	if k<=0:
+	if not sparse:
 		V1,S,V2=_la.svd(v0)
 	else:
 		V1,S,V2=_sla.svds(v0,k=Ns-1,which='SM',maxiter=1E10)

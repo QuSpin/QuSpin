@@ -77,7 +77,6 @@ class spin_basis_1d(basis):
 					spin_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
 				elif _Np >= 0:
 					if _Np+1 > L: _Np = L
-					_Np = L
 					blocks["count_spins"] = True
 
 					zblock = blocks.get("zblock")

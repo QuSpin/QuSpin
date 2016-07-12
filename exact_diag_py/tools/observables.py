@@ -46,9 +46,12 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 
 	alpha: (optional) Renyi parameter alpha. The default is 'alpha=1.0', corresponding to von Neumann's entropy.
 
-	DM: (optional) when set to 'True', the returned dictionary contains the reduced density matrix under 
-			the key 'DM'. Note that the reduced DM is written in the full basis over all 2^L_A states of 
-			the subchain in question.
+	DM: (optional) when set to 'True', the returned dictionary contains the reduced density matrices of the
+			chain subsystems under the key 'DM_chain', and the photon + rest-of-chain subsystem under 
+			the key 'DM_photon'. If 'chain_subsys' is not specified then 'DM_photon' is the density matrix 
+			of the photon mode and 'DM_chain' is the chain DM. If only one DM is required, one can used
+			'DM = 'DM_photon' or 'DM = DM_chain', respectively. The basis for the DM depends on the symmetries
+			symmetries of psi.
 	"""
 
 	if not(type(L) is int):
@@ -65,7 +68,7 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 		chain_subsys=[i for i in xrange( int(L) )]
 		warnings.warn("subsystem automatically set to the entire chain.")
 	elif not isinstance(chain_subsys,list):
-		raise TypeError("'subsys' must be a list of integers to lable the lattice site numbers of the subsystem!")
+		raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 	elif min(chain_subsys) < 0:
 		raise TypeError("'subsys' must be a list of nonnegative numbers!")
 	elif max(chain_subsys) > L-1:
@@ -84,7 +87,10 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 	elif DM==True:
 		variables.append("DM_photon")
 		variables.append("DM_chain")
-		print "Density matrix calculation is enabled. The reduced DM_chain (DM_photon) is produced in the full chain (HO) basis."
+		if chain_symm:
+			print "Density matrix calculation is enabled. If symmetries are on, reduced DM_chain (DM_photon) is produced in the symmetry-reduced chain (photon) basis."
+		else:
+			print "Density matrix calculation is enabled. The reduced DM_chain (DM_photon) is produced in the full chain (photon) basis."
 
 
 	#calculate H-space dimensions of the subsystem and the system
@@ -102,21 +108,6 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 			raise TypeError("Basis contains symmetries; Please parse the basis variable!")
 
 
-	if Ntot is not None: # total particle-conservation
-		if len(psi) < 2**L: #chain symemtries present
-			if chain_symm:
-				if L_A < L:
-					raise TypeError("'chain_symm' set to 'True': subsystem size must be < L!")
-				else:
-					psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=False) )
-					Ns_spin = basis.chain_Ns
-			else:
-				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-				Ns_spin = basis.chain_Ns
-		else: # no chain symmetries present
-			psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-			Ns_spin = basis.chain_Ns
-
 	if Nph is not None: # no total particle conservation
 		if len(psi) < 2**L*(Nph+1): #chain symmetries present
 			if chain_symm:
@@ -127,9 +118,21 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 					Ns_spin = basis.chain_Ns
 			else:
 				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-				Ns_spin = basis.chain_Ns
+				Ns_spin = 2**L
 		else:
 			Ns_spin = 2**L
+
+	elif Ntot is not None: # total particle-conservation
+		Nph = Ntot
+		if len(psi) < 2**L: #chain symemtries present
+			if chain_symm:
+				raise TypeError("'chain_symm' is incompatible with Ntot symmetry!")
+			else:
+				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
+				Ns_spin = 2**L
+		else: # no chain symmetries present
+			psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
+			Ns_spin = basis.chain_Ns
 
 	del basis
 
@@ -233,7 +236,7 @@ def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
 		chain_subsys=[i for i in xrange( int(L/2) )]
 		warnings.warn("subsystem automatically set to contain sites {}.".format(chain_subsys))
 	elif not isinstance(chain_subsys,list):
-		raise TypeError("'subsys' must be a list of integers to lable the lattice site numbers of the subsystem!")
+		raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 	elif min(chain_subsys) < 0:
 		raise TypeError("'subsys' must be a list of nonnegative numbers!")
 	elif max(chain_subsys) > L-1:
