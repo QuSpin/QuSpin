@@ -1,5 +1,5 @@
 
-def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx):
+def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx,{c_complex_type} J):
 
 	cdef int i,Ns 
 	cdef {c_basis_type} s
@@ -7,7 +7,7 @@ def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 
 	Ns = basis.shape[0]
-	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+	col,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
 		return col,ME,error

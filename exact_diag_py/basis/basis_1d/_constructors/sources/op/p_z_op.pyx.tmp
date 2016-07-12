@@ -1,6 +1,6 @@
 
 
-def {type_code}_p_z_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, int L, int pblock, int zblock):
+def {type_code}_p_z_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int pblock, int zblock):
 	cdef {c_basis_type} s
 	cdef int Ns,error,ss,i,q,g
 	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(3,{np_basis_type})
@@ -10,7 +10,7 @@ def {type_code}_p_z_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_ty
 
 
 	Ns = basis.shape[0]
-	col,ME,error = {type_code}_spinop(basis,opstr,indx)
+	col,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
 		return col,ME,error
