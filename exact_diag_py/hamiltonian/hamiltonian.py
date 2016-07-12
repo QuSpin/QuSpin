@@ -364,7 +364,7 @@ class hamiltonian(object):
 
 
 		remove=[]
-		atol = 10*_np.finfo(self._dtype).eps
+		atol = 100*_np.finfo(self._dtype).eps
 		is_dense = False
 
 
@@ -734,8 +734,51 @@ class hamiltonian(object):
 
 		
 
-		
+	def project_to(self,proj):
+		if isinstance(proj,hamiltonian):
+			raise NotImplementedError
 
+		elif _sp.issparse(proj):
+			if self._shape[1] != proj.shape[0]:
+				raise ValueError
+			else:
+				self._shape = (proj.shape[1],proj.shape[1])
+
+			self._imul_sparse(proj)
+			return self._rmul_sparse(proj.getH())
+
+		elif _np.isscalar(proj):
+			raise NotImplementedError
+
+		elif proj.__class__ == _np.ndarray:
+			if self._shape[1] != proj.shape[0]:
+				raise ValueError
+			else:
+				self._shape = (proj.shape[1],proj.shape[1])
+
+			self._imul_dense(proj)	
+			return self._rmul_dense(proj.T.conj())
+
+
+		elif proj.__class__ == _np.matrix:
+			if self._shape[1] != proj.shape[0]:
+				raise ValueError
+			else:
+				self._shape = (proj.shape[1],proj.shape[1])
+
+			self._imul_dense(proj)	
+			return self._rmul_dense(proj.T.conj())
+
+
+		else:
+			proj = _np.asanyarray(proj)
+			if self._shape[1] != proj.shape[0]:
+				raise ValueError
+			else:
+				self._shape = (proj.shape[1],proj.shape[1])
+
+			self = self._rmul_dense(proj.T.conj())
+			self._imul_dense(proj)
 
 
 
@@ -820,6 +863,110 @@ class hamiltonian(object):
 		return E
 
 
+
+
+
+	def evolve(self,v0,t0,times,solver_name="dop853",verbose=False,iterate=False,**solver_args):
+		from scipy.integrate import complex_ode
+
+		if _np.iscomplexobj(times):
+			raise ValueError("times must be real number(s).")
+
+
+		
+		if v0.ndim <= 2:
+			v0 = v0.reshape((-1,))
+		else:
+			raise ValueError("v0 must have ndim <= 2")
+
+		if v0.shape[0] != self.Ns:
+			raise ValueError("v0 must have {0} elements".format(self.Ns))
+
+		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
+		v0 = v0.astype(complex_type)
+
+		if solver_name in ["dop853","dopri5"]:
+			if solver_args.get("nsteps") is None:
+				solver_args["nsteps"] = _np.iinfo(_np.int32).max
+			if solver_args.get("rtol") is None:
+				solver_args["rtol"] = 10.0**(-8)
+			if solver_args.get("atol") is None:
+				solver_args["atol"] = 10.0**(-8)
+
+
+		solver = complex_ode(self.__SO)
+		solver.set_integrator(solver_name,**solver_args)
+		solver.set_initial_value(v0, t0)
+
+		if _np.isscalar(times):
+			return self._evolve_scalar(solver,v0,t0,times)
+		else:
+			if iterate:
+				return self._evolve_iter(solver,v0,t0,times,verbose)
+			else:
+				return self._evolve_list(solver,v0,t0,times,complex_type,verbose)
+
+			
+		
+
+
+
+
+
+
+	def _evolve_scalar(self,solver,v0,t0,time):
+		if times == t0:
+			return _np.array(v0)
+		solver.integrate(time)
+		if solver.successful():
+			return _np.array(solver.y)
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(times))	
+
+
+
+	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose):
+		v = _np.empty((len(times),self.Ns),dtype=complex_type)
+		
+		for i,t in enumerate(times):
+			if t == t0:
+				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				v[i,:] = _np.array(v0)
+				continue
+
+			solver.integrate(t)
+			if solver.successful():
+				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				v[i,:] = _np.array(solver.y)
+			else:
+				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
+				
+		return v
+
+
+
+	def _evolve_iter(self,solver,v0,t0,times,verbose):
+		for i,t in enumerate(times):
+			if t == t0:
+				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				yield _np.array(v0)
+				continue
+				
+
+			solver.integrate(t)
+			if solver.successful():
+				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				yield _np.array(solver.y)
+			else:
+				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
+		
+
+
+
+
+
+
+
 	def astype(self,dtype,copy=False):
 		if copy:
 			return self.copy().astype(dtype)
@@ -889,22 +1036,27 @@ class hamiltonian(object):
 
 	def __mul__(self,other): # self * other
 		if isinstance(other,hamiltonian):
+#			self._hamiltonian_checks(other,casting="unsafe")
 			return self._mul_hamiltonian(other)
 
 		elif _sp.issparse(other):
+			self._mat_checks(other,casting="unsafe")
 			return self._mul_sparse(other)
 
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other,casting="unsafe")
 			return self._mul_dense(other)
 
 		elif other.__class__ == _np.matrix:
+			self._mat_checks(other,casting="unsafe")
 			return self._mul_dense(other)
 
 		else:
 			other = _np.asanyarray(other)
+			self._mat_checks(other,casting="unsafe")
 			return self._mul_dense(other)
 
 
@@ -914,22 +1066,28 @@ class hamiltonian(object):
 
 	def __rmul__(self,other): # other * self
 		if isinstance(other,hamiltonian):
+#			self._hamiltonian_checks(other,casting="unsafe")
 			return self._rmul_hamiltonian(other)
 
 		elif _sp.issparse(other):
+			self._mat_checks(other,casting="unsafe")
 			return self._rmul_sparse(other)
 
 		elif _np.isscalar(other):
+
 			return self._mul_scalar(other)
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other,casting="unsafe")
 			return self._rmul_dense(other)
 
 		elif other.__class__ == _np.matrix:
+			self._mat_checks(other,casting="unsafe")
 			return self._rmul_dense(other)
 
 		else:
 			other = _np.asanyarray(other)
+			self._mat_checks(other,casting="unsafe")
 			return self._rmul_dense(other)
 
 
@@ -940,24 +1098,28 @@ class hamiltonian(object):
 
 	def __imul__(self,other): # self *= other
 		if isinstance(other,hamiltonian):
-
+			self._hamiltonian_checks(other)
 			return self._imul_hamiltonian(other)
 
+		
 		elif _sp.issparse(other):
-
+			self._mat_checks(other)	
 			return self._imul_sparse(other)
 
 		elif _np.isscalar(other):
 			return self._imul_scalar(other)
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other)	
 			return self._imul_dense(other)
 
 		elif other.__class__ == _np.matrix:
+			self._mat_checks(other)	
 			return self._imul_dense(other)
 
 		else:
 			other = _np.asanyarray(other)
+			self._mat_checks(other)	
 			return self._imul_dense(other)
 
 
@@ -967,22 +1129,27 @@ class hamiltonian(object):
 
 	def __add__(self,other): # self + other
 		if isinstance(other,hamiltonian):
+#			self._hamiltonian_checks(other,casting="unsafe")
 			return self._add_hamiltonian(other)
 
 		elif _sp.issparse(other):
+			self._mat_checks(other,casting="unsafe")
 			return self._add_sparse(other)
 			
 		elif _np.isscalar(other):
 			raise NotImplementedError('hamiltonian does not support addition by scalar')
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other,casting="unsafe")
 			return self._add_dense(other)
 
 		elif other.__class__ == _np.matrix:
+			self._mat_checks(other,casting="unsafe")
 			return self._add_dense(other)
 
 		else:
 			other = _np.asanyarray(other)
+			self._mat_checks(other,casting="unsafe")
 			return self._add_dense(other)
 
 
@@ -999,19 +1166,23 @@ class hamiltonian(object):
 
 	def __iadd__(self,other): # self += other
 		if isinstance(other,hamiltonian):
+			self._hamiltonian_checks(other)
 			return self._iadd_hamiltonian(other)
 
 		elif _sp.issparse(other):
+			self._mat_checks(other)	
 			return self._iadd_sparse(other)
 
 		elif _np.isscalar(other):
 			raise NotImplementedError('hamiltonian does not support addition by scalar')
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other)	
 			return self._iadd_dense(other)
 
 		else:
-			other = _np.asanyarray(other)			
+			other = _np.asanyarray(other)
+			self._mat_checks(other)				
 			return self._iadd_dense(other)
 
 
@@ -1021,19 +1192,23 @@ class hamiltonian(object):
 
 	def __sub__(self,other): # self - other
 		if isinstance(other,hamiltonian):
+			self._hamiltonian_checks(other,casting="unsafe")
 			return self._sub_hamiltonian(other)
 
 		elif _sp.issparse(other):
+			self._mat_checks(other,casting="unsafe")
 			return self._sub_sparse(other)
 
 		elif _np.isscalar(other):
 			raise NotImplementedError('hamiltonian does not support addition by scalar')
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other,casting="unsafe")
 			return self._sub_dense(other)
 
 		else:
 			other = _np.asanyarray(other)
+			self._mat_checks(other,casting="unsafe")
 			return self._sub_dense(other)
 
 
@@ -1047,19 +1222,23 @@ class hamiltonian(object):
 
 	def __isub__(self,other): # self -= other
 		if isinstance(other,hamiltonian):
+			self._hamiltonian_checks(other)
 			return self._isub_hamiltonian(other)
 
-		elif _sp.issparse(other):			
+		elif _sp.issparse(other):
+			self._mat_checks(other)			
 			return self._isub_sparse(other)
 
 		elif _np.isscalar(other):
 			raise NotImplementedError('hamiltonian does not support addition by scalar')
 
 		elif other.__class__ == _np.ndarray:
+			self._mat_checks(other)	
 			return self._isub_dense(other)
 
 		else:
 			other = _np.asanyarray(other)
+			self._mat_checks(other)	
 			return self._sub_dense(other)
 
 	##########################################################################################	
@@ -1088,7 +1267,7 @@ class hamiltonian(object):
 
 
 	def _add_hamiltonian(self,other): 
-		self._hamiltonian_checks(other,casting="unsafe")
+#		self._hamiltonian_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1115,7 +1294,7 @@ class hamiltonian(object):
 
 
 	def _iadd_hamiltonian(self,other):
-		self._hamiltonian_checks(other)
+#		self._hamiltonian_checks(other)
 		self._is_dense = self._is_dense or other._is_dense
 
 		try:
@@ -1139,7 +1318,7 @@ class hamiltonian(object):
 
 
 	def _sub_hamiltonian(self,other): 
-		self._hamiltonian_checks(other,casting="unsafe")
+#		self._hamiltonian_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1168,7 +1347,7 @@ class hamiltonian(object):
 
 
 	def _isub_hamiltonian(self,other): 
-		self._hamiltonian_checks(other)
+#		self._hamiltonian_checks(other)
 
 		self._is_dense = self._is_dense or other._is_dense
 
@@ -1207,7 +1386,7 @@ class hamiltonian(object):
 
 
 	def _add_sparse(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1228,7 +1407,7 @@ class hamiltonian(object):
 
 
 	def _iadd_sparse(self,other):
-		self._mat_checks(other)
+#		self._mat_checks(other)
 		try:
 			self._static += other
 		except NotImplementedError:
@@ -1248,7 +1427,7 @@ class hamiltonian(object):
 
 
 	def _sub_sparse(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1269,7 +1448,7 @@ class hamiltonian(object):
 
 
 	def _isub_sparse(self,other):
-		self._mat_checks(other)
+#		self._mat_checks(other)
 		try:
 			self._static -= other
 		except NotImplementedError:
@@ -1289,7 +1468,7 @@ class hamiltonian(object):
 
 
 	def _mul_sparse(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1327,7 +1506,7 @@ class hamiltonian(object):
 
 
 	def _rmul_sparse(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1361,7 +1540,7 @@ class hamiltonian(object):
 
 
 	def _imul_sparse(self,other):
-		self._mat_checks(other)
+#		self._mat_checks(other)
 
 		self._static =self._static * other
 		try:	
@@ -1475,7 +1654,7 @@ class hamiltonian(object):
 
 
 	def _add_dense(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1495,7 +1674,7 @@ class hamiltonian(object):
 
 
 	def _iadd_dense(self,other):
-		self._mat_checks(other)
+#		self._mat_checks(other)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -1515,7 +1694,7 @@ class hamiltonian(object):
 
 
 	def _sub_dense(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1536,7 +1715,7 @@ class hamiltonian(object):
 
 
 	def _isub_dense(self,other):
-		self._mat_checks(other)
+#		self._mat_checks(other)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -1557,7 +1736,7 @@ class hamiltonian(object):
 
 
 	def _mul_dense(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1586,7 +1765,7 @@ class hamiltonian(object):
 
 
 	def _rmul_dense(self,other):
-		self._mat_checks(other,casting="unsafe")
+#		self._mat_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1618,7 +1797,7 @@ class hamiltonian(object):
 
 
 	def _imul_dense(self,other):
-		self._mat_checks(other)
+#		self._mat_checks(other)
 
 		if not self._is_dense:
 			self._is_dense = True
