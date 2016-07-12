@@ -874,7 +874,7 @@ class spin_basis_1d(basis):
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
 			str_list = [(temp1.format(i+1))+(temp2.format(b))[::-1] for i,b in zip(xrange(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i+1))+(temp2.format(b)).reverse() for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list.extend([(temp1.format(i+1))+(temp2.format(b))[::-1] for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
 			str_list = ((temp1.format(i+1))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis))
 

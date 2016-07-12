@@ -345,8 +345,8 @@ def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 	if k<=0:
 		V1,S,V2=_la.svd(v0)
 	else:
-		V1,S,V2=_sla.svds(v0,k=Ns-1,which='SM',maxiter=10**10)
-		V12,[S2],V22=_sla.svds(v0,k=1,which='LM',maxiter=10**10)
+		V1,S,V2=_sla.svds(v0,k=Ns-1,which='SM',maxiter=1E10)
+		V12,[S2],V22=_sla.svds(v0,k=1,which='LM',maxiter=1E10)
 
 		S.resize((Ns,))
 		S[-1] = S2

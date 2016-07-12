@@ -12,15 +12,50 @@ import warnings
 
 #__all__ = ["Entanglement_entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "Mean_Level_Spacing"]
 
-def Entanglement_entropy_photon(L,Nph,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False):
-	# psi: pure quantum state
-	# subsys: a list of integers modelling the site numbers of the subsystem
-	# basis: the basis of the Hamiltonian: needed only when symmetries are used
-	# alpha: Renyi parameter
-	# DM: if on returns the reduced density matrix corresponding to psi
+def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False):
+	"""
+	Entanglement_entropy_photon(L,Nph,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False) 
+
+	This routine calculates the entanglement (Renyi) entropy of a pure chain-photon quantum state 'psi' 
+	in a chain subsystem of arbitraty choice. It returns a dictionary in which the entanglement (Renyi) 
+	entropy has the key 'Sent'. The arguments are:
+
+	L: (compulsory) chain length. Always the first argument.
+
+	Nph: (compulsory) number of photon states. 
+
+	Ntot: (compulsory) number of total possible photons. 
+
+	psi: (compulsory) a pure quantum state, to calculate the entanglement entropy of.
+
+	chain_subsys: (optional) a list of site numbers defining uniquely the CHAIN subsystem of which 
+			the entanglement entropy (reduced and density matrix) are calculated. Notice that the site 
+			labelling of the chain goes as [0,1,....,L-1]. If not specified, the default subsystem 
+			chosen is the entire chain [0,...,L-1]. If in addition symmetries as present, it is required 
+			that 'chain_symm=False' whenever L_A = len(subsys) < L, and the density matrix (if on) is 
+			returned in the full spin-z basis of the chain subsystem containing 2^L_A sites.
+
+	basis: (semi-compulsory) basis of 'psi'. If no symmetry is invoked and if the basis of 'psi' contains 
+			all 2^L states, one can ommit the basis argument. If the state 'psi' is written in a 
+			symmetry-reduced basis, then one must also parse the basis in which 'psi' is given. 
+
+	chain_symm: (semi-compulsory) if the Hamiltonian of the chain part of the photon-chain model has 
+			symmetries used in the construction of the state 'psi', and if the 'chain_subsys' is the entire
+			spin chain, then the chain symmetries are inherited by the density matrices whenever 
+			'chain_symm = True'. Requires that 'basis' is parsed. 
+
+	alpha: (optional) Renyi parameter alpha. The default is 'alpha=1.0', corresponding to von Neumann's entropy.
+
+	DM: (optional) when set to 'True', the returned dictionary contains the reduced density matrix under 
+			the key 'DM'. Note that the reduced DM is written in the full basis over all 2^L_A states of 
+			the subchain in question.
+	"""
 
 	if not(type(L) is int):
 		raise TypeError("System size 'L' must be a positive integer!")
+
+	if (Ntot is not None) and (Nph is not None):
+		raise TypeError("Only one of the parameters 'Ntot' or 'Nph' is allowed!")
 
 	if isinstance(alpha,complex) or alpha < 0.0:
 		raise TypeError("Renyi entropy parameter 'alpha' must be real-valued and non-negative!")
@@ -61,24 +96,41 @@ def Entanglement_entropy_photon(L,Nph,psi,chain_subsys=None,basis=None,alpha=1.0
 	[system.append(i) for i in xrange(L) if not i in chain_subsys]
 	
 	# re-write the state in the initial basis
-	Ns_spin = 2**L
-	if len(psi)<2**L*(Nph+1):
-		if basis:
-			if chain_symm: #basis must be the chain basis except when subsys length < L
-				if isinstance(basis,spin_basis_1d):
-					Ns_spin = basis.Ns
-					if L_A < L:
-						raise TypeError("Chain subsystem size < L: please parse the non-symmetrised (full) photon basis and set 'chain_symm=False'!")
-				else:
-					raise TypeError("'chain_symm' is 'True': basis parsed must be the symmetrised chain basis!")
-			else: #basis must be the particle conserving photon basis
-				if isinstance(basis,photon_basis):
-					psi = _np.asarray( basis.get_vec(psi,sparse=False) )#[:,0]
-					Ns_spin = 2**L
-				else:
-					raise TypeError("'chain_symm' is 'False': basis parsed must be the non-symmetrised (full) photon basis!")
-		else:
+
+	if ( (Nph is not None) and len(psi)<2**L*(Nph+1) ) or (Ntot is not None): #basis required
+		if not isinstance(basis,photon_basis):
 			raise TypeError("Basis contains symmetries; Please parse the basis variable!")
+
+
+	if Ntot is not None: # total particle-conservation
+		if len(psi) < 2**L: #chain symemtries present
+			if chain_symm:
+				if L_A < L:
+					raise TypeError("'chain_symm' set to 'True': subsystem size must be < L!")
+				else:
+					psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=False) )
+					Ns_spin = basis.chain_Ns
+			else:
+				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
+				Ns_spin = basis.chain_Ns
+		else: # no chain symmetries present
+			psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
+			Ns_spin = basis.chain_Ns
+
+	if Nph is not None: # no total particle conservation
+		if len(psi) < 2**L*(Nph+1): #chain symmetries present
+			if chain_symm:
+				if L_A < L:
+					raise TypeError("'chain_symm' set to 'True': subsystem size must be < L!")
+				else:
+					psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=False) )
+					Ns_spin = basis.chain_Ns
+			else:
+				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
+				Ns_spin = basis.chain_Ns
+		else:
+			Ns_spin = 2**L
+
 	del basis
 
 
@@ -143,12 +195,33 @@ def Entanglement_entropy_photon(L,Nph,psi,chain_subsys=None,basis=None,alpha=1.0
 
 	return return_dict
 
-def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0, DM=False):
-	# psi: pure quantum state
-	# subsys: a list of integers modelling the site numbers of the subsystem
-	# basis: the basis of the Hamiltonian: needed only when symmetries are used
-	# alpha: Renyi parameter
-	# DM: if on returns the reduced density matrix corresponding to psi
+def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
+	"""
+	Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False) 
+
+	This routine calculates the entanglement (Renyi) entropy of a pure quantum state 'psi' in a subsystem 
+	of arbitraty choice. It returns a dictionary in which the entanglement (Renyi) entropy has the key 
+	'Sent'. The arguments are:
+
+	L: (compulsory) chain length. Always the first argument.
+
+	psi: (compulsory) a pure quantum state, to calculate the entanglement entropy of. Always the second argument.
+
+	basis: (semi-compulsory) basis of psi. If the state 'psi' is written in a symmetry-reduced basis, 
+			then one must also parse the basis in which 'psi' is given. However, if no symmetry is invoked 
+			and if the basis of 'psi' contains all 2^L states, one can ommit the basis argument.
+
+	chain_subsys: (optional) a list of site numbers defining uniquely the subsystem of which 
+			the entanglement entropy (reduced and density matrix) are calculated. Notice that the site 
+			labelling of the chain goes as [0,1,....,L-1]. If not specified, the default subsystem 
+			chosen is [0,...,floor(L/2)].
+
+	alpha: (optional) Renyi parameter alpha. The default is 'alpha=1.0', corresponding to von Neumann's entropy.
+
+	DM: (optional) when set to 'True', the returned dictionary contains the reduced density matrix under 
+			the key 'DM'. Note that the reduced DM is written in the full basis over all 2^L_A states of 
+			the subchain in question.
+	"""
 
 	if not(type(L) is int):
 		raise TypeError("System size 'L' must be a positive integer!")
@@ -259,13 +332,30 @@ def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0, DM=False)
 
 
 def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
+	"""
+	Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False)
+
+	This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs'
+	onto the reduced basis. It returns a dictionary with keys 'Proj_Obs' and 'Proj' (optional).
+
+	Obs: (compulsory) operator to be projected.
+
+	reduced_basis: (compulsory) basis of the final space after the projection.
+
+	dtype: (optional) data type. Default is np.complex128.
+
+	Proj: (optional) Projector operator. Default is 'None'. If 'Proj = True' is used, the projector isinstance
+			calculated and returned as a key. If 'Proj = operator' is put in, the input 'operator' is used to as 
+			a projector; it is not returned as a key.
+
+	"""
 
 	variables = ["Proj_Obs"]
 
 	if _np.any(Proj):
-		variables.append("Proj")
-
-	Proj = reduced_basis.get_proj(dtype=dtype)
+		if Proj == True:
+			variables.append("Proj")
+			Proj = reduced_basis.get_proj(dtype=dtype)
 
 	Proj_Obs = Proj.T.conj()*Obs*Proj
 
@@ -278,11 +368,44 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 
 
 def Diag_Ens_Observables(L,V1,E1,V2,betavec=[],alpha=1.0,Obs=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False):
-	# V1, V2:  matrices with pre and post quench eigenbases
-	# E1: vector of energies of pre-quench
-	# Obs: any hermitian observable
-	# betavec: vector of inverse temperatures
-	# alpha: Renyi entropy parameter
+	"""
+	This is routine calculates the expectation values of physical quantities in the Diagonal ensemble 
+	(see eg. arXiv:1509.06411), and returns a dictionary. Equivalently, these are the infinite-time 
+	expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2. 
+
+	L: (compulsory) chain length.
+
+	V1: (compulsory) unitary square matrix. Contains the eigenvectors of H1 in the columns. 
+			The initial state is the first column of V1.
+
+	E1: (compulsory) vector of real numbers. Contains the eigenenergies of H1. The order of the 
+			eigenvalues must correspond to the order of the columns of V1.
+
+	V2: (compulsory) unitary square matrix. Contains the eigenvectors of H2 in the columns. Must have 
+			the same size as V1.
+
+	Obs: (optional) hermitian matrix of the same size as V1. Infinite-time expectation value of the 
+			observable Obs in the state V1[:,0]. Has the key 'Obs' in the returned dictionary.
+
+	Ed: (optional) infinite-time expectation value of the Hamiltonian H1 in the state V1[:,0]. 
+			Has the key 'Ed' in the returned dictionary.
+
+	deltaE: (optional) infinite-time fluctuations around the energy expectation Ed. 
+			Has the key 'deltaE' in the returned dictionary.
+
+	Sd_Renyi: (optional) diagonal Renyi entropy after a quench H1->H2. The default Renyi parameter is 
+			'alpha=1.0'. Has the key 'Sd_Renyi' in the returned dictionary.
+
+	alpha: (optional) diagonal Renyi entropy parameter. Default value is 'alpha=1.0'.
+
+	S_double_quench: (optional) diagonal entropy after a double quench H1->H2->H1. 
+			Has the key 'S_double_quench' in the returned dictionary.
+
+	betavec: (optional) a list of INVERSE temperatures to specify the distribution of an initial 
+			thermal state. When passed the routine returns the corresponding finite-temperature 
+			expectation of each specified quantity defined above. The corresponding keys in the r
+			eturned dictionary are 'Obs_T', 'Ed_T', 'deltaE_T', 'Sd_Renyi_T', 'S_double_quench_T'. 
+	"""
 
 	if not(type(L) is int):
 		raise TypeError("System size 'L' must be a positive integer!")
@@ -420,7 +543,12 @@ def Diag_Ens_Observables(L,V1,E1,V2,betavec=[],alpha=1.0,Obs=False,Ed=False,S_do
 		
 
 def Kullback_Leibler_div(p1,p2):
-	# p1,p2: probability distributions
+	"""
+	This routine returns the Kullback-Leibler divergence of the discrete probability distrobutions p1 and p2.
+	"""
+
+
+
 	if len(p1) != len(p2):
 		raise TypeError("The probability distributions 'p1' and 'p2' must have same size!")
 	if len(p1.shape)!=1 or len(p2.shape)!=1:
@@ -443,10 +571,27 @@ def Kullback_Leibler_div(p1,p2):
 
 
 def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
-	# psi: initial state
-	# V2, E2: matrix w/ eigenbasis and vector of eogenvalues of post-quench Hamiltonian H2
-	# Obs: observable of interest
-	# times: vector with time values
+	"""
+	Observable_vs_time(psi,V2,E2,Obs,times,return_state=False)
+
+	This routine calculates the expectation value as a function of time of an observable Obs. The initial 
+	state is 'psi' and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary 
+	in which the time-dependent expectation value has the key 'Expt_time'.
+
+	psi: (compulsory) initial state.
+
+	V2: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
+
+	E2: (compulsory) real vector containing the eigenvalues of the Hamiltonian H2. 
+			The order of the eigenvalues must correspond to the order of the columns of V2. 
+
+	Obs: (compulsory) hermitian matrix to calculate its time-dependent expectation value. 
+
+	times: (compulsory) a vector of times to evaluate the expectation value at. 
+
+	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
+			at the times specified by the row index. The return dictonary key is 'psi_time'.
+	"""
 
 	if len(V[0,:]) != len(E):
 		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
@@ -501,6 +646,13 @@ def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
 
 
 def Mean_Level_Spacing(E):
+	"""
+	Mean_Level_Spacing(E)
+
+	This routine returns the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611. 
+
+	E: (compulsory) ordered list of ascending, nondegenerate eigenenergies.
+	"""
 
 	# compute consecutive E-differences
 	sn = _np.diff(E)
