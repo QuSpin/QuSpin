@@ -31,10 +31,12 @@ class photon_basis(tensor_basis):
 			if isinstance(self._b1,tensor_basis): raise TypeError("Can only create photon basis with non-tensor type basis")
 			if not isinstance(self._b1,basis): raise TypeError("Can only create photon basis with basis type")
 			self._b2 = ho_basis(Ntot)
-			self._n = Ntot - self._b1._Np
+			self._n = Ntot - self._b1._Np 
 			self._blocks = self._b1._blocks
 			self._Ns = self._b1._Ns
 			self._operators = self._b1._operators +"\n"+ self._b2._operators
+
+		self.chain_Ns = self._b1.Ns
 			
 
 
@@ -69,7 +71,7 @@ class photon_basis(tensor_basis):
 			opstr1,opstr2=opstr.split("|")
 
 			# calculates matrix elements of spin and photon basis
-
+			# the coupling 1.0 in self._b2.Op is used in order not to square the coupling J
 			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
 			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
 
