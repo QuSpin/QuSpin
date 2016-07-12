@@ -978,16 +978,18 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 			for k in xrange(-L/a,L/a):
 				getvec_zA_zB(L,kblock=k,zAblock=i,zBblock=j,a=a,sparse=sparse)
 	
-check_m(4)
-check_opstr(4)
-check_obc(8)
-check_pbc(8)
+#check_m(4)
+#check_opstr(4)
+#check_obc(8)
+#check_pbc(8)
 #for L in xrange(4,8):
 #	check_getvec(L,sparse=True)
 #	check_getvec(L,sparse=False)
 #for L in xrange(4,8,2):
 #	check_getvec_zA_zB(L,sparse=True)
 #	check_getvec_zA_zB(L,sparse=False)
+
+
 
 
 

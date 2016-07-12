@@ -195,7 +195,7 @@ class basis(object):
 			while (j < l):
 				if i != j:
 					opstr1,indx1,J1,f1,f1_args,i1 = tuple(dynamic_list[i]) 
-					opstr2,indx2,J2,f2_f2_args,i2 = tuple(dynamic_list[j])
+					opstr2,indx2,J2,f2,f2_args,i2 = tuple(dynamic_list[j])
 					if opstr1 == opstr2 and indx1 == indx2 and f1 == f2 and f1_args == f2_args:
 
 						del dynamic_list[j]
