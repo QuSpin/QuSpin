@@ -4,11 +4,15 @@ import scipy.linalg as _la
 import scipy.sparse as _sp
 import numpy as _np
 
+# needed for isinstance only
+from exact_diag_py.hamiltonian import hamiltonian
+from exact_diag_py.basis import spin_basis_1d,photon_basis
+
 import warnings
 
 #__all__ = ["Entanglement_entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "Mean_Level_Spacing"]
 
-def Entanglement_entropy_photon(L,Nph,psi,basis=None,alpha=1.0,DM=False,chain_symm=False):
+def Entanglement_entropy_photon(L,Nph,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False):
 	# psi: pure quantum state
 	# subsys: a list of integers modelling the site numbers of the subsystem
 	# basis: the basis of the Hamiltonian: needed only when symmetries are used
@@ -22,56 +26,81 @@ def Entanglement_entropy_photon(L,Nph,psi,basis=None,alpha=1.0,DM=False,chain_sy
 		raise TypeError("Renyi entropy parameter 'alpha' must be real-valued and non-negative!")
 
 
+	if chain_subsys is None: 
+		chain_subsys=[i for i in xrange( int(L) )]
+		warnings.warn("subsystem automatically set to the entire chain.")
+	elif not isinstance(chain_subsys,list):
+		raise TypeError("'subsys' must be a list of integers to lable the lattice site numbers of the subsystem!")
+	elif min(chain_subsys) < 0:
+		raise TypeError("'subsys' must be a list of nonnegative numbers!")
+	elif max(chain_subsys) > L-1:
+		raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
+
+
+	# initiate variables
 	variables = ["Sent"]
 	
 	if DM=='DM_photon':
 		variables.append("DM_photon")
-		print "Density matrix calculation is enabled. The reduced DM is produced in the full HO basis."
+		print "Density matrix calculation is enabled. The reduced DM is produced in the full photon basis."
 	elif DM=='DM_chain':
 		variables.append("DM_chain")
-		print "Density matrix calculation is enabled. The reduced DM is produced in the full chain basis."
+		print "Density matrix calculation is enabled. The reduced DM is produced in the chain sigma^z basis."
 	elif DM==True:
 		variables.append("DM_photon")
 		variables.append("DM_chain")
 		print "Density matrix calculation is enabled. The reduced DM_chain (DM_photon) is produced in the full chain (HO) basis."
 
 
+	#calculate H-space dimensions of the subsystem and the system
+	L_A = len(chain_subsys)
+	Ns_A = 2**L_A
+
+	# define lattice indices putting the subsystem to the left
+	system = chain_subsys[:]
+	[system.append(i) for i in xrange(L) if not i in chain_subsys]
 	
 	# re-write the state in the initial basis
-	#print len(psi), 2**L*(Nph+1)
 	Ns_spin = 2**L
 	if len(psi)<2**L*(Nph+1):
 		if basis:
-			if chain_symm: #basis must be the chain basis
-				Ns_spin = basis.Ns
+			if chain_symm: #basis must be the chain basis except when subsys length < L
+				if isinstance(basis,spin_basis_1d):
+					Ns_spin = basis.Ns
+					if L_A < L:
+						raise TypeError("Chain subsystem size < L: please parse the non-symmetrised (full) photon basis and set 'chain_symm=False'!")
+				else:
+					raise TypeError("'chain_symm' is 'True': basis parsed must be the symmetrised chain basis!")
 			else: #basis must be the particle conserving photon basis
-				psi = _np.asarray( basis.get_vec(psi,sparse=False) )#[:,0]
-				Ns_spin = 2**L
+				if isinstance(basis,photon_basis):
+					psi = _np.asarray( basis.get_vec(psi,sparse=False) )#[:,0]
+					Ns_spin = 2**L
+				else:
+					raise TypeError("'chain_symm' is 'False': basis parsed must be the non-symmetrised (full) photon basis!")
 		else:
-			raise TypeError("Spin basis contains symmetries; Please parse the basis variable!")
+			raise TypeError("Basis contains symmetries; Please parse the basis variable!")
 	del basis
 
-	
-	
-	
 
-	'''
-	the algorithm for the entanglement entropy of an arbitrary subsystem goes as follows:
-
-	1) the initial state psi has Nph x 2^L entries corresponding to the photon-spin-z configs
-	2) reshape psi into a Nph x 2^L dimensional array. Call this array v.
-	3) v should satisfy the property that v[i,j], should give the entry of psi 
-	   along the the |spin-z>|Nph> basis vector direction. This ensures a correspondence of the v-indices
-	   (and thus the psi-entries) to the L lattice sites.
-	4) fix the lattice sites that define the subsystem L_A, and reshuffle the array v according to this: e.g. if the 
- 	   subsystem consistes of sites (k,l) then v should be reshuffled such that v[(k,l), (all other sites)]
- 	'''
-
-	# performs 2) and 3)
-	v = _np.reshape(psi, (Ns_spin,Nph+1) )
-	del psi
-	# performs 4)
-	v = _np.transpose(v)
+	if L_A==L:
+		# reshape state vector psi
+		v = _np.reshape(psi, (Ns_spin,Nph+1) ).T
+		del psi
+	else:
+		# performs 2) and 3)
+		
+		chain_dim_per_site = [2 for i in xrange(L)]
+		chain_dim_per_site.append(Nph+1) 
+		
+		v = _np.reshape(psi, tuple(chain_dim_per_site) )
+		del psi, chain_dim_per_site
+		# performs 4)
+		system.append(len(system))
+		v = _np.transpose(v, axes=system) 
+		# performs 5)
+		v = _np.reshape(v, ( Ns_A, 2**(L-L_A)*(Nph+1) ) )
+	
+	del system, chain_subsys
 	
 	
 	# apply singular value decomposition
@@ -93,15 +122,15 @@ def Entanglement_entropy_photon(L,Nph,psi,basis=None,alpha=1.0,DM=False,chain_sy
 		del U,V	
 	del v
 
-	if any(gamma == 0.0):
-		# remove all zeros to prevent the log from giving an error
-		gamma = gamma[gamma!=0.0]
-		#gamma = _np.array([_np.finfo(_np.float64).eps if _i==0 else _i for _i in gamma])
-	#print gamma**2
+	
 	# calculate Renyi entropy
 	if any(gamma == 1.0):
 		Sent = 0.0
 	else:
+		if any(gamma == 0.0):
+			# remove all zero entries to prevent the log from giving an error
+			gamma = gamma[gamma!=0.0]
+
 		if alpha == 1.0:
 			Sent = -( abs(gamma)**2).dot( 2*_np.log( abs(gamma)  ) ).sum()
 		else:
@@ -114,7 +143,7 @@ def Entanglement_entropy_photon(L,Nph,psi,basis=None,alpha=1.0,DM=False,chain_sy
 
 	return return_dict
 
-def Entanglement_entropy(L,psi,subsys=None,basis=None,alpha=1.0, DM=False):
+def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0, DM=False):
 	# psi: pure quantum state
 	# subsys: a list of integers modelling the site numbers of the subsystem
 	# basis: the basis of the Hamiltonian: needed only when symmetries are used
@@ -127,14 +156,14 @@ def Entanglement_entropy(L,psi,subsys=None,basis=None,alpha=1.0, DM=False):
 	if isinstance(alpha,complex) or alpha < 0.0:
 		raise TypeError("Renyi entropy parameter 'alpha' must be real-valued and non-negative!")
 
-	if subsys is None: 
-		subsys=[i for i in xrange( int(L/2) )]
-		warnings.warn("subsystem automatically chosen to contain sites {}.".format(subsys))
-	elif not isinstance(subsys,list):
-		raise TypeError("subsys must be a list of integers to lable the lattice site numbers of the subsystem!")
-	elif min(subsys) < 0:
+	if chain_subsys is None: 
+		chain_subsys=[i for i in xrange( int(L/2) )]
+		warnings.warn("subsystem automatically set to contain sites {}.".format(chain_subsys))
+	elif not isinstance(chain_subsys,list):
+		raise TypeError("'subsys' must be a list of integers to lable the lattice site numbers of the subsystem!")
+	elif min(chain_subsys) < 0:
 		raise TypeError("'subsys' must be a list of nonnegative numbers!")
-	elif max(subsys) > L-1:
+	elif max(chain_subsys) > L-1:
 		raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 	
 
@@ -150,19 +179,19 @@ def Entanglement_entropy(L,psi,subsys=None,basis=None,alpha=1.0, DM=False):
 	# re-write the state in the initial basis
 	if len(psi)<2**L:
 		if basis:
-			psi = _np.asarray( basis.get_vec(psi,sparse=False) )[:,0]
+			psi = _np.asarray( basis.get_vec(psi,sparse=False) )
 		else:
 			raise TypeError("Spin basis contains symmetries; Please parse the basis variable!")
 	del basis
 
 	#calculate H-space dimensions of the subsystem and the system
-	L_A = len(subsys)
+	L_A = len(chain_subsys)
 	Ns_A = 2**L_A
 	Ns = len(psi)
 
 	# define lattice indices putting the subsystem to the left
-	system = subsys[:]
-	[system.append(i) for i in xrange(L) if not i in subsys]
+	system = chain_subsys[:]
+	[system.append(i) for i in xrange(L) if not i in chain_subsys]
 
 
 	'''
@@ -186,7 +215,7 @@ def Entanglement_entropy(L,psi,subsys=None,basis=None,alpha=1.0, DM=False):
 	# performs 5)
 	v = _np.reshape(v, ( Ns_A, Ns/Ns_A) )
 	
-	del system
+	del system, chain_subsys
 	
 	# apply singular value decomposition
 	if DM==False:
@@ -207,19 +236,19 @@ def Entanglement_entropy(L,psi,subsys=None,basis=None,alpha=1.0, DM=False):
 		print "NEED TO TEST this reduced DM against something known!!!"
 	del v
 
-	if any(gamma == 0.0):
-		# remove all zeros to prevent the log from giving an error
-		gamma = gamma[gamma!=0.0]
-		#gamma = _np.array([_np.finfo(_np.float64).eps if _i==0 else _i for _i in gamma])
-	#print gamma**2
 	# calculate Renyi entropy
 	if any(gamma == 1.0):
 		Sent = 0.0
 	else:
+		if any(gamma == 0.0):
+			# remove all zeros to prevent the log from giving an error
+			gamma = gamma[gamma!=0.0]
+			#gamma = _np.array([_np.finfo(_np.float64).eps if _i==0 else _i for _i in gamma])
+
 		if alpha == 1.0:
-			Sent = -1./L_A*( ( abs(gamma)**2).dot( 2*_np.log( abs(gamma)  ) ) ).sum()
+			Sent = -( abs(gamma)**2).dot( 2*_np.log( abs(gamma)  ) ).sum()
 		else:
-			Sent =  1./L_A*( 1./(1-alpha)*_np.log( (gamma**alpha).sum() )  )
+			Sent =  1./(1-alpha)*_np.log( (gamma**alpha).sum() ) 
 
 	# define dictionary with outputs
 	return_dict = {}
