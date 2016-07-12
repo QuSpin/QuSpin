@@ -359,6 +359,8 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 		if Proj == True:
 			variables.append("Proj")
 			Proj = reduced_basis.get_proj(dtype=dtype)
+	else:
+		Proj = reduced_basis.get_proj(dtype=dtype)
 
 	Proj_Obs = Proj.T.conj()*Obs*Proj
 
