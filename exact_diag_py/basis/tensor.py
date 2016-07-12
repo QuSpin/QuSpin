@@ -342,9 +342,7 @@ def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 	v0=_np.reshape(v0,(Ns1,Ns2))
 	# take singular value decomposition to get which decomposes the matrix into separate parts.
 	# the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector 
-	if k<=0:
-		V1,S,V2=_la.svd(v0)
-	else:
+	if sprase:
 		V1,S,V2=_sla.svds(v0,k=Ns-1,which='SM',maxiter=1E10)
 		V12,[S2],V22=_sla.svds(v0,k=1,which='LM',maxiter=1E10)
 
@@ -354,9 +352,9 @@ def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 		V1[:,-1] = V12[:,0]
 		V2.resize((Ns,Ns2))
 		V2[-1,:] = V22[0,:]
+	else:
+		V1,S,V2=_la.svd(v0)
 		
-		#V1 = _np.hstack(V1,V12)
-		#V2 = _np.hstack(V2,V22)
 	# svd returns V2.H so take the hc to reverse that
 	V2=V2.T.conj()
 	eps = _np.finfo(S.dtype).eps

@@ -387,7 +387,7 @@ class ho_basis(basis):
 
 	def _get__str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp = "\t{0:"+str(n_digits)+"d}.  "+"|{0}>"
+		temp = "\t{0:"+str(n_digits)+"d}.  "+"|{1}>"
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
