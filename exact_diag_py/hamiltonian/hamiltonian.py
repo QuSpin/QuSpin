@@ -366,7 +366,7 @@ class hamiltonian(object):
 		self._dynamic=tuple(self._dynamic)
 
 
-
+#	
 	def tocsr(self,time=0,dtype=None):
 		"""
 		args:
@@ -407,7 +407,8 @@ class hamiltonian(object):
 		return H
 
 
-	def todense(self,time=0,order="C", out=None):
+#	
+	def todense(self,time=0,order=None, out=None):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -416,35 +417,8 @@ class hamiltonian(object):
 			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
 			This function can overflow memory if not careful.
 		"""
-		if self.Ns <= 0:
-			return _np.asarray([[]])
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar arguement for time')
-
-		if out is None:
-			if _sp.issparse(self._static):
-				H=self._static.todense()
-			else:
-				H = _np.array(self._static)
-
-			for Hd,f,f_args in self._dynamic:
-				if _sp.issparse(Hd):
-					H = H + (Hd * f(time,*f_args))
-				else:		
-					H += Hd * f(time,*f_args)
-
-			return H
-		else:
-			if _sp.issparse(self._static):
-				self._static.todense(out=out)
-			else:
-				H = _np.copyto(out,self._static,casting='same_kind')
-
-			for Hd,f,f_args in self._dynamic:
-				if _sp.issparse(Hd):
-					out = out + (Hd * f(time,*f_args))
-				else:		
-					out += (Hd * f(time,*f_args))		
+		return self.tocsr(time=time).todense(order=order,out=out)
+			
 
 
 
@@ -650,7 +624,7 @@ class hamiltonian(object):
 
 
 
-
+	
 	def eigh(self,time=0,**eigh_args):
 		"""
 		args:
@@ -669,10 +643,8 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([]),_np.asarray([[]])
 
-		# allocate space
-		H_dense=_np.zeros(self._shape,dtype=self._dtype)
 		# fill dense array with hamiltonian
-		self.todense(time=time,out=H_dense)
+		H_dense = self.todense(time=time)		
 		# calculate eigh
 		E,H_dense = _la.eigh(H_dense,**eigh_args)
 		return E,H_dense
