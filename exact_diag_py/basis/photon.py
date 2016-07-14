@@ -183,7 +183,41 @@ class photon_basis(tensor_basis):
 
 
 	def _sort_opstr(self,op):
-		return tensor_basis._sort_opstr(self,op)
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+
+		if opstr.count("|") == 0: 
+			raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx1 = indx[:i]
+		indx2 = indx[i:]
+
+		opstr1,opstr2=opstr.split("|")
+
+		op1 = list(op)
+		op1[0] = opstr1
+		op1[1] = tuple(indx1)
+
+		op2 = list(op)
+		op2[0] = opstr2
+		op2[1] = tuple([min(indx1) for i in indx2])
+		
+		op1 = self._b1.sort_opstr(op1)
+
+		op[0] = "|".join((op1[0],op2[0]))
+		op[1] = op1[1] + op2[1]
+		
+		return tuple(op)
+
+
 
 	def _hc_opstr(self,op):
 		return tensor_basis._hc_opstr(self,op)
