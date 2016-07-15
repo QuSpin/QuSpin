@@ -166,9 +166,9 @@ class photon_basis(tensor_basis):
 				b1 = b1.replace(".","")
 				b1 = b1.split()
 				s1 = b1[1]
-				i1 = int(b1[0])-1
+				i1 = int(b1[0])
 				s2 = "|{0}>".format(self._n[i1])
-				str_list.append((temp.format(i1+1))+"\t"+s1+s2)
+				str_list.append((temp.format(i1))+"\t"+s1+s2)
 
 			if self._Ns > MAXPRINT:
 				half = MAXPRINT//2
@@ -425,10 +425,10 @@ class ho_basis(basis):
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [temp.format(i+1,b) for i,b in zip(xrange(half),self._basis[:half])]
+			str_list = [temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])]
 			str_list.extend([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [temp.format(i+1,b) for i,b in enumerate(self._basis)]
+			str_list = [temp.format(i,b) for i,b in enumerate(self._basis)]
 
 		return str_list
 
