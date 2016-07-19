@@ -1826,3 +1826,23 @@ class hamiltonian(object):
 				return NotImplemented
 
 
+
+def ishamiltonian(obj):
+	return isinstance(obj,hamiltonian)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

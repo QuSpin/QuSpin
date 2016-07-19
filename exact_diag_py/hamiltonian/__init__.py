@@ -1,3 +1,3 @@
-from .hamiltonian import hamiltonian
+from .hamiltonian import hamiltonian,ishamiltonian
 
-__all__ = ["hamiltonian"]
+__all__ = ["hamiltonian","ishamiltonian"]

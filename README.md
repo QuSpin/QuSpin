@@ -1,15 +1,13 @@
 # exact_diag_py
-exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of spcifying the time dependence of operators in the hamiltonian as well, which can be easily interfaced with Scipy [ode solvers](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.ode.html) to solve the time dependent Schrodinger equation numerically for these systems. All the hamiltonian data is stored using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library which allows the user to access the powerful sparse linear algebra tools. 
+exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of specifying the time dependence of operators in the Hamiltonian as well, which can be used to solve the time dependent Schrodinger equation numerically for these systems. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access the powerful linear algebra tools. 
 
-The package requires scipy v0.14.0 or later, a compatible version of numpy, and the proper fortran compilers.
-
-This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more protible across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
+This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
 
 ```
 $ conda install -c weinbe58 exact_diag_py
 ```
 
-This will install the latest version on to your computer. If this fails for whatever reason this means that either your OS is not supported or your compiler is too old. In this case one can also manually install the package using two methods:
+This will install the latest version on to your computer. If this fails for whatever reason this means that either your OS is not supported or your compiler is too old. In this case one can also manually install the package:
 
 
 1) Manual install: to install manually download source code either from the latest [release](https://github.com/weinbe58/exact_diag_py/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
@@ -23,18 +21,7 @@ or windows command line:
 ```
 setup.py install
 ```
-NOTE: you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. This is why we recommend way 2) using anaconda as it is a standard for scientific computing with python.
-
-2) Install via Anaconda: If you don't have write permission to the standard python directories, the packaged can be installed via Anaconda to a local environment. To learn more about Anaconda and local environments visit http://conda.pydata.org/docs/using/envs.html. The beauty of Anaconda is that it will automatically install all the neccesary libraries needed for the package to function. Before you can install the package you must first build it. To build the package first switch to your local python environment using the ```source activate <env name>``` and then run the command in either windows or unix:
-```
-conda build exact_diag_py-x.x.x
-```
-This will then run though and build the package from the source. Then to install the package run
-```
-conda install exact_diag_py --use-local 
-```
-This way of installing preserves the versioning for anaconda but you can also run the normal setup.py file to install the package as well but as with way 1) the appropriate prerequisite packages must be installed first.
-
+NOTE: you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. We recommend [Anaconda](https://www.continuum.io/downloads) to manage your python packages. 
 
 # Basic usage:
 
@@ -51,7 +38,7 @@ static_list=[[opstr_1,[indx_11,...,indx_1m]],...]
 dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],...]
 ```
 
-The wrapper accesses custom fortran libraries which calculates the action of each operator string on the states of the manybody S<sup>z</sup> basis. This data is then stored as a Scipy sparse csr_matrix. 
+The wrapper accesses custom cython libraries which calculates the action of each operator string on the states of the manybody S<sup>z</sup> basis. This data is then stored as a Scipy sparse csr_matrix. 
 
 example, transverse field ising model with time dependent field for L=10 chain:
 
@@ -92,7 +79,7 @@ H=hamiltonian(...,pauli=True,...)
 If pauli is set to True then the hamiltonian will be created assuming you have Pauli matrices while for pauli set to False you use spin 1/2 matrices. By default pauli is set to True.
 
 # Using symmetries:
-Adding symmetries is easy, either you can just add extra keyword arguements (by default all are set to None):
+Adding symmetries is easy, either you can just add extra keyword arguements:
 
 magnetization sector:
 Nup=0,...,L 
@@ -113,7 +100,7 @@ kblock=any integer
 H=hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
 ```
 
-One can also use the basis1d class to construct the basis object with a particular set of symmetries, then pass that into the the constructor of the hamiltonian:
+There are also basis type objects which can be constructed for a given set of symmetry blocks. These basis objects can be passed to hamiltonian which will then use that basis to construct the matrix elements for symmetry sector of the basis object. One basis object is called spin_basis_1d which is used to create the basis object for a 1d spin chain:
 
 ```python
 from exact_diag_py.basis import spin_basis_1d
@@ -121,47 +108,13 @@ from exact_diag_py.basis import spin_basis_1d
 basis=spin_basis_1d(L,Nup=Nup,pblock=pblock,...)
 H=hamiltonian(static_list,dynamic_list,L,basis=basis)
 ```
-The current system size limits depend on the version: versions < 0.0.5b only support L < 32 and 0.0.5b has preliminary support of L=32 but it hasn't been thoroughly tested yet.
-
 NOTE: for beta versions spin_basis_1d is named as basis1d.
 
-NOTE: The current system does no checks on the inputs to see if the inputs have the symmetries specified. Using symmetry reduction on hamiltonians which do not have said symmetry will give unphysical results. later we will impliment checks to see which symmetries are allowed based on the user input.
+More information about the basis objects can be found here(link).
 
-# Tensoring basis.
 
-In version 0.1.0 we have created new classes which allow basis to be tensored together. 
 
-* tensor_basis class: two basis objects b1 and b2 the tensor_basis class will combine them together to create a new basis objects which can be used to create the tensored hamiltonian of both basis:
 
-	```python
-	basis1 = spin_basis_1d(L,Nup=L/2)
-	basis2 = spin_basis_1d(L,Nup=L/2)
-	t_basis = tensor_basis(basis1,basis2)
-	```
-
-	The syntax for the operator strings are as follows. The operator strings are separated by a '|' while the index array has no splitting character.
-
-	```python
-	# tensoring two z spin operators at sites 1 for basis1 and 5 for basis2
-	opstr = "z|z" 
-	indx = [1,5] 
-	```
-
-	if there are no operator strings on one side of the '|' then an identity operator is assumed.
-
-* photon_basis class: This class allows the user to define a basis which couples to a single photon mode. There are two types of basis objects that one can create, a particle (magnetization + photon or particle + photon) conserving basis or a non-conserving basis.  In the former case one can specify the total number of quanta using the the Ntot keyword arguement:
-
-	```python
-	p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
-	```
-
-	while for for non-conserving basis you must specify the number of photon states with Nph:
-
-	```python
-	p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
-	```
-
-	For this basis class you can't pass not a basis object, but the constructor for you basis object. The operators for the photon sector are '+','-','n', and 'I'.
 
 # Numpy dtype:
 The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128. To specify the dtype use the dtype keyword arguement:
@@ -184,84 +137,5 @@ The input matrices must have the same dimensions as the matrices created from th
 
 NOTE: if no operator strings are present one must specify the shape of the matrices being used as well as the dtype using the keyword arguement shape: ```H=hmailtonian(static,dynamic,shape=shape,dtype=dtype)```. By default the dtype is set to numpy.complex128, double precision complex numbers.
 
-# Using hamiltonian:
-The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians as well as scipy sparse matrices and numpy dense arrays and scalars:
 
-* between other hamiltonians we have: ```+,-,+=,-=``` 
-* between numpy and sparse arrays we have: ```*,+,-,*=,+=.-=``` (versions >= v0.0.5b)
-* between scalars: ```*,*=``` (versions >= v0.0.5b)
-
-
-We've included some basic functionality into the hamiltonian class useful for quantum calculations:
-
-* sparse matrix vector product / dense matrix:
-
-  usage:
-    ```python
-    v = H.dot(u,time=time)
-    ```
-  where time is the time to evaluate the Hamiltonian at for the product, by default time=0.
-  
-* matrix elements:
-
-  usage:
-    ```python
-    Huv = H.me(u,v,time=time)
-    ```
-  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. NOTE: the inputs should not be hermitian tranposed, the function will do that for you.
-  
-* matrix exponential (versions >= v0.0.5b):
-  usage:
-    ```python
-    v = H.expm_multiply(u,a=a,time=time,**linspace_args)
-    ```
-  which evaluates |v > = exp(a H(time))|u > using only the dot product of H on |u >. The extra arguements will allow one to evaluate it at different time points see scipy docs for [expm_multiply](http://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) for more information.
-  
-  There are also some methods which are useful if you need other functionality from other packages:
-
-* return copy of hamiltonian as csr matrix: 
-  ```python
-  H_csr = H.tocsr(time=time)
-  ```
-  
-* return copy of hamiltonian as dense matrix: 
-  ```python
-  H_dense = H.todense(time=time)
-  ```
-
-The hamiltonian class also has built in methods which are useful for doing ED calculations:
-
-* Full diagonalization:
-
-  usage:
-    ```python
-    eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
-    eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
-    ```
-  where **eigh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh) and [eigvalsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.linalg.eigvalsh.html#scipy.linalg.eigvalsh). 
-  
-  NOTE: overwrite_a=True always for memory conservation
-
-* Sparse diagonalization, which uses ARPACK:
-
-  usage:
-    ```python
-    eigenvalues,eigenvectors=H.eigsh(time=time,**eigsh_args)
-    ```
-  where **eigsh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html)
-
-
-* Schrodinger dynamics:
-
-  The hamiltonian class has 2 private functions which can be passed into Scipy's ode solvers in order to numerically solve the Schrodinger equation in both real and imaginary time:
-    1. __SO(t,v) which proforms: -iH(t)|v>
-    2. __ISO(t,v) which proforms: -H(t)|v> 
-  
-  The interface with complex_ode is as easy as:
-  
-    ```python
-    solver = complex_ode(H._hamiltonian__SO)
-    ```
-  
-  From here all one has to do is use the solver object as specified in the scipy [documentation](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.complex_ode.html#scipy.integrate.complex_ode). Note that if the hamiltonian is not complex and you are using __ISO, the equations are real valued and so it is more effeicent to use ode instead of complex_ode.
 
