@@ -1,6 +1,0 @@
-7. put all three time evolution routines: (i) state-by-state eps-routine, (ii) expm_multiply, (iii) solver
-
-8.1. In hamiltonian class add fn to project onto subspace
-
-9. write paper on the packages
-
