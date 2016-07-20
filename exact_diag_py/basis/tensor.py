@@ -295,12 +295,12 @@ class tensor_basis(basis):
 		for b1 in str_list_1:
 			b1 = b1.replace(".","").split()
 			s1 = b1[1]
-			i1 = int(b1[0])-1
+			i1 = int(b1[0])
 			for b2 in str_list_2:
 				b2 = b2.replace(".","").split()
 				s2 = b2[1]
-				i2 = int(b2[0])-1
-				str_list.append((temp.format(i2+Ns2*i1+1))+"\t"+s1+s2)
+				i2 = int(b2[0])
+				str_list.append((temp.format(i2+Ns2*i1))+"\t"+s1+s2)
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT//2

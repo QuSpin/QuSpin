@@ -404,6 +404,7 @@ class hamiltonian(object):
 
 		self._is_dense = not is_sparse
 
+
 	def tocsr(self,time=0,dtype=None):
 		"""
 		args:
@@ -444,7 +445,8 @@ class hamiltonian(object):
 		return H
 
 
-	def todense(self,time=0,order="C", out=None):
+#	
+	def todense(self,time=0,order=None, out=None):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -453,35 +455,8 @@ class hamiltonian(object):
 			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
 			This function can overflow memory if not careful.
 		"""
-		if self.Ns <= 0:
-			return _np.asarray([[]])
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
+		return self.tocsr(time=time).todense(order=order,out=out)
 
-		if out is None:
-			if _sp.issparse(self._static):
-				H=self._static.todense()
-			else:
-				H = _np.array(self._static)
-
-			for Hd,f,f_args in self._dynamic:
-				if _sp.issparse(Hd):
-					H = H + (Hd * f(time,*f_args))
-				else:		
-					H += Hd * f(time,*f_args)
-
-			return H
-		else:
-			if _sp.issparse(self._static):
-				self._static.todense(out=out)
-			else:
-				H = _np.copyto(out,self._static,casting='same_kind')
-
-			for Hd,f,f_args in self._dynamic:
-				if _sp.issparse(Hd):
-					out = out + (Hd * f(time,*f_args))
-				else:		
-					out += (Hd * f(time,*f_args))		
 
 
 
@@ -811,7 +786,7 @@ class hamiltonian(object):
 
 
 
-
+	
 	def eigh(self,time=0,**eigh_args):
 		"""
 		args:
@@ -830,10 +805,8 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([]),_np.asarray([[]])
 
-		# allocate space
-		H_dense=_np.zeros(self._shape,dtype=self._dtype)
 		# fill dense array with hamiltonian
-		self.todense(time=time,out=H_dense)
+		H_dense = self.todense(time=time)		
 		# calculate eigh
 		E,H_dense = _la.eigh(H_dense,**eigh_args)
 		return E,H_dense
@@ -866,11 +839,20 @@ class hamiltonian(object):
 
 
 
-	def evolve(self,v0,t0,times,solver_name="dop853",verbose=False,iterate=False,**solver_args):
+	def evolve(self,v0,t0,times,solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args):
 		from scipy.integrate import complex_ode
 
 		if _np.iscomplexobj(times):
 			raise ValueError("times must be real number(s).")
+
+		if solver_name in ["dop853","dopri5"]:
+			if solver_args.get("nsteps") is None:
+				solver_args["nsteps"] = _np.iinfo(_np.int32).max
+			if solver_args.get("rtol") is None:
+				solver_args["rtol"] = 10.0**(-8)
+			if solver_args.get("atol") is None:
+				solver_args["atol"] = 10.0**(-8)
+
 
 
 		
@@ -882,29 +864,28 @@ class hamiltonian(object):
 		if v0.shape[0] != self.Ns:
 			raise ValueError("v0 must have {0} elements".format(self.Ns))
 
-		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
-		v0 = v0.astype(complex_type)
 
-		if solver_name in ["dop853","dopri5"]:
-			if solver_args.get("nsteps") is None:
-				solver_args["nsteps"] = _np.iinfo(_np.int32).max
-			if solver_args.get("rtol") is None:
-				solver_args["rtol"] = 10.0**(-8)
-			if solver_args.get("atol") is None:
-				solver_args["atol"] = 10.0**(-8)
+		if imag_time:
+			v0 = v0.astype(self.dtype)
+			if _np.iscomplexobj(v0):
+				solver = ode(self.__ISO)
+			else:
+				solver = complex_ode(self.__ISO)
+		else:
+			complex_type = _np.dtype(_np.complex64(1j)*v0[0])
+			v0 = v0.astype(complex_type)
+			solver = complex_ode(self.__SO)
 
-
-		solver = complex_ode(self.__SO)
 		solver.set_integrator(solver_name,**solver_args)
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return self._evolve_scalar(solver,v0,t0,times)
+			return self._evolve_scalar(solver,v0,t0,times,imag_time)
 		else:
 			if iterate:
-				return self._evolve_iter(solver,v0,t0,times,verbose)
+				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time)
 			else:
-				return self._evolve_list(solver,v0,t0,times,complex_type,verbose)
+				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time)
 
 			
 		
@@ -914,18 +895,23 @@ class hamiltonian(object):
 
 
 
-	def _evolve_scalar(self,solver,v0,t0,time):
-		if times == t0:
+	def _evolve_scalar(self,solver,v0,t0,time,imag_time):
+		from numpy.linalg import norm
+
+		if time == t0:
 			return _np.array(v0)
 		solver.integrate(time)
 		if solver.successful():
+			if imag_time: solver._y /= norm(solver._y)
 			return _np.array(solver.y)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(times))	
 
 
 
-	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose):
+	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time):
+		from numpy.linalg import norm
+
 		v = _np.empty((len(times),self.Ns),dtype=complex_type)
 		
 		for i,t in enumerate(times):
@@ -937,6 +923,7 @@ class hamiltonian(object):
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				if imag_time: solver._y /= norm(solver._y)
 				v[i,:] = _np.array(solver.y)
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
@@ -945,7 +932,9 @@ class hamiltonian(object):
 
 
 
-	def _evolve_iter(self,solver,v0,t0,times,verbose):
+	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time):
+		from numpy.linalg import norm
+
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
@@ -956,6 +945,7 @@ class hamiltonian(object):
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				if imag_time: solver._y /= norm(solver._y)
 				yield _np.array(solver.y)
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
@@ -1834,5 +1824,25 @@ class hamiltonian(object):
 				return self.__rmul__(inputs[0])
 			else:
 				return NotImplemented
+
+
+
+def ishamiltonian(obj):
+	return isinstance(obj,hamiltonian)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
