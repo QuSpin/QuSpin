@@ -869,9 +869,9 @@ class hamiltonian(object):
 			if solver_args.get("nsteps") is None:
 				solver_args["nsteps"] = _np.iinfo(_np.int32).max
 			if solver_args.get("rtol") is None:
-				solver_args["rtol"] = 10.0**(-8)
+				solver_args["rtol"] = 1E-9
 			if solver_args.get("atol") is None:
-				solver_args["atol"] = 10.0**(-8)
+				solver_args["atol"] = 1E-9
 
 
 
