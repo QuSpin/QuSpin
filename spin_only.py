@@ -1,5 +1,7 @@
 from exact_diag_py.tools import observables
 
+from exact_diag_py.tools.Floquet import Floquet
+
 from exact_diag_py.hamiltonian import hamiltonian
 from exact_diag_py.basis import spin_basis_1d,photon_basis
 import numpy as np
@@ -12,6 +14,9 @@ from numpy.random import random,seed
 import matplotlib.pyplot as plt
 import pylab
 
+from joblib import delayed,Parallel
+from numpy import vstack
+
 import time
 import sys
 import os
@@ -20,16 +25,22 @@ import os
 start_time = time.time()
 ####################################################################
 
-L = 6
+# parallelisation params
+U_jobs = 2
+n_jobs = 2
 
+# system size
+L = int(sys.argv[1])
+
+### static model params
 J = 1.0
 hx = 0.809
 hz = 0.9045
 
-
+### dynamic model params
 def f(t,Omega):
-	return 2*np.cos(Omega*t)
-Omega = 16.0
+	return np.cos(Omega*t)
+Omega = int(sys.argv[2])
 A = 1.0
 def t_vec(Omega,N_const,len_T=100,N_up=0,N_down=0):
 	# define dynamics params for a time step of 'da=1/len_T'
@@ -81,98 +92,129 @@ def t_vec(Omega,N_const,len_T=100,N_up=0,N_down=0):
 		t_vec.T_down = t[t_vec.indT_down]
 
 	return t
-t = t_vec(Omega,11)
+t = t_vec(Omega,1)
 
-
+### set up operator strings
+# static
 x_field=[[hx,i] for i in xrange(L)]
 z_field=[[hz,i] for i in xrange(L)]
 J_nn=[[-J,i,(i+1)%L] for i in xrange(L)]
-
+# dynamic
 drive_coupling=[[A,i] for i in xrange(L)]
 
 ### build spin operator lists
-
 static = [["zz",J_nn],["z",z_field], ["x",x_field]]
 dynamic = [["x",drive_coupling,f,[Omega]]]
 
-# build spin basis
-basis = spin_basis_1d(L=L,kblock=0,pblock=1)
+
+def symm_sector(kblock,pblock):
+
+	################################################################
+	##################   set up Hamiltonian    #####################
+	################################################################
+
+	# build spin basis
+	basis = spin_basis_1d(L=L,kblock=kblock,pblock=pblock)
 
 
-# build spin Hamiltonian and operators
-H=hamiltonian(static,dynamic,L=L,dtype=np.float64,basis=basis)
-HF0=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis)
+	# build spin Hamiltonian and operators
+	H=hamiltonian(static,dynamic,L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
+	HF0=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
 
-Ns = HF0.Ns
-print "spin H-space size is", Ns
+	Ns = HF0.Ns
+	print "spin H-space size is", Ns
 
+	################################################################
+	################  calculate FLoquet operator  ##################
+	################################################################
 
-######### calculate FLoquet operator
+	Floq = Floquet(H,t_vec.T,VF=True,n_jobs=U_jobs)
+	VF = Floq.VF
+	EF = Floq.EF
 
-# this function evolves the ith local basis state with Hamiltonian H
-# this is used to construct the stroboscpoic evolution operator
-def evolve(i,H,T):
-	from numpy import zeros
-	from scipy.integrate import complex_ode
+	del Floq
 
-	nsteps=sum([2**_i for _i in xrange(32,63)]) # huge number to make sure solver is successful.
-	psi0=zeros((Ns,),dtype=np.complex128); psi0[i]=1.0
-	solver=complex_ode(H._hamiltonian__SO)
-	solver.set_integrator('dop853', atol=1E-12,rtol=1E-12,nsteps=nsteps) 
-	solver.set_initial_value(psi0,t=0.0)
-	solver.integrate(T)
-	if solver.successful():
-		return solver.y
-	else:
-		raise Exception('failed to integrate')
-### USING JOBLIB ###
-def get_U(H,n_jobs,T): 
-	from joblib import delayed,Parallel
-	from numpy import vstack # or hstack, I can't remember
+	### diagonalise infinite-frequency Hamiltonian
+	EF0, VF0 = HF0.eigh()
 
-	sols=Parallel(n_jobs=n_jobs)(delayed(evolve)(i,H,T) for i in xrange(H.Ns))
+	################################################################
+	###################  calculate observables  ####################
+	################################################################
 
-	return vstack(sols)
+	Diag_Ens = observables.Diag_Ens_Observables(L,VF,EF,VF0,Sd_Renyi=True,Ed=True,deltaE=True)
 
-n_jobs = 2
-UF = get_U(H,n_jobs,t_vec.T)
-# find Floquet states and phases
-thetaF, VF = la.eig(UF)
-# calculate and order q'energies
-EF = np.real( 1j/t_vec.T*np.log(thetaF) )
-ind_EF = np.argsort(EF)
-EF = EF[ind_EF]
-VF = VF[:,ind_EF]
+	Sd = Diag_Ens['Sd_Renyi_state']
+	S_Tinf = Diag_Ens['S_Tinf']
+	Ed = Diag_Ens['Ed_state']
+	E_Tinf = Diag_Ens['E_Tinf']
+	deltaE = Diag_Ens['deltaE_state']
 
-del ind_EF, UF
+	print "----------------------------------------------"
+	print "GS ENERGY AND BLOCKS", EF[0], (kblock, pblock)
+	print "----------------------------------------------"
 
+	Q = (Ed - EF[0]/L)/(E_Tinf- EF[0]/L) 
+	S = Sd/S_Tinf
 
-### diagonalise Hamiltonian
-EF0, VF0 = HF0.eigh()
-print "MB band width per site is", (EF0[-1]-EF0[0])/L
+	# calculate entanglement entropy of L/2 the chain
+	Sent = observables.Entanglement_entropy(L,VF0[:,0],basis=basis)['Sent']/L
+
+	# calculate mean level spacing of HF and HF0
+	rave_F0 = observables.Mean_Level_Spacing(EF0)
+	rave_F = observables.Mean_Level_Spacing(EF)
 
 
-Diag_Ens = observables.Diag_Ens_Observables(L,VF,EF,VF0,Sd_Renyi=True,Ed=True,deltaE=True,rho_d=True,state=Ns)
+	################################################################
+	###################     store data        ######################
+	################################################################
 
-print Diag_Ens.keys()
-print Diag_Ens['rho_d'].sum()
+	data = np.zeros((13,),dtype=np.float64)
 
-Sd = Diag_Ens['Sd_Renyi_state']
-S_Tinf = Diag_Ens['S_Tinf']
-Ed = Diag_Ens['Ed_state']
-E_Tinf = Diag_Ens['E_Tinf']
-deltaE = Diag_Ens['deltaE_state']
+	data[0] = Q
+	data[1] = S
+	data[2] = Sent
+	data[3] = rave_F
+	data[4] = rave_F0
+	data[5] = Ed
+	data[6] = E_Tinf
+	data[7] = EF[0]/L
+	data[8] = Sd
+	data[9] = S_Tinf
+	data[10]= (EF0[-1]-EF0[0])/L # MB bandwdith per site
+	data[11]= kblock
+	data[12]= pblock
+
+	return data
 
 
-Q = (Ed - EF[0]/L)/(E_Tinf- EF[0]/L) 
-S = Sd/S_Tinf
+print symm_sector(0,1)
 
-print Q, S
+# define list will all symmetry sectors
+sectors = [(0,-1)]
+[sectors.append((kblock, 1)) for kblock in xrange(L)]
+
+# parallel-loop over the symmetry sectors
+Data = np.vstack( Parallel(n_jobs=n_jobs)(delayed(symm_sector)(kblock,pblock) for kblock, pblock in sectors) )
+
+
+################################################################
+###################     save data        #######################
+################################################################
+
+# file name
+save_params = (L,) + tuple(np.around([Omega,A],2))
+data_name = "data_driven_chain_L=%s_Omega=%s_A=%s.txt" %(save_params)
+
+# display full strings
+np.set_printoptions(threshold='nan')
+
+# save to .txt
+#np.savetxt(data_name, Data, delimiter=" ", fmt="%s")
 
 print "Calculation took",("--- %s seconds ---" % (time.time() - start_time))
 
 
-exit()
+"""
 
 
 #psi = H.evolve(psi0,t[-1],t,rtol=1E-12,atol=1E-12)
@@ -198,5 +240,5 @@ plt.grid(True)
 
 plt.show()
 
-
+"""
 			
