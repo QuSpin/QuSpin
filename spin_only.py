@@ -152,7 +152,10 @@ EF0, VF0 = HF0.eigh()
 print "MB band width per site is", (EF0[-1]-EF0[0])/L
 
 
-Diag_Ens = observables.Diag_Ens_Observables(L,VF,EF,VF0,Sd_Renyi=True,Ed=True,deltaE=True)
+Diag_Ens = observables.Diag_Ens_Observables(L,VF,EF,VF0,Sd_Renyi=True,Ed=True,deltaE=True,rho_d=True,state=Ns)
+
+print Diag_Ens.keys()
+print Diag_Ens['rho_d'].sum()
 
 Sd = Diag_Ens['Sd_Renyi_state']
 S_Tinf = Diag_Ens['S_Tinf']

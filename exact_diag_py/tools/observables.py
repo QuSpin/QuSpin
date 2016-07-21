@@ -440,8 +440,8 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 	if state:
 		if not(type(state) is int):
 			raise TypeError("'state' must be ingeter to pick the state V[:,state]!")
-		if state<0 or state>len(E1):
-			raise ValueError("state must satisfy: '0 <= state <= len(E1)'!")
+		if state<0 or state>len(E1)-1:
+			raise ValueError("'state' must satisfy: '0 <= state <= len(E1) - 1'!")
 
 	if betavec:
 		if E_gs:
