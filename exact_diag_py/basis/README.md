@@ -1,82 +1,35 @@
-# Using hamiltonian:
-The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians as well as scipy sparse matrices and numpy dense arrays and scalars:
+# Tensoring basis.
 
-* between other hamiltonians we have: ```+,-,+=,-=``` 
-* between numpy and sparse arrays we have: ```*,+,-,*=,+=.-=``` (versions >= v0.0.5b)
-* between scalars: ```*,*=``` (versions >= v0.0.5b)
+In version 0.1.0 we have created new classes which allow basis to be tensored together. 
 
+* tensor_basis class: two basis objects b1 and b2 the tensor_basis class will combine them together to create a new basis objects which can be used to create the tensored hamiltonian of both basis:
 
-We've included some basic functionality into the hamiltonian class useful for quantum calculations:
+	```python
+	basis1 = spin_basis_1d(L,Nup=L/2)
+	basis2 = spin_basis_1d(L,Nup=L/2)
+	t_basis = tensor_basis(basis1,basis2)
+	```
 
-* sparse matrix vector product / dense matrix:
+	The syntax for the operator strings are as follows. The operator strings are separated by a '|' while the index array has no splitting character.
 
-  usage:
-    ```python
-    v = H.dot(u,time=time)
-    ```
-  where time is the time to evaluate the Hamiltonian at for the product, by default time=0.
-  
-* matrix elements:
+	```python
+	# tensoring two z spin operators at sites 1 for basis1 and 5 for basis2
+	opstr = "z|z" 
+	indx = [1,5] 
+	```
 
-  usage:
-    ```python
-    Huv = H.me(u,v,time=time)
-    ```
-  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. NOTE: the inputs should not be hermitian tranposed, the function will do that for you.
-  
-* matrix exponential (versions >= v0.0.5b):
-  usage:
-    ```python
-    v = H.expm_multiply(u,a=a,time=time,**linspace_args)
-    ```
-  which evaluates |v > = exp(a H(time))|u > using only the dot product of H on |u >. The extra arguements will allow one to evaluate it at different time points see scipy docs for [expm_multiply](http://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) for more information.
-  
-  There are also some methods which are useful if you need other functionality from other packages:
+	if there are no operator strings on one side of the '|' then an identity operator is assumed.
 
-* return copy of hamiltonian as csr matrix: 
-  ```python
-  H_csr = H.tocsr(time=time)
-  ```
-  
-* return copy of hamiltonian as dense matrix: 
-  ```python
-  H_dense = H.todense(time=time)
-  ```
+* photon_basis class: This class allows the user to define a basis which couples to a single photon mode. There are two types of basis objects that one can create, a particle (magnetization + photon or particle + photon) conserving basis or a non-conserving basis.  In the former case one can specify the total number of quanta using the the Ntot keyword arguement:
 
-The hamiltonian class also has built in methods which are useful for doing ED calculations:
+	```python
+	p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
+	```
 
-* Full diagonalization:
+	while for for non-conserving basis you must specify the number of photon states with Nph:
 
-  usage:
-    ```python
-    eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
-    eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
-    ```
-  where **eigh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh) and [eigvalsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.linalg.eigvalsh.html#scipy.linalg.eigvalsh). 
-  
-  NOTE: overwrite_a=True always for memory conservation
+	```python
+	p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
+	```
 
-* Sparse diagonalization, which uses ARPACK:
-
-  usage:
-    ```python
-    eigenvalues,eigenvectors=H.eigsh(time=time,**eigsh_args)
-    ```
-  where **eigsh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html)
-
-
-* Schrodinger dynamics:
-
-  The hamiltonian class has 2 private functions which can be passed into Scipy's ode solvers in order to numerically solve the Schrodinger equation in both real and imaginary time:
-    1. __SO(t,v) which proforms: -iH(t)|v>
-    2. __ISO(t,v) which proforms: -H(t)|v> 
-  
-  The interface with complex_ode is as easy as:
-  
-    ```python
-    solver = complex_ode(H._hamiltonian__SO)
-    ```
-  
-  From here all one has to do is use the solver object as specified in the scipy [documentation](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.complex_ode.html#scipy.integrate.complex_ode). Note that if the hamiltonian is not complex and you are using __ISO, the equations are real valued and so it is more effeicent to use ode instead of complex_ode.
-
-
+	For this basis class you can't pass not a basis object, but the constructor for you basis object. The operators for the photon sector are '+','-','n', and 'I'.

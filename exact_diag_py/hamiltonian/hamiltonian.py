@@ -504,14 +504,22 @@ class hamiltonian(object):
 		return _sp.linalg.expm_multiply(a*self.tocsr(time),V,**linspace_args)
 
 
-	def comm(self,O,time=0,check=True,a=1): # H*O - O*H
-		O_out = a*self.rdot(O,time=time,check=check)
-		O_out = O_out - a*self.dot(O,time=time,check=check)
-		return O_out
+	def expm(self,a=-1j,time=0):
+		if self.Ns <= 0:
+			return _np.asarray([])
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar argument for time')
+		if not _np.isscalar(a):
+			raise TypeError('expecting scalar argument for a')
+
+		return _sp.linalg.expm(a*self.tocsr(time))
+
+		
+	
 
 
 
-	def rdot(self,V,time=0,check=True):
+	def rdot(self,V,time=0,check=True): # V * H(time)
 		if self.Ns <= 0:
 			return _np.asarray([])
 		if not _np.isscalar(time):
@@ -522,7 +530,6 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
 			return V_dot
-
 
 
 		if V.__class__ is _np.ndarray:
@@ -637,6 +644,19 @@ class hamiltonian(object):
 		return V_dot
 
 
+
+
+	def comm(self,O,time=0,check=True,a=1): # a*(O*H(time) - H(time)*O)
+		O_out = a*self.rdot(O,time=time,check=check)
+		O_out = O_out - a*self.dot(O,time=time,check=check)
+		return O_out
+
+	def anti_comm(self,O,time=0,check=True,a=1): # a*(O*H(time) + H(time)*O)
+		O_out = a*self.rdot(O,time=time,check=check)
+		O_out = O_out + a*self.dot(O,time=time,check=check)
+		return O_out
+
+
 	def matrix_ele(self,Vl,Vr,time=0):
 		"""
 		args:
@@ -718,9 +738,9 @@ class hamiltonian(object):
 				raise ValueError
 			else:
 				self._shape = (proj.shape[1],proj.shape[1])
-
-			self._imul_sparse(proj)
-			return self._rmul_sparse(proj.getH())
+			
+			new = self._rmul_sparse(proj.getH())
+			return new._imul_sparse(proj)
 
 		elif _np.isscalar(proj):
 			raise NotImplementedError
@@ -731,8 +751,8 @@ class hamiltonian(object):
 			else:
 				self._shape = (proj.shape[1],proj.shape[1])
 
-			self._imul_dense(proj)	
-			return self._rmul_dense(proj.T.conj())
+			new = self._rmul_dense(proj.T.conj())
+			return new._imul_dense(proj)
 
 
 		elif proj.__class__ == _np.matrix:
@@ -741,8 +761,8 @@ class hamiltonian(object):
 			else:
 				self._shape = (proj.shape[1],proj.shape[1])
 
-			self._imul_dense(proj)	
-			return self._rmul_dense(proj.T.conj())
+			new = self._rmul_dense(proj.H)
+			return new._imul_dense(proj)
 
 
 		else:
@@ -752,8 +772,8 @@ class hamiltonian(object):
 			else:
 				self._shape = (proj.shape[1],proj.shape[1])
 
-			self = self._rmul_dense(proj.T.conj())
-			self._imul_dense(proj)
+			new = self._rmul_dense(proj.T.conj())
+			return new._imul_dense(proj)
 
 
 

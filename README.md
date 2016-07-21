@@ -1,4 +1,4 @@
-# exact_diag_py
+**# exact_diag_py**
 exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of specifying the time dependence of operators in the Hamiltonian as well, which can be used to solve the time dependent Schrodinger equation numerically for these systems. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access the powerful linear algebra tools. 
 
 This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
@@ -21,26 +21,33 @@ or windows command line:
 ```
 setup.py install
 ```
-NOTE: you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. We recommend [Anaconda](https://www.continuum.io/downloads) to manage your python packages. 
+NOTE:** you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. We recommend [Anaconda](https://www.continuum.io/downloads) to manage your python packages. 
 
 # Basic usage:
 
-many-spin operators are represented by string of letters representing the type of operator:
+Many-body operators are represented by string of letters representing the type of operators. For example, in a spin system we can represent multi-spin operators as:
 
 |      opstr       |      indx      |        operator string      |
 |:----------------:|:--------------:|:---------------------------:|
-|'a<sub>1</sub>...a<sub>n</sub>'|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>a<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>a<sub>n</sub></sup>|
+|'o<sub>1</sub>...o<sub>n</sub>'|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>o<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup>|
 
-where a<sub>i</sub> can be x, y, z, +, or -. The object indx specifies the coupling as well as the sites for which the operator acts. This gives the full range of possible spin operators that can be constructed. The hamiltonian is split into two parts, static and dynamic. static parts are all added up into a single sparse matrix, while the dynamic parts are separated from each other and grouped with the time dependent function. When needed the time dependence is evaluated on the fly with the time always passed into a method by an arguement time. All this data is input in the following format:
+where o<sub>i</sub> can be x, y, z, +, or -. The object indx specifies the coupling as well as the sites for which the operator acts. This gives the full range of possible spin operators that can be constructed. For different systems there are different types of operators. To see the availible operators for a given type of system checkout out the [basis](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/basis) classes. 
+
+The hamiltonian is split into two parts, static and dynamic. Static parts are all added up into a single matrix, while the dynamic parts are separated from each other and grouped with the time dependent function. When needed the time dependence is evaluated on the fly with the time always passed into a method by an arguement time. All this data is input in the following format:
 
 ```python
 static_list=[[opstr_1,[indx_11,...,indx_1m]],...]
 dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],...]
 ```
+**New in version 0.0.5b:** We now let the user initialize with Scipy sparse matrices or dense Numpy arrays. To do this just replace the opstr and indx tuple with your matrix. you can even mix them together in the same list:
 
-The wrapper accesses custom cython libraries which calculates the action of each operator string on the states of the manybody S<sup>z</sup> basis. This data is then stored as a Scipy sparse csr_matrix. 
+```python
+static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
+dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
+```
+NOTE: if no operator strings or matrices are present one must specify the shape of the matrices being used as well as the dtype using the keyword arguement shape: ```H=hmailtonian([],[],...,shape=shape,...)```.
 
-example, transverse field ising model with time dependent field for L=10 chain:
+**example:** transverse field ising model with time dependent field for L=10 chain:
 
 ```python
 # python script
@@ -61,7 +68,6 @@ dynamic_list=[['x',field_indx,drive,drive_args]]
 
 H=hamiltonian(static_list,dynamic_list,L)
 ```
-
 Here is an example of a 3 spin operator as well:
 
 ```python
@@ -79,7 +85,8 @@ H=hamiltonian(...,pauli=True,...)
 If pauli is set to True then the hamiltonian will be created assuming you have Pauli matrices while for pauli set to False you use spin 1/2 matrices. By default pauli is set to True.
 
 # Using symmetries:
-Adding symmetries is easy, either you can just add extra keyword arguements:
+Adding symmetries is easy, either you can just add extra keyword arguements to the initialization of your hamiltonian. By default the hamiltonian will pick the spin-1/2 operators as well as 1d-symmetries.
+The symmetries for a spin chain in 1d are:
 
 magnetization sector:
 Nup=0,...,L 
@@ -96,25 +103,22 @@ pzblock=+/-1
 momentum sector:
 kblock=any integer
 
+used like:
 ```python
 H=hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
 ```
-
-There are also basis type objects which can be constructed for a given set of symmetry blocks. These basis objects can be passed to hamiltonian which will then use that basis to construct the matrix elements for symmetry sector of the basis object. One basis object is called spin_basis_1d which is used to create the basis object for a 1d spin chain:
+By doing this option the hamiltonian creates a [spin_basis_1d](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/basis) for the given symmetries and then uses that object to construct the matrix elements. If you don't want to use spin chains there are also other basis type objects which can be constructed for a given set of symmetry blocks. These basis objects can be passed to hamiltonian which will then use that basis to construct the matrix elements for symmetry sector of the basis object. One basis object is called spin_basis_1d which is used to create the basis object for a 1d spin chain:
 
 ```python
 from exact_diag_py.basis import spin_basis_1d
 
 basis=spin_basis_1d(L,Nup=Nup,pblock=pblock,...)
-H=hamiltonian(static_list,dynamic_list,L,basis=basis)
+H1=hamiltonian(static_list_1,dynamic_list_1,basis=basis)
+H2=hamiltonian(static_list_2,dynamic_list_2,basis=basis)
 ```
-NOTE: for beta versions spin_basis_1d is named as basis1d.
+This is typically more efficient because you can use a basis object for multiple hamiltonians without constructing the basis every time a hamiltonian is created. More information about the basis objects can be found [here](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/basis).
 
-More information about the basis objects can be found here(link).
-
-
-
-
+**NOTE:** for beta versions spin_basis_1d is named as basis1d.
 
 # Numpy dtype:
 The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128. To specify the dtype use the dtype keyword arguement:
@@ -123,19 +127,5 @@ The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/nump
 H=hamiltonian(...,dtype=np.float32,...)
 ```
 
-* New in verions 0.1.0
-We now let the user use quadruple precision dtypes float128 and complex256, but note that not all scipy and numpy functions support this dtypes.
-
-* New in version 0.0.5b 
-We now let the user initialize with scipy sparse matrices or dense numpy arrays. To do this just replace the opstr and indx tuple with your matrix. you can even mix them together in the same list:
-
-```python
-static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
-dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
-```
-The input matrices must have the same dimensions as the matrices created from the operator strings, if not an error is thrown to the user. 
-
-NOTE: if no operator strings are present one must specify the shape of the matrices being used as well as the dtype using the keyword arguement shape: ```H=hmailtonian(static,dynamic,shape=shape,dtype=dtype)```. By default the dtype is set to numpy.complex128, double precision complex numbers.
-
-
+**New in verions 0.1.0:** We now let the user use quadruple precision dtypes float128 and complex256, but note that not all Scipy and Numpy functions support all dtypes.
 
