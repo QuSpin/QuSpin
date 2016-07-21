@@ -45,6 +45,18 @@ class Floquet(object):
 		if not isinstance(H,hamiltonian):
 			raise TypeError("Variable 'H' must be an instance of 'hamiltonian' class!")
 
+		### check if H is periodic with period T
+		# define arbitrarily complicated weird-ass number
+		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+
+		for _, f, f_args in H.dynamic: 
+			if abs(f(t,*f_args) - f(t+T,*f_args) ) > _np.finfo(_np.complex128).eps:
+				raise TypeError("Hamiltonian 'H' must be periodic with period 'T'!")
+
+		if not (type(n_jobs) is int):
+			raise TypeError("Expecting integer value for optional variable 'n_jobs'!")
+
+
 		self._atol = atol
 		self._rtol = rtol
 
@@ -55,8 +67,6 @@ class Floquet(object):
 		if UF: variables.append('UF')
 		if VF: variables.append('VF')
 		if thetaF: variables.append('thetaF')
-
-		## check if H is periodic with T
 
 
 		# calculate evolution operator
