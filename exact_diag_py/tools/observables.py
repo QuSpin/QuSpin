@@ -372,7 +372,7 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 	return return_dict
 
 
-def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False,alpha=1.0,betavec=[],E_gs=None,Z=None):
+def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False,state=0,alpha=1.0,betavec=[],E_gs=None,Z=None):
 	"""
 	This routine calculates the expectation values of physical quantities in the Diagonal ensemble 
 	(see eg. arXiv:1509.06411), and returns a dictionary. Equivalently, these are the infinite-time 
@@ -389,6 +389,10 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 
 	V2: (compulsory) unitary square matrix. Contains the eigenvectors of H2 in the columns. Must have 
 			the same size as V1.
+
+	state: (optional) integer, determines which state the non-thermal (i.e. 'GS') quantities should be computed 
+			in. The default is 'state = 0', corresponding to the GS (provided 'E1' are ordered).
+
 
 	rho_d: matrix whose columns contain the density matrix of the Diagonal Ensemble for each state
 			as given by the columns of V1
@@ -434,6 +438,12 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 	elif len(V1[0,:]) != len(E1):
 		raise TypeError("Number of eigenstates in 'V1' must equal number of eigenvalues in 'E1'!")
 
+	if state:
+		if not(type(state) is int):
+			raise TypeError("'state' must be ingeter to pick the state V[:,state]!")
+		if state<0 or state>len(E1):
+			raise ValueError("state must satisfy: '0 <= state <= len(E1)'!")
+
 	if betavec:
 		if E_gs:
 			if not Z:
@@ -445,35 +455,35 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 			if not E_gs:
 				raise TypeError("Please, parse the ground state energy variable 'E_gs'!")
 
-	variables_GS = []
+	variables_state = []
 	variables_T = []
 
 	if Obs is not False:
 		if _la.norm(Obs.todense().T.conj() - Obs.todense()) > 1E4*_np.finfo(eval('_np.'+Obs[0,0].dtype.name)).eps:
 			raise ValueError("'Obs' is not hermitian!")
-		variables_GS.append("Obs_GS")
+		variables_state.append("Obs_state")
 		variables_T.append("Obs_T")
 	if rho_d:
-		variables_GS.append("rho_d")
+		variables_state.append("rho_d")
 	if Ed:
 		warnings.warn("The value of E_Tinf depends on the symmetries used!",UserWarning)
-		variables_GS.append("Ed_GS")
-		variables_GS.append("E_Tinf")
+		variables_state.append("Ed_state")
+		variables_state.append("E_Tinf")
 		variables_T.append("Ed_T")
 		variables_T.append("E_Tave")
 	if S_double_quench:
-		variables_GS.append("S_double_quench_GS")
+		variables_state.append("S_double_quench_state")
 		variables_T.append("S_double_quench_T")
 	if Sd_Renyi:
-		variables_GS.append("Sd_Renyi_GS")
+		variables_state.append("Sd_Renyi_state")
 		variables_T.append("Sd_Renyi_T")
 	if S_double_quench or Sd_Renyi:
-		variables_GS.append("S_Tinf")
+		variables_state.append("S_Tinf")
 	if deltaE:
-		variables_GS.append("deltaE_GS")
+		variables_state.append("deltaE_state")
 		variables_T.append("deltaE_T")
 
-	if not variables_GS:
+	if not variables_state:
 		warnings.warn("No observables were requested: ..exiting", UserWarning)
 		return {}
 
@@ -507,14 +517,14 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 
 	# diagonal ens expectation value of Obs in post-quench basis
 	if Obs is not False:
-		Obs_GS = T_nm[0,:].dot(O_mm)/L # GS
+		Obs_state = T_nm[state,:].dot(O_mm)/L # GS
 		if betavec:
 			Obs_T = (_np.einsum( 'ij,j->i', T_nm, O_mm )/L ).dot(rho) # finite-temperature
 
 
 	#calculate diagonal energy <H1> in long time limit
 	if Ed:
-		Ed_GS = rho_d[0,:].dot(E1)/L  # GS
+		Ed_state = rho_d[state,:].dot(E1)/L  # GS
 		if betavec:
 			Ed_T  = (rho_d.dot(E1)/L ).dot(rho) # finite-temperature
 			E_Tave = E1.dot(rho)/L # average energy density
@@ -522,24 +532,24 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 
 	#calculate double-quench entropy (H1->H2->H1)
 	if S_double_quench:
-		S_double_quench_GS = -rho_d[0,:].dot(_np.log(rho_d[0,:]))/L # GS
+		S_double_quench_state = -rho_d[state,:].dot(_np.log(rho_d[state,:]))/L # GS
 		if betavec:
 			S_double_quench_T  = (_np.einsum( 'ij,ji->i', -rho_d,_np.log(rho_d) )/L ).dot(rho) # finite-temperature
 	
 	# clear up memory
-	if 'rho_d' not in variables_GS:
+	if 'rho_d' not in variables_state:
 		del rho_d
 
 	# calculate diagonal Renyi entropy for parameter alpha: equals (Shannon) entropy for alpha=1: (H1->H2)
 	if Sd_Renyi:
 		if alpha != 1.0:
 			#calculate diagonal (Renyi) entropy for parameter alpha (H1->H2)
-			Sd_Renyi_GS = 1/(1-alpha)*_np.log(_np.power( T_nm[0,:], alpha ).sum() )/L  # # GS
+			Sd_Renyi_state = 1/(1-alpha)*_np.log(_np.power( T_nm[state,:], alpha ).sum() )/L  # # GS
 			if betavec:
 				Sd_Renyi_T = 1/(1-alpha)*(_np.log(_np.power( T_nm, alpha ).sum(1)  )/L  ).dot(rho) # finite-temperature
 		else:
 			warnings.warn("Renyi entropy equals diagonal entropy.", UserWarning)
-			Sd_Renyi_GS = -T_nm[0,:].dot(_np.log(T_nm[0,:]) ) /L # GS
+			Sd_Renyi_state = -T_nm[state,:].dot(_np.log(T_nm[state,:]) ) /L # GS
 			if betavec:
 				Sd_Renyi_T = (np.einsum( 'ij,ji->i', -T_nm,_np.log(T_nm.transpose()) )/L ).dot(rho) # finite-temperature
 
@@ -554,7 +564,7 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 		del a_n
 		_np.fill_diagonal(H1_mn2,0.0) 
 
-		deltaE_GS = _np.real( reduce( _np.dot,[T_nm[0,:], H1_mn2, T_nm[0,:] ])  )/L**2  # GS
+		deltaE_state = _np.real( reduce( _np.dot,[T_nm[state,:], H1_mn2, T_nm[state,:] ])  )/L**2  # GS
 		if betavec:
 			deltaE_T  = _np.real(_np.einsum( 'ij,ji->i', T_nm, H1_mn2.dot(T_nm.transpose()) )/(L**2) ).dot(rho) # finite-temperature
 		# free up memory
@@ -562,7 +572,7 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 		del H1_mn2
 
 	return_dict = {}
-	for i in variables_GS:
+	for i in variables_state:
 		return_dict[i] = vars()[i]
 	if betavec:
 		for i in variables_T:

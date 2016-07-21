@@ -20,7 +20,7 @@ import os
 start_time = time.time()
 ####################################################################
 
-L = 14
+L = 6
 
 J = 1.0
 hx = 0.809
@@ -111,7 +111,6 @@ print "spin H-space size is", Ns
 
 # this function evolves the ith local basis state with Hamiltonian H
 # this is used to construct the stroboscpoic evolution operator
-n_jobs = 2
 def evolve(i,H,T):
 	from numpy import zeros
 	from scipy.integrate import complex_ode
@@ -126,7 +125,6 @@ def evolve(i,H,T):
 		return solver.y
 	else:
 		raise Exception('failed to integrate')
-
 ### USING JOBLIB ###
 def get_U(H,n_jobs,T): 
 	from joblib import delayed,Parallel
@@ -136,6 +134,7 @@ def get_U(H,n_jobs,T):
 
 	return vstack(sols)
 
+n_jobs = 2
 UF = get_U(H,n_jobs,t_vec.T)
 # find Floquet states and phases
 thetaF, VF = la.eig(UF)
@@ -155,11 +154,11 @@ print "MB band width per site is", (EF0[-1]-EF0[0])/L
 
 Diag_Ens = observables.Diag_Ens_Observables(L,VF,EF,VF0,Sd_Renyi=True,Ed=True,deltaE=True)
 
-Sd = Diag_Ens['Sd_Renyi_GS']
+Sd = Diag_Ens['Sd_Renyi_state']
 S_Tinf = Diag_Ens['S_Tinf']
-Ed = Diag_Ens['Ed_GS']
+Ed = Diag_Ens['Ed_state']
 E_Tinf = Diag_Ens['E_Tinf']
-deltaE = Diag_Ens['deltaE_GS']
+deltaE = Diag_Ens['deltaE_state']
 
 
 Q = (Ed - EF[0]/L)/(E_Tinf- EF[0]/L) 
