@@ -381,26 +381,26 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 
 	L: (compulsory) chain length.
 
-	V1: (compulsory) unitary square matrix. Contains the eigenvectors of H1 in the columns. 
-			The initial state is the first column of V1.
+	V1: (compulsory) unitary square matrix. Contains the eigenvectors corresponding to the eigenvalues
+			of H1 in the columns (must come in the right order). If 'state' is not specified, the initial 
+			state is the first column of V1; otherwise the state is V1[:,state].
 
-	E1: (compulsory) vector of real numbers. Contains the eigenenergies of H1. The order of the 
+	E1: (compulsory) vector of ordered real numbers. Contains the eigenenergies of H1. The order of the 
 			eigenvalues must correspond to the order of the columns of V1.
 
 	V2: (compulsory) unitary square matrix. Contains the eigenvectors of H2 in the columns. Must have 
 			the same size as V1.
 
-	state: (optional) integer, determines which state the non-thermal (i.e. 'GS') quantities should be computed 
-			in. The default is 'state = 0', corresponding to the GS (provided 'E1' are ordered).
-
+	state: (optional) integer, determines which state the non-thermal (e.g. 'GS') quantities should be 
+			computed in. The default is 'state = 0', corresponding to the GS (provided 'E1' are ordered).
 
 	rho_d: matrix whose columns contain the density matrix of the Diagonal Ensemble for each state
 			as given by the columns of V1
 
 	Obs: (optional) hermitian matrix of the same size as V1. Infinite-time expectation value of the 
-			observable Obs in the state V1[:,0]. Has the key 'Obs' in the returned dictionary.
+			observable Obs in the state V1[:,state]. Has the key 'Obs' in the returned dictionary.
 
-	Ed: (optional) infinite-time expectation value of the Hamiltonian H1 in the state V1[:,0]. 
+	Ed: (optional) infinite-time expectation value of the Hamiltonian H1 in the state V1[:,state]. 
 			Has the key 'Ed' in the returned dictionary.
 
 	deltaE: (optional) infinite-time fluctuations around the energy expectation Ed. 
