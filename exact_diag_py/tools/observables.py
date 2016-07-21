@@ -394,8 +394,7 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 	state: (optional) integer, determines which state the non-thermal (e.g. 'GS') quantities should be 
 			computed in. The default is 'state = 0', corresponding to the GS (provided 'E1' are ordered).
 
-	rho_d: matrix whose columns contain the density matrix of the Diagonal Ensemble for each state
-			as given by the columns of V1
+	rho_d: Diagonal Ensemble for the state V1[:,state]
 
 	Obs: (optional) hermitian matrix of the same size as V1. Infinite-time expectation value of the 
 			observable Obs in the state V1[:,state]. Has the key 'Obs' in the returned dictionary.
@@ -539,6 +538,8 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 	# clear up memory
 	if 'rho_d' not in variables_state:
 		del rho_d
+	else:
+		rho_d = rho_d[state,:]
 
 	# calculate diagonal Renyi entropy for parameter alpha: equals (Shannon) entropy for alpha=1: (H1->H2)
 	if Sd_Renyi:
