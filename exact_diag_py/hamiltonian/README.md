@@ -1,4 +1,4 @@
-**# Creating hamiltonians:** 
+# ** Creating hamiltonians:** 
 Many-body operators are represented by string of letters representing the type of operators. For example, in a spin system we can represent multi-spin operators as:
 
 |      opstr       |      indx      |        operator string      |
@@ -58,7 +58,7 @@ H=hamiltonian(...,pauli=True,...)
 ``` 
 If pauli is set to True then the hamiltonian will be created assuming you have Pauli matrices while for pauli set to False you use spin 1/2 matrices. By default pauli is set to True.
 
-# Using symmetries:
+## Using symmetries:
 Adding symmetries is easy, either you can just add extra keyword arguements to the initialization of your hamiltonian. By default the hamiltonian will pick the spin-1/2 operators as well as 1d-symmetries.
 The symmetries for a spin chain in 1d are:
 
@@ -94,7 +94,7 @@ This is typically more efficient because you can use a basis object for multiple
 
 **NOTE:** for beta versions spin_basis_1d is named as basis1d.
 
-# Numpy dtype:
+## Numpy dtype:
 The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, complex64, and complex128. The default type is complex128. To specify the dtype use the dtype keyword arguement:
 
 ```python
@@ -103,7 +103,7 @@ H=hamiltonian(...,dtype=np.float32,...)
 
 **New in verions 0.1.0:** We now let the user use quadruple precision dtypes float128 and complex256, but note that not all Scipy and Numpy functions support all dtypes.
 
-**# Using hamiltonian:**
+# ** Using hamiltonian:**
 The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians as well as scipy sparse matrices and numpy dense arrays and scalars:
 
 * between other hamiltonians we have: ```+,-,+=,-=``` 

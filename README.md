@@ -1,4 +1,4 @@
-**# exact_diag_py**
+# ** exact_diag_py**
 exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of specifying the time dependence of operators in the Hamiltonian as well, which can be used to solve the time dependent Schrodinger equation numerically for these systems. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access the powerful linear algebra tools. 
 
 This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
@@ -47,7 +47,7 @@ dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_
 ```
 NOTE: if no operator strings or matrices are present one must specify the shape of the matrices being used as well as the dtype using the keyword arguement shape: ```H=hmailtonian([],[],...,shape=shape,...)```.
 
-**example:** transverse field ising model with time dependent field for L=10 chain:
+**example:** constructing a hamiltonian object of the transverse field ising model with time dependent field for L=10 chain:
 
 ```python
 # python script

@@ -2,7 +2,7 @@ import numpy as _np
 import warnings
 
 MAXPRINT = 50
-# this file stores
+# this file stores the base class for all basis classes
 
 class basis(object):
 
@@ -36,9 +36,6 @@ class basis(object):
 			return "reference states: \n\t not availible"
 
 
-
-
-
 	@property
 	def Ns(self):
 		return self._Ns
@@ -47,12 +44,32 @@ class basis(object):
 	def operators(self):
 		return self._operators
 
+
+
+	def Op(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required to construct hamiltonian!".format(self.__class__))
+
+
+
 	def __repr__(self):
-		return "< instant of 'exact_diag_py.basis.base' with {0} states >".format(self._Ns)
+		return "< instance of 'exact_diag_py.basis.base' with {0} states >".format(self._Ns)
 
 	def __name__(self):
 		return "<type 'exact_diag_py.basis.base'>"
 
+
+
+	def _hc_opstr(self,op):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check!".format(self.__class__))
+
+	def _sort_opstr(self,op):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks!".format(self.__class__))
+
+	def _expand_opstr(self,op,num):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check!".format(self.__class__))
+
+	def _non_zero(self,op):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check!".format(self.__class__))
 
 
 	# These methods are required for every basis class.
@@ -343,81 +360,6 @@ class basis(object):
 				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
 
 			print "Particle conservation check passed!"
-			
-
-
-
-
-
-
-
-
-
-
-
-	"""
-	def check_hermitian(self,static_list,dynamic_list):
-		# assumes static and dynamic lists are ordered
-		# static list
-		if static_list:
-
-			static_expand = []
-			static_expand_hc = []
-			for opstr, bonds in static_list:
-				# calculate conjugate opstr
-				opstr_hc = opstr.replace('-','#').replace('+','-').replace('#','+')
-				
-				for bond in bonds:
-					J = complex(bond[0])
-					indx = list(bond[1:])
-					indx_hc = list(indx)
-					static_expand.append( (opstr,tuple(indx),J) )
-					static_expand_hc.append( (opstr_hc,tuple(indx_hc),J.conjugate()) )
-
-
-			# calculate non-hermitian elements
-			diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
-			if diff:
-				unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-				warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
-				if user_input == 'y':
-					print "   (opstr, indices, coupling)"
-					for i in xrange(len(diff)):
-						print "{}. {}".format(i+1, list(diff)[i])
-				raise TypeError("Hamiltonian not hermitian! To turn this check off set check_herm=False in hamiltonian.")
-			
-			
-		# define arbitrarily complicated weird-ass number
-		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
-
-		dynamic_expand = []
-		dynamic_expand_hc = []
-		for opstr, bonds, f, f_args in dynamic_list:
-				opstr_hc = opstr.replace('-','#').replace('+','-').replace('#','+')
-				for bond in bonds:
-					J = complex(bond[0]*f(t,*f_args))
-					indx = list(bond[1:])
-					indx_hc = list(indx)
-
-					static_expand.append( (opstr,tuple(indx),J) )
-					static_expand_hc.append( (opstr_hc,tuple(indx_hc),J.conjugate()) )
-		# calculate non-hermitian elements
-		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
-		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
-			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
-			if user_input == 'y':
-				print "   (opstr, indices, coupling(t))"
-				for i in xrange(len(diff)):
-					print "{}. {}".format(i+1, list(diff)[i])
-			raise TypeError("Hamiltonian not hermitian! To turn this check off set check_herm=False in hamiltonian.")
-
-		print "Hermiticity check passed!"
-
-	"""
-
 
 
 

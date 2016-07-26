@@ -60,15 +60,15 @@ class tensor_basis(basis):
 		if n1 > 0 and n2 > 0:
 			row1 = row1.astype(self._dtype)
 			row1 *= self._b2.Ns
-			row = _np.kron(row1,_np.ones_like(row2))
-			row += _np.kron(_np.ones_like(row1),row2)
+			row = _np.kron(row1,_np.ones_like(row2,dtype=_np.int8))
+			row += _np.kron(_np.ones_like(row1,dtype=_np.int8),row2)
 
 			del row1,row2
 
 			col1 = col1.astype(self._dtype)
 			col1 *= self._b2.Ns
-			col = _np.kron(col1,_np.ones_like(col2))
-			col += _np.kron(_np.ones_like(col1),col2)
+			col = _np.kron(col1,_np.ones_like(col2,dtype=_np.int8))
+			col += _np.kron(_np.ones_like(col1,dtype=_np.int8),col2)
 
 			del col1,col2
 
@@ -91,14 +91,13 @@ class tensor_basis(basis):
 		if self._Ns <= 0:
 			return _np.array([])
 
+		if v0.shape[0] != self._Ns:
+			raise ValueError("v0 has incompatible dimensions with basis")
+
 		if v0.ndim == 1:
-			if v0.shape[0] != self._Ns:
-				raise ValueError("v0 has incompatible dimensions with basis")
 			v0 = v0.reshape((-1,1))
-			return _combine_get_vec(self,v0,sparse,full_1,full_2)
+			return _combine_get_vecs(self,v0,sparse,full_1,full_2).reshape((-1,))
 		elif v0.ndim == 2:
-			if v0.shape[0] != self._Ns:
-				raise ValueError("v0 has incompatible dimensions with basis")
 			return _combine_get_vecs(self,v0,sparse,full_1,full_2)
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
@@ -118,7 +117,7 @@ class tensor_basis(basis):
 			proj2 = _sp.identity(self._b2.Ns,dtype=dtype)
 
 
-		return _sp.kron(proj1,proj2)
+		return _sp.kron(proj1,proj2,format="csr")
 
 
 
@@ -315,7 +314,96 @@ class tensor_basis(basis):
 
 
 
+def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
+	Ns1=basis._b1.Ns
+	Ns2=basis._b2.Ns
 
+	Nvecs = v0.shape[1]
+
+	Ns = min(Ns1,Ns2)
+
+	# reshape vector to matrix to rewrite vector as an outer product.
+	v0=v0.T.reshape((Nvecs,-1,Ns))
+	# take singular value decomposition to get which decomposes the matrix into separate parts.
+	# the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector 
+
+	V1,S,V2 = _la.svd(v0,full_matrices=False)
+
+	V2 = V2.conj()
+
+	V1 = V1.T
+	V2 = V2.transpose((1,2,0))
+	S = S.T
+
+	# combining all the vectors together with the tensor product as opposed to the outer product
+	if sparse:
+		# take the vectors and convert them to their full hilbert space
+		if full_1:
+			v1 = basis._b1.get_vec(V1[-1],sparse=True)
+		else:
+			v1 = V1[-1]
+
+		if full_2:
+			v2 = basis._b2.get_vec(V2[-1],sparse=True)
+		else:
+			v2 = V2[-1]
+
+		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
+		temp2 = _np.ones((v2.shape[0],1),dtype=_np.int8)
+
+		v0 = _sp.kron(v1,temp2) * _sp.kron(temp1,v2)
+		v0 = v0.multiply(S[-1])
+		
+		for i,s in enumerate(S[:-1]):
+			if full_1:
+				v1 = basis._b1.get_vec(V1[i],sparse=True)
+			else:
+				v1 = V1[i]
+
+			if full_2:
+				v2 = basis._b2.get_vec(V2[i],sparse=True)
+			else:
+				v2 = V2[i]
+
+			v = _sp.kron(v1,temp1) * _sp.kron(temp2,v2)
+			v = v.multiply(s)
+
+			v0 = v0 + v
+		
+		
+	else:
+		# take the vectors and convert them to their full hilbert space
+		if full_1:
+			v1=basis._b1.get_vec(V1[-1],sparse=False)
+		else:
+			v1 = V1[-1]
+
+		if full_2:
+			v2=basis._b2.get_vec(V2[-1],sparse=False)
+		else:
+			v2 = V2[-1]
+
+		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
+		temp2 = _np.ones((v2.shape[0],1),dtype=_np.int8)
+
+		v0 = _np.kron(v1,temp2) * _np.kron(temp1,v2)
+		v0 *= S[-1]
+
+		for i,s in enumerate(S[:-1]):
+			if full_1:
+				v1 = basis._b1.get_vec(V1[i],sparse=False)
+			else:
+				v1 = V1[i]
+
+			if full_2:
+				v2 = basis._b2.get_vec(V2[i],sparse=False)
+			else:
+				v2 = V2[i]
+
+			v = _np.kron(v1,temp1) * _np.kron(temp2,v2)
+			v0 += s*v
+
+	return v0
 
 
 
@@ -331,7 +419,7 @@ class tensor_basis(basis):
 
 
 
-
+"""
 def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 	Ns1=basis._b1.Ns
 	Ns2=basis._b2.Ns
@@ -418,5 +506,5 @@ def _combine_get_vecs(basis,V0,sparse,full_1,full_2):
 		V0=_np.hstack(v0_list)
 
 	return V0
-
+"""
 

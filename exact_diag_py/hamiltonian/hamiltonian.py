@@ -493,7 +493,7 @@ class hamiltonian(object):
 		return -V_dot
 
 
-	def expm_multiply(self,V,a=-1j,time=0,**linspace_args):
+	def expm_multiply(self,V,a=-1j,time=0,iterate=True,verbose=False,times=(),**linspace_args):
 		if self.Ns <= 0:
 			return _np.asarray([])
 		if not _np.isscalar(time):
@@ -501,7 +501,45 @@ class hamiltonian(object):
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
-		return _sp.linalg.expm_multiply(a*self.tocsr(time),V,**linspace_args)
+		times = np.asarray(times)
+
+		def expm_multiply_iter(V,M_csr,times):
+
+			dtimes = times[1:] - times[:-1]
+			start = times[0]
+			times = np.array(times[1:])
+
+			V = _sp.linalg.expm_multiply(start*M_csr,V)
+
+			yield _np.array(V)
+
+			if verbose: print "evolved to initial time {0}.".format(start)
+
+			for dt,t in zip(dtimes,times):
+				V = _sp.linalg.expm_multiply(dt*M_csr,V)
+				if verbose: print "evolved to time {0}.".format(t)
+
+				yield _np.array(V)
+
+
+		M_csr = a*self.tocsr(time)
+
+		if iterate:
+			if not _np.any(times):
+				start = linspace_args['start']
+				stop = linspace_args['stop']
+				num = linspace_args['num']
+
+				endpoint = linspace_args.get('endpoint')
+				if endpoint is None: endpoint=False
+			
+				times = np.linspace(start,stop,num=num,endpoint=endpoint)
+
+			return expm_multiply_iter(V,M_csr,times)
+		else:
+			if not _np.any(times):
+				warnings.warn("'times' option only availible when iterate=True.",UserWarning)
+			return _sp.linalg.expm_multiply(M_csr,V,**linspace_args)
 
 
 	def expm(self,a=-1j,time=0):
@@ -512,7 +550,7 @@ class hamiltonian(object):
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
-		return _sp.linalg.expm(a*self.tocsr(time))
+		return _sp.linalg.expm(a*self.tocsr(time).tocsc())
 
 		
 	

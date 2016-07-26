@@ -5,12 +5,12 @@ import scipy.sparse as _sp
 import numpy as _np
 
 # needed for isinstance only
-from exact_diag_py.hamiltonian import hamiltonian
-from exact_diag_py.basis import spin_basis_1d,photon_basis
+from ..hamiltonian import hamiltonian,ishamiltonian
+from ..basis import spin_basis_1d,photon_basis
 
 import warnings
 
-#__all__ = ["Entanglement_entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "Mean_Level_Spacing"]
+__all__ = ["Entanglement_entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing"]
 
 def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False):
 	"""
@@ -197,6 +197,8 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 		return_dict[i] = vars()[i]
 
 	return return_dict
+
+
 
 def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
 	"""
@@ -612,19 +614,90 @@ def Kullback_Leibler_div(p1,p2):
 	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
 
 
+
+def ED_state_vs_time(psi,V,E,times,iterate=False):
+	"""
+	ED_state_vs_time(psi,V2,E2,Obs,times,return_state=False)
+
+	This routine calculates the time evolved initial state as a function of time. The initial 
+	state is 'psi' and the time evolution is carried out under the Hamiltonian H. Returns either a matrix with 
+	the time evolved states as rows, or an iterator which generates the states one by one. 
+
+	psi: (compulsory) initial state.
+
+	V: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
+
+	E: (compulsory) array containing the eigenvalues of the Hamiltonian H2. 
+			The order of the eigenvalues must correspond to the order of the columns of V2. 
+
+	times: (compulsory) a vector of times to evaluate the time evolved state at. 
+
+	iterate: (optional) if True this function returns the generator of the time evolved state. 
+	"""
+
+	if V.ndim != 2 or V.shape[0] != V.shape[1]:
+		raise ValueError("'V' must be a square matrix")
+
+	if V.shape[0] != len(E):
+		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
+	if len(psi) != len(E):
+		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+
+	if _np.isscalar(times):
+		TypeError("Variable 'times' must be a array or iter like object!")
+
+	times = _np.asarray(times)
+	times = _np.array(-1j*times)
+
+
+	# define generator of time-evolved state in basis V2
+	def psi_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		a_n = V.T.conj().dot(psi)
+		for t in times:
+			yield V.dot( _np.exp(-1j*E*t)*a_n )
+
+
+	
+
+
+	if iterate:
+		return psi_t_iter(V,psi,times)
+	else:
+		c_n = V.T.conj().dot(psi)
+		Ntime = len(times)
+		Ns = len(E)
+
+		psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+		psi_t = psi_t * E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+		_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+
+
+		psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+
+
+		psi_t = psi_t.T 
+		# for each vector trasform back to original basis
+		psi_t = V.dot(psi_t) 
+
+		return psi_t.T # [ psi(times[0]), ...,psi(times[-1]) ]
+
+
+
 def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
 	"""
 	Observable_vs_time(psi,V2,E2,Obs,times,return_state=False)
 
 	This routine calculates the expectation value as a function of time of an observable Obs. The initial 
-	state is 'psi' and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary 
+	state is 'psi' and the time evolution is carried out under the Hamiltonian H. Returns a dictionary 
 	in which the time-dependent expectation value has the key 'Expt_time'.
 
 	psi: (compulsory) initial state.
 
-	V2: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
+	V: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
 
-	E2: (compulsory) real vector containing the eigenvalues of the Hamiltonian H2. 
+	E: (compulsory) real vector containing the eigenvalues of the Hamiltonian H2. 
 			The order of the eigenvalues must correspond to the order of the columns of V2. 
 
 	Obs: (compulsory) hermitian matrix to calculate its time-dependent expectation value. 
@@ -634,57 +707,59 @@ def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
 	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
 			at the times specified by the row index. The return dictonary key is 'psi_time'.
 	"""
+	if V.ndim != 2 or V.shape[0] != V.shape[1]:
+		raise ValueError("'V' must be a square matrix")
 
-	if len(V[0,:]) != len(E):
+	if V.shape[0] != len(E):
 		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-	elif len(psi) != len(E):
+	if len(psi) != len(E):
 		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-	elif V.shape!=Obs.shape:
-		raise TypeError("Sizes of 'V1' and 'Obs' must be equal!")
+	if V.shape != Obs.shape:
+		raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
 
-	if not isinstance(times,list):
-		TypeError("Variable 'times' must be a list!")
+	if _np.isscalar(times):
+		TypeError("Variable 'times' must be a array or iter like object!")
 
 	variables = ['Expt_time']
 
-	if return_state==True:
-		variables.append("psi_time")
+	if return_state:
+		variables.append("psi_t")
 
-	# project initial state onto basis V2
-	c_n = V.conjugate().transpose().dot(psi)
+	# get complex type which matches precision of Eigen values
+	complex_type = _np.dtype(_np.complex64(1j)*E[0])
 
-
-	# define time-evolved state in basis V2
-	def psit(a_n,t):
-		# a_n: probability amplitudes
-		# t: time vector
-
-		return V.dot(_np.multiply(_np.exp(-1j*E*t), a_n ) )
-
-	
 	Lt = len(times)
 
-	# preallocate state
-	if return_state==True:
-		psi_time = _np.zeros((len(E),Lt),dtype=_np.complex128)
 
-	# preallocate expectation value
-	Expt_time = _np.zeros((Lt),dtype=_np.float64)
 
-	# loop over time vector
-	for m in xrange(Lt):
-		if return_state==True:
-			psi_time[:,m] = psit(c_n,times[m])
-		psi_t = psit(c_n,times[m])
-		#print _np.real( reduce( _np.dot, [psi_t.conjugate().T, Obs, psi_t ]  )  )
-		#print _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs, psi_t ) )
-		Expt_time[m] = _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs.todense(), psi_t ) )
+	# get iterator over time dependent state (see function above)
+	psi_t = ED_state_vs_time(psi,V,E,times,iterate = not(return_state) ).T
+
+	if return_state:
+
+		psi_l = Obs.dot(psi_t_iter)
+		Expt_time = _np.real( _np.einsum("ij,ji->i",psi_t_iter.T.conj(),psi_l) )
+
+	else:
+
+		# preallocate expectation value
+		Expt_time = _np.zeros((Lt,))
+
+		# loop over time vector
+		for m,psi in enumerate(psi_t):
+			#print _np.real( reduce( _np.dot, [psi_t.conjugate().T, Obs, psi_t ]  )  )
+			#print _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs, psi_t ) )
+			#Expt_time[m] = _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs.todense(), psi_t ) )
+			psi_l = Obs.dot(psi)
+			Expt_time[m] = _np.real( _np.vdot(psi,psi_l) )
 
 	return_dict = {}
 	for i in variables:
 		return_dict[i] = vars()[i]
 
 	return return_dict
+
+
 
 
 def Mean_Level_Spacing(E):
