@@ -71,7 +71,7 @@ def check_dynamic(sub_list):
 
 
 class hamiltonian(object):
-	def __init__(self,static_list,dynamic_list,L=None,shape=None,pauli=True,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
+	def __init__(self,static_list,dynamic_list,L=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
@@ -79,7 +79,6 @@ class hamiltonian(object):
 
 		self._is_dense=False
 		self._ndim=2
-		self._pauli = pauli
 
 
 
@@ -153,8 +152,8 @@ class hamiltonian(object):
 
 
 
-			self._static=_make_static(basis,static_opstr_list,dtype,pauli)
-			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype,pauli)
+			self._static=_make_static(basis,static_opstr_list,dtype)
+			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
 
 
@@ -314,10 +313,6 @@ class hamiltonian(object):
 	def dynamic(self):
 		return self._dynamic
 
-	@property
-	def pauli(self):
-		return self._pauli
-
 	def sum_duplicates(self):
 		"""
 		description:
@@ -405,7 +400,7 @@ class hamiltonian(object):
 		self._is_dense = not is_sparse
 
 
-	def tocsr(self,time=0,dtype=None):
+	def tocsr(self,time=0):
 		"""
 		args:
 			time=0, the time to evalute drive at.
@@ -417,9 +412,6 @@ class hamiltonian(object):
 			return _sp.csr_matrix(_np.asarray([[]]))
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
-
-		if dtype is None:
-			dtype = self._dtype
 
 
 		if _sp.issparse(self._static):
@@ -455,6 +447,23 @@ class hamiltonian(object):
 			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
 			This function can overflow memory if not careful.
 		"""
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+
+		if _sp.issparse(self._static):
+			self._static.todense(order=order,out=out)
+		else:
+			out[:] = self._static[:]
+
+		for Hd,f,f_args in self._dynamic:
+			out += Hd * f(time,*f_args)
+		
+		return out
+
+
+
+
 		return self.tocsr(time=time).todense(order=order,out=out)
 
 
@@ -1041,6 +1050,35 @@ class hamiltonian(object):
 	###################
 	# special methods #
 	###################
+
+
+	def __getitem__(self,key):
+		if len(key) != 3:
+			raise IndexError("invalid number of indices, hamiltonian must be indexed with three indices [time,row,col].")
+		try:
+			times = iter(key[0])
+			iterate=True
+		except TypeError:
+			time = key[0]
+			iterate=False
+
+		key = tuple(key[1:])
+		if iterate:
+			ME = []
+			if self.is_dense:
+				for t in times:
+					ME.append(self.todense(time=t)[key])
+			else:
+				for t in times:
+					ME.append(self.tocsr(time=t)[key])
+				
+			ME = tuple(ME)
+		else:
+			ME = self.tocsr(time=time)[key]
+
+		return ME
+			
+		
 
 
 	def __str__(self):

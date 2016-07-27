@@ -46,11 +46,6 @@ class basis(object):
 
 
 
-	def Op(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required to construct hamiltonian!".format(self.__class__))
-
-
-
 	def __repr__(self):
 		return "< instance of 'exact_diag_py.basis.base' with {0} states >".format(self._Ns)
 
@@ -59,16 +54,29 @@ class basis(object):
 
 
 
-	def _hc_opstr(self,op):
+
+	def Op(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for for creating hamiltonians!".format(self.__class__))
+		
+	def get_vec(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec'!".format(self.__class__))
+
+	def get_proj(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of 'get_proj'!".format(self.__class__))
+
+
+
+
+	def _hc_opstr(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check!".format(self.__class__))
 
-	def _sort_opstr(self,op):
+	def _sort_opstr(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks!".format(self.__class__))
 
-	def _expand_opstr(self,op,num):
+	def _expand_opstr(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check!".format(self.__class__))
 
-	def _non_zero(self,op):
+	def _non_zero(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check!".format(self.__class__))
 
 

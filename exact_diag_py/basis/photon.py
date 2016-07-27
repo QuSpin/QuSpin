@@ -40,7 +40,7 @@ class photon_basis(tensor_basis):
 			
 
 
-	def Op(self,opstr,indx,J,dtype,pauli):
+	def Op(self,opstr,indx,J,dtype):
 		if self._Ns <= 0:
 			return [],[],[]
 
@@ -53,7 +53,7 @@ class photon_basis(tensor_basis):
 		if not self._check_pcon:
 			n = len(opstr.replace("|","")) - len(indx)
 			indx.extend([min(indx) for i in xrange(n)])
-			return tensor_basis.Op(self,opstr,indx,J,dtype,pauli)
+			return tensor_basis.Op(self,opstr,indx,J,dtype)
 		else:
 			# read off spin and photon operators
 			n = len(opstr.replace("|","")) - len(indx)
@@ -72,8 +72,8 @@ class photon_basis(tensor_basis):
 
 			# calculates matrix elements of spin and photon basis
 			# the coupling 1.0 in self._b2.Op is used in order not to square the coupling J
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
-			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
+			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype)
+			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype)
 
 			# calculate total matrix element
 			ME *= ME_ph[self._n[row]]
@@ -286,7 +286,7 @@ def _conserved_get_vec(p_basis,v0,sparse,full_part):
 	v0_mask = _np.zeros_like(v0)
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
-	v_ph = _np.zeros((np_max+1,1),dtype=_np.int64)
+	v_ph = _np.zeros((np_max+1,1),dtype=_np.int8)
 	
 	v_ph[np_min] = 1
 	mask = p_basis._n == np_min
@@ -335,7 +335,7 @@ def _conserved_get_vec(p_basis,v0,sparse,full_part):
 def _conserved_get_proj(p_basis,dtype,full_part):
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
-	v_ph = _np.zeros((np_max+1,1),dtype=_np.int32)
+	v_ph = _np.zeros((np_max+1,1),dtype=_np.int8)
 
 	if full_part:
 		proj_1 = p_basis._b1.get_proj(dtype).tocsc()

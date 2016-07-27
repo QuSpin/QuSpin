@@ -63,6 +63,10 @@ class spin_basis_1d(basis):
 			a=1
 			blocks["a"]=1
 
+		if blocks.get("pauli") is None:
+			blocks["pauli"] = True
+
+
 		if type(Nup) is int:
 			self._check_pcon=True
 			self._make_Nup_block(L,Nup=Nup,**blocks)
@@ -590,7 +594,7 @@ class spin_basis_1d(basis):
 
 
 
-	def Op(self,opstr,indx,J,dtype,pauli):
+	def Op(self,opstr,indx,J,dtype):
 		indx = _np.asarray(indx,dtype=_np.int32)
 
 		if opstr.count("|") > 0:
@@ -600,11 +604,10 @@ class spin_basis_1d(basis):
 		if _np.any(indx >= self._L) or _np.any(indx < 0):
 			raise ValueError('values in indx falls outside of system')
 
-
 		if self._Ns <= 0:
 			return [],[],[]
-		
-		ME,row,col = op[self._conserved](opstr,indx,J,dtype,pauli,*self._op_args,**self._blocks)
+
+		ME,row,col = op[self._conserved](opstr,indx,J,dtype,*self._op_args,**self._blocks)
 
 		mask = ME != dtype(0.0)
 		row = row[mask]

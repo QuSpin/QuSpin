@@ -32,7 +32,7 @@ class tensor_basis(basis):
 #		self._check_pcon = self._b1._check_pcon and self._b2._check_pcon
 
 
-	def Op(self,opstr,indx,J,dtype,pauli):
+	def Op(self,opstr,indx,J,dtype):
 		if opstr.count("|") > 1: 
 			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
@@ -46,11 +46,11 @@ class tensor_basis(basis):
 		opstr1,opstr2=opstr.split("|")
 
 		if self._b1._Ns < self._b2._Ns:
-			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype,pauli)
-			ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
+			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype)
+			ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype)
 		else:
-			ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype,pauli)
-			ME2,row2,col2 = self._b2.Op(opstr2,indx2,J,dtype,pauli)
+			ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype)
+			ME2,row2,col2 = self._b2.Op(opstr2,indx2,J,dtype)
 			
 
 		n1 = row1.shape[0]
