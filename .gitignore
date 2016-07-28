@@ -22,6 +22,9 @@ semiclassical.py
 semiclassical_ETH.py
 spin_only.py
 
+submit.sh
+spin_only_analysis.py
+
 
 
 
