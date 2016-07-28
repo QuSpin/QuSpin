@@ -6,31 +6,28 @@ import numpy as np
 
 
 
-L=6
+L=8
 Nph = 10
+Ntot = 5
 
 J = [[-1.0,i,(i+1)%L] for i in xrange(L)]
+K = [[-1.0,i,(i+1)%L,(i+2)%L] for i in xrange(L)]
 h = [[-0.5,i] for i in xrange(L)]
 
-basis1 = photon_basis(spin_basis_1d,L,Nph=Nph,kblock=L/2,pblock=-1)
+basis1 = photon_basis(spin_basis_1d,L,Ntot=Ntot,kblock=0,pblock=1)
 basis2 = photon_basis(spin_basis_1d,L,Nph=Nph)
 
-static = [["zz|",J],["y|",h],["x|+",h],["x|-",h]]
+static = [["zz|",J],["+z-|",K],["-z+|",K],["-|+",h],["+|-",h]]
 dynamic = []
 
 H1 = hamiltonian(static,dynamic,basis=basis1)
-H2 = hamiltonian(static,dynamic,basis=basis2).todense()
+H2 = hamiltonian(static,dynamic,basis=basis2)
 
 
-E1,V1 = H1.eigh()
+V = basis1.get_proj(np.float64,Nph=Nph)
+H2 = H2.project_to(V)
 
-V1_tot = basis1.get_vec(V1,sparse=True).todense()
-
-
-E2 = np.einsum('ji,jk,ki->i',V1_tot.conj(),H2,V1_tot)
-
-print np.linalg.norm(E1-E2)
-
+print H1-H2
 
 
 
