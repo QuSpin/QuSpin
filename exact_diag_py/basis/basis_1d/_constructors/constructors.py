@@ -23,9 +23,10 @@ class OpstrError(Exception):
 
 
 
-def op(opstr,indx,J,dtype,pauli,basis,**blocks):
+def op(opstr,indx,J,dtype,basis,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_spinop"]
+	pauli = blocks.get('pauli')
 	# col: resilting basis states; -1: state is thrown out (cf FindZState)
 	# ME: array of dtype with matrix elements
 	# error: see line 11 above
@@ -53,7 +54,7 @@ def op(opstr,indx,J,dtype,pauli,basis,**blocks):
 
 
 
-def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
+def op_m(opstr,indx,J,dtype,basis,**blocks):
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_m_op"]
@@ -78,8 +79,9 @@ def op_m(opstr,indx,J,dtype,pauli,basis,**blocks):
 
 
 
-def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
+def op_z(opstr,indx,J,dtype,basis,L,**blocks):
 	zblock=blocks.get("zblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_z_op"]
@@ -101,8 +103,9 @@ def op_z(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 
 	return ME,row,col
 
-def op_zA(opstr,indx,J,dtype,pauli,basis,L,**blocks):
+def op_zA(opstr,indx,J,dtype,basis,L,**blocks):
 	zAblock=blocks.get("zAblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_zA_op"]
@@ -125,8 +128,9 @@ def op_zA(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	return ME,row,col
 
 
-def op_zB(opstr,indx,J,dtype,pauli,basis,L,**blocks):
+def op_zB(opstr,indx,J,dtype,basis,L,**blocks):
 	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_zB_op"]
@@ -149,9 +153,10 @@ def op_zB(opstr,indx,J,dtype,pauli,basis,L,**blocks):
 	return ME,row,col
 
 
-def op_zA_zB(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+def op_zA_zB(opstr,indx,J,dtype,N,basis,L,**blocks):
 	zAblock=blocks.get("zAblock")
 	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_zA_zB_op"]
@@ -173,8 +178,9 @@ def op_zA_zB(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 	return ME,row,col
 
 
-def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
 	pblock=blocks.get("pblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_p_op"]
@@ -200,8 +206,9 @@ def op_p(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 
 
-def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+def op_pz(opstr,indx,J,dtype,N,basis,L,**blocks):
 	pzblock=blocks.get("pzblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_pz_op"]
@@ -225,9 +232,10 @@ def op_pz(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 
 
-def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+def op_p_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 	pblock=blocks.get("pblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_p_z_op"]
@@ -252,9 +260,10 @@ def op_p_z(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 
 
-def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
+def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_op"]
@@ -279,10 +288,11 @@ def op_t(opstr,indx,J,dtype,pauli,N,basis,L,**blocks):
 
 
 
-def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	zblock=blocks.get("zblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_z_op"]
@@ -303,10 +313,11 @@ def op_t_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	return ME,row,col
 
-def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_zA(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	zAblock=blocks.get("zAblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_zA_op"]
@@ -327,10 +338,11 @@ def op_t_zA(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	return ME,row,col
 
-def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_zB(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_zB_op"]
@@ -351,11 +363,12 @@ def op_t_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 	return ME,row,col
 
-def op_t_zA_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_zA_zB(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	zAblock=blocks.get("zAblock")
 	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_zA_zB_op"]
@@ -378,10 +391,11 @@ def op_t_zA_zB(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	return ME,row,col
 
 
-def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_p(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pblock=blocks.get("pblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_p_op"]
@@ -406,10 +420,11 @@ def op_t_p(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 
 
 
-def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_pz(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pzblock=blocks.get("pzblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_pz_op"]
@@ -433,11 +448,12 @@ def op_t_pz(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
 	return ME,row,col
 
 
-def op_t_p_z(opstr,indx,J,dtype,pauli,N,m,basis,L,**blocks):
+def op_t_p_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	a=blocks.get("a")
 	kblock=blocks.get("kblock")
 	pblock=blocks.get("pblock")
 	zblock=blocks.get("zblock")
+	pauli=blocks.get("pauli")
 
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_t_p_z_op"]

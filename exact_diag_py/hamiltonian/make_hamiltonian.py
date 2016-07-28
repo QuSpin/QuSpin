@@ -72,7 +72,7 @@ def test_function(func,func_args):
 
 
 
-def make_static(basis,static_list,dtype,pauli):
+def make_static(basis,static_list,dtype):
 	"""
 	args:
 		static=[[opstr_1,indx_1],...,[opstr_n,indx_n]], list of opstr,indx to add up for static piece of Hamiltonian.
@@ -96,7 +96,7 @@ def make_static(basis,static_list,dtype,pauli):
 			J=bond[0]
 			indx=bond[1:]
 #			indx = _np.asarray(indx,_np.int32)
-			ME,row,col = basis.Op(opstr,indx,J,dtype,pauli)
+			ME,row,col = basis.Op(opstr,indx,J,dtype)
 			Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 			H=H+Ht
 			del Ht
@@ -109,7 +109,7 @@ def make_static(basis,static_list,dtype,pauli):
 
 
 
-def make_dynamic(basis,dynamic_list,dtype,pauli):
+def make_dynamic(basis,dynamic_list,dtype):
 	"""
 	args:
 	dynamic=[[opstr_1,indx_1,func_1,func_1_args],...,[opstr_n,indx_n,func_n,func_n_args]], list of opstr,indx and functions to drive with
@@ -139,7 +139,7 @@ def make_dynamic(basis,dynamic_list,dtype,pauli):
 				J=bond[0]
 				indx=bond[1:]
 #				indx = _np.asarray(indx,_np.int32)
-				ME,row,col = basis.Op(opstr,indx,J,dtype,pauli)
+				ME,row,col = basis.Op(opstr,indx,J,dtype)
 				Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 				H=H+Ht
 				del Ht

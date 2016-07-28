@@ -41,7 +41,7 @@ class photon_basis(tensor_basis):
 			
 
 
-	def Op(self,opstr,indx,J,dtype,pauli):
+	def Op(self,opstr,indx,J,dtype):
 		if self._Ns <= 0:
 			return [],[],[]
 
@@ -54,7 +54,7 @@ class photon_basis(tensor_basis):
 		if not self._check_pcon:
 			n = len(opstr.replace("|","")) - len(indx)
 			indx.extend([min(indx) for i in xrange(n)])
-			return tensor_basis.Op(self,opstr,indx,J,dtype,pauli)
+			return tensor_basis.Op(self,opstr,indx,J,dtype)
 		else:
 			# read off spin and photon operators
 			n = len(opstr.replace("|","")) - len(indx)
@@ -73,8 +73,8 @@ class photon_basis(tensor_basis):
 
 			# calculates matrix elements of spin and photon basis
 			# the coupling 1.0 in self._b2.Op is used in order not to square the coupling J
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype,pauli)
-			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype,pauli)
+			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype)
+			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype)
 
 			# calculate total matrix element
 			ME *= ME_ph[self._n[row]]
@@ -108,39 +108,55 @@ class photon_basis(tensor_basis):
 		
 
 
-	def get_vec(self,v0,sparse=True,full_part=True):
+	def get_vec(self,v0,sparse=True,Nph=None,full_part=True):
 		if not self._check_pcon:
 			return tensor_basis.get_vec(self,v0,sparse=sparse,full_1=full_part)
 		else:
-#			raise NotImplementedError("get_vec not implimented for particle conservation symm.")
-			# still needs testing...
+			if Nph is None:
+				Nph = self.Ntot
+
+			if not type(Nph) is int:
+				raise TypeError("Nph must be integer")
+
+			if Nph < self.Ntot:
+				raise ValueError("Nph must be larger or equal to {0}".format(self.Ntot))
+		
 			if v0.ndim == 1:
 				if v0.shape[0] != self._Ns:
 					raise ValueError("v0 has incompatible dimensions with basis")
 				v0 = v0.reshape((-1,1))
 				if sparse:
-					return _conserved_get_vec(self,v0,sparse,full_part)
+					return _conserved_get_vec(self,v0,sparse,Nph,full_part)
 				else:
-					return _conserved_get_vec(self,v0,sparse,full_part).reshape((-1,))
+					return _conserved_get_vec(self,v0,sparse,Nph,full_part).reshape((-1,))
 
 			elif v0.ndim == 2:
 				if v0.shape[0] != self._Ns:
 					raise ValueError("v0 has incompatible dimensions with basis")
 
-				return _conserved_get_vec(self,v0,sparse,full_part)
+				return _conserved_get_vec(self,v0,sparse,Nph,full_part)
 			else:
 				raise ValueError("excpecting v0 to have ndim at most 2")
 
 
 
 
-	def get_proj(self,dtype,full_part=True):
+	def get_proj(self,dtype,Nph=None,full_part=True):
 		if not self._check_pcon:
 			return tensor_basis.get_proj(self,dtype,full_1=full_part)	
 		else:
-			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
+			if Nph is None:
+				Nph = self.Ntot
+
+			if not type(Nph) is int:
+				raise TypeError("Nph must be integer")
+
+			if Nph < self.Ntot:
+				raise ValueError("Nph must be larger or equal to {0}".format(self.Ntot))
+
+#			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
 			# still needs testing...
-			return _conserved_get_proj(self,dtype,full_part)
+			return _conserved_get_proj(self,dtype,Nph,full_part)
 
 
 
@@ -283,11 +299,11 @@ class photon_basis(tensor_basis):
 
 
 
-def _conserved_get_vec(p_basis,v0,sparse,full_part):
+def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 	v0_mask = _np.zeros_like(v0)
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
-	v_ph = _np.zeros((np_max+1,1),dtype=_np.int64)
+	v_ph = _np.zeros((Nph+1,1),dtype=_np.int8)
 	
 	v_ph[np_min] = 1
 	mask = p_basis._n == np_min
@@ -333,17 +349,18 @@ def _conserved_get_vec(p_basis,v0,sparse,full_part):
 
 
 
-def _conserved_get_proj(p_basis,dtype,full_part):
+def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
-	v_ph = _np.zeros((np_max+1,1),dtype=_np.int32)
+	v_ph = _np.zeros((Nph+1,1),dtype=_np.int8)
 
 	if full_part:
-		proj_1 = p_basis._b1.get_proj(dtype).tocsc()
+		proj_1 = p_basis._b1.get_proj(dtype)
 	else:
-		proj_1 = _sp.identity(p_basis.Ns,dtype=dtype,format="csc")
+		proj_1 = _sp.identity(p_basis.Ns,dtype=dtype,format="csr")
 
-	proj_1_mask = _sp.csc_matrix(proj_1.shape,dtype=dtype)
+	proj_1_mask = _sp.lil_matrix(proj_1.shape,dtype=dtype)
+
 
 	v_ph[np_min] = 1
 	mask = p_basis._n == np_min
@@ -351,8 +368,7 @@ def _conserved_get_proj(p_basis,dtype,full_part):
 
 	proj_1_full = _sp.kron(proj_1_mask,v_ph,format="csr")
 
-	proj_1_mask[:,mask]=0.0
-	proj_1_mask.eliminate_zeros()
+	proj_1_mask[:,:]=0.0
 	v_ph[np_min] = 0
 
 
@@ -363,14 +379,13 @@ def _conserved_get_proj(p_basis,dtype,full_part):
 
 		proj_1_full = proj_1_full + _sp.kron(proj_1_mask,v_ph,format="csr")
 
-		proj_1_mask[:,mask]=0.0
-		proj_1_mask.eliminate_zeros()
+		proj_1_mask[:,:]=0.0
 		v_ph[np] = 0		
 
 
 
 
-
+	return proj_1_full
 
 
 

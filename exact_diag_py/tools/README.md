@@ -1,6 +1,6 @@
 # **Tools.observables:** 
 
-# Entanglement entropy:
+## Entanglement entropy:
 
 ```python
 Entanglement_entropy(L,psi,subsys=[i for i in xrange( int(L/2) )],basis=None,alpha=1.0, DM=False, DM_basis=False) 
@@ -29,7 +29,7 @@ reduced DM is written in the full basis containing 2^L states.
 
 
 
-#Diagonal Ensemble Observables:
+## Diagonal Ensemble Observables:
 ```python
 Diag_Ens_Observables(L,V1,V2,E1,betavec=[],alpha=1.0, Obs=False, Ed=False, S_double_quench=False, Sd_Renyi=False, deltaE=False)
 ```
@@ -64,7 +64,7 @@ betavec: (optional) a list of INVERSE temperatures to specify the distribution o
 
 
 
-#Kullback-Leibler divergence:
+## Kullback-Leibler divergence:
 ```python
 Kullback_Leibler_div(p1,p2)
 ```
@@ -76,7 +76,7 @@ This routine returns the Kullback-Leibler divergence of the discrete probabiliti
 
 
 
-#Time Evolution:
+## Time Evolution:
 ```
 Observable_vs_time(psi,V2,E2,Obs,times,return_state=False)
 ```
@@ -96,7 +96,7 @@ return_state: (optional) when set to 'True', returns a matrix whose columns give
 
 
 
-# Mean Level spacing:
+## Mean Level spacing:
 ```python
 Mean_Level_Spacing(E)
 ```
