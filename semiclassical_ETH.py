@@ -36,19 +36,19 @@ all_fields=[[1.0,i] for i in xrange(L)]
 
 x_field=[[hx,i] for i in xrange(L)]
 z_field=[[hz,i] for i in xrange(L)]
-J_nn=[[J,i,(i+1)%L] for i in xrange(L)]
+J_nn=[[-J,i,(i+1)%L] for i in xrange(L)]
 
 drive_coupling=[[A,i] for i in xrange(L)]
 
 def f(t,Omega):
-	return 2*np.cos(Omega*t)
+	return np.cos(Omega*t)
 def g(t,Omega):
 	return np.exp(+1j*Omega*t)
 def g_conj(t,Omega):
 	return np.exp(-1j*Omega*t)
 
-absorb=[[A/np.sqrt(Nph),i] for i in xrange(L)]
-emit=[[np.conj(A)/np.sqrt(Nph),i] for i in xrange(L)]
+absorb=[[0.5*A/np.sqrt(Nph),i] for i in xrange(L)]
+emit=[[0.5*np.conj(A)/np.sqrt(Nph),i] for i in xrange(L)]
 
 ph_energy = [[Omega/L,i] for i in xrange(L)]
 

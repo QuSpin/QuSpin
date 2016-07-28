@@ -11,27 +11,19 @@ import scipy.linalg as la
 from numpy.linalg import norm
 from numpy.random import random,seed
 
-import matplotlib.pyplot as plt
-import pylab
 
 from joblib import delayed,Parallel
 from numpy import vstack
 
-import time
-import sys
-import os
 
-####################################################################
-start_time = time.time()
-####################################################################
 
 # parallelisation params
 U_jobs = 1
 n_jobs = 1
 
 # system size
-L = int(sys.argv[1])
-block = int(sys.argv[3]) - 1
+L = 3
+block = 2
 
 ### static model params
 J = 1.0
@@ -41,7 +33,7 @@ hz = 0.9045
 ### dynamic model params
 def f(t,Omega):
 	return np.cos(Omega*t)
-Omega = int(sys.argv[2])
+Omega = 10.0
 A = 1.0
 def t_vec(Omega,N_const,len_T=100,N_up=0,N_down=0):
 	# define dynamics params for a time step of 'da=1/len_T'
@@ -123,8 +115,7 @@ def symm_sector(kblock,pblock):
 	HF0=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
 
 	Ns = HF0.Ns
-	print "spin H-space size is", Ns
-
+	
 	################################################################
 	################  calculate FLoquet operator  ##################
 	################################################################
@@ -141,54 +132,41 @@ def symm_sector(kblock,pblock):
 	################################################################
 	###################  calculate observables  ####################
 	################################################################
+	"""
+	betavec = [1.0, 0.235]
+	Diag_Ens = observables.Diag_Ens_Observables_old(L,VF0,EF0,VF,betavec=betavec,Sd_Renyi=True,Ed=True,deltaE=True,rho_d=True)
 
-	Diag_Ens = observables.Diag_Ens_Observables(L,VF0,EF0,VF,Sd_Renyi=True,Ed=True,deltaE=True)
+	psi0 = VF0[:,0]
 
-	Sd = Diag_Ens['Sd_Renyi_state']
-	S_Tinf = Diag_Ens['S_Tinf']
-	Ed = Diag_Ens['Ed_state']
-	E_Tinf = Diag_Ens['E_Tinf']
-	deltaE = Diag_Ens['deltaE_state']
+	rho0 = np.outer(VF0[:,0].conj(), VF0[:,0]) #+ np.outer(VF0[:,1].conj(), VF0[:,1])
 
+	#Diag_Ens2 = observables.Diag_Ens_Observables(L,{'V1':VF0,'E1':EF0,'f_args':[betavec],'V1_state':0},VF,Sd_Renyi=True,Obs=HF0,deltaObs=True,rho_d=True)
+	#Diag_Ens2 = observables.Diag_Ens_Observables(L,rho0,VF,Sd_Renyi=True,Obs=HF0,deltaObs=True,rho_d=True)
+	Diag_Ens2 = observables.Diag_Ens_Observables(L,psi0,VF,rho_d=True)
 	
-	Q_E = (Ed - EF0[0]/L)/(E_Tinf- EF0[0]/L) 
-	Q_SF = Sd/S_Tinf
+
+	print "old", Diag_Ens
+	print '---------------------'
+	print "new", Diag_Ens2
+	"""
 
 	# calculate entanglement entropy of L/2 the chain
-	Sent = observables.Entanglement_entropy(L,VF0	[:,0],basis=basis)['Sent']/(L/2)
+	v = observables.Entanglement_entropy(L,VF0[:,0],basis=basis)
 
-	Q_Sent = Sent/S_Tinf
+	v2 = observables.reshape_as_subsys({'V_rho':VF0,'rho_d':EF0},basis)
+	#v2 = observables.reshape_as_subsys(VF0[:,0],basis)
 
-	# calculate mean level spacing of HF and HF0
-	folded_EF0 = sorted( np.real( 1j/t_vec.T*np.log(np.exp(-1j*EF0*t_vec.T)) ) )
-	rave_F0 = observables.Mean_Level_Spacing( folded_EF0 )
-	rave_F = observables.Mean_Level_Spacing(EF)
+	#"""
+	print "++++++++++++"
+	print v.shape
+	print v
+	print "-----------"
+	print v2.shape
+	print v2[0,:]
+	#"""
+	exit()
 
-
-	################################################################
-	###################     store data        ######################
-	################################################################
-
-	data = np.zeros((16,),dtype=np.float64)
-
-	data[0] = Q_E
-	data[1] = Q_SF
-	data[2] = Q_Sent
-	data[3] = deltaE
-	data[4] = rave_F
-	data[5] = rave_F0
-	data[6] = Ed
-	data[7] = Sd
-	data[8] = Sent
-	data[9] = E_Tinf
-	data[10] = S_Tinf
-	data[11] = EF0[0]/L
-	data[12]= (EF0[-1]-EF0[0])/L # MB bandwdith per site
-	data[13]= Ns
-	data[14]= kblock
-	data[15]= pblock
-
-	return data
+	
 
 
 # define list will all symmetry sectors
@@ -204,63 +182,4 @@ sectors = [(0,-1)]
 Data = symm_sector(*sectors[block])
 
 
-################################################################
-###################     save data        #######################
-################################################################
-
-# file name
-save_params = (L,) + tuple(np.around([Omega,A],2)) + sectors[block]
-data_name = "data_driven_chain_L=%s_Omega=%s_A=%s_kblock=%s_pblock=%s.txt" %(save_params)
-
-# display full strings
-np.set_printoptions(threshold='nan')
-
-
-# read in local directory path
-str1=os.getcwd()
-str2=str1.split('\\')
-n=len(str2)
-my_dir = str2[n-1]
-
-# define save data directory
-save_dir = "%s/data" %(my_dir)
-if not os.path.exists(save_dir):
-    os.makedirs(save_dir)
-
-#change path to save directory
-os.chdir(save_dir)
-
-# save to .txt
-np.savetxt(data_name, Data, delimiter=" ", fmt="%s")
-
-print "Calculation took",("--- %s seconds ---" % (time.time() - start_time))
-
-
-"""
-
-
-#psi = H.evolve(psi0,t[-1],t,rtol=1E-12,atol=1E-12)
-
-# calculate energy of spin chain
-Energy = np.real( np.einsum("ij,jk,ik->i", psi.conj(),HF0.todense(),psi) )
-
-# plot results
-title_params = tuple(np.around([hz/J,hx/J,A/Omega,Omega/J],2) ) + (L,)
-titlestr = "$h_z/J=%s,\\ h_x/J=%s,\\ A/\\Omega=%s,\\ \\Omega/J=%s,\\ L=%s$" %(title_params)
-
-plt.plot(t,Energy/L,'r--',linewidth=2)
-
-plt.xlabel('$t/T$', fontsize=18)
-plt.ylabel('$\\eta(t)$', fontsize=20)
-
-
-plt.legend(loc='upper right')
-plt.title(titlestr, fontsize=18)
-plt.tick_params(labelsize=16)
-plt.grid(True)
-
-
-plt.show()
-
-"""
 			

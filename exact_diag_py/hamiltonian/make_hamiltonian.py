@@ -67,7 +67,7 @@ def test_function(func,func_args):
 	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 	func_val=func(t,*func_args)
 	if not _np.isscalar(func_val):
-		raise TypeError("function must return scaler values")
+		raise TypeError("function must return scalar values")
 
 
 

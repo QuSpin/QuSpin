@@ -543,7 +543,7 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
 
-		elif _sm.issparse(V):
+		elif _sp.issparse(V):
 			if V.shape[1] != self._shape[0]:
 				raise ValueError('dimension mismatch')
 	
@@ -592,6 +592,7 @@ class hamiltonian(object):
 			the specified time. It is faster in this case to multiple each individual parts of the Hamiltonian 
 			first, then add all those vectors together.
 		"""
+
 		
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -613,7 +614,7 @@ class hamiltonian(object):
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 
 
-		elif _sm.issparse(V):
+		elif _sp.issparse(V):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError('dimension mismatch')
 	

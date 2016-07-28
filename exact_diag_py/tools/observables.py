@@ -2,6 +2,7 @@
 import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
 import scipy.sparse as _sp
+from scipy.special import binom, hyp2f1
 import numpy as _np
 
 # needed for isinstance only
@@ -124,21 +125,23 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 
 	elif Ntot is not None: # total particle-conservation
 		Nph = Ntot
-		if len(psi) < 2**L: #chain symemtries present
+		if len(psi) < 2**basis.L - binom(basis.L,basis.Ntot+1)*hyp2f1(1,1-basis.L+basis.Ntot,2+basis.Ntot,-1): #chain symemtries present
 			if chain_symm:
 				raise TypeError("'chain_symm' is incompatible with Ntot symmetry!")
 			else:
 				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
 				Ns_spin = 2**L
 		else: # no chain symmetries present
+			print 'real', psi
 			psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-			Ns_spin = basis.chain_Ns
+			Ns_spin = 2**L
 
 	del basis
 
 
 	if L_A==L:
 		# reshape state vector psi
+		print 'real', psi
 		v = _np.reshape(psi, (Ns_spin,Nph+1) ).T
 		del psi
 	else:
@@ -151,11 +154,13 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 		del psi, chain_dim_per_site
 		# performs 4)
 		system.append(len(system))
-		v = _np.transpose(v, axes=system) 
+		v = _np.transpose(v, axes=system)
 		# performs 5)
 		v = _np.reshape(v, ( Ns_A, 2**(L-L_A)*(Nph+1) ) )
-	
+
 	del system, chain_subsys
+
+	return v
 	
 	
 	# apply singular value decomposition
@@ -234,7 +239,7 @@ def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
 
 	if chain_subsys is None: 
 		chain_subsys=[i for i in xrange( int(L/2) )]
-		warnings.warn("subsystem automatically set to contain sites {}.".format(chain_subsys))
+		warnings.warn("subsystem automatically set to contain sites {}.".format(chain_subsys),stacklevel=4)
 	elif not isinstance(chain_subsys,list):
 		raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 	elif min(chain_subsys) < 0:
@@ -283,6 +288,8 @@ def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
  	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( L_A x L/L_A ) and proceed with the SVD as below  
 	'''
 
+	#print "real", psi
+
 	# performs 2) and 3)
 	v = _np.reshape(psi, tuple([2 for i in xrange(L)] ) )
 	del psi
@@ -292,6 +299,8 @@ def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
 	v = _np.reshape(v, ( Ns_A, Ns/Ns_A) )
 	
 	del system, chain_subsys
+
+	return v
 	
 	# apply singular value decomposition
 	if DM==False:
@@ -334,6 +343,270 @@ def Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
 	return return_dict
 
 
+def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True):
+
+	"""
+	returns v with dimensions (Ns,Ns_subsys,Ns_rest) where Ns = dim(H) 
+	"""
+
+	if chain_subsys:
+		if not isinstance(chain_subsys,list):
+			raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
+		elif min(chain_subsys) < 0:
+			raise TypeError("'subsys' must be a list of nonnegative numbers!")
+		elif max(chain_subsys) > basis.L-1:
+			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
+		elif len(set(chain_subsys)) < len(chain_subsys):
+			raise TypeError("'subsys' cannot contain repeating site indices!")
+		elif subsys_ordering:
+			if len(set(chain_subsys))==len(chain_subsys) and sorted(chain_subsys)!=chain_subsys:
+				# if chain subsys is def with unordered sites, order them
+				warnings.warn("'subsys' {} contains non-ordered sites. 'subsys' re-ordered! To change default set 'subsys_ordering = False'.".format(chain_subsys),stacklevel=4)
+				chain_subsys = sorted(chain_subsys)
+
+		
+
+
+	# read off initial input
+	if isinstance(system_state,(list, tuple, _np.ndarray)): # initial state either pure or DM
+		if len(system_state.shape)==1: # pure state
+			istate = 'pure'
+			# define initial state
+			psi = system_state
+		elif len(system_state.shape)==2: # DM
+			istate = 'DM'
+			# diagonalise DM
+			if _sp.issparse(system_state):
+				rho_d, psi = _sla.eigsh(system_state)
+			else:
+				rho_d, psi = _la.eigh(system_state)
+	elif isinstance(system_state,dict): # initial DM is diagonal in basis Vrho
+		key_strings = ['V_rho','rho_d']
+		if 'V_rho' not in system_state.keys():
+			raise TypeError("Dictionary 'system_state' must contain eigenstates matrix 'V_rho'!")
+		elif 'rho_d' not in system_state.keys():
+			raise TypeError("Dictionary 'system_state' must contain diagonal DM 'rho_d'!")
+		istate = 'DM'
+		# define initial state
+		rho_d = system_state['rho_d']
+		psi = system_state['V_rho']
+	else:
+		raise TypeError("Wrong variable type for 'system_state'! E.g., use np.ndarray.")
+
+
+	# clear up memory
+	del system_state
+
+
+
+	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
+
+		# set chain subsys if not defined
+		if chain_subsys is None: 
+			chain_subsys=[i for i in xrange( int(basis.L/2) )]
+			warnings.warn("Subsystem set to contain sites {}.".format(chain_subsys),stacklevel=4)
+		
+	
+		# re-write the state in the initial basis
+		if basis.Ns<2**basis.L:
+			psi = _np.asarray( basis.get_vec(psi,sparse=False) )
+		#del basis
+
+		#calculate H-space dimensions of the subsystem and the system
+		L_A = len(chain_subsys)
+		Ns_A = 2**L_A
+
+		# define lattice indices putting the subsystem to the left
+		system = chain_subsys[:]
+		[system.append(i) for i in xrange(basis.L) if not i in chain_subsys]
+
+
+		'''
+		the algorithm for the entanglement entropy of an arbitrary subsystem goes as follows:
+
+		1) the initial state psi has 2^L entries corresponding to the spin-z configs
+		2) reshape psi into a 2x2x2x2x...x2 dimensional array (L products in total). Call this array v.
+		3) v should satisfy the property that v[0,1,0,0,0,1,...,1,0], total of L entries, should give the entry of psi 
+		   along the the spin-z basis vector direction (0,1,0,0,0,1,...,1,0). This ensures a correspondence of the v-indices
+		   (and thus the psi-entries) to the L lattice sites.
+		4) fix the lattice sites that define the subsystem L_A, and reshuffle the array v according to this: e.g. if the 
+	 	   subsystem consistes of sites (k,l) then v should be reshuffled such that v[(k,l), (all other sites)]
+	 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( L_A x L/L_A ) and proceed with the SVD as below  
+		'''
+
+		if sorted(chain_subsys)==range(min(chain_subsys), max(chain_subsys)+1): 
+			# chain_subsys sites come in consecutive order
+			# define reshape tuple
+			reshape_tuple2 = (Ns_A, 2**basis.L/Ns_A)
+			if istate == 'DM':
+				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+			# reshape states
+			v = _np.reshape(psi.T, reshape_tuple2)
+		else: # if chain_subsys not consecutive
+			# performs 2) and 3)
+			reshape_tuple1 = tuple([2 for i in xrange(basis.L)] )
+			reshape_tuple2 = (Ns_A, 2**basis.L/Ns_A)
+			if istate == 'DM':
+				# update reshape tuples
+				reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
+				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+				# upadte axes dimensions
+				system = [s+1 for s in system]
+				system.insert(0,0)
+			# reshape states
+			#v = _np.reshape(psi.ravel(order='F'), reshape_tuple )
+			v = _np.reshape(psi.T, reshape_tuple1)
+			# performs 4)
+			v = _np.transpose(v, axes=system) 
+			# performs 5)
+			v = _np.reshape(v, reshape_tuple2 )
+		
+
+	elif basis.__class__.__name__[:-6] == 'photon':
+
+		def photon_Hspace_dim(L,Ntot,Nph):
+
+			"""
+			This function calculates the dimension of the total spin-photon Hilbert space.
+			"""
+			if Ntot is None and Nph is not None: # no total particle # conservation
+				return 2**basis.L*(basis.Nph+1)
+			elif Ntot is not None:
+				return 2**basis.L - binom(basis.L,basis.Ntot+1)*hyp2f1(1,1-basis.L+basis.Ntot,2+basis.Ntot,-1)
+			else:
+				raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
+
+
+		# set chain subsys if not defined; 
+		if chain_subsys is None: 
+			chain_subsys=[i for i in xrange( int(basis.L) )]
+			warnings.warn("subsystem automatically set to the entire chain.",stacklevel=4)
+
+
+		#calculate H-space dimensions of the subsystem and the system
+		L_A = len(chain_subsys)
+		Ns_A = 2**L_A
+
+		# define lattice indices putting the subsystem to the left
+		system = chain_subsys[:]
+		[system.append(i) for i in xrange(basis.L) if not i in chain_subsys]
+		
+		# re-write the state in the initial basis
+		if basis.Nph is not None: # no total particle conservation
+			if basis.Ns < photon_Hspace_dim(basis.L,basis.Ntot,basis.Nph): #chain symmetries present
+				if L_A==basis.L: # make use of chain symmetries
+					print psi.shape, type(psi)
+					psi = basis.get_vec(psi,sparse=False,full_part=False)
+					print psi.shape, type(psi)
+				else:
+					psi = basis.get_vec(psi,sparse=False,full_part=True)
+				Ns_spin = basis.chain_Ns
+			else:
+				Ns_spin = 2**basis.L
+
+		elif basis.Ntot is not None: # total particle-conservation
+			basis.Nph = basis.Ntot
+			if basis.Ns < photon_Hspace_dim(basis.L,basis.Ntot,basis.Nph): #chain symemtries present
+				#psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
+				psi = basis.get_vec(psi,sparse=False,full_part=True)
+				Ns_spin = 2**basis.L
+			else: # no chain symmetries present
+				print psi[:,2]
+				psi = basis.get_vec(psi,sparse=False,full_part=True)
+				Ns_spin = 2**basis.L
+
+		#del basis
+		if sorted(chain_subsys)==range(min(chain_subsys), max(chain_subsys)+1): 
+			# chain_subsys sites come in consecutive order
+
+			print psi[:,2]
+			exit()
+
+
+			# define reshape tuple
+			if L_A==basis.L: # chain_subsys equals entire lattice
+				reshape_tuple2 = (Ns_spin,basis.Nph+1)
+			else: #chain_subsys is smaller than entire lattice
+				reshape_tuple2 = ( Ns_A, 2**(basis.L-L_A)*(basis.Nph+1) )
+			# check if user parsed a DM
+			if istate == 'DM':
+				# update reshape tuples
+				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+			# reshape states
+			v = _np.reshape(psi.T, reshape_tuple2 )
+
+		else: # if chain_subsys not consecutive
+			# performs 2) and 3)	
+			reshape_tuple1 = tuple([2 for i in xrange(basis.L)]) + (basis.Nph+1,)
+			reshape_tuple2 = ( Ns_A, 2**(basis.L-L_A)*(basis.Nph+1) )
+			if istate == 'DM':
+				# update reshape tuples
+				reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
+				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+				# upadte axes dimensions
+				system = [s+1 for s in system]
+				system.insert(0,0)
+			# reshape states
+			v = _np.reshape(psi.T, reshape_tuple1)
+			# performs 4)
+			system.append(len(system))
+			v = _np.transpose(v, axes=system)
+			# performs 5)
+			v = _np.reshape(v, reshape_tuple2)
+
+			
+
+		"""
+		if L_A==basis.L: # chain_subsys equals entire lattice
+			# reshape state vector psi
+			print psi.shape
+			#print psi
+			#exit()
+			#print psi[:,1]
+			#exit()
+			reshape_tuple2 = (Ns_spin,basis.Nph+1)
+			#axes_T = [1,0]
+			if istate == 'DM':
+				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+				#axes_T = [s+1 for s in axes_T]
+				#axes_T.insert(0,0)
+			v = _np.reshape(psi.T, reshape_tuple2 )
+			#v = _np.transpose(v,axes=axes_T)
+		else: #chain_subsys is smaller than entire lattice
+
+			if sorted(chain_subsys)!=chain_subsys: # if chain_subsys not ordered
+				# performs 2) and 3)	
+				reshape_tuple1 = tuple([2 for i in xrange(basis.L)]) + (basis.Nph+1,)
+				reshape_tuple2 = ( Ns_A, 2**(basis.L-L_A)*(basis.Nph+1) )
+				if istate == 'DM':
+					# update reshape tuples
+					reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
+					reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+					# upadte axes dimensions
+					system = [s+1 for s in system]
+					system.insert(0,0)
+
+				v = _np.reshape(psi.T, reshape_tuple1)
+				# performs 4)
+				system.append(len(system))
+				v = _np.transpose(v, axes=system)
+				# performs 5)
+				v = _np.reshape(v, reshape_tuple2)
+			else:
+				reshape_tuple2 = ( Ns_A, 2**(basis.L-L_A)*(basis.Nph+1) )
+				if istate == 'DM':
+					# update reshape tuples
+					reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+				v = _np.reshape(psi.T, reshape_tuple2 )
+		"""
+				
+	else:
+		raise ValueError("'basis' class {} not supported!".format(basis.__class__.__name__))
+
+	return v
+
+
+
 def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 	"""
 	Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False)
@@ -372,58 +645,292 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 	return return_dict
 
 
-def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False,state=0,alpha=1.0,betavec=[],E_gs=None,Z=None):
+def inf_time_obs(L,rho,istate,densities=True,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,Sent_Renyi=False):
+	"""
+	rho: Density matrix of diagonal ensemble
+
+	istate: type of initial state: allowed states are 'pure', 'mixed_DM', 'mixed', 'thermal'.
+
+	Obs: diagonal part of observable 
+	""" 
+
+	# if Obs or deltaObs: parse V2
+
+	if L and not(type(L) is int):
+		raise TypeError("System size 'L' must be a positive integer!")
+
+	if isinstance(alpha,complex) or alpha < 0.0:
+		raise TypeError("Renyi parameter 'alpha' must be real-valued and non-negative!")
+
+	istates = ['pure', 'DM','mixed','thermal']
+	if istate not in istates:
+		raise TypeError("Uknown type 'istate' encountered! Try {}!".format(istates))
+
+	# initiate observables dict
+	variables = []
+
+
+	if Obs is not False:
+		variables.append("Obs_"+istate)
+	if deltaObs is not False:
+		variables.append("deltaObs_"+istate)
+	if Sd_Renyi:
+		variables.append("Sd_Renyi_"+istate)
+	if Sent_Renyi:
+		if not Sent_params:
+			raise TypeError("Please, parse the parameters for Sent!")
+		variables.append("Sent_Renyi_"+istate)
+
+
+	#################################################################
+
+	# def einsum string
+	def es_str(s):
+		'''
+		This function uses the np.einsum string to calculate the diagonal of a matrix product (d=1) in d=0
+		'''
+		if istate in ['pure','DM']:
+			return s.replace(s[-1],'')
+		else:
+			return s
+
+
+	# calculate diag ens value of Obs
+	if Obs is not False:
+		Obs_d = Obs.dot(rho)
+		if densities:
+			Obs_d *= 1.0/L
+
+	# calculate diag ens value of Obs fluctuations
+	if deltaObs is not False:
+		deltaObs_d = _np.einsum(es_str('ji,jk,ki->i'),rho,deltaObs,rho).real 
+		if densities:
+			deltaObs_d *= 1.0/(L**2.0)
+
+	# calculate diagonal entanglement entropy for the distribution p
+	def Entropy(p,alpha):
+
+		if alpha == 1.0:
+			warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
+			S = - _np.einsum(es_str('ji,ji->i'),p,_np.log(p))
+		else:
+			S = 1.0/(1.0-alpha)*_np.log(_np.sum(_np.power(p,alpha),axis=0) )
+			
+		if densities:
+			S *= 1.0/L
+
+		return S
+
+	# calculate diag ens ent entropy in post-quench basis
+	if Sent_Renyi is not False:
+		# calculate effective diagonal singular values, \lambda_i^{(n)} = Sent_Renyi
+		rho_ent = _np.power(Sent_Renyi,2).dot(rho) # has components (i,psi)
+		Sent_Renyi_d = Entropy(rho_ent,alpha)
+
+	# calculate diag ens entropy in post-quench basis
+	if Sd_Renyi:
+		Sd_Renyi_d = Entropy(rho,alpha)
+		
+
+
+	# define return dict
+	return_dict = {}
+	for i in variables:
+		return_dict[i] = vars()[i[:-len(istate)]+'d']
+
+		
+	return return_dict
+		
+
+def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,deltaObs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=[]):
+	"""
+	system_state = |\psi>, rho_i, {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int}
+
+	Sent_args: Entanglement entropy arguments
+
+	"""
+
+	# various checks
+	if deltaObs:
+		if not Obs:
+			raise TypeError("Expecting to parse the observable 'Obs' whenever 'deltaObs = True'!")
+	
+	# calculate diagonal ensemble DM
+
+	if isinstance(system_state,(list, tuple, _np.ndarray)): # initial state either pure or DM
+
+		if len(system_state.shape)==1: # pure state
+			istate = 'pure'
+			# calculate diag ensemble DM
+			rho = abs( system_state.conj().dot(V2) )**2;
+		elif len(system_state.shape)==2: # DM
+			istate = 'DM'
+			# calculate diag ensemble DM
+			rho = _np.einsum( 'ij,ji->i', V2.T.conj(), system_state.dot(V2) ).real
+
+	
+	elif isinstance(system_state,dict): # initial state is defined by diag distr
+		# define allowed keys
+		key_strings = ['V1','E1','f','f_args','V1_state']
+
+		if 'V1' not in system_state.keys():
+			raise TypeError("Dictionary 'system_state' must contain states matrix 'V1'!")
+		elif 'E1' not in system_state.keys():
+			raise TypeError("Dictionary 'system_state' must contain eigenvalues vector 'E1'!")
+		elif 'f_args' not in system_state.keys():
+			raise TypeError("Dictionary 'system_state' must contain function arguments list 'f_args'!")
+		
+		# import array to be able to assign V1 from the keys below
+		from numpy import array
+		# turn dict into variables
+		for key,value in system_state.iteritems():
+			# check if key is allowed
+			if key not in key_strings:
+				raise TypeError("Key '{}' not allowed for use in dictionary 'system_state'!".format(key))
+			# turn key to variable and assign its value
+			exec("{} = {}".format(key,repr(value)) ) in locals()
+
+		# check if user has passed the distribution 'f'
+		if 'f' in locals():
+			istate = 'mixed'
+		else:
+			istate = 'thermal'
+			# define Gibbs distribution (up to normalisation)
+			f = lambda E,beta: _np.exp(-beta*(E - E[0]))
+
+		if 'V1_state' in locals():
+			if not(type(V1_state) is int):
+				raise TypeError("Expecting an integer value for variable 'V1_state'!")
+			if V1_state < 0 or V1_state > len(E1)-1:
+				raise TypeError("Value 'V1_state' violates '0 <= V1_state <= len(E1)-1'!")
+
+		# define diagonal (in V1) mixed DM
+		warnings.warn("All expectation values depend statistically on the symmetry block via the available number of states as part of the system-size dependence!",UserWarning,stacklevel=-1)
+		
+		rho_mixed = _np.zeros((len(E1),len(f_args[0])),dtype=type(f_args[0][0]) )
+		for i, arg in enumerate(f_args[0]):
+			rho_mixed[:,i] = f(E1,arg) / sum(f(E1,arg))
+
+
+		# calculate diag ensemble DM for each state in V1
+		rho = abs( V2.conj().T.dot(V1) )**2 # components are (n,psi)
+	else:
+		raise TypeError("Wrong variable type for 'system_state'! E.g., use np.ndarray.")
+
+
+	# clear up memory
+	del system_state
+
+	# add floating point number to zero elements
+	rho[rho<=1E-16] = _np.finfo(float).eps
+
+
+
+	# prepare observables
+	if Obs is not False or deltaObs is not False:
+		# check if Obs is hermitian
+		print "these lines need to be revised; Need also a flag to disable the hermiticity check."
+		try: 
+			if _la.norm(Obs.todense().T.conj() - Obs.todense()) > 1E4*_np.finfo(eval('_np.'+Obs.todense()[0,0].dtype.name)).eps:
+				raise ValueError("'Obs' is not hermitian!")
+		except AttributeError:
+			if _la.norm(Obs.T.conj() - Obs) > 1E4*_np.finfo(eval('_np.'+Obs[0,0].dtype.name)).eps:
+				raise ValueError("'Obs' is not hermitian!")
+
+		if deltaObs and Obs is not False:
+			# diagonal matrix elements of Obs^2 in the basis V2
+			print "revisit dot product in deltaObs"
+			#deltaObs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
+			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
+			deltaObs = _np.square(Obs)
+			_np.fill_diagonal(deltaObs,0.0)
+			Obs = _np.diag(Obs).real
+
+		elif Obs is not False:
+			# diagonal matrix elements of Obs in the basis V2
+			Obs = _np.einsum( 'ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real
+
+		
+	if Sent_Renyi:
+		# calculate singular values of columns of V2
+		sing_values =[]
+		Sent_Renyi = sing_values # components (i,n)
+
+	# clear up memory
+	del V2
+
+
+	# calculate diag expectation values
+	Expt_Diag = inf_time_obs(L,rho,istate,densities=densities,alpha=alpha,Obs=Obs,deltaObs=deltaObs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	
+
+	# calculate thermal expectations
+	if istate in ['mixed','thermal']:
+		Expt_Diag_state = {}
+		for key,value in Expt_Diag.iteritems():
+			#print key
+			#print value.shape, rho_mixed.shape
+			
+			Expt_Diag[key] = value.dot(rho_mixed)
+			# if 'GS' option is passed save GS value
+			if 'V1_state' in locals():
+				state_key = key[:-len(istate)]+'{}'.format(V1_state)
+				Expt_Diag_state[state_key] = value[V1_state]
+		# merge state and mixed dicts
+		Expt_Diag.update(Expt_Diag_state)
+
+
+	# return diag ensemble density matrix if requested
+	if rho_d:
+		if 'V1_state' in locals():
+			Expt_Diag['rho_d'] = rho[:,V1_state]
+		else:
+			Expt_Diag['rho_d'] = rho 	
+
+
+
+	return Expt_Diag
+
+
+
+
+
+def Diag_Ens_Observables_old(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False,state=0,alpha=1.0,betavec=[],E_gs=None,Z=None):
 	"""
 	This routine calculates the expectation values of physical quantities in the Diagonal ensemble 
 	(see eg. arXiv:1509.06411), and returns a dictionary. Equivalently, these are the infinite-time 
 	expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
 	All quantities are INTENSIVE, i.e. divided by the system size L 
-
 	L: (compulsory) chain length.
-
 	V1: (compulsory) unitary square matrix. Contains the eigenvectors corresponding to the eigenvalues
 			of H1 in the columns (must come in the right order). If 'state' is not specified, the initial 
 			state is the first column of V1; otherwise the state is V1[:,state].
-
 	E1: (compulsory) vector of ordered real numbers. Contains the eigenenergies of H1. The order of the 
 			eigenvalues must correspond to the order of the columns of V1.
-
 	V2: (compulsory) unitary square matrix. Contains the eigenvectors of H2 in the columns. Must have 
 			the same size as V1.
-
 	state: (optional) integer, determines which state the non-thermal (e.g. 'GS') quantities should be 
 			computed in. The default is 'state = 0', corresponding to the GS (provided 'E1' are ordered).
-
 	rho_d: Diagonal Ensemble for the state V1[:,state]
-
 	Obs: (optional) hermitian matrix of the same size as V1. Infinite-time expectation value of the 
 			observable Obs in the state V1[:,state]. Has the key 'Obs' in the returned dictionary.
-
 	Ed: (optional) infinite-time expectation value of the Hamiltonian H1 in the state V1[:,state]. 
 			Has the key 'Ed' in the returned dictionary.
-
 	deltaE: (optional) infinite-time fluctuations around the energy expectation Ed. 
 			Has the key 'deltaE' in the returned dictionary.
-
 	Sd_Renyi: (optional) diagonal Renyi entropy after a quench H1->H2. The default Renyi parameter is 
 			'alpha=1.0'. Has the key 'Sd_Renyi' in the returned dictionary.
-
 	alpha: (optional) diagonal Renyi entropy parameter. Default value is 'alpha=1.0'.
-
 	S_double_quench: (optional) diagonal entropy after a double quench H1->H2->H1. 
 			Has the key 'S_double_quench' in the returned dictionary.
-
 	betavec: (optional) a list of INVERSE temperatures to specify the distribution of an initial 
 			thermal state. When passed the routine returns the corresponding finite-temperature 
 			expectation of each specified quantity defined above. The corresponding keys in the r
 			eturned dictionary are 'Obs_T', 'Ed_T', 'deltaE_T', 'Sd_Renyi_T', 'S_double_quench_T'.
-
 	E_gs: (optional) ground state energy used for the definition of the thermal density matrix.
 			Requires 'betavec'.
-
 	Z: (optional) normalisation constant (partition function) used for definition of thermal density 
 			matrix. Requires 'betavec'.
-
 	"""
 
 	if not(type(L) is int):
@@ -539,7 +1046,7 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 	if 'rho_d' not in variables_state:
 		del rho_d
 	else:
-		rho_d = rho_d[state,:]
+		rho_d = T_nm[state,:]
 
 	# calculate diagonal Renyi entropy for parameter alpha: equals (Shannon) entropy for alpha=1: (H1->H2)
 	if Sd_Renyi:
@@ -552,7 +1059,7 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 			warnings.warn("Renyi entropy equals diagonal entropy.", UserWarning)
 			Sd_Renyi_state = -T_nm[state,:].dot(_np.log(T_nm[state,:]) ) /L # GS
 			if betavec:
-				Sd_Renyi_T = (np.einsum( 'ij,ji->i', -T_nm,_np.log(T_nm.transpose()) )/L ).dot(rho) # finite-temperature
+				Sd_Renyi_T = (_np.einsum( 'ij,ji->i', -T_nm,_np.log(T_nm.transpose()) )/L ).dot(rho) # finite-temperature
 
 	# infinite temperature entropy
 	if S_double_quench or Sd_Renyi:
@@ -563,8 +1070,7 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 		# calculate <H1^2>
 		H1_mn2 = (a_n.conjugate().transpose().dot(_np.einsum('i,ij->ij',E1,a_n)) )**2
 		del a_n
-		_np.fill_diagonal(H1_mn2,0.0) 
-
+		_np.fill_diagonal(H1_mn2,0.0)
 		deltaE_state = _np.real( reduce( _np.dot,[T_nm[state,:], H1_mn2, T_nm[state,:] ])  )/L**2  # GS
 		if betavec:
 			deltaE_T  = _np.real(_np.einsum( 'ij,ji->i', T_nm, H1_mn2.dot(T_nm.transpose()) )/(L**2) ).dot(rho) # finite-temperature
@@ -582,7 +1088,8 @@ def Diag_Ens_Observables(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quen
 
 	
 	return return_dict
-		
+
+
 
 def Kullback_Leibler_div(p1,p2):
 	"""
@@ -676,9 +1183,7 @@ def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
 		if return_state==True:
 			psi_time[:,m] = psit(c_n,times[m])
 		psi_t = psit(c_n,times[m])
-		#print _np.real( reduce( _np.dot, [psi_t.conjugate().T, Obs, psi_t ]  )  )
-		#print _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs, psi_t ) )
-		Expt_time[m] = _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs.todense(), psi_t ) )
+		Expt_time[m] = _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs.todense(), psi_t ).real
 
 	return_dict = {}
 	for i in variables:

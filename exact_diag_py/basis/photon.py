@@ -37,6 +37,7 @@ class photon_basis(tensor_basis):
 			self._operators = self._b1._operators +"\n"+ self._b2._operators
 
 		self.chain_Ns = self._b1.Ns
+		self.L = self._b1.L
 			
 
 
