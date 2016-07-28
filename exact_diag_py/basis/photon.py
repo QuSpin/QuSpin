@@ -35,9 +35,6 @@ class photon_basis(tensor_basis):
 			self._blocks = self._b1._blocks
 			self._Ns = self._b1._Ns
 			self._operators = self._b1._operators +"\n"+ self._b2._operators
-
-		self.chain_Ns = self._b1.Ns
-		self.L = self._b1.L
 			
 
 
@@ -159,6 +156,14 @@ class photon_basis(tensor_basis):
 			return _conserved_get_proj(self,dtype,Nph,full_part)
 
 
+	@property
+	def chain_Ns(self):
+	    return self._b1.Ns
+	@property
+	def chain_L(self):
+	    return self._b1.L
+	
+	
 
 
 

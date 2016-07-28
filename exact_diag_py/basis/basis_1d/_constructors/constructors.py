@@ -59,6 +59,7 @@ def op_m(opstr,indx,J,dtype,basis,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_m_op"]
 	col,ME,error = compiled_op(basis,opstr,indx,J)
+	pauli = blocks.get('pauli')
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 

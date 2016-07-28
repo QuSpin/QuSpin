@@ -59,8 +59,6 @@ op={"":_cn.op,
 class spin_basis_1d(basis):
 	def __init__(self,L,Nup=None,_Np=None,**blocks):
 
-		self.L = L # define system size
-
 		if blocks.get("a") is None: # by default a = 1
 			a=1
 			blocks["a"]=1
@@ -868,7 +866,10 @@ class spin_basis_1d(basis):
 
 
 
-
+	@property
+	def L(self):
+	    return self._L
+	
 
 
 

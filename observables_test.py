@@ -22,7 +22,7 @@ U_jobs = 1
 n_jobs = 1
 
 # system size
-L = 3
+L = 4
 block = 2
 
 ### static model params
@@ -132,7 +132,7 @@ def symm_sector(kblock,pblock):
 	################################################################
 	###################  calculate observables  ####################
 	################################################################
-	"""
+	#"""
 	betavec = [1.0, 0.235]
 	Diag_Ens = observables.Diag_Ens_Observables_old(L,VF0,EF0,VF,betavec=betavec,Sd_Renyi=True,Ed=True,deltaE=True,rho_d=True)
 
@@ -142,18 +142,19 @@ def symm_sector(kblock,pblock):
 
 	#Diag_Ens2 = observables.Diag_Ens_Observables(L,{'V1':VF0,'E1':EF0,'f_args':[betavec],'V1_state':0},VF,Sd_Renyi=True,Obs=HF0,deltaObs=True,rho_d=True)
 	#Diag_Ens2 = observables.Diag_Ens_Observables(L,rho0,VF,Sd_Renyi=True,Obs=HF0,deltaObs=True,rho_d=True)
-	Diag_Ens2 = observables.Diag_Ens_Observables(L,psi0,VF,rho_d=True)
+	Diag_Ens2 = observables.Diag_Ens_Observables(L,psi0,VF,rho_d=True,Sent_Renyi=True,Sent_args=(basis))
 	
 
 	print "old", Diag_Ens
 	print '---------------------'
 	print "new", Diag_Ens2
-	"""
+	#s"""
 
+	'''
 	# calculate entanglement entropy of L/2 the chain
-	v = observables.Entanglement_entropy(L,VF0[:,0],basis=basis)
+	v = observables.Entanglement_entropy2(L,VF0[:,0],basis=basis)
 
-	v2 = observables.reshape_as_subsys({'V_rho':VF0,'rho_d':EF0},basis)
+	v2,_ = observables.reshape_as_subsys({'V_rho':VF0,'rho_d':EF0},basis)
 	#v2 = observables.reshape_as_subsys(VF0[:,0],basis)
 
 	#"""
@@ -165,13 +166,23 @@ def symm_sector(kblock,pblock):
 	print v2[0,:]
 	#"""
 	exit()
+	'''
 
-	
+	'''
+	Sent = observables.Entanglement_entropy2(L,VF0[:,0],basis=basis,DM=True)
 
+	Sent_new = observables.Entanglement_Entropy({'V_rho':VF0,'rho_d':abs(EF0)/sum(abs(EF0))},basis,DM='both',svd_return_vec=[True,True,True])
+	#Sent_new = observables.Entanglement_Entropy(VF0[:,0],basis)
 
-# define list will all symmetry sectors
-#sectors = [(0,-1)]
-#[sectors.append((kblock, 1)) for kblock in xrange(int(np.ceil((L+1)/2.0)))]
+	#"""
+	print "++++++++++++"
+	print Sent
+	print "-----------"
+	print Sent_new
+	#"""
+	exit()
+	'''
+
 
 sectors = [(0,-1)]
 [sectors.append((kblock, 1)) for kblock in xrange( (L+2)/2)]
