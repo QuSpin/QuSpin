@@ -71,7 +71,7 @@ def check_dynamic(sub_list):
 
 
 class hamiltonian(object):
-	def __init__(self,static_list,dynamic_list,L=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
+	def __init__(self,static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
@@ -124,13 +124,13 @@ class hamiltonian(object):
 
 			# if not
 			if basis is None: 
-				if L is None: # if L is missing 
-					raise Exception('if opstrs in use, argument L needed for basis class')
+				if N is None: # if L is missing 
+					raise Exception('if opstrs in use, argument N needed for basis class')
 
-				if type(L) is not int: # if L is not int
-					raise TypeError('argument L must be integer')
+				if type(N) is not int: # if L is not int
+					raise TypeError('argument N must be integer')
 
-				basis=_default_basis(L,**kwargs)
+				basis=_default_basis(N,**kwargs)
 
 			elif not _isbasis(basis):
 				raise TypeError('expecting instance of basis class for argument: basis')
@@ -270,9 +270,32 @@ class hamiltonian(object):
 			self._dynamic += tuple(dynamic_other_list)
 
 		else:
-			if not hasattr(self,"_shape"):			
+			if not hasattr(self,"_shape"):
 				if shape is None:
-					raise ValueError('missing argument shape')
+					# check if user input basis
+					basis=kwargs.get('basis')	
+
+					# if not
+					if basis is None: 
+						if N is None: # if N is missing 
+							raise Exception("argument N or shape needed to create empty hamiltonian")
+
+						if type(N) is not int: # if L is not int
+							raise TypeError('argument N must be integer')
+
+						basis=_default_basis(N,**kwargs)
+
+					elif not _isbasis(basis):
+						raise TypeError('expecting instance of basis class for argument: basis')
+
+					shape = (basis.Ns,basis.Ns)
+
+				else:
+					basis=kwargs.get('basis')	
+					if not basis is None: 
+						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
+
+			
 				if len(shape) != 2:
 					raise ValueError('expecting ndim = 2')
 				if shape[0] != shape[1]:
@@ -463,12 +486,6 @@ class hamiltonian(object):
 
 
 
-
-		return self.tocsr(time=time).todense(order=order,out=out)
-
-
-
-
 	def __SO(self,time,V):
 		"""
 		args:
@@ -510,23 +527,23 @@ class hamiltonian(object):
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
-		times = np.asarray(times)
+		times = _np.asarray(times)
 
 		def expm_multiply_iter(V,M_csr,times):
 
 			dtimes = times[1:] - times[:-1]
 			start = times[0]
-			times = np.array(times[1:])
+			times = _np.array(times[1:])
 
 			V = _sp.linalg.expm_multiply(start*M_csr,V)
 
 			yield _np.array(V)
 
-			if verbose: print "evolved to initial time {0}.".format(start)
+			if verbose: print "evolved to initial time {0}".format(start)
 
 			for dt,t in zip(dtimes,times):
 				V = _sp.linalg.expm_multiply(dt*M_csr,V)
-				if verbose: print "evolved to time {0}.".format(t)
+				if verbose: print "evolved to time {0}".format(t)
 
 				yield _np.array(V)
 

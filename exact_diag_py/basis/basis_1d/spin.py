@@ -753,9 +753,11 @@ class spin_basis_1d(basis):
 		if self._Ns <= 0:
 			return _np.array([])
 		if v0.ndim == 1:
+			ravel=True
 			shape = (2**self._L,1)
 			v0 = v0.reshape((-1,1))
 		elif v0.ndim == 2:
+			ravel=False
 			shape = (2**self._L,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
@@ -800,7 +802,10 @@ class spin_basis_1d(basis):
 		if sparse:
 			return _get_vec_sparse(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
 		else:
-			return  _get_vec_dense(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
+			if ravel:
+				return  _get_vec_dense(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks).ravel()
+			else:
+				return  _get_vec_dense(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
 
 
 	def get_proj(self,dtype):
@@ -1076,12 +1081,8 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			flipall(basis,L)
 		
 		shiftc(basis,-a,L)
-		
-	if v.shape[1] == 1:
-		return v.ravel()
-	else:
-		return v
-
+	
+	return v
 
 
 

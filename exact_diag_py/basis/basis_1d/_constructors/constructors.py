@@ -26,6 +26,7 @@ class OpstrError(Exception):
 def op(opstr,indx,J,dtype,basis,**blocks):
 	char = _dtype(dtype).char
 	compiled_op = basis_ops.__dict__[char+"_spinop"]
+	pauli = blocks.get('pauli')
 	# col: resilting basis states; -1: state is thrown out (cf FindZState)
 	# ME: array of dtype with matrix elements
 	# error: see line 11 above

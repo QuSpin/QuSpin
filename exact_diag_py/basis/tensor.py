@@ -96,7 +96,10 @@ class tensor_basis(basis):
 
 		if v0.ndim == 1:
 			v0 = v0.reshape((-1,1))
-			return _combine_get_vecs(self,v0,sparse,full_1,full_2).reshape((-1,))
+			if sparse:
+				return _combine_get_vecs(self,v0,sparse,full_1,full_2)
+			else:
+				return _combine_get_vecs(self,v0,sparse,full_1,full_2).reshape((-1,))
 		elif v0.ndim == 2:
 			return _combine_get_vecs(self,v0,sparse,full_1,full_2)
 		else:
@@ -323,85 +326,95 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 	Ns = min(Ns1,Ns2)
 
 	# reshape vector to matrix to rewrite vector as an outer product.
-	v0=v0.T.reshape((Nvecs,-1,Ns))
+	v0=v0.T.reshape((Nvecs,Ns1,Ns2))
 	# take singular value decomposition to get which decomposes the matrix into separate parts.
 	# the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector 
 
-	V1,S,V2 = _la.svd(v0,full_matrices=False)
-
-	V2 = V2.conj()
-
-	V1 = V1.T
-	V2 = V2.transpose((1,2,0))
+	V1,S,V2 = _np.linalg.svd(v0,full_matrices=False)
 	S = S.T
+	V1 = V1.transpose((2,1,0))
+	V2 = V2.transpose((1,2,0))
 
 	# combining all the vectors together with the tensor product as opposed to the outer product
 	if sparse:
 		# take the vectors and convert them to their full hilbert space
-		if full_1:
-			v1 = basis._b1.get_vec(V1[-1],sparse=True)
-		else:
-			v1 = V1[-1]
+		v1 = V1[-1]
+		v2 = V2[-1]
 
+		if full_1:
+			v1 = basis._b1.get_vec(v1,sparse=True)
+			
 		if full_2:
-			v2 = basis._b2.get_vec(V2[-1],sparse=True)
-		else:
-			v2 = V2[-1]
+			v2 = basis._b2.get_vec(v2,sparse=True)
+
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
 		temp2 = _np.ones((v2.shape[0],1),dtype=_np.int8)
 
-		v0 = _sp.kron(v1,temp2) * _sp.kron(temp1,v2)
-		v0 = v0.multiply(S[-1])
+		v1 = _sp.kron(v1,temp2,format="csr")
+		v2 = _sp.kron(temp1,v2,format="csr")
+
+		s = _np.array(S[-1])
+		s = _np.broadcast_to(s,v1.shape)
+
+		v0 = v1.multiply(v2).multiply(s)
 		
 		for i,s in enumerate(S[:-1]):
+			v1 = V1[i]
+			v2 = V2[i]
+
 			if full_1:
-				v1 = basis._b1.get_vec(V1[i],sparse=True)
-			else:
-				v1 = V1[i]
-
+				v1 = basis._b1.get_vec(v1,sparse=True)
+			
 			if full_2:
-				v2 = basis._b2.get_vec(V2[i],sparse=True)
-			else:
-				v2 = V2[i]
+				v2 = basis._b2.get_vec(v2,sparse=True)
 
-			v = _sp.kron(v1,temp1) * _sp.kron(temp2,v2)
-			v = v.multiply(s)
+
+			v1 = _sp.kron(v1,temp2,format="csr")  
+			v2 = _sp.kron(temp1,v2,format="csr")
+
+			s = _np.broadcast_to(s,v1.shape)
+			v = v1.multiply(v2).multiply(s)
 
 			v0 = v0 + v
 		
 		
 	else:
 		# take the vectors and convert them to their full hilbert space
-		if full_1:
-			v1=basis._b1.get_vec(V1[-1],sparse=False)
-		else:
-			v1 = V1[-1]
+		v1 = V1[-1]
+		v2 = V2[-1]
 
+		if full_1:
+			v1 = basis._b1.get_vec(v1,sparse=False)
+			
 		if full_2:
-			v2=basis._b2.get_vec(V2[-1],sparse=False)
-		else:
-			v2 = V2[-1]
+			v2 = basis._b2.get_vec(v2,sparse=False)
+
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
 		temp2 = _np.ones((v2.shape[0],1),dtype=_np.int8)
 
-		v0 = _np.kron(v1,temp2) * _np.kron(temp1,v2)
+		v1 =  _np.kron(v1,temp2)
+		v2 = _np.kron(temp1,v2)
+		v0 = _np.multiply(v1,v2)
 		v0 *= S[-1]
 
 		for i,s in enumerate(S[:-1]):
+			v1 = V1[i]
+			v2 = V2[i]
+
 			if full_1:
-				v1 = basis._b1.get_vec(V1[i],sparse=False)
-			else:
-				v1 = V1[i]
-
+				v1 = basis._b1.get_vec(v1,sparse=False)
+			
 			if full_2:
-				v2 = basis._b2.get_vec(V2[i],sparse=False)
-			else:
-				v2 = V2[i]
+				v2 = basis._b2.get_vec(v2,sparse=False)
 
-			v = _np.kron(v1,temp1) * _np.kron(temp2,v2)
+			v1 =  _np.kron(v1,temp2)
+			v2 = _np.kron(temp1,v2)
+			v = _np.multiply(v1,v2)
 			v0 += s*v
+
+
 
 	return v0
 
