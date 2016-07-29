@@ -11,9 +11,6 @@ import scipy.linalg as la
 from numpy.linalg import norm
 from numpy.random import random,seed
 
-import matplotlib.pyplot as plt
-import pylab
-
 from joblib import delayed,Parallel
 from numpy import vstack
 
@@ -142,22 +139,26 @@ def symm_sector(kblock,pblock):
 	###################  calculate observables  ####################
 	################################################################
 
-	Diag_Ens = observables.Diag_Ens_Observables(L,VF0,EF0,VF,Sd_Renyi=True,Ed=True,deltaE=True)
-
-	Sd = Diag_Ens['Sd_Renyi_state']
-	S_Tinf = Diag_Ens['S_Tinf']
-	Ed = Diag_Ens['Ed_state']
-	E_Tinf = Diag_Ens['E_Tinf']
-	deltaE = Diag_Ens['deltaE_state']
-
+	# calculate Diag Ensemble quantitties
+	Diag_Ens = observables.Diag_Ens_Observables(L,VF0[:,0],VF,Sent_Renyi=True,Sd_Renyi=True,Obs=HF0,deltaObs=True,Sent_args={'basis':basis})
 	
+	
+	Sd = Diag_Ens['Sd_pure']
+	Sent = Diag_Ens['Sent_pure']
+	S_Tinf = np.log(2)
+	Ed = Diag_Ens['Obs_pure']
+	E_Tinf = sum(EF0)/L
+	deltaE = Diag_Ens['deltaObs_pure']
+
+
+	# calculate entanglement entropy of HF0 GS
+	Sent0 = observables.Entanglement_Entropy(VF0[:,0],basis)['Sent']
+	
+	# calculate normalised Q quantities
 	Q_E = (Ed - EF0[0]/L)/(E_Tinf- EF0[0]/L) 
 	Q_SF = Sd/S_Tinf
+	Q_Sent = (Sent - Sent0)/(S_Tinf - Sent0)
 
-	# calculate entanglement entropy of L/2 the chain
-	Sent = observables.Entanglement_entropy(L,VF0[:,0],basis=basis)['Sent']/(L/2)
-
-	Q_Sent = Sent/S_Tinf
 
 	# calculate mean level spacing of HF and HF0
 	folded_EF0 = sorted( np.real( 1j/t_vec.T*np.log(np.exp(-1j*EF0*t_vec.T)) ) )
@@ -169,7 +170,7 @@ def symm_sector(kblock,pblock):
 	###################     store data        ######################
 	################################################################
 
-	data = np.zeros((16,),dtype=np.float64)
+	data = np.zeros((17,),dtype=np.float64)
 
 	data[0] = Q_E
 	data[1] = Q_SF
@@ -182,11 +183,12 @@ def symm_sector(kblock,pblock):
 	data[8] = Sent
 	data[9] = E_Tinf
 	data[10] = S_Tinf
-	data[11] = EF0[0]/L
-	data[12]= (EF0[-1]-EF0[0])/L # MB bandwdith per site
-	data[13]= Ns
-	data[14]= kblock
-	data[15]= pblock
+	data[11] = Sent0
+	data[12] = EF0[0]/L
+	data[13]= (EF0[-1]-EF0[0])/L # MB bandwdith per site
+	data[14]= Ns
+	data[15]= kblock
+	data[16]= pblock
 
 	return data
 
@@ -237,7 +239,8 @@ print "Calculation took",("--- %s seconds ---" % (time.time() - start_time))
 
 
 """
-
+import matplotlib.pyplot as plt
+import pylab
 
 #psi = H.evolve(psi0,t[-1],t,rtol=1E-12,atol=1E-12)
 

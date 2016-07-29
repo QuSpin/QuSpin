@@ -115,8 +115,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				warnings.warn("'subsys' {} contains non-ordered sites. 'subsys' re-ordered! To change default set 'subsys_ordering = False'.".format(chain_subsys),stacklevel=4)
 				chain_subsys = sorted(chain_subsys)
 
-		
-
+	
 
 	# read off initial input
 	if isinstance(system_state,(list, tuple, _np.ndarray)): # initial state either pure or DM
@@ -124,6 +123,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			istate = 'pure'
 			# define initial state
 			psi = system_state
+			rho_d = _np.array(1.0)
 		elif len(system_state.shape)==2: # DM
 			istate = 'DM'
 			# diagonalise DM
@@ -442,7 +442,7 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,
 	for i in variables:
 
 		j=i
-		if alpha == 1.0:
+		if alpha == 1.0 and ("Sent" in i or 'Sd' in i):
 			i=i.replace(istate,'Renyi_{}'.format(istate))
 
 		return_dict[j] = locals()[i[:-len(istate)]+'d']
