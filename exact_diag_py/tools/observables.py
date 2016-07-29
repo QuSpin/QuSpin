@@ -12,10 +12,10 @@ from ..basis import spin_basis_1d,photon_basis
 
 import warnings
 
-__all__ = ["Entanglement_entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing"]
+__all__ = ["Entanglement_Entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing"]
 
 
-def Entanglement_Entropy(system_state,basis,chain_subsys=None,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
 	DM = ['False', 'both', 'chain_subsys', 'other_subsys']
 	'svd_return_vec' = [boolean,boolean,boolean]
@@ -46,7 +46,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,subsys_ordering=Tr
 	
 
 	# calculate reshaped system_state
-	v, rho_d = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
+	v, rho_d, L_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
 	
 	if DM == False:
@@ -74,6 +74,9 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,subsys_ordering=Tr
 		Sent = -( abs(lmbda)**2).dot( 2*_np.log( abs(lmbda)  ) ).sum()
 	else:
 		Sent =  1./(1-alpha)*_np.log( (lmbda**alpha).sum() )
+
+	if densities:
+		Sent *= 1.0/L_A
 
 	# store variables to dictionar
 	return_dict = {}
@@ -189,6 +192,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
+			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)
 			reshape_tuple1 = tuple([2 for i in xrange(L)] )
@@ -203,11 +207,12 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			# reshape states
 			#v = _np.reshape(psi.ravel(order='F'), reshape_tuple )
 			v = _np.reshape(psi.T, reshape_tuple1)
+			del psi
 			# performs 4)
-			v = _np.transpose(v, axes=system) 
+			v.transpose(system) 
 			# performs 5)
-			v = _np.reshape(v, reshape_tuple2 )
-		
+			v = _np.reshape(v,reshape_tuple2)
+			
 
 	elif basis.__class__.__name__[:-6] == 'photon':
 
@@ -281,7 +286,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2 )
-
+			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
 			reshape_tuple1 = tuple([2 for i in xrange(L)]) + (Nph+1,)
@@ -295,16 +300,17 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				system.insert(0,0)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple1)
+			del psi
 			# performs 4)
 			system.append(len(system))
-			v = _np.transpose(v, axes=system)
+			v.transpose(system)
 			# performs 5)
 			v = _np.reshape(v, reshape_tuple2)
 				
 	else:
 		raise ValueError("'basis' class {} not supported!".format(basis.__class__.__name__))
 
-	return v, rho_d
+	return v, rho_d, L_A
 
 
 
@@ -346,7 +352,7 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 	return return_dict
 
 
-def inf_time_obs(L,rho,istate,densities=True,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,Sent_Renyi=False):
+def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,Sent_Renyi=False):
 	"""
 	rho: Density matrix of diagonal ensemble
 
@@ -376,9 +382,15 @@ def inf_time_obs(L,rho,istate,densities=True,alpha=1.0,Obs=False,deltaObs=False,
 	if deltaObs is not False:
 		variables.append("deltaObs_"+istate)
 	if Sd_Renyi:
-		variables.append("Sd_Renyi_"+istate)
+		if alpha == 1.0:
+			variables.append("Sd_"+istate)
+		else:
+			variables.append("Sd_Renyi_"+istate)
 	if Sent_Renyi is not False:
-		variables.append("Sent_Renyi_"+istate)
+		if alpha == 1.0:
+			variables.append("Sent_"+istate)
+		else:
+			variables.append("Sent_Renyi_"+istate)
 
 
 	#################################################################
@@ -397,16 +409,12 @@ def inf_time_obs(L,rho,istate,densities=True,alpha=1.0,Obs=False,deltaObs=False,
 	# calculate diag ens value of Obs
 	if Obs is not False:
 		Obs_d = Obs.dot(rho)
-		if densities:
-			Obs_d *= 1.0/L
 
 	# calculate diag ens value of Obs fluctuations
 	if deltaObs is not False:
-		deltaObs_d = _np.einsum(es_str('ji,jk,ki->i'),rho,deltaObs,rho).real 
-		if densities:
-			deltaObs_d *= 1.0/(L**2.0)
+		deltaObs_d = _np.sqrt( _np.einsum(es_str('ji,jk,ki->i'),rho,deltaObs,rho).real )
 
-	# calculate diagonal entanglement entropy for the distribution p
+	# calculate Shannon entropy for the distribution p
 	def Entropy(p,alpha):
 
 		if alpha == 1.0:
@@ -415,9 +423,6 @@ def inf_time_obs(L,rho,istate,densities=True,alpha=1.0,Obs=False,deltaObs=False,
 		else:
 			S = 1.0/(1.0-alpha)*_np.log(_np.sum(_np.power(p,alpha),axis=0) )
 			
-		if densities:
-			S *= 1.0/L
-
 		return S
 
 	# calculate diag ens ent entropy in post-quench basis
@@ -435,7 +440,12 @@ def inf_time_obs(L,rho,istate,densities=True,alpha=1.0,Obs=False,deltaObs=False,
 	# define return dict
 	return_dict = {}
 	for i in variables:
-		return_dict[i] = locals()[i[:-len(istate)]+'d']
+
+		j=i
+		if alpha == 1.0:
+			i=i.replace(istate,'Renyi_{}'.format(istate))
+
+		return_dict[j] = locals()[i[:-len(istate)]+'d']
 
 		
 	return return_dict
@@ -547,38 +557,40 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 		elif Obs is not False:
 			# diagonal matrix elements of Obs in the basis V2
-			Obs = _np.einsum( 'ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real
+			Obs = _np.einsum('ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real
 
 		
 	if Sent_Renyi:
 		# calculate singular values of columns of V2
-		v, _ = reshape_as_subsys({'V_rho':V2,'rho_d':rho},Sent_args) 
-		Sent_Renyi = _npla.svd(v, compute_uv=False).T # components (i,n)
-		print Sent_Renyi.shape
- 
+		v, _, L_A = reshape_as_subsys({'V_rho':V2,'rho_d':rho},**Sent_args) 
+		Sent_Renyi = _npla.svd(v, compute_uv=False).T # components (i,n) 
 
 	# clear up memory
 	del V2
 
 
 	# calculate diag expectation values
-	Expt_Diag = inf_time_obs(L,rho,istate,densities=densities,alpha=alpha,Obs=Obs,deltaObs=deltaObs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	Expt_Diag = inf_time_obs(L,rho,istate,alpha=alpha,Obs=Obs,deltaObs=deltaObs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
 	
+	# compute densities
+	for key,value in Expt_Diag.iteritems():
+		if densities:
+			if '_ent' in key:
+				value *= 1.0/L_A
+			else:
+				value *= 1.0/L
 
-	# calculate thermal expectations
-	if istate in ['mixed','thermal']:
-		Expt_Diag_state = {}
-		for key,value in Expt_Diag.iteritems():
-			#print key
-			#print value.shape, rho_mixed.shape
-			
+		Expt_Diag[key] = value
+		# calculate thermal expectations
+		if istate in ['mixed','thermal']:
+			Expt_Diag_state = {}
 			Expt_Diag[key] = value.dot(rho_mixed)
 			# if 'GS' option is passed save GS value
 			if 'V1_state' in locals():
 				state_key = key[:-len(istate)]+'{}'.format(V1_state)
 				Expt_Diag_state[state_key] = value[V1_state]
-		# merge state and mixed dicts
-		Expt_Diag.update(Expt_Diag_state)
+			# merge state and mixed dicts
+			Expt_Diag.update(Expt_Diag_state)
 
 
 	# return diag ensemble density matrix if requested

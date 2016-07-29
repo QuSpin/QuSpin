@@ -155,7 +155,7 @@ def symm_sector(kblock,pblock):
 	Q_SF = Sd/S_Tinf
 
 	# calculate entanglement entropy of L/2 the chain
-	Sent = observables.Entanglement_entropy(L,VF0	[:,0],basis=basis)['Sent']/(L/2)
+	Sent = observables.Entanglement_entropy(L,VF0[:,0],basis=basis)['Sent']/(L/2)
 
 	Q_Sent = Sent/S_Tinf
 

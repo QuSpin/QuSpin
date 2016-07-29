@@ -134,7 +134,7 @@ def symm_sector(kblock,pblock):
 	################################################################
 	#"""
 	betavec = [1.0, 0.235]
-	Diag_Ens = observables.Diag_Ens_Observables_old(L,VF0,EF0,VF,betavec=betavec,Sd_Renyi=True,Ed=True,deltaE=True,rho_d=True)
+	#Diag_Ens = observables.Diag_Ens_Observables_old(L,VF0,EF0,VF,betavec=betavec,Sd_Renyi=True,Ed=True,deltaE=True,rho_d=True)
 
 	psi0 = VF0[:,0]
 
@@ -142,10 +142,10 @@ def symm_sector(kblock,pblock):
 
 	#Diag_Ens2 = observables.Diag_Ens_Observables(L,{'V1':VF0,'E1':EF0,'f_args':[betavec],'V1_state':0},VF,Sd_Renyi=True,Obs=HF0,deltaObs=True,rho_d=True)
 	#Diag_Ens2 = observables.Diag_Ens_Observables(L,rho0,VF,Sd_Renyi=True,Obs=HF0,deltaObs=True,rho_d=True)
-	Diag_Ens2 = observables.Diag_Ens_Observables(L,psi0,VF,rho_d=True,Sent_Renyi=True,Sent_args=(basis))
+	Diag_Ens2 = observables.Diag_Ens_Observables(L,psi0,VF,rho_d=True,Sent_Renyi=True,Sent_args={'basis':basis,'chain_subsys':[1,3]})
 	
 
-	print "old", Diag_Ens
+	#print "old", Diag_Ens
 	print '---------------------'
 	print "new", Diag_Ens2
 	#s"""
