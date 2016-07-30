@@ -14,6 +14,16 @@ import warnings
 
 __all__ = ["Entanglement_Entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing"]
 
+# coherent state function
+def coherent_state(a,n,dtype=_np.float64):
+	s1 = _np.full((n,),-_np.abs(a)**2/2.0,dtype=dtype)
+	s2 = _np.arange(n,dtype=_np.float64)
+	s3 = _np.array(s2)
+	s3[0] = 1
+	_np.log(s3,out=s3)
+	s3[1:] = 0.5*_np.cumsum(s3[1:])
+	state = s1+_np.log(a)*s2-s3
+	return _np.exp(state)
 
 def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
@@ -48,30 +58,35 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	# calculate reshaped system_state
 	v, rho_d, L_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
-	
+
+	if len(v.shape) != 3:
+		v = _np.reshape(v,(1,)+v.shape)
+		rho_d = _np.reshape(rho_d,(1,))
+
 	if DM == False:
 		lmbda = _npla.svd(v, compute_uv=False)
 	elif DM == 'chain_subsys':
 		U, lmbda, _ = _npla.svd(v, full_matrices=False)
-		DM_chain_subsys = lmbda.shape[0]*_np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+		DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
 	elif DM == 'other_subsys':
 		_, lmbda, V = _npla.svd(v, full_matrices=False)
-		DM_other_subsys = lmbda.shape[0]*_np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+		DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
 	elif DM == 'both':
 		U, lmbda, V = _npla.svd(v, full_matrices=False)
-		DM_chain_subsys = lmbda.shape[0]*_np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
-		DM_other_subsys = lmbda.shape[0]*_np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+		DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+		DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
 
 
 	# add floating point number to zero elements
 	lmbda[lmbda<=1E-16] = _np.finfo(lmbda.dtype).eps
 
 	# calculate singular values of reduced DM
-	lmbda = rho_d.dot(lmbda)
+	lmbda = _np.sqrt( rho_d.dot(lmbda**2) )
 
+	
 	# calculate entanglement entropy of 'system_state'
 	if alpha == 1.0:
-		Sent = -( abs(lmbda)**2).dot( 2*_np.log( abs(lmbda)  ) ).sum()
+		Sent = -( lmbda**2).dot( _np.log( lmbda**2  ) ).sum()
 	else:
 		Sent =  1./(1-alpha)*_np.log( (lmbda**alpha).sum() )
 
@@ -352,7 +367,7 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 	return return_dict
 
 
-def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,Sent_Renyi=False):
+def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False):
 	"""
 	rho: Density matrix of diagonal ensemble
 
@@ -379,8 +394,10 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,
 
 	if Obs is not False:
 		variables.append("Obs_"+istate)
-	if deltaObs is not False:
-		variables.append("deltaObs_"+istate)
+	if delta_t_Obs is not False:
+		variables.append("delta_t_Obs_"+istate)
+	if delta_q_Obs is not False:
+		variables.append("delta_q_Obs_"+istate)
 	if Sd_Renyi:
 		if alpha == 1.0:
 			variables.append("Sd_"+istate)
@@ -410,9 +427,16 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,
 	if Obs is not False:
 		Obs_d = Obs.dot(rho)
 
+	def Fluctuations(delta_Obs,rho):
+		return _np.sqrt( _np.einsum(es_str('ji,jk,ki->i'),rho,delta_Obs,rho).real )
+
 	# calculate diag ens value of Obs fluctuations
-	if deltaObs is not False:
-		deltaObs_d = _np.sqrt( _np.einsum(es_str('ji,jk,ki->i'),rho,deltaObs,rho).real )
+	if delta_t_Obs is not False:
+		delta_t_Obs_d = Fluctuations(delta_t_Obs,rho)
+
+	# calculate diag ens value of Obs fluctuations
+	if delta_q_Obs is not False:
+		delta_q_Obs_d = Fluctuations(delta_q_Obs,rho)
 
 	# calculate Shannon entropy for the distribution p
 	def Entropy(p,alpha):
@@ -430,7 +454,7 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,
 		# calculate effective diagonal singular values, \lambda_i^{(n)} = Sent_Renyi
 		rho_ent = (Sent_Renyi**2).dot(rho) # has components (i,psi)
 		Sent_Renyi_d = Entropy(rho_ent,alpha)
-
+		
 	# calculate diag ens entropy in post-quench basis
 	if Sd_Renyi:
 		Sd_Renyi_d = Entropy(rho,alpha)
@@ -451,7 +475,7 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,deltaObs=False,Sd_Renyi=False,
 	return return_dict
 		
 
-def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,deltaObs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
+def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
 	"""
 	system_state = |\psi>, rho_i, {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int}
 
@@ -460,9 +484,9 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	"""
 
 	# various checks
-	if deltaObs:
+	if delta_t_Obs or delta_q_Obs:
 		if not Obs:
-			raise TypeError("Expecting to parse the observable 'Obs' whenever 'deltaObs = True'!")
+			raise TypeError("Expecting to parse the observable 'Obs' whenever 'delta_t_Obs = True' or 'delta_q_Obs = True'!")
 	
 	# calculate diagonal ensemble DM
 
@@ -536,7 +560,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 
 	# prepare observables
-	if Obs is not False or deltaObs is not False:
+	if Obs is not False or delta_t_Obs is not False or delta_q_Obs is not False:
 		# check if Obs is hermitian
 		print "these lines need to be revised; Need also a flag to disable the hermiticity check."
 		try: 
@@ -546,14 +570,30 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			if _la.norm(Obs.T.conj() - Obs) > 1E4*_np.finfo(Obs.dtype).eps:
 				raise ValueError("'Obs' is not hermitian!")
 
-		if deltaObs and Obs is not False:
+		if delta_t_Obs and delta_q_Obs and Obs is not False:
 			# diagonal matrix elements of Obs^2 in the basis V2
 			print "revisit dot product in deltaObs"
-			#deltaObs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
+			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
 			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
-			deltaObs = _np.square(Obs)
-			_np.fill_diagonal(deltaObs,0.0)
+			delta_t_Obs = _np.square(Obs)
+			delta_q_Obs = _np.diag(delta_t_Obs)
+			_np.fill_diagonal(delta_t_Obs,0.0)
 			Obs = _np.diag(Obs).real
+			delta_q_Obs = delta_q_Obs - _np.square(Obs)
+
+		elif delta_t_Obs and Obs is not False:
+			# diagonal matrix elements of Obs^2 in the basis V2
+			print "revisit dot product in deltaObs"
+			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
+			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
+			delta_t_Obs = _np.square(Obs)
+			_np.fill_diagonal(delta_t_Obs,0.0)
+			Obs = _np.diag(Obs).real
+
+		elif delta_q_Obs and Obs is not False:
+			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
+			delta_q_Obs = _np.diag(_np.square(Obs))
+			Obs = _np.diag(Obs)
 
 		elif Obs is not False:
 			# diagonal matrix elements of Obs in the basis V2
@@ -562,7 +602,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 		
 	if Sent_Renyi:
 		# calculate singular values of columns of V2
-		v, _, L_A = reshape_as_subsys({'V_rho':V2,'rho_d':rho},**Sent_args) 
+		v, _, L_A = reshape_as_subsys({'V_rho':V2,'rho_d':rho},**Sent_args)
 		Sent_Renyi = _npla.svd(v, compute_uv=False).T # components (i,n) 
 
 	# clear up memory
@@ -570,7 +610,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 
 	# calculate diag expectation values
-	Expt_Diag = inf_time_obs(L,rho,istate,alpha=alpha,Obs=Obs,deltaObs=deltaObs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	Expt_Diag = inf_time_obs(L,rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
 	
 	# compute densities
 	for key,value in Expt_Diag.iteritems():
