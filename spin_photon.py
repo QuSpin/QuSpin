@@ -153,6 +153,11 @@ def symm_sector(kblock,pblock):
 	# calculate total initial state
 	psi0 = np.kron(psiF0_sp,psi0_ph)
 
+	#print psi0.conj().T.dot( N_op.tocsr().dot(psi0) ), Nph
+	#print psi0.conj().T.dot( N_op.tocsr().dot( N_op.tocsr().dot(psi0) ) )  - psi0.conj().T.dot( N_op.tocsr().dot(psi0) )**2, Nph
+
+
+
 	### diagonalise spin-photon Hamiltonian
 	E, V = H.eigh()
 
@@ -161,9 +166,8 @@ def symm_sector(kblock,pblock):
 	################################################################
 
 	# calculate Diag Ensemble quantities of full system
-	Diag_Ens = observables.Diag_Ens_Observables(L,psi0,V,rho_d=True,Obs=N_op,delta_t_Obs=True,Sent_Renyi=True,Sent_args={'basis':basis})
+	Diag_Ens = observables.Diag_Ens_Observables(L,psi0,V,rho_d=True,densities=False,Obs=N_op,delta_t_Obs=True)
 	
-	Sent_spins = Diag_Ens['Sent_pure']
 	N_op_d = Diag_Ens['Obs_pure']
 	delta_t_N_op_d = Diag_Ens['delta_t_Obs_pure']
 	delta_q_N_op_d = Diag_Ens['delta_q_Obs_pure']
@@ -173,28 +177,28 @@ def symm_sector(kblock,pblock):
 
 	# calculate reduced DM of spin chain from diagonal DM
 	Chain = observables.Entanglement_Entropy({'V_rho':V,'rho_d':rho_d},basis,DM='chain_subsys')
+	Sent_spins = Chain['Sent']
 	rho_d_sp = Chain['DM_chain_subsys']
 
 	# calculate infinite time expectation of spin chain
-	#Diag_Ens_sp = observables.Diag_Ens_Observables(L,rho_d_sp,VF0_sp,Obs=HF0_sp,deltaObs=True,Sd_Renyi=True,Sent_Renyi=True,Sent_args={'basis':basis_sp})
 	
-
 	Sent_sp = observables.Entanglement_Entropy(rho_d_sp,basis_sp)['Sent']
 	S_Tinf_sp = np.log(2)
-	Ed_sp = np.trace(HF0_sp.dot(rho_d_sp))
+	Ed_sp = np.trace(HF0_sp.dot(rho_d_sp))/L
 	E_Tinf_sp = sum(EF0_sp)/L
-	deltaE_sp = np.trace(HF0_sp.dot(HF0_sp.todense()).dot(rho_d_sp))
+	deltaE_sp = np.sqrt( np.trace(HF0_sp.dot(HF0_sp.tocsr()).dot(rho_d_sp))/L**2 - Ed_sp**2 )
 
 
 	# calculate entanglement entropy of HF0 GS.
-	Sent0_sp = observables.Entanglement_Entropy(psiF0_sp,basis_sp)['Sent']
+	Diag_Ens_sp = observables.Diag_Ens_Observables(L,rho_d_sp,VF0_sp,Sent_Renyi=True,Sent_args={'basis':basis_sp})
+	Sent_sp_subsys = Diag_Ens_sp['Sent_DM']
+	Sent_sp_subsys_0 = observables.Entanglement_Entropy(psiF0_sp,basis_sp)['Sent']
 	
-	exit()
 	
 	# calculate normalised Q quantities
-	Q_E = (Ed - EF0[0]/L)/(E_Tinf- EF0[0]/L) 
-	Q_SF = Sd/S_Tinf
-	Q_Sent = (Sent - Sent0)/(S_Tinf - Sent0)
+	Q_E_sp = (Ed_sp - EF0_sp[0]/L)/(E_Tinf_sp- EF0_sp[0]/L) 
+	Q_Sent_sp = Sent_sp/S_Tinf_sp
+	Q_Sent_subsys = (Sent_sp_subsys - Sent_sp_subsys_0)/(S_Tinf_sp - Sent_sp_subsys_0)
 
 
 	# calculate mean level spacing of HF and HF0
@@ -202,6 +206,7 @@ def symm_sector(kblock,pblock):
 	rave_folded = observables.Mean_Level_Spacing( folded_E )
 	rave = observables.Mean_Level_Spacing(E)
 
+	exit()
 
 	################################################################
 	###################     store data        ######################
