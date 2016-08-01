@@ -17,7 +17,7 @@ import warnings
 # this is used to construct the stroboscpoic evolution operator
 def evolve(i,H,T,atol=1E-9,rtol=1E-9):
 	
-	nsteps=sum([2**_i for _i in xrange(32,63)]) # huge number to make sure solver is successful.
+	nsteps=sum([2**_i for _i in xrange(16,31)]) # huge number to make sure solver is successful.
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
 
