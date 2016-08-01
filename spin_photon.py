@@ -111,6 +111,7 @@ ph_energy = [[Omega/L,i] for i in xrange(L)]
 
 ### build spin-photon operator lists
 static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
+H_ph_list = [["I|n",ph_energy]]
 N_op_list = [["I|n",[[1.0/L,i] for i in xrange(L)] ]]
 # spin-only operator list
 static_sp = [["zz",J_nn],["z",z_field], ["x",x_field]]
@@ -131,6 +132,7 @@ def symm_sector(kblock,pblock):
 
 	# build spin-photon Hamiltonian and operators
 	H=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
+	H_ph=hamiltonian(H_ph_list,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
 	N_op = hamiltonian(N_op_list,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
 	# build spin Hamiltonian and operators
 	HF0_sp=hamiltonian(static_sp,[],L=L,dtype=np.float64,basis=basis_sp,check_symm=False,check_herm=False)
@@ -152,9 +154,11 @@ def symm_sector(kblock,pblock):
 	psi0_ph *= 1.0/np.linalg.norm(psi0_ph)
 	# calculate total initial state
 	psi0 = np.kron(psiF0_sp,psi0_ph)
+	#print 'Norm of initial state is:', np.linalg.norm(psi0)
+	print 'Energy of initial state is', H_ph.matrix_ele(psi0,psi0), EF0_sp[-1] - EF0_sp[0], H_ph.matrix_ele(psi0,psi0) - (EF0_sp[-1] - EF0_sp[0])
 
-	#print psi0.conj().T.dot( N_op.tocsr().dot(psi0) ), Nph
-	#print psi0.conj().T.dot( N_op.tocsr().dot( N_op.tocsr().dot(psi0) ) )  - psi0.conj().T.dot( N_op.tocsr().dot(psi0) )**2, Nph
+	print psi0.conj().T.dot( N_op.tocsr().dot(psi0) ), Nph
+	print psi0.conj().T.dot( N_op.tocsr().dot( N_op.tocsr().dot(psi0) ) )  - psi0.conj().T.dot( N_op.tocsr().dot(psi0) )**2, Nph
 
 
 

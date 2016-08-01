@@ -147,7 +147,7 @@ def symm_sector(kblock,pblock):
 	Sent = Diag_Ens['Sent_pure']
 	S_Tinf = np.log(2)
 	Ed = Diag_Ens['Obs_pure']
-	E_Tinf = sum(EF0)/L
+	E_Tinf = sum(EF0)/Ns/L
 	deltaE = Diag_Ens['delta_t_Obs_pure']
 
 

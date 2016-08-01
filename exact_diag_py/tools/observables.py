@@ -157,8 +157,10 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	else:
 		Sent =  1./(1-alpha)*_np.log( (lmbda**alpha).sum() )
 
+
 	if densities:
 		Sent *= 1.0/L_A
+
 
 	# store variables to dictionar
 	return_dict = {}
@@ -422,46 +424,6 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 	return v, rho_d, L_A
 
 
-
-def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
-	"""
-	This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs'
-	onto the reduced basis.
-
-	RETURNS: 	dictionary with keys 'Proj_Obs' and value the projected observable.
-
-	--- arguments ---
-
-	Obs: (compulsory) operator to be projected.
-
-	reduced_basis: (compulsory) basis of the final space after the projection.
-
-	dtype: (optional) data type. Default is np.complex128.
-
-	Proj: (optional) Projector operator. Default is 'None'. If 'Proj = True' is used, the projector is
-			calculated and returned under the key 'Proj'. If 'Proj = operator' is put in, the input array
-			'operator' is used as the projector but it is not returned.
-	"""
-
-	variables = ["Proj_Obs"]
-
-	if _np.any(Proj):
-		if Proj == True:
-			variables.append("Proj")
-			Proj = reduced_basis.get_proj(dtype=dtype)
-	else:
-		Proj = reduced_basis.get_proj(dtype=dtype)
-
-	Proj_Obs = Proj.T.conj()*Obs*Proj
-
-	# define dictionary with outputs
-	return_dict = {}
-	for i in range(len(variables)):
-		return_dict[variables[i]] = vars()[variables[i]]
-
-	return return_dict
-
-
 def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False):
 	"""
 	This function calculates various quantities (observables, fluctuations, entropies) written in the
@@ -550,12 +512,12 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=
 		# calculate effective diagonal singular values, \lambda_i^{(n)} = Sent_Renyi
 		rho_ent = (Sent_Renyi**2).dot(rho) # has components (i,psi)
 		Sent_Renyi_d = Entropy(rho_ent,alpha)
+
 		
 	# calculate diag ens entropy in post-quench basis
 	if Sd_Renyi:
 		Sd_Renyi_d = Entropy(rho,alpha)
 		
-
 
 	# define return dict
 	return_dict = {}
@@ -566,8 +528,8 @@ def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=
 			i=i.replace(istate,'Renyi_{}'.format(istate))
 
 		return_dict[j] = locals()[i[:-len(istate)]+'d']
+	
 
-		
 	return return_dict
 		
 
@@ -770,7 +732,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	# compute densities
 	for key,value in Expt_Diag.iteritems():
 		if densities:
-			if '_ent' in key:
+			if 'ent' in key:
 				value *= 1.0/L_A
 			else:
 				value *= 1.0/L
@@ -787,7 +749,6 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			# merge state and mixed dicts
 			Expt_Diag.update(Expt_Diag_state)
 
-
 	# return diag ensemble density matrix if requested
 	if rho_d:
 		if 'V1_state' in locals():
@@ -798,6 +759,44 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 
 	return Expt_Diag
+
+def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
+	"""
+	This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs'
+	onto the reduced basis.
+
+	RETURNS: 	dictionary with keys 'Proj_Obs' and value the projected observable.
+
+	--- arguments ---
+
+	Obs: (compulsory) operator to be projected.
+
+	reduced_basis: (compulsory) basis of the final space after the projection.
+
+	dtype: (optional) data type. Default is np.complex128.
+
+	Proj: (optional) Projector operator. Default is 'None'. If 'Proj = True' is used, the projector is
+			calculated and returned under the key 'Proj'. If 'Proj = operator' is put in, the input array
+			'operator' is used as the projector but it is not returned.
+	"""
+
+	variables = ["Proj_Obs"]
+
+	if _np.any(Proj):
+		if Proj == True:
+			variables.append("Proj")
+			Proj = reduced_basis.get_proj(dtype=dtype)
+	else:
+		Proj = reduced_basis.get_proj(dtype=dtype)
+
+	Proj_Obs = Proj.T.conj()*Obs*Proj
+
+	# define dictionary with outputs
+	return_dict = {}
+	for i in range(len(variables)):
+		return_dict[variables[i]] = vars()[variables[i]]
+
+	return return_dict
 
 
 
