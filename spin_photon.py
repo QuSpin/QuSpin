@@ -30,16 +30,21 @@ n_jobs = 1
 L = int(sys.argv[1])
 block = int(sys.argv[3]) - 1
 
+Nph_tot = int(sys.argv[4]) #120 #total number of photon states
+Nph = Nph_tot/2 # mean number of photons in initial state
+
 ### static model params
 J = 1.0
 hx = 0.809
 hz = 0.9045
 
 ### dynamic model params
+Omega = float(sys.argv[2])
+A = 1.0
+T = 2*np.pi/Omega
+'''
 def f(t,Omega):
 	return np.cos(Omega*t)
-Omega = int(sys.argv[2])
-A = 1.0
 def t_vec(Omega,N_const,len_T=100,N_up=0,N_down=0):
 	# define dynamics params for a time step of 'da=1/len_T'
 	# N_up, N_down: ramp-up (-down) periods
@@ -90,19 +95,27 @@ def t_vec(Omega,N_const,len_T=100,N_up=0,N_down=0):
 		t_vec.T_down = t[t_vec.indT_down]
 
 	return t
-t = t_vec(Omega,1)
+t = t_vec(Omega,len_T=10)
+'''
 
 ### set up operator strings
-# static
+# spin
 x_field=[[-hx,i] for i in xrange(L)]
 z_field=[[-hz,i] for i in xrange(L)]
 J_nn=[[-J,i,(i+1)%L] for i in xrange(L)]
-# dynamic
-drive_coupling=[[-A,i] for i in xrange(L)]
+# spin-photon
+absorb=[[-0.5*A/np.sqrt(Nph),i] for i in xrange(L)]
+emit=[[-0.5*np.conj(A)/np.sqrt(Nph),i] for i in xrange(L)]
+# photon
+ph_energy = [[Omega/L,i] for i in xrange(L)]
 
-### build spin operator lists
-static = [["zz",J_nn],["z",z_field], ["x",x_field]]
-dynamic = [["x",drive_coupling,f,[Omega]]]
+### build spin-photon operator lists
+static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
+H_ph_list = [["I|n",ph_energy]]
+N_op_list = [["I|n",[[1.0/L,i] for i in xrange(L)] ]]
+# spin-only operator list
+static_sp = [["zz",J_nn],["z",z_field], ["x",x_field]]
+
 
 
 def symm_sector(kblock,pblock):
@@ -111,60 +124,93 @@ def symm_sector(kblock,pblock):
 	##################   set up Hamiltonian    #####################
 	################################################################
 
+	# build spin-photon basis
+	basis = photon_basis(spin_basis_1d,L=L,kblock=kblock,pblock=pblock,Nph=Nph_tot)
 	# build spin basis
-	basis = spin_basis_1d(L=L,kblock=kblock,pblock=pblock)
+	basis_sp = spin_basis_1d(L=L,kblock=kblock,pblock=pblock)
 
 
+	# build spin-photon Hamiltonian and operators
+	H=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
+	H_ph=hamiltonian(H_ph_list,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
+	N_op = hamiltonian(N_op_list,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
 	# build spin Hamiltonian and operators
-	H=hamiltonian(static,dynamic,L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
-	HF0=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_symm=False,check_herm=False)
-
-	Ns = HF0.Ns
-	print "spin H-space size is", Ns
+	HF0_sp=hamiltonian(static_sp,[],L=L,dtype=np.float64,basis=basis_sp,check_symm=False,check_herm=False)
+	
+	Ns = H.Ns
+	print "spin (total, spin) H-space sizes are", (Ns, HF0_sp.Ns)
 
 	################################################################
-	################  calculate Floquet operator  ##################
+	################  calculate initial state  #####################
 	################################################################
 
-	Floq = Floquet(H,t_vec.T,VF=True,n_jobs=U_jobs)
-	VF = Floq.VF
-	EF = Floq.EF
+	# get GS of spin chain
+	#EF0_sp, psiF0_sp = HF0_sp.eigsh(k=1)
+	EF0_sp, VF0_sp = HF0_sp.eigh()
+	psiF0_sp = VF0_sp[:,0]
+	# get coherent state of photon mode
+	psi0_ph = observables.coherent_state(np.sqrt(Nph),Nph_tot+1)
+	print 'Norm of coherent state is:', np.linalg.norm(psi0_ph)
+	psi0_ph *= 1.0/np.linalg.norm(psi0_ph)
+	# calculate total initial state
+	psi0 = np.kron(psiF0_sp,psi0_ph)
+	#print 'Norm of initial state is:', np.linalg.norm(psi0)
+	print 'Energy of initial state is', H_ph.matrix_ele(psi0,psi0), EF0_sp[-1] - EF0_sp[0], H_ph.matrix_ele(psi0,psi0) - (EF0_sp[-1] - EF0_sp[0])
 
-	del Floq
+	print psi0.conj().T.dot( N_op.tocsr().dot(psi0) ), Nph
+	print psi0.conj().T.dot( N_op.tocsr().dot( N_op.tocsr().dot(psi0) ) )  - psi0.conj().T.dot( N_op.tocsr().dot(psi0) )**2, Nph
 
-	### diagonalise infinite-frequency Hamiltonian
-	EF0, VF0 = HF0.eigh()
+
+
+	### diagonalise spin-photon Hamiltonian
+	E, V = H.eigh()
 
 	################################################################
 	###################  calculate observables  ####################
 	################################################################
 
-	# calculate Diag Ensemble quantitties
-	Diag_Ens = observables.Diag_Ens_Observables(L,VF0[:,0],VF,Sent_Renyi=True,Sd_Renyi=True,Obs=HF0,delta_t_Obs=True,Sent_args={'basis':basis})
+	# calculate Diag Ensemble quantities of full system
+	Diag_Ens = observables.Diag_Ens_Observables(L,psi0,V,rho_d=True,densities=False,Obs=N_op,delta_t_Obs=True)
 	
-	
-	Sd = Diag_Ens['Sd_pure']
-	Sent = Diag_Ens['Sent_pure']
-	S_Tinf = np.log(2)
-	Ed = Diag_Ens['Obs_pure']
-	E_Tinf = sum(EF0)/Ns/L
-	deltaE = Diag_Ens['delta_t_Obs_pure']
+	N_op_d = Diag_Ens['Obs_pure']
+	delta_t_N_op_d = Diag_Ens['delta_t_Obs_pure']
+	delta_q_N_op_d = Diag_Ens['delta_q_Obs_pure']
+	# get diagonal DM
+	rho_d = Diag_Ens['rho_d']
 
 
-	# calculate entanglement entropy of HF0 GS
-	Sent0 = observables.Entanglement_Entropy(VF0[:,0],basis)['Sent']
+	# calculate reduced DM of spin chain from diagonal DM
+	Chain = observables.Entanglement_Entropy({'V_rho':V,'rho_d':rho_d},basis,DM='chain_subsys')
+	Sent_spins = Chain['Sent']
+	rho_d_sp = Chain['DM_chain_subsys']
+
+	# calculate infinite time expectation of spin chain
+	
+	Sent_sp = observables.Entanglement_Entropy(rho_d_sp,basis_sp)['Sent']
+	S_Tinf_sp = np.log(2)
+	Ed_sp = np.trace(HF0_sp.dot(rho_d_sp))/L
+	E_Tinf_sp = sum(EF0_sp)/L
+	deltaE_sp = np.sqrt( np.trace(HF0_sp.dot(HF0_sp.tocsr()).dot(rho_d_sp))/L**2 - Ed_sp**2 )
+
+
+	# calculate entanglement entropy of HF0 GS.
+	Diag_Ens_sp = observables.Diag_Ens_Observables(L,rho_d_sp,VF0_sp,Sent_Renyi=True,Sent_args={'basis':basis_sp})
+	Sent_sp_subsys = Diag_Ens_sp['Sent_DM']
+	Sent_sp_subsys_0 = observables.Entanglement_Entropy(psiF0_sp,basis_sp)['Sent']
+	
 	
 	# calculate normalised Q quantities
-	Q_E = (Ed - EF0[0]/L)/(E_Tinf- EF0[0]/L) 
-	Q_SF = Sd/S_Tinf
-	Q_Sent = (Sent - Sent0)/(S_Tinf - Sent0)
+	Q_E_sp = (Ed_sp - EF0_sp[0]/L)/(E_Tinf_sp- EF0_sp[0]/L) 
+	Q_Sent_sp = Sent_sp/S_Tinf_sp
+	Q_Sent_subsys = (Sent_sp_subsys - Sent_sp_subsys_0)/(S_Tinf_sp - Sent_sp_subsys_0)
 
 
 	# calculate mean level spacing of HF and HF0
-	folded_EF0 = sorted( np.real( 1j/t_vec.T*np.log(np.exp(-1j*EF0*t_vec.T)) ) )
-	rave_F0 = observables.Mean_Level_Spacing( folded_EF0 )
-	rave_F = observables.Mean_Level_Spacing(EF)
+	folded_E = sorted( np.real( 1j/T*np.log(np.exp(-1j*E*T)) ) )
+	rave_folded = observables.Mean_Level_Spacing( folded_E )
+	rave = observables.Mean_Level_Spacing(E)
 
+	exit()
 
 	################################################################
 	###################     store data        ######################
@@ -205,7 +251,7 @@ sectors = [(0,-1)]
 #Data = np.vstack( Parallel(n_jobs=n_jobs)(delayed(symm_sector)(kblock,pblock) for kblock, pblock in sectors) )
 Data = symm_sector(*sectors[block])
 
-
+br
 ################################################################
 ###################     save data        #######################
 ################################################################
