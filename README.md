@@ -7,7 +7,7 @@ exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran l
 Contents
 --------
 * [Installation](#installation)
-* [using exact_diag_py](#using-our-package)
+* [using the package](#using-the-package)
  * [constructing hamiltonians](#constructing-hamiltonians)
  * [using basis objects](#using-basis-objects)
  * [using symmetries](#using-symmetries)
@@ -49,12 +49,13 @@ setup.py install
 NOTE:** you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. We recommend [Anaconda](https://www.continuum.io/downloads) to manage your python packages. 
 
 
-#**using our package**
-All of the calculations done with our package happen through the [hamiltonians](#hamiltonian-objects). The hamiltonian is split into a static part and dynamic part. Static part is a single matrix which contains and matrix elements of the hamiltonian which will remain state under Schroedinger evolution, while the dynamic part contains separate pieces of the hamiltonian grouped with the time dependent function. When needed, the time dependence is evaluated on the fly for doing calculations that would envolve time dependent operators. The hamiltonian object can be constructed with Numpy arrays or Scipy sparse matrices but we have also created an representation which allows the user to construct the hamiltonian of many-body operators. Many-body operators are represented by string of letters representing the type of operators and a tuple which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent multi-spin operators as:
+#**using the package**
+All of the calculations done with our package happen through the [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the Quantum Hamiltonian. Time independent operators are summed together into a single  static matrix while all time dependent operators are stored separatly along with the time dependent coupling in front of it. When needed, the time dependence is evaluated on the fly for doing calculations that would involve time dependent operators. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Beyond this we have also created an representation which allows the user to construct the matrices for many-body operators. 
 
-|      opstr       |      indx      |        operator string      |
+Many-body operators are represented by string of letters representing the type of operators and a tuple which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent multi-spin operators as:
+|      opstr       |      indx      |        operator      |
 |:----------------:|:--------------:|:---------------------------:|
-|'o<sub>1</sub>...o<sub>n</sub>'|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>o<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup>|
+|"o<sub>1</sub>...o<sub>n</sub>"|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>o<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup>|
 
 where o<sub>i</sub> can be x, y, z, +, or -. This gives the full range of possible spin operators that can be constructed. For different systems there are different types of operators. To see the available operators for a given type of system checkout out the [basis](basis-objects) classes. 
 
@@ -63,13 +64,13 @@ The hamiltonian is constructed as:
 ```python
 H = hamiltonian(static_list,dynamic_list,**kwargs)
 ```
-where the lattice and the static and dynamic lists have the following form for many-body operators:
+where the static_list and dynamic_list are lists have the following format for many-body operators:
 
 ```python
 static_list=[[opstr_1,[indx_11,...,indx_1m]],...]
 dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],...]
 ```
-You can also mix Many-body operators and Numpy arrays or scipy matrices together:
+To use Numpy arrays or Scipy matrices the syntax is:
 
 ```python
 static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
@@ -80,8 +81,9 @@ For the dynamic list the ```func``` is the function which goes in front of the m
 f_val = func(t,*func_args)
 ```
 
-####keyword arguements(kwargs):
+####keyword arguements (kwargs):
 the ```**kwargs``` give extra information about the hamiltonian. There are different things one can input for this and which one depends on what object you would like to create. They are used to specify symmetry blocks, give a shape and provide the floating point type to store the matrix elements with.
+
 **providing a shape:**
 If there are many-body operators one must either specify the number of sites with ```N=...``` or pass in a basis object as ```basis=...```, more about basis objects later [section](#basis-objects). You can also specify the shape using the ```shape=...``` keyword argument. For input lists which contain matrices only, the shape does not have to be specified. If empty lists are given, then either one of the previous options must be provided to the hamiltonian constructor.  
 
@@ -94,7 +96,8 @@ H=hamiltonian(...,dtype=np.float32,...)
 Note that not all platforms as well as all of Scipy and Numpy functions support dtype float128 and complex256.
 
 
-**example:** constructing a hamiltonian object of the transverse field ising model with time dependent field for 10 site chain:
+**example:** 
+constructing a hamiltonian object of the transverse field ising model with time dependent field for 10 site chain:
 
 ```python
 # python script
@@ -127,39 +130,44 @@ Notice that I need to include both '-z+' and '+z-' operators to make sure our Ha
 
 ###**Using basis objects**
 
+Basis objects are another type included in this package which provide all of the functionality which calculates the matrix elements from the operator string representation of the many-body operators. On top of this, some of them have been programmed to calculate the matrix elements in different symmetry blocks of the many-body hamiltonian. to use a basis object to construct the hamiltonian just use the basis keyword argument:
+```python
+H = hamiltonian(static_list,dynamic_list,...,basis=basis,...)
+```
+More information about basis objects can be found in the [basis objects](#basis-objects) section.  
+
 ###**Using symmetries**
-Adding symmetries is easy, either you can just add extra keyword arguements to the initialization of your hamiltonian. By default the hamiltonian will use the spin-1/2 operators as well as 1d-symmetries.
+Adding symmetries is easy, either you can just add extra keyword arguments to the initialization of your hamiltonian or when you initialize a basis object. By default the hamiltonian will use the spin-1/2 operators as well as 1d-symmetries. At this point the only symmetries implemented are for spins-1/2 operators in 1 dimension. 
 The symmetries for a spin chain in 1d are:
 
 magnetization sector:
-Nup=0,...,L 
+Nup = integers: 0,...,L; or list: [1,...] 
 
 parity sector:
-pblock=+/-1
+pblock = +/-1
 
 spin inversion sector:
-zblock=+/-1
+zblock = +/-1
 
 (parity)*(spin inversion) sector:
-pzblock=+/-1
+pzblock = +/-1
 
 momentum sector:
-kblock=any integer
+kblock = any integer
 
 used like:
 ```python
-H=hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
+H = hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
 ```
-By doing this option the hamiltonian creates a [spin_basis_1d](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/basis) for the given symmetries and then uses that object to construct the matrix elements. If you don't want to use spin chains there are also other basis type objects which can be constructed for a given set of symmetry blocks. These basis objects can be passed to hamiltonian which will then use that basis to construct the matrix elements for symmetry sector of the basis object. One basis object is called spin_basis_1d which is used to create the basis object for a 1d spin chain:
+If the user passes the symmetries into the hamiltonian constructor, the constructor creates a [spin_basis_1d](spin-basis-1d) object for the given symmetries and then uses that object to construct the matrix elements. because of this, If one is constructing multiply hamiltonian objects within the same symmetry block it is more efficient to first construct the basis object and then use the basis object to construct the different hamiltonians:
 
 ```python
-from exact_diag_py.basis import spin_basis_1d
 
-basis=spin_basis_1d(L,Nup=Nup,pblock=pblock,...)
-H1=hamiltonian(static_list_1,dynamic_list_1,basis=basis)
-H2=hamiltonian(static_list_2,dynamic_list_2,basis=basis)
+basis = spin_basis_1d(L,Nup=Nup,pblock=pblock,...)
+H1 = hamiltonian(static1_list,dynamic1_list,basis=basis)
+H2 = hamiltonian(static2_list,dynamic2_list,basis=basis)
+...
 ```
-This is typically more efficient because you can use a basis object for multiple hamiltonians without constructing the basis every time a hamiltonian is created. More information about the basis objects can be found [here](#basis-objects).
 
 **NOTE:** for beta versions spin_basis_1d is named as basis1d.
 
@@ -497,6 +505,7 @@ This routine returns the mean-level spacing r_ave of the energy distribution E, 
 E: (compulsory) ordered list of ascending, nondegenerate eigenenergies. 
 
 ###**Floquet**
+
 
 
 
