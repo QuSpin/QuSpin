@@ -424,18 +424,38 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 	return v, rho_d, L_A
 
 
-def inf_time_obs(L,rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False):
+def inf_time_obs(rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False):
 	"""
 	This function calculates various quantities (observables, fluctuations, entropies) written in the
-	diagonal basis of a density matrix 'rho'. See also documentation of 'Diag_Ens_Observables'.
+	diagonal basis of a density matrix 'rho'. See also documentation of 'Diag_Ens_Observables'. The 
+	fuction is vectorised, meaning that 'rho' can be an array containing the diagonal density matrices
+	in the columns.
+
+	RETURNS:	dictionary with keys corresponding to the observables
+
+	--- variables --- 
 
 	istate: (compulsory) type of initial state. Allowed strings are 'pure', 'DM', 'mixed', 'thermal'.
+
+	Obs: (optional) array of shape (,1) with the diagonal matrix elements of an observable in the basis
+			where the density matrix 'rho' is diagonal.
+
+	delta_t_Obs: (optional) array of shape (1,1) containing the off-diagonal matrix elements of the 
+			square of an observable, to evaluate the infinite-time temporal fluctuations
+
+	delta_q_Obs: (optional) array containing the diagonal elements (Obs^2)_{nn} - (Obs_{nn})^2 in the 
+			basis where the DM 'rho' is diagonal. Evaluates the infinite-time quantum fluctuations.
+
+	Sd_Renyi: (optional) when set to 'True', returns the key with diagonal density matrix of 'rho'.
+
+	Sent_Renyi: (optional) (i,n) array containing the singular values of the i-th state of the eigenbasis
+			of 'rho'. Returns the key with the entanglement entropy of 'rho' reduced to a subsystem of
+			given choice at infinite times.
+
+	alpha: (optional) Renyi entropy parameter. 
 	""" 
 
 	# if Obs or deltaObs: parse V2
-
-	if L and not(type(L) is int):
-		raise TypeError("System size 'L' must be a positive integer!")
 
 	if isinstance(alpha,complex) or alpha < 0.0:
 		raise TypeError("Renyi parameter 'alpha' must be real-valued and non-negative!")
@@ -600,6 +620,10 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 	"""
 
+	if L and not(type(L) is int):
+		raise TypeError("System size 'L' must be a positive integer!")
+
+
 	# various checks
 	if delta_t_Obs or delta_q_Obs:
 		if not Obs:
@@ -696,7 +720,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			delta_q_Obs = _np.diag(delta_t_Obs)
 			_np.fill_diagonal(delta_t_Obs,0.0)
 			Obs = _np.diag(Obs).real
-			delta_q_Obs = delta_q_Obs - _np.square(Obs)
+			delta_q_Obs -= Obs**2
 
 		elif delta_t_Obs and Obs is not False:
 			# diagonal matrix elements of Obs^2 in the basis V2
@@ -709,8 +733,9 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 		elif delta_q_Obs and Obs is not False:
 			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
-			delta_q_Obs = _np.diag(_np.square(Obs))
-			Obs = _np.diag(Obs)
+			delta_q_Obs = _np.diag(_np.square(Obs)).real
+			Obs = _np.diag(Obs).real
+			delta_q_Obs -= Obs**2
 
 		elif Obs is not False:
 			# diagonal matrix elements of Obs in the basis V2
@@ -727,7 +752,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 
 	# calculate diag expectation values
-	Expt_Diag = inf_time_obs(L,rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	Expt_Diag = inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
 	
 	# compute densities
 	for key,value in Expt_Diag.iteritems():

@@ -180,9 +180,12 @@ def symm_sector(kblock,pblock):
 
 
 	# calculate reduced DM of spin chain from diagonal DM
-	Chain = observables.Entanglement_Entropy({'V_rho':V,'rho_d':rho_d},basis,DM='chain_subsys')
+	Chain = observables.Entanglement_Entropy({'V_rho':V,'rho_d':rho_d},basis,DM='chain_subsys',svd_return_vec=[0,1,0])
 	Sent_spins = Chain['Sent']
 	rho_d_sp = Chain['DM_chain_subsys']
+	lmbda_eff = Chain['lmbda']
+
+	print lmbda_eff**2
 
 	# calculate infinite time expectation of spin chain
 	
