@@ -161,6 +161,9 @@ def symm_sector(kblock,pblock):
 	print psi0.conj().T.dot( N_op.tocsr().dot( N_op.tocsr().dot(psi0) ) )  - psi0.conj().T.dot( N_op.tocsr().dot(psi0) )**2, Nph
 
 
+	print "Ent Entropy", observables.Entanglement_Entropy(psi0,basis)['Sent']
+
+	exit()
 
 	### diagonalise spin-photon Hamiltonian
 	E, V = H.eigh()

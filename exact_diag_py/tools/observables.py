@@ -316,7 +316,6 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				system = [s+1 for s in system]
 				system.insert(0,0)
 			# reshape states
-			#v = _np.reshape(psi.ravel(order='F'), reshape_tuple )
 			v = _np.reshape(psi.T, reshape_tuple1)
 			del psi
 			# performs 4)
@@ -571,7 +570,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 				-- density matrix (DM) [numpy array of shape (1,1)].
 
-				-- mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int} to 
+				-- mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
 					define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
 
 					== 'V1': (compulsory) array with the eigenbasis of H1 in the columns.
@@ -586,6 +585,9 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 					== 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
 						expectations are also returned.
+
+					== 'f_norm': (optional) if set to 'False' the mixed DM built from 'f' is NOT normalised
+						and the norm is returned under the key 'f_norm'. 
 
 					The keys are CANNOT be chosen arbitrarily.
 
@@ -620,6 +622,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 	"""
 
+
 	if L and not(type(L) is int):
 		raise TypeError("System size 'L' must be a positive integer!")
 
@@ -645,15 +648,43 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	
 	elif isinstance(system_state,dict): # initial state is defined by diag distr
 		# define allowed keys
-		key_strings = ['V1','E1','f','f_args','V1_state']
+		key_strings = ['V1','E1','f','f_args','V1_state','f_norm']
 
-		if 'V1' not in system_state.keys():
+		if 'V1' in system_state.keys():
+			V1 = system_state['V1']
+		else:
 			raise TypeError("Dictionary 'system_state' must contain states matrix 'V1'!")
-		elif 'E1' not in system_state.keys():
-			raise TypeError("Dictionary 'system_state' must contain eigenvalues vector 'E1'!")
-		elif 'f_args' not in system_state.keys():
-			raise TypeError("Dictionary 'system_state' must contain function arguments list 'f_args'!")
 		
+		if 'E1' in system_state.keys():
+			E1 = system_state['E1']
+		else:
+			raise TypeError("Dictionary 'system_state' must contain eigenvalues vector 'E1'!")
+		
+		if 'f_args' in system_state.keys():
+			f_args = system_state['f_args']
+		else:
+			raise TypeError("Dictionary 'system_state' must contain function arguments list 'f_args'!")
+
+		if 'V1_state' in system_state.keys():
+			V1_state = system_state['V1_state']
+
+		# check if user has passed the distribution 'f'
+		if 'f' in system_state.keys():
+			f = system_state['f']
+			istate = 'mixed'
+		else:
+			istate = 'thermal'
+			# define Gibbs distribution (up to normalisation)
+			f = lambda E1,beta: _np.exp(-beta*(E1 - E1[0]))
+
+		if 'f_norm' in system_state.keys():
+			f_norm = system_state['f_norm']
+			f_norms = _np.zeros((len(f_args[0])),dtype=type(f_args[0][0]) )
+		else:
+			f_norm = True
+
+
+		'''
 		# import array to be able to assign V1 from the keys below
 		from numpy import array
 		# turn dict into variables
@@ -661,16 +692,11 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			# check if key is allowed
 			if key not in key_strings:
 				raise TypeError("Key '{}' not allowed for use in dictionary 'system_state'!".format(key))
+			# display full strings
+			_np.set_printoptions(threshold='nan')
 			# turn key to variable and assign its value
 			exec("{} = {}".format(key,repr(value)) ) in locals()
-
-		# check if user has passed the distribution 'f'
-		if 'f' in locals():
-			istate = 'mixed'
-		else:
-			istate = 'thermal'
-			# define Gibbs distribution (up to normalisation)
-			f = lambda E,beta: _np.exp(-beta*(E - E[0]))
+		'''
 
 		if 'V1_state' in locals():
 			if not(type(V1_state) is int):
@@ -683,11 +709,18 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 		
 		rho_mixed = _np.zeros((len(E1),len(f_args[0])),dtype=type(f_args[0][0]) )
 		for i, arg in enumerate(f_args[0]):
-			rho_mixed[:,i] = f(E1,arg) / sum(f(E1,arg))
+			if f_norm:
+				rho_mixed[:,i] = f(E1,arg) / sum(f(E1,arg))
+			else:
+				rho_mixed[:,i] = f(E1,arg)
+				# calculate normalisation
+				f_norms[i] = sum(f(E1,arg))
 
 
 		# calculate diag ensemble DM for each state in V1
 		rho = abs( V2.conj().T.dot(V1) )**2 # components are (n,psi)
+
+		del V1, E1
 	else:
 		raise TypeError("Wrong variable type for 'system_state'! E.g., use np.ndarray.")
 
@@ -754,6 +787,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	# calculate diag expectation values
 	Expt_Diag = inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
 	
+
 	# compute densities
 	for key,value in Expt_Diag.iteritems():
 		if densities:
@@ -774,12 +808,17 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			# merge state and mixed dicts
 			Expt_Diag.update(Expt_Diag_state)
 
+	if istate in ['mixed','thermal']:
+		if f_norm==False:
+			Expt_Diag['f_norm'] = f_norms
+
 	# return diag ensemble density matrix if requested
 	if rho_d:
 		if 'V1_state' in locals():
 			Expt_Diag['rho_d'] = rho[:,V1_state]
 		else:
-			Expt_Diag['rho_d'] = rho 	
+			Expt_Diag['rho_d'] = rho
+
 
 
 

@@ -150,6 +150,20 @@ def symm_sector(kblock,pblock):
 	E_Tinf = sum(EF0)/Ns/L
 	deltaE = Diag_Ens['delta_t_Obs_pure']
 
+	# calculate finite-temperater diag ensemble values
+	beta = [0.005, 1.0, 20.0]
+	Diag_Ens_T = observables.Diag_Ens_Observables(L,{'V1':VF0,'E1':EF0,'f_args':[beta],'f_norm':False},VF,Sd_Renyi=True)
+	
+	print 'print keys:', Diag_Ens_T
+
+	# read off Floquet diagonal entropy for the three values of 'beta'
+	Sd_T = Diag_Ens_T['Sd_thermal']
+
+	print 'pure', Sd
+	print 'thermal', Sd_T
+
+	exit()
+
 
 	# calculate entanglement entropy of HF0 GS
 	Sent0 = observables.Entanglement_Entropy(VF0[:,0],basis)['Sent']
