@@ -53,6 +53,7 @@ NOTE:** you must write permission to the standard places python is installed as 
 All of the calculations done with our package happen through the [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the Quantum Hamiltonian. Time independent operators are summed together into a single  static matrix while all time dependent operators are stored separatly along with the time dependent coupling in front of it. When needed, the time dependence is evaluated on the fly for doing calculations that would involve time dependent operators. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Beyond this we have also created an representation which allows the user to construct the matrices for many-body operators. 
 
 Many-body operators are represented by string of letters representing the type of operators and a tuple which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent multi-spin operators as:
+
 |      opstr       |      indx      |        operator      |
 |:----------------:|:--------------:|:---------------------------:|
 |"o<sub>1</sub>...o<sub>n</sub>"|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>o<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup>|
