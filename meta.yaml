@@ -14,7 +14,7 @@ requirements:
     - python
     - numpy
     - scipy
-	- joblib
+    - joblib
 
 test:
   imports:
