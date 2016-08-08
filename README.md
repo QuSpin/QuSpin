@@ -1,5 +1,5 @@
-#**exact_diag_py**
-exact_diag_py is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of specifying the time dependence of operators in the Hamiltonian as well, which can be used to solve the time dependent Schrodinger equation numerically for these systems. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access the powerful linear algebra tools. 
+#**qspin**
+qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 31 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing all possible symmetries in 1d. There is also a way of specifying the time dependence of operators in the Hamiltonian as well, which can be used to solve the time dependent Schrodinger equation numerically for these systems. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access the powerful linear algebra tools. 
 
 
 
@@ -29,13 +29,13 @@ Contents
 This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
 
 ```
-$ conda install -c weinbe58 exact_diag_py
+$ conda install -c weinbe58 qspin
 ```
 
 This will install the latest version on to your computer. If this fails for whatever reason this means that either your OS is not supported or your compiler is too old. In this case one can also manually install the package:
 
 
-1) Manual install: to install manually download source code either from the latest [release](https://github.com/weinbe58/exact_diag_py/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
+1) Manual install: to install manually download source code either from the latest [release](https://github.com/weinbe58/qspin/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
 
 unix:
 ```
@@ -101,7 +101,7 @@ constructing a hamiltonian object of the transverse field ising model with time 
 
 ```python
 # python script
-from exact_diag_py.hamiltonian import hamiltonian
+from qspin.hamiltonian import hamiltonian
 
 L=10
 v=0.01
@@ -386,9 +386,9 @@ In version 0.1.0 we have created new classes which allow basis to be tensored to
 ###**Checks on operator strings**
 new in version 0.2.0 we have included a new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
 
-* Checks if complete list of opertors obey the given symmetry of that basis. The check can be turned off with the flag ```check_symm=False ``` in the [hamiltonian](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/hamiltonian) class. 
-* Checks of the given set of operators are hermitian. The check can be turned out with the flag ```check_herm=False``` in the [hamiltonian](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/hamiltonian) class. 
-* Checks of the given set of operators obey particle conservation (for spin systems this means magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](https://github.com/weinbe58/exact_diag_py/tree/master/exact_diag_py/hamiltonian) class. 
+* Checks if complete list of opertors obey the given symmetry of that basis. The check can be turned off with the flag ```check_symm=False ``` in the [hamiltonian](https://github.com/weinbe58/qspin/tree/master/qspin/hamiltonian) class. 
+* Checks of the given set of operators are hermitian. The check can be turned out with the flag ```check_herm=False``` in the [hamiltonian](https://github.com/weinbe58/qspin/tree/master/qspin/hamiltonian) class. 
+* Checks of the given set of operators obey particle conservation (for spin systems this means magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](https://github.com/weinbe58/qspin/tree/master/qspin/hamiltonian) class. 
 
 ###**Methods of Basis Classes**
 * Op(indx,opstr,J,dtype)
@@ -505,7 +505,6 @@ This routine returns the mean-level spacing r_ave of the energy distribution E, 
 E: (compulsory) ordered list of ascending, nondegenerate eigenenergies. 
 
 ###**Floquet**
-
 
 
 
