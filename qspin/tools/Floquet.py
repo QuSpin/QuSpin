@@ -12,6 +12,8 @@ from numpy import vstack
 
 import warnings
 
+warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning)
+
 
 # this function evolves the ith local basis state with Hamiltonian H
 # this is used to construct the stroboscpoic evolution operator

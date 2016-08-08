@@ -1,6 +1,6 @@
 package:
-  name: exact_diag_py
-  version: "0.2.0"
+  name: qspin
+  version: "0.1.0"
 
 source:
   path: ./
@@ -12,8 +12,9 @@ requirements:
 
   run:
     - python
-    - numpy >=1.10
-    - scipy >=0.14
+    - numpy
+    - scipy
+	- joblib
 
 test:
   imports:
@@ -21,5 +22,5 @@ test:
     - scipy 
 
 about:
-  home: https://github.com/weinbe58/exact_diag_py
+  home: https://github.com/weinbe58/qspin.git
   license: MET

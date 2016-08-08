@@ -6,7 +6,7 @@ def configuration(parent_package='', top_path=None):
 	delegate_options_to_subpackages=True,
 	quiet=True)
 
-	config.add_subpackage('exact_diag_py')
+	config.add_subpackage('qspin')
 
 	return config
 
@@ -29,11 +29,11 @@ def setup_package():
 	io
 
 	metadata = dict(
-		name='exact_diag_py',
+		name='qspin',
 		version=version,
 		maintainer="Phillip Weinberg, Marin Bukov",
 		maintainer_email="weinbe58@bu.edu,mbukov.bu.edu",
-		download_url="https://github.com/weinbe58/exact_diag_py",
+		download_url="https://github.com/weinbe58/qspin.git",
 		license='MET',
 		platforms=["Unix"]
 	)
