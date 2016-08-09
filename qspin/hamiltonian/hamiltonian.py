@@ -528,26 +528,6 @@ class hamiltonian(object):
 			raise TypeError('expecting scalar argument for a')
 
 		times = _np.asarray(times)
-
-		def expm_multiply_iter(V,M_csr,times):
-
-			dtimes = times[1:] - times[:-1]
-			start = times[0]
-			times = _np.array(times[1:])
-
-			V = _sp.linalg.expm_multiply(start*M_csr,V)
-
-			yield _np.array(V)
-
-			if verbose: print "evolved to initial time {0}".format(start)
-
-			for dt,t in zip(dtimes,times):
-				V = _sp.linalg.expm_multiply(dt*M_csr,V)
-				if verbose: print "evolved to time {0}".format(t)
-
-				yield _np.array(V)
-
-
 		M_csr = a*self.tocsr(time)
 
 		if iterate:
@@ -561,11 +541,33 @@ class hamiltonian(object):
 			
 				times = np.linspace(start,stop,num=num,endpoint=endpoint)
 
-			return expm_multiply_iter(V,M_csr,times)
+			return self._expm_multiply_iter(V,M_csr,times)
 		else:
 			if not _np.any(times):
 				warnings.warn("'times' option only availible when iterate=True.",UserWarning)
 			return _sp.linalg.expm_multiply(M_csr,V,**linspace_args)
+
+
+
+
+	def _expm_multiply_iter(V,M_csr,times):
+		dtimes = times[1:] - times[:-1]
+		start = times[0]
+		times = _np.array(times[1:])
+
+		V = _sp.linalg.expm_multiply(start*M_csr,V)
+
+		yield _np.array(V)
+		if verbose: print "evolved to initial time {0}".format(start)
+
+		for dt,t in zip(dtimes,times):
+			V = _sp.linalg.expm_multiply(dt*M_csr,V)
+			if verbose: print "evolved to time {0}".format(t)
+
+			yield _np.array(V)
+
+
+
 
 
 	def expm(self,a=-1j,time=0):
@@ -1106,16 +1108,16 @@ class hamiltonian(object):
 			f_args_str = f_args.__str__()
 			f_str = f.__name__
 			
-			string += ("{0} func: {2}, func_args: {3}, mat: \n{1} \n".format(i,h_str, f_str,f_args_str))
+			string += ("{0}) func: {2}, func_args: {3}, mat: \n{1} \n".format(i,h_str, f_str,f_args_str))
 
 		return string
 		
 
 	def __repr__(self):
 		if self.is_dense:
-			return "<{0}x{1} exact_diag_py dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+			return "<{0}x{1} qspin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 		else:
-			return "<{0}x{1} exact_diag_py sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,self._static.getformat()))
+			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,self._static.getformat()))
 
 
 	def __neg__(self): # -self

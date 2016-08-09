@@ -145,5 +145,5 @@ def make_dynamic(basis,dynamic_list,dtype):
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
-			dynamic.append((H,f,f_args))
+			dynamic.append((H,f,tuple(f_args)))
 	return tuple(dynamic)
