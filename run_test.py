@@ -833,8 +833,8 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 					]
 
 
-	H1 = hamiltonian(static,[],L=L,dtype=dtype)
-	H2 = hamiltonian(static,[],L=L,basis=b,dtype=dtype)
+	H1 = hamiltonian(static,[],N=L,dtype=dtype)
+	H2 = hamiltonian(static,[],basis=b,dtype=dtype)
 	
 
 	E,v0=H2.eigh()
@@ -849,9 +849,10 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	H2 = v0.T.conj() * (H2 * v0)
 
 	if v.shape[0] != 0:
-		H1 = v.T.conj() * ( H1 * v)
+		H1 = v.T.conj().dot(H1.dot(v))
 		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
-			raise Exception("get_vec() failed {0}")
+			print Nup,kblock,pblock,zblock,pzblock
+#			raise Exception("get_vec() failed {0}".format(kblock))
 	else: 
 		pass
 
@@ -982,9 +983,9 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 #check_opstr(4)
 #check_obc(8)
 #check_pbc(8)
-#for L in xrange(4,8):
+for L in xrange(4,8):
 #	check_getvec(L,sparse=True)
-#	check_getvec(L,sparse=False)
+	check_getvec(L,sparse=False)
 #for L in xrange(4,8,2):
 #	check_getvec_zA_zB(L,sparse=True)
 #	check_getvec_zA_zB(L,sparse=False)

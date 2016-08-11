@@ -5,9 +5,10 @@ import numpy.linalg as _npla
 import scipy.sparse as _sp
 from scipy.special import binom, hyp2f1
 import numpy as _np
+from inspect import isgenerator as _isgenerator 
 
 # needed for isinstance only
-from ..hamiltonian import hamiltonian,ishamiltonian
+from ..hamiltonian import ishamiltonian as _ishamiltonian
 from ..basis import spin_basis_1d,photon_basis
 
 import warnings
@@ -965,7 +966,8 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 
 
 
-def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
+def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
+	
 	"""
 	This routine calculates the expectation value as a function of time of an observable Obs. The initial 
 	state is 'psi' and the time evolution is carried out under the Hamiltonian H. 
@@ -974,12 +976,20 @@ def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
 
 	--- arguments ---
 
-	psi: (compulsory) initial state.
+	psi_t: (compulsory) three different inputs:
+		i) psi_t tuple(psi,E,V,times) 
+			psi: initial state
+	
+			V: unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
 
-	V: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
+			E: real vector containing the eigenvalues of the Hamiltonian H2. 
+			   The order of the eigenvalues must correspond to the order of the columns of V2.
+	
+			times: list or array of times to evolve to.
 
-	E: (compulsory) real vector containing the eigenvalues of the Hamiltonian H2. 
-			The order of the eigenvalues must correspond to the order of the columns of V2. 
+		ii) ndarray with states in the columns.
+
+		iii) generator which generates the time dependent states
 
 	Obs: (compulsory) hermitian matrix to calculate its time-dependent expectation value. 
 
@@ -989,55 +999,145 @@ def Observable_vs_time(psi,V,E,Obs,times,return_state=False):
 			at the times specified by the row index. The return dictonary key is 'psi_time'.
 	"""
 
-
-	if V.ndim != 2 or V.shape[0] != V.shape[1]:
-		raise ValueError("'V' must be a square matrix")
-
-	if V.shape[0] != len(E):
-		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-	if len(psi) != len(E):
-		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-	if V.shape != Obs.shape:
-		raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
-
-	if _np.isscalar(times):
-		TypeError("Variable 'times' must be a array or iter like object!")
-
 	variables = ['Expt_time']
 
+	if type(Obs_list) is not tuple:
+		raise ValueError
+
+	num_Obs = len(Obs_list)
+	Obs_list = list(Obs_list)
+	ham_list = []
+	i=0
+
+	while (i < num_Obs):
+		if _ishamiltonian(Obs_list[i]):
+			Obs = Obs_list.pop(i)
+			num_Obs -= 1
+			ham_list.append(Obs)
+		else:
+			i += 1
+
+	Obs_list = tuple(Obs_list)
+	ham_list = tuple(ham_list)
+
+
+	if type(psi_t) is tuple:
+
+		psi,E,V,times = psi_t
+
+		if V.ndim != 2 or V.shape[0] != V.shape[1]:
+			raise ValueError("'V' must be a square matrix")
+
+		if V.shape[0] != len(E):
+			raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
+		if len(psi) != len(E):
+			raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+		for Obs in Obs_list:
+			if V.shape != Obs.shape:
+				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
+		for ham in ham_list:
+			if V.shape != ham.get_shape:
+				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
+			
+
+		if _np.isscalar(times):
+			TypeError("Variable 'times' must be a array or iter like object!")
+
+		if return_state:
+			variables.append("psi_t")
+
+		
+		# get iterator over time dependent state (see function above)
+		psi_t = ED_state_vs_time(psi,V,E,times,iterate = not(return_state) ).T
+
+	elif psi_t.__class__ is _np.ndarray:
+
+		if psi_t.ndim != 2:
+			raise ValueError("states must come in two dimensional array.")
+		for Obs in Obs_list:
+			if psi_t.shape[0] != Obs.shape[1]:
+				raise ValueError("states must be in columns of input matrix.")
+
+		for ham in ham_list:
+			if psi_t.shape[0] != ham.get_shape[1]:
+				raise ValueError("states must be in columns of input matrix.")
+
+		return_state=True # set to True to use einsum but do not return state
+
+	elif _isgenerator(psi_t):
+		if return_state:
+			variables.append("psi_t")
+			psi_t_list = []
+			for psi in psi_t:
+				psi_t_list.append(psi)
+
+			psi_t = _np.vstack(psi_t_list).T
+
+			for Obs in Obs_list:
+				if psi_t.shape[0] != Obs.shape[1]:
+					raise ValueError("states must be in columns of input matrix.")
+
+			for ham in ham_list:
+				if psi_t.shape[0] != ham.get_shape[1]:
+					raise ValueError("states must be in columns of input matrix.")
+
+
+	else:
+		raise ValueError
+	
+
+
+
+
+		
+	Expt_time = []
+
 	if return_state:
-		variables.append("psi_t")
+		warnings.warn("MAINT:hamiltonian classes need to be extended such that it evaluates a time dependent dot with h at different times.",UserWarning)
+		if times is not None:
+			Expt_time.append(times)
 
-	# get complex type which matches precision of Eigen values
-	complex_type = _np.dtype(_np.complex64(1j)*E[0])
+		for Obs in Obs_list:
+			psi_l = Obs.dot(psi_t)
+			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
 
-	Lt = len(times)
+		for ham in ham_list:
+			if times is not None:
+				psi_l = ham.dot(psi_t,time=times,check=False)
+			else:
+				psi_l = ham.dot(psi_t)
+			print psi_l.shape,psi_t.shape
+		
+			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
+		Expt_time = _np.vstack(Expt_time).T
 
-
-
-	# get iterator over time dependent state (see function above)
-	psi_t = ED_state_vs_time(psi,V,E,times,iterate = not(return_state) ).T
-
-	if return_state:
-
-		psi_l = Obs.dot(psi_t_iter)
-		Expt_time =  _np.einsum("ij,ji->i",psi_t_iter.T.conj(),psi_l).real
 	else:
 
-		# preallocate expectation value
-		Expt_time = _np.zeros((Lt,))
-
-		# loop over time vector
+		# loop over psi generator
 		for m,psi in enumerate(psi_t):
-			#print _np.real( reduce( _np.dot, [psi_t.conjugate().T, Obs, psi_t ]  )  )
-			#print _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs, psi_t ) )
-			#Expt_time[m] = _np.real( _np.einsum('i,ij,j->',psi_t.conjugate().T, Obs.todense(), psi_t ) )
-			psi_l = Obs.dot(psi)
-			Expt_time[m] = _np.vdot(psi,psi_l).real
+			if times is not None:
+				Expt = [times[m]]
+				time = times[m]
+			else:
+				Expt = []
+				time = 0
+
+			for Obs in Obs_list:
+				psi_l = Obs.dot(psi)
+				Expt.append(_np.vdot(psi,psi_l).real)
+
+			for ham in ham_list:
+#				psi_l = ham.dot(psi,time=time,check=False)
+#				Expt.append(_np.vdot(psi,psi_l).real)
+				Expt.append(ham.matrix_ele(psi,psi,time=time))
+
+			Expt_time.append(_np.asarray(Expt))
+
+		Expt_time = _np.vstack(Expt_time)
 
 	return_dict = {}
 	for i in variables:
-		return_dict[i] = vars()[i]
+		return_dict[i] = locals()[i]
 
 	return return_dict
 

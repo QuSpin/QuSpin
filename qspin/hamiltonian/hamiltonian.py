@@ -541,7 +541,7 @@ class hamiltonian(object):
 			
 				times = np.linspace(start,stop,num=num,endpoint=endpoint)
 
-			return self._expm_multiply_iter(V,M_csr,times)
+			return self._expm_multiply_iter(V,M_csr,times,verbose)
 		else:
 			if not _np.any(times):
 				warnings.warn("'times' option only availible when iterate=True.",UserWarning)
@@ -550,7 +550,7 @@ class hamiltonian(object):
 
 
 
-	def _expm_multiply_iter(V,M_csr,times):
+	def _expm_multiply_iter(self,V,M_csr,times,verbose):
 		dtimes = times[1:] - times[:-1]
 		start = times[0]
 		times = _np.array(times[1:])
@@ -588,8 +588,26 @@ class hamiltonian(object):
 	def rdot(self,V,time=0,check=True): # V * H(time)
 		if self.Ns <= 0:
 			return _np.asarray([])
+
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
+			time = _np.asarray(time)
+			if V.ndim == 2:
+ 				if V.shape[0] != self._shape[1]:
+					raise Exception
+
+				if len(V[:]) != len(time):
+					raise Exception
+				
+				return _np.vstack([self.rdot(v,time=t) for v,t in zip(V[:],time)])
+
+			elif V.ndim == 1:
+ 				if V.shape[0] != self._shape[1]:
+					raise Exception
+				
+				return _np.vstack([self.dot(V,time=t) for t in time])
+				
+			else:
+				raise Exception
 
 		if not check:
 			V_dot = self._static.__rmul__(V)
@@ -663,7 +681,25 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
+			time = _np.asarray(time)
+			if V.ndim == 2:
+ 				if V.shape[0] != self._shape[1]:
+					raise Exception
+				
+				if len(V.T[:]) != len(time):
+					raise Exception
+				
+				V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V.T[:],time)]).T
+				return V_dot
+			elif V.ndim == 1:
+ 				if V.shape[0] != self._shape[1]:
+					raise Exception
+				
+				V_dot = _np.vstack([self.dot(V,time=t,check=check) for t in time]).T
+				return V_dot
+			else:
+				raise Exception
+			
 
 		if not check:
 			V_dot = self._static.dot(V)	
@@ -724,7 +760,7 @@ class hamiltonian(object):
 		return O_out
 
 
-	def matrix_ele(self,Vl,Vr,time=0):
+	def matrix_ele(self,Vl,Vr,time=0,diagonal=False):
 		"""
 		args:
 			Vl, the vector to multiple with on left side
@@ -737,8 +773,6 @@ class hamiltonian(object):
 		"""
 		if self.Ns <= 0:
 			return np.array([])
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
 
 		Vr=self.dot(Vr,time=time)
 		
@@ -752,7 +786,10 @@ class hamiltonian(object):
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError('dimension mismatch')
 
-				return Vl.T.conj().dot(Vr)
+				if diagonal:
+					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+				else:
+					return Vl.T.conj().dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
 
@@ -766,7 +803,10 @@ class hamiltonian(object):
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError('dimension mismatch')
 
-				return Vl.H.dot(Vr)
+				if diagonal:
+					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+				else:
+					return Vl.H.dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
 
@@ -774,8 +814,10 @@ class hamiltonian(object):
 			if Vl.ndim == 2:
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError('dimension mismatch')
-
-				return Vl.H.dot(Vr)
+				if diagonal:
+					return Vl.H.dot(Vr).diagonal()
+				else:
+					return Vl.H.dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
 
@@ -784,8 +826,10 @@ class hamiltonian(object):
 			if Vl.ndim == 1:
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError('dimension mismatch')
-
-				return Vl.conj().dot(Vr)
+				if diagonal:
+					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+				else:
+					return Vl.conj().dot(Vr)
 			elif Vl.ndim == 2:
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError('dimension mismatch')
