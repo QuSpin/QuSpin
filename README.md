@@ -32,21 +32,23 @@ This latest version of this package has the compiled modules written in [Cython]
 $ conda install -c weinbe58 qspin
 ```
 
-This will install the latest version on to your computer. If this fails for whatever reason this means that either your OS is not supported or your compiler is too old. In this case one can also manually install the package:
+This will install the latest version on to your computer. Right now the package is in its beta stages and so it may not be availible for installation on all platforms using this method. In this case one can also manually install the package:
 
 
-1) Manual install: to install manually download source code either from the latest [release](https://github.com/weinbe58/qspin/releases) section or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
+1) Manual install: to install manually download source code either by downloading the [master](https://github.com/weinbe58/qspin/archive/master.zip) branch or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
 
 unix:
 ```
-python setup.py install
+python setup.py install 
 ```
 
 or windows command line:
 ```
 setup.py install
 ```
-NOTE:** you must write permission to the standard places python is installed as well as have all the prerequisite python packages (numpy >= 1.10.0, scipy >= 0.14.0) installed first to do this type of install since the actual build itself relies on numpy. We recommend [Anaconda](https://www.continuum.io/downloads) to manage your python packages. 
+For the manual installation you must have all the prerequisite python packages: [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), and [joblib](https://pythonhosted.org/joblib/) installed. We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages. 
+
+to update the package with conda all one has to do is run the installation command again, but for a manual install you must delete the package manually from the python 'site-packages/' directory. When installing the package if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which will tell you which files to delete when you want to upgrade the code. In unix the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```, while for windows it is easiest to just go to the folder and delete it from windows explorer. 
 
 
 #**using the package**
