@@ -1,5 +1,5 @@
-from exact_diag_py.hamiltonian import hamiltonian
-from exact_diag_py.basis import spin_basis_1d,photon_basis
+from qspin.hamiltonian import hamiltonian
+from qspin.basis import spin_basis_1d,photon_basis
 import numpy as np
 import scipy.sparse as sm
 from numpy.linalg import norm
