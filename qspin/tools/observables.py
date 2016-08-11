@@ -987,9 +987,9 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	
 			times: list or array of times to evolve to.
 
-		ii) ndarray with states in the columns.
+		ii) numpy array or matrix with states in the columns.
 
-		iii) generator which generates the time dependent states
+		iii) generator which generates the states
 
 	Obs: (compulsory) hermitian matrix to calculate its time-dependent expectation value. 
 
@@ -1050,7 +1050,7 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 		# get iterator over time dependent state (see function above)
 		psi_t = ED_state_vs_time(psi,V,E,times,iterate = not(return_state) ).T
 
-	elif psi_t.__class__ is _np.ndarray:
+	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
 
 		if psi_t.ndim != 2:
 			raise ValueError("states must come in two dimensional array.")
@@ -1083,7 +1083,7 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 
 	else:
-		raise ValueError
+		raise ValueError("input not recognized")
 	
 
 
@@ -1093,7 +1093,6 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	Expt_time = []
 
 	if return_state:
-		warnings.warn("MAINT:hamiltonian classes need to be extended such that it evaluates a time dependent dot with h at different times.",UserWarning)
 		if times is not None:
 			Expt_time.append(times)
 
@@ -1105,8 +1104,8 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 			if times is not None:
 				psi_l = ham.dot(psi_t,time=times,check=False)
 			else:
+				warnings.warn("argument 'times' needed for time dependent Obs.")
 				psi_l = ham.dot(psi_t)
-			print psi_l.shape,psi_t.shape
 		
 			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
 		Expt_time = _np.vstack(Expt_time).T
@@ -1117,6 +1116,7 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 		for m,psi in enumerate(psi_t):
 			if psi.ndim == 2:
 				psi = psi.ravel()
+
 			if times is not None:
 				Expt = [times[m]]
 				time = times[m]
@@ -1129,8 +1129,6 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 				Expt.append(_np.vdot(psi,psi_l).real)
 
 			for ham in ham_list:
-#				psi_l = ham.dot(psi,time=time,check=False)
-#				Expt.append(_np.vdot(psi,psi_l).real)
 				Expt.append(ham.matrix_ele(psi,psi,time=time).real)
 
 			Expt_time.append(_np.asarray(Expt))

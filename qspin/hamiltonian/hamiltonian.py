@@ -532,18 +532,21 @@ class hamiltonian(object):
 
 		if iterate:
 			if not _np.any(times):
-				start = linspace_args['start']
-				stop = linspace_args['stop']
-				num = linspace_args['num']
+				if linspace_args.keys(): # if linspace args found
+					start = linspace_args['start']
+					stop = linspace_args['stop']
+					num = linspace_args['num']
 
-				endpoint = linspace_args.get('endpoint')
-				if endpoint is None: endpoint=False
+					endpoint = linspace_args.get('endpoint')
+					if endpoint is None: endpoint=False
 			
-				times = np.linspace(start,stop,num=num,endpoint=endpoint)
+					times = _np.linspace(start,stop,num=num,endpoint=endpoint)
+				else: # else assume scalar multiple of 
+					return _sp.linalg.expm_multiply(M_csr,V)
 
 			return self._expm_multiply_iter(V,M_csr,times,verbose)
 		else:
-			if not _np.any(times):
+			if _np.any(times):
 				warnings.warn("'times' option only availible when iterate=True.",UserWarning)
 			return _sp.linalg.expm_multiply(M_csr,V,**linspace_args)
 
