@@ -1115,6 +1115,8 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
+			if psi.ndim == 2:
+				psi = psi.ravel()
 			if times is not None:
 				Expt = [times[m]]
 				time = times[m]
@@ -1129,7 +1131,7 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 			for ham in ham_list:
 #				psi_l = ham.dot(psi,time=time,check=False)
 #				Expt.append(_np.vdot(psi,psi_l).real)
-				Expt.append(ham.matrix_ele(psi,psi,time=time))
+				Expt.append(ham.matrix_ele(psi,psi,time=time).real)
 
 			Expt_time.append(_np.asarray(Expt))
 

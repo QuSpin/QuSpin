@@ -125,7 +125,7 @@ class tensor_basis(basis):
 
 
 	def __name__(self):
-		return "<type 'exact_diag_py.basis.tensor_basis'>"
+		return "<type 'qspin.basis.tensor_basis'>"
 
 
 

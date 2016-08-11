@@ -588,7 +588,7 @@ class spin_basis_1d(basis):
 
 
 	def __type__(self):
-		return "<type 'exact_diag_py.basis.spin_basis_1d'>"
+		return "<type 'qspin.basis.spin_basis_1d'>"
 
 
 

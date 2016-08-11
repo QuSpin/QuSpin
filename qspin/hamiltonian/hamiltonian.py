@@ -847,10 +847,9 @@ class hamiltonian(object):
 		elif _sp.issparse(proj):
 			if self._shape[1] != proj.shape[0]:
 				raise ValueError
-			else:
-				self._shape = (proj.shape[1],proj.shape[1])
-			
+					
 			new = self._rmul_sparse(proj.getH())
+			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_sparse(proj)
 
 		elif _np.isscalar(proj):
@@ -859,20 +858,18 @@ class hamiltonian(object):
 		elif proj.__class__ == _np.ndarray:
 			if self._shape[1] != proj.shape[0]:
 				raise ValueError
-			else:
-				self._shape = (proj.shape[1],proj.shape[1])
 
 			new = self._rmul_dense(proj.T.conj())
+			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
 
 		elif proj.__class__ == _np.matrix:
 			if self._shape[1] != proj.shape[0]:
 				raise ValueError
-			else:
-				self._shape = (proj.shape[1],proj.shape[1])
 
 			new = self._rmul_dense(proj.H)
+			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
 
@@ -880,10 +877,9 @@ class hamiltonian(object):
 			proj = _np.asanyarray(proj)
 			if self._shape[1] != proj.shape[0]:
 				raise ValueError
-			else:
-				self._shape = (proj.shape[1],proj.shape[1])
 
 			new = self._rmul_dense(proj.T.conj())
+			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
 
@@ -995,7 +991,7 @@ class hamiltonian(object):
 		if v0.shape[0] != self.Ns:
 			raise ValueError("v0 must have {0} elements".format(self.Ns))
 
-
+		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
 		if imag_time:
 			v0 = v0.astype(self.dtype)
 			if _np.iscomplexobj(v0):
@@ -1003,9 +999,10 @@ class hamiltonian(object):
 			else:
 				solver = complex_ode(self.__ISO)
 		else:
-			complex_type = _np.dtype(_np.complex64(1j)*v0[0])
 			v0 = v0.astype(complex_type)
 			solver = complex_ode(self.__SO)
+
+		
 
 		solver.set_integrator(solver_name,**solver_args)
 		solver.set_initial_value(v0, t0)

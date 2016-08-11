@@ -47,10 +47,10 @@ class basis(object):
 
 
 	def __repr__(self):
-		return "< instance of 'exact_diag_py.basis.base' with {0} states >".format(self._Ns)
+		return "< instance of 'qspin.basis.base' with {0} states >".format(self._Ns)
 
 	def __name__(self):
-		return "<type 'exact_diag_py.basis.base'>"
+		return "<type 'qspin.basis.base'>"
 
 
 

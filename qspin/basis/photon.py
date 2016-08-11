@@ -168,7 +168,7 @@ class photon_basis(tensor_basis):
 
 
 	def __name__(self):
-		return "<type 'exact_diag_py.basis.photon_basis'>"
+		return "<type 'qspin.basis.photon_basis'>"
 
 
 	def _get__str__(self):
