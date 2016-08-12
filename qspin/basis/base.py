@@ -44,8 +44,6 @@ class basis(object):
 	def operators(self):
 		return self._operators
 
-
-
 	def __repr__(self):
 		return "< instance of 'qspin.basis.base' with {0} states >".format(self._Ns)
 

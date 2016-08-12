@@ -9,7 +9,7 @@ from inspect import isgenerator as _isgenerator
 
 # needed for isinstance only
 from ..hamiltonian import ishamiltonian as _ishamiltonian
-from ..basis import spin_basis_1d,photon_basis
+from ..basis import spin_basis_1d,photon_basis,isbasis
 
 import warnings
 
@@ -65,9 +65,9 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
 
-				-- [0,1,...,L/2-1,L/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
 
-				-- [0,1,...,L-1,L] for 'photon_basis'.
+				-- [0,1,...,N-1,N] for 'photon_basis'.
 
 	DM: (optional) String to enable the calculation of the reduced density matrix. Available options are
 
@@ -125,7 +125,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	
 
 	# calculate reshaped system_state
-	v, rho_d, L_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
+	v, rho_d, N_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
 
 	if len(v.shape) != 3:
@@ -161,7 +161,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 
 	if densities:
-		Sent *= 1.0/L_A
+		Sent *= 1.0/N_A
 
 
 	# store variables to dictionar
@@ -199,17 +199,17 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 
 	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
 
-				-- [0,1,...,L/2-1,L/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
 
-				-- [0,1,...,L-1,L] for 'photon_basis'. 
+				-- [0,1,...,N-1,N] for 'photon_basis'. 
 
 	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'. 
 	"""
 
 	try:
-		L = basis.L
+		N = basis.N
 	except AttributeError:
-		L = basis.chain_L
+		N = basis.chain_N
 
 
 
@@ -218,7 +218,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 		elif min(chain_subsys) < 0:
 			raise TypeError("'subsys' must be a list of nonnegative numbers!")
-		elif max(chain_subsys) > L-1:
+		elif max(chain_subsys) > N-1:
 			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 		elif len(set(chain_subsys)) < len(chain_subsys):
 			raise TypeError("'subsys' cannot contain repeating site indices!")
@@ -267,40 +267,40 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
-			chain_subsys=[i for i in xrange( int(L/2) )]
+			chain_subsys=[i for i in xrange( int(N/2) )]
 			warnings.warn("Subsystem set to contain sites {}.".format(chain_subsys),stacklevel=4)
 		
 	
 		# re-write the state in the initial basis
-		if basis.Ns<2**L:
+		if basis.Ns<2**N:
 			psi = basis.get_vec(psi,sparse=False)
 		
 		#calculate H-space dimensions of the subsystem and the system
-		L_A = len(chain_subsys)
-		Ns_A = 2**L_A
+		N_A = len(chain_subsys)
+		Ns_A = 2**N_A
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
-		[system.append(i) for i in xrange(L) if not i in chain_subsys]
+		[system.append(i) for i in xrange(N) if not i in chain_subsys]
 
 
 		'''
 		the algorithm for the entanglement entropy of an arbitrary subsystem goes as follows:
 
-		1) the initial state psi has 2^L entries corresponding to the spin-z configs
-		2) reshape psi into a 2x2x2x2x...x2 dimensional array (L products in total). Call this array v.
-		3) v should satisfy the property that v[0,1,0,0,0,1,...,1,0], total of L entries, should give the entry of psi 
+		1) the initial state psi has 2^N entries corresponding to the spin-z configs
+		2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
+		3) v should satisfy the property that v[0,1,0,0,0,1,...,1,0], total of N entries, should give the entry of psi 
 		   along the the spin-z basis vector direction (0,1,0,0,0,1,...,1,0). This ensures a correspondence of the v-indices
-		   (and thus the psi-entries) to the L lattice sites.
-		4) fix the lattice sites that define the subsystem L_A, and reshuffle the array v according to this: e.g. if the 
+		   (and thus the psi-entries) to the N lattice sites.
+		4) fix the lattice sites that define the subsystem N_A, and reshuffle the array v according to this: e.g. if the 
 	 	   subsystem consistes of sites (k,l) then v should be reshuffled such that v[(k,l), (all other sites)]
-	 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( L_A x L/L_A ) and proceed with the SVD as below  
+	 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( N_A x N/N_A ) and proceed with the SVD as below  
 		'''
 
 		if chain_subsys==range(min(chain_subsys), max(chain_subsys)+1): 
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			reshape_tuple2 = (Ns_A, 2**L/Ns_A)
+			reshape_tuple2 = (Ns_A, 2**N/Ns_A)
 			if istate == 'DM':
 				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
 			# reshape states
@@ -308,8 +308,8 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)
-			reshape_tuple1 = tuple([2 for i in xrange(L)] )
-			reshape_tuple2 = (Ns_A, 2**L/Ns_A)
+			reshape_tuple1 = tuple([2 for i in xrange(N)] )
+			reshape_tuple2 = (Ns_A, 2**N/Ns_A)
 			if istate == 'DM':
 				# update reshape tuples
 				reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
@@ -330,55 +330,55 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 
 
 
-		def photon_Hspace_dim(L,Ntot,Nph):
+		def photon_Hspace_dim(N,Ntot,Nph):
 
 			"""
 			This function calculates the dimension of the total spin-photon Hilbert space.
 			"""
 			if Ntot is None and Nph is not None: # no total particle # conservation
-				return 2**L*(Nph+1)
+				return 2**N*(Nph+1)
 			elif Ntot is not None:
-				return 2**L - binom(L,Ntot+1)*hyp2f1(1,1-L+Ntot,2+Ntot,-1)
+				return 2**N - binom(N,Ntot+1)*hyp2f1(1,1-N+Ntot,2+Ntot,-1)
 			else:
 				raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
 
 
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
-			chain_subsys=[i for i in xrange( int(L) )]
+			chain_subsys=[i for i in xrange( int(N) )]
 			warnings.warn("subsystem automatically set to the entire chain.",stacklevel=4)
 
 
 		#calculate H-space dimensions of the subsystem and the system
-		L_A = len(chain_subsys)
-		Ns_A = 2**L_A
+		N_A = len(chain_subsys)
+		Ns_A = 2**N_A
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
-		[system.append(i) for i in xrange(L) if not i in chain_subsys]
+		[system.append(i) for i in xrange(N) if not i in chain_subsys]
 		
 		# re-write the state in the initial basis
 		if basis.Nph is not None: # no total particle conservation
 			Nph = basis.Nph
-			if basis.Ns < photon_Hspace_dim(L,basis.Ntot,basis.Nph): #chain symmetries present
-				if L_A!=L: # doesn't make use of chain symmetries
+			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
+				if N_A!=N: # doesn't make use of chain symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
 				Ns_spin = basis.chain_Ns
 			else:
-				Ns_spin = 2**L
+				Ns_spin = 2**N
 
 		elif basis.Ntot is not None: # total particle-conservation
 			Nph = basis.Ntot
-			if basis.Ns < photon_Hspace_dim(L,basis.Ntot,basis.Nph): #chain symmetries present
+			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
 				#psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-				if L_A==L:
+				if N_A==N:
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
 					Ns_spin = basis.chain_Ns
 				else:
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-					Ns_spin = 2**L
+					Ns_spin = 2**N
 			else: # no chain symmetries present
-				if L_A==L:
+				if N_A==N:
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
 				else:
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
@@ -388,10 +388,10 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 		if sorted(chain_subsys)==range(min(chain_subsys), max(chain_subsys)+1): 
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			if L_A==L: # chain_subsys equals entire lattice
+			if N_A==N: # chain_subsys equals entire lattice
 				reshape_tuple2 = (Ns_spin,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
-				reshape_tuple2 = ( Ns_A, 2**(L-L_A)*(Nph+1) )
+				reshape_tuple2 = ( Ns_A, 2**(N-N_A)*(Nph+1) )
 			# check if user parsed a DM
 			if istate == 'DM':
 				# update reshape tuples
@@ -401,8 +401,8 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
-			reshape_tuple1 = tuple([2 for i in xrange(L)]) + (Nph+1,)
-			reshape_tuple2 = ( Ns_A, 2**(L-L_A)*(Nph+1) )
+			reshape_tuple1 = tuple([2 for i in xrange(N)]) + (Nph+1,)
+			reshape_tuple2 = ( Ns_A, 2**(N-N_A)*(Nph+1) )
 			if istate == 'DM':
 				# update reshape tuples
 				reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
@@ -422,7 +422,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 	else:
 		raise ValueError("'basis' class {} not supported!".format(basis.__class__.__name__))
 
-	return v, rho_d, L_A
+	return v, rho_d, N_A
 
 
 def inf_time_obs(rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False):
@@ -554,7 +554,7 @@ def inf_time_obs(rho,istate,alpha=1.0,Obs=False,delta_t_Obs=False,delta_q_Obs=Fa
 	return return_dict
 		
 
-def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
+def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -564,7 +564,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 	--- arguments ---
 
-	L: (compulsory) system size L.
+	N: (compulsory) system size N.
 
 	system_state: (compulsory) the state of the quantum system. Can be a:
 
@@ -617,7 +617,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			At least 'Sent_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
 			see documentation of 'reshape_as_subsys'.
 
-	densities: (optional) if set to 'True', all observables are normalised by the system size L, except
+	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
 				for the entanglement entropy which is normalised by the subsystem size 
 				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
@@ -625,8 +625,8 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	"""
 
 
-	if L and not(type(L) is int):
-		raise TypeError("System size 'L' must be a positive integer!")
+	if N and not(type(N) is int):
+		raise TypeError("System size 'N' must be a positive integer!")
 
 
 	# various checks
@@ -779,7 +779,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 		
 	if Sent_Renyi:
 		# calculate singular values of columns of V2
-		v, _, L_A = reshape_as_subsys({'V_rho':V2,'rho_d':rho},**Sent_args)
+		v, _, N_A = reshape_as_subsys({'V_rho':V2,'rho_d':rho},**Sent_args)
 		Sent_Renyi = _npla.svd(v, compute_uv=False).T # components (i,n) 
 
 	# clear up memory
@@ -794,9 +794,9 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 	for key,value in Expt_Diag.iteritems():
 		if densities:
 			if 'ent' in key:
-				value *= 1.0/L_A
+				value *= 1.0/N_A
 			else:
-				value *= 1.0/L
+				value *= 1.0/N
 
 		Expt_Diag[key] = value
 		# calculate thermal expectations
@@ -826,7 +826,7 @@ def Diag_Ens_Observables(L,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 	return Expt_Diag
 
-def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
+def Project_Operator(Obs,proj,dtype=_np.complex128):
 	"""
 	This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs'
 	onto the reduced basis.
@@ -837,30 +837,50 @@ def Project_Operator(Obs,reduced_basis,dtype=_np.complex128,Proj=False):
 
 	Obs: (compulsory) operator to be projected.
 
-	reduced_basis: (compulsory) basis of the final space after the projection.
+	proj: (compulsory) basis of the final space after the projection or a matrix which contains the projector.
 
 	dtype: (optional) data type. Default is np.complex128.
 
-	Proj: (optional) Projector operator. Default is 'None'. If 'Proj = True' is used, the projector is
-			calculated and returned under the key 'Proj'. If 'Proj = operator' is put in, the input array
-			'operator' is used as the projector but it is not returned.
 	"""
 
 	variables = ["Proj_Obs"]
+	if proj.__class__ in [_np.ndarray,_np.matrix] or _sp.issparse(proj):
+		if _ishamiltonian(Obs):
+			proj_Obs = Obs.project_to(proj)
 
-	if _np.any(Proj):
-		if Proj == True:
-			variables.append("Proj")
-			Proj = reduced_basis.get_proj(dtype=dtype)
+		else:
+			if Obs.ndim != 2:
+				raise ValueError("Expecting Obs to be a 2 dimensional array.")
+
+			if Obs.shape[0] != Obs.shape[1]:
+				raise ValueError("Expecting OBs to be a square array.")
+
+			if Obs.shape[0] != proj.shape[1]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
+
+			proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+	elif isbasis(proj):
+		proj = proj.get_proj(dtype)
+		if _ishamiltonian(Obs):
+			proj_Obs = Obs.project_to(proj)		
+		else:
+			if Obs.ndim != 2:
+				raise ValueError("Expecting Obs to be a 2 dimensional array.")
+
+			if Obs.shape[0] != Obs.shape[1]:
+				raise ValueError("Expecting OBs to be a square array.")
+
+			if Obs.shape[0] != proj.shape[1]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
+		
+			proj_Obs = proj.T.conj().dot(Obs.dot(proj))
 	else:
-		Proj = reduced_basis.get_proj(dtype=dtype)
-
-	Proj_Obs = Proj.T.conj()*Obs*Proj
+		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
 
 	# define dictionary with outputs
 	return_dict = {}
 	for i in range(len(variables)):
-		return_dict[variables[i]] = vars()[variables[i]]
+		return_dict[variables[i]] = locals()[variables[i]]
 
 	return return_dict
 
@@ -871,24 +891,24 @@ def Kullback_Leibler_div(p1,p2):
 	This routine returns the Kullback-Leibler divergence of the discrete probability distrobutions 
 	p1 and p2.
 	"""
-
-	if len(p1) != len(p2):
-		raise TypeError("The probability distributions 'p1' and 'p2' must have same size!")
-	if len(p1.shape)!=1 or len(p2.shape)!=1:
-		raise TypeError("The probability distributions 'p1' and 'p2' must have linear dimension!")
-
 	p1 = _np.asarray(p1)
 	p2 = _np.asarray(p2)
 
-	if any(i<0.0 for i in p1) or any(i<=0.0 for i in p2):
+
+	if len(p1) != len(p2):
+		raise TypeError("The probability distributions 'p1' and 'p2' must have same size!")
+	if p1.ndim != 1 or p2.ndim != 1:
+		raise TypeError("The probability distributions 'p1' and 'p2' must have linear dimension!")
+
+
+	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
 		raise TypeError("All entries of the probability distributions 'p1' and 'p2' must be non-negative!")
-	if any(p1==0.0):
+	if _np.any(p1==0.0):
 
-		inds = _np.where(p1 == 0)[0]
+		inds = _np.where(p1 == 0)
 
-		p1 = [_np.delete(p1,i) for i in inds][0]	
-		p2 = [_np.delete(p2,i) for i in inds][0]
-
+		p1 = _np.delete(p1,inds)
+		p2 = _np.delete(p2,inds)
 
 	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
 
@@ -1171,15 +1191,15 @@ def Mean_Level_Spacing(E):
 
 ### old functions
 '''
-def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False):
+def Entanglement_entropy_photon(N,Nph,Ntot,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False):
 	"""
-	Entanglement_entropy_photon(L,Nph,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False) 
+	Entanglement_entropy_photon(N,Nph,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False,chain_symm=False) 
 
 	This routine calculates the entanglement (Renyi) entropy of a pure chain-photon quantum state 'psi' 
 	in a chain subsystem of arbitraty choice. It returns a dictionary in which the entanglement (Renyi) 
 	entropy has the key 'Sent'. The arguments are:
 
-	L: (compulsory) chain length. Always the first argument.
+	N: (compulsory) chain length. Always the first argument.
 
 	Nph: (compulsory) number of photon states. 
 
@@ -1189,13 +1209,13 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 
 	chain_subsys: (optional) a list of site numbers defining uniquely the CHAIN subsystem of which 
 			the entanglement entropy (reduced and density matrix) are calculated. Notice that the site 
-			labelling of the chain goes as [0,1,....,L-1]. If not specified, the default subsystem 
-			chosen is the entire chain [0,...,L-1]. If in addition symmetries as present, it is required 
-			that 'chain_symm=False' whenever L_A = len(subsys) < L, and the density matrix (if on) is 
-			returned in the full spin-z basis of the chain subsystem containing 2^L_A sites.
+			labelling of the chain goes as [0,1,....,N-1]. If not specified, the default subsystem 
+			chosen is the entire chain [0,...,N-1]. If in addition symmetries as present, it is required 
+			that 'chain_symm=False' whenever N_A = len(subsys) < N, and the density matrix (if on) is 
+			returned in the full spin-z basis of the chain subsystem containing 2^N_A sites.
 
 	basis: (semi-compulsory) basis of 'psi'. If no symmetry is invoked and if the basis of 'psi' contains 
-			all 2^L states, one can ommit the basis argument. If the state 'psi' is written in a 
+			all 2^N states, one can ommit the basis argument. If the state 'psi' is written in a 
 			symmetry-reduced basis, then one must also parse the basis in which 'psi' is given. 
 
 	chain_symm: (semi-compulsory) if the Hamiltonian of the chain part of the photon-chain model has 
@@ -1213,8 +1233,8 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 			symmetries of psi.
 	"""
 
-	if not(type(L) is int):
-		raise TypeError("System size 'L' must be a positive integer!")
+	if not(type(N) is int):
+		raise TypeError("System size 'N' must be a positive integer!")
 
 	if (Ntot is not None) and (Nph is not None):
 		raise TypeError("Only one of the parameters 'Ntot' or 'Nph' is allowed!")
@@ -1224,13 +1244,13 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 
 
 	if chain_subsys is None: 
-		chain_subsys=[i for i in xrange( int(L) )]
+		chain_subsys=[i for i in xrange( int(N) )]
 		warnings.warn("subsystem automatically set to the entire chain.")
 	elif not isinstance(chain_subsys,list):
 		raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 	elif min(chain_subsys) < 0:
 		raise TypeError("'subsys' must be a list of nonnegative numbers!")
-	elif max(chain_subsys) > L-1:
+	elif max(chain_subsys) > N-1:
 		raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 
 
@@ -1253,51 +1273,51 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 
 
 	#calculate H-space dimensions of the subsystem and the system
-	L_A = len(chain_subsys)
-	Ns_A = 2**L_A
+	N_A = len(chain_subsys)
+	Ns_A = 2**N_A
 
 	# define lattice indices putting the subsystem to the left
 	system = chain_subsys[:]
-	[system.append(i) for i in xrange(L) if not i in chain_subsys]
+	[system.append(i) for i in xrange(N) if not i in chain_subsys]
 	
 	# re-write the state in the initial basis
 
-	if ( (Nph is not None) and len(psi)<2**L*(Nph+1) ) or (Ntot is not None): #basis required
+	if ( (Nph is not None) and len(psi)<2**N*(Nph+1) ) or (Ntot is not None): #basis required
 		if not isinstance(basis,photon_basis):
 			raise TypeError("Basis contains symmetries; Please parse the basis variable!")
 
 
 	if Nph is not None: # no total particle conservation
-		if len(psi) < 2**L*(Nph+1): #chain symmetries present
+		if len(psi) < 2**N*(Nph+1): #chain symmetries present
 			if chain_symm:
-				if L_A < L:
-					raise TypeError("'chain_symm' set to 'True': subsystem size must be < L!")
+				if N_A < N:
+					raise TypeError("'chain_symm' set to 'True': subsystem size must be < N!")
 				else:
 					psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=False) )
 					Ns_spin = basis.chain_Ns
 			else:
 				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-				Ns_spin = 2**L
+				Ns_spin = 2**N
 		else:
-			Ns_spin = 2**L
+			Ns_spin = 2**N
 
 	elif Ntot is not None: # total particle-conservation
 		Nph = Ntot
-		if len(psi) < 2**L - binom(L,basis.Ntot+1)*hyp2f1(1,1-L+basis.Ntot,2+basis.Ntot,-1): #chain symemtries present
+		if len(psi) < 2**N - binom(N,basis.Ntot+1)*hyp2f1(1,1-N+basis.Ntot,2+basis.Ntot,-1): #chain symemtries present
 			if chain_symm:
 				raise TypeError("'chain_symm' is incompatible with Ntot symmetry!")
 			else:
 				psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-				Ns_spin = 2**L
+				Ns_spin = 2**N
 		else: # no chain symmetries present
 			#print 'real', psi
 			psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-			Ns_spin = 2**L
+			Ns_spin = 2**N
 
 	del basis
 
 
-	if L_A==L:
+	if N_A==N:
 		# reshape state vector psi
 		#print 'real', psi
 		v = _np.reshape(psi, (Ns_spin,Nph+1) ).T
@@ -1305,7 +1325,7 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 	else:
 		# performs 2) and 3)
 		
-		chain_dim_per_site = [2 for i in xrange(L)]
+		chain_dim_per_site = [2 for i in xrange(N)]
 		chain_dim_per_site.append(Nph+1) 
 		
 		v = _np.reshape(psi, tuple(chain_dim_per_site) )
@@ -1314,7 +1334,7 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 		system.append(len(system))
 		v = _np.transpose(v, axes=system)
 		# performs 5)
-		v = _np.reshape(v, ( Ns_A, 2**(L-L_A)*(Nph+1) ) )
+		v = _np.reshape(v, ( Ns_A, 2**(N-N_A)*(Nph+1) ) )
 
 	del system, chain_subsys
 
@@ -1362,48 +1382,48 @@ def Entanglement_entropy_photon(L,Nph,Ntot,psi,chain_subsys=None,basis=None,alph
 	return return_dict
 
 
-def Entanglement_entropy2(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
+def Entanglement_entropy2(N,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False):
 	"""
-	Entanglement_entropy(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False) 
+	Entanglement_entropy(N,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False) 
 
 	This routine calculates the entanglement (Renyi) entropy of a pure quantum state 'psi' in a subsystem 
 	of arbitraty choice. It returns a dictionary in which the entanglement (Renyi) entropy has the key 
 	'Sent'. The arguments are:
 
-	L: (compulsory) chain length. Always the first argument.
+	N: (compulsory) chain length. Always the first argument.
 
 	psi: (compulsory) a pure quantum state, to calculate the entanglement entropy of. Always the second argument.
 
 	basis: (semi-compulsory) basis of psi. If the state 'psi' is written in a symmetry-reduced basis, 
 			then one must also parse the basis in which 'psi' is given. However, if no symmetry is invoked 
-			and if the basis of 'psi' contains all 2^L states, one can ommit the basis argument.
+			and if the basis of 'psi' contains all 2^N states, one can ommit the basis argument.
 
 	chain_subsys: (optional) a list of site numbers defining uniquely the subsystem of which 
 			the entanglement entropy (reduced and density matrix) are calculated. Notice that the site 
-			labelling of the chain goes as [0,1,....,L-1]. If not specified, the default subsystem 
-			chosen is [0,...,floor(L/2)].
+			labelling of the chain goes as [0,1,....,N-1]. If not specified, the default subsystem 
+			chosen is [0,...,floor(N/2)].
 
 	alpha: (optional) Renyi parameter alpha. The default is 'alpha=1.0', corresponding to von Neumann's entropy.
 
 	DM: (optional) when set to 'True', the returned dictionary contains the reduced density matrix under 
-			the key 'DM'. Note that the reduced DM is written in the full basis over all 2^L_A states of 
+			the key 'DM'. Note that the reduced DM is written in the full basis over all 2^N_A states of 
 			the subchain in question.
 	"""
 
-	if not(type(L) is int):
-		raise TypeError("System size 'L' must be a positive integer!")
+	if not(type(N) is int):
+		raise TypeError("System size 'N' must be a positive integer!")
 
 	if isinstance(alpha,complex) or alpha < 0.0:
 		raise TypeError("Renyi entropy parameter 'alpha' must be real-valued and non-negative!")
 
 	if chain_subsys is None: 
-		chain_subsys=[i for i in xrange( int(L/2) )]
+		chain_subsys=[i for i in xrange( int(N/2) )]
 		warnings.warn("subsystem automatically set to contain sites {}.".format(chain_subsys),stacklevel=4)
 	elif not isinstance(chain_subsys,list):
 		raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 	elif min(chain_subsys) < 0:
 		raise TypeError("'subsys' must be a list of nonnegative numbers!")
-	elif max(chain_subsys) > L-1:
+	elif max(chain_subsys) > N-1:
 		raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 	
 
@@ -1417,7 +1437,7 @@ def Entanglement_entropy2(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False)
 
 	
 	# re-write the state in the initial basis
-	if len(psi)<2**L:
+	if len(psi)<2**N:
 		if basis:
 			psi = _np.asarray( basis.get_vec(psi,sparse=False) )
 		else:
@@ -1425,32 +1445,32 @@ def Entanglement_entropy2(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False)
 	del basis
 
 	#calculate H-space dimensions of the subsystem and the system
-	L_A = len(chain_subsys)
-	Ns_A = 2**L_A
+	N_A = len(chain_subsys)
+	Ns_A = 2**N_A
 	Ns = len(psi)
 
 	# define lattice indices putting the subsystem to the left
 	system = chain_subsys[:]
-	[system.append(i) for i in xrange(L) if not i in chain_subsys]
+	[system.append(i) for i in xrange(N) if not i in chain_subsys]
 
 
 	"""
 	the algorithm for the entanglement entropy of an arbitrary subsystem goes as follows:
 
-	1) the initial state psi has 2^L entries corresponding to the spin-z configs
-	2) reshape psi into a 2x2x2x2x...x2 dimensional array (L products in total). Call this array v.
-	3) v should satisfy the property that v[0,1,0,0,0,1,...,1,0], total of L entries, should give the entry of psi 
+	1) the initial state psi has 2^N entries corresponding to the spin-z configs
+	2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
+	3) v should satisfy the property that v[0,1,0,0,0,1,...,1,0], total of N entries, should give the entry of psi 
 	   along the the spin-z basis vector direction (0,1,0,0,0,1,...,1,0). This ensures a correspondence of the v-indices
-	   (and thus the psi-entries) to the L lattice sites.
-	4) fix the lattice sites that define the subsystem L_A, and reshuffle the array v according to this: e.g. if the 
+	   (and thus the psi-entries) to the N lattice sites.
+	4) fix the lattice sites that define the subsystem N_A, and reshuffle the array v according to this: e.g. if the 
  	   subsystem consistes of sites (k,l) then v should be reshuffled such that v[(k,l), (all other sites)]
- 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( L_A x L/L_A ) and proceed with the SVD as below  
+ 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( N_A x N/N_A ) and proceed with the SVD as below  
 	"""
 
 	#print "real", psi
 
 	# performs 2) and 3)
-	v = _np.reshape(psi, tuple([2 for i in xrange(L)] ) )
+	v = _np.reshape(psi, tuple([2 for i in xrange(N)] ) )
 	del psi
 	# performs 4)
 	v = _np.transpose(v, axes=system) 
@@ -1502,13 +1522,13 @@ def Entanglement_entropy2(L,psi,chain_subsys=None,basis=None,alpha=1.0,DM=False)
 	return return_dict
 
 
-def Diag_Ens_Observables_old(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False,state=0,alpha=1.0,betavec=[],E_gs=None,Z=None):
+def Diag_Ens_Observables_old(N,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_quench=False,Sd_Renyi=False,deltaE=False,state=0,alpha=1.0,betavec=[],E_gs=None,Z=None):
 	"""
 	This routine calculates the expectation values of physical quantities in the Diagonal ensemble 
 	(see eg. arXiv:1509.06411), and returns a dictionary. Equivalently, these are the infinite-time 
 	expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
-	All quantities are INTENSIVE, i.e. divided by the system size L 
-	L: (compulsory) chain length.
+	All quantities are INTENSIVE, i.e. divided by the system size N 
+	N: (compulsory) chain length.
 	V1: (compulsory) unitary square matrix. Contains the eigenvectors corresponding to the eigenvalues
 			of H1 in the columns (must come in the right order). If 'state' is not specified, the initial 
 			state is the first column of V1; otherwise the state is V1[:,state].
@@ -1540,8 +1560,8 @@ def Diag_Ens_Observables_old(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_
 			matrix. Requires 'betavec'.
 	"""
 
-	if not(type(L) is int):
-		raise TypeError("System size 'L' must be a positive integer!")
+	if not(type(N) is int):
+		raise TypeError("System size 'N' must be a positive integer!")
 
 	if isinstance(alpha,complex) or alpha < 0.0:
 		raise TypeError("Renyi entropy parameter 'alpha' must be real-valued and non-negative!")
@@ -1630,24 +1650,24 @@ def Diag_Ens_Observables_old(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_
 
 	# diagonal ens expectation value of Obs in post-quench basis
 	if Obs is not False:
-		Obs_state = T_nm[state,:].dot(O_mm)/L # GS
+		Obs_state = T_nm[state,:].dot(O_mm)/N # GS
 		if betavec:
-			Obs_T = (_np.einsum( 'ij,j->i', T_nm, O_mm )/L ).dot(rho) # finite-temperature
+			Obs_T = (_np.einsum( 'ij,j->i', T_nm, O_mm )/N ).dot(rho) # finite-temperature
 
 
 	#calculate diagonal energy <H1> in long time limit
 	if Ed:
-		Ed_state = rho_d[state,:].dot(E1)/L  # GS
+		Ed_state = rho_d[state,:].dot(E1)/N  # GS
 		if betavec:
-			Ed_T  = (rho_d.dot(E1)/L ).dot(rho) # finite-temperature
-			E_Tave = E1.dot(rho)/L # average energy density
-		E_Tinf = E1.sum()/Ns/L # infinite temperature
+			Ed_T  = (rho_d.dot(E1)/N ).dot(rho) # finite-temperature
+			E_Tave = E1.dot(rho)/N # average energy density
+		E_Tinf = E1.sum()/Ns/N # infinite temperature
 
 	#calculate double-quench entropy (H1->H2->H1)
 	if S_double_quench:
-		S_double_quench_state = -rho_d[state,:].dot(_np.log(rho_d[state,:]))/L # GS
+		S_double_quench_state = -rho_d[state,:].dot(_np.log(rho_d[state,:]))/N # GS
 		if betavec:
-			S_double_quench_T  = (_np.einsum( 'ij,ji->i', -rho_d,_np.log(rho_d) )/L ).dot(rho) # finite-temperature
+			S_double_quench_T  = (_np.einsum( 'ij,ji->i', -rho_d,_np.log(rho_d) )/N ).dot(rho) # finite-temperature
 	
 	# clear up memory
 	if 'rho_d' not in variables_state:
@@ -1659,14 +1679,14 @@ def Diag_Ens_Observables_old(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_
 	if Sd_Renyi:
 		if alpha != 1.0:
 			#calculate diagonal (Renyi) entropy for parameter alpha (H1->H2)
-			Sd_Renyi_state = 1/(1-alpha)*_np.log(_np.power( T_nm[state,:], alpha ).sum() )/L  # # GS
+			Sd_Renyi_state = 1/(1-alpha)*_np.log(_np.power( T_nm[state,:], alpha ).sum() )/N  # # GS
 			if betavec:
-				Sd_Renyi_T = 1/(1-alpha)*(_np.log(_np.power( T_nm, alpha ).sum(1)  )/L  ).dot(rho) # finite-temperature
+				Sd_Renyi_T = 1/(1-alpha)*(_np.log(_np.power( T_nm, alpha ).sum(1)  )/N  ).dot(rho) # finite-temperature
 		else:
 			warnings.warn("Renyi entropy equals diagonal entropy.", UserWarning)
-			Sd_Renyi_state = -T_nm[state,:].dot(_np.log(T_nm[state,:]) ) /L # GS
+			Sd_Renyi_state = -T_nm[state,:].dot(_np.log(T_nm[state,:]) ) /N # GS
 			if betavec:
-				Sd_Renyi_T = (_np.einsum( 'ij,ji->i', -T_nm,_np.log(T_nm.transpose()) )/L ).dot(rho) # finite-temperature
+				Sd_Renyi_T = (_np.einsum( 'ij,ji->i', -T_nm,_np.log(T_nm.transpose()) )/N ).dot(rho) # finite-temperature
 
 	# infinite temperature entropy
 	if S_double_quench or Sd_Renyi:
@@ -1678,9 +1698,9 @@ def Diag_Ens_Observables_old(L,V1,E1,V2,Obs=False,rho_d=False,Ed=False,S_double_
 		H1_mn2 = (a_n.conjugate().transpose().dot(_np.einsum('i,ij->ij',E1,a_n)) )**2
 		del a_n
 		_np.fill_diagonal(H1_mn2,0.0)
-		deltaE_state = _np.real( reduce( _np.dot,[T_nm[state,:], H1_mn2, T_nm[state,:] ])  )/L**2  # GS
+		deltaE_state = _np.real( reduce( _np.dot,[T_nm[state,:], H1_mn2, T_nm[state,:] ])  )/N**2  # GS
 		if betavec:
-			deltaE_T  = _np.real(_np.einsum( 'ij,ji->i', T_nm, H1_mn2.dot(T_nm.transpose()) )/(L**2) ).dot(rho) # finite-temperature
+			deltaE_T  = _np.real(_np.einsum( 'ij,ji->i', T_nm, H1_mn2.dot(T_nm.transpose()) )/(N**2) ).dot(rho) # finite-temperature
 		# free up memory
 		del T_nm
 		del H1_mn2

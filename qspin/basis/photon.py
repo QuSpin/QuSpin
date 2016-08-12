@@ -159,9 +159,10 @@ class photon_basis(tensor_basis):
 	@property
 	def chain_Ns(self):
 	    return self._b1.Ns
+
 	@property
-	def chain_L(self):
-	    return self._b1.L
+	def chain_N(self):
+	    return self._b1.N
 	
 	
 

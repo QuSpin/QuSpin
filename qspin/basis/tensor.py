@@ -124,6 +124,7 @@ class tensor_basis(basis):
 
 
 
+
 	def __name__(self):
 		return "<type 'qspin.basis.tensor_basis'>"
 
