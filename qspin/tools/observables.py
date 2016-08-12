@@ -60,6 +60,9 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 					rho_d [numpy array of shape (1,) or (,1)] and its eigenbasis in the columns of V_rho
 					[numpy arary of shape (1,1)]. The keys are CANNOT be chosen arbitrarily.].
 
+				-- a collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (1,1)]
+
 	basis: (compulsory) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
 				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
 
@@ -93,7 +96,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 				-- [True, . , . ] returns the svd matrix 'U'.
 
-				-- [ . ,True, . ] returns the (effective) singular values 'lmbda'.
+				-- [ . ,True, . ] returns the singular values 'lmbda'.
 
 				-- [ . , . ,True] returns the svd matrix 'V'.
 
@@ -128,36 +131,47 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	v, rho_d, N_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
 
-	if len(v.shape) != 3:
-		v = _np.reshape(v,(1,)+v.shape)
-		rho_d = _np.reshape(rho_d,(1,))
+	print v.shape
+
 
 	if DM == False:
 		lmbda = _npla.svd(v, compute_uv=False)
 	elif DM == 'chain_subsys':
 		U, lmbda, _ = _npla.svd(v, full_matrices=False)
-		DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+		if rho_d is not None:
+			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+		else:
+			DM_chain_subsys = _np.einsum('nij,nj,nkj->nik',U,lmbda**2,U.conj() )
 	elif DM == 'other_subsys':
 		_, lmbda, V = _npla.svd(v, full_matrices=False)
-		DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+		if rho_d is not None:
+			DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+		else:
+			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
 	elif DM == 'both':
 		U, lmbda, V = _npla.svd(v, full_matrices=False)
-		DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
-		DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+		if rho_d is not None:
+			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+			DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+		else:
+			DM_chain_subsys = _np.einsum('nij,nj,nkj->nik',U,lmbda**2,U.conj() )
+			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
 
 
 	# add floating point number to zero elements
 	lmbda[lmbda<=1E-16] = _np.finfo(lmbda.dtype).eps
 
 	# calculate singular values of reduced DM
-	lmbda = _np.sqrt( rho_d.dot(lmbda**2) )
+	if rho_d is not None:
+		lmbda = _np.sqrt( rho_d.dot(lmbda**2) )
 
 	
+
 	# calculate entanglement entropy of 'system_state'
 	if alpha == 1.0:
-		Sent = -( lmbda**2).dot( _np.log( lmbda**2  ) ).sum()
+		Sent = -_np.sum( (lmbda**2).dot( _np.log( lmbda.T**2  ) ),axis=0)
 	else:
-		Sent =  1./(1-alpha)*_np.log( (lmbda**alpha).sum() )
+		Sent =  1./(1-alpha)*_np.sum( _np.log( (lmbda**alpha).sum() ), axis=0 )
 
 
 	if densities:
@@ -236,15 +250,22 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			istate = 'pure'
 			# define initial state
 			psi = system_state
-			rho_d = _np.array(1.0)
+			rho_d = _np.reshape(1.0,(1,))
 		elif len(system_state.shape)==2: # DM
 			istate = 'DM'
 			# diagonalise DM
 			if _sp.issparse(system_state):
-				rho_d, psi = _sla.eigsh(system_state)
+				rho_d, psi = _la.eigh(system_state.todense())
 			else:
 				rho_d, psi = _la.eigh(system_state)
-	elif isinstance(system_state,dict): # initial DM is diagonal in basis Vrho
+	elif isinstance(system_state,dict) and len(system_state)==1: # a collection of states in columns of V_states
+		key_strings = ['V_states']
+		if 'V_states' not in system_state.keys():
+			raise TypeError("Dictionary 'system_state' must contain states matrix 'V_states'!")
+		istate = 'DM'
+		rho_d = None
+		psi = system_state['V_states']
+	elif isinstance(system_state,dict) and len(system_state)==2: # initial DM is diagonal in basis Vrho
 		key_strings = ['V_rho','rho_d']
 		if 'V_rho' not in system_state.keys():
 			raise TypeError("Dictionary 'system_state' must contain eigenstates matrix 'V_rho'!")
@@ -261,7 +282,12 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 	# clear up memory
 	del system_state
 
+	print 'NEED CHECKS ON DIMENSIONS OF INPUT'
+	print 'NEED CHECKS ON POSITIVITY OF RHO'
 
+
+	# define number of participating states in 'system_state'
+	Ns = psi[0,].size
 
 	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
 
@@ -300,29 +326,24 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 		if chain_subsys==range(min(chain_subsys), max(chain_subsys)+1): 
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			reshape_tuple2 = (Ns_A, 2**N/Ns_A)
-			if istate == 'DM':
-				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
+			reshape_tuple2 = (Ns, Ns_A, 2**N/Ns_A)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)
-			reshape_tuple1 = tuple([2 for i in xrange(N)] )
-			reshape_tuple2 = (Ns_A, 2**N/Ns_A)
-			if istate == 'DM':
-				# update reshape tuples
-				reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
-				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
-				# upadte axes dimensions
-				system = [s+1 for s in system]
-				system.insert(0,0)
+			# update reshape tuple
+			reshape_tuple1 = (Ns,) + tuple([2 for i in xrange(N)])
+			# upadte axes dimensions
+			system = [s+1 for s in system]
+			system.insert(0,0)
 			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple1)
+			v = _np.reshape(psi.T,reshape_tuple1)
 			del psi
 			# performs 4)
 			v.transpose(system) 
 			# performs 5)
+			reshape_tuple2 = (Ns, Ns_A, 2**N/Ns_A)
 			v = _np.reshape(v,reshape_tuple2)
 			
 
@@ -389,27 +410,17 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
 			if N_A==N: # chain_subsys equals entire lattice
-				reshape_tuple2 = (Ns_spin,Nph+1)
+				reshape_tuple2 = (Ns, Ns_spin,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
-				reshape_tuple2 = ( Ns_A, 2**(N-N_A)*(Nph+1) )
-			# check if user parsed a DM
-			if istate == 'DM':
-				# update reshape tuples
-				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
-			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple2 )
+				reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+			v = _np.reshape(psi.T,reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
-			reshape_tuple1 = tuple([2 for i in xrange(N)]) + (Nph+1,)
-			reshape_tuple2 = ( Ns_A, 2**(N-N_A)*(Nph+1) )
-			if istate == 'DM':
-				# update reshape tuples
-				reshape_tuple1 = (psi.shape[1],) + reshape_tuple1
-				reshape_tuple2 = (basis.Ns,) + reshape_tuple2
-				# upadte axes dimensions
-				system = [s+1 for s in system]
-				system.insert(0,0)
+			reshape_tuple1 = (Ns,) + tuple([2 for i in xrange(N)]) + (Nph+1,)
+			# upadte axes dimensions
+			system = [s+1 for s in system]
+			system.insert(0,0)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple1)
 			del psi
@@ -417,7 +428,8 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			system.append(len(system))
 			v.transpose(system)
 			# performs 5)
-			v = _np.reshape(v, reshape_tuple2)
+			reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+			v = _np.reshape(v,reshape_tuple2)
 				
 	else:
 		raise ValueError("'basis' class {} not supported!".format(basis.__class__.__name__))

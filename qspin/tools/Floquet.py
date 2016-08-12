@@ -4,7 +4,7 @@ from ..hamiltonian import hamiltonian,ishamiltonian
 import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
 import scipy.sparse as _sp
-import scipy.sparse.linalg as _sla
+
 import numpy as _np
 
 from scipy.integrate import complex_ode
@@ -16,9 +16,11 @@ import warnings
 warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
 
 
-# this function evolves the ith local basis state with Hamiltonian H
-# this is used to construct the stroboscpoic evolution operator
 def evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
+	"""
+	This function evolves the ith local basis state under the Hamiltonian H up to period T. 
+	This is used to construct the stroboscpoic evolution operator
+	"""
 	
 	nsteps=_np.iinfo(_np.int32).max # huge number to make sure solver is successful.
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
@@ -46,6 +48,9 @@ def evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 
 
 def evolve_step_1(i,H_list,dt_list):
+	"""
+	This function calculates the evolved state 
+	"""
 	
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
@@ -212,8 +217,6 @@ class Floquet(object):
 
 
 
-
-
 		if 'HF' in variables:
 			self._HF = 1j/self.T*_np.logm(UF)
 #			self._Hf = np.einsum("ij,j,jk->ik",VF.T.conj(),EF,VF)
@@ -233,6 +236,108 @@ class Floquet(object):
 			raise AttributeError
 			
 
+
+
+class Floquet_t_vec(object):
+	def __init__(self,Omega,N_const,len_T=100,N_up=0,N_down=0):
+		"""
+		Returns a time vector (np.array) which hits the stroboscopic times, and has as attributes
+		their indices. The time vector can be divided in three regimes: ramp-up, constant and ramp-down.
+
+		--- arguments ---
+
+		Omega: (compulsory) drive frequency
+
+		N_const: (compulsory) # of time periods in the constant period
+
+		N_up: (optional) # of time periods in the ramp-up period
+
+		N_up: (optional) # of time periods in the ramp-down period
+		"""
+
+		# total number of periods
+		self.N = N_up+N_const+N_down
+		# total length of a period 
+		self.len_T = len_T
+		# driving period T
+		self.T = 2.0*_np.pi/Omega 
+
+
+		# define time vector
+		n = _np.linspace(-N_up, N_const+N_down, self.N*len_T+1)
+		self.vals = self.T*n
+		# total length of time vector
+		self.len = self.vals.size
+		# time step
+		self.dt = self.T/self.len_T
+		# define index of period -N_up
+		ind0 = 0 #int( _np.squeeze( (n==-N_up).nonzero() ) )
+
+		# calculate stroboscopic times
+		self.strobo = strobo_times(self.vals,self.len_T,ind0)
+
+		# define initial and final times and total duration
+		self.i = self.vals[0]
+		self.f = self.vals[-1]
+		self.tot = self.N*self.T
+
+		# if ramp is on, define more attributes
+		if N_up > 0 and N_down > 0:
+			t_up = self.vals[:self.strobo.inds[N_up]]
+			self.up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
+
+			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
+			ind0 = self.up.strobo.inds[-1]+self.len_T
+			self.const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+
+			t_down = self.vals[self.strobo.inds[N_up+N_const]+1:self.strobo.inds[-1]+1]
+			ind0 = self.const.strobo.inds[-1]+self.len_T
+			self.down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+
+		elif N_up > 0:
+			t_up = self.vals[:self.strobo.inds[N_up]]
+			self.up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
+
+			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
+			ind0 = self.up.strobo.inds[-1]+self.len_T
+			self.const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+
+		elif N_down > 0:
+			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
+			self.const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+
+			t_down = self.vals[self.strobo.inds[N_up+N_const]+1:self.strobo.inds[-1]+1]
+			ind0 = self.const.strobo.inds[-1]+self.len_T
+			self.down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+
+
+class strobo_times():
+	def __init__(self,t,len_T,ind0):
+		"""
+		Calculates stroboscopic times in time vector t with period length len_T and assigns them as
+		attributes.
+		"""
+
+		# indices of strobo times
+		self.inds = _np.arange(0,t.size,len_T).astype(int)
+		#discrete stroboscopic t_vecs
+		self.vals = t.take(self.inds)
+		# update strobo indices to match shifted (ramped) ones
+		self.inds += ind0 
+
+
+class periodic_ramp():
+	def __init__(self,N,t,T,len_T,ind0):
+		"""
+		Defines time vector attributes of each regime.
+		"""
+		self.N=N # total # periods
+		self.vals = t # time values
+		self.i = self.vals[0] # initial value
+		self.f = self.vals[-1] # final value
+		self.t_tot = self.N*self.T # total duration
+		self.len = self.vals.size # total length
+		self.strobo = strobo_times(self.vals,len_T,ind0) # strobo attributes
 
 
 
