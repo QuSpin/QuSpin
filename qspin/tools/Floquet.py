@@ -1,4 +1,4 @@
-from exact_diag_py.hamiltonian import hamiltonian
+from ..hamiltonian import hamiltonian
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
