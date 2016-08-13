@@ -1055,21 +1055,24 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	"""
 
 	variables = ['Expt_time']
-
-	if type(Obs_list) is not tuple:
-		raise ValueError
+	
+	if type(Obs_list) not in [list,tuple]:
+		raise ValueError("Obs_list must be tuple or list.")
 
 	num_Obs = len(Obs_list)
 	Obs_list = list(Obs_list)
 	ham_list = []
-	i=0
 
+	i=0
 	while (i < num_Obs):
 		if _ishamiltonian(Obs_list[i]):
 			Obs = Obs_list.pop(i)
 			num_Obs -= 1
 			ham_list.append(Obs)
 		else:
+			if not(_sp.issparse(Obs_list[i])) and not(Obs_list[i].__class__ in [_np.ndarray,_np.matrix]):
+				Obs_list[i] = _np.asanyarray(Obs_list[i])
+			
 			i += 1
 
 	Obs_list = tuple(Obs_list)

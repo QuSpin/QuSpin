@@ -210,7 +210,7 @@ class Floquet(object):
 		EF = _np.real( 1j/self.T*_np.log(thetaF) )
 		ind_EF = _np.argsort(EF)
 		VF = _np.array(VF[:,ind_EF])
-		self.EF = EF[ind_EF]
+		self._EF = EF[ind_EF]
 		# clear up junk
 		del ind_EF
 
@@ -219,7 +219,6 @@ class Floquet(object):
 
 		if 'HF' in variables:
 			self._HF = 1j/self.T*_np.logm(UF)
-#			self._Hf = np.einsum("ij,j,jk->ik",VF.T.conj(),EF,VF)
 		if 'UF' in variables:
 			self._UF = UF
 		if 'thetaF' in variables:
@@ -228,12 +227,42 @@ class Floquet(object):
 			self._VF = VF
 
 
+	@property
+	def T(self):
+		return self._T
 
-	def __getattr__(self, attr):
-		if hasattr(self,"_"+attr):
-			return eval("self."+"_"+attr)
+	@property
+	def EF(self):
+		return self._EF
+
+	@property
+	def HF(self):
+		if hasattr(self,"_HF"):
+			return self._HF
 		else:
-			raise AttributeError
+			raise AttributeError("missing atrribute 'HF'.")
+
+	@property
+	def UF(self):
+		if hasattr(self,"_UF"):
+			return self._UF
+		else:
+			raise AttributeError("missing atrribute 'UF'.")
+
+	@property
+	def thetaF(self):
+		if hasattr(self,"_thetaF"):
+			return self._thetaF
+		else:
+			raise AttributeError("missing atrribute 'thetaF'.")
+
+
+	@property
+	def VF(self):
+		if hasattr(self,"_VF"):
+			return self._VF
+		else:
+			raise AttributeError("missing atrribute 'VF'.")
 			
 
 
@@ -300,59 +329,139 @@ class Floquet_t_vec(object):
 		"""
 
 		# total number of periods
-		self.N = N_up+N_const+N_down
+		self._N = N_up+N_const+N_down
 		# total length of a period 
-		self.len_T = len_T
+		self._len_T = len_T
 		# driving period T
-		self.T = 2.0*_np.pi/Omega 
+		self._T = 2.0*_np.pi/Omega 
 
 
 		# define time vector
 		n = _np.linspace(-N_up, N_const+N_down, self.N*len_T+1)
-		self.vals = self.T*n
+		self._vals = self.T*n
 		# total length of time vector
-		self.len = self.vals.size
+		self._len = self.vals.size
 		# time step
-		self.dt = self.T/self.len_T
+		self._dt = self.T/self.len_T
 		# define index of period -N_up
 		ind0 = 0 #int( _np.squeeze( (n==-N_up).nonzero() ) )
 
 		# calculate stroboscopic times
-		self.strobo = strobo_times(self.vals,self.len_T,ind0)
+		self._strobo = strobo_times(self.vals,self.len_T,ind0)
 
 		# define initial and final times and total duration
-		self.i = self.vals[0]
-		self.f = self.vals[-1]
-		self.tot = self.i - self.f
+		self._i = self.vals[0]
+		self._f = self.vals[-1]
+		self._tot = self.i - self.f
 
 		# if ramp is on, define more attributes
 		if N_up > 0 and N_down > 0:
 			t_up = self.vals[:self.strobo.inds[N_up]]
-			self.up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
+			self._up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
 
 			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
 			ind0 = self.up.strobo.inds[-1]+self.len_T
-			self.const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+			self._const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
 
 			t_down = self.vals[self.strobo.inds[N_up+N_const]+1:self.strobo.inds[-1]+1]
 			ind0 = self.const.strobo.inds[-1]+self.len_T
-			self.down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+			self._down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
 
 		elif N_up > 0:
 			t_up = self.vals[:self.strobo.inds[N_up]]
-			self.up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
+			self._up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
 
 			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
 			ind0 = self.up.strobo.inds[-1]+self.len_T
-			self.const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+			self._const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
 
 		elif N_down > 0:
 			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
-			self.const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+			self._const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
 
 			t_down = self.vals[self.strobo.inds[N_up+N_const]+1:self.strobo.inds[-1]+1]
 			ind0 = self.const.strobo.inds[-1]+self.len_T
-			self.down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+			self._down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+
+
+	def __iter__(self):
+		return self.vals.__iter__()
+
+	def __getitem__(self,s):
+		return self._vals.__getitem__(s)
+
+	def __len__(self):
+		return self._vals.__len__()
+
+	@property
+	def N(self):
+		return self._N
+
+	@property
+	def len_T(self):
+		return self._len_T
+
+	@property
+	def T(self):
+		return self._T
+
+	@property
+	def vals(self):
+		return self._vals
+
+	@property
+	def len(self):
+		return self._len
+
+	@property
+	def dt(self):
+		return self._dt
+
+	@property
+	def strobo(self):
+		return self._strobo
+
+	@property
+	def i(self):
+		return self._i
+
+	@property
+	def f(self):
+		return self._f
+
+
+	@property
+	def tot(self):
+		return self._tot
+
+
+
+	@property
+	def up(self):
+		if hasattr(self,"_up"):
+			return self._up
+		else:
+			raise AttributeError("missing attribute 'up'")
+
+	@property
+	def up(self):
+		if hasattr(self,"_const"):
+			return self._up
+		else:
+			raise AttributeError("missing attribute 'const'")
+
+	@property
+	def up(self):
+		if hasattr(self,"_down"):
+			return self._up
+		else:
+			raise AttributeError("missing attribute 'down'")
+
+
+	
+
+
+
 
 
 class strobo_times():
