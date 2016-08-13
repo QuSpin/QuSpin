@@ -316,6 +316,7 @@ class hamiltonian(object):
 	def Ns(self):
 		return self._shape[0]
 
+	print 'WHY CALLING .shape .get_shape? in Hamiltonian class?'
 	@property
 	def get_shape(self):
 		return self._shape

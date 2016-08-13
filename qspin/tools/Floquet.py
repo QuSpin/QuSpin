@@ -253,6 +253,50 @@ class Floquet_t_vec(object):
 		N_up: (optional) # of time periods in the ramp-up period
 
 		N_up: (optional) # of time periods in the ramp-down period
+
+		len_T: (optional) # of time points within a period. N.B. the last period interval is assumed 
+				open on the right, i.e. [0,T) and the poin T does not go into the definition of 'len_T'. 
+
+
+		--- time vector attributes ---: '_. ' below stands for 'object. '
+
+
+		_.vals: time vector values
+
+		_.i: initial time value
+
+		_.f: final time value
+
+		_.tot: total length of time: t.i - t.f 
+
+		_.T: period of drive
+
+		_.dt: time vector spacing
+
+		_.len: length of total time vector
+
+		_.len_T: # of points in a single period interval, assumed half-open: [0,T)
+
+		_.N: total # of periods
+
+
+		--- strobo attribues ---
+
+
+		_.strobo.vals: strobosopic time values
+
+		_.strobo.inds: strobosopic time indices
+
+
+		--- regime attributes --- (available if N_up or N_down are parsed)
+
+
+		_.up : referes to time ector of up-regime; inherits the above attributes (e.g. _up.strobo.inds)
+
+		_.const : referes to time ector of const-regime; inherits the above attributes
+
+		_.down : referes to time ector of down-regime; inherits the above attributes
+
 		"""
 
 		# total number of periods
@@ -279,7 +323,7 @@ class Floquet_t_vec(object):
 		# define initial and final times and total duration
 		self.i = self.vals[0]
 		self.f = self.vals[-1]
-		self.tot = self.N*self.T
+		self.tot = self.i - self.f
 
 		# if ramp is on, define more attributes
 		if N_up > 0 and N_down > 0:
@@ -317,7 +361,6 @@ class strobo_times():
 		Calculates stroboscopic times in time vector t with period length len_T and assigns them as
 		attributes.
 		"""
-
 		# indices of strobo times
 		self.inds = _np.arange(0,t.size,len_T).astype(int)
 		#discrete stroboscopic t_vecs
@@ -335,7 +378,7 @@ class periodic_ramp():
 		self.vals = t # time values
 		self.i = self.vals[0] # initial value
 		self.f = self.vals[-1] # final value
-		self.t_tot = self.N*self.T # total duration
+		self.tot = self.N*self.T # total duration
 		self.len = self.vals.size # total length
 		self.strobo = strobo_times(self.vals,len_T,ind0) # strobo attributes
 
