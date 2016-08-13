@@ -52,16 +52,16 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 	system_state: (compulsory) the state of the quantum system. Can be a:
 
-				-- pure state [numpy array of shape (1,) or (,1)].
+				-- pure state [numpy array of shape (Ns,)].
 
-				-- density matrix (DM) [numpy array of shape (1,1)].
+				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
 
 				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
-					rho_d [numpy array of shape (1,) or (,1)] and its eigenbasis in the columns of V_rho
-					[numpy arary of shape (1,1)]. The keys are CANNOT be chosen arbitrarily.].
+					rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
+					[numpy arary of shape (Ns,Ns)]. The keys are CANNOT be chosen arbitrarily.].
 
 				-- a collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (1,1)]
+					in the columns of V_states [shape (Ns,Nvecs)]
 
 	basis: (compulsory) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
 				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
@@ -129,10 +129,8 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 	# calculate reshaped system_state
 	v, rho_d, N_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
+
 	del system_state
-
-	print v.shape
-
 
 	if DM == False:
 		lmbda = _npla.svd(v, compute_uv=False)
@@ -169,7 +167,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 	# calculate entanglement entropy of 'system_state'
 	if alpha == 1.0:
-		Sent = -_np.sum( (lmbda**2).dot( _np.log( lmbda.T**2  ) ),axis=0)
+		Sent = -_np.sum( (lmbda.T**2)*_np.log( lmbda.T**2 ) ,axis=0)
 	else:
 		Sent =  1./(1-alpha)*_np.sum( _np.log( (lmbda**alpha).sum() ), axis=0 )
 
@@ -244,51 +242,82 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 
 	
 
-	# read off initial input
-	if isinstance(system_state,(list, tuple, _np.ndarray)): # initial state either pure or DM
-		if len(system_state.shape)==1: # pure state
+	if isinstance(system_state,dict):
+		keys = set(system_state.keys())
+		if keys == set(['V_rho','rho_d']):
+			istate = 'DM'
+			# define initial state
+			rho_d = system_state['rho_d']
+			psi = system_state['V_rho']
+		elif keys == set(['V_states']):
+			istate = 'pure'
+			rho_d = None
+			psi = system_state['V_states']
+		else:
+			raise ValueError("expecting dictionary with keys ['V_rho','rho_d'] or ['V_states']")
+
+
+		if _sp.issparse(system_state):
+			warnings.warn("Entanglement_Entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			system_state = system_state.todense()
+			if system_state.shape[1] == 1:
+				system_state = system_state.ravel()
+
+		elif system_state.__class__ not in  [_np.ndarray,_np.matrix]:
+			system_state = np.asanyarray(system_state)
+
+
+		if psi.ndim != 2:
+			raise ValueError("Expecting ndim == 2 for V_states.")
+
+		if psi.shape[0] != basis.Ns:
+			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))
+	else:
+		if _sp.issparse(system_state):
+			warnings.warn("Entanglement_Entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			system_state = system_state.todense()
+			if system_state.shape[1] == 1:
+				system_state = system_state.ravel()
+		elif system_state.__class__ not in  [_np.ndarray,_np.matrix]:
+			system_state = np.asanyarray(system_state)
+
+			
+
+
+		if system_state.ndim == 1: # pure state
 			istate = 'pure'
 			# define initial state
 			psi = system_state
 			rho_d = _np.reshape(1.0,(1,))
-		elif len(system_state.shape)==2: # DM
+		elif system_state.ndim == 2: # DM
+			if system_state.shape[0] != system_state.shape[1]:
+				raise ValueError("Expecting square array for Density Matrix.")
 			istate = 'DM'
 			# diagonalise DM
-			if _sp.issparse(system_state):
-				rho_d, psi = _la.eigh(system_state.todense())
-			else:
-				rho_d, psi = _la.eigh(system_state)
-	elif isinstance(system_state,dict) and len(system_state)==1: # a collection of states in columns of V_states
-		key_strings = ['V_states']
-		if 'V_states' not in system_state.keys():
-			raise TypeError("Dictionary 'system_state' must contain states matrix 'V_states'!")
-		istate = 'DM'
-		rho_d = None
-		psi = system_state['V_states']
-	elif isinstance(system_state,dict) and len(system_state)==2: # initial DM is diagonal in basis Vrho
-		key_strings = ['V_rho','rho_d']
-		if 'V_rho' not in system_state.keys():
-			raise TypeError("Dictionary 'system_state' must contain eigenstates matrix 'V_rho'!")
-		elif 'rho_d' not in system_state.keys():
-			raise TypeError("Dictionary 'system_state' must contain diagonal DM 'rho_d'!")
-		istate = 'DM'
-		# define initial state
-		rho_d = system_state['rho_d']
-		psi = system_state['V_rho']
-	else:
-		raise TypeError("Wrong variable type for 'system_state'! E.g., use np.ndarray.")
+			rho_d, psi = _la.eigh(system_state)	
+
+		if psi.shape[0] != basis.Ns:
+			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))			
+			
+
+
+			
+		
+
+
 
 
 	# clear up memory
 	del system_state
 
-	print 'NEED CHECKS ON DIMENSIONS OF INPUT'
-	print 'NEED CHECKS ON POSITIVITY OF RHO'
 
 
 	# define number of participating states in 'system_state'
 	Ns = psi[0,].size
 
+
+
+	
 	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
 
 		# set chain subsys if not defined
