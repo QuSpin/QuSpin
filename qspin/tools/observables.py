@@ -131,9 +131,6 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	v, rho_d, N_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
 
-	print v.shape
-
-
 	if DM == False:
 		lmbda = _npla.svd(v, compute_uv=False)
 	elif DM == 'chain_subsys':
@@ -157,21 +154,22 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 			DM_chain_subsys = _np.einsum('nij,nj,nkj->nik',U,lmbda**2,U.conj() )
 			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
 
-
+	del v
 	# add floating point number to zero elements
 	lmbda[lmbda<=1E-16] = _np.finfo(lmbda.dtype).eps
 
-	# calculate singular values of reduced DM
+	# calculate singular values of reduced DM and the corresponding probabilities
 	if rho_d is not None:
-		lmbda = _np.sqrt( rho_d.dot(lmbda**2) )
-
-	
+		p = rho_d.dot(lmbda**2)
+		lmbda = _np.sqrt(p)
+	else:# calculate probabilities
+		p = (lmbda**2).T
 
 	# calculate entanglement entropy of 'system_state'
 	if alpha == 1.0:
-		Sent = -_np.sum( (lmbda**2).dot( _np.log( lmbda.T**2  ) ),axis=0)
+		Sent = -_np.sum( p*_np.log(p),axis=0)
 	else:
-		Sent =  1./(1-alpha)*_np.sum( _np.log( (lmbda**alpha).sum() ), axis=0 )
+		Sent =  1./(1-alpha)*_np.log(_np.sum(p**alpha, axis=0))
 
 
 	if densities:
@@ -337,7 +335,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			v = _np.reshape(psi.T,reshape_tuple1)
 			del psi
 			# performs 4)
-			v.transpose(system) 
+			v=v.transpose(system) 
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, 2**N/Ns_A)
 			v = _np.reshape(v,reshape_tuple2)
@@ -422,7 +420,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			del psi
 			# performs 4)
 			system.append(len(system))
-			v.transpose(system)
+			v=v.transpose(system)
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
 			v = _np.reshape(v,reshape_tuple2)
@@ -532,7 +530,7 @@ def inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Ren
 			warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
 			S = - _np.einsum(es_str('ji,ji->i'),p,_np.log(p))
 		else:
-			S = 1.0/(1.0-alpha)*_np.log(_np.sum(_np.power(p,alpha),axis=0) )
+			S = 1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha,axis=0) )
 			
 		return S
 
