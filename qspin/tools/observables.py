@@ -264,7 +264,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				system_state = system_state.ravel()
 
 		elif system_state.__class__ not in  [_np.ndarray,_np.matrix]:
-			system_state = np.asanyarray(system_state)
+			system_state = _np.asanyarray(system_state)
 
 
 		if psi.ndim != 2:
@@ -279,7 +279,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
 		elif system_state.__class__ not in  [_np.ndarray,_np.matrix]:
-			system_state = np.asanyarray(system_state)
+			system_state = _np.asanyarray(system_state)
 
 			
 
