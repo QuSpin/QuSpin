@@ -75,6 +75,61 @@ class hamiltonian(object):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
+
+		--- arguments ---
+
+		* static_list: (compulsory) list of objects to calculate the static part of hamiltonian operator. The format goes like:
+
+			```python
+			static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
+			```
+	
+
+		* dynamic_list: (compulsory) list of objects to calculate the dynamic part of the hamiltonian operator.The format goes like:
+
+			```python
+			dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
+			```
+
+			For the dynamic list the ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra arguements which go into the function to evaluate it like: 
+			```python
+			f_val = func(t,*func_args)
+			```
+
+
+		* N: (optional) number of sites to create the hamiltonian with.
+
+		* shape: (optional) shape to create the hamiltonian with.
+
+		* copy: (optional) weather or not to copy the values from the input arrays. 
+
+		* check_symm: (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+
+		* check_herm: (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+
+		* check_pcon: (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+
+		* dtype: (optional) data type to case the matrices with. 
+
+		* kw_args: extra options to pass to the basis class.
+
+		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
+
+ 		* _.ndim: number of dimensions, always 2.
+		
+		* _.Ns: number of states in the hilbert space.
+
+		* _.get_shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
+
+		* _.is_dense: return 'True' if the hamiltonian contains a dense matrix as a componnent. 
+
+		* _.dtype: returns the data type of the hamiltonian
+
+		* _.static: return the static part of the hamiltonian 
+
+		* _.dynamic: returns the dynamic parts of the hamiltonian 
+
+
 		"""
 
 		self._is_dense=False

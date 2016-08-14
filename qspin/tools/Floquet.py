@@ -13,10 +13,12 @@ from numpy import vstack
 
 import warnings
 
+__all__ = ['Floquet_t_vec','Floquet']
+
 warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
 
 
-def evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
+def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 	"""
 	This function evolves the ith local basis state under the Hamiltonian H up to period T. 
 	This is used to construct the stroboscpoic evolution operator
@@ -47,7 +49,7 @@ def evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 
 
 
-def evolve_step_1(i,H_list,dt_list):
+def _evolve_step_1(i,H_list,dt_list):
 	"""
 	This function calculates the evolved state 
 	"""
@@ -62,7 +64,7 @@ def evolve_step_1(i,H_list,dt_list):
 
 
 
-def evolve_step_2(i,H,t_list,dt_list):
+def _evolve_step_2(i,H,t_list,dt_list):
 	
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
@@ -75,28 +77,88 @@ def evolve_step_2(i,H,t_list,dt_list):
 	
 
 ### USING JOBLIB ###
-def get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9): 
+def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(evolve_cont)(i,H,T,atol,rtol) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in xrange(H.Ns))
 
 	return vstack(sols)
 
 
-def get_U_step_1(H_list,dt_list,n_jobs): 
+def _get_U_step_1(H_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(evolve_step_1)(i,H_list,dt_list) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in xrange(H.Ns))
 
 	return vstack(sols)
 
-def get_U_step_2(H,t_list,dt_list,n_jobs): 
+def _get_U_step_2(H,t_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(evolve_step_2)(i,H,t_list,dt_list) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_2)(i,H,t_list,dt_list) for i in xrange(H.Ns))
 
 	return vstack(sols)
 
 
 class Floquet(object):
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
+		"""
+		Calculates the Floquet spectrum for a given protocol, and optionally the Floquet hamiltonian matrix,
+		and Floquet eigen-vectors.
+
+		--- arguments ---
+		* evo_dict: (compulsory) dictionary which passes the different types of protocols to calculate evolution operator:
+
+			1. Continuous protocol.
+
+				* 'H': (compulsory) hamiltonian object to generate the time evolution. 
+
+				* 'T': (compulsory) period of the protocol. 
+
+				* 'rtol': (optional) relative tolerance for the ode solver. (default = 1E-9)
+
+				* 'atol': (optional) absolute tolerance for the ode solver. (defauly = 1E-9)
+
+			2. Step protocol from a hamiltonian object. 
+
+				* 'H': (compulsory) hamiltonian object to generate the hamiltonians at each step.
+				
+				* 't_list': (compulsory) list of times to evaluate the hamiltonian at when doing each step.
+
+				* 'dt_list': (compulsory) list of time steps for each step of the evolution. 
+
+			3. Step protocol from a list of hamiltonians. 
+
+				* 'H_list': (compulsory) list of matrices which to evolve with.
+
+				* 'dt_list': (compulsory) list of time steps to evolve with. 
+
+
+		* HF: (optional) if set to 'True' calculate Floquet hamiltonian. 
+
+		* UF: (optional) if set to 'True' save eovlution operator. 
+
+		* ThetaF: (optional) if set to 'True' save the eigen-values of the evolution operator. 
+
+		* VF: (optional) if set to 'True' save the eigen-vectors of the evolution operator. 
+
+		* n_jobs: (optional) set the number of processors which are used when looping over the basis states. 
+
+		--- Floquet attributes ---: '_. ' below stands for 'object. '
+
+		Always given:
+
+		_.EF: Floquet qausi-energies
+
+		Calculate via flags:
+
+		_.HF: Floquet Hamiltonian dense array
+
+		_.UF: Evolution operator
+
+		_.VF: Floquet eigen-states
+
+		_.thetaF: eigen-values of evolution operator
+
+
+		"""
 
 		variables = []
 		if HF: variables.append('HF')
@@ -153,7 +215,7 @@ class Floquet(object):
 				self._T = T
 
 				# calculate evolution operator
-				UF = get_U_cont(H,self.T,n_jobs,atol=self._atol,rtol=self._rtol)
+				UF = _get_U_cont(H,self.T,n_jobs,atol=self._atol,rtol=self._rtol)
 
 			elif set(keys) == set(["H","t_list","dt_list"]):
 				H = evo_dict["H"]
@@ -174,7 +236,7 @@ class Floquet(object):
 					raise ValueError("expecting hamiltonian object for 'H'.")
 
 				# calculate evolution operator
-				UF = get_U_step_2(H,t_list,dt_list,n_jobs)
+				UF = _get_U_step_2(H,t_list,dt_list,n_jobs)
 
 
 
@@ -194,37 +256,40 @@ class Floquet(object):
 					raise ValueError("expecting list/tuple for H_list.")
 
 				# calculate evolution operator
-				UF = get_U_cont(H_list,dt_list,n_jobs)
+				UF = _get_U_cont(H_list,dt_list,n_jobs)
 				
 			else:
 				raise ValueError("evo_dict={0} is not correct format.".format(evo_dict))	
 		else:
 			raise ValueError("evo_dict={0} is not correct format.".format(evo_dict))
 
+		if 'UF' in variables:
+			self._UF = _np.copy(UF)
 
 		# find Floquet states and phases
-		thetaF, VF = _la.eig(UF)
+		if "VF" in variables:
+			thetaF, UF = _la.eig(UF,overwrite_a=True)
+			# calculate and order q'energies
+			EF = _np.real( 1j/self.T*_np.log(thetaF) )
+			ind_EF = _np.argsort(EF)
+			self._EF = _np.array(EF[ind_EF])
+			self._VF = _np.array(VF[:,ind_EF])
 
-
-		# calculate and order q'energies
-		EF = _np.real( 1j/self.T*_np.log(thetaF) )
-		ind_EF = _np.argsort(EF)
-		VF = _np.array(VF[:,ind_EF])
-		self._EF = EF[ind_EF]
-		# clear up junk
-		del ind_EF
-
-
+			# clear up junk
+			del ind_EF,VF
+		else:
+			thetaF = _la.eigvals(UF,overwrite_a=True)
+			# calculate and order q'energies
+			EF = _np.real( 1j/self.T*_np.log(thetaF) )
+			EF.sort()
+			self._EF = EF
 
 
 		if 'HF' in variables:
 			self._HF = 1j/self.T*_np.logm(UF)
-		if 'UF' in variables:
-			self._UF = UF
+
 		if 'thetaF' in variables:
 			self._thetaF = thetaF
-		if 'VF' in variables:
-			self._VF = VF
 
 
 	@property
@@ -347,7 +412,7 @@ class Floquet_t_vec(object):
 		ind0 = 0 #int( _np.squeeze( (n==-N_up).nonzero() ) )
 
 		# calculate stroboscopic times
-		self._strobo = strobo_times(self.vals,self.len_T,ind0)
+		self._strobo = _strobo_times(self.vals,self.len_T,ind0)
 
 		# define initial and final times and total duration
 		self._i = self.vals[0]
@@ -357,31 +422,31 @@ class Floquet_t_vec(object):
 		# if ramp is on, define more attributes
 		if N_up > 0 and N_down > 0:
 			t_up = self.vals[:self.strobo.inds[N_up]]
-			self._up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
+			self._up = _periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
 
 			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
 			ind0 = self.up.strobo.inds[-1]+self.len_T
-			self._const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+			self._const = _periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
 
 			t_down = self.vals[self.strobo.inds[N_up+N_const]+1:self.strobo.inds[-1]+1]
 			ind0 = self.const.strobo.inds[-1]+self.len_T
-			self._down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+			self._down = _periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
 
 		elif N_up > 0:
 			t_up = self.vals[:self.strobo.inds[N_up]]
-			self._up = periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
+			self._up = _periodic_ramp(N_up,t_up,self.T,self.len_T,ind0)
 
 			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
 			ind0 = self.up.strobo.inds[-1]+self.len_T
-			self._const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+			self._const = _periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
 
 		elif N_down > 0:
 			t_const = self.vals[self.strobo.inds[N_up]:self.strobo.inds[N_up+N_const]+1]
-			self._const = periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
+			self._const = _periodic_ramp(N_const,t_const,self.T,self.len_T,ind0)
 
 			t_down = self.vals[self.strobo.inds[N_up+N_const]+1:self.strobo.inds[-1]+1]
 			ind0 = self.const.strobo.inds[-1]+self.len_T
-			self._down = periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
+			self._down = _periodic_ramp(N_down,t_down,self.T,self.len_T,ind0)
 
 
 	def __iter__(self):
@@ -464,7 +529,7 @@ class Floquet_t_vec(object):
 
 
 
-class strobo_times():
+class _strobo_times():
 	def __init__(self,t,len_T,ind0):
 		"""
 		Calculates stroboscopic times in time vector t with period length len_T and assigns them as
@@ -478,7 +543,7 @@ class strobo_times():
 		self.inds += ind0 
 
 
-class periodic_ramp():
+class _periodic_ramp():
 	def __init__(self,N,t,T,len_T,ind0):
 		"""
 		Defines time vector attributes of each regime.
@@ -489,7 +554,7 @@ class periodic_ramp():
 		self.f = self.vals[-1] # final value
 		self.tot = self.N*self.T # total duration
 		self.len = self.vals.size # total length
-		self.strobo = strobo_times(self.vals,len_T,ind0) # strobo attributes
+		self.strobo = _strobo_times(self.vals,len_T,ind0) # strobo attributes
 
 
 
