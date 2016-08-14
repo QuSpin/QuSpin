@@ -626,7 +626,29 @@ This function calculates the expectation values of physical quantities in the Di
 
 * alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 
-RETURNS: 	dictionary
+RETURNS: 	
+
+dictionary
+
+####**Project Operator**
+```python
+Project_Operator(Obs,proj,dtype=_np.complex128):
+```
+This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs' onto the reduced basis.
+
+	
+--- arguments ---
+
+* Obs: (compulsory) operator to be projected.
+
+* proj: (compulsory) basis of the final space after the projection or a matrix which contains the projector.
+
+* dtype: (optional) data type. Default is np.complex128.
+
+RETURNS: 	
+
+* dictionary with keys 'Proj_Obs' and value the projected observable.
+
 
 
 
