@@ -273,7 +273,7 @@ class Floquet(object):
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
 			ind_EF = _np.argsort(EF)
 			self._EF = _np.array(EF[ind_EF])
-			self._VF = _np.array(VF[:,ind_EF])
+			self._VF = _np.array(UF[:,ind_EF])
 
 			# clear up junk
 			del ind_EF,VF
