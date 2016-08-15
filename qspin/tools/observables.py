@@ -1156,8 +1156,6 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	Expt_time = []
 
 	if return_state:
-		if times is not None:
-
 		for Obs in Obs_list:
 			psi_l = Obs.dot(psi_t)
 			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
