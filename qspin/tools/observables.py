@@ -9,12 +9,14 @@ from inspect import isgenerator as _isgenerator
 
 # needed for isinstance only
 from ..hamiltonian import ishamiltonian as _ishamiltonian
+from ..hamiltonian import hamiltonian as _hamiltonian
 from ..basis import spin_basis_1d,photon_basis,isbasis
 
 import warnings
 
 
-__all__ = ["Entanglement_Entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing"]
+__all__ = ["Entanglement_Entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing","coherent_state"]
+
 
 # coherent state function
 def coherent_state(a,n,dtype=_np.float64):
@@ -862,9 +864,8 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 			Expt_Diag['rho_d'] = rho
 
 
-
-
 	return Expt_Diag
+
 
 def Project_Operator(Obs,proj,dtype=_np.complex128):
 	"""
@@ -1060,21 +1061,24 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	"""
 
 	variables = ['Expt_time']
-
-	if type(Obs_list) is not tuple:
-		raise ValueError
+	
+	if type(Obs_list) not in [list,tuple]:
+		raise ValueError("Obs_list must be tuple or list.")
 
 	num_Obs = len(Obs_list)
 	Obs_list = list(Obs_list)
 	ham_list = []
-	i=0
 
+	i=0
 	while (i < num_Obs):
 		if _ishamiltonian(Obs_list[i]):
 			Obs = Obs_list.pop(i)
 			num_Obs -= 1
 			ham_list.append(Obs)
 		else:
+			if not(_sp.issparse(Obs_list[i])) and not(Obs_list[i].__class__ in [_np.ndarray,_np.matrix]):
+				Obs_list[i] = _np.asanyarray(Obs_list[i])
+			
 			i += 1
 
 	Obs_list = tuple(Obs_list)
@@ -1122,7 +1126,10 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 			if psi_t.shape[0] != ham.get_shape[1]:
 				raise ValueError("states must be in columns of input matrix.")
 
-		return_state=True # set to True to use einsum but do not return state
+		if return_state:
+			variables.append("psi_t")
+		else:
+			return_state=True # set to True to use einsum but do not return state
 
 	elif _isgenerator(psi_t):
 		if return_state:
@@ -1150,11 +1157,11 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 
 		
+
 	Expt_time = []
 
 	if return_state:
 		if times is not None:
-			Expt_time.append(times)
 
 		for Obs in Obs_list:
 			psi_l = Obs.dot(psi_t)
@@ -1178,12 +1185,11 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 				psi = psi.ravel()
 
 			if times is not None:
-				Expt = [times[m]]
 				time = times[m]
 			else:
-				Expt = []
 				time = 0
 
+			Expt = []
 			for Obs in Obs_list:
 				psi_l = Obs.dot(psi)
 				Expt.append(_np.vdot(psi,psi_l).real)

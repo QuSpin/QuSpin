@@ -75,6 +75,61 @@ class hamiltonian(object):
 		"""
 		This function intializes the Hamtilonian. You can either initialize with symmetries, or an instance of basis.
 		Note that if you initialize with a basis it will ignore all symmetry inputs.
+
+		--- arguments ---
+
+		* static_list: (compulsory) list of objects to calculate the static part of hamiltonian operator. The format goes like:
+
+			```python
+			static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
+			```
+	
+
+		* dynamic_list: (compulsory) list of objects to calculate the dynamic part of the hamiltonian operator.The format goes like:
+
+			```python
+			dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
+			```
+
+			For the dynamic list the ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra arguements which go into the function to evaluate it like: 
+			```python
+			f_val = func(t,*func_args)
+			```
+
+
+		* N: (optional) number of sites to create the hamiltonian with.
+
+		* shape: (optional) shape to create the hamiltonian with.
+
+		* copy: (optional) weather or not to copy the values from the input arrays. 
+
+		* check_symm: (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+
+		* check_herm: (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+
+		* check_pcon: (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+
+		* dtype: (optional) data type to case the matrices with. 
+
+		* kw_args: extra options to pass to the basis class.
+
+		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
+
+ 		* _.ndim: number of dimensions, always 2.
+		
+		* _.Ns: number of states in the hilbert space.
+
+		* _.get_shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
+
+		* _.is_dense: return 'True' if the hamiltonian contains a dense matrix as a componnent. 
+
+		* _.dtype: returns the data type of the hamiltonian
+
+		* _.static: return the static part of the hamiltonian 
+
+		* _.dynamic: returns the dynamic parts of the hamiltonian 
+
+
 		"""
 
 		self._is_dense=False
@@ -596,7 +651,7 @@ class hamiltonian(object):
 			time = _np.asarray(time)
 			if V.ndim == 2:
  				if V.shape[0] != self._shape[1]:
-					raise Exception
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 				if len(V[:]) != len(time):
 					raise Exception
@@ -605,7 +660,7 @@ class hamiltonian(object):
 
 			elif V.ndim == 1:
  				if V.shape[0] != self._shape[1]:
-					raise Exception
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				return _np.vstack([self.dot(V,time=t) for t in time])
 				
@@ -624,7 +679,7 @@ class hamiltonian(object):
 				V = V.reshape((1,-1))
 				
 			if V.shape[1] != self._shape[0]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 	
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
@@ -632,7 +687,7 @@ class hamiltonian(object):
 
 		elif _sp.issparse(V):
 			if V.shape[1] != self._shape[0]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 	
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
@@ -644,7 +699,7 @@ class hamiltonian(object):
 				V = V.reshape((1,-1))
 
 			if V.shape[1] != self._shape[0]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
@@ -658,7 +713,7 @@ class hamiltonian(object):
 				V = V.reshape((1,-1))
 
 			if V.shape[1] != self._shape[0]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
@@ -683,25 +738,32 @@ class hamiltonian(object):
 		
 		if self.Ns <= 0:
 			return _np.asarray([])
+
+		if V.ndim > 2:
+			raise ValueError("Expecting V.ndim < 3.")
+
 		if not _np.isscalar(time):
 			time = _np.asarray(time)
+
+			if time.ndim > 1:
+				raise ValueError("Expecting time.ndim < 2.")
+
 			if V.ndim == 2:
  				if V.shape[0] != self._shape[1]:
-					raise Exception
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				if len(V.T[:]) != len(time):
-					raise Exception
+					raise ValueError("{0} number of vectors do not match length of time vector {1}.".format(V.shape[0],len(time)))
 				
 				V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V.T[:],time)]).T
 				return V_dot
 			elif V.ndim == 1:
  				if V.shape[0] != self._shape[1]:
-					raise Exception
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				V_dot = _np.vstack([self.dot(V,time=t,check=check) for t in time]).T
 				return V_dot
-			else:
-				raise Exception
+
 			
 
 		if not check:
@@ -712,7 +774,7 @@ class hamiltonian(object):
 
 		if V.__class__ is _np.ndarray:
 			if V.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 	
 			V_dot = self._static.dot(V)	
 			for Hd,f,f_args in self._dynamic:
@@ -721,7 +783,7 @@ class hamiltonian(object):
 
 		elif _sp.issparse(V):
 			if V.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 	
 			V_dot = self._static.dot(V)	
 			for Hd,f,f_args in self._dynamic:
@@ -730,7 +792,7 @@ class hamiltonian(object):
 
 		elif V.__class__ is _np.matrix:
 			if V.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 			V_dot = self._static.dot(V)	
 			for Hd,f,f_args in self._dynamic:
@@ -741,7 +803,7 @@ class hamiltonian(object):
 			V = _np.asanyarray(V)
 
 			if V.shape[0] != self._shape[1]:
-				raise ValueError('dimension mismatch')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 			V_dot = self._static.dot(V)	
 			for Hd,f,f_args in self._dynamic:
@@ -752,18 +814,8 @@ class hamiltonian(object):
 
 
 
-	def comm(self,O,time=0,check=True,a=1): # a*(O*H(time) - H(time)*O)
-		O_out = a*self.rdot(O,time=time,check=check)
-		O_out = O_out - a*self.dot(O,time=time,check=check)
-		return O_out
 
-	def anti_comm(self,O,time=0,check=True,a=1): # a*(O*H(time) + H(time)*O)
-		O_out = a*self.rdot(O,time=time,check=check)
-		O_out = O_out + a*self.dot(O,time=time,check=check)
-		return O_out
-
-
-	def matrix_ele(self,Vl,Vr,time=0,diagonal=False):
+	def matrix_ele(self,Vl,Vr,time=0,diagonal=False,check=True):
 		"""
 		args:
 			Vl, the vector to multiple with on left side
@@ -777,34 +829,41 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return np.array([])
 
-		Vr=self.dot(Vr,time=time)
+		Vr=self.dot(Vr,time=time,check=check)
+
+		if not check:
+			if diagonal:
+				return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+			else:
+				return Vl.T.conj().dot(Vr)
+ 
 		
 		if Vl.__class__ is _np.ndarray:
 			if Vl.ndim == 1:
 				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				return Vl.conj().dot(Vr)
 			elif Vl.ndim == 2:
 				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				if diagonal:
 					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
 				else:
 					return Vl.T.conj().dot(Vr)
 			else:
-				raise ValueError('Expecting Vl to have ndim < 3')
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 		elif Vl.__class__ is _np.matrix:
 			if Vl.ndim == 1:
 				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				return Vl.conj().dot(Vr)
 			elif Vl.ndim == 2:
 				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				if diagonal:
 					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
@@ -828,14 +887,14 @@ class hamiltonian(object):
 			Vl = _np.asanyarray(Vl)
 			if Vl.ndim == 1:
 				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 				if diagonal:
 					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
 				else:
 					return Vl.conj().dot(Vr)
 			elif Vl.ndim == 2:
 				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				return Vl.T.conj().dot(Vr)
 			else:
@@ -849,7 +908,7 @@ class hamiltonian(object):
 
 		elif _sp.issparse(proj):
 			if self._shape[1] != proj.shape[0]:
-				raise ValueError
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(proj.shape,self._shape))
 					
 			new = self._rmul_sparse(proj.getH())
 			new._shape = (proj.shape[1],proj.shape[1])
@@ -860,7 +919,7 @@ class hamiltonian(object):
 
 		elif proj.__class__ == _np.ndarray:
 			if self._shape[1] != proj.shape[0]:
-				raise ValueError
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(proj.shape,self._shape))
 
 			new = self._rmul_dense(proj.T.conj())
 			new._shape = (proj.shape[1],proj.shape[1])
@@ -869,7 +928,7 @@ class hamiltonian(object):
 
 		elif proj.__class__ == _np.matrix:
 			if self._shape[1] != proj.shape[0]:
-				raise ValueError
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(proj.shape,self._shape))
 
 			new = self._rmul_dense(proj.H)
 			new._shape = (proj.shape[1],proj.shape[1])
@@ -879,7 +938,7 @@ class hamiltonian(object):
 		else:
 			proj = _np.asanyarray(proj)
 			if self._shape[1] != proj.shape[0]:
-				raise ValueError
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(proj.shape,self._shape))
 
 			new = self._rmul_dense(proj.T.conj())
 			new._shape = (proj.shape[1],proj.shape[1])
@@ -1186,7 +1245,7 @@ class hamiltonian(object):
 
 	def __mul__(self,other): # self * other
 		if isinstance(other,hamiltonian):
-#			self._hamiltonian_checks(other,casting="unsafe")
+#			
 			return self._mul_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1519,13 +1578,35 @@ class hamiltonian(object):
 
 
 	def _mul_hamiltonian(self,other): # self * other
-		return NotImplemented
+		if self.dynamic and other.dynamic:
+			raise TypeError("unsupported operand type(s) for *: 'hamiltonian' and 'hamiltonian' which both have dynamic parts.")
+		elif self.dynamic:
+			return self.__mul__(other.static)
+		elif other.dynamic:
+			return other.__rmul__(self.static)
+		else:
+			return self.__mul__(other.static)
+
 
 	def _rmul_hamiltonian(self,other): # other * self
-		return NotImplemented
+		if self.dynamic and other.dynamic:
+			raise TypeError("unsupported operand type(s) for *: 'hamiltonian' and 'hamiltonian' which both have dynamic parts.")
+		elif self.dynamic:
+			return self.__rmul__(other.static)
+		elif other.dynamic:
+			return other.__mul__(self.static)
+		else:
+			return self.__rmul__(other.static)
 
 	def _imul_hamiltonian(self,other): # self *= other
-		return NotImplemented
+		if self.dynamic and other.dynamic:
+			raise TypeError("unsupported operand type(s) for *: 'hamiltonian' and 'hamiltonian' which both have dynamic parts.")
+		elif self.dynamic:
+			return self.__imul__(other.static)
+		elif other.dynamic:
+			return other.__rmul__(self.static)
+		else:
+			return self.__imul__(other.static)
 
 
 
