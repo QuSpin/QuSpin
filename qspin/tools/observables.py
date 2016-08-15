@@ -86,7 +86,8 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 				Default is 'False'. 	
 
-	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
+				the entropy keys have attached '_Renyi' to their label.
 
 	densities: (optional) if set to 'True', the entanglement entropy is normalised by the size of the
 				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
@@ -206,7 +207,11 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 
 				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
 					rho_d [numpy array of shape (1,) or (,1)] and its eigenbasis in the columns of V_rho
-					[numpy arary of shape (1,1)]. The keys are CANNOT be chosen arbitrarily.].
+					[numpy arary of shape (1,1)]. The keys are CANNOT be chosen arbitrarily. 'rho_d'
+					can be 'None', but needs to always be passed.
+
+				-- a collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
 
 	basis: (compulsory) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
 				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
@@ -816,9 +821,9 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 		
 	if Sent_Renyi:
 		# calculate singular values of columns of V2
-		v, _, N_A = reshape_as_subsys({'V_rho':V2,'rho_d':rho},**Sent_args)
-		Sent_Renyi = _npla.svd(v, compute_uv=False).T # components (i,n) 
-
+		v, _, N_A = reshape_as_subsys({'V_rho':V2,'rho_d':None},**Sent_args)
+		Sent_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
+		
 	# clear up memory
 	del V2
 

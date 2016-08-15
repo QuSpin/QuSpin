@@ -509,14 +509,14 @@ class Floquet_t_vec(object):
 			raise AttributeError("missing attribute 'up'")
 
 	@property
-	def up(self):
+	def const(self):
 		if hasattr(self,"_const"):
 			return self._up
 		else:
 			raise AttributeError("missing attribute 'const'")
 
 	@property
-	def up(self):
+	def down(self):
 		if hasattr(self,"_down"):
 			return self._up
 		else:
