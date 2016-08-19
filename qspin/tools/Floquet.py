@@ -417,7 +417,7 @@ class Floquet_t_vec(object):
 		# define initial and final times and total duration
 		self._i = self.vals[0]
 		self._f = self.vals[-1]
-		self._tot = self.i - self.f
+		self._tot = self._i - self._f
 
 		# if ramp is on, define more attributes
 		if N_up > 0 and N_down > 0:
@@ -536,11 +536,21 @@ class _strobo_times():
 		attributes.
 		"""
 		# indices of strobo times
-		self.inds = _np.arange(0,t.size,len_T).astype(int)
+		self._inds = _np.arange(0,t.size,len_T).astype(int)
 		#discrete stroboscopic t_vecs
-		self.vals = t.take(self.inds)
+		self._vals = t.take(self._inds)
 		# update strobo indices to match shifted (ramped) ones
-		self.inds += ind0 
+		self._inds += ind0
+
+	@property
+	def inds(self):
+	    return self._inds
+
+	@property
+	def vals(self):
+	    return self._vals
+	
+		 
 
 
 class _periodic_ramp():
@@ -548,13 +558,56 @@ class _periodic_ramp():
 		"""
 		Defines time vector attributes of each regime.
 		"""
-		self.N=N # total # periods
-		self.vals = t # time values
-		self.i = self.vals[0] # initial value
-		self.f = self.vals[-1] # final value
-		self.tot = self.N*self.T # total duration
-		self.len = self.vals.size # total length
-		self.strobo = _strobo_times(self.vals,len_T,ind0) # strobo attributes
+		self._N=N # total # periods
+		self._vals = t # time values
+		self._i = self._vals[0] # initial value
+		self._f = self._vals[-1] # final value
+		self._tot = self._N*T # total duration
+		self._len = self._vals.size # total length
+		self._strobo = _strobo_times(self._vals,len_T,ind0) # strobo attributes
+
+	def __iter__(self):
+		return self.vals.__iter__()
+
+	def __getitem__(self,s):
+		return self._vals.__getitem__(s)
+
+	def __len__(self):
+		return self._vals.__len__()
+
+	@property
+	def N(self):
+	    return self._N
+	
+	@property
+	def vals(self):
+	    return self._vals
+
+	@property
+	def i(self):
+	    return self._i
+
+	@property
+	def f(self):
+	    return self._f
+
+	@property
+	def tot(self):
+	    return self._tot
+
+	@property
+	def len(self):
+	    return self._len
+
+	@property
+	def strobo(self):
+	    return self._strobo
+	
+	
+	
+	
+	
+	
 
 
 

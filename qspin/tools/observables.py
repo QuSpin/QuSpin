@@ -10,12 +10,18 @@ from inspect import isgenerator as _isgenerator
 # needed for isinstance only
 from ..hamiltonian import ishamiltonian as _ishamiltonian
 from ..hamiltonian import hamiltonian as _hamiltonian
-from ..basis import spin_basis_1d,photon_basis,isbasis
+from ..basis import spin_basis_1d,photon_basis,isbasis,photon_Hspace_dim
 
 import warnings
 
+### TO DO
+# dicts in end of doc explained
+# finish examples 2, 3
+# put commutator function
+# test long-time quantum fluctuations
 
-__all__ = ["Entanglement_Entropy", "Diag_Ens_Observables", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing","coherent_state"]
+
+__all__ = ["Entanglement_Entropy", "Diagonal_Ensemble", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing","coherent_state","Project_Operator"]
 
 
 # coherent state function
@@ -27,9 +33,9 @@ def coherent_state(a,n,dtype=_np.float64):
 
 	--- arguments ---
 
-	a: (compulsory) expectation value of annihilation operator, i.e. sqrt(mean particle number)
+	a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
 
-	n: (compulsory) cut-off on the number of states kept in the definition of the coherent state
+	n: (required) cut-off on the number of states kept in the definition of the coherent state
 
 	dtype: (optional) data type. Default is set to numpy.float64
 	"""
@@ -52,7 +58,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 	--- arguments ---
 
-	system_state: (compulsory) the state of the quantum system. Can be a:
+	system_state: (required) the state of the quantum system. Can be a:
 
 				-- pure state [numpy array of shape (Ns,)].
 
@@ -65,7 +71,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 				-- a collection of states [dictionary {'V_states':V_states}] containing the states
 					in the columns of V_states [shape (Ns,Nvecs)]
 
-	basis: (compulsory) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
 				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
 
 	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
@@ -131,7 +137,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	
 
 	# calculate reshaped system_state
-	v, rho_d, N_A = reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
+	v, rho_d, N_A = _reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
 
 	if DM == False:
@@ -188,7 +194,7 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 
 
 
-def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True):
+def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True):
 	"""
 	This function reshapes an input state (or matrix with 'Nstates' initial states) into an array of
 	the shape (Nstates,Ns_subsys,Ns_other) with 'Ns_subsys' and 'Ns_other' the Hilbert space dimensions
@@ -199,7 +205,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 
 	--- arguments ---
 
-	system_state: (compulsory) the state of the quantum system. Can be a:
+	system_state: (required) the state of the quantum system. Can be a:
 
 				-- pure state [numpy array of shape (1,) or (,1)].
 
@@ -213,7 +219,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				-- a collection of states [dictionary {'V_states':V_states}] containing the states
 					in the columns of V_states [shape (Ns,Nvecs)]
 
-	basis: (compulsory) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
 				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
 
 	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
@@ -380,7 +386,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 	elif basis.__class__.__name__[:-6] == 'photon':
 
 
-
+		'''
 		def photon_Hspace_dim(N,Ntot,Nph):
 
 			"""
@@ -392,7 +398,7 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 				return 2**N - binom(N,Ntot+1)*hyp2f1(1,1-N+Ntot,2+Ntot,-1)
 			else:
 				raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
-
+		'''
 
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
@@ -467,10 +473,10 @@ def reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True)
 	return v, rho_d, N_A
 
 
-def inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,alpha=1.0):
+def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,alpha=1.0):
 	"""
 	This function calculates various quantities (observables, fluctuations, entropies) written in the
-	diagonal basis of a density matrix 'rho'. See also documentation of 'Diag_Ens_Observables'. The 
+	diagonal basis of a density matrix 'rho'. See also documentation of 'Diagonal_Ensemble'. The 
 	fuction is vectorised, meaning that 'rho' can be an array containing the diagonal density matrices
 	in the columns.
 
@@ -478,7 +484,7 @@ def inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Ren
 
 	--- variables --- 
 
-	istate: (compulsory) type of initial state. Allowed strings are 'pure', 'DM', 'mixed', 'thermal'.
+	istate: (required) type of initial state. Allowed strings are 'pure', 'DM', 'mixed', 'thermal'.
 
 	Obs: (optional) array of shape (,1) with the diagonal matrix elements of an observable in the basis
 			where the density matrix 'rho' is diagonal.
@@ -596,7 +602,7 @@ def inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Ren
 	return return_dict
 		
 
-def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
+def Diagonal_Ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -606,9 +612,9 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 	--- arguments ---
 
-	N: (compulsory) system size N.
+	N: (required) system size N.
 
-	system_state: (compulsory) the state of the quantum system. Can be a:
+	system_state: (required) the state of the quantum system. Can be a:
 
 				-- pure state [numpy array of shape (1,) or (,1)].
 
@@ -617,14 +623,14 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 				-- mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
 					define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
 
-					== 'V1': (compulsory) array with the eigenbasis of H1 in the columns.
+					== 'V1': (required) array with the eigenbasis of H1 in the columns.
 
-					== 'E1': (compulsory) eigenenergies of H1.
+					== 'E1': (required) eigenenergies of H1.
 
 					== 'f': (optional) the distribution used to define the mixed DM. Default is
 						'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
 
-					== 'f_args': (compulsory) list of arguments of function 'f'. If 'f' is not defined, 
+					== 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, 
 						it specifies the inverse temeprature list [beta].
 
 					== 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
@@ -635,7 +641,7 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 					The keys are CANNOT be chosen arbitrarily.
 
-	V2: (compulsory) numpy array containing the basis of the Hamiltonian H2 in the columns.
+	V2: (required) numpy array containing the basis of the Hamiltonian H2 in the columns.
 
 	rho_d: (optional) When set to 'True', returns the Diagonal ensemble DM under the key 'rho_d'. 
 
@@ -653,11 +659,11 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 	Sent_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
 			parameter is 'alpha=1.0' (see below). Appears under the key Sent_Renyi'. Requires 
-			'Sent_args'. To specify the subsystem, see documentation of 'reshape_as_subsys'.
+			'Sent_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
 	Sent_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Sent_Renyi = True'.
 			At least 'Sent_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
-			see documentation of 'reshape_as_subsys'.
+			see documentation of '_reshape_as_subsys'.
 
 	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
 				for the entanglement entropy which is normalised by the subsystem size 
@@ -821,7 +827,7 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 		
 	if Sent_Renyi:
 		# calculate singular values of columns of V2
-		v, _, N_A = reshape_as_subsys({'V_rho':V2,'rho_d':None},**Sent_args)
+		v, _, N_A = _reshape_as_subsys({'V_rho':V2,'rho_d':None},**Sent_args)
 		Sent_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
 		
 	# clear up memory
@@ -829,7 +835,7 @@ def Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,
 
 
 	# calculate diag expectation values
-	Expt_Diag = inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
 	
 
 	# compute densities
@@ -876,9 +882,9 @@ def Project_Operator(Obs,proj,dtype=_np.complex128):
 
 	--- arguments ---
 
-	Obs: (compulsory) operator to be projected.
+	Obs: (required) operator to be projected.
 
-	proj: (compulsory) basis of the final space after the projection or a matrix which contains the projector.
+	proj: (required) basis of the final space after the projection or a matrix which contains the projector.
 
 	dtype: (optional) data type. Default is np.complex128.
 
@@ -965,14 +971,14 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 
 	--- arguments --- 
 
-	psi: (compulsory) initial state.
+	psi: (required) initial state.
 
-	V: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
+	V: (required) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
 
-	E: (compulsory) array containing the eigenvalues of the Hamiltonian H2. 
+	E: (required) array containing the eigenvalues of the Hamiltonian H2. 
 			The order of the eigenvalues must correspond to the order of the columns of V2. 
 
-	times: (compulsory) a vector of times to evaluate the time evolved state at. 
+	times: (required) a vector of times to evaluate the time evolved state at. 
 
 	iterate: (optional) if True this function returns the generator of the time evolved state. 
 	"""
@@ -1037,7 +1043,7 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 	--- arguments ---
 
-	psi_t: (compulsory) three different inputs:
+	psi_t: (required) three different inputs:
 		i) psi_t tuple(psi,E,V,times) 
 			psi: initial state
 	
@@ -1052,9 +1058,9 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 		iii) generator which generates the states
 
-	Obs: (compulsory) tuple of hermitian matrices to calculate its time-dependent expectation value. 
+	Obs: (required) tuple of hermitian matrices to calculate its time-dependent expectation value. 
 
-	times: (compulsory) a vector of times to evaluate the expectation value at. 
+	times: (required) a vector of times to evaluate the expectation value at. 
 
 	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
 			at the times specified by the row index. The return dictonary key is 'psi_time'.
@@ -1215,7 +1221,7 @@ def Mean_Level_Spacing(E):
 
 	--- arguments ---
 
-	E: (compulsory) ordered list of ascending, nondegenerate eigenenergies.
+	E: (required) ordered list of ascending, nondegenerate eigenenergies.
 	"""
 
 	# compute consecutive E-differences
