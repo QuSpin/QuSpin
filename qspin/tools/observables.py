@@ -550,7 +550,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 			variables.append("Sd_Renyi_"+istate)
 	if Srdm_Renyi is not False:
 		if alpha == 1.0:
-			variables.append("Sent_"+istate)
+			variables.append("Srdm_"+istate)
 		else:
 			variables.append("Srdm_Renyi_"+istate)
 
@@ -614,7 +614,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	for i in variables:
 
 		j=i
-		if alpha == 1.0 and ("Sent" in i or 'Sd' in i):
+		if alpha == 1.0 and ("Srdm" in i or 'Sd' in i):
 			i=i.replace(istate,'Renyi_{}'.format(istate))
 
 		return_dict[j] = locals()[i[:-len(istate)]+'d']
@@ -623,7 +623,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 
-def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Sent_args=()):
+def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=()):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -700,10 +700,10 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 
 	Srdm_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
 			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
-			'Sent_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
+			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Sent_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Srdm_Renyi = True'.
-			At least 'Sent_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
+	Srdm_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Srdm_Renyi = True'.
+			At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
 			see documentation of '_reshape_as_subsys'.
 
 	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
@@ -846,7 +846,7 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 		
 	if Srdm_Renyi:
 		# calculate singular values of columns of V2
-		v, _, N_A = _reshape_as_subsys({'V_rho':V2,'rho_d':None},**Sent_args)
+		v, _, N_A = _reshape_as_subsys({'V_rho':V2,'rho_d':None},**Srdm_args)
 		Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
 		
 	# clear up memory
