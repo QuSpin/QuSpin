@@ -54,11 +54,11 @@ def _evolve_step_1(i,H_list,dt_list):
 	This function calculates the evolved state 
 	"""
 	
-	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
+	psi0=_np.zeros((H_list[0].Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
 
 	for dt,H in zip(dt_list,H_list):
-		psi0 = _sla.expm_multiply(-1j*dt*H,psi0)
+		psi0 = _sla.expm_multiply(-1j*dt*H.tocsr(),psi0)
 
 	return psi0
 
@@ -86,7 +86,7 @@ def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9):
 
 def _get_U_step_1(H_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in xrange(H_list[0].Ns))
 
 	return vstack(sols)
 
@@ -145,7 +145,7 @@ class Floquet(object):
 
 		Always given:
 
-		_.EF: Floquet qausi-energies
+		_.EF: ordered Floquet qausi-energies in interval [-Omega,Omega]
 
 		Calculate via flags:
 
@@ -244,8 +244,8 @@ class Floquet(object):
 				H_list = evo_dict["H_list"]
 				dt_list = _np.asarray(evo_dict["dt_list"],dtype=_np.float64)
 
-				if t_list.ndim != 1:
-					raise ValueError("t_list must be 1d array.")
+#				if t_list.ndim != 1:
+#					raise ValueError("t_list must be 1d array.")
 
 				if dt_list.ndim != 1:
 					raise ValueError("dt_list must be 1d array.")
@@ -256,7 +256,7 @@ class Floquet(object):
 					raise ValueError("expecting list/tuple for H_list.")
 
 				# calculate evolution operator
-				UF = _get_U_cont(H_list,dt_list,n_jobs)
+				UF = _get_U_step_1(H_list,dt_list,n_jobs)
 				
 			else:
 				raise ValueError("evo_dict={0} is not correct format.".format(evo_dict))	
@@ -266,29 +266,30 @@ class Floquet(object):
 		if 'UF' in variables:
 			self._UF = _np.copy(UF)
 
+		if 'HF' in variables:
+			self._HF = 1j/self._T*_la.logm(UF)
+
 		# find Floquet states and phases
 		if "VF" in variables:
-			thetaF, UF = _la.eig(UF,overwrite_a=True)
+			thetaF, VF = _la.eig(UF,overwrite_a=True)
 			# calculate and order q'energies
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
+			# sort and order
 			ind_EF = _np.argsort(EF)
 			self._EF = _np.array(EF[ind_EF])
-			self._VF = _np.array(UF[:,ind_EF])
-
+			self._VF = _np.array(VF[:,ind_EF])
 			# clear up junk
-			del ind_EF,VF
+			del VF
 		else:
 			thetaF = _la.eigvals(UF,overwrite_a=True)
 			# calculate and order q'energies
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
-			EF.sort()
-			self._EF = EF
-
-
-		if 'HF' in variables:
-			self._HF = 1j/self._T*_la.logm(UF)
+			ind_EF = _np.argsort(EF)
+			self._EF = _np.array(EF[ind_EF])
 
 		if 'thetaF' in variables:
+			# sort phases
+			thetaF = _np.array(thetaF[ind_EF])
 			self._thetaF = thetaF
 
 
