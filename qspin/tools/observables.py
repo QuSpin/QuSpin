@@ -22,10 +22,16 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 
 def commutator(H1,H2):
-	return H1.dot(H2) - H2.dot(H1)
+	if _ishamiltonian(H1) or _ishamiltonian(H2):
+		return H1*H2 - H2*H1
+	else:
+		return H1.dot(H2) - H2.dot(H1)
 
 def anti_commutator(H1,H2):
-	return H1.dot(H2) + H2.dot(H1)
+	if _ishamiltonian(H1) or _ishamiltonian(H2):
+		return H1*H2 + H2*H1
+	else:
+		return H1.dot(H2) + H2.dot(H1)
 
 def coherent_state(a,n,dtype=_np.float64):
 	"""
@@ -487,7 +493,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	return v, rho_d, N_A
 
 
-def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,alpha=1.0):
+def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,alpha=1.0):
 	"""
 	This function calculates various quantities (observables, fluctuations, entropies) written in the
 	diagonal basis of a density matrix 'rho'. See also documentation of 'Diagonal_Ensemble'. The 
@@ -511,7 +517,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 	Sd_Renyi: (optional) when set to 'True', returns the key with diagonal density matrix of 'rho'.
 
-	Sent_Renyi: (optional) (i,n) array containing the singular values of the i-th state of the eigenbasis
+	Srdm_Renyi: (optional) (i,n) array containing the singular values of the i-th state of the eigenbasis
 			of 'rho'. Returns the key with the entanglement entropy of 'rho' reduced to a subsystem of
 			given choice at infinite times.
 
@@ -542,11 +548,11 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 			variables.append("Sd_"+istate)
 		else:
 			variables.append("Sd_Renyi_"+istate)
-	if Sent_Renyi is not False:
+	if Srdm_Renyi is not False:
 		if alpha == 1.0:
 			variables.append("Sent_"+istate)
 		else:
-			variables.append("Sent_Renyi_"+istate)
+			variables.append("Srdm_Renyi_"+istate)
 
 
 	#################################################################
@@ -592,10 +598,10 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 		return S
 
 	# calculate diag ens ent entropy in post-quench basis
-	if Sent_Renyi is not False:
-		# calculate effective diagonal singular values, \lambda_i^{(n)} = Sent_Renyi
-		rho_ent = (Sent_Renyi**2).dot(rho) # has components (i,psi)
-		Sent_Renyi_d = Entropy(rho_ent,alpha)
+	if Srdm_Renyi is not False:
+		# calculate effective diagonal singular values, \lambda_i^{(n)} = Srdm_Renyi
+		rho_ent = (Srdm_Renyi**2).dot(rho) # has components (i,psi)
+		Srdm_Renyi_d = Entropy(rho_ent,alpha)
 
 		
 	# calculate diag ens entropy in post-quench basis
@@ -617,7 +623,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 
-def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
+def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Sent_args=()):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -637,7 +643,7 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 
 	'Sd_Renyi_...': Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-	'Sent_Renyi_...': Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+	'Srdm_Renyi_...': Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
 			with parameter 'alpha'.
 
 	'rho_d': density matrix of diagonal ensemble
@@ -692,11 +698,11 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 	Sd_Renyi: (optional) diagonal Renyi entropy in the basis of H2. The default Renyi parameter is 
 			'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
 
-	Sent_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
-			parameter is 'alpha=1.0' (see below). Appears under the key Sent_Renyi'. Requires 
+	Srdm_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
+			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
 			'Sent_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Sent_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Sent_Renyi = True'.
+	Sent_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Srdm_Renyi = True'.
 			At least 'Sent_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
 			see documentation of '_reshape_as_subsys'.
 
@@ -820,14 +826,6 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 
 	# prepare observables
 	if Obs is not False or delta_t_Obs is not False or delta_q_Obs is not False:
-		# check if Obs is hermitian
-		print "these lines need to be revised; Need also a flag to disable the hermiticity check."
-		try: 
-			if _la.norm(Obs.todense().T.conj() - Obs.todense()) > 1E4*_np.finfo(Obs.dtype).eps:
-				raise ValueError("'Obs' is not hermitian!")
-		except AttributeError:
-			if _la.norm(Obs.T.conj() - Obs) > 1E4*_np.finfo(Obs.dtype).eps:
-				raise ValueError("'Obs' is not hermitian!")
 
 		if (delta_t_Obs or delta_q_Obs) and Obs is not False:
 			# diagonal matrix elements of Obs^2 in the basis V2
@@ -846,16 +844,16 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 			Obs = _np.einsum('ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real
 
 		
-	if Sent_Renyi:
+	if Srdm_Renyi:
 		# calculate singular values of columns of V2
 		v, _, N_A = _reshape_as_subsys({'V_rho':V2,'rho_d':None},**Sent_args)
-		Sent_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
+		Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
 		
 	# clear up memory
 	del V2
 
 	# calculate diag expectation values
-	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_q_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_q_Obs,Srdm_Renyi=Srdm_Renyi,Sd_Renyi=Sd_Renyi)
 	
 
 	# compute densities
