@@ -15,21 +15,23 @@ from ..basis import spin_basis_1d,photon_basis,isbasis,photon_Hspace_dim
 import warnings
 
 ### TO DO
-# dicts in end of doc explained
 # finish examples 2, 3
-# put commutator function
-# test long-time quantum fluctuations
 
 
-__all__ = ["Entanglement_Entropy", "Diagonal_Ensemble", "Kullback_Leibler_div", "Observable_vs_time", "ED_state_vs_time", "Mean_Level_Spacing","coherent_state","Project_Operator"]
+__all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","coherent_state","project_operator","commutator","anti_commutator"]
 
 
-# coherent state function
+def commutator(H1,H2):
+	return H1.dot(H2) - H2.dot(H1)
+
+def anti_commutator(H1,H2):
+	return H1.dot(H2) + H2.dot(H1)
+
 def coherent_state(a,n,dtype=_np.float64):
 	"""
-	This function creates a harmonic oscillator (ho) coherent state.
+	This function creates a harmonic oscillator coherent state.
 
-	RETURNS: numpy array with ho coherent state.
+	RETURNS: numpy array with harmonic oscilaltor coherent state.
 
 	--- arguments ---
 
@@ -49,12 +51,24 @@ def coherent_state(a,n,dtype=_np.float64):
 	state = s1+_np.log(a)*s2-s3
 	return _np.exp(state)
 
-def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
 	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular
 	Value Decomposition (svd).
 
-	RETURNS:	dictionary in which the entanglement entropy has the key 'Sent'.
+	RETURNS:	dictionary with keys:
+
+	'Sent': entanglement entropy.
+
+	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
+
+	'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
+
+	'U': (optional) svd U matrix
+
+	'V': (optional) svd V matrix
+
+	'lmbda': (optional) svd singular values
 
 	--- arguments ---
 
@@ -193,14 +207,14 @@ def Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,sub
 	return return_dict
 
 
-
 def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True):
 	"""
 	This function reshapes an input state (or matrix with 'Nstates' initial states) into an array of
 	the shape (Nstates,Ns_subsys,Ns_other) with 'Ns_subsys' and 'Ns_other' the Hilbert space dimensions
 	of the subsystem and its complement, respectively.
 
-	RETURNS:	reshaped state, vector with eigenvalues of the DM associated with the initial state, 
+	RETURNS:	reshaped state, 
+				vector with eigenvalues of the DM associated with the initial state, 
 				subsystem size
 
 	--- arguments ---
@@ -552,17 +566,18 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	if Obs is not False:
 		Obs_d = Obs.dot(rho)
 
-	def Fluctuations(delta_Obs,rho):
-		return _np.sqrt( _np.einsum(es_str('ji,jk,ki->i'),rho,delta_Obs,rho).real )
-
 	# calculate diag ens value of Obs fluctuations
 	if delta_t_Obs is not False:
-		delta_t_Obs_d = Fluctuations(delta_t_Obs,rho)
 
-	# calculate diag ens value of Obs fluctuations
-	if delta_q_Obs is not False:
-		delta_q_Obs_d = Fluctuations(delta_q_Obs,rho)
+		delta_t_Obs_d = _np.einsum(es_str('ji,jk,ki->i'),rho,delta_t_Obs,rho).real
 
+		# calculate diag ens value of Obs fluctuations
+		if delta_q_Obs is not False:
+			delta_q_Obs_d = _np.sqrt( _np.einsum(es_str('ji,j->i'),rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
+
+		delta_t_Obs_d = _np.sqrt( delta_t_Obs_d )
+
+		
 	# calculate Shannon entropy for the distribution p
 	def Entropy(p,alpha):
 		""" 
@@ -602,15 +617,34 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 
-def Diagonal_Ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
+def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=()):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
 	expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
 
-	RETURNS: 	dictionary
+
+	RETURNS: 	dictionary with keys depending on the passed optional arguments:
+
+
+	replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
+
+	'Obs_...': infinite time expectation of observable 'Obs'.
+
+	'delta_t_Obs_...': infinite time temporal fluctuations of 'Obs'.
+
+	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
+
+	'Sd_Renyi_...': Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+
+	'Sent_Renyi_...': Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+			with parameter 'alpha'.
+
+	'rho_d': density matrix of diagonal ensemble
+
 
 	--- arguments ---
+
 
 	N: (required) system size N.
 
@@ -652,7 +686,8 @@ def Diagonal_Ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs
 			Appears under the key 'delta_t_Obs'.
 
 	delta_q_Obs: (optional) QUANTUM fluctuations of the expectation of 'Obs' at infinite-times. 
-			Requires 'Obs'. Appears under the key 'delta_q_Obs'.
+			Requires 'Obs'. Appears under the key 'delta_q_Obs'. Returns temporal fluctuations 
+			'delta_t_Obs' for free.
 
 	Sd_Renyi: (optional) diagonal Renyi entropy in the basis of H2. The default Renyi parameter is 
 			'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
@@ -794,31 +829,17 @@ def Diagonal_Ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs
 			if _la.norm(Obs.T.conj() - Obs) > 1E4*_np.finfo(Obs.dtype).eps:
 				raise ValueError("'Obs' is not hermitian!")
 
-		if delta_t_Obs and delta_q_Obs and Obs is not False:
-			# diagonal matrix elements of Obs^2 in the basis V2
-			print "revisit dot product in deltaObs"
-			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
-			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
-			delta_t_Obs = _np.square(Obs)
-			delta_q_Obs = _np.diag(delta_t_Obs)
-			_np.fill_diagonal(delta_t_Obs,0.0)
-			Obs = _np.diag(Obs).real
-			delta_q_Obs -= Obs**2
-
-		elif delta_t_Obs and Obs is not False:
+		if (delta_t_Obs or delta_q_Obs) and Obs is not False:
 			# diagonal matrix elements of Obs^2 in the basis V2
 			print "revisit dot product in deltaObs"
 			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
 			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
 			delta_t_Obs = _np.square(Obs)
 			_np.fill_diagonal(delta_t_Obs,0.0)
+			if delta_q_Obs is not False:
+				delta_q_Obs = _np.diag(Obs.dot(Obs)).real
 			Obs = _np.diag(Obs).real
-
-		elif delta_q_Obs and Obs is not False:
-			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
-			delta_q_Obs = _np.diag(_np.square(Obs)).real
-			Obs = _np.diag(Obs).real
-			delta_q_Obs -= Obs**2
+			#delta_q_Obs = delta_q_Obs # - Obs**2
 
 		elif Obs is not False:
 			# diagonal matrix elements of Obs in the basis V2
@@ -833,9 +854,8 @@ def Diagonal_Ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs
 	# clear up memory
 	del V2
 
-
 	# calculate diag expectation values
-	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_t_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
+	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_q_Obs,Sent_Renyi=Sent_Renyi,Sd_Renyi=Sd_Renyi)
 	
 
 	# compute densities
@@ -873,12 +893,14 @@ def Diagonal_Ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs
 	return Expt_Diag
 
 
-def Project_Operator(Obs,proj,dtype=_np.complex128):
+def project_op(Obs,proj,dtype=_np.complex128):
 	"""
-	This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs'
+	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
 	onto the reduced basis.
 
-	RETURNS: 	dictionary with keys 'Proj_Obs' and value the projected observable.
+	RETURNS: 	dictionary with keys 
+
+	'Proj_Obs': projected observable 'Obs'. and value the projected observable.
 
 	--- arguments ---
 
@@ -915,7 +937,7 @@ def Project_Operator(Obs,proj,dtype=_np.complex128):
 				raise ValueError("Expecting Obs to be a 2 dimensional array.")
 
 			if Obs.shape[0] != Obs.shape[1]:
-				raise ValueError("Expecting OBs to be a square array.")
+				raise ValueError("Expecting Obs to be a square array.")
 
 			if Obs.shape[0] != proj.shape[1]:
 				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
@@ -933,9 +955,9 @@ def Project_Operator(Obs,proj,dtype=_np.complex128):
 
 
 
-def Kullback_Leibler_div(p1,p2):
+def KL_div(p1,p2):
 	"""
-	This routine returns the Kullback-Leibler divergence of the discrete probability distrobutions 
+	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
 	p1 and p2.
 	"""
 	p1 = _np.asarray(p1)
@@ -943,13 +965,13 @@ def Kullback_Leibler_div(p1,p2):
 
 
 	if len(p1) != len(p2):
-		raise TypeError("The probability distributions 'p1' and 'p2' must have same size!")
+		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have same size!")
 	if p1.ndim != 1 or p2.ndim != 1:
-		raise TypeError("The probability distributions 'p1' and 'p2' must have linear dimension!")
+		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have linear dimension!")
 
 
 	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
-		raise TypeError("All entries of the probability distributions 'p1' and 'p2' must be non-negative!")
+		raise TypeError("Expecting all entries of the probability distributions 'p1' and 'p2' to be non-negative!")
 	if _np.any(p1==0.0):
 
 		inds = _np.where(p1 == 0)
@@ -964,7 +986,8 @@ def Kullback_Leibler_div(p1,p2):
 def ED_state_vs_time(psi,V,E,times,iterate=False):
 	"""
 	This routine calculates the time evolved initial state as a function of time. The initial 
-	state is 'psi' and the time evolution is carried out under the Hamiltonian H. 
+	state is 'psi' and the time evolution is carried out under the Hamiltonian H with eigenenergies 
+	'E' and eigensystem 'V'. 
 
 	RETURNS:	either a matrix with the time evolved states as rows, 
 				or an iterator which generates the states one by one.
@@ -1006,10 +1029,6 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 		for t in times:
 			yield V.dot( _np.exp(-1j*E*t)*a_n )
 
-
-	
-
-
 	if iterate:
 		return psi_t_iter(V,psi,times)
 	else:
@@ -1018,7 +1037,7 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 		Ns = len(E)
 
 		psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-		psi_t = psi_t * E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+		psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
 		_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
 
 
@@ -1033,13 +1052,18 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 
 
 
-def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
+def obs_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	
 	"""
-	This routine calculates the expectation value as a function of time of observable(s). The initial 
-	state is 'psi' and the time evolution is carried out under the Hamiltonian H. 
+	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
+	in the time-dependent state 'psi_t'.
 
-	RETURNS:	dictionary in which the time-dependent expectation value has the key 'Expt_time'.
+	RETURNS:	dictionary with keys:
+
+	'Expt_time': 2D array, contains the time-dependent expectation (in the rows) of the i'th 
+				observable from 'Obs_list' in the i'th column.
+
+	'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
 
 	--- arguments ---
 
@@ -1063,7 +1087,7 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	times: (required) a vector of times to evaluate the expectation value at. 
 
 	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
-			at the times specified by the row index. The return dictonary key is 'psi_time'.
+			at the times specified by the column index. The return dictonary key is 'psi_time'.
 	"""
 
 	variables = ['Expt_time']
@@ -1158,10 +1182,6 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 	else:
 		raise ValueError("input not recognized")
 	
-
-
-
-
 		
 
 	Expt_time = []
@@ -1213,16 +1233,22 @@ def Observable_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 
 
-def Mean_Level_Spacing(E):
+def mean_level_spacing(E):
 	"""
 	This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
 
-	RETURNS: mean-level spacing 'r_ave'
+	RETURNS: float with mean-level spacing 'r_ave'
 
 	--- arguments ---
 
 	E: (required) ordered list of ascending, nondegenerate eigenenergies.
 	"""
+
+	if not isinstance(E,_np.ndarray):
+		E = _np.asarray(E)
+
+	if _np.any(_np.sort(E)!=E):
+		raise TypeError("Expecting a sorted list of ascending, nondegenerate eigenenergies 'E'.")
 
 	# compute consecutive E-differences
 	sn = _np.diff(E)

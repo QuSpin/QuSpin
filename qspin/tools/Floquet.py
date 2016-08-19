@@ -286,7 +286,7 @@ class Floquet(object):
 
 
 		if 'HF' in variables:
-			self._HF = 1j/self.T*_np.logm(UF)
+			self._HF = 1j/self._T*_la.logm(UF)
 
 		if 'thetaF' in variables:
 			self._thetaF = thetaF
