@@ -91,7 +91,7 @@ class hamiltonian(object):
 			dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
 			```
 
-			For the dynamic list the ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra arguements which go into the function to evaluate it like: 
+			For the dynamic list the ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra arguments which go into the function to evaluate it like: 
 			```python
 			f_val = func(t,*func_args)
 			```

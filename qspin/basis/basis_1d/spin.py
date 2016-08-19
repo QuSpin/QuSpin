@@ -122,7 +122,7 @@ class spin_basis_1d(basis):
 
 
 	def _make_Nup_block(self,L,Nup=None,**blocks):
-		# getting arguements which are used in basis.
+		# getting arguments which are used in basis.
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
 		zAblock=blocks.get("zAblock")
