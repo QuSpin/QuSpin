@@ -54,11 +54,11 @@ def _evolve_step_1(i,H_list,dt_list):
 	This function calculates the evolved state 
 	"""
 	
-	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
+	psi0=_np.zeros((H_list[0].Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
 
 	for dt,H in zip(dt_list,H_list):
-		psi0 = _sla.expm_multiply(-1j*dt*H,psi0)
+		psi0 = _sla.expm_multiply(-1j*dt*H.tocsr(),psi0)
 
 	return psi0
 
@@ -86,7 +86,7 @@ def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9):
 
 def _get_U_step_1(H_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in xrange(H_list[0].Ns))
 
 	return vstack(sols)
 
@@ -145,7 +145,7 @@ class Floquet(object):
 
 		Always given:
 
-		_.EF: Floquet qausi-energies
+		_.EF: ordered Floquet qausi-energies in interval [-Omega,Omega]
 
 		Calculate via flags:
 
@@ -244,8 +244,8 @@ class Floquet(object):
 				H_list = evo_dict["H_list"]
 				dt_list = _np.asarray(evo_dict["dt_list"],dtype=_np.float64)
 
-				if t_list.ndim != 1:
-					raise ValueError("t_list must be 1d array.")
+#				if t_list.ndim != 1:
+#					raise ValueError("t_list must be 1d array.")
 
 				if dt_list.ndim != 1:
 					raise ValueError("dt_list must be 1d array.")
@@ -256,7 +256,7 @@ class Floquet(object):
 					raise ValueError("expecting list/tuple for H_list.")
 
 				# calculate evolution operator
-				UF = _get_U_cont(H_list,dt_list,n_jobs)
+				UF = _get_U_step_1(H_list,dt_list,n_jobs)
 				
 			else:
 				raise ValueError("evo_dict={0} is not correct format.".format(evo_dict))	
@@ -266,29 +266,30 @@ class Floquet(object):
 		if 'UF' in variables:
 			self._UF = _np.copy(UF)
 
+		if 'HF' in variables:
+			self._HF = 1j/self._T*_la.logm(UF)
+
 		# find Floquet states and phases
 		if "VF" in variables:
-			thetaF, UF = _la.eig(UF,overwrite_a=True)
+			thetaF, VF = _la.eig(UF,overwrite_a=True)
 			# calculate and order q'energies
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
+			# sort and order
 			ind_EF = _np.argsort(EF)
 			self._EF = _np.array(EF[ind_EF])
-			self._VF = _np.array(UF[:,ind_EF])
-
+			self._VF = _np.array(VF[:,ind_EF])
 			# clear up junk
-			del ind_EF,VF
+			del VF
 		else:
 			thetaF = _la.eigvals(UF,overwrite_a=True)
 			# calculate and order q'energies
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
-			EF.sort()
-			self._EF = EF
-
-
-		if 'HF' in variables:
-			self._HF = 1j/self.T*_np.logm(UF)
+			ind_EF = _np.argsort(EF)
+			self._EF = _np.array(EF[ind_EF])
 
 		if 'thetaF' in variables:
+			# sort phases
+			thetaF = _np.array(thetaF[ind_EF])
 			self._thetaF = thetaF
 
 
@@ -417,7 +418,7 @@ class Floquet_t_vec(object):
 		# define initial and final times and total duration
 		self._i = self.vals[0]
 		self._f = self.vals[-1]
-		self._tot = self.i - self.f
+		self._tot = self._i - self._f
 
 		# if ramp is on, define more attributes
 		if N_up > 0 and N_down > 0:
@@ -536,11 +537,21 @@ class _strobo_times():
 		attributes.
 		"""
 		# indices of strobo times
-		self.inds = _np.arange(0,t.size,len_T).astype(int)
+		self._inds = _np.arange(0,t.size,len_T).astype(int)
 		#discrete stroboscopic t_vecs
-		self.vals = t.take(self.inds)
+		self._vals = t.take(self._inds)
 		# update strobo indices to match shifted (ramped) ones
-		self.inds += ind0 
+		self._inds += ind0
+
+	@property
+	def inds(self):
+	    return self._inds
+
+	@property
+	def vals(self):
+	    return self._vals
+	
+		 
 
 
 class _periodic_ramp():
@@ -548,13 +559,56 @@ class _periodic_ramp():
 		"""
 		Defines time vector attributes of each regime.
 		"""
-		self.N=N # total # periods
-		self.vals = t # time values
-		self.i = self.vals[0] # initial value
-		self.f = self.vals[-1] # final value
-		self.tot = self.N*self.T # total duration
-		self.len = self.vals.size # total length
-		self.strobo = _strobo_times(self.vals,len_T,ind0) # strobo attributes
+		self._N=N # total # periods
+		self._vals = t # time values
+		self._i = self._vals[0] # initial value
+		self._f = self._vals[-1] # final value
+		self._tot = self._N*T # total duration
+		self._len = self._vals.size # total length
+		self._strobo = _strobo_times(self._vals,len_T,ind0) # strobo attributes
+
+	def __iter__(self):
+		return self.vals.__iter__()
+
+	def __getitem__(self,s):
+		return self._vals.__getitem__(s)
+
+	def __len__(self):
+		return self._vals.__len__()
+
+	@property
+	def N(self):
+	    return self._N
+	
+	@property
+	def vals(self):
+	    return self._vals
+
+	@property
+	def i(self):
+	    return self._i
+
+	@property
+	def f(self):
+	    return self._f
+
+	@property
+	def tot(self):
+	    return self._tot
+
+	@property
+	def len(self):
+	    return self._len
+
+	@property
+	def strobo(self):
+	    return self._strobo
+	
+	
+	
+	
+	
+	
 
 
 

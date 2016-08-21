@@ -396,7 +396,17 @@ def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 
 
 
+def photon_Hspace_dim(N,Ntot,Nph):
 
+	"""
+	This function calculates the dimension of the total spin-photon Hilbert space.
+	"""
+	if Ntot is None and Nph is not None: # no total particle # conservation
+		return 2**N*(Nph+1)
+	elif Ntot is not None:
+		return 2**N - binom(N,Ntot+1)*hyp2f1(1,1-N+Ntot,2+Ntot,-1)
+	else:
+		raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
 
 
 
