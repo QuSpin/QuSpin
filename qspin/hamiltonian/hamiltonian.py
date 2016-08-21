@@ -17,6 +17,8 @@ import warnings
 
 
 
+
+
 class HamiltonianEfficiencyWarning(Warning):
     pass
 
@@ -391,6 +393,16 @@ class hamiltonian(object):
 	def dynamic(self):
 		return self._dynamic
 
+	@property
+	def T(self):
+		return self.transpose()
+
+	@property
+	def H(self):
+		return self.getH()
+
+
+
 	def sum_duplicates(self):
 		"""
 		description:
@@ -647,26 +659,30 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 
+		if ishamiltonian(V):
+			raise ValueError("To multiply hamiltonians use '*' operator.")
+
+		if V.ndim > 2:
+			raise ValueError("Expecting V.ndim < 3.")
+
+
 		if not _np.isscalar(time):
 			time = _np.asarray(time)
-			if V.ndim == 2:
+			if V.ndim == 2 and V.shape[0] > 1:
  				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-				if len(V[:]) != len(time):
-					raise Exception
+				if V.shape[0] != len(time):
+					raise ValueError("{0} number of vectors do not match length of time vector {1}.".format(V.shape[0],len(time)))
 				
 				return _np.vstack([self.rdot(v,time=t) for v,t in zip(V[:],time)])
 
-			elif V.ndim == 1:
- 				if V.shape[0] != self._shape[1]:
+			else:
+ 				if V.shape[1] != self._shape[0]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				return _np.vstack([self.dot(V,time=t) for t in time])
 				
-			else:
-				raise Exception
-
 		if not check:
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
@@ -739,6 +755,9 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 
+		if ishamiltonian(V):
+			raise ValueError("To multiply hamiltonians use '*' operator.")
+
 		if V.ndim > 2:
 			raise ValueError("Expecting V.ndim < 3.")
 
@@ -748,16 +767,16 @@ class hamiltonian(object):
 			if time.ndim > 1:
 				raise ValueError("Expecting time.ndim < 2.")
 
-			if V.ndim == 2:
+			if V.ndim == 2 and V.shape[1] > 1:
  				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
-				if len(V.T[:]) != len(time):
-					raise ValueError("{0} number of vectors do not match length of time vector {1}.".format(V.shape[0],len(time)))
+				if V.shape[1] != len(time):
+					raise ValueError("{0} number of vectors do not match length of time vector {1}.".format(V.shape[1],len(time)))
 				
 				V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V.T[:],time)]).T
 				return V_dot
-			elif V.ndim == 1:
+			else:
  				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
@@ -798,9 +817,11 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 
-
 		else:
 			V = _np.asanyarray(V)
+
+			if V.ndim not in [1,2]:
+				raise ValueError("Expecting 1 or 2 dimensional array")
 
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
@@ -1142,8 +1163,39 @@ class hamiltonian(object):
 		
 
 
+	def getH(self,copy=False):
+		return self.conj().transpose(copy=copy)
 
 
+	def conj(self):
+		self._static = self._static.conj()
+		self._dynamic = list(self._dynamic)
+		n = len(self._dynamic)
+		for i in xrange(n):
+			self._dynamic[i] = list(self._dynamic[i])
+			self._dynamic[i][0] = self._dynamic[i][0].conj()
+			self._dynamic[i] = tuple(self._dynamic[i])
+
+		self._dynamic = tuple(self._dynamic)
+		return self
+
+
+
+
+	def transpose(self,copy=False):
+		if copy:
+			return self.copy().transpose()
+		else:
+			self._static = self._static.T
+			self._dynamic = list(self._dynamic)
+			n = len(self._dynamic)
+			for i in xrange(n):
+				self._dynamic[i] = list(self._dynamic[i])
+				self._dynamic[i][0] = self._dynamic[i][0].T
+				self._dynamic[i] = tuple(self._dynamic[i])
+
+			self._dynamic = tuple(self._dynamic)
+			return self
 
 
 
@@ -1151,6 +1203,7 @@ class hamiltonian(object):
 		if copy:
 			return self.copy().astype(dtype)
 		else:
+			self._dtype = dtype
 			self._static = self._static.astype(dtype)
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
@@ -1233,6 +1286,13 @@ class hamiltonian(object):
 		self._dynamic = tuple(self._dynamic)
 		
 		return self
+
+
+	def __call__(self,time):
+		if self.is_dense:
+			return self.todense(time)
+		else:
+			return self.tocsr(time)
 
 
 	##################################

@@ -983,9 +983,9 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 #check_opstr(4)
 #check_obc(8)
 #check_pbc(8)
-for L in xrange(4,8):
+#for L in xrange(4,8):
 #	check_getvec(L,sparse=True)
-	check_getvec(L,sparse=False)
+#	check_getvec(L,sparse=False)
 #for L in xrange(4,8,2):
 #	check_getvec_zA_zB(L,sparse=True)
 #	check_getvec_zA_zB(L,sparse=False)
