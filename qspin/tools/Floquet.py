@@ -114,7 +114,7 @@ class Floquet(object):
 
 				* 'rtol': (optional) relative tolerance for the ode solver. (default = 1E-9)
 
-				* 'atol': (optional) absolute tolerance for the ode solver. (defauly = 1E-9)
+				* 'atol': (optional) absolute tolerance for the ode solver. (default = 1E-9)
 
 			2. Step protocol from a hamiltonian object. 
 
@@ -133,11 +133,11 @@ class Floquet(object):
 
 		* HF: (optional) if set to 'True' calculate Floquet hamiltonian. 
 
-		* UF: (optional) if set to 'True' save eovlution operator. 
+		* UF: (optional) if set to 'True' save evolution operator. 
 
-		* ThetaF: (optional) if set to 'True' save the eigen-values of the evolution operator. 
+		* ThetaF: (optional) if set to 'True' save the eigenvalues of the evolution operator. 
 
-		* VF: (optional) if set to 'True' save the eigen-vectors of the evolution operator. 
+		* VF: (optional) if set to 'True' save the eigenvectors of the evolution operator. 
 
 		* n_jobs: (optional) set the number of processors which are used when looping over the basis states. 
 
@@ -153,9 +153,9 @@ class Floquet(object):
 
 		_.UF: Evolution operator
 
-		_.VF: Floquet eigen-states
+		_.VF: Floquet eigenstates
 
-		_.thetaF: eigen-values of evolution operator
+		_.thetaF: eigenvalues of evolution operator
 
 
 		"""
@@ -350,7 +350,7 @@ class Floquet_t_vec(object):
 		N_up: (optional) # of time periods in the ramp-down period
 
 		len_T: (optional) # of time points within a period. N.B. the last period interval is assumed 
-				open on the right, i.e. [0,T) and the poin T does not go into the definition of 'len_T'. 
+				open on the right, i.e. [0,T) and the point T does not go into the definition of 'len_T'. 
 
 
 		--- time vector attributes ---: '_. ' below stands for 'object. '

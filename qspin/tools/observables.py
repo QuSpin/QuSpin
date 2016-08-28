@@ -22,12 +22,14 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 
 def commutator(H1,H2):
+	""" This function returns the commutator of two Hamiltonians H1 and H2. """
 	if _ishamiltonian(H1) or _ishamiltonian(H2):
 		return H1*H2 - H2*H1
 	else:
 		return H1.dot(H2) - H2.dot(H1)
 
 def anti_commutator(H1,H2):
+	""" This function returns the anti-commutator of two Hamiltonians H1 and H2. """
 	if _ishamiltonian(H1) or _ishamiltonian(H2):
 		return H1*H2 + H2*H1
 	else:
@@ -86,7 +88,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
 					rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
-					[numpy arary of shape (Ns,Ns)]. The keys are CANNOT be chosen arbitrarily.].
+					[numpy arary of shape (Ns,Ns)]. The keys CANNOT be chosen arbitrarily.].
 
 				-- a collection of states [dictionary {'V_states':V_states}] containing the states
 					in the columns of V_states [shape (Ns,Nvecs)]
@@ -1235,7 +1237,7 @@ def mean_level_spacing(E):
 	"""
 	This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
 
-	RETURNS: float with mean-level spacing 'r_ave'
+	RETURNS: float with mean-level spacing 'r_ave'.
 
 	--- arguments ---
 

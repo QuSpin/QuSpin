@@ -1,5 +1,5 @@
 #**qspin**
-qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on 1 dimensional spin 1/2 chains with lengths up to 32 sites. The interface allows the user to define any spin 1/2 Hamiltonian which can be constructed from spin operators; while also allowing the user flexibility of accessing many symmetries in 1d. There is also a way of specifying the time dependence of operators in the Hamiltonian as well, which can be used to solve the time dependent Schrodinger equation numerically for these systems. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access the powerful linear algebra tools. 
+qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrodinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python linear algebra tools. 
 
 
 
@@ -7,35 +7,43 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 Contents
 --------
 * [Installation](#installation)
+ * [automatic install](#auto-install)
+ * [manual install](#man-install)
+ * [updating the package](#update)
 * [using the package](#using-the-package)
  * [constructing hamiltonians](#constructing-hamiltonians)
  * [using basis objects](#using-basis-objects)
- * [using symmetries](#using-symmetries)
+ * [specifying symmetries](#using-symmetries)
 * [hamiltonian objects](#hamiltonian-objects)
- * [normal operations](#normal-operations)
- * [quantum operations](#quantum-operations)
+ * [arithmetic operations](#normal-operations)
+ * [quantum (algebraic) operations](#quantum-operations)
  * [other operations](#other-operations)
 * [basis objects](#basis-objects)
- * [1d Spin Basis](#1d-spin-basis)
- * [Harmonic Oscillator basis](#harmonic-oscillator-basis)
- * [Tensor basis objects](#tensor-basis-objects)
- * [Methods of Basis Classes](#methods-of-basis-classes)
-* [Tools](#tools)
- * [Observables](#observables)
- * [Floquet](#floquet)
+ * [1d spin basis](#1d-spin-basis)
+ * [harmonic oscillator basis](#harmonic-oscillator-basis)
+ * [tensor basis objects](#tensor-basis-objects)
+ * [methods of basis classes](#methods-of-basis-classes)
+* [tools](#tools)
+ * [measusrements](#measurements)
+ * [floquet](#floquet)
 
 
 #**Installation**
-This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux and OS-X and windows 64-bit systems. In order to install this you need to get Anaconda package manager for python. Then all one has to do to install is run:
+
+###**automatic install**
+
+This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of qspin requires the Anaconda package manager for Python. Once it has been installen, all one has to do to install is run:
 
 ```
 $ conda install -c weinbe58 qspin
 ```
 
-This will install the latest version on to your computer. Right now the package is in its beta stages and so it may not be availible for installation on all platforms using this method. In this case one can also manually install the package:
+This will install the latest version on your computer. Right now the package is in its beta stages and so it may not be availible for installation on all platforms using this method. In this case one can also manually install the package:
 
 
-1) Manual install: to install manually download source code either by downloading the [master](https://github.com/weinbe58/qspin/archive/master.zip) branch or cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
+###**manual install**
+
+To install qspin manually, download the source code either from the [master](https://github.com/weinbe58/qspin/archive/master.zip) branch, or by cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
 
 unix:
 ```
@@ -46,117 +54,129 @@ or windows command line:
 ```
 setup.py install
 ```
-For the manual installation you must have all the prerequisite python packages: [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), and [joblib](https://pythonhosted.org/joblib/) installed. We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages. 
+For the manual installation you must have all the prerequisite python packages: [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), and [joblib](https://pythonhosted.org/joblib/) installed. We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages.
 
-to update the package with conda all one has to do is run the installation command again, but for a manual install you must delete the package manually from the python 'site-packages/' directory. When installing the package if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which will tell you which files to delete when you want to upgrade the code. In unix the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```, while for windows it is easiest to just go to the folder and delete it from windows explorer. 
+When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code. 
+
+###**updating the package**
+
+To update the package with Anaconda, all one has to do is run the installation command again.
+
+To safely update a manually installed version of qspin, one must first manually delete the entire package from the python 'site-packages/' directory. In Unix, provided the flag ```--record install.txt``` has been used in the manual installation, the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```. In Windows, it is easiest to just go to the folder and delete it from Windows Explorer. 
 
 
 #**using the package**
-All of the calculations done with our package happen through the [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the Quantum Hamiltonian. Time independent operators are summed together into a single  static matrix while all time dependent operators are stored separatly along with the time dependent coupling in front of it. When needed, the time dependence is evaluated on the fly for doing calculations that would involve time dependent operators. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Beyond this we have also created an representation which allows the user to construct the matrices for many-body operators. 
+All the calculations done with qspin happen through [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it. Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the time argument. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this we provide a user-friendly representation for constructings the Hamiltonian matrices for many-body operators. 
 
-Many-body operators are represented by string of letters representing the type of operators and a tuple which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent multi-spin operators as:
+Many-body operators in qspin are defined by a string of letters representing the opeartor types, together with a tuple which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
 
 |      opstr       |      indx      |        operator      |
 |:----------------:|:--------------:|:---------------------------:|
 |"o<sub>1</sub>...o<sub>n</sub>"|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>o<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup>|
 
-where o<sub>i</sub> can be x, y, z, +, or -. This gives the full range of possible spin operators that can be constructed. For different systems there are different types of operators. To see the available operators for a given type of system checkout out the [basis](basis-objects) classes. 
+where o<sub>i</sub> can be x, y, z, +, or -. Then S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup> is the spin-1/2 operator acting on lattice site <sub>i<sub>n</sub>. This gives the full range of possible spin-1/2 operators that can be constructed. By default the hamiltonian will use the spin-1/2 operators (a.k.a. sigma matrices). For different systems, there are different types of operators. To see the available operators for a given type of system check out the [basis](basis-objects) classes. 
 
-###**Constructing hamiltonians**
+###**constructing hamiltonians**
 The hamiltonian is constructed as:
 ```python
 H = hamiltonian(static_list,dynamic_list,**kwargs)
 ```
-where the static_list and dynamic_list are lists have the following format for many-body operators:
+where ```static_list``` and ```dynamic_list``` are lists which have the following format for many-body operators:
 
 ```python
-static_list=[[opstr_1,[indx_11,...,indx_1m]],...]
-dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],...]
+static_list =  [[opstr_1,[indx_11,...,indx_1m]                   ],...]
+dynamic_list = [[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],...]
 ```
 To use Numpy arrays or Scipy matrices the syntax is:
 
 ```python
-static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
-dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
+static_list  = [[opstr_1,[indx_11,...,indx_1m]                   ], matrix_2,...]
+dynamic_list = [[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
 ```
-For the dynamic list the ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra arguements which go into the function to evaluate it like: 
+In the definition of the dynamic list, ```func``` is the python function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra function arguments to evaluate it like: 
 ```python
 f_val = func(t,*func_args)
 ```
 
-####keyword arguements (kwargs):
-the ```**kwargs``` give extra information about the hamiltonian. There are different things one can input for this and which one depends on what object you would like to create. They are used to specify symmetry blocks, give a shape and provide the floating point type to store the matrix elements with.
+####keyword arguments (kwargs):
+the ```**kwargs``` give extra information about the hamiltonian. There is a variety of different things one can input here, and which one to choose depends on what Hamiltonian one would like to create. These arguments are used to specify symmetry blocks, give a shape and provide the floating point type to store the matrix elements with, disable automatic checks on the symemtries and the hermiticity of the hamiltonian, etc.
 
 **providing a shape:**
-If there are many-body operators one must either specify the number of sites with ```N=...``` or pass in a basis object as ```basis=...```, more about basis objects later [section](#basis-objects). You can also specify the shape using the ```shape=...``` keyword argument. For input lists which contain matrices only, the shape does not have to be specified. If empty lists are given, then either one of the previous options must be provided to the hamiltonian constructor.  
+to construct many-body operators one must either specify the number of lattice sites with ```N=...``` or pass in a basis object as ```basis=...```, more about basis objects can be found [here](#basis-objects). You can also specify the shape using the ```shape=...``` keyword argument. For input lists which contain matrices only, the shape does not have to be specified. If empty lists are given, then either one of the previous options must be provided to the hamiltonian constructor.  
 
 **Numpy dtype:**
-The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements with. It supports float32, float64, float128, complex64, and complex128, complex256. The default type is complex128. To specify the dtype use the dtype keyword arguement:
+The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements in. It supports float32, float64, float128, complex64, and complex128, complex256. The default type is complex128. To specify the dtype use the dtype keyword argument:
 
 ```python
-H=hamiltonian(...,dtype=np.float32,...)
+H=hamiltonian(...,dtype=numpy.float32,...)
 ```
-Note that not all platforms as well as all of Scipy and Numpy functions support dtype float128 and complex256.
+Note that not all platforms and all of Scipy and Numpy functions support dtype float128 and complex256.
 
 
-**example:** 
-constructing a hamiltonian object of the transverse field ising model with time dependent field for 10 site chain:
+**Example:** 
+constructing the hamiltonian object of the transverse field Ising model with time-dependent field for a 10-site chain:
 
 ```python
 # python script
 from qspin.hamiltonian import hamiltonian
+import numpy as np
 
-L=10
-v=0.01
-
+# set lattice site
+L=10 
+# define drive function of time t (called func above)
 def drive(t,v):
   return v*t
-  
+v=0.01 # set ramp speed
+# define the function arguments (called func_args above)  
 drive_args=[v]
-
-ising_indx=[[-1.0,i,(i+1)%L] for i in xrange(L)]
-field_indx=[[-1.0,i] for i in xrange(L)]
-static_list=[['zz',ising_indx],['x',field_indx]]
-dynamic_list=[['x',field_indx,drive,drive_args]]
-
+# define operator strings
+Jnn_indx=[[-1.0,i,(i+1)%L] for i in range(L)] # nearest-neughbour interaction with periodic BC
+field_indx=[[-1.0,i] for i in range(L)] # on-site external field
+# define static and dynamic lists
+static_list=[['zz',Jnn_indx],['x',field_indx]] # $H_{stat} = \sum_{j=1}^{L} -\sigma^z_{j}\sigma^z_{j+1} - \sigma^x_j $
+dynamic_list=[['x',field_indx,drive,drive_args]] # $H_{dyn}(t) = vt\sum_{j=1}^{L}\sigma^x_j $
+# create Hamiltonian object
 H=hamiltonian(static_list,dynamic_list,N=L,dtype=np.float64)
 ```
 Here is an example of a 3 spin operator as well:
 
 ```python
-op_indx=[[1.0j,i,(i+1)%L,(i+2)%L] for i in xrange(L)]
-op_indx_cc=[[-1.0j,i,(i+1)%L,(i+2)%L] for i in xrange(L)]
+op_indx=[[1.0j,i,(i+1)%L,(i+2)%L] for i in xrange(L)] # periodic BC
+op_indx_cc=[[-1.0j,i,(i+1)%L,(i+2)%L] for i in xrange(L)] # periodic BC
 
 static_list=[['-z+',op_indx],['+z-',op_indx_cc]]
 ```
-Notice that I need to include both '-z+' and '+z-' operators to make sure our Hamiltonian is hermitian. 
+Notice that one needs to include both '-z+' and '+z-' operators to make sure the Hamiltonian is hermitian. If one forgets about this, there is still the automatic hermiticity check which raises an error, see the optional flag ```check_herm``` in the hamiltonian object class organisation [here](#hamiltonian-objects) which is set to ```True``` by default.
 
 ###**Using basis objects**
 
-Basis objects are another type included in this package which provide all of the functionality which calculates the matrix elements from the operator string representation of the many-body operators. On top of this, some of them have been programmed to calculate the matrix elements in different symmetry blocks of the many-body hamiltonian. to use a basis object to construct the hamiltonian just use the basis keyword argument:
+Basis objects are another very useful type included in qspin: they provide all of the functionality which calculates the matrix elements from the operator string representation of many-body operators. On top of this, they have been programmed to calculate the matrix elements in different symmetry blocks of the many-body hamiltonian with the help of optional flags. To use a basis object to construct the hamiltonian, one simply uses the basis keyword argument:
 ```python
 H = hamiltonian(static_list,dynamic_list,...,basis=basis,...)
 ```
-More information about basis objects can be found in the [basis objects](#basis-objects) section.  
+More information about basis objects can be found in the [basis objects](#basis-objects) section.
+
+We recommend using basis objects when multiple separate Hamiltonians which share the same symmetries need to be constructed. This provides the advantage of saving time when creating the corresponding symmetry objects.
 
 ###**Using symmetries**
-Adding symmetries is easy, either you can just add extra keyword arguments to the initialization of your hamiltonian or when you initialize a basis object. By default the hamiltonian will use the spin-1/2 operators as well as 1d-symmetries. At this point the only symmetries implemented are for spins-1/2 operators in 1 dimension. 
-The symmetries for a spin chain in 1d are:
+Adding symmetries is easy and versatile: one can either just add extra keyword arguments to the initialization of your hamiltonian or, when one initializes a basis object one can build in the desired symmetries. By default, the hamiltonian uses spin-1/2 operators and 1d-symmetries. At this point the spin-chain symmetries implemented are for spins-1/2 operators in 1 dimension. 
+The available symmetries for a spin chain in 1d are:
 
-* Magnetization symmetries: 
+* magnetization symmetries: 
  *  ```Nup=0,1,...,L # pick single magnetization sector```
- * ```Nup = [0,1,...] # pick list of magnetization sectors```
-* Parity symmetry: ```pblock = +/- 1```
-* Spin Inversion symmetry: ```zblock = +/- 1```
-* (Spin Inversion)*(Parity) symmetry: ```pzblock = +/- 1 ```
-* Spin inversion on sublattice A (even sites): ```zAblock = +/- 1```
-* Spin inversion on sublattice B (odd sites): ```zAblock = +/- 1```
-* Translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
-used like:
+ * ```Nup = [0,1,...] # pick list of magnetization sectors (e.g. all even ones)```
+* parity symmetry: ```pblock = +/- 1```
+* spin inversion symmetry: ```zblock = +/- 1```
+* (spin inversion)*(parity) symmetry: ```pzblock = +/- 1 ```
+* spin inversion on sublattice A (even sites, first site of chain is even): ```zAblock = +/- 1```
+* spin inversion on sublattice B (odd sites): ```zAblock = +/- 1```
+* translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
+
+The symmetries can be used like:
 ```python
 H = hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
 ```
-If the user passes the symmetries into the hamiltonian constructor, the constructor creates a [spin_basis_1d](spin-basis-1d) object for the given symmetries and then uses that object to construct the matrix elements. because of this, If one is constructing multiply hamiltonian objects within the same symmetry block it is more efficient to first construct the basis object and then use the basis object to construct the different hamiltonians:
+If the user passes the symmetries into the hamiltonian constructor, the constructor first creates a [spin_basis_1d](spin-basis-1d) object for the given symmetries, and then uses that object to construct the matrix elements. Because of this, if one needs to construct multiple hamiltonian objects in the same symmetry block, it is more efficient to first construct the basis object and then use it to construct all different hamiltonians:
 
 ```python
 
@@ -175,24 +195,24 @@ H2 = hamiltonian(static2_list,dynamic2_list,basis=basis)
 H = hamiltonian(static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs)
 ```
 
-The hamiltonian class wraps most of the functionalty of the package. Below shows the initialization arguements:
+The hamiltonian class wraps most of the functionalty of the package. Below shows the initialization arguments:
 
 --- arguments ---
 
-* static_list: (compulsory) list of objects to calculate the static part of hamiltonian operator. The format goes like:
+* static_list: (required) list of objects to calculate the static part of hamiltonian operator. The format goes like:
 
  ```python
  static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
  ```
 	
 
-* dynamic_list: (compulsory) list of objects to calculate the dynamic part of the hamiltonian operator.The format goes like:
+* dynamic_list: (required) list of objects to calculate the dynamic part of the hamiltonian operator. The format goes like:
 
  ```python
- dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args] [matrix_2,func_2,func_2_args],...]
+ dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
  ```
 
- For the dynamic list the ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple of the extra arguements which go into the function to evaluate it like: 
+ For the dynamic list ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple containing the extra arguments which go into the function to evaluate it like: 
  ```python
  f_val = func(t,*func_args)
  ```
@@ -202,27 +222,27 @@ The hamiltonian class wraps most of the functionalty of the package. Below shows
 
 * shape: (optional) shape to create the hamiltonian with.
 
-* copy: (optional) weather or not to copy the values from the input arrays. 
+* copy: (optional) whether or not to copy the values from the input arrays. 
 
-* check_symm: (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+* check_symm: (optional) flag whether or not to check the operator strings if they obey the requested symmetries.
 
-* check_herm: (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+* check_herm: (optional) flag whether or not to check if the operator strings create a hermitian matrix. 
 
-* check_pcon: (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+* check_pcon: (optional) flag whether or not to check if the operator strings conserve magnetization/particle number. 
 
-* dtype: (optional) data type to case the matrices with. 
+* dtype: (optional) data type to create the matrices with. 
 
 * kw_args: extra options to pass to the basis class.
 
 --- hamiltonian attributes ---: '_. ' below stands for 'object. '
 
-* _.ndim: number of dimensions, always 2.
+* _.ndim: number of array dimensions, always 2.
 		
-* _.Ns: number of states in the hilbert space.
+* _.Ns: number of states in the Hilbert space.
 
 * _.get_shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
 
-* _.is_dense: return 'True' if the hamiltonian contains a dense matrix as a componnent. 
+* _.is_dense: return ```True``` if the hamiltonian contains a dense matrix as a componnent. 
 
 * _.dtype: returns the data type of the hamiltonian
 
@@ -233,25 +253,26 @@ The hamiltonian class wraps most of the functionalty of the package. Below shows
 
 
 
-###**normal operations**
-The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians as well as scipy sparse matrices and numpy dense arrays and scalars:
+###**arithmetic operations**
+The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians, scipy sparse matrices or numpy dense arrays and scalars, as follows:
 
-* between other hamiltonians we have: ```+,-,*,+=,-=``` . Note that ```*``` only works between a static and static hamiltonians or a static and dynamic hamiltonians.
-* between numpy and sparse square arrays we have: ```*,+,-,*=,+=.-=``` (versions >= v0.0.5b)
+* between other hamiltonians we have: ```+,-,*,+=,-=``` . Note that ```*``` only works between a static and static hamiltonians or a static and dynamic hamiltonians, but NOT between two dynamic hamiltonians.
+* between numpy and sparse square arrays we have: ```*,+,-,*=,+=,-=``` (versions >= v0.0.5b)
 * between scalars: ```*,*=``` (versions >= v0.0.5b)
 * negative operator '-H'
 * indexing and slicing: ```H[times,row,col]``` 
 
-###**quantum operations**
-We've included some basic functionality into the hamiltonian class useful for quantum calculations:
+###**quantum (algebraic) operations**
+We have included some basic functionality into the hamiltonian class, useful for quantum calculations:
 
 * matrix vector product / dense matrix:
 
   usage:
     ```python
-    v = H.dot(u,time=0)
+    B = H.dot(A,time=0) # $B = HA$
+    B = H.rdot(A,time=0) # $B = AH$
     ```
-  where time is the time to evaluate the Hamiltonian at for the product, by default time=0. rdot is another function similar to dot just from the right. 
+  where time is the time to evaluate the Hamiltonian at for the product, by default time=0. ```_.rdot``` is another function similar to ```_.dot```, but it performs the matrix multiplication from the right. 
   
 * matrix elements:
 
@@ -259,10 +280,10 @@ We've included some basic functionality into the hamiltonian class useful for qu
     ```python
     Huv = H.matrix_ele(u,v,time=0)
     ```
-  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. NOTE: the inputs should not be hermitian tranposed, the function will do that for you.
+  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. 
+  **NOTE: the inputs should not be hermitian tranposed, the function will do that automatically.
 
-* project to new basis:
-usage:
+* project a Hamiltonian to a new basis:
 	```python
 	H_new = H.project_to(V)
 	```
@@ -273,12 +294,12 @@ returns a new hamiltonian object which is: V<sup>+</sup> H V. Note that V need n
 	```
 	v = H.expm_multiply(u,a=-1j,time=0,times=(),iterate=False,**linspace_args)
 	```
- * u: (compulsory) vector to act on
+ * u: (required) vector to act on
  * a: (optional) factor to multiply H by in the exponential
  * time: (optional) time to evaluate H at
  * times: (optional) lines of times to exponentiate to
  * iterate: (optional) bool to return generate or list of vectors
- * linspace_args: (optional) arguements to pass into expm_multiply
+ * linspace_args: (optional) arguments to pass into expm_multiply
 	
   which evaluates |v > = exp(a H(time))|u > using only the dot product of H on |u >. The extra arguments will allow one to evaluate it at different time points see scipy docs for [expm_multiply](http://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) for more information. If iterate is True the function returns a generate which yields a vector evaluated at the time points specified either by time or by the linspace arguments:
 	```python
@@ -296,9 +317,9 @@ If iterate is false then times is ignored.
     ```
   which evaluates M = exp(a H(time)) using the pade approximation, see scipy docs of [expm](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.linalg.expm.html) for more information.
 
-* Schrodinger dynamics:
+* Schroedinger dynamics:
 
-  The hamiltonian class has 2 private functions which can be passed into Scipy's ode solvers in order to numerically solve the Schrodinger equation in both real and imaginary time:
+  The hamiltonian class has 2 private functions which can be passed into Scipy's ode solvers in order to numerically solve the Schroedinger equation in both real and imaginary time:
     1. __SO(t,v) which proforms: -iH(t)|v>
     2. __ISO(t,v) which proforms: -H(t)|v> 
   
@@ -308,23 +329,23 @@ If iterate is false then times is ignored.
     solver = complex_ode(H._hamiltonian__SO)
     ```
   
-  From here all one has to do is use the solver object as specified in the scipy [documentation](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.complex_ode.html#scipy.integrate.complex_ode). Note that if the hamiltonian is not complex and you are using __ISO, the equations are real valued and so it is more effeicent to use ode instead of complex_ode.
+  From here all one has to do is use the solver object as specified in the scipy [documentation](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.integrate.complex_ode.html#scipy.integrate.complex_ode). Note that if the hamiltonian is not complex and you are using __ISO, the equations are real valued and so it is more efficient to use ```ode``` instead of ```complex_ode```.
 
  This functionality is wrapped in a method called evolve (version >= 0.2.0):
 
 	```python
 	vf = H.evolve(v0,t0,times,solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
 	```
- * v0:  (compulsory) initial state array.
- * t0: (compulsory) initial time.
- * times: (compulsory) a time or generator of times to evolve to.
+ * v0:  (required) initial state array.
+ * t0: (required) initial time.
+ * times: (required) a time or generator of times to evolve up to.
  * solver_name: (optional) used to pick which Scipy ode solver to use.
  * verbose: (optional) prints out when the solver has evolved to each time in times
- * iterate: (optional) returns vf which is an iterator over the evolution vectors without storing the solution for every time in times. 
+ * iterate: (optional) returns 'vf' as an iterator over the evolution vectors without storing the solution for every time in 'times'. 
  * imag_time: (optional) toggles whether to evolve with __SO or __ISO.
- * solver_args: (optional) the optional arguements which are passed into the solver. The default setup is: nstep = 2**31 - 1 ,atol = 1E-9, rtol = 1E-9
+ * solver_args: (optional) the optional arguments which are passed into the solver. The default setup is: ```nstep = 2**31 - 1```, ```atol = 1E-9```, ```rtol = 1E-9```.
   
-The hamiltonian class also has built in methods which are useful for doing ED calculations:
+The hamiltonian class also has built in methods which are useful for doing exact diagonalisation (ED) calculations:
 
 * Full diagonalization:
 
@@ -333,9 +354,9 @@ The hamiltonian class also has built in methods which are useful for doing ED ca
     eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
     eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
     ```
-  where **eigh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh) and [eigvalsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.linalg.eigvalsh.html#scipy.linalg.eigvalsh). 
+  where ```**eigh_args``` are optional arguments which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh) and [eigvalsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.linalg.eigvalsh.html#scipy.linalg.eigvalsh). 
   
-  NOTE: overwrite_a=True always for memory conservation
+  **NOTE: ```overwrite_a=True``` always for memory conservation.
 
 * Sparse diagonalization, which uses ARPACK:
 
@@ -343,10 +364,10 @@ The hamiltonian class also has built in methods which are useful for doing ED ca
     ```python
     eigenvalues,eigenvectors=H.eigsh(time=time,**eigsh_args)
     ```
-  where **eigsh_args are optional arguements which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.eigsh.html)
+  where ```**eigsh_args``` are optional arguments which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.eigsh.html).
 
 ###**other operations**
-There are also some methods which are useful if you need other functionality from other packages:
+There are also some methods which are useful when interfacing qspin with functionality from other packages:
 
 * return copy of hamiltonian as csr matrix: 
   ```python
@@ -370,44 +391,45 @@ There are also some methods which are useful if you need other functionality fro
 
 
 
-# **Basis objects**
+# **basis objects**
 
-The basis objects provide a way of constructing all the necessary information needed to construct a sparse matrix from a list of operators. There are two different kinds of basis classes at this point in the development of the code, All basis objects are derived from the same base object class and have mostly the same functionality but there are two subtypes of this class. The first are basis objects which provide the bulk operations required to create a sparse matrix out of an operator string. Right now we have included only two of these types of classes. One type of class preforms calculations of hamiltonian matrix elements while the other basis types wrap the first type together in tensor style basis types. 
+The basis objects provide a way of constructing all the necessary information needed to construct a sparse matrix from a list of operators. All basis objects are derived from the same base object class and have mostly the same functionality. There are two subtypes of the base object class. The first type consists of basis objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, basis type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style basis type. For instance, basis type two can take two spin-chain bases and create the corresponding tensor product basis our of them.   
 
-
-###**1d Spin Basis**
+###**1d spin basis**
 ```python
-basis = spin_basis_1d(L,**symmtry_blocks)
+basis = spin_basis_1d(L,**symmetry_blocks)
 ```
-the spin_basis_1d class provides everything necessary to create a hamiltonian of a spin system in 1d. The available operators one can use are the the standard spin operators: ```x,y,z,+,-``` which either represent the pauli operators or spin 1/2 operators. The ```+,-``` operators are always constructed as ```x +/- i y```.
+The spin_basis_1d class provides everything necessary to create a hamiltonian of a spin-1/2 system in 1d. The available operators one can use are the the standard spin operators: ```x,y,z,+,-``` which either represent the Pauli operators (matrices) or spin-1/2 operators. The ```+/-``` operators are always constructed as ```x +/- i y```.
 
 
-It also allows the user to create the hamiltonian in block reduced by symmetries like:
+It is also possible to create the hamiltonian in a given symmetry-reduced block as follows:
 
-* Magnetization symmetries: 
+* magnetization symmetries: 
  *  ```Nup=0,1,...,L # pick single magnetization sector```
  * ```Nup = [0,1,...] # pick list of magnetization sectors```
-* Parity symmetry: ```pblock = +/- 1```
-* Spin Inversion symmetry: ```zblock = +/- 1```
-* (Spin Inversion)*(Parity) symmetry: ```pzblock = +/- 1 ```
-* Spin inversion on sublattice A (even sites): ```zAblock = +/- 1```
-* Spin inversion on sublattice B (odd sites): ```zAblock = +/- 1```
-* Translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
+* parity symmetry: ```pblock = +/- 1```
+* spin inversion symmetry: ```zblock = +/- 1```
+* (spin inversion)*(parity) symmetry: ```pzblock = +/- 1 ```
+* spin inversion on sublattice A (even sites, first lattice site is even): ```zAblock = +/- 1```
+* spin inversion on sublattice B (odd sites): ```zAblock = +/- 1```
+* translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
 
-Other arguements which are optional are:
+Other optional arguments include:
 
-* pauli: toggle whether or not to use spin-1/2 or pauli matrices for matrix elements (default pauli = True).
-* a: the lattice spacing for the translational symmetry (default a = 1).
+* pauli: toggle whether or not to use spin-1/2 or Pauli matrices for matrix elements. Default is ```pauli = True```.
+* a: the lattice spacing for the translational symmetry. Default is ```a = 1```.
 
 
 
-###**Harmonic Oscillator Basis**
-This basis implements a single harmonic oscillator mode. The available operators are ```+,-,n```.
+###**harmonic oscillator basis**
+This basis implements a single harmonic oscillator mode. The available operators are ```+,-,n,I```, corresponding to the raising, lowering, the number operator, and the identity, respectively.
 
-###**Tensor Basis Objects**
-In version 0.1.0b we have created new classes which allow basis to be tensored together. 
+###**tensor basis objects**
+In version 0.1.0b we have created new classes which allow bases to be tensored together. 
 
-* tensor_basis class: two basis objects b1 and b2 the tensor_basis class will combine them together to create a new basis objects which can be used to create the tensored hamiltonian of both basis:
+* **tensor_basis class: 
+
+  the tensor_basis class will combine two basis objects b1 and b2 together into a new basis object which can be then used, e.g., to create the tensored hamiltonian of both basis:
 
 	```python
 	basis1 = spin_basis_1d(L,Nup=L/2)
@@ -415,47 +437,52 @@ In version 0.1.0b we have created new classes which allow basis to be tensored t
 	t_basis = tensor_basis(basis1,basis2)
 	```
 
-	The syntax for the operator strings are as follows. The operator strings are separated by a '|' while the index array has no splitting character.
+	The syntax for the operator strings is as follows. The operator strings are separated by a '|' while the index array has no splitting character.
 
 	```python
-	# tensoring two z spin operators at sites 1 for basis1 and 5 for basis2
+	# tensoring two z spin operators at site 1 for basis1 and site 5 for basis2
 	opstr = "z|z" 
 	indx = [1,5] 
 	```
 
-	if there are no operator strings on one side of the '|' then an identity operator is assumed.
+	if there are no operator strings on either side of the '|' then an identity operator is assumed.
 
-* photon_basis class: This class allows the user to define a basis which couples to a single photon mode. There are two types of basis objects that one can create, a particle (magnetization + photon or particle + photon) conserving basis or a non-conserving basis.  In the former case one can specify the total number of quanta using the the Ntot keyword arguement:
+* **photon_basis class: 
+
+This class allows the user to define a basis which couples to a single photon mode. The operators for the photon sector are the same as the harmonic oscilaltor basis: '+', '-', 'n', and 'I'. 
+
+There are two types of basis objects that one can create: a particle (magnetization + photon) conserving basis or a non-conserving basis. 
+
+  In the conserving case one can specify the total number of quanta using the the Ntot keyword argument:
 
 	```python
 	p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
 	```
 
-	while for for non-conserving basis you must specify the number of photon states with Nph:
+	For the non-conserving basis, one must specify the total number of photon (a.k.a harmonic oscillator) states with Nph:
 
 	```python
 	p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
 	```
+  In the non-conserving basis class ones cannot directly pass a basis object; instead, the constructor will build it from scratch.
 
-	For this basis class you can't pass not a basis object, but the constructor for you basis object. The operators for the photon sector are '+', '-', 'n', and 'I'.
+###**checks on operator strings**
+New in version 0.2.0 we have included new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
 
-###**Checks on operator strings**
-new in version 0.2.0 we have included a new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
-
-* Checks if complete list of opertors obey the given symmetry of that basis. The check can be turned off with the flag ```check_symm=False ``` in the [hamiltonian](#hamiltonian-objects) class. 
-* Checks of the given set of operators are hermitian. The check can be turned out with the flag ```check_herm=False``` in the [hamiltonian](#hamiltonian-objects) class. 
-* Checks of the given set of operators obey particle conservation (for spin systems this means magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](#hamiltonian-objects) class. 
+* check if the final complete list of opertors obeys the requested symmetry of that basis. The check can be turned off with the flag ```check_symm=False ``` in the [hamiltonian](#hamiltonian-objects) class. 
+* check if the final complete list of operators are hermitian. The check can be turned out with the flag ```check_herm=False``` in the [hamiltonian](#hamiltonian-objects) class. 
+* check if the final complete list of opertors obeys particle number conservation (for spin systems this means that magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](#hamiltonian-objects) class. 
 
 ###**Methods of Basis Classes**
 ```python
 basis.Op(opstr,indx,J,dtype)
 ```
-This function takes the string of operators and index which they act returns the matrix elements, row index and column index of those matrix elements in the Hamiltonian matrix for the symmetry sector the basis was initialized with.
----arguments--- (*all compulsory*)
+This function takes the string of operators and the sites on which they act, and returns the matrix elements, their row index and column index in the Hamiltonian matrix for the symmetry sector the basis was initialized with.
+---arguments--- (*all required*)
 
 * opstr: string which contains the operator string.
-* indx: 1-dim array which contains the index where the operators act.
-* J: scalar value which is the coefficient in front of the operator.
+* indx: 1-dim array which contains the site indices where the operators act.
+* J: scalar value which is the coefficient in front of the operator (i.e. the coupling constant).
 * dtype: the data type the matrix elements should be cast to. 
 
 RETURNS:
@@ -467,20 +494,20 @@ RETURNS:
 ```python
 basis.get_vec(v)
 ```
-This function converts a state in the symmetry reduced basis to the full basis.
+This function converts a state defined in the symmetry-reduced basis to the full basis.
 ---arguments---
 
 * v:
   1. 1-dim array which contains the state
-  2. 2-dim array which contains multiply states in the columns
+  2. 2-dim array which contains multiple states in the columns
   
 RETURNS:
-state or states in the full Hilbert space.
+state or states in the full basis.
 
 ```python
 basis.get_proj(dtype)
 ```
-This function returns the transformation from the symmetry reduced basis to the full basis
+This function returns the transformation from the symmetry-reduced basis to the full basis
 ---arguments---
 
 * dtype: data type to cast projector matrix in. 
@@ -490,58 +517,87 @@ projector to the full basis as a sparse matrix.
 
 # **Tools**
 
-##**Observables** 
+
+
+
+
+
+
+##**Measurements** 
+
+
+
+
 
 #### **Entanglement entropy**
 
 ```python
-Entanglement_Entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False])
+ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False])
 ```
-	
-This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd).
 
+This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular
+Value Decomposition (svd).
 
---- arguments ---
+RETURNS:  dictionary with keys:
 
-* system_state: (compulsory) the state of the quantum system. Can be a:
+* 'Sent': entanglement entropy.
 
- 1. pure state [1-dim array].
+* 'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
 
- 2. density matrix (DM) [2-dim array].
+* 'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
 
- 3. diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
-  * rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho [numpy arary of shape (Ns,Ns)]. The keys are CANNOT be chosen arbitrarily.].
+* 'U': (optional) svd U matrix
 
- 4. a collection of states [dictionary {'V_states':V_states}] containing the states in the columns of V_states [shape (Ns,Nvecs)]
+* 'V': (optional) svd V matrix
 
-* basis: (compulsory) the basis used to build 'system_state'. Must be an instance of 'photon_basis', 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+* 'lmbda': (optional) svd singular values
+
+ --- arguments ---
+
+* system_state: (required) the state of the quantum system. Can be a:
+
+  1. pure state [numpy array of shape (Ns,)].
+
+  2. density matrix (DM) [numpy array of shape (Ns,Ns)].
+
+  3. diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
+    rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
+    [numpy arary of shape (Ns,Ns)]. The keys CANNOT be chosen arbitrarily.].
+
+  4. a collection of states [dictionary {'V_states':V_states}] containing the states
+    in the columns of V_states [shape (Ns,Nvecs)]
+
+* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
 
 * chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
 
- * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+  * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
 
- * [0,1,...,N-1,N] for 'photon_basis'.
+  * [0,1,...,N-1,N] for 'photon_basis'.
 
 * DM: (optional) String to enable the calculation of the reduced density matrix. Available options are
 
- * 'chain_subsys': calculates the reduced DM of the subsystem 'chain_subsys' and
-					returns it under the key 'DM_chain_subsys'.
+  * 'chain_subsys': calculates the reduced DM of the subsystem 'chain_subsys' and
+    returns it under the key 'DM_chain_subsys'.
 
- * 'other_subsys': calculates the reduced DM of the complement of 'chain_subsys' and
-					returns it under the key 'DM_other_subsys'.
+  * 'other_subsys': calculates the reduced DM of the complement of 'chain_subsys' and
+    returns it under the key 'DM_other_subsys'.
 
- * 'both': calculates and returns both density matrices as defined above.
+  * 'both': calculates and returns both density matrices as defined above.
 
- Default is 'False'. 	
+  Default is 'False'.   
 
-* alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+* alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
+        the entropy keys have attached '_Renyi' to their label.
 
 * densities: (optional) if set to 'True', the entanglement entropy is normalised by the size of the
-				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
+        subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
-* svd_return_vec: (optional) list of three booleans to return Singular Value Decomposition (svd) parameters:
+* svd_return_vec: (optional) list of three booleans to return Singular Value Decomposition (svd) 
+  parameters:
 
   * [True, . , . ] returns the svd matrix 'U'.
 
@@ -549,105 +605,122 @@ This function calculates the entanglement entropy of a lattice quantum subsystem
 
   * [ . , . ,True] returns the svd matrix 'V'.
 
- Any combination of the above is possible. Default is [False,False,False].
-
-RETURNS:	
-
-dictionary in which the entanglement entropy has the key 'Sent'.
-
-
+  Any combination of the above is possible. Default is [False,False,False].
 
 
 
 
 #### **Diagonal Ensemble Observables**
 ```python
-Diag_Ens_Observables(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Sent_Renyi=False,Sent_args=())
+diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
 
-This function calculates the expectation values of physical quantities in the Diagonal ensemble set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
+This function calculates the expectation values of physical quantities in the Diagonal ensemble 
+set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
+expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
+
+
+RETURNS:  dictionary with keys depending on the passed optional arguments:
+
+replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
+
+* 'Obs_...': infinite time expectation of observable 'Obs'.
+
+* 'delta_t_Obs_...': infinite time temporal fluctuations of 'Obs'.
+
+* 'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
+
+* 'Sd_Renyi_...': Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+
+* 'Srdm_Renyi_...': Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+  with parameter 'alpha'.
+
+* 'rho_d': density matrix of diagonal ensemble
+
+
 --- arguments ---
 
-* N: (compulsory) system size N.
 
-* system_state: (compulsory) the initial state of the quantum system. Can be a:
+* N: (required) system size N.
 
- 1. pure state [1-dim array].
+* system_state: (required) the state of the quantum system. Can be a:
 
- 2. density matrix (DM) [2-dim array].
+  1. pure state [numpy array of shape (1,) or (,1)].
 
-  3. mixed DM [dictionary]{'V1':V1, 'E1':E1, 'f':f, 'f_args':f_args, 'V1_state':int, 'f_norm':False} to define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
+  2. density matrix (DM) [numpy array of shape (1,1)].
 
-   * 'V1': (compulsory) array with the eigenbasis of H1 in the columns.
+  3. mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
+    define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
 
-   * 'E1': (compulsory) eigenenergies of H1.
+    * 'V1': (required) array with the eigenbasis of H1 in the columns.
 
-   * 'f': (optional) the distribution used to define the mixed DM. Default is
-						'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
+    * 'E1': (required) eigenenergies of H1.
 
-   * 'f_args': (compulsory) list of arguments of function 'f'. If 'f' is not defined, 
-						it specifies the inverse temeprature list [beta].
+    * 'f': (optional) the distribution used to define the mixed DM. Default is
+      'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
 
-   * 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
-						expectations are also returned.
+    * 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, 
+      it specifies the inverse temeprature list [beta].
 
-   * 'f_norm': (optional) if set to 'False' the mixed DM built from 'f' is NOT normalised
-						and the norm is returned under the key 'f_norm'. 
+    * 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
+      expectations are also returned.
 
- The keys are CANNOT be chosen arbitrarily.
+    * 'f_norm': (optional) if set to 'False' the mixed DM built from 'f' is NOT normalised
+      and the norm is returned under the key 'f_norm'. 
 
-* V2: (compulsory) numpy array containing the basis of the Hamiltonian H2 in the columns.
+    The keys are CANNOT be chosen arbitrarily.
+
+* V2: (required) numpy array containing the basis of the Hamiltonian H2 in the columns.
 
 * rho_d: (optional) When set to 'True', returns the Diagonal ensemble DM under the key 'rho_d'. 
 
 * Obs: (optional) hermitian matrix of the same size as V2, to calculate the Diagonal ensemble 
-			expectation value of. Appears under the key 'Obs'.
+  expectation value of. Appears under the key 'Obs'.
 
 * delta_t_Obs: (optional) TIME fluctuations around infinite-time expectation of 'Obs'. Requires 'Obs'. 
-			Appears under the key 'delta_t_Obs'.
+  Appears under the key 'delta_t_Obs'.
 
 * delta_q_Obs: (optional) QUANTUM fluctuations of the expectation of 'Obs' at infinite-times. 
-			Requires 'Obs'. Appears under the key 'delta_q_Obs'.
+  Requires 'Obs'. Appears under the key 'delta_q_Obs'. Returns temporal fluctuations 
+  'delta_t_Obs' for free.
 
 * Sd_Renyi: (optional) diagonal Renyi entropy in the basis of H2. The default Renyi parameter is 
-			'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
+  'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
 
-* Sent_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
-			parameter is 'alpha=1.0' (see below). Appears under the key Sent_Renyi'. Requires 
-			'Sent_args'. To specify the subsystem, see documentation of 'reshape_as_subsys'.
+* Srdm_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
+  parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
+  'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-* Sent_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Sent_Renyi = True'.
-			At least 'Sent_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
-			see documentation of 'reshape_as_subsys'.
+* Srdm_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Srdm_Renyi = True'.
+  At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
+  see documentation of '_reshape_as_subsys'.
 
 * densities: (optional) if set to 'True', all observables are normalised by the system size N, except
-				for the entanglement entropy which is normalised by the subsystem size 
-				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
+  for the entanglement entropy which is normalised by the subsystem size 
+  [i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
 * alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 
-RETURNS: 	
 
-dictionary
+
 
 ####**Project Operator**
 ```python
-Project_Operator(Obs,proj,dtype=_np.complex128):
+project_op(Obs,proj,dtype=_np.complex128):
 ```
 This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs' onto the reduced basis.
 
+RETURNS:  dictionary with keys 
+
+* 'Proj_Obs': projected observable 'Obs'. and value the projected observable.
 	
 --- arguments ---
 
-* Obs: (compulsory) operator to be projected.
+* Obs: (required) operator to be projected.
 
-* proj: (compulsory) basis of the final space after the projection or a matrix which contains the projector.
+* proj: (required) basis of the final space after the projection or a matrix which contains the projector.
 
 * dtype: (optional) data type. Default is np.complex128.
-
-RETURNS: 	
-
-* dictionary with keys 'Proj_Obs' and value the projected observable.
 
 
 
@@ -656,7 +729,7 @@ RETURNS:
 
 #### **Kullback-Leibler divergence**
 ```python
-Kullback_Leibler_div(p1,p2)
+KL_div(p1,p2)
 ```
 This routine returns the Kullback-Leibler divergence of the discrete probabilities p1 and p2. 
 
@@ -670,23 +743,22 @@ This routine returns the Kullback-Leibler divergence of the discrete probabiliti
 ```python
 ED_state_vs_time(psi,V,E,times,iterate=False):
 ```
-This routine calculates the time evolved initial state as a function of time. The initial state is 'psi' and the time evolution is carried out under the Hamiltonian H. 
+This routine calculates the time evolved initial state as a function of time. The initial state is 'psi' and the time evolution is carried out under the Hamiltonian H.
+
+RETURNS:  either a matrix with the time evolved states as rows, or an iterator which generates the states one by one.
+
 --- arguments --- 
 
-* psi: (compulsory) initial state.
+* psi: (required) initial state.
 
-* V: (compulsory) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
+* V: (required) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
 
-* E: (compulsory) array containing the eigenvalues of the Hamiltonian H. 
+* E: (required) array containing the eigenvalues of the Hamiltonian H. 
 			The order of the eigenvalues must correspond to the order of the columns of V. 
 
-* times: (compulsory) an array of times to evaluate the time evolved state at. 
+* times: (required) an array of times to evaluate the time evolved state at. 
 
 * iterate: (optional) if True this function returns the generator of the time evolved state. 
-
-RETURNS:
-
-* Returns a matrix with the time evolve states in the columns, or an iterator which generates the states in sequence.
 
 
 
@@ -694,9 +766,18 @@ RETURNS:
 Observable_vs_time(psi_t,Obs_list,times=None,return_state=False)
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
---- arguements ---
 
-* psi_t: (compulsory) Source of time dependent states, three different types of inputs:
+RETURNS:  dictionary with keys:
+
+* 'Expt_time': 2D array, contains the time-dependent expectation (in the rows) of the i'th 
+  observable from 'Obs_list' in the i'th column.
+
+* 'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
+
+
+--- arguments ---
+
+* psi_t: (required) Source of time dependent states, three different types of inputs:
 
 
  1. psi_t: tuple(psi, E, V, times)  
@@ -708,25 +789,61 @@ This routine calculate the expectation value as a function of time of an observa
  3. psi_t:  Iterator generates the states sequentially ( For most evolution functions you can get this my setting ```iterate=True```. This is more memory efficient as the states are generated on the fly as opposed to being stored in memory )
 
 
-* Obs_list: (compulsory) List of objects to take the expecation values with. This accepts NumPy, and SciPy matrices as well as hamiltonian objects.
+* Obs_list: (required) List of objects to take the expecation values with. This accepts NumPy, and SciPy matrices as well as hamiltonian objects.
 
 * times: (optional) a real array of times to evaluate the expectation value at. always fifth argument. If this is specified, the hamiltonian objects will be dynamically evaluated at the times specified. The function will also 
 
 * return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
-RETURNS:
 
-* output: dictionary
- * 'Expt_time' array 2-dimensions: contains the time dependent expectation values of the operators. The row index is the time index and the column index in the index of the observable in Obs_list. 
- * 'psi_time' array 2-dimensional: contains the states evaluated at each of the time points, where the column index refers to the time index. 
+
 
 ### **Mean Level spacing**
 ```python
 Mean_Level_Spacing(E)
 ```
-This routine returns the mean-level spacing r_ave of the energy distribution E, see [arXiv:1212.5611](http://arxiv.org/abs/1212.5611). 
 
-E: (compulsory) ordered list of ascending, nondegenerate eigenenergies. 
+This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
+
+RETURNS: float with mean-level spacing 'r_ave'.
+
+--- arguments ---
+
+* E: (required) ordered list of ascending, nondegenerate eigenenergies.
+
+
+### **Commutator**
+```python
+commutator(H1,H2)
+```
+This function returns the commutator of two Hamiltonians H1 and H2.
+
+### **anti_commutator**
+```python
+commutator(H1,H2)
+```
+This function returns the anti-commutator of two Hamiltonians H1 and H2.
+
+
+### **coherent_state**
+```python
+coherent_state(a,n,dtype=_np.float64)
+```
+This function creates a harmonic oscillator coherent state.
+
+RETURNS: numpy array with harmonic oscilaltor coherent state.
+
+--- arguments ---
+
+* a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
+
+* n: (required) cut-off on the number of states kept in the definition of the coherent state
+
+* dtype: (optional) data type. Default is set to numpy.float64
+
+
+
+
 
 ###**Floquet**
 This package contains tools which contains tools which can be helpful in simulating Floquet systems. 
@@ -740,40 +857,41 @@ Calculates the Floquet spectrum for a given protocol, and optionally the Floquet
 
 --- arguments ---
 
-* evo_dict: (compulsory) dictionary which passes the different types of protocols to calculate evolution operator:
+* evo_dict: (required) dictionary which passes the different types of protocols to calculate evolution operator:
+
 
  1. Continuous protocol.
 
-  * 'H': (compulsory) hamiltonian object to generate the time evolution. 
+  * 'H': (required) hamiltonian object to generate the time evolution. 
 
-  * 'T': (compulsory) period of the protocol. 
+  * 'T': (required) period of the protocol. 
 
   * 'rtol': (optional) relative tolerance for the ode solver. (default = 1E-9)
 
-  * 'atol': (optional) absolute tolerance for the ode solver. (defauly = 1E-9)
+  * 'atol': (optional) absolute tolerance for the ode solver. (default = 1E-9)
 
  2. Step protocol from a hamiltonian object. 
 
-  * 'H': (compulsory) hamiltonian object to generate the hamiltonians at each step.
+  * 'H': (required) hamiltonian object to generate the hamiltonians at each step.
 				
-  * 't_list': (compulsory) list of times to evaluate the hamiltonian at when doing each step.
+  * 't_list': (required) list of times to evaluate the hamiltonian at when doing each step.
 
-  * 'dt_list': (compulsory) list of time steps for each step of the evolution. 
+  * 'dt_list': (required) list of time steps for each step of the evolution. 
 
  3. Step protocol from a list of hamiltonians. 
 
-  * 'H_list': (compulsory) list of matrices which to evolve with.
+  * 'H_list': (required) list of matrices which to evolve with.
 
-  * 'dt_list': (compulsory) list of time steps to evolve with. 
+  * 'dt_list': (required) list of time steps to evolve with. 
 
  * HF: (optional) if set to 'True' calculate Floquet hamiltonian. 
 
 
-* UF: (optional) if set to 'True' save eovlution operator. 
+* UF: (optional) if set to 'True' save evolution operator. 
 
-* ThetaF: (optional) if set to 'True' save the eigen-values of the evolution operator. 
+* ThetaF: (optional) if set to 'True' save the eigenvalues of the evolution operator. 
 
-		* VF: (optional) if set to 'True' save the eigen-vectors of the evolution operator. 
+		* VF: (optional) if set to 'True' save the eigenvectors of the evolution operator. 
 
 * n_jobs: (optional) set the number of processors which are used when looping over the basis states. 
 
@@ -789,9 +907,9 @@ Calculate via flags:
 
 * _.UF: Evolution operator
 
-* _.VF: Floquet eigen-states
+* _.VF: Floquet eigenstates
 
-* _.thetaF: eigen-values of evolution operator
+* _.thetaF: eigenvalues of evolution operator
 
 ####**Floquet_t_vec**
 ```python
@@ -801,15 +919,15 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 
 --- arguments ---
 
-* Omega: (compulsory) drive frequency
+* Omega: (required) drive frequency
 
-* N_const: (compulsory) # of time periods in the constant period
+* N_const: (required) # of time periods in the constant period
 
 * N_up: (optional) # of time periods in the ramp-up period
 
 * N_down: (optional) # of time periods in the ramp-down period
 
-* len_T: (optional) # of time points within a period. N.B. the last period interval is assumed  open on the right, i.e. [0,T) and the poin T does not go into the definition of 'len_T'. 
+* len_T: (optional) # of time points within a period. N.B. the last period interval is assumed  open on the right, i.e. [0,T) and the point T does not go into the definition of 'len_T'. 
 
 
 --- Floquet_t_vec attributes ---: '_. ' below stands for 'object. '
