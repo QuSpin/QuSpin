@@ -763,7 +763,7 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 
 
 ```python
-Observable_vs_time(psi_t,Obs_list,times=None,return_state=False)
+obs_vs_time(psi_t,Obs_list,times=None,return_state=False)
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
 
