@@ -74,7 +74,7 @@ Many-body operators in qspin are defined by a string of letters representing the
 |:----------------:|:--------------:|:---------------------------:|
 |"o<sub>1</sub>...o<sub>n</sub>"|[J,i<sub>1</sub>,...,i<sub>n</sub>]|J S<sub>i<sub>1</sub></sub><sup>o<sub>1</sub></sup>...S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup>|
 
-where o<sub>i</sub> can be x, y, z, +, or -. Then S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup> is the spin-1/2 operator acting on lattice site <sub>i<sub>n</sub>. This gives the full range of possible spin-1/2 operators that can be constructed. By default the hamiltonian will use the spin-1/2 operators (a.k.a. sigma matrices). For different systems, there are different types of operators. To see the available operators for a given type of system check out the [basis](basis-objects) classes. 
+where o<sub>i</sub> can be x, y, z, +, or -. Then S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup> is the spin-1/2 operator acting on lattice site i<sub>n</sub>. This gives the full range of possible spin-1/2 operators that can be constructed. By default the hamiltonian will use the spin-1/2 operators (a.k.a. sigma matrices). For different systems, there are different types of operators. To see the available operators for a given type of system check out the [basis](basis-objects) classes. 
 
 ###**constructing hamiltonians**
 The hamiltonian is constructed as:
@@ -105,7 +105,7 @@ the ```**kwargs``` give extra information about the hamiltonian. There is a vari
 to construct many-body operators one must either specify the number of lattice sites with ```N=...``` or pass in a basis object as ```basis=...```, more about basis objects can be found [here](#basis-objects). You can also specify the shape using the ```shape=...``` keyword argument. For input lists which contain matrices only, the shape does not have to be specified. If empty lists are given, then either one of the previous options must be provided to the hamiltonian constructor.  
 
 **Numpy dtype:**
-The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements in. It supports float32, float64, float128, complex64, and complex128, complex256. The default type is complex128. To specify the dtype use the dtype keyword argument:
+The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements in. It supports ```float32```, ```float64```, ```float128```, ```complex64```, ```complex128```, and ```complex256```. The default type is ```complex128```. To specify the dtype use the dtype keyword argument:
 
 ```python
 H=hamiltonian(...,dtype=numpy.float32,...)
@@ -121,13 +121,13 @@ constructing the hamiltonian object of the transverse field Ising model with tim
 from qspin.hamiltonian import hamiltonian
 import numpy as np
 
-# set lattice site
+# set total number of lattice sites
 L=10 
-# define drive function of time t (called func above)
+# define drive function of time t (called 'func' above)
 def drive(t,v):
   return v*t
 v=0.01 # set ramp speed
-# define the function arguments (called func_args above)  
+# define the function arguments (called 'func_args' above)  
 drive_args=[v]
 # define operator strings
 Jnn_indx=[[-1.0,i,(i+1)%L] for i in range(L)] # nearest-neughbour interaction with periodic BC
@@ -148,7 +148,7 @@ static_list=[['-z+',op_indx],['+z-',op_indx_cc]]
 ```
 Notice that one needs to include both '-z+' and '+z-' operators to make sure the Hamiltonian is hermitian. If one forgets about this, there is still the automatic hermiticity check which raises an error, see the optional flag ```check_herm``` in the hamiltonian object class organisation [here](#hamiltonian-objects) which is set to ```True``` by default.
 
-###**Using basis objects**
+###**using basis objects**
 
 Basis objects are another very useful type included in qspin: they provide all of the functionality which calculates the matrix elements from the operator string representation of many-body operators. On top of this, they have been programmed to calculate the matrix elements in different symmetry blocks of the many-body hamiltonian with the help of optional flags. To use a basis object to construct the hamiltonian, one simply uses the basis keyword argument:
 ```python
@@ -158,7 +158,8 @@ More information about basis objects can be found in the [basis objects](#basis-
 
 We recommend using basis objects when multiple separate Hamiltonians which share the same symmetries need to be constructed. This provides the advantage of saving time when creating the corresponding symmetry objects.
 
-###**Using symmetries**
+
+###**using symmetries**
 Adding symmetries is easy and versatile: one can either just add extra keyword arguments to the initialization of your hamiltonian or, when one initializes a basis object one can build in the desired symmetries. By default, the hamiltonian uses spin-1/2 operators and 1d-symmetries. At this point the spin-chain symmetries implemented are for spins-1/2 operators in 1 dimension. 
 The available symmetries for a spin chain in 1d are:
 
@@ -190,7 +191,7 @@ H2 = hamiltonian(static2_list,dynamic2_list,basis=basis)
 
 #**hamiltonian objects**
 
-##**Class organization**:
+##**class organization**:
 ```python
 H = hamiltonian(static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs)
 ```
@@ -453,18 +454,18 @@ This class allows the user to define a basis which couples to a single photon mo
 
 There are two types of basis objects that one can create: a particle (magnetization + photon) conserving basis or a non-conserving basis. 
 
-  In the conserving case one can specify the total number of quanta using the the Ntot keyword argument:
+In the conserving case one can specify the total number of quanta using the the Ntot keyword argument:
 
-	```python
-	p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
-	```
+```python
+p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
+```
 
-	For the non-conserving basis, one must specify the total number of photon (a.k.a harmonic oscillator) states with Nph:
+For the non-conserving basis, one must specify the total number of photon (a.k.a harmonic oscillator) states with Nph:
 
-	```python
-	p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
-	```
-  In the non-conserving basis class ones cannot directly pass a basis object; instead, the constructor will build it from scratch.
+```python
+p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
+```
+In the non-conserving basis class ones cannot directly pass a basis object; instead, the constructor will build it from scratch.
 
 ###**checks on operator strings**
 New in version 0.2.0 we have included new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
@@ -529,7 +530,7 @@ projector to the full basis as a sparse matrix.
 
 
 
-#### **Entanglement entropy**
+#### **entanglement entropy**
 
 ```python
 ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False])
@@ -610,7 +611,7 @@ RETURNS:  dictionary with keys:
 
 
 
-#### **Diagonal Ensemble Observables**
+#### **diagonal ensemble observables**
 ```python
 diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
@@ -704,7 +705,7 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
 
 
 
-####**Project Operator**
+####**project operator**
 ```python
 project_op(Obs,proj,dtype=_np.complex128):
 ```
@@ -739,7 +740,7 @@ This routine returns the Kullback-Leibler divergence of the discrete probabiliti
 
 
 
-####**Time Evolution**
+####**time evolution**
 ```python
 ED_state_vs_time(psi,V,E,times,iterate=False):
 ```
@@ -759,7 +760,6 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 * times: (required) an array of times to evaluate the time evolved state at. 
 
 * iterate: (optional) if True this function returns the generator of the time evolved state. 
-
 
 
 ```python
@@ -798,9 +798,9 @@ RETURNS:  dictionary with keys:
 
 
 
-### **Mean Level spacing**
+### **mean level spacing**
 ```python
-Mean_Level_Spacing(E)
+mean_level_spacing(E)
 ```
 
 This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
@@ -812,20 +812,20 @@ RETURNS: float with mean-level spacing 'r_ave'.
 * E: (required) ordered list of ascending, nondegenerate eigenenergies.
 
 
-### **Commutator**
+### **commutator**
 ```python
 commutator(H1,H2)
 ```
 This function returns the commutator of two Hamiltonians H1 and H2.
 
-### **anti_commutator**
+### **anti commutator**
 ```python
-commutator(H1,H2)
+anti_commutator(H1,H2)
 ```
 This function returns the anti-commutator of two Hamiltonians H1 and H2.
 
 
-### **coherent_state**
+### **coherent state**
 ```python
 coherent_state(a,n,dtype=_np.float64)
 ```
