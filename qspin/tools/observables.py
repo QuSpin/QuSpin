@@ -214,7 +214,6 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	return return_dict
 
-
 def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True):
 	"""
 	This function reshapes an input state (or matrix with 'Nstates' initial states) into an array of
@@ -352,7 +351,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		# set chain subsys if not defined
 		if chain_subsys is None: 
 			chain_subsys=[i for i in xrange( int(N/2) )]
-			warnings.warn("Subsystem set to contain sites {}.".format(chain_subsys),stacklevel=4)
+			warnings.warn("Subsystem contains sites {}.".format(chain_subsys),stacklevel=4)
 		
 	
 		# re-write the state in the initial basis
@@ -407,25 +406,10 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 	elif basis.__class__.__name__[:-6] == 'photon':
 
-
-		'''
-		def photon_Hspace_dim(N,Ntot,Nph):
-
-			"""
-			This function calculates the dimension of the total spin-photon Hilbert space.
-			"""
-			if Ntot is None and Nph is not None: # no total particle # conservation
-				return 2**N*(Nph+1)
-			elif Ntot is not None:
-				return 2**N - binom(N,Ntot+1)*hyp2f1(1,1-N+Ntot,2+Ntot,-1)
-			else:
-				raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
-		'''
-
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
 			chain_subsys=[i for i in xrange( int(N) )]
-			warnings.warn("subsystem automatically set to the entire chain.",stacklevel=4)
+			warnings.warn("subsystem set to the entire chain.",stacklevel=4)
 
 
 		#calculate H-space dimensions of the subsystem and the system
@@ -983,7 +967,7 @@ def KL_div(p1,p2):
 
 
 
-def ED_state_vs_time(psi,V,E,times,iterate=False):
+def ED_state_vs_time(psi,E,V,times,iterate=False):
 	"""
 	This routine calculates the time evolved initial state as a function of time. The initial 
 	state is 'psi' and the time evolution is carried out under the Hamiltonian H with eigenenergies 
@@ -1017,9 +1001,8 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 	if _np.isscalar(times):
 		TypeError("Variable 'times' must be a array or iter like object!")
 
-	times = _np.asarray(times)
-	times = _np.array(-1j*times)
-
+	times = -1j*_np.asarray(times)
+	
 
 	# define generator of time-evolved state in basis V2
 	def psi_t_iter(V,psi,times):
@@ -1033,6 +1016,7 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 		return psi_t_iter(V,psi,times)
 	else:
 		c_n = V.T.conj().dot(psi)
+
 		Ntime = len(times)
 		Ns = len(E)
 
@@ -1040,19 +1024,16 @@ def ED_state_vs_time(psi,V,E,times,iterate=False):
 		psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
 		_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
 
-
 		psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
 
-
-		psi_t = psi_t.T 
 		# for each vector trasform back to original basis
-		psi_t = V.dot(psi_t) 
+		psi_t = V.dot(psi_t.T) 
 
 		return psi_t.T # [ psi(times[0]), ...,psi(times[-1]) ]
 
 
 
-def obs_vs_time(psi_t,Obs_list,return_state=False,times=None):
+def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1142,7 +1123,8 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None):
 
 		
 		# get iterator over time dependent state (see function above)
-		psi_t = ED_state_vs_time(psi,V,E,times,iterate = not(return_state) ).T
+		psi_t = ED_state_vs_time(psi,E,V,times,iterate = not(return_state) ).T
+
 
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
 
@@ -1185,12 +1167,12 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None):
 		
 
 	Expt_time = []
-
+	
 	if return_state:
 		for Obs in Obs_list:
 			psi_l = Obs.dot(psi_t)
 			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
-
+	
 		for ham in ham_list:
 			if times is not None:
 				psi_l = ham.dot(psi_t,time=times,check=False)
@@ -1224,6 +1206,13 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None):
 			Expt_time.append(_np.asarray(Expt))
 
 		Expt_time = _np.vstack(Expt_time)
+
+
+	if len(Sent_args) > 0:
+		variables.append("Sent_time")
+		Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+
+
 
 	return_dict = {}
 	for i in variables:

@@ -221,8 +221,6 @@ class Floquet(object):
 				H = evo_dict["H"]
 				t_list = _np.asarray(evo_dict["t_list"],dtype=_np.float64)
 				dt_list = _np.asarray(evo_dict["dt_list"],dtype=_np.float64)
-				print t_list
-				print dt_list
 
 				if t_list.ndim != 1:
 					raise ValueError("t_list must be 1d array.")
@@ -272,6 +270,9 @@ class Floquet(object):
 		# find Floquet states and phases
 		if "VF" in variables:
 			thetaF, VF = _la.eig(UF,overwrite_a=True)
+			if len(_np.unique(_np.round(thetaF,12))) < len(thetaF):
+				# orthogonalise VF in degenerate subspaces
+				VF,_ = _la.qr(VF, overwrite_a=True) 
 			# calculate and order q'energies
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
 			# sort and order
