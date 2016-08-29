@@ -130,7 +130,7 @@ v=0.01 # set ramp speed
 # define the function arguments (called 'func_args' above)  
 drive_args=[v]
 # define operator strings
-Jnn_indx=[[-1.0,i,(i+1)%L] for i in range(L)] # nearest-neughbour interaction with periodic BC
+Jnn_indx=[[-1.0,i,(i+1)%L] for i in range(L)] # nearest-neighbour interaction with periodic BC
 field_indx=[[-1.0,i] for i in range(L)] # on-site external field
 # define static and dynamic lists
 static_list=[['zz',Jnn_indx],['x',field_indx]] # $H_{stat} = \sum_{j=1}^{L} -\sigma^z_{j}\sigma^z_{j+1} - \sigma^x_j $
@@ -742,7 +742,7 @@ This routine returns the Kullback-Leibler divergence of the discrete probabiliti
 
 ####**time evolution**
 ```python
-ED_state_vs_time(psi,V,E,times,iterate=False):
+ED_state_vs_time(psi,E,V,times,iterate=False):
 ```
 This routine calculates the time evolved initial state as a function of time. The initial state is 'psi' and the time evolution is carried out under the Hamiltonian H.
 
@@ -774,6 +774,8 @@ RETURNS:  dictionary with keys:
 
 * 'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
 
+* 'Sent_time': (optional) returns the entanglement entropy of the state at time 'times'.
+
 
 --- arguments ---
 
@@ -795,7 +797,9 @@ RETURNS:  dictionary with keys:
 
 * return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
-
+* Sent_args: (optional) tuple of Entanglement_Entropy arguments. When nonempty, the enatanglement 
+  entropy is returned uder the key 'Sent_time'. At least 'Sent_args=(basis)' is required. 
+  If not passed, assumes the default 'chain_subsys', see documentation of '_reshape_as_subsys'.
 
 
 ### **mean level spacing**

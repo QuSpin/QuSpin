@@ -1046,6 +1046,8 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 	'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
 
+	'Sent_time': (optional) returns the entanglement entropy of the state at time 'times'.
+
 	--- arguments ---
 
 	psi_t: (required) three different inputs:
@@ -1069,6 +1071,10 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
 			at the times specified by the column index. The return dictonary key is 'psi_time'.
+
+	Sent_args: (optional) tuple of Entanglement_Entropy arguments. When nonempty, the enatanglement 
+			entropy is returned uder the key 'Sent_time'. At least 'Sent_args=(basis)' is required. 
+			If not passed, assumes the default 'chain_subsys', see documentation of '_reshape_as_subsys'.
 	"""
 
 	variables = ['Expt_time']
