@@ -1,4 +1,4 @@
 from .hamiltonian import hamiltonian,ishamiltonian
-from .expO import expO
+from .exp_op import exp_op
 
-__all__ = ["hamiltonian","ishamiltonian","expO"]
+__all__ = ["hamiltonian","ishamiltonian","exp_op"]
