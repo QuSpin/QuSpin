@@ -613,7 +613,7 @@ RETURNS:  dictionary with keys:
 
 #### **diagonal ensemble observables**
 ```python
-diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
+diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
 
 This function calculates the expectation values of physical quantities in the Diagonal ensemble 
@@ -631,10 +631,9 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
 
 * 'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
 
-* 'Sd_Renyi_...': Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+* 'Sd_Renyi_...' ('Sd_...' for alpha=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-* 'Srdm_Renyi_...': Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
-  with parameter 'alpha'.
+* 'Srdm_Renyi_...' ('Srdm_...' for alpha=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble with parameter 'alpha'.
 
 * 'rho_d': density matrix of diagonal ensemble
 
@@ -672,6 +671,9 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
     The keys are CANNOT be chosen arbitrarily.
 
 * V2: (required) numpy array containing the basis of the Hamiltonian H2 in the columns.
+
+* E2: (required) numpy array containing the eigenenergies corresponding to the eigenstates in 'V2'.
+  This variable is only used to check for degeneracies.
 
 * rho_d: (optional) When set to 'True', returns the Diagonal ensemble DM under the key 'rho_d'. 
 

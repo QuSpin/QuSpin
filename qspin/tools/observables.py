@@ -576,7 +576,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 		This function calculates the Renyi entropy of the distribution p with parameter alpha.
 		"""
 		if alpha == 1.0:
-			warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
+#			warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
 			S = - _np.einsum(es_str('ji,ji->i'),p,_np.log(p))
 		else:
 			S = 1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha,axis=0) )
@@ -609,7 +609,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 
-def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=()):
+def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=()):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -627,9 +627,9 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 
 	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
 
-	'Sd_Renyi_...': Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+	'Sd_Renyi_...' ('Sd_...' for alpha=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-	'Srdm_Renyi_...': Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+	'Srdm_Renyi_...' ('Srdm_...' for alpha=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
 			with parameter 'alpha'.
 
 	'rho_d': density matrix of diagonal ensemble
@@ -669,6 +669,9 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 
 	V2: (required) numpy array containing the basis of the Hamiltonian H2 in the columns.
 
+	E2: (required) numpy array containing the eigenenergies corresponding to the eigenstates in 'V2'.
+		This variable is only used to check for degeneracies.
+
 	rho_d: (optional) When set to 'True', returns the Diagonal ensemble DM under the key 'rho_d'. 
 
 	Obs: (optional) hermitian matrix of the same size as V2, to calculate the Diagonal ensemble 
@@ -699,6 +702,11 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 	"""
 
+	# check if E2 are all unique
+	seen = list()
+	if any(i in seen or seen.append(i) for i in _np.round(E2,_np.asarray(E2).dtype.itemsize) ):
+		raise TypeError("Cannot use function 'diag_ensemble' with dengenerate e'values 'E2'!")
+	del E2
 
 	if N and not(type(N) is int):
 		raise TypeError("System size 'N' must be a positive integer!")
