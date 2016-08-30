@@ -299,7 +299,7 @@ class hamiltonian(object):
 					self._mat_checks(O)
 					self._is_dense=True
 
-					dynamic_other_list[i][0] = dynamic_other_list[i][0].astype(self._dtype,copy=copy)
+					dynamic_other_list[i][0] = _np.asmatrix(dynamic_other_list[i][0],dtype=self._dtype,copy=copy)
 
 
 				elif O.__class__ is _np.matrix:
@@ -483,67 +483,6 @@ class hamiltonian(object):
 
 		self._is_dense = not is_sparse
 
-
-	def tocsr(self,time=0):
-		"""
-		args:
-			time=0, the time to evalute drive at.
-
-		description:
-			this function simply returns a copy of the Hamiltonian as a csr_matrix evaluated at the desired time.
-		"""
-		if self.Ns <= 0:
-			return _sp.csr_matrix(_np.asarray([[]]))
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
-
-
-		if _sp.issparse(self._static):
-			H=self._static.tocsr(copy=True)
-		else:
-			H = _sp.csr_matrix(self._static)	
-
-		for Hd,f,f_args in self._dynamic:
-			if _sp.issparse(Hd):
-				try:
-					H += Hd.tocsr() * f(time,*f_args)
-				except:
-					H = H + Hd.tocsr() * f(time,*f_args)
-
-			else:
-				Hd = _sp.csr_matrix(Hd)
-				try:
-					H += Hd * f(time,*f_args)
-				except:
-					H = H + Hd * f(time,*f_args)
-
-
-		return H
-
-
-#	
-	def todense(self,time=0,order=None, out=None):
-		"""
-		args:
-			time=0, the time to evalute drive at.
-
-		description:
-			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
-			This function can overflow memory if not careful.
-		"""
-
-		if out is None:
-			out = _np.zeros(self._shape,dtype=self.dtype)
-
-		if _sp.issparse(self._static):
-			self._static.todense(order=order,out=out)
-		else:
-			out[:] = self._static[:]
-
-		for Hd,f,f_args in self._dynamic:
-			out += Hd * f(time,*f_args)
-		
-		return out
 
 
 
@@ -1156,9 +1095,111 @@ class hamiltonian(object):
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
 
+	def tocsr(self,time=0):
+		"""
+		args:
+			time=0, the time to evalute drive at.
 
-	def getH(self,copy=False):
-		return self.conj().transpose(copy=copy)
+		description:
+			this function simply returns a copy of the Hamiltonian as a csr_matrix evaluated at the desired time.
+		"""
+		if self.Ns <= 0:
+			return _sp.csr_matrix(_np.asarray([[]]))
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar argument for time')
+
+
+		if _sp.issparse(self._static):
+			H=self._static.tocsr(copy=True)
+		else:
+			H = _sp.csr_matrix(self._static)	
+
+		for Hd,f,f_args in self._dynamic:
+			if _sp.issparse(Hd):
+				try:
+					H += Hd.tocsr() * f(time,*f_args)
+				except:
+					H = H + Hd.tocsr() * f(time,*f_args)
+
+			else:
+				Hd = _sp.csr_matrix(Hd)
+				try:
+					H += Hd * f(time,*f_args)
+				except:
+					H = H + Hd * f(time,*f_args)
+
+
+		return H
+
+	
+	def todense(self,time=0,order=None, out=None):
+		"""
+		args:
+			time=0, the time to evalute drive at.
+
+		description:
+			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
+			This function can overflow memory if not careful.
+		"""
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+
+		if _sp.issparse(self._static):
+			self._static.todense(order=order,out=out)
+		else:
+			out[:] = self._static[:]
+
+		for Hd,f,f_args in self._dynamic:
+			out += Hd * f(time,*f_args)
+		
+		return out
+
+
+	def as_dense_format(self,copy=False):
+		if copy:
+			return self.copy().asdense()
+		else:
+			if _sp.issparse(self._static):
+				self._static = self._static.todense()
+			else:
+				self._static = _np.asmatrix(self._static)
+
+			self._dynamic = list(self._dynamic)
+			n = len(self._dynamic)
+			for i in xrange(n):
+				self._dynamic[i] = list(self._dynamic[i])
+				if _sp.issparse(self._dynamic[i][0]):
+					self._dynamic[i][0] = self._dynamic[i][0].todense()
+				else:
+					self._dynamic[i][0] = _np.asmatrix(self._dynamic[i][0])
+
+				self._dynamic[i][0] = self._dynamic[i][0].todense()
+				self._dynamic[i] = tuple(self._dynamic[i])
+
+			self._dynamic = tuple(self._dynamic)
+			return self
+
+
+	def as_sparse_format(self,fmt,copy=False):
+		if fmt not in ["csr","csc","dia","bsr"]:
+			raise ValueError("'{0}' is not a valid sparse format or does not support arithmetic.".format(fmt))
+
+		if copy:
+			return self.copy().asformat_csr(fmt)
+		else:
+			sparse_constuctor = getattr(_sp,fmt+"_matrix")
+
+			self._static = sparse_constuctor(self._static)
+			self._dynamic = list(self._dynamic)
+			n = len(self._dynamic)
+			for i in xrange(n):
+				self._dynamic[i] = list(self._dynamic[i])
+				self._dynamic[i][0] = sparse_constuctor(self._dynamic[i][0])
+				self._dynamic[i] = tuple(self._dynamic[i])
+
+			self._dynamic = tuple(self._dynamic)
+			return self
 
 
 	def conj(self):
@@ -1174,6 +1215,8 @@ class hamiltonian(object):
 		return self
 
 
+	def getH(self,copy=False):
+		return self.conj().transpose(copy=copy)
 
 
 	def transpose(self,copy=False):
