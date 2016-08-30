@@ -6,10 +6,10 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 
 Contents
 --------
-* [Installation](#installation)
- * [automatic install](#auto-install)
- * [manual install](#man-install)
- * [updating the package](#update)
+* [installation](#installation)
+ * [automatic install](#automatic-install)
+ * [manual install](#manual-install)
+ * [updating the package](#updating-the-package)
 * [using the package](#using-the-package)
  * [constructing hamiltonians](#constructing-hamiltonians)
  * [using basis objects](#using-basis-objects)
@@ -692,7 +692,7 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
   parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
   'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-* Srdm_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Srdm_Renyi = True'.
+* Srdm_args: (optional) tuple of ent_entropy arguments, required when 'Srdm_Renyi = True'.
   At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
   see documentation of '_reshape_as_subsys'.
 
@@ -797,7 +797,7 @@ RETURNS:  dictionary with keys:
 
 * return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
-* Sent_args: (optional) tuple of Entanglement_Entropy arguments. When nonempty, the enatanglement 
+* Sent_args: (optional) tuple of ent_entropy arguments. When nonempty, the enatanglement 
   entropy is returned uder the key 'Sent_time'. At least 'Sent_args=(basis)' is required. 
   If not passed, assumes the default 'chain_subsys', see documentation of '_reshape_as_subsys'.
 

@@ -292,7 +292,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 		if _sp.issparse(system_state):
-			warnings.warn("Entanglement_Entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
 			system_state = system_state.todense()
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
@@ -308,7 +308,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))
 	else:
 		if _sp.issparse(system_state):
-			warnings.warn("Entanglement_Entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
 			system_state = system_state.todense()
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
@@ -688,7 +688,7 @@ def diag_ensemble(N,system_state,V2,densities=True,alpha=1.0,rho_d=False,Obs=Fal
 			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
 			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Srdm_args: (optional) tuple of Entanglement_Entropy arguments, required when 'Srdm_Renyi = True'.
+	Srdm_args: (optional) tuple of ent_entropy arguments, required when 'Srdm_Renyi = True'.
 			At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
 			see documentation of '_reshape_as_subsys'.
 
@@ -1072,7 +1072,7 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
 			at the times specified by the column index. The return dictonary key is 'psi_time'.
 
-	Sent_args: (optional) tuple of Entanglement_Entropy arguments. When nonempty, the enatanglement 
+	Sent_args: (optional) tuple of ent_entropy arguments. When nonempty, the enatanglement 
 			entropy is returned uder the key 'Sent_time'. At least 'Sent_args=(basis)' is required. 
 			If not passed, assumes the default 'chain_subsys', see documentation of '_reshape_as_subsys'.
 	"""
