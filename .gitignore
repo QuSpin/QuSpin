@@ -21,6 +21,7 @@ photon_only.py
 semiclassical.py
 semiclassical_ETH.py
 spin_only.py
+example*.py 
 
 submit.sh
 spin_only_analysis.py

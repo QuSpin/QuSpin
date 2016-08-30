@@ -196,16 +196,10 @@ class hamiltonian(object):
 				basis.check_hermitian(static_opstr_list, dynamic_opstr_list)
 
 			if check_symm:
-				if hasattr(basis,"check_symm") :
-					basis.check_symm(static_opstr_list,dynamic_opstr_list)
-				else:
-					warnings.warn("basis {0} has no symmetry checks. To turn off this warning set check_symm=False".format(type(basis)),UserWarning,stacklevel=2)
+				basis.check_symm(static_opstr_list,dynamic_opstr_list)
 
 			if check_pcon:
-				if hasattr(basis,"check_pcon"):
-					basis.check_pcon(static_opstr_list,dynamic_opstr_list)
-				else:
-					warnings.warn("basis {0} has no check for particle consrevation. To turn off this warning set check_pcon=False".format(type(basis)),UserWarning,stacklevel=2)
+				basis.check_pcon(static_opstr_list,dynamic_opstr_list)
 
 
 

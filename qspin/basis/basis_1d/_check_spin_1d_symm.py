@@ -1,10 +1,5 @@
 import warnings
 
-class SymmException(Exception):
-	pass
-
-
-
 
 
 

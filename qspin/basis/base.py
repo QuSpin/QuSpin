@@ -369,6 +369,112 @@ class basis(object):
 
 
 
+
+	def check_symm(self,static,dynamic):
+		if not hasattr(self,"_check_symm"):
+			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_pcon=Flase in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			return
+
+		static_blocks,dynamic_blocks = self._check_symm(static,dynamic)
+
+		# define arbitrarily complicated weird-ass number
+		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+
+		for symm in static_blocks.keys():
+			if len(static_blocks[symm]) == 2:
+				odd_ops,missing_ops = static_blocks[symm]
+				ops = list(missing_ops)
+				ops.extend(odd_ops)
+				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				if unique_opstrs:
+					unique_missing_ops = []
+					unique_odd_ops = []
+					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
+					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
+					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					if user_input == 'y':
+						print " these operators are needed for {}:".format(symm)
+						print "   (opstr, indices, coupling)"
+						for i,op in enumerate(unique_missing_ops):
+							print "{0}. {1}".format(i+1, op)
+						print 
+						print " these do not obey the {}:".format(symm)
+						print "   (opstr, indices, coupling)"
+						for i,op in enumerate(unique_odd_ops):
+							print "{0}. {1}".format(i+1, op)
+					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
+
+
+			elif len(static_blocks[symm]) == 1:
+				missing_ops, = static_blocks[symm]
+				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				if unique_opstrs:
+					unique_missing_ops = []
+					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
+					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					if user_input == 'y':
+						print " these operators are needed for {}:".format(symm)
+						print "   (opstr, indices, coupling)"
+						for i,op in enumerate(unique_missing_ops):
+							print "{0}. {1}".format(i+1, op)
+					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
+			else:
+				continue
+
+
+		for symm in dynamic_blocks.keys():
+			if len(dynamic_blocks[symm]) == 2:
+				odd_ops,missing_ops = dynamic_blocks[symm]
+				ops = list(missing_ops)
+				ops.extend(odd_ops)
+				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				if unique_opstrs:
+					unique_missing_ops = []
+					unique_odd_ops = []
+					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
+					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
+					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					if user_input == 'y':
+						print " these operators are missing for {}:".format(symm)
+						print "   (opstr, indices, coupling)"
+						for i,op in enumerate(unique_missing_ops):
+							print "{0}. {1}".format(i+1, op)
+						print 
+						print " these do not obey {}:".format(symm)
+						print "   (opstr, indices, coupling)"
+						for i,op in enumerate(unique_odd_ops):
+							print "{0}. {1}".format(i+1, op)
+					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
+
+
+			elif len(dynamic_blocks[symm]) == 1:
+				missing_ops, = dynamic_blocks[symm]
+				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				if unique_opstrs:
+					unique_missing_ops = []
+					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
+					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					if user_input == 'y':
+						print " these operators are needed for {}:".format(symm)
+						print "   (opstr, indices, coupling)"
+						for i,op in enumerate(unique_missing_ops):
+							print "{0}. {1}".format(i+1, op)
+					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
+			else:
+				continue
+
+		print "Symmetry checks passed!"
+
+
+
+
+
+
+
 def isbasis(x):
 	return isinstance(x,basis)
 

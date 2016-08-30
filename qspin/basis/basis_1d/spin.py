@@ -914,11 +914,14 @@ class spin_basis_1d(basis):
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
 		indx = _np.array(op[1])
-		indx_p = indx[opstr == "+"].tolist()
-		p = not any(indx_p.count(x) > 1 for x in indx_p)
-		indx_p = indx[opstr == "-"].tolist()
-		m = not any(indx_p.count(x) > 1 for x in indx_p)
-		return (p and m)
+		if _np.any(indx):
+			indx_p = indx[opstr == "+"].tolist()
+			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			indx_p = indx[opstr == "-"].tolist()
+			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			return (p and m)
+		else:
+			return True
 		
 
 
@@ -1000,23 +1003,72 @@ class spin_basis_1d(basis):
 
 
 
+	def _check_symm(self,static,dynamic,basis=None):
+		kblock = self._blocks.get("kblock")
+		pblock = self._blocks.get("pblock")
+		zblock = self._blocks.get("zblock")
+		pzblock = self._blocks.get("pzblock")
+		zAblock = self._blocks.get("zAblock")
+		zBblock = self._blocks.get("zBblock")
+		a = self._blocks.get("a")
+		L = self.L
 
-	# This function is called during the symmtry checks
-	def symm_op(self,op,symm):
-		if symm == "T_symm": pass
-		elif symm == "P_symm": pass
-		elif symm == "Z_symm": pass
-		elif symm == "PZ_symm": pass
-		elif symm == "ZA_symm": pass
-		elif symm == "ZB_symm": pass
-		else:
-			raise ValueError("{0} is not a valid symmetry of spin_basis_1d")
-		
+		if basis is None:
+			basis = self
 
+		static_list,dynamic_list = basis.get_lists(static,dynamic)
 
+		static_blocks = {}
+		dynamic_blocks = {}
+		if kblock is not None:
+			missing_ops = _check.check_T(basis,static_list,L,a)
+			if missing_ops:	static_blocks["T symm"] = (tuple(missing_ops),)
 
+			missing_ops = _check.check_T(basis,dynamic_list,L,a)
+			if missing_ops:	dynamic_blocks["T symm"] = (tuple(missing_ops),)
 
+		if pblock is not None:
+			missing_ops = _check.check_P(basis,static_list,L)
+			if missing_ops:	static_blocks["P symm"] = (tuple(missing_ops),)
 
+			missing_ops = _check.check_P(basis,dynamic_list,L)
+			if missing_ops:	dynamic_blocks["P symm"] = (tuple(missing_ops),)
+
+		if zblock is not None:
+			odd_ops,missing_ops = _check.check_Z(basis,static_list)
+			if missing_ops or odd_ops:
+				static_blocks["Z symm"] = (tuple(odd_ops),tuple(missing_ops))
+
+			odd_ops,missing_ops = _check.check_Z(basis,dynamic_list)
+			if missing_ops or odd_ops:
+				dynamic_blocks["Z symm"] = (tuple(odd_ops),tuple(missing_ops))
+
+		if zAblock is not None:
+			odd_ops,missing_ops = _check.check_ZA(basis,static_list)
+			if missing_ops or odd_ops:
+				static_blocks["ZA symm"] = (tuple(odd_ops),tuple(missing_ops))
+
+			odd_ops,missing_ops = _check.check_ZA(basis,dynamic_list)
+			if missing_ops or odd_ops:
+				dynamic_blocks["ZA symm"] = (tuple(odd_ops),tuple(missing_ops))
+
+		if zBblock is not None:
+			odd_ops,missing_ops = _check.check_ZB(basis,static_list)
+			if missing_ops or odd_ops:
+				static_blocks["ZB symm"] = (tuple(odd_ops),tuple(missing_ops))
+
+			odd_ops,missing_ops = _check.check_ZB(basis,dynamic_list)
+			if missing_ops or odd_ops:
+				dynamic_blocks["ZB symm"] = (tuple(odd_ops),tuple(missing_ops))
+
+		if pzblock is not None:
+			missing_ops = _check.check_PZ(basis,static_list,L)
+			if missing_ops:	static_blocks["PZ symm"] = (tuple(missing_ops),)
+
+			missing_ops = _check.check_PZ(basis,dynamic_list,L)
+			if missing_ops:	dynamic_blocks["PZ symm"] = (tuple(missing_ops),)
+
+		return static_blocks,dynamic_blocks
 
 
 

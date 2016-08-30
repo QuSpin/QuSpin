@@ -50,12 +50,13 @@ class photon_basis(tensor_basis):
 
 		if not self._check_pcon:
 			n = len(opstr.replace("|","")) - len(indx)
-			indx.extend([min(indx) for i in xrange(n)])
+			indx.extend([0 for i in xrange(n)])
+
 			return tensor_basis.Op(self,opstr,indx,J,dtype)
 		else:
 			# read off spin and photon operators
 			n = len(opstr.replace("|","")) - len(indx)
-			indx.extend([min(indx) for i in xrange(n)])
+			indx.extend([0 for i in xrange(n)])
 
 			if opstr.count("|") > 1: 
 				raise ValueError("only one '|' charactor allowed in opstr {0}".format(opstr))
@@ -84,25 +85,6 @@ class photon_basis(tensor_basis):
 			del ME_ph, row_ph, col_ph
 
 			return ME, row, col	
-
-
-	"""
-	def check_pcon(self,static_list,dynamic_list):
-		if hasattr(self._b1,"check_check_pcon"):
-			try:
-				self._b1.check_check_pcon(static_list,dynamic_list,_check_pcon=self._check_pcon)
-			except TypeError:
-				raise TypeError("Hamiltonian does not conserve particle number! To turn off this check set check_check_pcon=False in hamiltonian.")
-		else:
-			warnings.warn("particle basis in photon_basis has no check for particle consrevation. To turn off this check set check_check_pcon=False in hamiltonian.",UserWarning,stacklevel=3)
-	"""
-
-	def check_symm(self,static_list,dynamic_list):
-		if hasattr(self._b1,"check_symm"):
-			self._b1.check_symm(static_list,dynamic_list,basis=self)
-		else:
-			warnings.warn("particle basis {0} in photon_basis has no check for symmetries. To turn off this check set check_symm=False in hamiltonian.".format(type(self._b1)),UserWarning,stacklevel=3)
-		
 
 
 	def get_vec(self,v0,sparse=True,Nph=None,full_part=True):
@@ -204,7 +186,6 @@ class photon_basis(tensor_basis):
 			return str_list	
 
 
-
 	def _sort_opstr(self,op):
 		op = list(op)
 		opstr = op[0]
@@ -229,64 +210,97 @@ class photon_basis(tensor_basis):
 		op1[0] = opstr1
 		op1[1] = tuple(indx1)
 
+		if indx1: ind_min = min(indx1)
+		else: ind_min = 0
+
+
 		op2 = list(op)
 		op2[0] = opstr2
-		op2[1] = tuple([min(indx1) for i in indx2])
+		op2[1] = tuple([ind_min for i in opstr2])
 		
 		op1 = self._b1.sort_opstr(op1)
+		op2 = self._b2.sort_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
 		
 		return tuple(op)
 
+	def _check_symm(self,static,dynamic):
+		# pick out operators which have charactors to the left of the '|' charactor. 
+		# otherwise this is operator must be
+		new_static = []
+		for opstr,bonds in static:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_static.append([opstr,bonds])
 
 
-	def _hc_opstr(self,op):
-		return tensor_basis._hc_opstr(self,op)
+		new_dynamic = []
+		for opstr,bonds,f,f_args in dynamic:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_dynamic.append([opstr,bonds,f,f_args])
+		
+		return self._b1._check_symm(new_static,new_dynamic,basis=self)
 
 
 
 	def _get_lists(self,static,dynamic): #overwrite the default get_lists from base.
 		static_list = []
 		for opstr,bonds in static:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
 			for bond in bonds:
 				indx = list(bond[1:])
 
-
-				if opstr.count("|") == 0: 
-					raise ValueError("missing '|' character in: {0}, {1}".format(opstr,indx))
-
-				opstr1,opstr2=opstr.split("|")
 				if len(opstr1) != len(indx):
 					raise ValueError("The length of indx must be the same length as particle operators in {0},{1}".format(opstr,indx))
 
 				# extend the operators such that the photon ops get an index.
 				# choose that the index is equal to the smallest indx of the spin operators
 				n = len(opstr.replace("|","")) - len(indx)
-				indx.extend([min(indx) for i in xrange(n)])
 
-
+				if opstr1:
+					indx.extend([min(indx) for i in xrange(n)])
+				else:
+					indx.extend([0 for i in xrange(n)])
 
 				J = complex(bond[0])
 				static_list.append((opstr,tuple(indx),J))
 
 		dynamic_list = []
 		for opstr,bonds,f,f_args in dynamic:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
 			for bond in bonds:
 				indx = list(bond[1:])
 
-				if opstr.count("|") == 0: 
-					raise ValueError("missing '|' character in: {0}, {1}".format(opstr,indx))
-
-				opstr1,opstr2=opstr.split("|")
 				if len(opstr1) != len(indx):
 					raise ValueError("The length of indx must be the same length as particle operators in {0},{1}".format(opstr,indx))
 
 				# extend the operators such that the photon ops get an index.
 				# choose that the index is equal to the smallest indx of the spin operators
 				n = len(opstr.replace("|","")) - len(indx)
-				indx.extend([min(indx) for i in xrange(n)])
+
+				if opstr1:
+					indx.extend([min(indx) for i in xrange(n)])
+				else:
+					indx.extend([0 for i in xrange(n)])
 
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
