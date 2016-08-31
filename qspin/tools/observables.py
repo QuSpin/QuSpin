@@ -817,7 +817,6 @@ def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=
 	rho[rho<=1E-16] = _np.finfo(rho.dtype).eps
 
 
-
 	# prepare observables
 	if Obs is not False or delta_t_Obs is not False or delta_q_Obs is not False:
 
@@ -853,7 +852,7 @@ def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=
 	# compute densities
 	for key,value in Expt_Diag.iteritems():
 		if densities:
-			if 'ent' in key:
+			if 'rdm' in key:
 				value *= 1.0/N_A
 			else:
 				value *= 1.0/N
