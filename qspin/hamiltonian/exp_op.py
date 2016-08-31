@@ -175,7 +175,13 @@ class exp_op(object):
 				raise ValueError("iterate option only availible for time discretization.")
 
 			grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
-			return _iter_sandwich(M, other, step, grid)
+
+			if is_ham:
+				mat_iter = _hamiltonian_iter_sandwich(M, other, step, grid)
+			else:
+				mat_iter = _iter_sandwich(M, other, step, grid)
+
+			return mat_iter
 		else:
 			if [start, stop] == [None, None]:
 
@@ -183,7 +189,9 @@ class exp_op(object):
 					raise ValueError('impropor linspace arguements!')
 
 				other = self.dot(other, a=a, time=time)
-				return self.rdot(other, a=a, time=time)
+				print "the following line holds only for hermitian self; ideally we'd like to have self.getH()"
+				other = self.rdot(other, a=a.conjugate(), time=time)
+				return other
 
 			else:
 				grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
@@ -230,7 +238,7 @@ def _iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _expm_multiply(M, other)
-		r_other = _expm_multiply(M.T.conj(), other.T.conj()).T.conj()
+		r_other = _expm_multiply(M, other.T.conj()).T.conj()
 		M /= grid[0]
 
 		yield r_other.copy()
@@ -243,7 +251,7 @@ def _iter_sandwich(M, other, step, grid):
 		M /= step
 		if t != 0:
 			M *= t
-			r_other = _expm_multiply(M.T.conj(), other.T.conj()).T.conj()
+			r_other = _expm_multiply(M, other.T.conj()).T.conj()
 			M /= t
 
 		yield r_other.copy()
@@ -303,7 +311,7 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _hamiltonian_dot(M, other)
-		r_other = _hamiltonian_rdot(M.T.conj(), other.T.conj()).T.conj()
+		r_other = _hamiltonian_rdot(M, other.T.conj()).T.conj()
 		M /= grid[0]
 
 		yield r_other
@@ -316,7 +324,7 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 		M /= step
 		if t != 0:
 			M *= t
-			r_other = _hamiltonian_rdot(M.T.conj(), other.T.conj()).T.conj()
+			r_other = _hamiltonian_rdot(M, other.T.conj()).T.conj()
 			M /= t
 
 		yield r_other
