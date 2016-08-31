@@ -691,7 +691,7 @@ def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=
 			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
 			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Srdm_args: (optional) tuple of ent_entropy arguments, required when 'Srdm_Renyi = True'.
+	Srdm_args: (optional) diction of ent_entropy arguments, required when 'Srdm_Renyi = True'.
 			At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
 			see documentation of '_reshape_as_subsys'.
 
