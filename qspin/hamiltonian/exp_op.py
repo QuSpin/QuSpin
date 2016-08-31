@@ -146,7 +146,7 @@ class exp_op(object):
 				else:
 					return _expm_multiply(M, other.T.conj(), start=start, stop=stop, num=num, endpoint=endpoint).T.conj()
 
-	def trans(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def sandwich(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_ham = False
 		if ishamiltonian(other):
@@ -175,7 +175,7 @@ class exp_op(object):
 				raise ValueError("iterate option only availible for time discretization.")
 
 			grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
-			return _iter_trans(M, other, step, grid)
+			return _iter_sandwich(M, other, step, grid)
 		else:
 			if [start, stop] == [None, None]:
 
@@ -189,9 +189,9 @@ class exp_op(object):
 				grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
 				if is_ham:
-					mat_iter = _hamiltonian_iter_trans(M, other, step, grid)
+					mat_iter = _hamiltonian_iter_sandwich(M, other, step, grid)
 				else:
-					mat_iter = _iter_trans(M, other, step, grid)
+					mat_iter = _iter_sandwich(M, other, step, grid)
 
 				others = _np.asarray([mat for mat in mat_iter])
 
@@ -226,7 +226,7 @@ def _iter_rdot(M, other, step, grid):
 		yield other.T.conj().copy()
 
 
-def _iter_trans(M, other, step, grid):
+def _iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _expm_multiply(M, other)
@@ -291,15 +291,15 @@ def _hamiltonian_iter_rdot(M, other, grid, step):
 		other = _hamiltonian_rdot(M, other)
 		M /= grid[0]
 
-	yield other.conj().transpose(copy=True)
+	yield other.conj().sandwichpose(copy=True)
 
 	M *= step
 	for t in grid[1:]:
 		other =  _hamiltonian_rdot(M, other)
-		yield other.conj().transpose(copy=True)
+		yield other.conj().sandwichpose(copy=True)
 
 
-def _hamiltonian_iter_trans(M, other, step, grid):
+def _hamiltonian_iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _hamiltonian_dot(M, other)
