@@ -21,43 +21,6 @@ import warnings
 __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","coherent_state","project_operator","commutator","anti_commutator"]
 
 
-def commutator(H1,H2):
-	""" This function returns the commutator of two Hamiltonians H1 and H2. """
-	if _ishamiltonian(H1) or _ishamiltonian(H2):
-		return H1*H2 - H2*H1
-	else:
-		return H1.dot(H2) - H2.dot(H1)
-
-def anti_commutator(H1,H2):
-	""" This function returns the anti-commutator of two Hamiltonians H1 and H2. """
-	if _ishamiltonian(H1) or _ishamiltonian(H2):
-		return H1*H2 + H2*H1
-	else:
-		return H1.dot(H2) + H2.dot(H1)
-
-def coherent_state(a,n,dtype=_np.float64):
-	"""
-	This function creates a harmonic oscillator coherent state.
-
-	RETURNS: numpy array with harmonic oscilaltor coherent state.
-
-	--- arguments ---
-
-	a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
-
-	n: (required) cut-off on the number of states kept in the definition of the coherent state
-
-	dtype: (optional) data type. Default is set to numpy.float64
-	"""
-
-	s1 = _np.full((n,),-_np.abs(a)**2/2.0,dtype=dtype)
-	s2 = _np.arange(n,dtype=_np.float64)
-	s3 = _np.array(s2)
-	s3[0] = 1
-	_np.log(s3,out=s3)
-	s3[1:] = 0.5*_np.cumsum(s3[1:])
-	state = s1+_np.log(a)*s2-s3
-	return _np.exp(state)
 
 def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""

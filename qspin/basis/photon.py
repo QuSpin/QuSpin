@@ -552,7 +552,29 @@ class ho_basis(basis):
 		return ME,row,col		
 
 
+def coherent_state(a,n,dtype=_np.float64):
+	"""
+	This function creates a harmonic oscillator coherent state.
 
+	RETURNS: numpy array with harmonic oscilaltor coherent state.
+
+	--- arguments ---
+
+	a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
+
+	n: (required) cut-off on the number of states kept in the definition of the coherent state
+
+	dtype: (optional) data type. Default is set to numpy.float64
+	"""
+
+	s1 = _np.full((n,),-_np.abs(a)**2/2.0,dtype=dtype)
+	s2 = _np.arange(n,dtype=_np.float64)
+	s3 = _np.array(s2)
+	s3[0] = 1
+	_np.log(s3,out=s3)
+	s3[1:] = 0.5*_np.cumsum(s3[1:])
+	state = s1+_np.log(a)*s2-s3
+	return _np.exp(state)
 
 
 			

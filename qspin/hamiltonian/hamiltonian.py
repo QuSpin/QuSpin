@@ -17,6 +17,21 @@ import warnings
 
 
 
+def commutator(H1,H2):
+	""" This function returns the commutator of two Hamiltonians H1 and H2. """
+	if _ishamiltonian(H1) or _ishamiltonian(H2):
+		return H1*H2 - H2*H1
+	else:
+		return H1.dot(H2) - H2.dot(H1)
+
+def anti_commutator(H1,H2):
+	""" This function returns the anti-commutator of two Hamiltonians H1 and H2. """
+	if _ishamiltonian(H1) or _ishamiltonian(H2):
+		return H1*H2 + H2*H1
+	else:
+		return H1.dot(H2) + H2.dot(H1)
+
+
 
 
 class HamiltonianEfficiencyWarning(Warning):
