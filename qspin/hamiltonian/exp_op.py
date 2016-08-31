@@ -19,7 +19,7 @@ class exp_op(object):
 	def get_shape(self):
 		return self.O.get_shape
 
-	def get_mat(self, a=-1j, time=0):
+	def get_mat(self, a=1.0, time=0):
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
@@ -28,7 +28,7 @@ class exp_op(object):
 		else:
 			return _sp.linalg.expm(a * self.O.tocsr(time).tocsc())
 
-	def dot(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def dot(self, other, a=1.0, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_sp = False
 		is_ham = False
@@ -88,7 +88,7 @@ class exp_op(object):
 				else:
 					return _expm_multiply(M, other, start=start, stop=stop, num=num, endpoint=endpoint)
 
-	def rdot(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def rdot(self, other, a=1.0, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_sp = False
 		is_ham = False
@@ -146,7 +146,7 @@ class exp_op(object):
 				else:
 					return _expm_multiply(M, other.T.conj(), start=start, stop=stop, num=num, endpoint=endpoint).T.conj()
 
-	def sandwich(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def sandwich(self, other, a=1.0, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_ham = False
 		if ishamiltonian(other):

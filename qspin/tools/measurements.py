@@ -18,7 +18,7 @@ import warnings
 # finish examples 2, 3
 
 
-__all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","coherent_state","project_operator","commutator","anti_commutator"]
+__all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
 
 
 
@@ -539,7 +539,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 		This function calculates the Renyi entropy of the distribution p with parameter alpha.
 		"""
 		if alpha == 1.0:
-#			warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
+			#warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
 			S = - _np.einsum(es_str('ji,ji->i'),p,_np.log(p))
 		else:
 			S = 1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha,axis=0) )
@@ -572,7 +572,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 
-def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=()):
+def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -654,9 +654,19 @@ def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=
 			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
 			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Srdm_args: (optional) diction of ent_entropy arguments, required when 'Srdm_Renyi = True'.
-			At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
-			see documentation of '_reshape_as_subsys'.
+	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+			following keys are allowed:
+
+			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+			  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+
+			* chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+
+			 * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
+			 * [0,1,...,N-1,N] for 'photon_basis'. 
+
+			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
 	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
 				for the entanglement entropy which is normalised by the subsystem size 
@@ -1042,9 +1052,20 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
 			at the times specified by the column index. The return dictonary key is 'psi_time'.
 
-	Sent_args: (optional) tuple of ent_entropy arguments. When nonempty, the enatanglement 
-			entropy is returned uder the key 'Sent_time'. At least 'Sent_args=(basis)' is required. 
-			If not passed, assumes the default 'chain_subsys', see documentation of '_reshape_as_subsys'.
+	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+			following keys are allowed:
+
+			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+			  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+
+			* chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+
+			 * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
+			 * [0,1,...,N-1,N] for 'photon_basis'. 
+
+			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
+
 	"""
 
 	variables = ['Expt_time']
@@ -1182,7 +1203,7 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 
 	if len(Sent_args) > 0:
 		variables.append("Sent_time")
-		Sent_time = ent_entropy({'V_states':psi_t.T},**Sent_args)
+		Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
 
 
 
