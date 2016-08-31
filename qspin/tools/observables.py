@@ -1136,7 +1136,10 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 		
 		# get iterator over time dependent state (see function above)
-		psi_t = ED_state_vs_time(psi,E,V,times,iterate = not(return_state) ).T
+		if return_state:
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate = False ).T
+		else:
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate = True )
 
 
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
@@ -1223,7 +1226,7 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 	if len(Sent_args) > 0:
 		variables.append("Sent_time")
-		Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+		Sent_time = ent_entropy({'V_states':psi_t.T},**Sent_args)
 
 
 
