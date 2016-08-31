@@ -1003,7 +1003,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 
 
-def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
+def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1074,7 +1074,7 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 	if type(psi_t) is tuple:
 
-		psi,E,V,times = psi_t
+		psi,E,V = psi_t
 
 		if V.ndim != 2 or V.shape[0] != V.shape[1]:
 			raise ValueError("'V' must be a square matrix")
@@ -1099,7 +1099,10 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 		
 		# get iterator over time dependent state (see function above)
-		psi_t = ED_state_vs_time(psi,E,V,times,iterate = not(return_state) ).T
+		if return_state:
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate = False ).T
+		else:
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate = True )
 
 
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
@@ -1150,13 +1153,9 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
 	
 		for ham in ham_list:
-			if times is not None:
-				psi_l = ham.dot(psi_t,time=times,check=False)
-			else:
-				warnings.warn("argument 'times' needed for time dependent Obs.")
-				psi_l = ham.dot(psi_t)
-		
+			psi_l = ham.dot(psi_t,time=times,check=False)
 			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
+
 		Expt_time = _np.vstack(Expt_time).T
 
 	else:
@@ -1166,10 +1165,7 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 			if psi.ndim == 2:
 				psi = psi.ravel()
 
-			if times is not None:
-				time = times[m]
-			else:
-				time = 0
+			time = times[m]
 
 			Expt = []
 			for Obs in Obs_list:
@@ -1186,7 +1182,7 @@ def obs_vs_time(psi_t,Obs_list,return_state=False,times=None,Sent_args=()):
 
 	if len(Sent_args) > 0:
 		variables.append("Sent_time")
-		Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+		Sent_time = ent_entropy({'V_states':psi_t.T},**Sent_args)
 
 
 
