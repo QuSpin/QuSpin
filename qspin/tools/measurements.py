@@ -1092,6 +1092,10 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 	Obs_list = tuple(Obs_list)
 	ham_list = tuple(ham_list)
 
+	if len(Sent_args) > 0:
+		return_state=True
+
+
 
 	if type(psi_t) is tuple:
 
@@ -1165,7 +1169,7 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 		raise ValueError("input not recognized")
 	
 		
-
+	# calculate observables
 	Expt_time = []
 	
 	if return_state:
@@ -1180,7 +1184,6 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 		Expt_time = _np.vstack(Expt_time).T
 
 	else:
-
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
 			if psi.ndim == 2:
@@ -1197,14 +1200,13 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 				Expt.append(ham.matrix_ele(psi,psi,time=time).real)
 
 			Expt_time.append(_np.asarray(Expt))
-
+			
 		Expt_time = _np.vstack(Expt_time)
-
-
+	
+	# calculate entanglement entropy if requested	
 	if len(Sent_args) > 0:
 		variables.append("Sent_time")
 		Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
-
 
 
 	return_dict = {}

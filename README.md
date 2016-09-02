@@ -789,7 +789,7 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 
 
 ```python
-obs_vs_time(psi_t,Obs_list,times=None,return_state=False)
+obs_vs_time(psi_t,times,Obs_list,return_state=False)
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
 
@@ -816,12 +816,11 @@ RETURNS:  dictionary with keys:
  2. psi_t: 2-dim array which contains the time dependent states as columns of the array.
  3. psi_t:  Iterator generates the states sequentially ( For most evolution functions you can get this my setting ```iterate=True```. This is more memory efficient as the states are generated on the fly as opposed to being stored in memory )
 
+* times: (required) a real array of times to evaluate the expectation value at. always fifth argument. If this is specified, the hamiltonian objects will be dynamically evaluated at the times specified. The function will also 
 
 * Obs_list: (required) List of objects to take the expecation values with. This accepts NumPy, and SciPy matrices as well as hamiltonian objects.
 
-* times: (optional) a real array of times to evaluate the expectation value at. always fifth argument. If this is specified, the hamiltonian objects will be dynamically evaluated at the times specified. The function will also 
-
-* return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
+* return_state: (optional) when set to 'True' or 'Sent_args' is nonempty, returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
 * Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
 following keys are allowed:
