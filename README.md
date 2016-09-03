@@ -627,7 +627,7 @@ RETURNS:  dictionary with keys:
 
 #### **diagonal ensemble observables**
 ```python
-diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
+diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
 
 This function calculates the expectation values of physical quantities in the Diagonal ensemble 

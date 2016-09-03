@@ -572,7 +572,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 
-def diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
+def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -1049,7 +1049,7 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 
 	times: (required) a vector of times to evaluate the expectation value at. 
 
-	return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector 
+	return_state: (optional) when set to 'True' or Sent_args is nonempty, returns a matrix whose columns give the state vector 
 			at the times specified by the column index. The return dictonary key is 'psi_time'.
 
 	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
