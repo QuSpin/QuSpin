@@ -391,6 +391,20 @@ There are also some methods which are useful when interfacing qspin with functio
   ```
 
 
+### **functions**
+
+#### **commutator**
+```python
+commutator(H1,H2)
+```
+This function returns the commutator of two Hamiltonians H1 and H2.
+
+#### **anti commutator**
+```python
+anti_commutator(H1,H2)
+```
+This function returns the anti-commutator of two Hamiltonians H1 and H2.
+
 
 # **basis objects**
 
@@ -613,7 +627,7 @@ RETURNS:  dictionary with keys:
 
 #### **diagonal ensemble observables**
 ```python
-diag_ensemble(N,system_state,V2,E2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
+diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
 
 This function calculates the expectation values of physical quantities in the Diagonal ensemble 
@@ -694,9 +708,19 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
   parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
   'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-* Srdm_args: (optional) tuple of ent_entropy arguments, required when 'Srdm_Renyi = True'.
-  At least 'Srdm_args=(basis)' is required. If not passed, assumes the default 'chain_subsys', 
-  see documentation of '_reshape_as_subsys'.
+* Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+following keys are allowed:
+
+  1. basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+    'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+
+  2. chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+
+   * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
+   * [0,1,...,N-1,N] for 'photon_basis'. 
+
+   * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
 * densities: (optional) if set to 'True', all observables are normalised by the system size N, except
   for the entanglement entropy which is normalised by the subsystem size 
@@ -765,7 +789,7 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 
 
 ```python
-obs_vs_time(psi_t,Obs_list,times=None,return_state=False)
+obs_vs_time(psi_t,times,Obs_list,return_state=False)
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
 
@@ -792,16 +816,26 @@ RETURNS:  dictionary with keys:
  2. psi_t: 2-dim array which contains the time dependent states as columns of the array.
  3. psi_t:  Iterator generates the states sequentially ( For most evolution functions you can get this my setting ```iterate=True```. This is more memory efficient as the states are generated on the fly as opposed to being stored in memory )
 
+* times: (required) a real array of times to evaluate the expectation value at. always fifth argument. If this is specified, the hamiltonian objects will be dynamically evaluated at the times specified. The function will also 
 
 * Obs_list: (required) List of objects to take the expecation values with. This accepts NumPy, and SciPy matrices as well as hamiltonian objects.
 
-* times: (optional) a real array of times to evaluate the expectation value at. always fifth argument. If this is specified, the hamiltonian objects will be dynamically evaluated at the times specified. The function will also 
+* return_state: (optional) when set to 'True' or 'Sent_args' is nonempty, returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
-* return_state: (optional) when set to 'True', returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
+* Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+following keys are allowed:
 
-* Sent_args: (optional) tuple of ent_entropy arguments. When nonempty, the enatanglement 
-  entropy is returned uder the key 'Sent_time'. At least 'Sent_args=(basis)' is required. 
-  If not passed, assumes the default 'chain_subsys', see documentation of '_reshape_as_subsys'.
+  1. basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+    'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+
+  2. chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+
+   * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
+   * [0,1,...,N-1,N] for 'photon_basis'. 
+
+   * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
+
 
 
 ### **mean level spacing**
@@ -816,36 +850,6 @@ RETURNS: float with mean-level spacing 'r_ave'.
 --- arguments ---
 
 * E: (required) ordered list of ascending, nondegenerate eigenenergies.
-
-
-### **commutator**
-```python
-commutator(H1,H2)
-```
-This function returns the commutator of two Hamiltonians H1 and H2.
-
-### **anti commutator**
-```python
-anti_commutator(H1,H2)
-```
-This function returns the anti-commutator of two Hamiltonians H1 and H2.
-
-
-### **coherent state**
-```python
-coherent_state(a,n,dtype=_np.float64)
-```
-This function creates a harmonic oscillator coherent state.
-
-RETURNS: numpy array with harmonic oscilaltor coherent state.
-
---- arguments ---
-
-* a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
-
-* n: (required) cut-off on the number of states kept in the definition of the coherent state
-
-* dtype: (optional) data type. Default is set to numpy.float64
 
 
 

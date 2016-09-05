@@ -6,6 +6,7 @@ from .make_hamiltonian import make_static as _make_static
 from .make_hamiltonian import make_dynamic as _make_dynamic
 from .make_hamiltonian import test_function as _test_function
 
+
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
@@ -84,7 +85,8 @@ def check_dynamic(sub_list):
 
 	
 
-
+def ishamiltonian(obj):
+	return isinstance(obj,hamiltonian)
 
 
 class hamiltonian(object):
@@ -534,6 +536,64 @@ class hamiltonian(object):
 		return -V_dot
 
 
+	def rotate(self, other, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
+
+		is_ham = False
+		if ishamiltonian(other):
+			shape = other._shape
+			is_ham = True
+		elif _sp.issparse(other):
+			shape = other.shape
+		elif other.__class__ in [_np.matrix, _np.ndarray]:
+			shape = other.shape
+		else:
+			other = _np.asanyarray(other)
+			shape = other.shape
+
+		if other.ndim != 2:
+			raise ValueError("Expecting a 2 dimensional array for 'other'")
+
+		if shape[0] != shape[1]:
+			raise ValueError("Expecting square array for 'other'")
+
+		if shape[0] != self.get_shape[0]:
+			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
+
+		M = a*other(time)
+		if iterate:
+			if [start, stop] == [None, None]:
+				raise ValueError("iterate option only availible for time discretization.")
+
+			grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
+
+			if is_ham:
+				mat_iter = _hamiltonian_iter_sandwich(M, self, step, grid)
+			else:
+				mat_iter = _iter_sandwich(M, self, step, grid)
+
+			return mat_iter
+		else:
+			if [start,stop] == [None, None]:
+
+				if [num, endpoint] != [None, None]:
+					raise ValueError('impropor linspace arguements!')
+				self = other.expm_multiply(self(time),a=a) #self.dot(other,time=time)
+				other = _sp.linalg.expm_multiply( a*other.tocsr(),self.H.tocsr() ).H #other.dot(self.H,time=time)
+				return other
+
+			else:
+				grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
+
+				if is_ham:
+					mat_iter = _hamiltonian_iter_sandwich(M, self, step, grid)
+				else:
+					mat_iter = _iter_sandwich(M, self, step, grid)
+
+				others = _np.asarray([mat for mat in mat_iter])
+
+				return others
+
+
 	def expm_multiply(self,V,a=-1j,time=0,iterate=True,verbose=False,times=(),**linspace_args):
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -739,6 +799,9 @@ class hamiltonian(object):
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 			return V_dot
 
+
+
+
 		if V.__class__ is _np.ndarray:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
@@ -765,9 +828,23 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 
+		elif V.__class__.__name__=='exp_op': # matrix op right dot
+
+			V = V.expm()
+
+			if not _sp.issparse(V):
+				raise ValueError("Expecting a sparse matrix for 'V'!")
+			
+			if V.shape[0] != self._shape[1]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+			V_dot = self._static.dot(V)	
+			for Hd,f,f_args in self._dynamic:
+				V_dot += f(time,*f_args)*(Hd.dot(V))
+			return V_dot
+		
 		else:
 			V = _np.asanyarray(V)
-
 			if V.ndim not in [1,2]:
 				raise ValueError("Expecting 1 or 2 dimensional array")
 
@@ -1125,7 +1202,8 @@ class hamiltonian(object):
 
 
 		if _sp.issparse(self._static):
-			H=self._static.tocsr(copy=True)
+			print "hamiltonian.tocsr(copy=True) creates problems with the exp_op class"
+			H=self._static.tocsr() #copy=True
 		else:
 			H = _sp.csr_matrix(self._static)	
 
@@ -2180,14 +2258,89 @@ class hamiltonian(object):
 
 
 
-def ishamiltonian(obj):
-	return isinstance(obj,hamiltonian)
 
 
 
+def _iter_sandwich(M, other, step, grid):
+	if grid[0] != 0:
+		M *= grid[0]
+		other = _sp.linalg.expm_multiply(M, other)
+		r_other = _sp.linalg.expm_multiply(M, other.T.conj()).T.conj()
+		M /= grid[0]
+
+		yield r_other.copy()
+	else:
+		yield other.copy()
+
+	for t in grid[1:]:
+		M *= step
+		other = _sp.linalg.expm_multiply(M, other)
+		M /= step
+		if t != 0:
+			M *= t
+			r_other = _sp.linalg.expm_multiply(M, other.T.conj()).T.conj()
+			M /= t
+
+		yield r_other.copy()
 
 
+def _hamiltonian_dot(M, other):
+	exp_static = [_sp.linalg.expm_multiply(M, other.static)]
+	
+	exp_dynamic = []
+	for Hd,f,f_args in other.dynamic:
+		Hd = _sp.linalg.expm_multiply(M, Hd)
+		exp_dynamic.append([Hd,f,f_args])
 
+	return hamiltonian(exp_static,exp_dynamic)
+
+
+def _hamiltonian_iter_dot(M, other, grid, step):
+	if grid[0] != 0:
+		M *= grid[0]
+		other = _hamiltonian_dot(M, other)
+		M /= grid[0]
+
+	yield other
+
+	M *= step
+	for t in grid[1:]:
+		other =  _hamiltonian_dot(M, other)
+		yield other
+
+
+def _hamiltonian_rdot(M, other):
+	exp_static = [_sp.linalg.expm_multiply(M, other.static)]
+	
+	exp_dynamic = []
+	for Hd,f,f_args in other.dynamic:
+		Hd = _expm_multiply(M, Hd)
+		exp_dynamic.append([Hd,f,f_args])
+
+	return hamiltonian(exp_static,exp_dynamic)
+
+
+def _hamiltonian_iter_sandwich(M, other, step, grid):
+	if grid[0] != 0:
+		M *= grid[0]
+		other = _hamiltonian_dot(M, other)
+		r_other = _hamiltonian_rdot(M, other.T.conj()).T.conj()
+		M /= grid[0]
+
+		yield r_other
+	else:
+		yield other.copy()
+
+	for t in grid[1:]:
+		M *= step
+		other = _hamiltonian_dot(M, other)
+		M /= step
+		if t != 0:
+			M *= t
+			r_other = _hamiltonian_rdot(M, other.T.conj()).T.conj()
+			M /= t
+
+		yield r_other
 
 
 
