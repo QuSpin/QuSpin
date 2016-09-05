@@ -5,30 +5,45 @@ import scipy.sparse as _sp
 
 
 class exp_op(object):
-	def __init__(self, O):
+	def __init__(self, O, a = 1):
 		if ishamiltonian(O):
 			self._O = O
 		else:
 			self._O = hamiltonian([O], [])
+		
+		self._a = a
 
 	@property
 	def O(self):
 		return self._O
 
 	@property
+	def a(self):
+		return self._a
+
+	@property
 	def get_shape(self):
 		return self.O.get_shape
 
-	def get_mat(self, a=-1j, time=0):
+
+	def get_H(self):
+		self._O = self._O.get_H()
+		self._a = _np.conj(self._a)
+
+		return self
+
+	def set_a(self,a):
 		if not _np.isscalar(a):
-			raise TypeError('expecting scalar argument for a')
+			raise ValueError("a must be a scalar.")
+		self._a = a
 
+	def get_mat(self, time=0):
 		if self.O.is_dense:
-			return _np.linalg.expm(a * self.O.todense(time))
+			return _np.linalg.expm(self.a * self.O.todense(time))
 		else:
-			return _sp.linalg.expm(a * self.O.tocsr(time).tocsc())
+			return _sp.linalg.expm(self.a * self.O.tocsr(time).tocsc())
 
-	def dot(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def dot(self, other, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_sp = False
 		is_ham = False
@@ -53,7 +68,7 @@ class exp_op(object):
 		if shape[0] != self.get_shape[1]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
-		M = a * self.O(time)
+		M = self.a * self.O(time)
 		if iterate:
 			if [start, stop] == [None, None]:
 				raise ValueError("iterate option only availible for time discretization.")
@@ -88,7 +103,7 @@ class exp_op(object):
 				else:
 					return _expm_multiply(M, other, start=start, stop=stop, num=num, endpoint=endpoint)
 
-	def rdot(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def rdot(self, other, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_sp = False
 		is_ham = False
@@ -113,7 +128,7 @@ class exp_op(object):
 		if shape[1] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
-		M = (a * self.O(time)).T.conj()
+		M = (self.a * self.O(time)).T
 		if iterate:
 			if [start, stop] == [None, None]:
 				raise ValueError("iterate option only availible for time discretization.")
@@ -121,9 +136,9 @@ class exp_op(object):
 			grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
 			if is_ham:
-				return _hamiltonian_iter_rdot(M, other.T.conj(), step, grid)
+				return _hamiltonian_iter_rdot(M, other.T, step, grid)
 			else:
-				return _iter_rdot(M, other.T.conj(), step, grid)
+				return _iter_rdot(M, other.T, step, grid)
 		else:
 			if [start, stop] == [None, None]:
 
@@ -131,22 +146,22 @@ class exp_op(object):
 					raise ValueError('impropor linspace arguements!')
 
 				if is_ham:
-					return _hamiltonian_rdot(M, other.T.conj()).T.conj()
+					return _hamiltonian_rdot(M, other.T).T
 				else:
-					return _expm_multiply(M, other.T.conj()).T.conj()
+					return _expm_multiply(M, other.T).T
 			else:
 				if is_sp:
 					grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
-					mats = _iter_rdot(M, other.T.conj(), step, grid)
+					mats = _iter_rdot(M, other.T, step, grid)
 					return _np.array([mat for mat in mats])
 				elif is_ham:
 					grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
-					mats = _hamiltonian_iter_rdot(M, other.T.conj(), step, grid)
+					mats = _hamiltonian_iter_rdot(M, other.T, step, grid)
 					return _np.array([mat for mat in mats])				
 				else:
-					return _expm_multiply(M, other.T.conj(), start=start, stop=stop, num=num, endpoint=endpoint).T.conj()
+					return _expm_multiply(M, other.T, start=start, stop=stop, num=num, endpoint=endpoint).T
 
-	def sandwich(self, other, a=-1j, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def sandwich(self, other, time=0, start=None, stop=None, num=None, endpoint=None, iterate=False):
 
 		is_ham = False
 		if ishamiltonian(other):
@@ -169,7 +184,7 @@ class exp_op(object):
 		if shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
-		M = a * self.O(time)
+		M = self.a * self.O(time)
 		if iterate:
 			if [start, stop] == [None, None]:
 				raise ValueError("iterate option only availible for time discretization.")
@@ -182,8 +197,8 @@ class exp_op(object):
 				if [num, endpoint] != [None, None]:
 					raise ValueError('impropor linspace arguements!')
 
-				other = self.dot(other, a=a, time=time)
-				return self.rdot(other, a=a, time=time)
+				other = self.dot(other, a=self.a, time=time)
+				return self.rdot(other, a=self.a, time=time)
 
 			else:
 				grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
@@ -218,19 +233,19 @@ def _iter_rdot(M, other, step, grid):
 		other = _expm_multiply(M, other)
 		M /= grid[0]
 
-	yield other.T.conj().copy()
+	yield other.T.copy()
 
 	M *= step
 	for t in grid[1:]:
 		other = _expm_multiply(M, other)
-		yield other.T.conj().copy()
+		yield other.T.copy()
 
 
 def _iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _expm_multiply(M, other)
-		r_other = _expm_multiply(M.T.conj(), other.T.conj()).T.conj()
+		r_other = _expm_multiply(M.T, other.T).T
 		M /= grid[0]
 
 		yield r_other.copy()
@@ -243,7 +258,7 @@ def _iter_sandwich(M, other, step, grid):
 		M /= step
 		if t != 0:
 			M *= t
-			r_other = _expm_multiply(M.T.conj(), other.T.conj()).T.conj()
+			r_other = _expm_multiply(M.T, other.T).T
 			M /= t
 
 		yield r_other.copy()
@@ -291,19 +306,19 @@ def _hamiltonian_iter_rdot(M, other, grid, step):
 		other = _hamiltonian_rdot(M, other)
 		M /= grid[0]
 
-	yield other.conj().sandwichpose(copy=True)
+	yield other.conj().transpose(copy=True)
 
 	M *= step
 	for t in grid[1:]:
 		other =  _hamiltonian_rdot(M, other)
-		yield other.conj().sandwichpose(copy=True)
+		yield other.conj().transpose(copy=True)
 
 
 def _hamiltonian_iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _hamiltonian_dot(M, other)
-		r_other = _hamiltonian_rdot(M.T.conj(), other.T.conj()).T.conj()
+		r_other = _hamiltonian_rdot(M.T, other.T).T
 		M /= grid[0]
 
 		yield r_other
@@ -316,7 +331,7 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 		M /= step
 		if t != 0:
 			M *= t
-			r_other = _hamiltonian_rdot(M.T.conj(), other.T.conj()).T.conj()
+			r_other = _hamiltonian_rdot(M.T, other.T).T
 			M /= t
 
 		yield r_other
