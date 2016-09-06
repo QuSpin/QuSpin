@@ -546,7 +546,7 @@ class hamiltonian(object):
 
 	def rotate(self, other, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
 
-		return exp_op(self,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=False).sandwich(other)
+		return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=False).sandwich(self)
 		"""
 		is_ham = False
 		if ishamiltonian(other):
@@ -739,6 +739,10 @@ class hamiltonian(object):
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+		elif V.__class__ == exp_op: # matrix op right dot
+
+			return V.dot(self.__call__(time),time=time)
 
 
 		else:
@@ -1239,9 +1243,9 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
 
-
+		print 1
 		H = _sp.csc_matrix(self._static)	
-
+		print 2
 		for Hd,f,f_args in self._dynamic:
 			Hd = _sp.csc_matrix(Hd)
 			try:
@@ -2419,9 +2423,7 @@ class exp_op(object):
 
 		self._iterate = Value
 		
-	def expm(self):
-		return self._O.expm(a=self._a,time=self._time)
-		
+
 	def get_mat(self,time=0.0):
 
 		if self.O.is_dense:
