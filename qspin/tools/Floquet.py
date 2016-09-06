@@ -1,4 +1,4 @@
-from ..hamiltonian import hamiltonian,ishamiltonian
+from ..operators import hamiltonian,ishamiltonian
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
@@ -15,7 +15,7 @@ import warnings
 
 __all__ = ['Floquet_t_vec','Floquet']
 
-warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
+#warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
 
 
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):

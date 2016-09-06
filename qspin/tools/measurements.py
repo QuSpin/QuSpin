@@ -8,8 +8,8 @@ import numpy as _np
 from inspect import isgenerator as _isgenerator 
 
 # needed for isinstance only
-from ..hamiltonian import ishamiltonian as _ishamiltonian
-from ..hamiltonian import hamiltonian as _hamiltonian
+from ..operators import ishamiltonian as _ishamiltonian
+from ..operators import hamiltonian as _hamiltonian
 from ..basis import spin_basis_1d,photon_basis,isbasis,photon_Hspace_dim
 
 import warnings

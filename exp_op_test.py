@@ -1,4 +1,4 @@
-from qspin.hamiltonian import hamiltonian,exp_op # Hamiltonian and matrix exp
+from qspin.operators import hamiltonian,exp_op # Hamiltonian and matrix exp
 from qspin.basis import spin_basis_1d # Hilbert space spin basis
 from qspin.tools.measurements import obs_vs_time, diag_ensemble # t_dep measurements
 from qspin.tools.Floquet import Floquet, Floquet_t_vec # Floquet Hamiltonian
