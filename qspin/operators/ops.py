@@ -1412,8 +1412,7 @@ class hamiltonian(object):
 
 
 	def __mul__(self,other): # self * other
-		if isinstance(other,hamiltonian):
-#			
+		if isinstance(other,hamiltonian):			
 			return self._mul_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1500,6 +1499,53 @@ class hamiltonian(object):
 			return self._imul_dense(other)
 
 
+
+
+	def __div__(self,other): # self / other
+		if isinstance(other,hamiltonian):			
+			return NotImplemented
+
+		elif _sp.issparse(other):
+			return NotImplemented
+
+		elif _np.isscalar(other):
+			return self._mul_scalar(1.0/other)
+
+		elif other.__class__ == _np.ndarray:
+			return NotImplemented
+
+		elif other.__class__ == _np.matrix:
+			return NotImplemented
+
+		else:
+			return NotImplemented
+
+
+
+
+
+	def __rdiv__(self,other): # other / self
+		return NotImplemented
+
+
+	def __idiv__(self,other): # self *= other
+		if isinstance(other,hamiltonian):
+			return NotImplemented
+		
+		elif _sp.issparse(other):
+			return NotImplemented
+
+		elif _np.isscalar(other):
+			return self._imul_scalar(1.0/other)
+
+		elif other.__class__ == _np.ndarray:
+			return NotImplemented
+
+		elif other.__class__ == _np.matrix:
+			return NotImplemented
+
+		else:
+			return NotImplemented
 
 
 
@@ -1775,6 +1821,7 @@ class hamiltonian(object):
 			return other.__rmul__(self.static)
 		else:
 			return self.__imul__(other.static)
+
 
 
 
