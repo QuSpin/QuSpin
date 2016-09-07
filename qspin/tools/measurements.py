@@ -587,9 +587,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
 
-	'Sd_Renyi_...' ('Sd_...' for alpha=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+	'Sd_...' ('Sd_Renyi_...' for alpha different from 1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-	'Srdm_Renyi_...' ('Srdm_...' for alpha=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+	'Srdm_...' ('Srdm_Renyi_...' for alpha different from 1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
 			with parameter 'alpha'.
 
 	'rho_d': density matrix of diagonal ensemble
@@ -673,8 +673,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	"""
 
 	# check if E2 are all unique
-	seen = list()
-	if any(i in seen or seen.append(i) for i in _np.round(E2,_np.asarray(E2).dtype.itemsize) ):
+	if any( _np.diff(sorted(E2)) < _np.finfo(_np.asarray(E2).dtype).eps):
 		raise TypeError("Cannot use function 'diag_ensemble' with dengenerate e'values 'E2'!")
 	del E2
 
@@ -711,7 +710,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			raise TypeError("Dictionary 'system_state' must contain states matrix 'V1'!")
 		
 		if 'E1' in system_state.keys():
-			E1 = system_state['E1']
+			E1 = _np.asarray( system_state['E1'] )
+			if any(sorted(E1)!=E1):
+				raise TypeError("Expecting ordered vector of energies 'E1'!")
 		else:
 			raise TypeError("Dictionary 'system_state' must contain eigenvalues vector 'E1'!")
 		
@@ -737,21 +738,6 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			f_norms = _np.zeros((len(f_args[0])),dtype=type(f_args[0][0]) )
 		else:
 			f_norm = True
-
-
-		'''
-		# import array to be able to assign V1 from the keys below
-		from numpy import array
-		# turn dict into variables
-		for key,value in system_state.iteritems():
-			# check if key is allowed
-			if key not in key_strings:
-				raise TypeError("Key '{}' not allowed for use in dictionary 'system_state'!".format(key))
-			# display full strings
-			_np.set_printoptions(threshold='nan')
-			# turn key to variable and assign its value
-			exec("{} = {}".format(key,repr(value)) ) in locals()
-		'''
 
 		if 'V1_state' in locals():
 			if not(type(V1_state) is int):
@@ -792,16 +778,14 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 		if (delta_t_Obs or delta_q_Obs) and Obs is not False:
 			# diagonal matrix elements of Obs^2 in the basis V2
-			print "revisit dot product in deltaObs"
 			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
-			Obs = reduce(_np.dot,[V2.T.conj(),_np.asarray(Obs.todense()),V2])
+			Obs = reduce(_np.dot,[V2.T.conj(),Obs,V2])
 			delta_t_Obs = _np.square(Obs)
 			_np.fill_diagonal(delta_t_Obs,0.0)
 			if delta_q_Obs is not False:
 				delta_q_Obs = _np.diag(Obs.dot(Obs)).real
 			Obs = _np.diag(Obs).real
-			#delta_q_Obs = delta_q_Obs # - Obs**2
-
+			
 		elif Obs is not False:
 			# diagonal matrix elements of Obs in the basis V2
 			Obs = _np.einsum('ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real

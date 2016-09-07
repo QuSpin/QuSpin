@@ -663,9 +663,9 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
 
 * 'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
 
-* 'Sd_Renyi_...' ('Sd_...' for alpha=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+* 'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-* 'Srdm_Renyi_...' ('Srdm_...' for alpha=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble with parameter 'alpha'.
+* 'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble with parameter 'alpha'.
 
 * 'rho_d': density matrix of diagonal ensemble
 

@@ -1115,9 +1115,7 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
 
-		print 1
 		H = _sp.csc_matrix(self._static)	
-		print 2
 		for Hd,f,f_args in self._dynamic:
 			Hd = _sp.csc_matrix(Hd)
 			try:
