@@ -542,83 +542,6 @@ class hamiltonian(object):
 		return -V_dot
 
 
-	def rotate_to(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
-		if generator:
-			return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=iterate).sandwich(self)
-		else:
-			return self.project_to(other)
-
-
-
-	def expm_multiply(self,V,a=-1j,time=0,iterate=True,verbose=False,times=(),**linspace_args):
-		if self.Ns <= 0:
-			return _np.asarray([])
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
-		if not _np.isscalar(a):
-			raise TypeError('expecting scalar argument for a')
-
-		times = _np.asarray(times)
-		M_csr = a*self.tocsr(time)
-
-		if iterate:
-			if not _np.any(times):
-				if linspace_args.keys(): # if linspace args found
-					start = linspace_args['start']
-					stop = linspace_args['stop']
-					num = linspace_args['num']
-
-					endpoint = linspace_args.get('endpoint')
-					if endpoint is None: endpoint=False
-			
-					times = _np.linspace(start,stop,num=num,endpoint=endpoint)
-				else: # else assume scalar multiple of 
-					return _sp.linalg.expm_multiply(M_csr,V)
-
-			return self._expm_multiply_iter(V,M_csr,times,verbose)
-		else:
-			if _np.any(times):
-				warnings.warn("'times' option only availible when iterate=True.",UserWarning)
-			return _sp.linalg.expm_multiply(M_csr,V,**linspace_args)
-
-
-
-
-	def _expm_multiply_iter(self,V,M_csr,times,verbose):
-		dtimes = times[1:] - times[:-1]
-		start = times[0]
-		times = _np.array(times[1:])
-
-		V = _sp.linalg.expm_multiply(start*M_csr,V)
-
-		yield _np.array(V)
-		if verbose: print "evolved to initial time {0}".format(start)
-
-		for dt,t in zip(dtimes,times):
-			V = _sp.linalg.expm_multiply(dt*M_csr,V)
-			if verbose: print "evolved to time {0}".format(t)
-
-			yield _np.array(V)
-
-
-
-
-
-	def expm(self,a=-1j,time=0):
-		if self.Ns <= 0:
-			return _np.asarray([])
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
-		if not _np.isscalar(a):
-			raise TypeError('expecting scalar argument for a')
-
-		return _sp.linalg.expm(a*self.tocsc(time))
-
-		
-	
-
-
-
 	def rdot(self,V,time=0,check=True): # V * H(time)
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -907,7 +830,6 @@ class hamiltonian(object):
 				return Vl.T.conj().dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
-
 		
 
 	def project_to(self,proj):
@@ -952,6 +874,11 @@ class hamiltonian(object):
 			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
+	def rotate_to(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
+		if generator:
+			return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=iterate).sandwich(self)
+		else:
+			return self.project_to(other)
 
 
 	def eigsh(self,time=0,**eigsh_args):
@@ -1215,6 +1142,7 @@ class hamiltonian(object):
 
 		if out is None:
 			out = _np.zeros(self._shape,dtype=self.dtype)
+			out = _np.asmatrix(out)
 
 		if _sp.issparse(self._static):
 			self._static.todense(order=order,out=out)
@@ -1225,6 +1153,31 @@ class hamiltonian(object):
 			out += Hd * f(time,*f_args)
 		
 		return out
+
+
+	def toarray(self,time=0,order=None, out=None):
+		"""
+		args:
+			time=0, the time to evalute drive at.
+
+		description:
+			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
+			This function can overflow memory if not careful.
+		"""
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+
+		if _sp.issparse(self._static):
+			self._static.toarray(order=order,out=out)
+		else:
+			out[:] = self._static[:]
+
+		for Hd,f,f_args in self._dynamic:
+			out += Hd * f(time,*f_args)
+		
+		return out
+
 
 
 	def as_dense_format(self,copy=False):
@@ -1253,6 +1206,9 @@ class hamiltonian(object):
 
 
 	def as_sparse_format(self,fmt,copy=False):
+		if type(fmt) is not str:
+			raise ValueError("Expecting string for 'fmt'")
+
 		if fmt not in ["csr","csc","dia","bsr"]:
 			raise ValueError("'{0}' is not a valid sparse format or does not support arithmetic.".format(fmt))
 
