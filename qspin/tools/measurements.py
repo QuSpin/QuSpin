@@ -14,9 +14,6 @@ from ..basis import spin_basis_1d,photon_basis,isbasis,photon_Hspace_dim
 
 import warnings
 
-### TO DO
-# finish examples 2, 3
-
 
 __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
 
