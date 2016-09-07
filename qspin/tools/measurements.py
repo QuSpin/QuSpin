@@ -1152,6 +1152,9 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 		
 	# calculate observables
 	Expt_time = []
+
+	if len(Sent_args) > 0:
+		variables.append("Sent_time")
 	
 	if return_state:
 		for Obs in Obs_list:
@@ -1163,6 +1166,11 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
 
 		Expt_time = _np.vstack(Expt_time).T
+
+		# calculate entanglement entropy if requested	
+		if len(Sent_args) > 0:
+			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+
 
 	else:
 		# loop over psi generator
@@ -1180,14 +1188,14 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 			for ham in ham_list:
 				Expt.append(ham.matrix_ele(psi,psi,time=time).real)
 
+
+			if len(Sent_args) > 0:
+				Sent_time.append(ent_entropy(psi_t,**Sent_args))
+
 			Expt_time.append(_np.asarray(Expt))
 			
 		Expt_time = _np.vstack(Expt_time)
 	
-	# calculate entanglement entropy if requested	
-	if len(Sent_args) > 0:
-		variables.append("Sent_time")
-		Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
 
 
 	return_dict = {}
