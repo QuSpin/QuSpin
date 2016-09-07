@@ -544,65 +544,12 @@ class hamiltonian(object):
 		return -V_dot
 
 
-	def rotate(self, other, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
-
-		return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=False).sandwich(self)
-		"""
-		is_ham = False
-		if ishamiltonian(other):
-			shape = other._shape
-			is_ham = True
-		elif _sp.issparse(other):
-			shape = other.shape
-		elif other.__class__ in [_np.matrix, _np.ndarray]:
-			shape = other.shape
+	def rotate_to(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
+		if generator:
+			return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=iterate).sandwich(self)
 		else:
-			other = _np.asanyarray(other)
-			shape = other.shape
+			return self.project_to(other)
 
-		if other.ndim != 2:
-			raise ValueError("Expecting a 2 dimensional array for 'other'")
-
-		if shape[0] != shape[1]:
-			raise ValueError("Expecting square array for 'other'")
-
-		if shape[0] != self.get_shape[0]:
-			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
-
-		M = a*other(time)
-		if iterate:
-			if [start, stop] == [None, None]:
-				raise ValueError("iterate option only availible for time discretization.")
-
-			grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
-
-			if is_ham:
-				mat_iter = _hamiltonian_iter_sandwich(M, self, step, grid)
-			else:
-				mat_iter = _iter_sandwich(M, self, step, grid)
-
-			return mat_iter
-		else:
-			if [start,stop] == [None, None]:
-
-				if [num, endpoint] != [None, None]:
-					raise ValueError('impropor linspace arguements!')
-				self = other.expm_multiply(self(time),a=a) #self.dot(other,time=time)
-				other = _sp.linalg.expm_multiply( a*other.tocsr(),self.H.tocsr() ).H #other.dot(self.H,time=time)
-				return other
-
-			else:
-				grid, step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
-
-				if is_ham:
-					mat_iter = _hamiltonian_iter_sandwich(M, self, step, grid)
-				else:
-					mat_iter = _iter_sandwich(M, self, step, grid)
-
-				others = _np.asarray([mat for mat in mat_iter])
-
-				return others
-		"""
 
 
 	def expm_multiply(self,V,a=-1j,time=0,iterate=True,verbose=False,times=(),**linspace_args):
