@@ -6,8 +6,6 @@ from .make_hamiltonian import make_static as _make_static
 from .make_hamiltonian import make_dynamic as _make_dynamic
 from .make_hamiltonian import test_function as _test_function
 
-from .exp_op import *
-
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla

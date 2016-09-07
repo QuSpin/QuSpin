@@ -7,6 +7,43 @@ from scipy import sparse as _sp
 import warnings
 
 
+def coherent_state(a,n,dtype=_np.float64):
+	"""
+	This function creates a harmonic oscillator coherent state.
+
+	RETURNS: numpy array with harmonic oscilaltor coherent state.
+
+	--- arguments ---
+
+	a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
+
+	n: (required) cut-off on the number of states kept in the definition of the coherent state
+
+	dtype: (optional) data type. Default is set to numpy.float64
+	"""
+
+	s1 = _np.full((n,),-_np.abs(a)**2/2.0,dtype=dtype)
+	s2 = _np.arange(n,dtype=_np.float64)
+	s3 = _np.array(s2)
+	s3[0] = 1
+	_np.log(s3,out=s3)
+	s3[1:] = 0.5*_np.cumsum(s3[1:])
+	state = s1+_np.log(a)*s2-s3
+	return _np.exp(state)
+
+def photon_Hspace_dim(N,Ntot,Nph):
+	"""
+	This function calculates the dimension of the total spin-photon Hilbert space.
+	"""
+	if Ntot is None and Nph is not None: # no total particle # conservation
+		return 2**N*(Nph+1)
+	elif Ntot is not None:
+		return 2**N - binom(N,Ntot+1)*hyp2f1(1,1-N+Ntot,2+Ntot,-1)
+	else:
+		raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
+
+	
+
 class photon_basis(tensor_basis):
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
 		Ntot = blocks.get("Ntot")
@@ -409,22 +446,6 @@ def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 
 
 
-
-def photon_Hspace_dim(N,Ntot,Nph):
-
-	"""
-	This function calculates the dimension of the total spin-photon Hilbert space.
-	"""
-	if Ntot is None and Nph is not None: # no total particle # conservation
-		return 2**N*(Nph+1)
-	elif Ntot is not None:
-		return 2**N - binom(N,Ntot+1)*hyp2f1(1,1-N+Ntot,2+Ntot,-1)
-	else:
-		raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
-
-
-
-
 # helper class which calcualates ho matrix elements
 class ho_basis(basis):
 	def __init__(self,Np):
@@ -550,31 +571,4 @@ class ho_basis(basis):
 			ME *= J
 
 		return ME,row,col		
-
-
-def coherent_state(a,n,dtype=_np.float64):
-	"""
-	This function creates a harmonic oscillator coherent state.
-
-	RETURNS: numpy array with harmonic oscilaltor coherent state.
-
-	--- arguments ---
-
-	a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
-
-	n: (required) cut-off on the number of states kept in the definition of the coherent state
-
-	dtype: (optional) data type. Default is set to numpy.float64
-	"""
-
-	s1 = _np.full((n,),-_np.abs(a)**2/2.0,dtype=dtype)
-	s2 = _np.arange(n,dtype=_np.float64)
-	s3 = _np.array(s2)
-	s3[0] = 1
-	_np.log(s3,out=s3)
-	s3[1:] = 0.5*_np.cumsum(s3[1:])
-	state = s1+_np.log(a)*s2-s3
-	return _np.exp(state)
-
-
-			
+		
