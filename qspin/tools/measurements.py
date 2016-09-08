@@ -587,9 +587,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
 
-	'Sd_...' ('Sd_Renyi_...' for alpha different from 1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+	'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-	'Srdm_...' ('Srdm_Renyi_...' for alpha different from 1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+	'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
 			with parameter 'alpha'.
 
 	'rho_d': density matrix of diagonal ensemble
