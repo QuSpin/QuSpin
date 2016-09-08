@@ -10,22 +10,24 @@ Contents
  * [automatic install](#automatic-install)
  * [manual install](#manual-install)
  * [updating the package](#updating-the-package)
-* [using the package](#using-the-package)
+* [basic package usage](#using-the-package)
  * [constructing hamiltonians](#constructing-hamiltonians)
  * [using basis objects](#using-basis-objects)
  * [specifying symmetries](#using-symmetries)
-* [hamiltonian objects](#hamiltonian-objects)
- * [arithmetic operations](#normal-operations)
- * [quantum (algebraic) operations](#quantum-operations)
- * [other operations](#other-operations)
-* [basis objects](#basis-objects)
- * [1d spin basis](#1d-spin-basis)
- * [harmonic oscillator basis](#harmonic-oscillator-basis)
- * [tensor basis objects](#tensor-basis-objects)
- * [methods of basis classes](#methods-of-basis-classes)
-* [tools](#tools)
- * [measusrements](#measurements)
- * [floquet](#floquet)
+* [list of package functions](#list-of-package-functions) 
+	* [operator objects](#operator-objects)
+	 * [hamiltonian class](#hamiltonian-class)
+	 * [functions for hamiltonians](#functions-for-hamiltonians)
+	 * [exo\_op class](#exp\_op-class)
+	* [basis objects](#basis-objects)
+	 * [1d spin basis](#1d-spin-basis)
+	 * [harmonic oscillator basis](#harmonic-oscillator-basis)
+	 * [tensor basis objects](#tensor-basis-objects)
+	 * [methods of basis classes](#methods-of-basis-classes)
+	* [tools](#tools)
+	 * [measusrements](#measurements)
+	 * [floquet](#floquet)
+
 
 
 #**Installation**
@@ -118,7 +120,7 @@ constructing the hamiltonian object of the transverse field Ising model with tim
 
 ```python
 # python script
-from qspin.hamiltonian import hamiltonian
+from qspin.operators import hamiltonian
 import numpy as np
 
 # set total number of lattice sites
@@ -189,9 +191,11 @@ H2 = hamiltonian(static2_list,dynamic2_list,basis=basis)
 
 **NOTE:** for beta versions spin_basis_1d is named as basis1d.
 
-#**hamiltonian objects**
+#**list of package functions**
 
-##**class organization**:
+#**Operator objects**
+
+##**hamiltonian class**:
 ```python
 H = hamiltonian(static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs)
 ```
@@ -252,9 +256,9 @@ The hamiltonian class wraps most of the functionalty of the package. Below shows
 * _.dynamic: returns the dynamic parts of the hamiltonian 
 
 
+###**methods of hamiltonian class**
 
-
-###**arithmetic operations**
+####**arithmetic operations**
 The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians, scipy sparse matrices or numpy dense arrays and scalars, as follows:
 
 * between other hamiltonians we have: ```+,-,*,+=,-=``` . Note that ```*``` only works between a static and static hamiltonians or a static and dynamic hamiltonians, but NOT between two dynamic hamiltonians.
@@ -263,61 +267,49 @@ The hamiltonian objects currectly support certain arithmetic operations with oth
 * negative operator '-H'
 * indexing and slicing: ```H[times,row,col]``` 
 
-###**quantum (algebraic) operations**
+####**quantum (algebraic) operations**
 We have included some basic functionality into the hamiltonian class, useful for quantum calculations:
 
+* matrix transformations:
+ * transpose (return copy of transposed hamiltonian set copy=True otherwise this is done inplace): 
+  ```
+  H_tran = H.transpose(copy=False)
+  H_tran = H.T # always inplace transpose
+  ```
+ * hermitian conjugate:
+  ```
+  H_herm = H.getH(copy=False)
+  H_herm = H.H
+  ```
+ * conjugate
+ ```
+ H_conj = H.conj() # always inplace
+ ```
 * matrix vector product / dense matrix:
 
   usage:
     ```python
-    B = H.dot(A,time=0) # $B = HA$
-    B = H.rdot(A,time=0) # $B = AH$
+    B = H.dot(A,time=0,check=True) # $B = HA$
+    B = H.rdot(A,time=0,check=True) # $B = AH$
     ```
-  where time is the time to evaluate the Hamiltonian at for the product, by default time=0. ```_.rdot``` is another function similar to ```_.dot```, but it performs the matrix multiplication from the right. 
+  where time is the time to evaluate the Hamiltonian at for the product, by default time=0. ```_.rdot``` is another function similar to ```_.dot```, but it performs the matrix multiplication from the right. The ```check``` option lets the user control whether or not to do checks for shape compatibility. If checks are turned off, there will be checks later which will throw a shape error.
   
 * matrix elements:
 
   usage:
     ```python
-    Huv = H.matrix_ele(u,v,time=0)
+    Huv = H.matrix_ele(u,v,time=0,diagonal=False,check=True)
     ```
-  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. 
+  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. ```diagonal=True``` then the function will only return the diagonal part of the resulting matrix multiplication. the check option is the same as for 'dot' and 'rdot'. 
   **NOTE: the inputs should not be hermitian tranposed, the function will do that automatically.
 
 * project a Hamiltonian to a new basis:
 	```python
 	H_new = H.project_to(V)
+	H_new = H.rotate_to(O,generator=False,**exp_op_args)
 	```
-returns a new hamiltonian object which is: V<sup>+</sup> H V. Note that V need not be a square matrix.
+The First function returns a new hamiltonian object which is: V<sup>+</sup> H V. Note that V need not be a square matrix. The second function when ```generator=False``` is the same as the first function but with ```generator=True``` the function uses O as the generator of a transformation. This function uses the [exp_op](#exp_op-class) class and the extra arguments ```**exp_op_args``` are optional arguments for the exp_op constructor. 
   
-* matrix exponential multiplication (versions >= v0.1.0):
-  usage:
-	```
-	v = H.expm_multiply(u,a=-1j,time=0,times=(),iterate=False,**linspace_args)
-	```
- * u: (required) vector to act on
- * a: (optional) factor to multiply H by in the exponential
- * time: (optional) time to evaluate H at
- * times: (optional) lines of times to exponentiate to
- * iterate: (optional) bool to return generate or list of vectors
- * linspace_args: (optional) arguments to pass into expm_multiply
-	
-  which evaluates |v > = exp(a H(time))|u > using only the dot product of H on |u >. The extra arguments will allow one to evaluate it at different time points see scipy docs for [expm_multiply](http://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) for more information. If iterate is True the function returns a generate which yields a vector evaluated at the time points specified either by time or by the linspace arguments:
-	```python
-	v_iter = H.expm_multiply(u,a=-1j,time=0,times=(1,2,3,4,5,6),iterate=True)
-	for v in v_iter:
-		#do stuff with v
-		# iterate to next vector
-	```
-If iterate is false then times is ignored. 
-
-* matrix exponential (versions >= v0.2.0):
-  usage:
-    ```python
-    U = H.expm(a=-1j,time=0)
-    ```
-  which evaluates M = exp(a H(time)) using the pade approximation, see scipy docs of [expm](http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.linalg.expm.html) for more information.
-
 * Schroedinger dynamics:
 
   The hamiltonian class has 2 private functions which can be passed into Scipy's ode solvers in order to numerically solve the Schroedinger equation in both real and imaginary time:
@@ -367,17 +359,26 @@ The hamiltonian class also has built in methods which are useful for doing exact
     ```
   where ```**eigsh_args``` are optional arguments which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.eigsh.html).
 
-###**other operations**
+####**other operations**
 There are also some methods which are useful when interfacing qspin with functionality from other packages:
 
 * return copy of hamiltonian as csr matrix: 
   ```python
   H_csr = H.tocsr(time=time)
   ```
+
+* return copy of hamiltonian as csc matrix: 
+  ```python
+  H_csr = H.tocsc(time=time)
+  ```
   
-* return copy of hamiltonian as dense matrix: 
+* return copy of hamiltonian as dense numpy matrix: 
   ```python
   H_dense = H.todense(time=time,order=None,out=None)
+  ```
+* return copy of hamiltonian as dense numpy array: 
+  ```python
+  H_dense = H.toarray(time=time,order=None,out=None)
   ```
 
 * return copy of hamiltonian: 
@@ -389,9 +390,23 @@ There are also some methods which are useful when interfacing qspin with functio
   ```python
   H_new = H.astype(dtype,copy=True)
   ```
+* changing the sparse format underlying matrices are stored as:
+ * change to sparse formats:
+ ```
+ H_new = H.as_sparse_format(fmt,copy=False)
+ ```
+	 available formats for fmt string: 
+	  * "csr" for compressed row storage
+	  * "csc" for compressed column storage
+	  * "dia" for diagonal storage
+	  * "bsr" for block compressed row storage
+ 
+ * change to dense format:
+ ```
+ H_new = H.as_dense_format(copy=False)
+ ```
 
-
-### **functions**
+## **functions for hamiltonians**
 
 #### **commutator**
 ```python
@@ -404,6 +419,9 @@ This function returns the commutator of two Hamiltonians H1 and H2.
 anti_commutator(H1,H2)
 ```
 This function returns the anti-commutator of two Hamiltonians H1 and H2.
+
+##**exp_op class**
+
 
 
 # **basis objects**
@@ -977,6 +995,7 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 * _.down : referes to time ector of down-regime; inherits the above attributes
 
 This object also acts like an array, you can iterate over it as well as index the values.
+
 
 
 
