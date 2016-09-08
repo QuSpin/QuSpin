@@ -464,7 +464,9 @@ class ho_basis(basis):
 
 		self._blocks = {}
 
-
+	@property
+	def Np(self):
+		return self._Np
 
 	def get_vec(self,v0,sparse=True):
 		if self._Ns <= 0:

@@ -2306,6 +2306,10 @@ class exp_op(object):
 	@property
 	def T(self):
 		return self.transpose(copy = False)
+	
+	@property
+	def H(self):
+		return self.getH(copy = False)
 
 	@property
 	def O(self):
@@ -2343,7 +2347,7 @@ class exp_op(object):
 		if copy:
 			return self.copy().getH(copy = False)
 		else:
-			self._O = self._O.H
+			self._O = self._O.getH(copy = False)
 			self._a = self._a.conjugate()
 			return self
 
