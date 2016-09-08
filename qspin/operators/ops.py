@@ -1506,7 +1506,6 @@ class hamiltonian(object):
 
 	def __add__(self,other): # self + other
 		if isinstance(other,hamiltonian):
-#			self._hamiltonian_checks(other,casting="unsafe")
 			return self._add_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1514,7 +1513,10 @@ class hamiltonian(object):
 			return self._add_sparse(other)
 			
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support addition by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other,casting="unsafe")
@@ -1551,7 +1553,10 @@ class hamiltonian(object):
 			return self._iadd_sparse(other)
 
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support addition by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other)	
@@ -1577,7 +1582,10 @@ class hamiltonian(object):
 			return self._sub_sparse(other)
 
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support subtraction by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other,casting="unsafe")
@@ -1607,7 +1615,10 @@ class hamiltonian(object):
 			return self._isub_sparse(other)
 
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support subtraction by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other)	

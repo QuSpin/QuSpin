@@ -673,7 +673,8 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	"""
 
 	# check if E2 are all unique
-	if any( _np.diff(sorted(E2)) < _np.finfo(_np.asarray(E2).dtype).eps):
+	E2 = _np.asarray(E2)
+	if _np.any( _np.diff(_np.sort(E2)) < 1E3*_np.finfo(E2.dtype).eps):
 		raise TypeError("Cannot use function 'diag_ensemble' with dengenerate e'values 'E2'!")
 	del E2
 
