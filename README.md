@@ -20,7 +20,7 @@ Contents
 	 * [functions for hamiltonians](#functions-for-hamiltonians)
 	 * [exo\_op class](#exp\_op-class)
 	* [basis objects](#basis-objects)
-	 * [1d spin basis](#1d-spin-basis)
+	 * [1d\_spin\_basis](#1d\_spin\_basis)
 	 * [harmonic oscillator basis](#harmonic-oscillator-basis)
 	 * [tensor basis objects](#tensor-basis-objects)
 	 * [methods of basis classes](#methods-of-basis-classes)
@@ -179,7 +179,7 @@ The symmetries can be used like:
 ```python
 H = hamiltonian(static_list,dynamic_list,L,Nup=Nup,pblock=pblock,...)
 ```
-If the user passes the symmetries into the hamiltonian constructor, the constructor first creates a [spin_basis_1d](spin-basis-1d) object for the given symmetries, and then uses that object to construct the matrix elements. Because of this, if one needs to construct multiple hamiltonian objects in the same symmetry block, it is more efficient to first construct the basis object and then use it to construct all different hamiltonians:
+If the user passes the symmetries into the hamiltonian constructor, the constructor first creates a [spin_basis_1d](spin\_basis\_1d) object for the given symmetries, and then uses that object to construct the matrix elements. Because of this, if one needs to construct multiple hamiltonian objects in the same symmetry block, it is more efficient to first construct the basis object and then use it to construct all different hamiltonians:
 
 ```python
 
@@ -421,6 +421,27 @@ anti_commutator(H1,H2)
 This function returns the anti-commutator of two Hamiltonians H1 and H2.
 
 ##**exp_op class**
+```
+exp_H = exp_op(H, a=1.0, start=None, stop=None, num=None, endpoint=None, iterate=False)
+```
+This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```H```. It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the [expm_multiply](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) function in Scipy's sparse library. 
+
+--- arguments ---
+
+* H: (compulsory) The operator which to be exponentiated. Must be a square matrix or a hamiltonian object. 
+
+* a: (optional) the prefactor which goes in from the of operator by in the exponential: exp(a*H)
+
+* start: (optional) specify the starting point for a grid of points to evaluate the matrix exponential at. see below.
+
+* stop: (optional) specify the end point of the grid of points. 
+
+* num: (optional) specify the number of grid points between start and stop (Default if 50)
+
+* endpoint: (optional) if True this will make sure stop is included in the set of grid points (Note this changes the grid step size).
+
+* iterate: (optional) if True when mathematical methods are called they will return iterators which will iterate over the grid points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
+
 
 
 
@@ -428,7 +449,7 @@ This function returns the anti-commutator of two Hamiltonians H1 and H2.
 
 The basis objects provide a way of constructing all the necessary information needed to construct a sparse matrix from a list of operators. All basis objects are derived from the same base object class and have mostly the same functionality. There are two subtypes of the base object class. The first type consists of basis objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, basis type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style basis type. For instance, basis type two can take two spin-chain bases and create the corresponding tensor product basis our of them.   
 
-###**1d spin basis**
+###**1d_spin_basis**
 ```python
 basis = spin_basis_1d(L,**symmetry_blocks)
 ```
@@ -995,6 +1016,7 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 * _.down : referes to time ector of down-regime; inherits the above attributes
 
 This object also acts like an array, you can iterate over it as well as index the values.
+
 
 
 

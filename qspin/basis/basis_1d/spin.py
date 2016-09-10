@@ -998,7 +998,6 @@ class spin_basis_1d(basis):
 					op[2] *= op2[2]
 					l.append(tuple(op))
 				
-	
 			return tuple(l)
 
 

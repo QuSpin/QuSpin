@@ -157,9 +157,9 @@ class hamiltonian(object):
 
 		"""
 
-		self._is_dense=False
-		self._ndim=2
-
+		self._is_dense = False
+		self._ndim = 2
+		self._basis = None
 
 
 
@@ -229,6 +229,7 @@ class hamiltonian(object):
 			self._static=_make_static(basis,static_opstr_list,dtype)
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
+			self._basis=basis
 
 
 		if static_other_list or dynamic_other_list:
@@ -381,6 +382,13 @@ class hamiltonian(object):
 
 
 		self.sum_duplicates()
+
+	@property
+	def basis(self):
+		if self._basis is not None:
+			return self._basis
+		else:
+			raise AttributeError("object has no attribute 'basis'")
 
 	@property
 	def ndim(self):
@@ -1265,6 +1273,10 @@ class hamiltonian(object):
 		if copy:
 			return self.copy().astype(dtype)
 		else:
+
+			if dtype not in supported_dtypes:
+				raise TypeError('hamiltonian does not support type: '+str(dtype))
+
 			self._dtype = dtype
 			self._static = self._static.astype(dtype)
 			self._dynamic = list(self._dynamic)
@@ -1506,7 +1518,7 @@ class hamiltonian(object):
 
 	def __add__(self,other): # self + other
 		if isinstance(other,hamiltonian):
-#			self._hamiltonian_checks(other,casting="unsafe")
+			self._hamiltonian_checks(other,casting="unsafe")
 			return self._add_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1772,7 +1784,7 @@ class hamiltonian(object):
 		elif self.dynamic:
 			return self.__imul__(other.static)
 		elif other.dynamic:
-			return other.__rmul__(self.static)
+			return (other.T.__imul__(self.static.T)).T
 		else:
 			return self.__imul__(other.static)
 
@@ -1786,7 +1798,7 @@ class hamiltonian(object):
 
 
 	def _add_sparse(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1807,7 +1819,7 @@ class hamiltonian(object):
 
 
 	def _iadd_sparse(self,other):
-#		self._mat_checks(other)
+
 		try:
 			self._static += other
 		except NotImplementedError:
@@ -1827,7 +1839,7 @@ class hamiltonian(object):
 
 
 	def _sub_sparse(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1848,7 +1860,7 @@ class hamiltonian(object):
 
 
 	def _isub_sparse(self,other):
-#		self._mat_checks(other)
+
 		try:
 			self._static -= other
 		except NotImplementedError:
@@ -1868,7 +1880,7 @@ class hamiltonian(object):
 
 
 	def _mul_sparse(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1906,7 +1918,7 @@ class hamiltonian(object):
 
 
 	def _rmul_sparse(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1940,7 +1952,7 @@ class hamiltonian(object):
 
 
 	def _imul_sparse(self,other):
-#		self._mat_checks(other)
+
 
 		self._static =self._static * other
 		try:	
@@ -2054,8 +2066,12 @@ class hamiltonian(object):
 
 
 	def _add_dense(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
+
+		if dtype not in supported_dtypes:
+			return NotImplemented
+
 		new=self.astype(dtype,copy=True)
 
 		if not self._is_dense:
@@ -2074,7 +2090,6 @@ class hamiltonian(object):
 
 
 	def _iadd_dense(self,other):
-#		self._mat_checks(other)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2094,8 +2109,12 @@ class hamiltonian(object):
 
 
 	def _sub_dense(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
+
+		if dtype not in supported_dtypes:
+			return NotImplemented
+
 		new=self.astype(dtype,copy=True)
 
 
@@ -2115,7 +2134,6 @@ class hamiltonian(object):
 
 
 	def _isub_dense(self,other):
-#		self._mat_checks(other)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2136,8 +2154,12 @@ class hamiltonian(object):
 
 
 	def _mul_dense(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
+
+		if dtype not in supported_dtypes:
+			return NotImplemented
+
 		new=self.astype(dtype,copy=True)
 
 		if not self._is_dense:
@@ -2165,8 +2187,12 @@ class hamiltonian(object):
 
 
 	def _rmul_dense(self,other):
-#		self._mat_checks(other,casting="unsafe")
+
 		dtype = _np.result_type(self._dtype, other.dtype)
+
+		if dtype not in supported_dtypes:
+			return NotImplemented
+
 		new=self.astype(dtype,copy=True)
 
 		if not self._is_dense:
@@ -2197,7 +2223,7 @@ class hamiltonian(object):
 
 
 	def _imul_dense(self,other):
-#		self._mat_checks(other)
+
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2270,17 +2296,34 @@ class exp_op(object):
 				if self._endpoint != None:
 					raise ValueError("unexpected arguement 'endpoint'.")
 
-
 				self._grid = None
 				self._step = None
 			else:
+
+				if not (_np.isscalar(start)  and _np.isscalar(stop)):
+					raise ValueError("expecting scalar values for 'start' and 'stop'")
+
+				if not (_np.isreal(start) and _np.isreal(stop)):
+					raise ValueError("expecting real values for 'start' and 'stop'")
+
+				if type(num) is not None:
+					if type(num) is not int:
+						raise ValueError("expecting integer for 'num'.")
+
+				if type(endpoint) is not None:
+					if type(endpoint) is not bool:
+						raise ValueError("expecting bool for 'endpoint'.")
 
 				self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
 		if ishamiltonian(O):
 			self._O = O
 		else:
-			self._O = hamiltonian([O], [])
+			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
+				self._O = hamiltonian([O], [],dtype=O.dtype)
+			else:
+				O = np.asanyarray(O)
+				self._O = hamiltonian([O],[],dtype=O.dtype)
 	
 		self._ndim = 2
 
@@ -2345,6 +2388,21 @@ class exp_op(object):
 		self._a = _np.complex128(new_a)
 
 	def set_grid(self, start, stop, num = None, endpoint = None):
+
+		if not (_np.isscalar(start)  and _np.isscalar(stop)):
+			raise ValueError("expecting scalar values for 'start' and 'stop'")
+
+		if not (_np.isreal(start) and _np.isreal(stop)):
+			raise ValueError("expecting real values for 'start' and 'stop'")
+
+		if type(num) is not None:
+			if type(num) is not int:
+				raise ValueError("expecting integer for 'num'.")
+
+		if type(endpoint) is not None:
+			if type(endpoint) is not bool:
+				raise ValueError("expecting bool for 'endpoint'.")
+
 		self._start=start
 		self._stop=stop
 		self._num=num

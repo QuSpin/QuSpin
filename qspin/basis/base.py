@@ -192,11 +192,16 @@ class basis(object):
 					opstr1,indx1,J1,i1 = tuple(static_list[i]) 
 					opstr2,indx2,J2,i2 = tuple(static_list[j])
 					if opstr1 == opstr2 and indx1 == indx2:
-
+						
 						del static_list[j]
-						if j < i: i -= 1
+						if j < i: 
+							i -= 1
+						else:
+							j -= 1
+
 						if J1 == -J2: 
 							del static_list[i]
+							i -= 1
 						else:
 							static_list[i] = list(static_list[i])
 							static_list[i][2] += J2
@@ -209,7 +214,6 @@ class basis(object):
 				j += 1
 			i += 1
 			
-
 		l = len(dynamic_list)
 		i = 0
 
