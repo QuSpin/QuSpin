@@ -882,7 +882,7 @@ class hamiltonian(object):
 			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
-	def rotate_to(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def rotate_by(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
 		if generator:
 			return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=iterate).sandwich(self)
 		else:
@@ -1526,7 +1526,10 @@ class hamiltonian(object):
 			return self._add_sparse(other)
 			
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support addition by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other,casting="unsafe")
@@ -1563,7 +1566,10 @@ class hamiltonian(object):
 			return self._iadd_sparse(other)
 
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support addition by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other)	
@@ -1589,7 +1595,10 @@ class hamiltonian(object):
 			return self._sub_sparse(other)
 
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support subtraction by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other,casting="unsafe")
@@ -1619,7 +1628,10 @@ class hamiltonian(object):
 			return self._isub_sparse(other)
 
 		elif _np.isscalar(other):
-			raise NotImplementedError('hamiltonian does not support addition by scalar')
+			if other==0.0:
+				return self.copy()
+			else:
+				raise NotImplementedError('hamiltonian does not support subtraction by nonzero scalar')
 
 		elif other.__class__ == _np.ndarray:
 			self._mat_checks(other)	
@@ -2338,6 +2350,10 @@ class exp_op(object):
 	@property
 	def T(self):
 		return self.transpose(copy = False)
+	
+	@property
+	def H(self):
+		return self.getH(copy = False)
 
 	@property
 	def O(self):
@@ -2375,7 +2391,7 @@ class exp_op(object):
 		if copy:
 			return self.copy().getH(copy = False)
 		else:
-			self._O = self._O.H
+			self._O = self._O.getH(copy = False)
 			self._a = self._a.conjugate()
 			return self
 
