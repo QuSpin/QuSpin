@@ -21,6 +21,7 @@ import warnings
 
 __all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op"]
 
+
 def commutator(H1,H2):
 	""" This function returns the commutator of two Hamiltonians H1 and H2. """
 	if _ishamiltonian(H1) or _ishamiltonian(H2):
@@ -1344,10 +1345,16 @@ class hamiltonian(object):
 		
 
 	def __repr__(self):
+		matrix_format={"csr":"Compressed Sparse Row",
+						"csc":"Compressed Sparse Column",
+						"dia":"DIAgonal",
+						"bsr":"Block Sparse Row"
+						}
 		if self.is_dense:
 			return "<{0}x{1} qspin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 		else:
-			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,self._static.getformat()))
+			fmt = matrix_format[self._static.getformat()]
+			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
 
 
 	def __neg__(self): # -self
@@ -1668,7 +1675,6 @@ class hamiltonian(object):
 
 
 	def _add_hamiltonian(self,other): 
-#		self._hamiltonian_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1695,7 +1701,6 @@ class hamiltonian(object):
 
 
 	def _iadd_hamiltonian(self,other):
-#		self._hamiltonian_checks(other)
 		self._is_dense = self._is_dense or other._is_dense
 
 		try:
@@ -1719,7 +1724,6 @@ class hamiltonian(object):
 
 
 	def _sub_hamiltonian(self,other): 
-#		self._hamiltonian_checks(other,casting="unsafe")
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype,copy=True)
 
@@ -1748,8 +1752,6 @@ class hamiltonian(object):
 
 
 	def _isub_hamiltonian(self,other): 
-#		self._hamiltonian_checks(other)
-
 		self._is_dense = self._is_dense or other._is_dense
 
 		try:
@@ -1930,10 +1932,14 @@ class hamiltonian(object):
 
 
 	def _rmul_sparse(self,other):
+		# Auxellery function to calculate the right-side multipication with another sparse matrix.
 
+		# find resultant type from product
 		dtype = _np.result_type(self._dtype, other.dtype)
+		# create a copy of the hamiltonian object with the previous dtype
 		new=self.astype(dtype,copy=True)
 
+		# proform multiplication on all matricies of the new hamiltonian object.
 
 		new._static = other * new._static
 		try:
@@ -1946,6 +1952,7 @@ class hamiltonian(object):
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
 		for i in xrange(n):
+			# convert tuple to list to do modifications inplace then convert back to tuple
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = other.dot(new._dynamic[i][0])
 			try:
@@ -1956,6 +1963,8 @@ class hamiltonian(object):
 			new._dynamic[i] = tuple(new._dynamic[i])
 
 		new._dynamic = tuple(new._dynamic)
+
+		# simplify any extra terms which might have been canceled
 		new.sum_duplicates()
 
 		return new
