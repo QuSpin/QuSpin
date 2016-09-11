@@ -1,3 +1,7 @@
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,qspin_path)
+
 from qspin.operators import HamiltonianOperator,hamiltonian
 from qspin.basis import spin_basis_1d
 import numpy as np
@@ -42,9 +46,10 @@ def dot_test(L,dtype):
 
 def tests():
 	for L in xrange(2,11):
-		print L
+		print "test L={0} ".format(L),
 		for dtype in [np.float32,np.float64,np.complex64,np.complex128]:
 			dot_test(L,dtype)
+		print "pass"
 		
 
 tests()
