@@ -2412,7 +2412,7 @@ class HamiltonianOperator(object):
 
 	@property
 	def H(self):
-		return self.getH(copt = False)
+		return self.getH(copy = False)
 
 	@property
 	def LinearOperator(self):
@@ -2433,7 +2433,7 @@ class HamiltonianOperator(object):
 		self._conjugated = not self._conjugated
 		return self
 
-	def getH(self,copy=False):
+	def getH(self,copy = False):
 		if copy:
 			return self.copy().get_H()
 		else:
@@ -2464,11 +2464,11 @@ class HamiltonianOperator(object):
 		if self.shape[1] != other.shape[0]:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
 
-		new_other = other.copy().astype(result_dtype)
+		
 
 		if dense:
+			new_other = _np.zeros_like(other,dtype=result_dtype)
 			for opstr, bonds in self.operator_list:
-				print opstr
 				for bond in bonds:
 					J = bond[0]
 					indx = _np.asarray(bond[1:])
@@ -2480,10 +2480,11 @@ class HamiltonianOperator(object):
 					if self._conjugated:
 						ME = ME.conj()
 					if new_other.ndim > 1:
-						new_other[row] = (new_other[col].T * ME).T 
+						new_other[row] += (other[col].T * ME).T 
 					else:
-						new_other[row] = new_other[col] * ME
+						new_other[row] += other[col] * ME
 		else:
+			new_other = _sp.lil_matrix(other.shape,dtype=result_dtype).asformat(other.getformat())
 			for opstr, bonds in self.operator_list:
 				for bond in bonds:
 					J = bond[0]
