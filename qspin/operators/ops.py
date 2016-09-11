@@ -1039,7 +1039,7 @@ class hamiltonian(object):
 			if imag_time: solver._y /= norm(solver._y)
 			return _np.array(solver.y)
 		else:
-			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(times))	
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
 
 
