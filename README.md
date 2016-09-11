@@ -1,5 +1,5 @@
 #**qspin**
-qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrodinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python linear algebra tools. 
+qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state of the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrodinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools. 
 
 
 
@@ -19,6 +19,7 @@ Contents
 	 * [hamiltonian class](#hamiltonian-class)
 	 * [functions for hamiltonians](#functions-for-hamiltonians)
 	 * [exo\_op class](#exp\_op-class)
+	 * [HamiltonianOperator class](#HamiltonianOperator-class)
 	* [basis objects](#basis-objects)
 	 * [1d\_spin\_basis](#1d\_spin\_basis)
 	 * [harmonic oscillator basis](#harmonic-oscillator-basis)
@@ -193,25 +194,25 @@ H2 = hamiltonian(static2_list,dynamic2_list,basis=basis)
 
 #**list of package functions**
 
-#**Operator objects**
+##**Operator objects**
 
-##**hamiltonian class**:
+###**hamiltonian class**:
 ```python
 H = hamiltonian(static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs)
 ```
 
-The hamiltonian class wraps most of the functionalty of the package. Below shows the initialization arguments:
+The hamiltonian class wraps most of the functionalty of the package. This object allows the user to construct a many-body hamiltonian, solve the schrodinger equation, do full/lanczos diagonalization and many other things. Below shows the initialization arguments:
 
 --- arguments ---
 
-* static_list: (required) list of objects to calculate the static part of hamiltonian operator. The format goes like:
+* static_list: list or tuple (required), list of objects to calculate the static part of hamiltonian operator. The format goes like:
 
  ```python
  static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
  ```
 	
 
-* dynamic_list: (required) list of objects to calculate the dynamic part of the hamiltonian operator. The format goes like:
+* dynamic_list: list or tuple (required), list of objects to calculate the dynamic part of the hamiltonian operator. The format goes like:
 
  ```python
  dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
@@ -223,19 +224,19 @@ The hamiltonian class wraps most of the functionalty of the package. Below shows
  ```
 
 
-* N: (optional) number of sites to create the hamiltonian with.
+* N: integer (optional), number of sites to create the hamiltonian with.
 
-* shape: (optional) shape to create the hamiltonian with.
+* shape: tuple (optional), shape to create the hamiltonian with.
 
-* copy: (optional) whether or not to copy the values from the input arrays. 
+* copy: bool (optional,) whether or not to copy the values from the input arrays. 
 
-* check_symm: (optional) flag whether or not to check the operator strings if they obey the requested symmetries.
+* check_symm: bool (optional), flag whether or not to check the operator strings if they obey the requested symmetries.
 
-* check_herm: (optional) flag whether or not to check if the operator strings create a hermitian matrix. 
+* check_herm: bool (optional), flag whether or not to check if the operator strings create a hermitian matrix. 
 
-* check_pcon: (optional) flag whether or not to check if the operator strings conserve magnetization/particle number. 
+* check_pcon: bool (optional), flag whether or not to check if the operator strings conserve magnetization/particle number. 
 
-* dtype: (optional) data type to create the matrices with. 
+* dtype: dtype (optional), data type to create the matrices with. 
 
 * kw_args: extra options to pass to the basis class.
 
@@ -255,10 +256,14 @@ The hamiltonian class wraps most of the functionalty of the package. Below shows
 
 * _.dynamic: returns the dynamic parts of the hamiltonian 
 
+* _.T: returns the transpose of the hamiltonian.
 
-###**methods of hamiltonian class**
+* _.H: returns the hermitian conjugate of the hamiltonian  
 
-####**arithmetic operations**
+
+####**methods of hamiltonian class**
+
+#####**arithmetic operations**
 The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians, scipy sparse matrices or numpy dense arrays and scalars, as follows:
 
 * between other hamiltonians we have: ```+,-,*,+=,-=``` . Note that ```*``` only works between a static and static hamiltonians or a static and dynamic hamiltonians, but NOT between two dynamic hamiltonians.
@@ -267,19 +272,17 @@ The hamiltonian objects currectly support certain arithmetic operations with oth
 * negative operator '-H'
 * indexing and slicing: ```H[times,row,col]``` 
 
-####**quantum (algebraic) operations**
+#####**quantum (algebraic) operations**
 We have included some basic functionality into the hamiltonian class, useful for quantum calculations:
 
 * matrix transformations:
  * transpose (return copy of transposed hamiltonian set copy=True otherwise this is done inplace): 
   ```
   H_tran = H.transpose(copy=False)
-  H_tran = H.T # always inplace transpose
   ```
  * hermitian conjugate:
   ```
   H_herm = H.getH(copy=False)
-  H_herm = H.H
   ```
  * conjugate
  ```
@@ -292,7 +295,10 @@ We have included some basic functionality into the hamiltonian class, useful for
     B = H.dot(A,time=0,check=True) # $B = HA$
     B = H.rdot(A,time=0,check=True) # $B = AH$
     ```
-  where time is the time to evaluate the Hamiltonian at for the product, by default time=0. ```_.rdot``` is another function similar to ```_.dot```, but it performs the matrix multiplication from the right. The ```check``` option lets the user control whether or not to do checks for shape compatibility. If checks are turned off, there will be checks later which will throw a shape error.
+  where time is the time to evaluate the Hamiltonian at for the product, by default time=0. ```_.rdot``` is another function similar to ```_.dot```, but it performs the matrix multiplication from the right. The ```check``` option lets the user control whether or not to do checks for shape compatibility. If checks are turned off, there will be checks later which will throw a shape error. if `time` is a list of values there are two different results that can happen:
+ 1. if ```A.shape[1] == len(time)``` then the hamiltonian is evaluated at the ith time and dotted into the ith column of ```A``` to get the ith column of ```B``` 
+ 2. if ```A.shape[1] == 1,0``` then the hamiltonian dot is evaluated on that one vector for each time. the results are then stacked such that the columns contain all the vectors. 
+If either of these cases do not match then an error is thrown.
   
 * matrix elements:
 
@@ -300,13 +306,13 @@ We have included some basic functionality into the hamiltonian class, useful for
     ```python
     Huv = H.matrix_ele(u,v,time=0,diagonal=False,check=True)
     ```
-  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. ```diagonal=True``` then the function will only return the diagonal part of the resulting matrix multiplication. the check option is the same as for 'dot' and 'rdot'. 
-  **NOTE: the inputs should not be hermitian tranposed, the function will do that automatically.
+  which evaluates < u|H(time)|v > if u and v are vectors but (versions >= v0.0.2b) can also handle u and v as dense matrices. ```diagonal=True``` then the function will only return the diagonal part of the resulting matrix multiplication. The check option is the same as for 'dot' and 'rdot'. the vectorization with time is the same as for the 'dot' and 'rdot' functions. 
+  **NOTE: the inputs should not be hermitian conjugated, the function will do that automatically.
 
 * project a Hamiltonian to a new basis:
 	```python
 	H_new = H.project_to(V)
-	H_new = H.rotate_to(O,generator=False,**exp_op_args)
+	H_new = H.rotate_by(O,generator=False,**exp_op_args)
 	```
 The First function returns a new hamiltonian object which is: V<sup>+</sup> H V. Note that V need not be a square matrix. The second function when ```generator=False``` is the same as the first function but with ```generator=True``` the function uses O as the generator of a transformation. This function uses the [exp_op](#exp_op-class) class and the extra arguments ```**exp_op_args``` are optional arguments for the exp_op constructor. 
   
@@ -329,13 +335,13 @@ The First function returns a new hamiltonian object which is: V<sup>+</sup> H V.
 	```python
 	vf = H.evolve(v0,t0,times,solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
 	```
- * v0:  (required) initial state array.
- * t0: (required) initial time.
- * times: (required) a time or generator of times to evolve up to.
- * solver_name: (optional) used to pick which Scipy ode solver to use.
- * verbose: (optional) prints out when the solver has evolved to each time in times
- * iterate: (optional) returns 'vf' as an iterator over the evolution vectors without storing the solution for every time in 'times'. 
- * imag_time: (optional) toggles whether to evolve with __SO or __ISO.
+ * v0:  array (required) initial state array.
+ * t0: real scalar (required) initial time.
+ * times:  real array like (required) a time or generator of times to evolve up to.
+ * solver_name: string (optional) used to pick which Scipy ode solver to use.
+ * verbose: bool (optional) prints out when the solver has evolved to each time in times
+ * iterate: bool (optional) returns 'vf' as an iterator over the evolution vectors without storing the solution for every time in 'times'. 
+ * imag_time: bool (optional) toggles whether to evolve with __SO or __ISO.
  * solver_args: (optional) the optional arguments which are passed into the solver. The default setup is: ```nstep = 2**31 - 1```, ```atol = 1E-9```, ```rtol = 1E-9```.
   
 The hamiltonian class also has built in methods which are useful for doing exact diagonalisation (ED) calculations:
@@ -359,7 +365,7 @@ The hamiltonian class also has built in methods which are useful for doing exact
     ```
   where ```**eigsh_args``` are optional arguments which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.eigsh.html).
 
-####**other operations**
+#####**other operations**
 There are also some methods which are useful when interfacing qspin with functionality from other packages:
 
 * return copy of hamiltonian as csr matrix: 
@@ -406,33 +412,33 @@ There are also some methods which are useful when interfacing qspin with functio
  H_new = H.as_dense_format(copy=False)
  ```
 
-## **functions for hamiltonians**
+### **functions for hamiltonians**
 
-#### **commutator**
+##### **commutator**
 ```python
 commutator(H1,H2)
 ```
 This function returns the commutator of two Hamiltonians H1 and H2.
 
-#### **anti commutator**
+##### **anti commutator**
 ```python
 anti_commutator(H1,H2)
 ```
 This function returns the anti-commutator of two Hamiltonians H1 and H2.
 
-##**exp_op class**
+###**exp_op class**
 ```
-exp_H = exp_op(H, a=1.0, start=None, stop=None, num=None, endpoint=None, iterate=False)
+exp_O = exp_op(O, a=1.0, start=None, stop=None, num=None, endpoint=None, iterate=False)
 ```
-This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```H```. It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the [expm_multiply](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) function in Scipy's sparse library. 
+This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```H```. It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the [expm_multiply](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in the complex plane via the optional arguements. if this is specified then an array `grid` is created via the numpy function [linspace](http://docs.scipy.org/doc/numpy/reference/generated/numpy.linspace.html), then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
 
 --- arguments ---
 
-* H: (compulsory) The operator which to be exponentiated. Must be a square matrix or a hamiltonian object. 
+* H: matrix/hamiltonian (compulsory), The operator which to be exponentiated.
 
-* a: (optional) the prefactor which goes in from the of operator by in the exponential: exp(a*H)
+* a: scalar (optional), prefactor to go in front of the operator in the exponential: exp(a*O)
 
-* start: (optional) specify the starting point for a grid of points to evaluate the matrix exponential at. see below.
+* start:  scalar (optional) specify the starting point for a grid of points to evaluate the matrix exponential at. see below.
 
 * stop: (optional) specify the end point of the grid of points. 
 
@@ -442,17 +448,157 @@ This class constructs an object which acts on various objects with the matrix ex
 
 * iterate: (optional) if True when mathematical methods are called they will return iterators which will iterate over the grid points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
 
+--- exp_op attributes ---: '_. ' below stands for 'object. '
+
+* _.a: returns the prefactor a
+
+* _.ndim: returns the number of dimensions, always 2
+
+* _.H: returns the hermitian conjugate of this operator
+
+* _.T: returns the transpose of this operator
+
+* _.O: returns the operator which is being exponentiated
+
+* _.get_shape: returns the tuple which contains the shape of the operator
+
+* _.iterate: returns a bool telling whether or not this function will iterate over the grid of values or return a list
+
+* _.grid: returns the array containing the grid points the exponential will be evaluated at
+
+* _.step: returns the step size between the grid points
+
+####**methods of exp_op class**
+
+* Transpose:
+ ```python
+   expO_trans = expO.transpose(copy=False)
+ ```
+ 
+* Hermitiain conjugate:
+ ```python
+   expO_H = expO.getH(copy=False)
+ ```
+ 
+* complex conjugate:
+ ```python
+   expO_conj = expO.conj() # always inplace
+ ```
+ 
+* setting a new grid:
+   ```python
+   expO_new = expO.set_grid(start, stop, num=None, endpoint=None)
+  ```
+ 
+* unset grid:
+ ```python
+   expO_new = expO.unset_grid()
+ ```
+ 
+* toggle iterate:
+ ```python
+   expO= expO.set_iterate(value)
+ ```
+ 
+* return matrix at given grid point:
+ ```python
+   expO_mat = expO.get_mat(index=None, time=0)
+ ```
+ 
+ ####**mathematical functions**
+* dot product:
+ ```python
+   B = expO.dot(A,time=0)
+   B = expO.rdot(A,time=0)
+ ```
+ 
+* rotate operator by ```expO```:
+ ```python
+   B = expO.sandwich(copy=False)
+ ```
+
+here time is always a scalar which is the time point at which operator ```O``` is evaluated at for dynamic hamiltonians, other wise for matrices or static hamiltonians this does not do anything.  If ```iterate=True``` all these functions return generators which return values of the results over the grid points. for example:
+
+```python
+expO.set_iterate(True)
+B_generator = expO.dot(A)
+
+for B in B_generator:
+	# code here
+```
+ 
+###**HamiltonianOperator class**
+```python
+H_operator = HamiltonianOperator(operator_list,system_arg,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args)
+```
+
+This class uses the basis.Op function to calculate the matrix vector product on the fly greating reducing the amount of memory needed for a calculation at the cost of speed. This object is useful for doing large scale Lanczos calculations using eigsh. 
+
+--- arguments ---
+
+* static_list: (compulsory) list of operator strings to be used for the HamiltonianOperator. The format goes like:
+
+```python
+operator_list=[[opstr_1,[indx_11,...,indx_1m]],...]
+```
+		
+* system_arg: int/basis_object (compulsory) number of sites to create basis object/basis object.
+
+* check_symm: bool (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+
+* check_herm: bool (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+
+* check_pcon: bool (optional) flag whether or not to check if the operator string whether or not they conserve magnetization/particles. 
+
+* dtype: dtype (optional) data type to case the matrices with. 
+
+* kw_args: extra options to pass to the basis class.
+
+--- hamiltonian attributes ---: '_. ' below stands for 'object. '
+
+* _.ndim: number of dimensions, always 2.
+		
+* _.Ns: number of states in the hilbert space.
+
+* _.shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
+
+* _.dtype: returns the data type of the hamiltonian
+
+* _.operator_list: return the list of operators given to this  
+
+* _.T: return the transpose of this operator
+
+* _.H: return the hermitian conjugate of this operator
+
+* _.basis: return the basis used by this operator
+
+* _.LinearOperator: returns a linear operator of this object
+
+####**Method of HamiltonianOperator class**
+* dot product from left and right:
+
+ ```python
+ B = H.dot(A) # $B = HA$
+ B = H.matvec(A) # $B=HA$
+ B = H.rdot(A) # $B = AH$
+ ```
+* Lanczos Diagonalization:
+
+ ```python
+ E,V = H.eigsh(**eigsh_args)
+ # or you can pass this object directly into the function itself:
+ E,V = scipy.sparse.linalg.eigsh(H,**eigsh_args)
+ E,V = scipy.sparse.linalg.eigsh(H.LinearOperator,**eigsh_args)
+ E,V = scipy.sparse.linalg.eigsh(H.get_LinearOperator(),**eigsh_args)
+ ```
+ 
 
 
-
-# **basis objects**
+## **basis objects**
 
 The basis objects provide a way of constructing all the necessary information needed to construct a sparse matrix from a list of operators. All basis objects are derived from the same base object class and have mostly the same functionality. There are two subtypes of the base object class. The first type consists of basis objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, basis type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style basis type. For instance, basis type two can take two spin-chain bases and create the corresponding tensor product basis our of them.   
 
 ###**1d_spin_basis**
-```python
-basis = spin_basis_1d(L,**symmetry_blocks)
-```
 The spin_basis_1d class provides everything necessary to create a hamiltonian of a spin-1/2 system in 1d. The available operators one can use are the the standard spin operators: ```x,y,z,+,-``` which either represent the Pauli operators (matrices) or spin-1/2 operators. The ```+/-``` operators are always constructed as ```x +/- i y```.
 
 
@@ -473,35 +619,74 @@ Other optional arguments include:
 * pauli: toggle whether or not to use spin-1/2 or Pauli matrices for matrix elements. Default is ```pauli = True```.
 * a: the lattice spacing for the translational symmetry. Default is ```a = 1```.
 
+Usage of spin_basis_1d:
+
+```python
+basis = spin_basis_1d(L,**symmetry_blocks)
+```
+---arguements---
+
+* L: int (compulsory) length of chain to construct basis for
+
+* symmetry_blocks: (optional) specify which block of a particular symmetry to construct the basis for. 
+
+--- spin_basis_1d attributes ---: '_. ' below stands for 'object. '
+
+* _.L: returns length of the chain as integer
+
+* _.N: return number of sites in chain as integer
+
+* _.Ns: returns number of states in the hilbert space
+
+* _.operators: returns string which lists information about the operators of this basis class. 
 
 
-###**harmonic oscillator basis**
-This basis implements a single harmonic oscillator mode. The available operators are ```+,-,n,I```, corresponding to the raising, lowering, the number operator, and the identity, respectively.
 
-###**tensor basis objects**
-In version 0.1.0b we have created new classes which allow bases to be tensored together. 
 
-* **tensor_basis class: 
 
-  the tensor_basis class will combine two basis objects b1 and b2 together into a new basis object which can be then used, e.g., to create the tensored hamiltonian of both basis:
 
-	```python
-	basis1 = spin_basis_1d(L,Nup=L/2)
-	basis2 = spin_basis_1d(L,Nup=L/2)
-	t_basis = tensor_basis(basis1,basis2)
-	```
+###**ho_basis**
+This basis implements a single harmonic oscillator mode. The available operators are ```+,-,n,I```, corresponding to the raising, lowering, the number operator, and the identity, respectively.  
 
-	The syntax for the operator strings is as follows. The operator strings are separated by a '|' while the index array has no splitting character.
+usage of ho_basis:
 
-	```python
-	# tensoring two z spin operators at site 1 for basis1 and site 5 for basis2
-	opstr = "z|z" 
-	indx = [1,5] 
-	```
+```python
+basis = ho_basis(Np)
+```
 
-	if there are no operator strings on either side of the '|' then an identity operator is assumed.
+---arguements---
 
-* **photon_basis class: 
+* Np: int (compulsory) highest number state to allow in the Hilbert space.
+
+--- spin_basis_1d attributes ---: '_. ' below stands for 'object. '
+
+* _.Np: returns the highest number state of this ho_basis 
+
+* _.Ns: returns number of states in the Hilbert space
+
+* _.operators: returns string which lists information about the operators of this basis class. 
+
+###**tensor_basis class** 
+
+  The tensor_basis class will combine two basis objects b1 and b2 together into a new basis object which can be then used, e.g., to create the tensored hamiltonian of both basis:
+
+```python
+basis1 = spin_basis_1d(L,Nup=L/2)
+basis2 = spin_basis_1d(L,Nup=L/2)
+t_basis = tensor_basis(basis1,basis2)
+```
+
+ The syntax for the operator strings is as follows. The operator strings are separated by a '|' while the index array has no splitting character.
+
+```python
+# tensoring two z spin operators at site 1 for basis1 and site 5 for basis2
+opstr = "z|z" 
+indx = [1,5] 
+```
+
+if there are no operator strings on either side of the '|' then an identity operator is assumed.
+
+###**photon_basis class** 
 
 This class allows the user to define a basis which couples to a single photon mode. The operators for the photon sector are the same as the harmonic oscilaltor basis: '+', '-', 'n', and 'I'. 
 
@@ -518,16 +703,19 @@ For the non-conserving basis, one must specify the total number of photon (a.k.a
 ```python
 p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
 ```
-In the non-conserving basis class ones cannot directly pass a basis object; instead, the constructor will build it from scratch.
+Here because the the nature of the interaction between the photon mode and the other basis, you must pass the constructor of the basis class into here as opposed to an already constructed basis. This is because the basis has to be constructed for each magnetization/particle sector of the basis. 
 
 ###**checks on operator strings**
-New in version 0.2.0 we have included new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
+New in version 0.1.0 we have included new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
 
 * check if the final complete list of opertors obeys the requested symmetry of that basis. The check can be turned off with the flag ```check_symm=False ``` in the [hamiltonian](#hamiltonian-objects) class. 
 * check if the final complete list of operators are hermitian. The check can be turned out with the flag ```check_herm=False``` in the [hamiltonian](#hamiltonian-objects) class. 
-* check if the final complete list of opertors obeys particle number conservation (for spin systems this means that magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](#hamiltonian-objects) class. 
+* check if the final complete list of opertors obeys particle number conservation (for spin systems this means that magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](#hamiltonian-class) class. 
 
 ###**Methods of Basis Classes**
+
+These functions are defined for every basis class:
+
 ```python
 basis.Op(opstr,indx,J,dtype)
 ```
@@ -551,12 +739,12 @@ basis.get_vec(v)
 This function converts a state defined in the symmetry-reduced basis to the full basis.
 ---arguments---
 
-* v:
+* v: two options
   1. 1-dim array which contains the state
   2. 2-dim array which contains multiple states in the columns
   
 RETURNS:
-state or states in the full basis.
+state or states in the full basis as columns of the returned array.
 
 ```python
 basis.get_proj(dtype)
@@ -569,20 +757,8 @@ This function returns the transformation from the symmetry-reduced basis to the 
 RETURNS:
 projector to the full basis as a sparse matrix. 
 
-# **Tools**
-
-
-
-
-
-
-
-##**Measurements** 
-
-
-
-
-
+## **Tools**
+###**Measurements** 
 #### **entanglement entropy**
 
 ```python
@@ -1016,16 +1192,4 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 * _.down : referes to time ector of down-regime; inherits the above attributes
 
 This object also acts like an array, you can iterate over it as well as index the values.
-
-
-
-
-
-
-
-
-
-
-
-
 
