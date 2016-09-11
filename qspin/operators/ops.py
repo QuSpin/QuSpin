@@ -19,7 +19,7 @@ from scipy.sparse.linalg import expm_multiply as _expm_multiply
 from copy import deepcopy as _deepcopy
 import warnings
 
-__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op"]
+__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator"]
 
 
 def commutator(H1,H2):
@@ -2288,21 +2288,285 @@ class hamiltonian(object):
 
 
 
+
+
+
+
+
+
+class HamiltonianOperator(object):
+	def __init__(self,operator_list,system_arg,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+		"""
+		This class uses the basis.Op function to calculate the matrix vector product on the fly greating reducing the amount of memory
+		needed for a calculation at the cost of speed. This object is useful for doing large scale Lanczos calculations using eigsh. 
+
+		--- arguments ---
+
+		* static_list: (compulsory) list of operator strings to be used for the HamiltonianOperator. The format goes like:
+
+			```python
+			operator_list=[[opstr_1,[indx_11,...,indx_1m]],...]
+			```
+		
+		* system_arg: int/basis_object (compulsory) number of sites to create basis object/basis object.
+
+		* check_symm: bool (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+
+		* check_herm: bool (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+
+		* check_pcon: bool (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+
+		* dtype: dtype (optional) data type to case the matrices with. 
+
+		* kw_args: extra options to pass to the basis class.
+
+		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
+
+ 		* _.ndim: number of dimensions, always 2.
+		
+		* _.Ns: number of states in the hilbert space.
+
+		* _.shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
+
+		* _.dtype: returns the data type of the hamiltonian
+
+		* _.operator_list: return the list of operators given to this  
+
+		* _.T: return the transpose of this operator
+
+		* _.H: return the hermitian conjugate of this operator
+
+		* _.basis: return the basis used by this operator
+
+		* _.LinearOperator: returns a linear operator of this object
+
+
+		"""
+
+		if type(operator_list) in [list,tuple]:
+			for ele in operator_list:
+				if not check_static(ele):
+					raise ValueError("HamiltonianOperator only supports operator string representations.")
+		else: 
+			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
+
+		self._operator_list = tuple(operator_list)
+
+		if not (dtype in supported_dtypes):
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
+		else:
+			self._dtype=dtype
+
+		if type(system_arg) is int:
+			self._basis = _default_basis(system_arg,**basis_args)
+		elif _isbasis(system_arg):
+			self._basis = system_arg
+		else:
+			raise ValueError("expecting integer or basis object for 'system_arg'")
+
+
+		if check_herm:
+			self.basis.check_hermitian(operator_list, [])
+
+		if check_symm:
+			self.basis.check_symm(operator_list,[])
+
+		if check_pcon:
+			self.basis.check_pcon(operator_list,[])
+
+			
+		self._transposed = False
+		self._conjugated = False
+		self._dtype = dtype
+		self._ndim = 2
+		self._shape = (self._basis.Ns,self._basis.Ns)
+		self._LinearOperator = _sp.linalg.LinearOperator(self.shape,self.dot,matmat=self.dot,rmatvec=self.rdot,dtype=self._dtype)
+
+	@property
+	def ndim(self):
+		return self._ndim
+
+	@property
+	def operator_list(self):
+		return self._operator_list
+
+	@property
+	def shape(self):
+		return self._shape
+
+	@property
+	def Ns(self):
+		return self.shape[0]
+
+	@property
+	def dtype(self):
+		return _np.dtype(self._dtype).name
+
+	@property
+	def basis(self):
+		return self._basis
+
+	@property
+	def T(self):
+		return self.transpose(copy = False)
+
+	@property
+	def H(self):
+		return self.getH(copt = False)
+
+	@property
+	def LinearOperator(self):
+		return self.get_LinearOperator()
+
+	def copy(self):
+		return _deepcopy(self)
+
+
+	def transpose(self,copy = False):
+		if copy:
+			return self.copy().transpose()
+		else:
+			self._transposed = not self._transposed
+			return self
+
+	def conj(self):
+		self._conjugated = not self._conjugated
+		return self
+
+	def getH(self,copy=False):
+		if copy:
+			return self.copy().get_H()
+		else:
+			return self.conj().transpose()
+
+	def dot(self,other):
+		return self.matvec(other)
+
+	def rdot(self,other):
+		return (self.T.matvec(other.T)).T
+
+	def get_LinearOperator(self):
+		return self._LinearOperator
+
+	def matvec(self,other):
+		dense = True
+		if other.__class__ in [_np.ndarray,_np.matrix]:
+			result_dtype = _np.result_type(self.dtype,other.dtype)
+		elif _sp.issparse(other):
+			result_dtype = _np.result_type(self.dtype,other.dtype)
+			dense = False
+		elif ishamiltonian(other):
+			raise NotImplementedError
+		else:
+			other = np.asanyarray(other)
+			result_dtype = _np.result_type(self.dtype,other.dtype)
+
+		if self.shape[1] != other.shape[0]:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+
+		new_other = other.copy().astype(result_dtype)
+
+		if dense:
+			for opstr, bonds in self.operator_list:
+				print opstr
+				for bond in bonds:
+					J = bond[0]
+					indx = _np.asarray(bond[1:])
+					if not self._transposed:
+						ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+					else:
+						ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+					if self._conjugated:
+						ME = ME.conj()
+					if new_other.ndim > 1:
+						new_other[row] = (new_other[col].T * ME).T 
+					else:
+						new_other[row] = new_other[col] * ME
+		else:
+			for opstr, bonds in self.operator_list:
+				for bond in bonds:
+					J = bond[0]
+					indx = _np.asarray(bond[1:])
+					if not self._transposed:
+						ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+					else:
+						ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+					if self._conjugated:
+						ME = ME.conj()
+
+					new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+
+		return new_other
+
+	def eigsh(self,**eigsh_args):
+		return _sla.eigsh(self.LinearOperator,**eigsh_args)
+
+
+
+
 class exp_op(object):
 	def __init__(self, O, a = 1.0, time = 0.0, start = None, stop = None, num = None, endpoint = None, iterate = False):
+		"""
+		This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```O```. 
+		It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through 
+		the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the 
+		expm_multiply function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in 
+		the complex plane via the optional arguements. if this is specified then an array `grid` is created via the numpy function 
+		linspace, then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
 
+		--- arguments ---
+
+		* H: matrix/hamiltonian (compulsory), The operator which to be exponentiated.
+
+		* a: scalar (optional), prefactor to go in front of the operator in the exponential: exp(a*O)
+
+		* start:  scalar (optional), specify the starting point for a grid of points to evaluate the matrix exponential at.
+
+		* stop: (optional), specify the end point of the grid of points. 
+
+		* num: (optional), specify the number of grid points between start and stop (Default if 50)
+
+		* endpoint: (optional), if True this will make sure stop is included in the set of grid points (Note this changes the grid step size).
+
+		* iterate: (optional), if True when mathematical methods are called they will return iterators which will iterate over the grid 
+		  points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
+
+		--- exp_op attributes ---: '_. ' below stands for 'object. '
+
+		* _.ndim: returns the number of dimensions, always 2
+
+		* _.a: returns the prefactor a
+
+		* _.H: returns the hermitian conjugate of this operator
+
+		* _.T: returns the transpose of this operator
+
+		* _.O: returns the operator which is being exponentiated
+
+		* _.get_shape: returns the tuple which contains the shape of the operator
+
+		* _.iterate: returns a bool telling whether or not this function will iterate over the grid of values or return a list
+
+		* _.grid: returns the array containing the grid points the exponential will be evaluated at
+
+		* _.step: returns the step size between the grid points
+
+
+		"""
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
 
-		self._a=_np.complex128(a)
-		self._time=time
+		self._a = a
+		self._time = time
 
-		self._start=start
-		self._stop=stop
-		self._num=num
-		self._endpoint=endpoint
-		self._iterate=iterate
+		self._start = start
+		self._stop = stop
+		self._num = num
+		self._endpoint = endpoint
+		self._iterate = iterate
 
 		if self._iterate:
 			if [self._start, self._stop] == [None, None]:
