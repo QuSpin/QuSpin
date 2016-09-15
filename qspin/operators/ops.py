@@ -588,7 +588,10 @@ class hamiltonian(object):
 
 		if V.__class__ is _np.ndarray:
 			if V.ndim != 2:
+				reshape = True
 				V = V.reshape((1,-1))
+			else:
+				reshape = False 
 				
 			if V.shape[1] != self._shape[0]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
@@ -596,6 +599,9 @@ class hamiltonian(object):
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+			if reshape:
+				return V_dot.reshape((-1,))
 
 		elif _sp.issparse(V):
 			if V.shape[1] != self._shape[0]:
@@ -608,7 +614,10 @@ class hamiltonian(object):
 
 		elif V.__class__ is _np.matrix:
 			if V.ndim != 2:
+				reshape = True
 				V = V.reshape((1,-1))
+			else:
+				reshape = False 
 
 			if V.shape[1] != self._shape[0]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
@@ -616,6 +625,10 @@ class hamiltonian(object):
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+
+			if reshape:
+				return V_dot.reshape((-1,))
+
 
 		elif V.__class__ == exp_op: # matrix op right dot
 
@@ -2377,10 +2390,11 @@ class HamiltonianOperator(object):
 			
 		self._transposed = False
 		self._conjugated = False
+		self._scale = dtype(1.0)
 		self._dtype = dtype
 		self._ndim = 2
 		self._shape = (self._basis.Ns,self._basis.Ns)
-		self._LinearOperator = _sp.linalg.LinearOperator(self.shape,self.dot,matmat=self.dot,rmatvec=self.rdot,dtype=self._dtype)
+		self._LinearOperator = _sp.linalg.LinearOperator(self.shape,self.matvec,matmat=self.matvec,rmatvec=self.rmatvec,dtype=self._dtype)
 
 	@property
 	def ndim(self):
@@ -2439,65 +2453,141 @@ class HamiltonianOperator(object):
 		else:
 			return self.conj().transpose()
 
-	def dot(self,other):
-		return self.matvec(other)
-
-	def rdot(self,other):
-		return (self.T.matvec(other.T)).T
-
 	def get_LinearOperator(self):
 		return self._LinearOperator
 
-	def matvec(self,other):
-		dense = True
+	def __imul__(self,other):
+		if _np.isscalar(other):
+			return self._mul_scalar(other)
+		else:
+			return NotImplemented
+
+	def __mul__(self,other):
 		if other.__class__ in [_np.ndarray,_np.matrix]:
-			result_dtype = _np.result_type(self.dtype,other.dtype)
+			dense = True
 		elif _sp.issparse(other):
-			result_dtype = _np.result_type(self.dtype,other.dtype)
 			dense = False
 		elif ishamiltonian(other):
-			raise NotImplementedError
+			return self._mul_hamiltonian(other)
+		elif _np.isscalar(other):
+			return self._mul_scalar(other)
 		else:
+			dense = False
 			other = np.asanyarray(other)
-			result_dtype = _np.result_type(self.dtype,other.dtype)
 
 		if self.shape[1] != other.shape[0]:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
 
-		
+		if dense:
+			if other.ndim == 1:
+				return self.matvec(other)
+			elif other.ndim == 2:
+				return self.matmat(other)
+			else:
+				raise ValueError
+		else:
+			return self._mul_sparse(other)
+
+	def __rmul__(self,other):
+		if other.__class__ in [_np.ndarray,_np.matrix]:
+			dense = True
+		elif _sp.issparse(other):
+			dense = False
+		elif ishamiltonian(other):
+			return self._rmul_hamiltonian(other)
+		elif _np.isscalar(other):
+			return self._mul_scalar(other)
+		else:
+			dense = False
+			other = np.asanyarray(other)
 
 		if dense:
-			new_other = _np.zeros_like(other,dtype=result_dtype)
-			for opstr, bonds in self.operator_list:
-				for bond in bonds:
-					J = bond[0]
-					indx = _np.asarray(bond[1:])
-					if not self._transposed:
-						ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-					else:
-						ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
-
-					if self._conjugated:
-						ME = ME.conj()
-					if new_other.ndim > 1:
-						new_other[row] += (other[col].T * ME).T 
-					else:
-						new_other[row] += other[col] * ME
+			if other.ndim == 1:
+				return self.T.matvec(other)
+			elif other.ndim == 2:
+				if self.shape[0] != other.shape[1]:
+					raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+				return (self.T.matmat(other.T)).T
+			else:
+				raise ValueError
 		else:
-			new_other = _sp.lil_matrix(other.shape,dtype=result_dtype).asformat(other.getformat())
-			for opstr, bonds in self.operator_list:
-				for bond in bonds:
-					J = bond[0]
-					indx = _np.asarray(bond[1:])
-					if not self._transposed:
-						ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-					else:
-						ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+			if self.shape[0] != other.shape[1]:
+				raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+			return (self.T._mul_sparse(other.T)).T
 
-					if self._conjugated:
-						ME = ME.conj()
+	def dot(self,other):
+		return self.__mul__(other)
 
-					new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+	def rdot(self,other):
+		return self.__rmul__(other)
+
+	def _mul_scalar(self,other):
+		self._dtype = _np.result_type(self._dtype,other)
+		self._scale *= other
+
+	def _mul_hamiltonian(self,other):
+		return NotImplemented
+
+	def _rmul_hamiltonian(self,other):
+		return NotImplemented
+
+	def _mul_sparse(self,other):
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		new_other = _sp.lil_matrix(other.shape,dtype=result_dtype).asformat(other.getformat())
+		for opstr, bonds in self.operator_list:
+			for bond in bonds:
+				J = bond[0]
+				indx = _np.asarray(bond[1:])
+				if not self._transposed:
+					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+				else:
+					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+				if self._conjugated:
+					ME = ME.conj()
+
+				new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+
+		return new_other
+
+	def rmatvec(self,other):
+		return self.H.matvec(other)
+
+	def matvec(self,other):
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		new_other = _np.zeros_like(other,dtype=result_dtype)
+		for opstr, bonds in self.operator_list:
+			for bond in bonds:
+				J = bond[0]*self._scale
+				indx = _np.asarray(bond[1:])
+				if not self._transposed:
+					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+				else:
+					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+				if self._conjugated:
+					ME = ME.conj()
+
+				new_other[row] += other[col] * ME
+
+		return new_other
+
+	def matmat(self,other):
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		new_other = _np.zeros_like(other,dtype=result_dtype)
+		for opstr, bonds in self.operator_list:
+			for bond in bonds:
+				J = bond[0]*self._scale
+				indx = _np.asarray(bond[1:])
+				if not self._transposed:
+					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+				else:
+					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+				if self._conjugated:
+					ME = ME.conj()
+
+				new_other[row] += (other[col].T * ME).T 
 
 		return new_other
 
