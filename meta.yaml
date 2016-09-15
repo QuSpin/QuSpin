@@ -15,7 +15,7 @@ requirements:
     - numpy
     - scipy
     - joblib
-	- matplotlib
+    - matplotlib
 
 test:
   imports:
