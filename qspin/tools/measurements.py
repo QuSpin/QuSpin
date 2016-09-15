@@ -386,18 +386,18 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
 				if N_A!=N: # doesn't make use of chain symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-				Ns_spin = basis.chain_Ns
+				else: # makes use of symmetries
+					Ns_spin = basis.chain_Ns
 			else:
 				Ns_spin = 2**N
 
 		elif basis.Ntot is not None: # total particle-conservation
 			Nph = basis.Ntot
 			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
-				#psi = _np.asarray( basis.get_vec(psi,sparse=False,full_part=True) )
-				if N_A==N:
+				if N_A==N: # make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
 					Ns_spin = basis.chain_Ns
-				else:
+				else: # doesn't make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
 					Ns_spin = 2**N
 			else: # no chain symmetries present
@@ -1020,8 +1020,6 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 
 			E: real vector containing the eigenvalues of the Hamiltonian H2. 
 			   The order of the eigenvalues must correspond to the order of the columns of V2.
-	
-			times: list or array of times to evolve to.
 
 		ii) numpy array or matrix with states in the columns.
 

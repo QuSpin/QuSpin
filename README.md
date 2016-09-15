@@ -772,9 +772,13 @@ RETURNS:  dictionary with keys:
 
 * 'Sent': entanglement entropy.
 
-* 'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
+* 'DM_chain_subsys': (optional) reduced density matrix of chain subsystem. The basis in which
+  the reduced DM is returned is the full z-basis of the subsystem. For instance, if the subsystem contains N_A sites
+  the reduced DM will be a (2^{N_A}, 2^{N_A}) array. This is required because some symmrtries of the system
+  might not be inherited by the subsystem. The only exception to this appears when 'basis' is an instance of 'photon_basis'
+  AND the subbsystem is the entire chain (i.e. one traces out the photon dregree of freedom only): then the reduced DM is returned in the basis specified by the '..._basis_1d' argument passed into the definition of 'photon_basis', and thus inherits all symmetries of '..._basis_1d' by construction.
 
-* 'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
+* 'DM_other_subsys': (optional) reduced density matrix of the complement subsystem. The basis the redcuded DM is returned in, is the     same as 'DM_chain_subsys' above.
 
 * 'U': (optional) svd U matrix
 
@@ -862,7 +866,7 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
 
 * 'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-* 'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble with parameter 'alpha'.
+* 'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entropy of reduced density matrix of Diagonal Ensemble with parameter 'alpha'.
 
 * 'rho_d': density matrix of diagonal ensemble
 
@@ -1004,7 +1008,7 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 
 
 ```python
-obs_vs_time(psi_t,times,Obs_list,return_state=False)
+obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=())
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
 
@@ -1027,7 +1031,6 @@ RETURNS:  dictionary with keys:
 	* psi [1-dim array]: initial state 
 	* V [2-dim array]: unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
 	* E [1-dim array]: real vector containing the eigenvalues of the Hamiltonian. The order of the eigenvalues must correspond to the order of the columns of V2.
-	* times: list or array of times to evolve to.
  2. psi_t: 2-dim array which contains the time dependent states as columns of the array.
  3. psi_t:  Iterator generates the states sequentially ( For most evolution functions you can get this my setting ```iterate=True```. This is more memory efficient as the states are generated on the fly as opposed to being stored in memory )
 
@@ -1037,7 +1040,7 @@ RETURNS:  dictionary with keys:
 
 * return_state: (optional) when set to 'True' or 'Sent_args' is nonempty, returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
-* Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+* Sent_args: (optional) when non-empty, this dictionary of ent_entropy arguments enables the calculation of 'Sent_time'. The 
 following keys are allowed:
 
   1. basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
