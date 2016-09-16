@@ -8,19 +8,19 @@ source:
 requirements:
   build:
     - python
-    - numpy >= 0.1.10
+    - numpy >=1.10
 
   run:
     - python
-    - numpy >= 0.1.10
-    - scipy >= 0.14.0
+    - numpy >=1.10
+    - scipy >=0.14.0
     - joblib
     - matplotlib
 
 test:
   imports:
-    - numpy >= 0.1.10
-    - scipy >= 0.14.0
+    - numpy 
+    - scipy
 
 about:
   home: https://github.com/weinbe58/qspin.git
