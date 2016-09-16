@@ -263,9 +263,9 @@ class basis(object):
 
 		static_list,dynamic_list = self.get_lists(static_list,dynamic_list)
 		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self.get_hc_lists(static_list,dynamic_list)
-
 		# calculate non-hermitian elements
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
+		
 		if diff:
 			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
