@@ -2387,7 +2387,9 @@ class HamiltonianOperator(object):
 		if check_pcon:
 			self.basis.check_pcon(operator_list,[])
 
-			
+		self._semi_momentum = self.basis.semi_momentum
+		
+
 		self._transposed = False
 		self._conjugated = False
 		self._scale = dtype(1.0)
@@ -2453,8 +2455,68 @@ class HamiltonianOperator(object):
 		else:
 			return self.conj().transpose()
 
+	def __repr__(self):
+		return "<{0}x{1} qspin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+
 	def get_LinearOperator(self):
 		return self._LinearOperator
+
+	def __neg__(self):
+		return self.__mul__(-1)
+
+	def __add__(self,other):
+		if other.__class__ in [_np.ndarray,_np.matrix]:
+			dense = True
+		elif _sp.issparse(other):
+			dense = False
+		elif ishamiltonian(other):
+			return self._add_hamiltonian(other)
+		elif _np.isscalar(other):
+			return self._mul_scalar(other)
+		else:
+			dense = True
+			other = np.asanyarray(other)
+
+		if self.shape != other.shape:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+
+		if dense:
+			return self._add_dense(other)
+		else:
+			return self._add_sparse(other)
+
+	def __iadd__(self,other):
+		return NotImplemented
+
+	def __radd__(self,other):
+		return self.__add__(other)
+
+	def __sub__(self,other):
+		if other.__class__ in [_np.ndarray,_np.matrix]:
+			dense = True
+		elif _sp.issparse(other):
+			dense = False
+		elif ishamiltonian(other):
+			return self._sub_hamiltonian(other)
+		elif _np.isscalar(other):
+			return self._mul_scalar(other)
+		else:
+			dense = False
+			other = np.asanyarray(other)
+
+		if self.shape != other.shape:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+
+		if dense:
+			return self._sub_dense(other)
+		else:
+			return self._sub_sparse(other)
+
+	def __isub__(self,other):
+		return NotImplemented
+
+	def __rsub__(self,other):
+		return -(self.__sub__(other))
 
 	def __imul__(self,other):
 		if _np.isscalar(other):
@@ -2472,7 +2534,7 @@ class HamiltonianOperator(object):
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
-			dense = False
+			dense = True
 			other = np.asanyarray(other)
 
 		if self.shape[1] != other.shape[0]:
@@ -2498,7 +2560,7 @@ class HamiltonianOperator(object):
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
-			dense = False
+			dense = True
 			other = np.asanyarray(other)
 
 		if dense:
@@ -2521,35 +2583,6 @@ class HamiltonianOperator(object):
 	def rdot(self,other):
 		return self.__rmul__(other)
 
-	def _mul_scalar(self,other):
-		self._dtype = _np.result_type(self._dtype,other)
-		self._scale *= other
-
-	def _mul_hamiltonian(self,other):
-		return NotImplemented
-
-	def _rmul_hamiltonian(self,other):
-		return NotImplemented
-
-	def _mul_sparse(self,other):
-		result_dtype = _np.result_type(self._dtype,other.dtype)
-		new_other = _sp.lil_matrix(other.shape,dtype=result_dtype).asformat(other.getformat())
-		for opstr, bonds in self.operator_list:
-			for bond in bonds:
-				J = bond[0]
-				indx = _np.asarray(bond[1:])
-				if not self._transposed:
-					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-				else:
-					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
-
-				if self._conjugated:
-					ME = ME.conj()
-
-				new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
-
-		return new_other
-
 	def rmatvec(self,other):
 		return self.H.matvec(other)
 
@@ -2568,7 +2601,10 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				new_other[row] += other[col] * ME
+				if self._semi_momentum:
+					new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+				else:
+					new_other[row] += (other[col] * ME)
 
 		return new_other
 
@@ -2587,13 +2623,78 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				new_other[row] += (other[col].T * ME).T 
+				if self._semi_momentum:
+					new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+				else:
+					new_other[row] += (other[col].T * ME).T 
+	
+		if isinstance(other,_np.matrix):		
+			return _np.asmatrix(new_other)
+		else:
+			return new_other
+
+	def _mul_scalar(self,other):
+		self._dtype = _np.result_type(self._dtype,other)
+		self._scale *= other
+
+	def _mul_hamiltonian(self,other):
+		return NotImplemented
+
+	def _rmul_hamiltonian(self,other):
+		return NotImplemented
+
+	def _add_hamiltonian(self,other):
+		return NotImplemented
+
+	def _sub_hamiltonian(self,other):
+		return NotImplemented
+
+	def _mul_sparse(self,other):
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		new_other = other.__class__(other.shape,dtype=result_dtype)
+		for opstr, bonds in self.operator_list:
+			for bond in bonds:
+				J = bond[0]
+				indx = _np.asarray(bond[1:])
+				if not self._transposed:
+					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+				else:
+					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+				if self._conjugated:
+					ME = ME.conj()
+
+				new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
 
 		return new_other
+
+	def _add_sparse(self,other):
+		return NotImplemented
+
+	def _sub_sparse(self,other):
+		return NotImplemented
+
+	def _add_dense(self,other):
+		return NotImplemented
+
+	def _sub_dense(self,other):
+		return NotImplemented
 
 	def eigsh(self,**eigsh_args):
 		return _sla.eigsh(self.LinearOperator,**eigsh_args)
 
+	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
+		"""Method for compatibility with NumPy's ufuncs and dot
+		functions.
+		"""
+
+		if (func == np.dot) or (func == np.multiply):
+			if pos == 0:
+				return self.__mul__(inputs[1])
+			if pos == 1:
+				return self.__rmul__(inputs[0])
+			else:
+				return NotImplemented
 
 
 
