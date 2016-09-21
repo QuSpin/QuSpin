@@ -24,7 +24,7 @@ spin_only.py
 example*.py 
 spin_photon.py
 exp_op_test.py
-Sent_test.py 
+#Sent_test.py 
 
 
 submit.sh
