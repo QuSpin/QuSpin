@@ -23,8 +23,10 @@ def spin_entropy(dtype,symm,Sent_args):
 	else:
 		basis = spin_basis_1d(L)
 	# define operators with OBC using site-coupling lists
-	J_zz = [[uniform(1),i,(i+1)%L,(i+2)%L] for i in range(0,L)] 
-	J_xy = [[uniform(1),i,(i+1)%L] for i in range(0,L)] 
+	J_zz = [[1.0,i,(i+1)%L,(i+2)%L] for i in range(0,L)] 
+	J_xy = [[1.0,i,(i+1)%L] for i in range(0,L)]
+
+	print J_zz 
 	# static and dynamic lists
 	static = [["+-",J_xy],["-+",J_xy],["zxz",J_zz]]
 	# build Hamiltonian
