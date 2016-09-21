@@ -133,17 +133,17 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	elif DM == 'other_subsys':
 		_, lmbda, V = _npla.svd(v, full_matrices=False)
 		if rho_d is not None:
-			DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('n,nji,nj,njk->ik',rho_d,V.conj(),lmbda**2,V )
 		else:
-			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('nji,nj,njk->nik',V.conj(),lmbda**2,V )
 	elif DM == 'both':
 		U, lmbda, V = _npla.svd(v, full_matrices=False)
 		if rho_d is not None:
 			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
-			DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('n,nji,nj,njk->ik',rho_d,V.conj(),lmbda**2,V )
 		else:
 			DM_chain_subsys = _np.einsum('nij,nj,nkj->nik',U,lmbda**2,U.conj() )
-			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('nji,nj,njk->nik',V.conj(),lmbda**2,V )
 
 	del v
 	# add floating point number to zero elements
@@ -154,14 +154,14 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 		p = rho_d.dot(lmbda**2)
 		lmbda = _np.sqrt(p)
 	else:# calculate probabilities
-		p = (lmbda**2).T
-
+		p = (lmbda**2.0).T
+		
 	# calculate entanglement entropy of 'system_state'
 	if alpha == 1.0:
 		Sent = -_np.sum( p*_np.log(p),axis=0)
 	else:
-		Sent =  1./(1-alpha)*_np.log(_np.sum(p**alpha, axis=0))
-
+		Sent =  1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha, axis=0))
+		
 
 	if densities:
 		Sent *= 1.0/N_A
@@ -219,7 +219,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 
-	if chain_subsys:
+	if chain_subsys is not None:
 		if not isinstance(chain_subsys,list):
 			raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 		elif min(chain_subsys) < 0:
@@ -242,7 +242,13 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			istate = 'DM'
 			# define initial state
 			rho_d = system_state['rho_d']
+			if rho_d.shape != (basis.Ns,):
+				raise ValueError("expecting a 1d array 'rho_d' of size {}!".format(basis.Ns))
+			elif _np.any(rho_d < 0):
+				raise ValueError("expecting positive eigenvalues for 'rho_d'!")
 			psi = system_state['V_rho']
+			if psi.shape != (basis.Ns,basis.Ns):
+				raise ValueError("expecting a 2d array 'V_rho' of size ({},{})!".format(basis.Ns,basis.Ns))
 		elif keys == set(['V_states']):
 			istate = 'pure'
 			rho_d = None
@@ -288,7 +294,12 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				raise ValueError("Expecting square array for Density Matrix.")
 			istate = 'DM'
 			# diagonalise DM
-			rho_d, psi = _la.eigh(system_state)	
+			rho_d, psi = _la.eigh(system_state)
+			if _np.min(rho_d) < 0 and abs(_np.min(rho_d)) > 1E3*_np.finfo(rho_d.dtype).eps:
+				raise ValueError("Expecting DM to have positive spectrum")
+			elif abs(1.0 - _np.sum(rho_d) ) > 1E3*_np.finfo(rho_d.dtype).eps:
+				raise ValueError("Expecting eigenvalues of DM to sum to unity!")
+			rho_d = abs(rho_d)
 
 		if psi.shape[0] != basis.Ns:
 			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))			
