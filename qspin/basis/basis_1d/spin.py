@@ -242,13 +242,13 @@ class spin_basis_1d(basis):
 		# allocates memory for number of basis states
 		frac = 1.0
 
-		self._semi_momentum = False		
+		self._unique_me = True	
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P & Z"
 			else: self._conserved = "T & P & Z"
 			self._blocks["pzblock"] = pblock*zblock
-			self._semi_momentum = True
+			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
@@ -289,7 +289,7 @@ class spin_basis_1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & PZ"
 			else: self._conserved = "T & PZ"
-			self._semi_momentum = True
+			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -308,7 +308,7 @@ class spin_basis_1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P"
 			else: self._conserved = "T & P"
-			self._semi_momentum = True
+			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -563,10 +563,6 @@ class spin_basis_1d(basis):
 			self._op_args.insert(0,self._N)
 
 		self._Ns = Ns
-
-	@property
-	def semi_momentum(self):
-		return self._semi_momentum
 
 	@property
 	def blocks(self):

@@ -2387,7 +2387,7 @@ class HamiltonianOperator(object):
 		if check_pcon:
 			self.basis.check_pcon(operator_list,[])
 
-		self._semi_momentum = self.basis.semi_momentum
+		self._unique_me = self.basis.unique_me
 		
 
 		self._transposed = False
@@ -2601,10 +2601,18 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				if self._semi_momentum:
-					new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
-				else:
+				if self._unique_me:
 					new_other[row] += (other[col] * ME)
+				else:
+					while len(row) > 0:
+						row_unique,args = _np.unique(row,return_index=True)
+						col_unique = col[args]
+
+						new_other[row_unique] += (other[col_unique] * ME[args])
+						row = _np.delete(row,args)
+						col = _np.delete(col,args)
+						ME = _np.delete(ME,args)
+
 
 		return new_other
 
@@ -2623,10 +2631,24 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				if self._semi_momentum:
-					new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+
+				# if there are only one matirx element per row then the indexing should work
+				if self._unique_me:
+					new_other[row] += (other[col] * ME)
 				else:
-					new_other[row] += (other[col].T * ME).T 
+				# if there are multiply matrix elements per row as there are for some
+				# symmetries availible then do the indexing for unique elements then
+				# delete them from the list and then repeat until all elements have been 
+				# taken care of. This is less memory efficient but works well for when
+				# there are a few number of matrix elements per row. 
+					while len(row) > 0:
+						row_unique,args = _np.unique(row,return_index=True)
+						col_unique = col[args]
+
+						new_other[row_unique] += (other[col_unique] * ME[args])
+						row = _np.delete(row,args)
+						col = _np.delete(col,args)
+						ME = _np.delete(ME,args)
 	
 		if isinstance(other,_np.matrix):		
 			return _np.asmatrix(new_other)

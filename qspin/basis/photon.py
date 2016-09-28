@@ -71,6 +71,7 @@ class photon_basis(tensor_basis):
 			self._n = Ntot - self._b1._Np 
 			self._blocks = self._b1._blocks
 			self._Ns = self._b1._Ns
+			self._unique_me = b1.unique_me
 			self._operators = self._b1._operators +"\n"+ self._b2._operators
 			
 
