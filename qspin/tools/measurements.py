@@ -133,17 +133,17 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	elif DM == 'other_subsys':
 		_, lmbda, V = _npla.svd(v, full_matrices=False)
 		if rho_d is not None:
-			DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('n,nji,nj,njk->ik',rho_d,V.conj(),lmbda**2,V )
 		else:
-			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('nji,nj,njk->nik',V.conj(),lmbda**2,V )
 	elif DM == 'both':
 		U, lmbda, V = _npla.svd(v, full_matrices=False)
 		if rho_d is not None:
 			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
-			DM_other_subsys = _np.einsum('n,nji,nj,nkj->ki',rho_d,V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('n,nji,nj,njk->ik',rho_d,V.conj(),lmbda**2,V )
 		else:
 			DM_chain_subsys = _np.einsum('nij,nj,nkj->nik',U,lmbda**2,U.conj() )
-			DM_other_subsys = _np.einsum('nji,nj,nkj->nki',V.conj(),lmbda**2,V )
+			DM_other_subsys = _np.einsum('nji,nj,njk->nik',V.conj(),lmbda**2,V )
 
 	del v
 	# add floating point number to zero elements
@@ -154,14 +154,14 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 		p = rho_d.dot(lmbda**2)
 		lmbda = _np.sqrt(p)
 	else:# calculate probabilities
-		p = (lmbda**2).T
-
+		p = (lmbda**2.0).T
+		
 	# calculate entanglement entropy of 'system_state'
 	if alpha == 1.0:
 		Sent = -_np.sum( p*_np.log(p),axis=0)
 	else:
-		Sent =  1./(1-alpha)*_np.log(_np.sum(p**alpha, axis=0))
-
+		Sent =  1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha, axis=0))
+		
 
 	if densities:
 		Sent *= 1.0/N_A
@@ -219,7 +219,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 
-	if chain_subsys:
+	if chain_subsys is not None:
 		if not isinstance(chain_subsys,list):
 			raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 		elif min(chain_subsys) < 0:
@@ -242,7 +242,13 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			istate = 'DM'
 			# define initial state
 			rho_d = system_state['rho_d']
+			if rho_d.shape != (basis.Ns,):
+				raise ValueError("expecting a 1d array 'rho_d' of size {}!".format(basis.Ns))
+			elif _np.any(rho_d < 0):
+				raise ValueError("expecting positive eigenvalues for 'rho_d'!")
 			psi = system_state['V_rho']
+			if psi.shape != (basis.Ns,basis.Ns):
+				raise ValueError("expecting a 2d array 'V_rho' of size ({},{})!".format(basis.Ns,basis.Ns))
 		elif keys == set(['V_states']):
 			istate = 'pure'
 			rho_d = None
@@ -288,7 +294,12 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				raise ValueError("Expecting square array for Density Matrix.")
 			istate = 'DM'
 			# diagonalise DM
-			rho_d, psi = _la.eigh(system_state)	
+			rho_d, psi = _la.eigh(system_state)
+			if _np.min(rho_d) < 0 and abs(_np.min(rho_d)) > 1E3*_np.finfo(rho_d.dtype).eps:
+				raise ValueError("Expecting DM to have positive spectrum")
+			elif abs(1.0 - _np.sum(rho_d) ) > 1E3*_np.finfo(rho_d.dtype).eps:
+				raise ValueError("Expecting eigenvalues of DM to sum to unity!")
+			rho_d = abs(rho_d)
 
 		if psi.shape[0] != basis.Ns:
 			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))			
@@ -317,7 +328,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		# re-write the state in the initial basis
 		if basis.Ns<2**N:
 			psi = basis.get_vec(psi,sparse=False)
-		
+			
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
 		Ns_A = 2**N_A
@@ -520,7 +531,6 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 	# calculate diag ens value of Obs fluctuations
 	if delta_t_Obs is not False:
-
 		delta_t_Obs_d = _np.einsum(es_str('ji,jk,ki->i'),rho,delta_t_Obs,rho).real
 
 		# calculate diag ens value of Obs fluctuations
@@ -602,12 +612,15 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 	system_state: (required) the state of the quantum system. Can be a:
 
-				-- pure state [numpy array of shape (1,) or (,1)].
+				-- pure state [numpy array of shape (Ns,) or (,Ns)].
 
-				-- density matrix (DM) [numpy array of shape (1,1)].
+				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
 
 				-- mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
 					define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
+
+					All expectation values depend statistically on the symmetry block via the available number of 
+					states as part of the system-size dependence!
 
 					== 'V1': (required) array with the eigenbasis of H1 in the columns.
 
@@ -616,8 +629,8 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 					== 'f': (optional) the distribution used to define the mixed DM. Default is
 						'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
 
-					== 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, 
-						it specifies the inverse temeprature list [beta].
+					== 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, by 
+						default we have 'f=numpy.exp(-beta*(E - E[0]))', and 'f_args' specifies the inverse temeprature list [beta].
 
 					== 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
 						expectations are also returned.
@@ -741,13 +754,12 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			f_norm = True
 
 		if 'V1_state' in locals():
-			if not(type(V1_state) is int):
+			if not all(isinstance(item, int) for item in V1_state):
 				raise TypeError("Expecting an integer value for variable 'V1_state'!")
-			if V1_state < 0 or V1_state > len(E1)-1:
+			if min(V1_state) < 0 or max(V1_state) > len(E1)-1:
 				raise TypeError("Value 'V1_state' violates '0 <= V1_state <= len(E1)-1'!")
 
 		# define diagonal (in V1) mixed DM
-		warnings.warn("All expectation values depend statistically on the symmetry block via the available number of states as part of the system-size dependence!",UserWarning,stacklevel=4)
 		
 		rho_mixed = _np.zeros((len(E1),len(f_args[0])),dtype=type(f_args[0][0]) )
 		for i, arg in enumerate(f_args[0]):
@@ -780,7 +792,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 		if (delta_t_Obs or delta_q_Obs) and Obs is not False:
 			# diagonal matrix elements of Obs^2 in the basis V2
 			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
-			Obs = reduce(_np.dot,[V2.T.conj(),Obs,V2])
+			Obs = V2.T.conj().dot( Obs.dot(V2) )
 			delta_t_Obs = _np.square(Obs)
 			_np.fill_diagonal(delta_t_Obs,0.0)
 			if delta_q_Obs is not False:
@@ -794,7 +806,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 		
 	if Srdm_Renyi:
 		# calculate singular values of columns of V2
-		v, _, N_A = _reshape_as_subsys({'V_rho':V2,'rho_d':None},**Srdm_args)
+		v, _, N_A = _reshape_as_subsys({"V_states":V2},**Srdm_args)
 		Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
 		
 	# clear up memory
@@ -804,6 +816,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_q_Obs,Srdm_Renyi=Srdm_Renyi,Sd_Renyi=Sd_Renyi)
 	
 
+	Expt_Diag_Vstate={}
 	# compute densities
 	for key,value in Expt_Diag.iteritems():
 		if densities:
@@ -819,15 +832,17 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			Expt_Diag[key] = value.dot(rho_mixed)
 			# if 'GS' option is passed save GS value
 			if 'V1_state' in locals():
-				state_key = key[:-len(istate)]+'{}'.format(V1_state)
-				Expt_Diag_state[state_key] = value[V1_state]
+				state_key = key[:-len(istate)]+'V1_state'
+				Expt_Diag_Vstate[state_key] = value[V1_state]
 			# merge state and mixed dicts
 			Expt_Diag.update(Expt_Diag_state)
 
 	if istate in ['mixed','thermal']:
 		if f_norm==False:
 			Expt_Diag['f_norm'] = f_norms
-
+		if 'V1_state' in locals():
+			Expt_Diag.update(Expt_Diag_Vstate)
+			
 	# return diag ensemble density matrix if requested
 	if rho_d:
 		if 'V1_state' in locals():

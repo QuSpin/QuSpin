@@ -878,9 +878,9 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
 
 * system_state: (required) the state of the quantum system. Can be a:
 
-  1. pure state [numpy array of shape (1,) or (,1)].
+  1. pure state [numpy array of shape (Ns,) or (,Ns)].
 
-  2. density matrix (DM) [numpy array of shape (1,1)].
+  2. density matrix (DM) [numpy array of shape (Ns,Ns)].
 
   3. mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
     define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
@@ -892,8 +892,8 @@ replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
     * 'f': (optional) the distribution used to define the mixed DM. Default is
       'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
 
-    * 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, 
-      it specifies the inverse temeprature list [beta].
+    * 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, by 
+	  efault we have 'f=numpy.exp(-beta*(E - E[0]))', and 'f_args' specifies the inverse temeprature list [beta].
 
     * 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
       expectations are also returned.
