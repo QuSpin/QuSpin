@@ -1,6 +1,6 @@
 from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from qspin.operators import hamiltonian # Hamiltonian and observables
-from qspin.tools.measurements import obs_vs_time
+from qspin.tools.measurements import obs_vs_time,ED_state_vs_time
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed()
@@ -22,11 +22,11 @@ def drive(t):
 drive_args=[]
 
 def time_dep(t):
-	return np.cosh(-0.25*t)*np.cos(2.0*t)
+	return np.cosh(+0.1*t)*np.cos(2.0*t)
 
-L=6
+L=12
 basis = spin_basis_1d(L,kblock=0,pblock=1,zblock=1)
-J_zxz = [[1.0,i,(i+1)%L,(i+2)%L] for i in range(0,L)]
+J_zxz =[[1.0,i,(i+1)%L,(i+2)%L] for i in range(0,L)]
 J_zz = [[1.0,i,(i+1)%L] for i in range(0,L)] 
 J_xy = [[1.0,i,(i+1)%L] for i in range(0,L)]
 J_yy = [[1.0,i,(i+1)%L] for i in range(0,L)]
@@ -84,6 +84,8 @@ psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=atol,atol=atol)
 Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
 Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
 
+psi_t3 = ED_state_vs_time(psi0,E,V,t,iterate=False).T
+
 Expn = Obs['Expt_time']
 psi_t = Obs['psi_t']
 Sent = Obs['Sent_time']['Sent']
@@ -93,8 +95,10 @@ psi_t2 = Obs2['psi_t']
 Sent2 = Obs2['Sent_time']['Sent']
 
 
+
 np.testing.assert_allclose(Expn,Expn2,atol=atol,err_msg='Failed observable comparison!')
 np.testing.assert_allclose(psi_t,psi_t2,atol=atol,err_msg='Failed state comparison!')
+np.testing.assert_allclose(psi_t2,psi_t3,atol=atol,err_msg='Failed ED_state_vs_time test!')
 np.testing.assert_allclose(Sent,Sent2,atol=atol,err_msg='Failed ent entropy comparison!')
 
 

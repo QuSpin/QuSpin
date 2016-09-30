@@ -1131,11 +1131,11 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 def project_op(Obs,proj,dtype=_np.complex128):
 	"""
 	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
-	onto the reduced basis.
+	onto that reduced basis.
 
 	RETURNS: 	dictionary with keys 
 
-	'Proj_Obs': projected observable 'Obs'. and value the projected observable.
+	'Proj_Obs': projected observable 'Obs'
 
 	--- arguments ---
 
@@ -1146,27 +1146,36 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	dtype: (optional) data type. Default is np.complex128.
 
 	"""
-
 	variables = ["Proj_Obs"]
 	if proj.__class__ in [_np.ndarray,_np.matrix] or _sp.issparse(proj):
+
 		if _ishamiltonian(Obs):
-			proj_Obs = Obs.project_to(proj)
+
+			if Obs.Ns != proj.shape[0]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
+
+			Proj_Obs = Obs.project_to(proj)
 
 		else:
+
 			if Obs.ndim != 2:
 				raise ValueError("Expecting Obs to be a 2 dimensional array.")
 
 			if Obs.shape[0] != Obs.shape[1]:
 				raise ValueError("Expecting OBs to be a square array.")
 
-			if Obs.shape[0] != proj.shape[1]:
+			if Obs.shape[1] != proj.shape[0]:
 				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
 
-			proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
 	elif isbasis(proj):
 		proj = proj.get_proj(dtype)
 		if _ishamiltonian(Obs):
-			proj_Obs = Obs.project_to(proj)		
+
+			if Obs.Ns != proj.shape[0]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
+
+			Proj_Obs = Obs.project_to(proj)		
 		else:
 			if Obs.ndim != 2:
 				raise ValueError("Expecting Obs to be a 2 dimensional array.")
@@ -1174,10 +1183,10 @@ def project_op(Obs,proj,dtype=_np.complex128):
 			if Obs.shape[0] != Obs.shape[1]:
 				raise ValueError("Expecting Obs to be a square array.")
 
-			if Obs.shape[0] != proj.shape[1]:
+			if Obs.shape[1] != proj.shape[0]:
 				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
 		
-			proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
 	else:
 		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
 
@@ -1207,6 +1216,13 @@ def KL_div(p1,p2):
 
 	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
 		raise TypeError("Expecting all entries of the probability distributions 'p1' and 'p2' to be non-negative!")
+	
+	if abs(sum(p1)-1.0) > 1E-13:
+		raise ValueError("Expecting 'p1' to be normalised!")
+
+	if abs(sum(p2)-1.0) > 1E-13:
+		raise ValueError("Expecting 'p2' to be normalised!")
+
 	if _np.any(p1==0.0):
 
 		inds = _np.where(p1 == 0)

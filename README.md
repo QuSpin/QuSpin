@@ -954,11 +954,11 @@ following keys are allowed:
 ```python
 project_op(Obs,proj,dtype=_np.complex128):
 ```
-This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs' onto the reduced basis.
+This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs' onto that reduced basis.
 
 RETURNS:  dictionary with keys 
 
-* 'Proj_Obs': projected observable 'Obs'. and value the projected observable.
+* 'Proj_Obs': projected observable 'Obs'.
 	
 --- arguments ---
 
