@@ -1,5 +1,5 @@
 from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
-from qspin.operators import hamiltonian # Hamiltonian and observables
+from qspin.operators import hamiltonian, exp_op # Hamiltonian and observables
 from qspin.tools.measurements import obs_vs_time,ED_state_vs_time
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
@@ -80,6 +80,8 @@ np.testing.assert_allclose(Sent,Sent2,atol=atol,err_msg='Failed ent entropy comp
 E,V = H2.eigh()
 
 psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=atol,atol=atol)
+
+psi_exp_op=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20).dot(psi0)
 
 Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
 Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
