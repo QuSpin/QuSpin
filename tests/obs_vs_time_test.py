@@ -1,3 +1,7 @@
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,qspin_path)
+
 from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from qspin.operators import hamiltonian # Hamiltonian and observables
 from qspin.tools.measurements import obs_vs_time,ED_state_vs_time
@@ -59,7 +63,7 @@ Obs_list = [Ozz,Ozz(time=np.sqrt(np.exp(0.0)) )]
 Sent_args={'basis':basis,'chain_subsys':range(L/2)}
 
 Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
-Obs2 = obs_vs_time(psi_t2.T,t,Obs_list,return_state=True,Sent_args=Sent_args)
+Obs2 = obs_vs_time(psi_t2,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
 
 Expn = Obs['Expt_time']

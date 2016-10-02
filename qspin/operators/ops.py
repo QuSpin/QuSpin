@@ -309,7 +309,7 @@ class hamiltonian(object):
 
 			n = len(dynamic_other_list)
 
-			for i in xrange(n):
+			for i in range(n):
 				O,f,f_args = dynamic_other_list[i]
 				_test_function(f,f_args)
 				if _sp.issparse(O):
@@ -464,7 +464,7 @@ class hamiltonian(object):
 			i+=1;j=0
 
 		l = len(self._dynamic)
-		for i in xrange(l):
+		for i in range(l):
 			try:
 				self._dynamic[i][0].tocsr()
 				self._dynamic[i][0].sum_duplicates()
@@ -1211,7 +1211,7 @@ class hamiltonian(object):
 
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				if _sp.issparse(self._dynamic[i][0]):
 					self._dynamic[i][0] = self._dynamic[i][0].todense()
@@ -1240,7 +1240,7 @@ class hamiltonian(object):
 			self._static = sparse_constuctor(self._static)
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = sparse_constuctor(self._dynamic[i][0])
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -1253,7 +1253,7 @@ class hamiltonian(object):
 		self._static = self._static.conj()
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 			self._dynamic[i][0] = self._dynamic[i][0].conj()
 			self._dynamic[i] = tuple(self._dynamic[i])
@@ -1273,7 +1273,7 @@ class hamiltonian(object):
 			self._static = self._static.T
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = self._dynamic[i][0].T
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -1295,7 +1295,7 @@ class hamiltonian(object):
 			self._static = self._static.astype(dtype)
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = self._dynamic[i][0].astype(dtype)
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -1374,7 +1374,7 @@ class hamiltonian(object):
 		self._static = -self._static
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i][-1] = -self._dynamic[i][-1]
 
 		self._dynamic = tuple(self._dynamic)
@@ -1921,7 +1921,7 @@ class hamiltonian(object):
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
 		
-		for i in xrange(n):
+		for i in range(n):
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = new._dynamic[i][0] * other
 
@@ -1964,7 +1964,7 @@ class hamiltonian(object):
 
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			# convert tuple to list to do modifications inplace then convert back to tuple
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = other.dot(new._dynamic[i][0])
@@ -1998,7 +1998,7 @@ class hamiltonian(object):
 
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 
 			self._dynamic[i][0] = self._dynamic[0][i] * other
@@ -2040,12 +2040,12 @@ class hamiltonian(object):
 		n = len(new._dynamic)
 		
 		try:
-			for i in xrange(n):
+			for i in range(n):
 				new._dynamic[i] = list(new._dynamic[i])
 				new._dynamic[i][0] *= other
 				new._dynamic[i] = tuple(new._dynamic[i])
 		except NotImplementedError:
-			for i in xrange(n):
+			for i in range(n):
 				new._dynamic[i] = list(new._dynamic[i])
 				new._dynamic[i][0] = new._dynamic[i][0] * other
 				new._dynamic[i] = tuple(new._dynamic[i])
@@ -2075,13 +2075,13 @@ class hamiltonian(object):
 		n = len(self._dynamic)
 
 		try:
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] *= other
 				self._dynamic[i] = tuple(self._dynamic[i])
 
 		except NotImplementedError:
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = other * self._dynamic[0]
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -2205,7 +2205,7 @@ class hamiltonian(object):
 
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = new._dynamic[i][0] * other
 			new._dynamic[i] = tuple(new._dynamic[i])
@@ -2241,7 +2241,7 @@ class hamiltonian(object):
 
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = other * new._dynamic[i][0]
 			new._dynamic[i] = tuple(new._dynamic[i])
@@ -2268,7 +2268,7 @@ class hamiltonian(object):
 
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 			self._dynamic[i][0] = self._dynamic[i][0].dot(other)
 			self._dynamic[i] = tuple(self._dynamic[i])
