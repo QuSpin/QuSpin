@@ -2781,10 +2781,23 @@ class exp_op(object):
 		self._num = num
 		self._endpoint = endpoint
 		self._iterate = iterate
-
 		if self._iterate:
 			if [self._start, self._stop] == [None, None]:
 				raise ValueError("'iterate' can only be True with time discretization. must specify 'start' and 'stop' points.")
+
+			if num is not None:
+				if type(num) is not int:
+					raise ValueError("expecting integer for 'num'.")
+			else:
+				num = 50
+				self._num = num
+
+			if endpoint is not None:
+				if type(endpoint) is not bool:
+					raise ValueError("expecting bool for 'endpoint'.")
+			else: 
+				endpoint = True
+				self._endpoint = endpoint
 
 		 	self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 		else:
@@ -2805,13 +2818,19 @@ class exp_op(object):
 				if not (_np.isreal(start) and _np.isreal(stop)):
 					raise ValueError("expecting real values for 'start' and 'stop'")
 
-				if type(num) is not None:
+				if num is not None:
 					if type(num) is not int:
 						raise ValueError("expecting integer for 'num'.")
+				else:
+					num = 50
+					self._num = num
 
-				if type(endpoint) is not None:
+				if endpoint is not None:
 					if type(endpoint) is not bool:
 						raise ValueError("expecting bool for 'endpoint'.")
+				else: 
+					endpoint = True
+					self._endpoint = endpoint
 
 				self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
@@ -3082,6 +3101,7 @@ class exp_op(object):
 
 
 def _iter_dot(M, other, step, grid):
+	print grid
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _expm_multiply(M, other)
