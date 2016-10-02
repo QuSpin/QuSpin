@@ -2966,7 +2966,7 @@ class exp_op(object):
 			if is_ham:
 				return _hamiltonian_iter_dot(M, other, self._step, self._grid)
 			else:
-				return _iter_dot(M, other, self.step, grid)
+				return _iter_dot(M, other, self.step, self._grid)
 
 		else:
 			if [self._grid, self._step] == [None, None]:

@@ -854,96 +854,6 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	return Expt_Diag
 
 
-def project_op(Obs,proj,dtype=_np.complex128):
-	"""
-	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
-	onto the reduced basis.
-
-	RETURNS: 	dictionary with keys 
-
-	'Proj_Obs': projected observable 'Obs'. and value the projected observable.
-
-	--- arguments ---
-
-	Obs: (required) operator to be projected.
-
-	proj: (required) basis of the final space after the projection or a matrix which contains the projector.
-
-	dtype: (optional) data type. Default is np.complex128.
-
-	"""
-
-	variables = ["Proj_Obs"]
-	if proj.__class__ in [_np.ndarray,_np.matrix] or _sp.issparse(proj):
-		if _ishamiltonian(Obs):
-			proj_Obs = Obs.project_to(proj)
-
-		else:
-			if Obs.ndim != 2:
-				raise ValueError("Expecting Obs to be a 2 dimensional array.")
-
-			if Obs.shape[0] != Obs.shape[1]:
-				raise ValueError("Expecting OBs to be a square array.")
-
-			if Obs.shape[0] != proj.shape[1]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
-
-			proj_Obs = proj.T.conj().dot(Obs.dot(proj))
-	elif isbasis(proj):
-		proj = proj.get_proj(dtype)
-		if _ishamiltonian(Obs):
-			proj_Obs = Obs.project_to(proj)		
-		else:
-			if Obs.ndim != 2:
-				raise ValueError("Expecting Obs to be a 2 dimensional array.")
-
-			if Obs.shape[0] != Obs.shape[1]:
-				raise ValueError("Expecting Obs to be a square array.")
-
-			if Obs.shape[0] != proj.shape[1]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
-		
-			proj_Obs = proj.T.conj().dot(Obs.dot(proj))
-	else:
-		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
-
-	# define dictionary with outputs
-	return_dict = {}
-	for i in range(len(variables)):
-		return_dict[variables[i]] = locals()[variables[i]]
-
-	return return_dict
-
-
-
-def KL_div(p1,p2):
-	"""
-	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
-	p1 and p2.
-	"""
-	p1 = _np.asarray(p1)
-	p2 = _np.asarray(p2)
-
-
-	if len(p1) != len(p2):
-		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have same size!")
-	if p1.ndim != 1 or p2.ndim != 1:
-		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have linear dimension!")
-
-
-	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
-		raise TypeError("Expecting all entries of the probability distributions 'p1' and 'p2' to be non-negative!")
-	if _np.any(p1==0.0):
-
-		inds = _np.where(p1 == 0)
-
-		p1 = _np.delete(p1,inds)
-		p2 = _np.delete(p2,inds)
-
-	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
-
-
-
 def ED_state_vs_time(psi,E,V,times,iterate=False):
 	"""
 	This routine calculates the time evolved initial state as a function of time. The initial 
@@ -1009,8 +919,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 		return psi_t.T # [ psi(times[0]), ...,psi(times[-1]) ]
 
 
-
-def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
+def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1028,7 +937,7 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 	--- arguments ---
 
 	psi_t: (required) three different inputs:
-		i) psi_t tuple(psi,E,V,times) 
+		i) psi_t tuple(psi,E,V) 
 			psi: initial state
 	
 			V: unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
@@ -1217,6 +1126,112 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=()):
 		return_dict[i] = locals()[i]
 
 	return return_dict
+
+
+def project_op(Obs,proj,dtype=_np.complex128):
+	"""
+	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
+	onto that reduced basis.
+
+	RETURNS: 	dictionary with keys 
+
+	'Proj_Obs': projected observable 'Obs'
+
+	--- arguments ---
+
+	Obs: (required) operator to be projected.
+
+	proj: (required) basis of the final space after the projection or a matrix which contains the projector.
+
+	dtype: (optional) data type. Default is np.complex128.
+
+	"""
+	variables = ["Proj_Obs"]
+	if proj.__class__ in [_np.ndarray,_np.matrix] or _sp.issparse(proj):
+
+		if _ishamiltonian(Obs):
+
+			if Obs.Ns != proj.shape[0]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
+
+			Proj_Obs = Obs.project_to(proj)
+
+		else:
+
+			if Obs.ndim != 2:
+				raise ValueError("Expecting Obs to be a 2 dimensional array.")
+
+			if Obs.shape[0] != Obs.shape[1]:
+				raise ValueError("Expecting OBs to be a square array.")
+
+			if Obs.shape[1] != proj.shape[0]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
+
+			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+	elif isbasis(proj):
+		proj = proj.get_proj(dtype)
+		if _ishamiltonian(Obs):
+
+			if Obs.Ns != proj.shape[0]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
+
+			Proj_Obs = Obs.project_to(proj)		
+		else:
+			if Obs.ndim != 2:
+				raise ValueError("Expecting Obs to be a 2 dimensional array.")
+
+			if Obs.shape[0] != Obs.shape[1]:
+				raise ValueError("Expecting Obs to be a square array.")
+
+			if Obs.shape[1] != proj.shape[0]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
+		
+			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+	else:
+		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
+
+	# define dictionary with outputs
+	return_dict = {}
+	for i in range(len(variables)):
+		return_dict[variables[i]] = locals()[variables[i]]
+
+	return return_dict
+
+
+
+def KL_div(p1,p2):
+	"""
+	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
+	p1 and p2.
+	"""
+	p1 = _np.asarray(p1)
+	p2 = _np.asarray(p2)
+
+
+	if len(p1) != len(p2):
+		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have same size!")
+	if p1.ndim != 1 or p2.ndim != 1:
+		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have linear dimension!")
+
+
+	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
+		raise TypeError("Expecting all entries of the probability distributions 'p1' and 'p2' to be non-negative!")
+	
+	if abs(sum(p1)-1.0) > 1E-13:
+		raise ValueError("Expecting 'p1' to be normalised!")
+
+	if abs(sum(p2)-1.0) > 1E-13:
+		raise ValueError("Expecting 'p2' to be normalised!")
+
+	if _np.any(p1==0.0):
+
+		inds = _np.where(p1 == 0)
+
+		p1 = _np.delete(p1,inds)
+		p2 = _np.delete(p2,inds)
+
+	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
+
 
 
 

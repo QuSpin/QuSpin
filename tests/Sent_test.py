@@ -4,6 +4,18 @@ from qspin.tools.measurements import ent_entropy
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 
+L=2
+basis = spin_basis_1d(L,Nup=L/2,kblock=None,pblock=None)
+#J = [[1.0,i,(i+1)%L] for i in range(0,L)]
+h = [[1.0,i] for i in range(0,L)]
+static = [["z",h]]
+H=hamiltonian(static,[],basis=basis,dtype=np.float64,pauli=True)
+E,V = H.eigh()
+psi0 = V[:,0]
+print E
+print ent_entropy(psi0,basis)
+
+exit()
 
 seed()
 
@@ -26,7 +38,6 @@ def spin_entropy(dtype,symm,Sent_args):
 	J_zz = [[1.0,i,(i+1)%L,(i+2)%L] for i in range(0,L)] 
 	J_xy = [[1.0,i,(i+1)%L] for i in range(0,L)]
 
-	print J_zz 
 	# static and dynamic lists
 	static = [["+-",J_xy],["-+",J_xy],["zxz",J_zz]]
 	# build Hamiltonian
@@ -47,7 +58,7 @@ def spin_entropy(dtype,symm,Sent_args):
 	return (S_pure, S_DM, S_DMd, S_all)
 
 
-for _r in xrange(10): # do 10 random realisations
+for _r in xrange(10): # do 10 random checks
 
 	L=8
 	chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))

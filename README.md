@@ -954,11 +954,11 @@ following keys are allowed:
 ```python
 project_op(Obs,proj,dtype=_np.complex128):
 ```
-This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs' onto the reduced basis.
+This function takes an observable 'Obs' and a reduced basis 'reduced_basis' and projects 'Obs' onto that reduced basis.
 
 RETURNS:  dictionary with keys 
 
-* 'Proj_Obs': projected observable 'Obs'. and value the projected observable.
+* 'Proj_Obs': projected observable 'Obs'.
 	
 --- arguments ---
 
@@ -1008,7 +1008,7 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 
 
 ```python
-obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args=())
+obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={})
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
 
@@ -1027,7 +1027,7 @@ RETURNS:  dictionary with keys:
 * psi_t: (required) Source of time dependent states, three different types of inputs:
 
 
- 1. psi_t: tuple(psi, E, V, times)  
+ 1. psi_t: tuple(psi, E, V)  
 	* psi [1-dim array]: initial state 
 	* V [2-dim array]: unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
 	* E [1-dim array]: real vector containing the eigenvalues of the Hamiltonian. The order of the eigenvalues must correspond to the order of the columns of V2.
