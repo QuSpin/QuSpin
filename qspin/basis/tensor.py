@@ -28,6 +28,7 @@ class tensor_basis(basis):
 		self._blocks = self._b1._blocks.copy()
 		self._blocks.update(self._b2._blocks)
 
+		self._unique_me = b1.unique_me and b1.unique_me
 		self._operators = self._b1._operators +"\n"+ self._b2._operators
 #		self._check_pcon = self._b1._check_pcon and self._b2._check_pcon
 

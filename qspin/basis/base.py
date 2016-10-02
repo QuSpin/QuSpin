@@ -11,6 +11,7 @@ class basis(object):
 		self._Ns = 0
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
+		self._unique_me = True
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
                              " to be instantiated directly.")
@@ -35,6 +36,9 @@ class basis(object):
 			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self)),UserWarning,stacklevel=3)
 			return "reference states: \n\t not availible"
 
+	@property
+	def unique_me(self):
+		return self._unique_me
 
 	@property
 	def Ns(self):

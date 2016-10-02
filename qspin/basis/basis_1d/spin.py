@@ -242,12 +242,13 @@ class spin_basis_1d(basis):
 		# allocates memory for number of basis states
 		frac = 1.0
 
-		
+		self._unique_me = True	
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P & Z"
 			else: self._conserved = "T & P & Z"
 			self._blocks["pzblock"] = pblock*zblock
+			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
@@ -288,7 +289,7 @@ class spin_basis_1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & PZ"
 			else: self._conserved = "T & PZ"
-
+			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -307,7 +308,7 @@ class spin_basis_1d(basis):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P"
 			else: self._conserved = "T & P"
-
+			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
@@ -563,6 +564,9 @@ class spin_basis_1d(basis):
 
 		self._Ns = Ns
 
+	@property
+	def blocks(self):
+		return self._blocks
 
 	@property
 	def description(self):
@@ -608,8 +612,7 @@ class spin_basis_1d(basis):
 			return [],[],[]
 
 		ME,row,col = op[self._conserved](opstr,indx,J,dtype,*self._op_args,**self._blocks)
-
-		mask = ME != dtype(0.0)
+		mask = ME != 0.0
 		row = row[mask]
 		col = col[mask]
 		ME = ME[mask]

@@ -996,9 +996,8 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 	Obs_list = tuple(Obs_list)
 	ham_list = tuple(ham_list)
 
-	if len(Sent_args) > 0:
-		return_state=True
-
+#	if len(Sent_args) > 0:
+#		return_state=True
 
 
 	if type(psi_t) is tuple:
@@ -1036,8 +1035,12 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
 
+
 		if psi_t.ndim != 2:
 			raise ValueError("states must come in two dimensional array.")
+
+		psi_t = psi_t.T
+
 		for Obs in Obs_list:
 			if psi_t.shape[0] != Obs.shape[1]:
 				raise ValueError("states must be in columns of input matrix.")
@@ -1096,6 +1099,33 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 
 	else:
+		psi = psi_t.next() # get first state from iterator.
+		# do first loop calculations
+		if psi.ndim == 2:
+			psi = psi.ravel()
+
+		time = times[0]
+
+		Expt = []
+		for Obs in Obs_list:
+			psi_l = Obs.dot(psi)
+			Expt.append(_np.vdot(psi,psi_l).real)
+
+		for ham in ham_list:
+			Expt.append(ham.matrix_ele(psi,psi,time=time).real)
+
+
+		# get initial dictionary from ent_entropy function
+		# use this to set up dictionary for the rest of calculation.
+		if len(Sent_args) > 0:
+			Sent_time = ent_entropy(psi,**Sent_args)
+
+			for key in Sent_time.keys():
+				Sent_time[key] = [Sent_time[key]]
+
+		Expt_time.append(_np.asarray(Expt))
+
+
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
 			if psi.ndim == 2:
@@ -1113,13 +1143,20 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 
 			if len(Sent_args) > 0:
-				Sent_time.append(ent_entropy(psi_t,**Sent_args))
+				Sent_time_update = ent_entropy(psi,**Sent_args)
+
+				for key in Sent_time.keys():
+					Sent_time[key].append(Sent_time_update[key])
 
 			Expt_time.append(_np.asarray(Expt))
-			
+		
+		for key in Sent_time.keys():
+			Sent_time[key] = _np.asarray(Sent_time[key])
+		
 		Expt_time = _np.vstack(Expt_time)
 	
 
+	print variables
 
 	return_dict = {}
 	for i in variables:
