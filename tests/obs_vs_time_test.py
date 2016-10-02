@@ -86,7 +86,25 @@ E,V = H2.eigh()
 
 psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=atol,atol=atol)
 
+from scipy.sparse.linalg import expm_multiply
+
 psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=False,iterate=True).dot(psi0)
+
+expO = exp_op(H2,a=-1j*(t[2]-t[1]))
+
+#psi_t5 = expm_multiply(-1j*H2(0),psi0)
+psi_t6 = H2.evolve(psi0,0.0,1.0,rtol=atol,atol=atol)
+
+psi3=psi0.copy()
+psi4=psi0.copy()
+for psi1,psi2 in zip(psi_t,psi_t4):
+
+	print np.linalg.norm(psi1 - psi2), np.linalg.norm(psi1 - psi3), np.linalg.norm(psi1 - psi4)
+
+	psi3 = expm_multiply(-1j*(t[2]-t[1])*H2(0),psi3)
+	psi4 = expO.dot(psi4)
+
+exit()
 
 Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
 Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
