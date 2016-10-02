@@ -2,8 +2,9 @@ import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
+
 from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
-from qspin.operators import hamiltonian # Hamiltonian and observables
+from qspin.operators import hamiltonian, exp_op # Hamiltonian and observables
 from qspin.tools.measurements import obs_vs_time,ED_state_vs_time
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
@@ -85,8 +86,11 @@ E,V = H2.eigh()
 
 psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=atol,atol=atol)
 
+psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=False,iterate=True).dot(psi0)
+
 Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
 Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
+Obs4 = obs_vs_time(psi_t4,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
 psi_t3 = ED_state_vs_time(psi0,E,V,t,iterate=False).T
 
@@ -98,12 +102,20 @@ Expn2 = Obs2['Expt_time']
 psi_t2 = Obs2['psi_t']
 Sent2 = Obs2['Sent_time']['Sent']
 
+Expn4 = Obs4['Expt_time']
+psi_t4 = Obs4['psi_t']
+Sent4 = Obs4['Sent_time']['Sent']
 
 
 np.testing.assert_allclose(Expn,Expn2,atol=atol,err_msg='Failed observable comparison!')
 np.testing.assert_allclose(psi_t,psi_t2,atol=atol,err_msg='Failed state comparison!')
-np.testing.assert_allclose(psi_t2,psi_t3,atol=atol,err_msg='Failed ED_state_vs_time test!')
 np.testing.assert_allclose(Sent,Sent2,atol=atol,err_msg='Failed ent entropy comparison!')
+
+np.testing.assert_allclose(psi_t2,psi_t3,atol=atol,err_msg='Failed ED_state_vs_time test!')
+
+print psi_t4[:,1]-psi_t2[:,1]
+
+#np.testing.assert_allclose(psi_t2,psi_t4,atol=atol,err_msg='Failed ED_state_vs_time test!')
 
 
 

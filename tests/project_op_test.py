@@ -1,3 +1,7 @@
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,qspin_path)
+
 from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from qspin.operators import hamiltonian # Hamiltonian and observables
 from qspin.tools.measurements import project_op, KL_div, mean_level_spacing
