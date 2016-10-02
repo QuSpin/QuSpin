@@ -3101,7 +3101,6 @@ class exp_op(object):
 
 
 def _iter_dot(M, other, step, grid):
-	print grid
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _expm_multiply(M, other)

@@ -972,6 +972,8 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 	"""
 
+	print "make Obs_list a dict"
+
 	variables = ['Expt_time']
 	
 	if type(Obs_list) not in [list,tuple]:
@@ -1155,8 +1157,6 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 		
 		Expt_time = _np.vstack(Expt_time)
 	
-
-	print variables
 
 	return_dict = {}
 	for i in variables:
