@@ -919,7 +919,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 		return psi_t.T # [ psi(times[0]), ...,psi(times[-1]) ]
 
 
-def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -927,8 +927,8 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 	RETURNS:	dictionary with keys:
 
-	'Expt_time': 2D array, contains the time-dependent expectation (in the rows) of the i'th 
-				observable from 'Obs_list' in the i'th column.
+	'custom_name': for each key of 'Obs_dict', the time-dependent expectation of the 
+				observable 'Obs_dict[key]' is calculated and returned.
 
 	'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
 
@@ -949,7 +949,7 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 		iii) generator which generates the states
 
-	Obs: (required) tuple of hermitian matrices to calculate its time-dependent expectation value. 
+	Obs_dict: (required) dictionary of hermitian matrices to calculate its time-dependent expectation value. 
 
 	times: (required) a vector of times to evaluate the expectation value at. 
 
@@ -972,34 +972,24 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 	"""
 
-	print "make Obs_list a dict"
-
+	
 	variables = ['Expt_time']
 	
-	if type(Obs_list) not in [list,tuple]:
-		raise ValueError("Obs_list must be tuple or list.")
+	if not isinstance(Obs_dict,dict):
+		raise ValueError("Obs_dict must be a dictionary.")
 
-	num_Obs = len(Obs_list)
-	Obs_list = list(Obs_list)
-	ham_list = []
+	num_Obs = len(Obs_dict.keys())
 
-	i=0
-	while (i < num_Obs):
-		if _ishamiltonian(Obs_list[i]):
-			Obs = Obs_list.pop(i)
-			num_Obs -= 1
-			ham_list.append(Obs)
+	ham_dict={}
+	obs_dict={}
+	for key, val in Obs_dict.iteritems():
+		if _ishamiltonian(val):
+			ham_dict[key]=val
 		else:
-			if not(_sp.issparse(Obs_list[i])) and not(Obs_list[i].__class__ in [_np.ndarray,_np.matrix]):
-				Obs_list[i] = _np.asanyarray(Obs_list[i])
-			
-			i += 1
-
-	Obs_list = tuple(Obs_list)
-	ham_list = tuple(ham_list)
-
-#	if len(Sent_args) > 0:
-#		return_state=True
+			if not(_sp.issparse(val)) and not(val.__class__ in [_np.ndarray,_np.matrix]):
+				obs_dict[key]=_np.asanyarray(val)
+			else:
+				obs_dict[key]=val
 
 
 	if type(psi_t) is tuple:
@@ -1008,15 +998,14 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 		if V.ndim != 2 or V.shape[0] != V.shape[1]:
 			raise ValueError("'V' must be a square matrix")
-
 		if V.shape[0] != len(E):
 			raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
 		if len(psi) != len(E):
 			raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-		for Obs in Obs_list:
+		for Obs in obs_dict.values():
 			if V.shape != Obs.shape:
 				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
-		for ham in ham_list:
+		for ham in ham_dict.values():
 			if V.shape != ham.get_shape:
 				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
 			
@@ -1043,11 +1032,11 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 		psi_t = psi_t.T
 
-		for Obs in Obs_list:
+		for Obs in obs_dict.values():
 			if psi_t.shape[0] != Obs.shape[1]:
 				raise ValueError("states must be in columns of input matrix.")
 
-		for ham in ham_list:
+		for ham in ham_dict.values():
 			if psi_t.shape[0] != ham.get_shape[1]:
 				raise ValueError("states must be in columns of input matrix.")
 
@@ -1065,11 +1054,11 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 			psi_t = _np.vstack(psi_t_list).T
 
-			for Obs in Obs_list:
+			for Obs in obs_dict.values():
 				if psi_t.shape[0] != Obs.shape[1]:
 					raise ValueError("states must be in columns of input matrix.")
 
-			for ham in ham_list:
+			for ham in ham_dict.values():
 				if psi_t.shape[0] != ham.get_shape[1]:
 					raise ValueError("states must be in columns of input matrix.")
 
@@ -1077,24 +1066,21 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 	else:
 		raise ValueError("input not recognized")
 	
-		
-	# calculate observables
-	Expt_time = []
+	# calculate observables and Sent
+	Expt_time = {}
 
 	if len(Sent_args) > 0:
 		variables.append("Sent_time")
 	
 	if return_state:
-		for Obs in Obs_list:
+		for key,Obs in obs_dict.iteritems():
 			psi_l = Obs.dot(psi_t)
-			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
+			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
 	
-		for ham in ham_list:
+		for key,ham in ham_dict.iteritems():
 			psi_l = ham.dot(psi_t,time=times,check=False)
-			Expt_time.append(_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real)
-
-		Expt_time = _np.vstack(Expt_time).T
-
+			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
+			
 		# calculate entanglement entropy if requested	
 		if len(Sent_args) > 0:
 			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
@@ -1108,13 +1094,12 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 		time = times[0]
 
-		Expt = []
-		for Obs in Obs_list:
+		for key,Obs in obs_dict.iteritems():
 			psi_l = Obs.dot(psi)
-			Expt.append(_np.vdot(psi,psi_l).real)
+			Expt[key]=[_np.vdot(psi,psi_l).real]
 
-		for ham in ham_list:
-			Expt.append(ham.matrix_ele(psi,psi,time=time).real)
+		for key,ham in ham_dict.iteritems():
+			Expt[key]=[ham.matrix_ele(psi,psi,time=time).real]
 
 
 		# get initial dictionary from ent_entropy function
@@ -1125,9 +1110,6 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 			for key in Sent_time.keys():
 				Sent_time[key] = [Sent_time[key]]
 
-		Expt_time.append(_np.asarray(Expt))
-
-
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
 			if psi.ndim == 2:
@@ -1135,13 +1117,12 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 
 			time = times[m]
 
-			Expt = []
-			for Obs in Obs_list:
+			for key,Obs in obs_dict.iteritems():
 				psi_l = Obs.dot(psi)
-				Expt.append(_np.vdot(psi,psi_l).real)
+				Expt[key].append(_np.vdot(psi,psi_l).real)
 
-			for ham in ham_list:
-				Expt.append(ham.matrix_ele(psi,psi,time=time).real)
+			for key,ham in ham_dict.iteritems():
+				Expt[key].append(ham.matrix_ele(psi,psi,time=time).real)
 
 
 			if len(Sent_args) > 0:
@@ -1150,17 +1131,17 @@ def obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={}):
 				for key in Sent_time.keys():
 					Sent_time[key].append(Sent_time_update[key])
 
-			Expt_time.append(_np.asarray(Expt))
-		
 		for key in Sent_time.keys():
 			Sent_time[key] = _np.asarray(Sent_time[key])
 		
-		Expt_time = _np.vstack(Expt_time)
-	
-
+		
 	return_dict = {}
 	for i in variables:
-		return_dict[i] = locals()[i]
+		if i == 'Expt_time':
+			for key,val in Expt_time.iteritems():
+				return_dict[key] = val
+		else:
+			return_dict[i] = locals()[i]
 
 	return return_dict
 
@@ -1183,49 +1164,51 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	dtype: (optional) data type. Default is np.complex128.
 
 	"""
+
 	variables = ["Proj_Obs"]
-	if proj.__class__ in [_np.ndarray,_np.matrix] or _sp.issparse(proj):
 
-		if _ishamiltonian(Obs):
-
-			if Obs.Ns != proj.shape[0]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
-
-			Proj_Obs = Obs.project_to(proj)
-
-		else:
-
-			if Obs.ndim != 2:
-				raise ValueError("Expecting Obs to be a 2 dimensional array.")
-
-			if Obs.shape[0] != Obs.shape[1]:
-				raise ValueError("Expecting OBs to be a square array.")
-
-			if Obs.shape[1] != proj.shape[0]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
-
-			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
-	elif isbasis(proj):
+	if isbasis(proj):
 		proj = proj.get_proj(dtype)
-		if _ishamiltonian(Obs):
+	elif (proj.__class__ not in [_np.ndarray,_np.matrix]) and (not _sp.issparse(proj)):
+		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
 
-			if Obs.Ns != proj.shape[0]:
+	if _ishamiltonian(Obs):
+
+		if Obs.Ns != proj.shape[0]:
+			if Obs.Ns != proj.shape[1]:
 				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
+			else:
+				# projecting from a smaller to larger H-space
+				proj_down=False
+		else:
+			# projecting from larger to smaller H-space
+			proj_down=True
 
+		if proj_down:
 			Proj_Obs = Obs.project_to(proj)		
 		else:
-			if Obs.ndim != 2:
-				raise ValueError("Expecting Obs to be a 2 dimensional array.")
+			Proj_Obs = Obs.project_to(proj.T.conj())
 
-			if Obs.shape[0] != Obs.shape[1]:
-				raise ValueError("Expecting Obs to be a square array.")
-
-			if Obs.shape[1] != proj.shape[0]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
-		
-			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
 	else:
-		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
+
+		if Obs.ndim != 2:
+			raise ValueError("Expecting Obs to be a 2 dimensional array.")
+
+		if Obs.shape[0] != Obs.shape[1]:
+			raise ValueError("Expecting Obs to be a square array.")
+
+		if Obs.shape[1] != proj.shape[0]:
+			if Obs.shape[0] != proj.shape[1]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
+			else:
+				proj_down=False
+		else:
+			proj_down=True
+
+		if proj_down:
+			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+		else:
+			Proj_Obs = proj.dot(Obs.dot(proj.T.conj()))
 
 	# define dictionary with outputs
 	return_dict = {}

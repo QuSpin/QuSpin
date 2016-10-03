@@ -80,4 +80,4 @@ for _i in dtypes.keys():
 	DE = diag_ensemble(L,in_state,E2,V2,Obs=O_zxz,delta_t_Obs=True,delta_q_Obs=True,Sd_Renyi=True,Srdm_Renyi=False,**DE_args)
 	DE = diag_ensemble(L,in_state,E2,V2,Obs=O_zxz,delta_t_Obs=True,delta_q_Obs=True,Sd_Renyi=True,Srdm_Renyi=True,**DE_args)
 
-
+print "diag_ensemble checks passed!"
