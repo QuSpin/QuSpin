@@ -1,6 +1,7 @@
 # compliled python code #
 *.pyc
 *.pyf
+*.pyd
 
 photon_test.py
 compile.py
