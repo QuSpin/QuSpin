@@ -8,19 +8,6 @@ from qspin.tools.measurements import ent_entropy
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 
-L=2
-basis = spin_basis_1d(L,Nup=L/2,kblock=None,pblock=None)
-#J = [[1.0,i,(i+1)%L] for i in range(0,L)]
-h = [[1.0,i] for i in range(0,L)]
-static = [["z",h]]
-H=hamiltonian(static,[],basis=basis,dtype=np.float64,pauli=True)
-E,V = H.eigh()
-psi0 = V[:,0]
-print E
-print ent_entropy(psi0,basis)
-
-exit()
-
 seed()
 
 

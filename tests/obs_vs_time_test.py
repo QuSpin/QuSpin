@@ -18,37 +18,42 @@ This test only makes sure the function 'obs_vs_time' runs properly.
 #dtypes={"float32":np.float32,"float64":np.float64,"float128":np.float128,
 #		"complex64":np.complex64,"complex128":np.complex128,"complex256":np.complex256}
 
-dtypes={"float32":np.float32,"float64":np.float64,
-		"complex64":np.complex64,"complex128":np.complex128}
+dtypes={"float32":np.float32,"float64":np.float64,"complex64":np.complex64,"complex128":np.complex128}
 
-atols={"float32":1E-4,"float64":1E-13,
-		"complex64":1E-4,"complex128":1E-13}
+atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
 
 
 def drive(t):
-	return np.exp(-uniform(1.0)*t)*np.cos(t)
+	return np.exp(-0.2*t)*np.cos(1.7*t)
 drive_args=[]
 
 def time_dep(t):
-	return np.cosh(+uniform(1.0)*t)*np.cos(uniform(1.0)*t)
+	return np.cosh(+1.1*t)*np.cos(2.0*t)
+
 
 L=10
 basis = spin_basis_1d(L)
-J_zxz =[[uniform(1.0),i,(i+1)%L,(i+2)%L] for i in range(0,L)]
-J_zz = [[uniform(1.0),i,(i+1)%L] for i in range(0,L)] 
-J_xy = [[uniform(1.0),i,(i+1)%L] for i in range(0,L)]
-J_yy = [[uniform(1.0),i,(i+1)%L] for i in range(0,L)]
+
+Jzxz=uniform(3.0)
+Jzz=uniform(3.0)
+Jxy=uniform(3.0)
+Jyy=uniform(3.0)
+
+J_zxz =[[Jzxz,i,(i+1)%L,(i+2)%L] for i in range(0,L)]
+J_zz = [[Jzz,i,(i+1)%L] for i in range(0,L)] 
+J_xy = [[Jxy,i,(i+1)%L] for i in range(0,L)]
+J_yy = [[Jyy,i,(i+1)%L] for i in range(0,L)]
 # static and dynamic lists
 static_pm = [["+-",J_xy],["-+",J_xy]]
 static_yy = [["yy",J_yy]]
 dynamic_zz = [["zz",J_zz,time_dep,drive_args]]
 dynamic_zxz = [["zxz",J_zxz,drive,drive_args]]
 
+t=np.linspace(0.0,2.0,20)
 
 for _i in dtypes.keys():
 	dtype = dtypes[_i]
 	atol = atols[_i]
-
 
 	H=hamiltonian(static_pm,dynamic_zxz,basis=basis,dtype=dtype,check_herm=False,check_symm=False)
 	Ozz=hamiltonian([],dynamic_zz,basis=basis,dtype=dtype,check_herm=False,check_symm=False)
@@ -57,22 +62,21 @@ for _i in dtypes.keys():
 	_,psi0 = H.eigsh(time=0,k=1,sigma=-100.)
 	psi0=psi0.squeeze()
 
-	t=np.linspace(0,2,20)
-	psi_t=H.evolve(psi0,0.0,t,iterate=True,rtol=atol,atol=atol)
-	psi_t2=H.evolve(psi0,0.0,t,rtol=atol,atol=atol)
+	psi_t=H.evolve(psi0,0.0,t,iterate=True,rtol=1E-6*atol,atol=1E-6*atol)
+	psi_t2=H.evolve(psi0,0.0,t,rtol=1E-6*atol,atol=1E-6*atol)
 
-	Obs_list = [Ozz,Ozz(time=np.sqrt(np.exp(0.0)) )] 
+
+	Obs_list = {"Ozz_t":Ozz,"Ozz":Ozz(time=np.sqrt(np.exp(0.0)) )} 
 	Sent_args={'basis':basis,'chain_subsys':range(L/2)}
 
 	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
 	Obs2 = obs_vs_time(psi_t2,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
-
-	Expn = Obs['Expt_time']
+	Expn = np.array([Obs['Ozz_t'],Obs['Ozz']])
 	psi_t = Obs['psi_t']
 	Sent = Obs['Sent_time']['Sent']
 
-	Expn2 = Obs2['Expt_time']
+	Expn2 = np.array([Obs2['Ozz_t'],Obs2['Ozz']])
 	psi_t2 = Obs2['psi_t']
 	Sent2 = Obs2['Sent_time']['Sent']
 
@@ -85,7 +89,7 @@ for _i in dtypes.keys():
 
 	E,V = H2.eigh()
 
-	psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=atol,atol=atol)
+	psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=1E-9*atol,atol=1E-9*atol)
 	psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=True,iterate=True).dot(psi0)
 
 
@@ -95,15 +99,15 @@ for _i in dtypes.keys():
 
 	psi_t3 = ED_state_vs_time(psi0,E,V,t,iterate=False).T
 
-	Expn = Obs['Expt_time']
+	Expn = np.array([Obs['Ozz_t'],Obs['Ozz']])
 	psi_t = Obs['psi_t']
 	Sent = Obs['Sent_time']['Sent']
 
-	Expn2 = Obs2['Expt_time']
+	Expn2 = np.array([Obs2['Ozz_t'],Obs2['Ozz']])
 	psi_t2 = Obs2['psi_t']
 	Sent2 = Obs2['Sent_time']['Sent']
 
-	Expn4 = Obs4['Expt_time']
+	Expn4 = np.array([Obs4['Ozz_t'],Obs4['Ozz']])
 	psi_t4 = Obs4['psi_t']
 	Sent4 = Obs4['Sent_time']['Sent']
 
@@ -115,6 +119,6 @@ for _i in dtypes.keys():
 	np.testing.assert_allclose(psi_t2,psi_t4,atol=atol,err_msg='Failed exp_op test!')
 
 
-
+print "obs_vs_time checks passed!"
 
 

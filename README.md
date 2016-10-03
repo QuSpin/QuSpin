@@ -1008,14 +1008,13 @@ RETURNS:  either a matrix with the time evolved states as rows, or an iterator w
 
 
 ```python
-obs_vs_time(psi_t,times,Obs_list,return_state=False,Sent_args={})
+obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={})
 ```
 This routine calculate the expectation value as a function of time of an observable Obs. The initial state is psi and the time evolution is carried out under the Hamiltonian H2. Returns a dictionary in which the time-dependent expectation value has the key 'Expt_time'.
 
 RETURNS:  dictionary with keys:
 
-* 'Expt_time': 2D array, contains the time-dependent expectation (in the rows) of the i'th 
-  observable from 'Obs_list' in the i'th column.
+* 'custom_name' (same as the keys of 'Obs_dict'). For each key of 'Obs_dict', the time-dependent expectation of the observable 'Obs_dict[key]' is calculated and returned.
 
 * 'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
 
@@ -1036,7 +1035,7 @@ RETURNS:  dictionary with keys:
 
 * times: (required) a real array of times to evaluate the expectation value at. always fifth argument. If this is specified, the hamiltonian objects will be dynamically evaluated at the times specified. The function will also 
 
-* Obs_list: (required) List of objects to take the expecation values with. This accepts NumPy, and SciPy matrices as well as hamiltonian objects.
+* Obs_dict: (required) Dictionary of objects to take the expecation values with. This accepts NumPy, and SciPy matrices as well as hamiltonian objects.
 
 * return_state: (optional) when set to 'True' or 'Sent_args' is nonempty, returns a matrix whose columns give the state vector at the times specified by the row index. The return dictonary key is 'psi_time'.
 
