@@ -975,9 +975,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 
-		H_dense=_np.zeros(self._shape,dtype=self._dtype)
-		self.todense(time=time,out=H_dense)
-
+		H_dense = self.todense(time=time)
 		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
