@@ -4,6 +4,8 @@ from .tensor import tensor_basis
 import numpy as _np
 from scipy import sparse as _sp
 
+from scipy.special import hyp2f1, binom
+
 import warnings
 
 
@@ -71,7 +73,7 @@ class photon_basis(tensor_basis):
 			self._n = Ntot - self._b1._Np 
 			self._blocks = self._b1._blocks
 			self._Ns = self._b1._Ns
-			self._unique_me = b1.unique_me
+			self._unique_me = self._b1.unique_me
 			self._operators = self._b1._operators +"\n"+ self._b2._operators
 			
 
