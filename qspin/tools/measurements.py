@@ -1096,10 +1096,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 		for key,Obs in obs_dict.iteritems():
 			psi_l = Obs.dot(psi)
-			Expt[key]=[_np.vdot(psi,psi_l).real]
+			Expt_time[key]=[_np.vdot(psi,psi_l).real]
 
 		for key,ham in ham_dict.iteritems():
-			Expt[key]=[ham.matrix_ele(psi,psi,time=time).real]
+			Expt_time[key]=[ham.matrix_ele(psi,psi,time=time).real]
 
 
 		# get initial dictionary from ent_entropy function
@@ -1119,10 +1119,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 			for key,Obs in obs_dict.iteritems():
 				psi_l = Obs.dot(psi)
-				Expt[key].append(_np.vdot(psi,psi_l).real)
+				Expt_time[key].append(_np.vdot(psi,psi_l).real)
 
 			for key,ham in ham_dict.iteritems():
-				Expt[key].append(ham.matrix_ele(psi,psi,time=time).real)
+				Expt_time[key].append(ham.matrix_ele(psi,psi,time=time).real)
 
 
 			if len(Sent_args) > 0:
