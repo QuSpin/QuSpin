@@ -15,11 +15,11 @@ from ..basis import spin_basis_1d,photon_basis,isbasis,photon_Hspace_dim
 import warnings
 
 
-__all__ = ["ent__entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
+__all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
 
 
 
-def ent__entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
 	This function calculates the entanglement _entropy of a lattice quantum subsystem based on the Singular
 	Value Decomposition (svd).
@@ -258,7 +258,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 		if _sp.issparse(system_state):
-			warnings.warn("ent__entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
 			system_state = system_state.todense()
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
@@ -274,7 +274,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))
 	else:
 		if _sp.issparse(system_state):
-			warnings.warn("ent__entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
 			system_state = system_state.todense()
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
@@ -664,7 +664,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
 			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Srdm_args: (optional) dictionary of ent__entropy arguments, required when 'Srdm_Renyi = True'. The 
+	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
 			following keys are allowed:
 
 			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
@@ -956,7 +956,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	return_state: (optional) when set to 'True' or Sent_args is nonempty, returns a matrix whose columns give the state vector 
 			at the times specified by the column index. The return dictonary key is 'psi_time'.
 
-	Srdm_args: (optional) dictionary of ent__entropy arguments, required when 'Srdm_Renyi = True'. The 
+	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
 			following keys are allowed:
 
 			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
@@ -1083,7 +1083,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = ent__entropy({'V_states':psi_t},**Sent_args)
+			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
 
 
 	else:
@@ -1102,10 +1102,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			Expt_time[key]=[ham.matrix_ele(psi,psi,time=time).real]
 
 
-		# get initial dictionary from ent__entropy function
+		# get initial dictionary from ent_entropy function
 		# use this to set up dictionary for the rest of calculation.
 		if len(Sent_args) > 0:
-			Sent_time = ent__entropy(psi,**Sent_args)
+			Sent_time = ent_entropy(psi,**Sent_args)
 
 			for key in Sent_time.keys():
 				Sent_time[key] = [Sent_time[key]]
@@ -1126,7 +1126,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 
 			if len(Sent_args) > 0:
-				Sent_time_update = ent__entropy(psi,**Sent_args)
+				Sent_time_update = ent_entropy(psi,**Sent_args)
 
 				for key in Sent_time.keys():
 					Sent_time[key].append(Sent_time_update[key])

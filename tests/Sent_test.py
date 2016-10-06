@@ -137,7 +137,7 @@ for _r in xrange(10): # do 10 random checks
 	if uniform(0.0,1.0) < 0.5:
 		chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
 	else:
-		chain_subsys=[r for r in xrange(L/2)]
+		chain_subsys=[r for r in xrange(L)]
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
@@ -203,7 +203,7 @@ for _r in xrange(10): # do 10 random checks
 	if uniform(0.0,1.0) < 0.5:
 		chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
 	else:
-		chain_subsys=[r for r in xrange(L/2)]
+		chain_subsys=[r for r in xrange(L)]
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
