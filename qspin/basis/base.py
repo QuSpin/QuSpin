@@ -24,7 +24,7 @@ class basis(object):
 			return string
 		
 		if hasattr(self,"_get__str__"):
-			str_list = self._get__str__()
+			str_list = list(self._get__str__())
 			if self._Ns > MAXPRINT:
 				L_str = len(str_list[0])
 				t = (" ".join(["" for i in xrange(L_str/2)]))+":"

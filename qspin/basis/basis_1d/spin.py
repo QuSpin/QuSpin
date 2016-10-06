@@ -893,7 +893,7 @@ class spin_basis_1d(basis):
 			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(xrange(half),self._basis[:half])]
 			str_list.extend([(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = ((temp1.format(i))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis))
+			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
