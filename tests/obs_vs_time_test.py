@@ -59,12 +59,11 @@ for _i in dtypes.keys():
 	Ozz=hamiltonian([],dynamic_zz,basis=basis,dtype=dtype,check_herm=False,check_symm=False)
 	H2=hamiltonian(static_yy,[],basis=basis,dtype=dtype,check_herm=False,check_symm=False) 
 
-	_,psi0 = H.eigsh(time=0,k=1,sigma=-100.)
+	_,psi0 = H.eigsh(time=0,k=1,sigma=-100.0)
 	psi0=psi0.squeeze()
 
-	psi_t=H.evolve(psi0,0.0,t,iterate=True,rtol=1E-6*atol,atol=1E-6*atol)
-	psi_t2=H.evolve(psi0,0.0,t,rtol=1E-6*atol,atol=1E-6*atol)
-
+	psi_t=H.evolve(psi0,0.0,t,iterate=True,rtol=1E-18,atol=1E-18)
+	psi_t2=H.evolve(psi0,0.0,t,rtol=1E-18,atol=1E-18)
 
 	Obs_list = {"Ozz_t":Ozz,"Ozz":Ozz(time=np.sqrt(np.exp(0.0)) )} 
 	Sent_args={'basis':basis,'chain_subsys':range(L/2)}
@@ -89,7 +88,7 @@ for _i in dtypes.keys():
 
 	E,V = H2.eigh()
 
-	psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=1E-9*atol,atol=1E-9*atol)
+	psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=1E-18,atol=1E-18)
 	psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=True,iterate=True).dot(psi0)
 
 

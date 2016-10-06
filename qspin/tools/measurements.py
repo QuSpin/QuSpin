@@ -15,18 +15,18 @@ from ..basis import spin_basis_1d,photon_basis,isbasis,photon_Hspace_dim
 import warnings
 
 
-__all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
+__all__ = ["ent__entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
 
 
 
-def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def ent__entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
-	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular
+	This function calculates the entanglement _entropy of a lattice quantum subsystem based on the Singular
 	Value Decomposition (svd).
 
 	RETURNS:	dictionary with keys:
 
-	'Sent': entanglement entropy.
+	'Sent': entanglement _entropy.
 
 	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
 
@@ -75,9 +75,9 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 				Default is 'False'. 	
 
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
-				the entropy keys have attached '_Renyi' to their label.
+				the _entropy keys have attached '_Renyi' to their label.
 
-	densities: (optional) if set to 'True', the entanglement entropy is normalised by the size of the
+	densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
 				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
 	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
@@ -156,7 +156,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	else:# calculate probabilities
 		p = (lmbda**2.0).T
 		
-	# calculate entanglement entropy of 'system_state'
+	# calculate entanglement _entropy of 'system_state'
 	if alpha == 1.0:
 		Sent = -_np.sum( p*_np.log(p),axis=0)
 	else:
@@ -258,7 +258,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 		if _sp.issparse(system_state):
-			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			warnings.warn("ent__entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
 			system_state = system_state.todense()
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
@@ -274,7 +274,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))
 	else:
 		if _sp.issparse(system_state):
-			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
+			warnings.warn("ent__entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
 			system_state = system_state.todense()
 			if system_state.shape[1] == 1:
 				system_state = system_state.ravel()
@@ -339,7 +339,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 		'''
-		the algorithm for the entanglement entropy of an arbitrary subsystem goes as follows:
+		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows:
 
 		1) the initial state psi has 2^N entries corresponding to the spin-z configs
 		2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
@@ -475,10 +475,10 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	Sd_Renyi: (optional) when set to 'True', returns the key with diagonal density matrix of 'rho'.
 
 	Srdm_Renyi: (optional) (i,n) array containing the singular values of the i-th state of the eigenbasis
-			of 'rho'. Returns the key with the entanglement entropy of 'rho' reduced to a subsystem of
+			of 'rho'. Returns the key with the entanglement _entropy of 'rho' reduced to a subsystem of
 			given choice at infinite times.
 
-	alpha: (optional) Renyi entropy parameter. 
+	alpha: (optional) Renyi _entropy parameter. 
 	""" 
 
 	# if Obs or deltaObs: parse V2
@@ -515,7 +515,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	#################################################################
 
 	# def einsum string
-	def es_str(s):
+	def _es_str(s):
 		'''
 		This function uses the np.einsum string to calculate the diagonal of a matrix product (d=1) in d=0.
 		'''
@@ -531,38 +531,38 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 	# calculate diag ens value of Obs fluctuations
 	if delta_t_Obs is not False:
-		delta_t_Obs_d = _np.einsum(es_str('ji,jk,ki->i'),rho,delta_t_Obs,rho).real
+		delta_t_Obs_d = _np.einsum(_es_str('ji,jk,ki->i'),rho,delta_t_Obs,rho).real
 
 		# calculate diag ens value of Obs fluctuations
 		if delta_q_Obs is not False:
-			delta_q_Obs_d = _np.sqrt( _np.einsum(es_str('ji,j->i'),rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
+			delta_q_Obs_d = _np.sqrt( _np.einsum(_es_str('ji,j->i'),rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
 
 		delta_t_Obs_d = _np.sqrt( delta_t_Obs_d )
 
 		
-	# calculate Shannon entropy for the distribution p
-	def Entropy(p,alpha):
+	# calculate Shannon _entropy for the distribution p
+	def _entropy(p,alpha):
 		""" 
-		This function calculates the Renyi entropy of the distribution p with parameter alpha.
+		This function calculates the Renyi _entropy of the distribution p with parameter alpha.
 		"""
 		if alpha == 1.0:
-			#warnings.warn("Renyi entropy equals von Neumann entropy.", UserWarning,stacklevel=4)
-			S = - _np.einsum(es_str('ji,ji->i'),p,_np.log(p))
+			#warnings.warn("Renyi _entropy equals von Neumann _entropy.", UserWarning,stacklevel=4)
+			S = - _np.einsum(_es_str('ji,ji->i'),p,_np.log(p))
 		else:
 			S = 1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha,axis=0) )
 			
 		return S
 
-	# calculate diag ens ent entropy in post-quench basis
+	# calculate diag ens ent _entropy in post-quench basis
 	if Srdm_Renyi is not False:
 		# calculate effective diagonal singular values, \lambda_i^{(n)} = Srdm_Renyi
 		rho_ent = (Srdm_Renyi**2).dot(rho) # has components (i,psi)
-		Srdm_Renyi_d = Entropy(rho_ent,alpha)
+		Srdm_Renyi_d = _entropy(rho_ent,alpha)
 
 		
-	# calculate diag ens entropy in post-quench basis
+	# calculate diag ens _entropy in post-quench basis
 	if Sd_Renyi:
-		Sd_Renyi_d = Entropy(rho,alpha)
+		Sd_Renyi_d = _entropy(rho,alpha)
 		
 
 	# define return dict
@@ -597,9 +597,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
 
-	'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
+	'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi _entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
 
-	'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement entropy of reduced density matrix of Diagonal Ensemble 
+	'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement _entropy of reduced density matrix of Diagonal Ensemble 
 			with parameter 'alpha'.
 
 	'rho_d': density matrix of diagonal ensemble
@@ -657,14 +657,14 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			Requires 'Obs'. Appears under the key 'delta_q_Obs'. Returns temporal fluctuations 
 			'delta_t_Obs' for free.
 
-	Sd_Renyi: (optional) diagonal Renyi entropy in the basis of H2. The default Renyi parameter is 
+	Sd_Renyi: (optional) diagonal Renyi _entropy in the basis of H2. The default Renyi parameter is 
 			'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
 
-	Srdm_Renyi: (optional) entanglement Renyi entropy of a subsystem of a choice. The default Renyi 
+	Srdm_Renyi: (optional) entanglement Renyi _entropy of a subsystem of a choice. The default Renyi 
 			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
 			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
 
-	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+	Srdm_args: (optional) dictionary of ent__entropy arguments, required when 'Srdm_Renyi = True'. The 
 			following keys are allowed:
 
 			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
@@ -679,7 +679,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
 	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
-				for the entanglement entropy which is normalised by the subsystem size 
+				for the entanglement _entropy which is normalised by the subsystem size 
 				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
@@ -932,7 +932,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 	'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
 
-	'Sent_time': (optional) returns the entanglement entropy of the state at time 'times'.
+	'Sent_time': (optional) returns the entanglement _entropy of the state at time 'times'.
 
 	--- arguments ---
 
@@ -956,7 +956,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	return_state: (optional) when set to 'True' or Sent_args is nonempty, returns a matrix whose columns give the state vector 
 			at the times specified by the column index. The return dictonary key is 'psi_time'.
 
-	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
+	Srdm_args: (optional) dictionary of ent__entropy arguments, required when 'Srdm_Renyi = True'. The 
 			following keys are allowed:
 
 			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
@@ -1081,9 +1081,9 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			psi_l = ham.dot(psi_t,time=times,check=False)
 			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
 			
-		# calculate entanglement entropy if requested	
+		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+			Sent_time = ent__entropy({'V_states':psi_t},**Sent_args)
 
 
 	else:
@@ -1102,10 +1102,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			Expt[key]=[ham.matrix_ele(psi,psi,time=time).real]
 
 
-		# get initial dictionary from ent_entropy function
+		# get initial dictionary from ent__entropy function
 		# use this to set up dictionary for the rest of calculation.
 		if len(Sent_args) > 0:
-			Sent_time = ent_entropy(psi,**Sent_args)
+			Sent_time = ent__entropy(psi,**Sent_args)
 
 			for key in Sent_time.keys():
 				Sent_time[key] = [Sent_time[key]]
@@ -1126,7 +1126,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 
 			if len(Sent_args) > 0:
-				Sent_time_update = ent_entropy(psi,**Sent_args)
+				Sent_time_update = ent__entropy(psi,**Sent_args)
 
 				for key in Sent_time.keys():
 					Sent_time[key].append(Sent_time_update[key])
