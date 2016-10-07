@@ -1187,11 +1187,11 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 --- regime attributes --- (available if N_up or N_down are parsed)
 
 
-* _.up : referes to time ector of up-regime; inherits the above attributes (e.g. _up.strobo.inds)
+* _.up : referes to time vector of up-regime; inherits the above attributes (e.g. _up.strobo.inds) except _.T, _.dt, and ._lenT
 
-* _.const : referes to time ector of const-regime; inherits the above attributes
+* _.const : referes to time vector of const-regime; inherits the above attributes except _.T, _.dt, and ._lenT
 
-* _.down : referes to time ector of down-regime; inherits the above attributes
+* _.down : referes to time vector of down-regime; inherits the above attributes except _.T, _.dt, and ._lenT
 
 This object also acts like an array, you can iterate over it as well as index the values.
 

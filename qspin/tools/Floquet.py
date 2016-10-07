@@ -170,7 +170,7 @@ class Floquet(object):
 		if isinstance(evo_dict,dict):
 
 			keys = evo_dict.keys()
-			if set(keys) == set(["H","T"]):
+			if set(keys) == set(["H","T"]) or set(keys) == set(["H","T","arol"]) or set(keys) == set(["H","T","atol","rtol"]):
 
 				H = evo_dict["H"]
 				T = evo_dict["T"]
@@ -179,7 +179,7 @@ class Floquet(object):
 
 				if self._atol is None:
 					self._atol=1E-12
-				elif type(self.atol) is not float:
+				elif type(self._atol) is not float:
 					raise ValueError("expecting float for 'atol'.")
 
 				if self._rtol is None:
@@ -242,8 +242,6 @@ class Floquet(object):
 				H_list = evo_dict["H_list"]
 				dt_list = _np.asarray(evo_dict["dt_list"],dtype=_np.float64)
 
-#				if t_list.ndim != 1:
-#					raise ValueError("t_list must be 1d array.")
 
 				if dt_list.ndim != 1:
 					raise ValueError("dt_list must be 1d array.")
@@ -252,6 +250,10 @@ class Floquet(object):
 				
 				if type(H_list) not in (list,tuple):
 					raise ValueError("expecting list/tuple for H_list.")
+
+				if len(dt_list) != len(H_list):
+					raise ValueError("Expecting arguments 'H_list' and 'dt_list' to have the same length!")
+
 
 				# calculate evolution operator
 				UF = _get_U_step_1(H_list,dt_list,n_jobs)
@@ -387,11 +389,11 @@ class Floquet_t_vec(object):
 		--- regime attributes --- (available if N_up or N_down are parsed)
 
 
-		_.up : referes to time ector of up-regime; inherits the above attributes (e.g. _up.strobo.inds)
+		_.up : referes to time vector of up-regime; inherits the above attributes (e.g. _up.strobo.inds) except _.T, _.dt, and ._lenT
 
-		_.const : referes to time ector of const-regime; inherits the above attributes
+		_.const : referes to time vector of const-regime; inherits the above attributes except _.T, _.dt, and ._lenT
 
-		_.down : referes to time ector of down-regime; inherits the above attributes
+		_.down : referes to time vector of down-regime; inherits the above attributes except _.T, _.dt, and ._lenT
 
 		"""
 
