@@ -449,7 +449,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 	return v, rho_d, N_A
 
-
 def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,alpha=1.0):
 	"""
 	This function calculates various quantities (observables, fluctuations, entropies) written in the
@@ -578,7 +577,6 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 	return return_dict
 		
-
 def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
@@ -853,7 +851,6 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 	return Expt_Diag
 
-
 def ED_state_vs_time(psi,E,V,times,iterate=False):
 	"""
 	This routine calculates the time evolved initial state as a function of time. The initial 
@@ -897,7 +894,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 		# times: time vector
 		a_n = V.T.conj().dot(psi)
 		for t in times:
-			yield V.dot( _np.exp(-1j*E*t)*a_n )
+			yield V.dot( _np.exp(E*t)*a_n )
 
 	if iterate:
 		return psi_t_iter(V,psi,times)
@@ -916,8 +913,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 		# for each vector trasform back to original basis
 		psi_t = V.dot(psi_t.T) 
 
-		return psi_t.T # [ psi(times[0]), ...,psi(times[-1]) ]
-
+		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 
 def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	
@@ -1019,9 +1015,9 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 		
 		# get iterator over time dependent state (see function above)
 		if return_state:
-			psi_t = ED_state_vs_time(psi,E,V,times,iterate = False ).T
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate=False)
 		else:
-			psi_t = ED_state_vs_time(psi,E,V,times,iterate = True )
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate=True)
 
 
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:

@@ -15,12 +15,9 @@ seed()
 This test only makes sure the function 'obs_vs_time' runs properly.
 """
 
-#dtypes={"float32":np.float32,"float64":np.float64,"float128":np.float128,
-#		"complex64":np.complex64,"complex128":np.complex128,"complex256":np.complex256}
+dtypes={"float64":np.float64,"complex128":np.complex128}
 
-dtypes={"float32":np.float32,"float64":np.float64,"complex64":np.complex64,"complex128":np.complex128}
-
-atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
+atols={"float64":1E-13,"complex128":1E-13}
 
 
 def drive(t):
@@ -88,7 +85,7 @@ for _i in dtypes.keys():
 
 	E,V = H2.eigh()
 
-	psi_t=H2.evolve(psi0,0.0,t,iterate=True,rtol=1E-18,atol=1E-18)
+	psi_t=H2.evolve(psi0,0.0,t,iterate=False,rtol=1E-18,atol=1E-18)
 	psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=True,iterate=True).dot(psi0)
 
 
@@ -96,7 +93,9 @@ for _i in dtypes.keys():
 	Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
 	Obs4 = obs_vs_time(psi_t4,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
-	psi_t3 = ED_state_vs_time(psi0,E,V,t,iterate=False).T
+	psi_t3 = ED_state_vs_time(psi0,E,V,t,iterate=False)
+	psi_t33 = np.asarray([psi for psi in ED_state_vs_time(psi0,E,V,t,iterate=True)]).T
+
 
 	Expn = np.array([Obs['Ozz_t'],Obs['Ozz']])
 	psi_t = Obs['psi_t']
@@ -115,6 +114,7 @@ for _i in dtypes.keys():
 	np.testing.assert_allclose(psi_t,psi_t2,atol=atol,err_msg='Failed state comparison!')
 	np.testing.assert_allclose(Sent,Sent2,atol=atol,err_msg='Failed ent entropy comparison!')
 	np.testing.assert_allclose(psi_t2,psi_t3,atol=atol,err_msg='Failed ED_state_vs_time test!')
+	np.testing.assert_allclose(psi_t3,psi_t33,atol=atol,err_msg='Failed ED_state_vs_time test!')
 	np.testing.assert_allclose(psi_t2,psi_t4,atol=atol,err_msg='Failed exp_op test!')
 
 

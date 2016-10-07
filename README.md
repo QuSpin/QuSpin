@@ -71,7 +71,7 @@ To safely update a manually installed version of qspin, one must first manually 
 #**using the package**
 All the calculations done with qspin happen through [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it. Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the time argument. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this we provide a user-friendly representation for constructings the Hamiltonian matrices for many-body operators. 
 
-Many-body operators in qspin are defined by a string of letters representing the opeartor types, together with a tuple which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
+Many-body operators in qspin are defined by a string of letters representing the operator types, together with a list which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
 
 |      opstr       |      indx      |        operator      |
 |:----------------:|:--------------:|:---------------------------:|
