@@ -17,7 +17,15 @@ This test only makes sure the function 'obs_vs_time' runs properly.
 
 dtypes={"float64":np.float64,"complex128":np.complex128}
 
-atols={"float64":1E-13,"complex128":1E-13}
+dtypes={
+		"float32":np.float32,
+		"float64":np.float64,
+		"complex64":np.complex64,
+		"complex128":np.complex128
+		}
+
+atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
+rtols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
 
 
 def drive(t):
@@ -26,6 +34,9 @@ drive_args=[]
 
 def time_dep(t):
 	return np.cosh(+1.1*t)*np.cos(2.0*t)
+
+solver_atol = 1E-18
+solver_rtol = 1E-18
 
 
 L=10
@@ -51,6 +62,7 @@ t=np.linspace(0.0,2.0,20)
 for _i in dtypes.keys():
 	dtype = dtypes[_i]
 	atol = atols[_i]
+	rtol = rtols[_i]
 
 	H=hamiltonian(static_pm,dynamic_zxz,basis=basis,dtype=dtype,check_herm=False,check_symm=False)
 	Ozz=hamiltonian([],dynamic_zz,basis=basis,dtype=dtype,check_herm=False,check_symm=False)
@@ -59,8 +71,8 @@ for _i in dtypes.keys():
 	_,psi0 = H.eigsh(time=0,k=1,sigma=-100.0)
 	psi0=psi0.squeeze()
 
-	psi_t=H.evolve(psi0,0.0,t,iterate=True,rtol=1E-18,atol=1E-18)
-	psi_t2=H.evolve(psi0,0.0,t,rtol=1E-18,atol=1E-18)
+	psi_t=H.evolve(psi0,0.0,t,iterate=True,rtol=solver_rtol,atol=solver_atol)
+	psi_t2=H.evolve(psi0,0.0,t,rtol=solver_rtol,atol=solver_atol)
 
 	Obs_list = {"Ozz_t":Ozz,"Ozz":Ozz(time=np.sqrt(np.exp(0.0)) )} 
 	Sent_args={'basis':basis,'chain_subsys':range(L/2)}
@@ -77,15 +89,15 @@ for _i in dtypes.keys():
 	Sent2 = Obs2['Sent_time']['Sent']
 
 
-	np.testing.assert_allclose(Expn,Expn2,atol=atol,err_msg='Failed observable comparison!')
-	np.testing.assert_allclose(psi_t,psi_t2,atol=atol,err_msg='Failed state comparison!')
+	np.testing.assert_allclose(Expn,Expn2,atol=atol,rtol=rtol,err_msg='Failed observable comparison!')
+	np.testing.assert_allclose(psi_t,psi_t2,atol=atol,rtol=rtol,err_msg='Failed state comparison!')
 	np.testing.assert_allclose(Sent,Sent2,atol=atol,err_msg='Failed ent entropy comparison!')
 
 	### check obs_vs_time vs ED
 
 	E,V = H2.eigh()
 
-	psi_t=H2.evolve(psi0,0.0,t,iterate=False,rtol=1E-18,atol=1E-18)
+	psi_t=H2.evolve(psi0,0.0,t,iterate=False,rtol=solver_rtol,atol=solver_atol)
 	psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=True,iterate=True).dot(psi0)
 
 
@@ -109,13 +121,12 @@ for _i in dtypes.keys():
 	psi_t4 = Obs4['psi_t']
 	Sent4 = Obs4['Sent_time']['Sent']
 
-
-	np.testing.assert_allclose(Expn,Expn2,atol=atol,err_msg='Failed observable comparison!')
-	np.testing.assert_allclose(psi_t,psi_t2,atol=atol,err_msg='Failed state comparison!')
-	np.testing.assert_allclose(Sent,Sent2,atol=atol,err_msg='Failed ent entropy comparison!')
-	np.testing.assert_allclose(psi_t2,psi_t3,atol=atol,err_msg='Failed ED_state_vs_time test!')
-	np.testing.assert_allclose(psi_t3,psi_t33,atol=atol,err_msg='Failed ED_state_vs_time test!')
-	np.testing.assert_allclose(psi_t2,psi_t4,atol=atol,err_msg='Failed exp_op test!')
+	np.testing.assert_allclose(Expn,Expn2,atol=atol,rtol=rtol,err_msg='Failed observable comparison!')
+	np.testing.assert_allclose(psi_t,psi_t2,atol=atol,rtol=rtol,err_msg='Failed state comparison!')
+	np.testing.assert_allclose(Sent,Sent2,atol=atol,rtol=rtol,err_msg='Failed ent entropy comparison!')
+	np.testing.assert_allclose(psi_t2,psi_t3,atol=atol,rtol=rtol,err_msg='Failed ED_state_vs_time test!')
+	np.testing.assert_allclose(psi_t3,psi_t33,atol=atol,rtol=rtol,err_msg='Failed ED_state_vs_time test!')
+	np.testing.assert_allclose(psi_t2,psi_t4,atol=atol,rtol=rtol,err_msg='Failed exp_op test!')
 
 
 print "obs_vs_time checks passed!"
