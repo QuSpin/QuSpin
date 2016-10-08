@@ -1094,13 +1094,13 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			psi_l = Obs.dot(psi)
 			val = _np.vdot(psi,psi_l).real
 			dtype = _np.dtype(val)
-			Expt_time[key] = _np.zeros((len(time),),dtype=dtype)
+			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
 			Expt_time[key][0] = val
 
 		for key,ham in ham_dict.iteritems():
 			val = ham.matrix_ele(psi,psi,time=time).real
 			dtype = _np.dtype(val)
-			Expt_time[key] = _np.zeros((len(time),),dtype=dtype)
+			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
 			Expt_time[key][0] = val
 
 
