@@ -1127,17 +1127,14 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 				for key in Sent_time.keys():
 					Sent_time[key].append(Sent_time_update[key])
 
-		for key in Sent_time.keys():
-			Sent_time[key] = _np.asarray(Sent_time[key])
-		
 		
 	return_dict = {}
 	for i in variables:
 		if i == 'Expt_time':
 			for key,val in Expt_time.iteritems():
-				return_dict[key] = val
+				return_dict[key] = _np.asarray(val)
 		else:
-			return_dict[i] = locals()[i]
+			return_dict[i] = _np.asarray(locals()[i])
 
 	return return_dict
 
