@@ -35,7 +35,7 @@ Contents
 
 ###**automatic install**
 
-This latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of qspin requires the Anaconda package manager for Python. Once it has been installen, all one has to do to install is run:
+The latest version of this package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of qspin requires the Anaconda package manager for Python. Once it has been installen, all one has to do to install is run:
 
 ```
 $ conda install -c weinbe58 qspin

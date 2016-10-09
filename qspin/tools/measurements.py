@@ -220,6 +220,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 	if chain_subsys is not None:
+		if len(chain_subsys) == 0:
+			raise TypeError("Expecting a nonempty list for 'chain_subsys'!")
 		if not isinstance(chain_subsys,list):
 			raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
 		elif min(chain_subsys) < 0:
