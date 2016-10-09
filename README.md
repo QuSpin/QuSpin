@@ -295,7 +295,7 @@ If either of these cases do not match then an error is thrown.
     ```python
     Huv = H.matrix_ele(u,v,time=0,diagonal=False,check=True)
     ```
-which evaluates $\langle u|H(time)|v\rangle$ if ```u``` and ```v``` are vectors but (versions >= v0.0.2b) can also handle ```u``` and ```v``` as dense matrices. ```diagonal=True``` then the function will only return the diagonal part of the resulting matrix multiplication. The check option is the same as for 'dot' and 'rdot'. The vectorization with time is the same as for the 'dot' and 'rdot' functions. 
+which evaluates $\langle u|H(t=0)|v\rangle$ if ```u``` and ```v``` are vectors but (versions >= v0.0.2b) can also handle ```u``` and ```v``` as dense matrices. ```diagonal=True``` then the function will only return the diagonal part of the resulting matrix multiplication. The check option is the same as for 'dot' and 'rdot'. The vectorization with time is the same as for the 'dot' and 'rdot' functions. 
   **NOTE: the inputs should NOT be hermitian conjugated, the function will do that automatically.
 
 * project a Hamiltonian to a new basis:
@@ -303,7 +303,7 @@ which evaluates $\langle u|H(time)|v\rangle$ if ```u``` and ```v``` are vectors 
 	H_new = H.project_to(V)
 	H_new = H.rotate_by(K,generator=False,**exp_op_args)
 	```
-The first function returns a new hamiltonian object which is: $V^\dagger H V$. Note that ```V``` need not be a square matrix. The second function, when ```generator=False```, is the same as the first function but with ```generator=True``` the function uses ```K``` as the generator of a transformation. This function uses the [exp_op](#exp_op-class) class and the extra arguments ```**exp_op_args``` are optional arguments for the exp_op constructor. 
+The first function returns a new hamiltonian object which is: $V^\dagger H V$. Note that ```V``` need not be a square matrix. The second function, when ```generator=False```, is the same as the first function but with ```generator=True``` the function uses ```K``` as the generator of a transformation. This function uses the [exp_op](#exp_op-class) class and the extra arguments ```**exp_op_args``` are optional arguments for the `exp_op` constructor. 
   
 * Schrödinger dynamics:
 
@@ -439,25 +439,25 @@ This class also allows the option to specify a grid of points `grid` on a line i
 
 * iterate: (optional) if `True` a generator is returned which can iterate over the grid points at a later time, as opposed to producing a list of all evaluated points. This is more memory efficient but at the cost of speed.
 
---- exp_op attributes ---: '_. ' below stands for 'object. '
+--- `exp_op` attributes ---: '_. ' below stands for 'object. '
 
-* _.a: returns the prefactor a
+* `_.a`: returns the prefactor `a`
 
-* _.ndim: returns the number of dimensions, always $2$
+* `_.ndim`: returns the number of dimensions, always $2$
 
-* _.H: returns the hermitian conjugate of this operator
+* `_.H`: returns the hermitian conjugate of this operator
 
-* _.T: returns the transpose of this operator
+* `_.T`: returns the transpose of this operator
 
-* _.O: returns the operator which is being exponentiated
+* `_.O`: returns the operator which is being exponentiated
 
-* _.get_shape: returns the tuple which contains the shape of the operator
+* `_.get_shape`: returns the tuple which contains the shape of the operator
 
-* _.iterate: returns a bool telling whether or not this function will iterate over the grid of values or return a list
+* `_.iterate`: returns a bool telling whether or not this function will iterate over the grid of values or return a list
 
-* _.grid: returns the array containing the grid points the exponential will be evaluated at
+* `_.grid`: returns the array containing the grid points the exponential will be evaluated at
 
-* _.step: returns the step size between the grid points
+* `_.step`: returns the step size between the grid points
 
 #### **methods of exp_op class**
 
@@ -499,8 +499,8 @@ This class also allows the option to specify a grid of points `grid` on a line i
 #### **mathematical functions**
 * dot product:
  ```python
-   B = expO.dot(A,time=0)
-   B = expO.rdot(A,time=0)
+ B = expO.dot(A,time=0)
+ B = expO.rdot(A,time=0)
  ```
  
 * rotate operator by ```expO```:
@@ -894,9 +894,15 @@ replace "..." below by `pure`, `thermal` or `mixed` depending on input params.
       expectations are also returned.
 
     * `f_norm`: (optional) if set to `False` the mixed DM built from `f` is NOT normalised
-      and the norm is returned under the key `f_norm`. 
-
+      and the norm is returned under the key `f_norm`.
+     
     The keys are CANNOT be chosen arbitrarily.
+    
+    If this option is specified, then all Diagonal ensemble quantities are averaged over the energy distribution $f(E_1,f\_args)$:
+    
+    $$ \overline{\mathcal{M}_d} = \frac{1}{Z_f}\sum_{n_1} \mathcal{M}^{n_1}_d \times f(E_{n_1},f\_args), \qquad \mathcal{M}^{\psi}_d = \langle\mathcal{O}\rangle_d^\psi,\ \delta_q\mathcal{O}^\psi_d,\ \delta_t\mathcal{O}^\psi_d,\ S_d^\psi,\ S_\mathrm{rdm}^\psi $$
+
+    
 
 * `V2`: (required) numpy array containing the basis of the Hamiltonian $H_2$ in the columns.
 
@@ -905,34 +911,34 @@ replace "..." below by `pure`, `thermal` or `mixed` depending on input params.
 
 * `rho_d`: (optional) When set to `True`, returns the Diagonal ensemble DM under the key `rho_d`. For example, if `system_state` is the pure state $|\psi\rangle$:
 
- $$\mathrm{rho\_d} = \rho_d^\psi = \sum_{n_2} \left|\langle\psi|n_2\rangle\right|^2\left|n_2\rangle\langle n_2\right| = \sum_{n_2} \left(\rho_d^\psi\right)_{n_2n_2}\left|n_2\rangle\langle n_2\right| $$
+ $$\rho_d^\psi = \sum_{n_2} \left|\langle\psi|n_2\rangle\right|^2\left|n_2\rangle\langle n_2\right| = \sum_{n_2} \left(\rho_d^\psi\right)_{n_2n_2}\left|n_2\rangle\langle n_2\right| $$
 
 * `Obs`: (optional) hermitian matrix of the same size as `V2`, to calculate the Diagonal ensemble 
   expectation value of. Appears under the key `Obs`. For example, if `system_state` is the pure state $|\psi\rangle$:
   
-  $$ \mathrm{Obs} = \langle\mathcal{O}\rangle_d = \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \frac{1}{N}\langle\psi\left|\mathcal{O}(t)\right|\psi\rangle = \frac{1}{N}\sum_{n_2}\left(\rho_d^\psi\right)_{n_2n_2} \langle n_2\left|\mathcal{O}\right|n_2\rangle$$
+  $$ \langle\mathcal{O}\rangle_d^\psi = \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \frac{1}{N}\langle\psi\left|\mathcal{O}(t)\right|\psi\rangle = \frac{1}{N}\sum_{n_2}\left(\rho_d^\psi\right)_{n_2n_2} \langle n_2\left|\mathcal{O}\right|n_2\rangle$$
 
 * `delta_q_Obs`: (optional) QUANTUM fluctuations of the expectation of `Obs` at infinite-times. 
   Requires `Obs`. Appears under the key `delta_q_Obs`. Returns temporal fluctuations `delta_t_Obs` for free.
   For example, if `system_state` is the pure state $|\psi\rangle$:
   
-  $$ \mathrm{delta\_q\_Obs} = \frac{1}{N}\sqrt{\lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2 - \langle\mathcal{O}\rangle_d^2}= \frac{1}{N}\sqrt{ \sum_{n_2\neq m_2} \left(\rho_d^\psi\right)_{n_2n_2} [\mathcal{O}]^2_{n_2m_2} \left(\rho_d^\psi\right)_{m_2m_2} } $$
+  $$ \delta_q\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{\lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2 - \langle\mathcal{O}\rangle_d^2}= \frac{1}{N}\sqrt{ \sum_{n_2\neq m_2} \left(\rho_d^\psi\right)_{n_2n_2} [\mathcal{O}]^2_{n_2m_2} \left(\rho_d^\psi\right)_{m_2m_2} } $$
 
 * `delta_t_Obs`: (optional) TIME fluctuations around infinite-time expectation of `Obs`. Requires `Obs`. 
   Appears under the key `delta_t_Obs`. For example, if `system_state` is the pure state $|\psi\rangle$:
   
-  $$ \mathrm{delta\_t\_Obs} = \frac{1}{N}\sqrt{ \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|[\mathcal{O}(t)]^2\right|\psi\rangle - \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2} =  
- \frac{1}{N}\sqrt{\langle\mathcal{O}^2\rangle_d - \langle\mathcal{O}\rangle_d^2 - \mathrm{delta\_q\_Obs}^2 }$$
+  $$ \delta_t\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{ \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|[\mathcal{O}(t)]^2\right|\psi\rangle - \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2} =  
+ \frac{1}{N}\sqrt{\langle\mathcal{O}^2\rangle_d - \langle\mathcal{O}\rangle_d^2 - \delta_q\mathcal{O}^2 }$$
 
 * `Sd_Renyi`: (optional) diagonal Renyi entropy in the basis of $H_2$. The default Renyi parameter is 
   `alpha=1.0` (see below). Appears under the key `Sd_Renyi`. For example, if `system_state` is the pure state $|\psi\rangle$:
   
-  $$ \mathcal{Sd\_Renyi} = \frac{1}{1-\alpha}\log\mathrm{tr}\left(\rho_d^\psi\right)^\alpha $$
+  $$ S_d^\psi = \frac{1}{1-\alpha}\log\mathrm{tr}\left(\rho_d^\psi\right)^\alpha $$
 
 * `Srdm_Renyi`: (optional) Renyi entropy of infinite-time reduced density matrix for a subsystem of a choice. The default Renyi parameter is `alpha=1.0` (see below). Appears under the key `Srdm_Renyi`. Requires 
   `Srdm_args`. To specify the subsystem, see documentation of `ent_entropy`. For example, if `system_state` is the pure state $|\psi\rangle$ (see also notation in documentation of `ent_entropy`):
   
-  $$ \mathrm{Srdm\_Renyi} = \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha $$
+  $$ S_\mathrm{rdm}^\psi = \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha $$
 
 * `Srdm_args`: (optional) dictionary of `ent_entropy` arguments, required when `Srdm_Renyi = True`. Some important 
 keys are:
