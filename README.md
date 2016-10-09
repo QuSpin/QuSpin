@@ -6,24 +6,24 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 
 Contents
 --------
-* [installation](#installation)
- * [automatic install](#automatic-install)
- * [manual install](#manual-install)
- * [updating the package](#updating-the-package)
-* [basic package usage](#using-the-package)
- * [constructing hamiltonians](#constructing-hamiltonians)
- * [using basis objects](#using-basis-objects)
- * [specifying symmetries](#using-symmetries)
-* [list of package functions](#list-of-package-functions) 
+* [Installation](#installation)
+ * [Automatic Install](#automatic-install)
+ * [Manual Install](#manual-install)
+ * [Updating the Package](#updating-the-package)
+* [Basic Package Usage](#using-the-package)
+ * [Constructing hamiltonians](#constructing-hamiltonians)
+ * [Using basis Objects](#using-basis-objects)
+ * [Specifying Symmetries](#specifying-symmetries)
+* [List of Package Functions](#list-of-package-functions) 
 	* [operator objects](#operator-objects)
 	 * [hamiltonian class](#hamiltonian-class)
 	 * [functions for hamiltonians](#functions-for-hamiltonians)
 	 * [exo\_op class](#exp\_op-class)
-	 * [HamiltonianOperator class](#HamiltonianOperator-class)
+	 * [HamiltonianOperator class](#hamiltonianoperator-class)
 	* [basis objects](#basis-objects)
 	 * [1d\_spin\_basis](#1d\_spin\_basis)
 	 * [harmonic oscillator basis](#harmonic-oscillator-basis)
-	 * [tensor basis objects](#tensor-basis-objects)
+	 * [tensor\_basis objects](#tensor\_basis-objects)
 	 * [methods of basis classes](#methods-of-basis-classes)
 	* [tools](#tools)
 	 * [measusrements](#measurements)
@@ -44,7 +44,7 @@ $ conda install -c weinbe58 qspin
 This will install the latest version on your computer. Right now the package is in its beta stages and so it may not be availible for installation on all platforms using this method. In this case one can also manually install the package:
 
 
-###**manual install**
+###**Manual Install**
 
 To install qspin manually, download the source code either from the [master](https://github.com/weinbe58/qspin/archive/master.zip) branch, or by cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
 
@@ -61,14 +61,14 @@ For the manual installation you must have all the prerequisite python packages: 
 
 When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code. 
 
-###**updating the package**
+###**Updating the Package**
 
 To update the package with Anaconda, all one has to do is run the installation command again.
 
 To safely update a manually installed version of qspin, one must first manually delete the entire package from the python 'site-packages/' directory. In Unix, provided the flag ```--record install.txt``` has been used in the manual installation, the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```. In Windows, it is easiest to just go to the folder and delete it from Windows Explorer. 
 
 
-#**using the package**
+#**Using the Package**
 All the calculations done with qspin happen through [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it. Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the time argument. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this we provide a user-friendly representation for constructings the Hamiltonian matrices for many-body operators. 
 
 Many-body operators in qspin are defined by a string of letters representing the operator types, together with a list which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
@@ -79,7 +79,7 @@ Many-body operators in qspin are defined by a string of letters representing the
 
 where o<sub>i</sub> can be x, y, z, +, or -. Then S<sub>i<sub>n</sub></sub><sup>o<sub>n</sub></sup> is the spin-1/2 operator acting on lattice site i<sub>n</sub>. This gives the full range of possible spin-1/2 operators that can be constructed. By default the hamiltonian will use the spin-1/2 operators (a.k.a. sigma matrices). For different systems, there are different types of operators. To see the available operators for a given type of system check out the [basis](basis-objects) classes. 
 
-###**constructing hamiltonians**
+###**Constructing Hamiltonians**
 The hamiltonian is constructed as:
 ```python
 H = hamiltonian(static_list,dynamic_list,**kwargs)
@@ -104,7 +104,7 @@ f_val = func(t,*func_args)
 ####keyword arguments (kwargs):
 the ```**kwargs``` give extra information about the hamiltonian. There is a variety of different things one can input here, and which one to choose depends on what Hamiltonian one would like to create. These arguments are used to specify symmetry blocks, give a shape and provide the floating point type to store the matrix elements with, disable automatic checks on the symemtries and the hermiticity of the hamiltonian, etc.
 
-**providing a shape:**
+**Providing a Shape:**
 to construct many-body operators one must either specify the number of lattice sites with ```N=...``` or pass in a basis object as ```basis=...```, more about basis objects can be found [here](#basis-objects). You can also specify the shape using the ```shape=...``` keyword argument. For input lists which contain matrices only, the shape does not have to be specified. If empty lists are given, then either one of the previous options must be provided to the hamiltonian constructor.  
 
 **Numpy dtype:**
@@ -151,7 +151,7 @@ static_list=[['-z+',op_indx],['+z-',op_indx_cc]]
 ```
 Notice that one needs to include both '-z+' and '+z-' operators to make sure the Hamiltonian is hermitian. If one forgets about this, there is still the automatic hermiticity check which raises an error, see the optional flag ```check_herm``` in the hamiltonian object class organisation [here](#hamiltonian-objects) which is set to ```True``` by default.
 
-###**using basis objects**
+###**Using basis Objects**
 
 Basis objects are another very useful type included in qspin: they provide all of the functionality which calculates the matrix elements from the operator string representation of many-body operators. On top of this, they have been programmed to calculate the matrix elements in different symmetry blocks of the many-body hamiltonian with the help of optional flags. To use a basis object to construct the hamiltonian, one simply uses the basis keyword argument:
 ```python
@@ -162,7 +162,7 @@ More information about basis objects can be found in the [basis objects](#basis-
 We recommend using basis objects when multiple separate Hamiltonians which share the same symmetries need to be constructed. This provides the advantage of saving time when creating the corresponding symmetry objects.
 
 
-###**using symmetries**
+###**Specifying Symmetries**
 Adding symmetries is easy and versatile: one can either just add extra keyword arguments to the initialization of your hamiltonian or, when one initializes a basis object one can build in the desired symmetries. By default, the hamiltonian uses spin-1/2 operators and 1d-symmetries. At this point the spin-chain symmetries implemented are for spins-1/2 operators in 1 dimension. 
 The available symmetries for a spin chain in 1d are:
 
@@ -192,11 +192,11 @@ H2 = hamiltonian(static2_list,dynamic2_list,basis=basis)
 
 **NOTE:** for beta versions spin_basis_1d is named as basis1d.
 
-#**list of package functions**
+#**List of Package Functions**
 
-##**Operator objects**
+##**Operator Objects**
 
-###**hamiltonian class**:
+###**hamiltonian Class**:
 ```python
 H = hamiltonian(static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs)
 ```
@@ -261,9 +261,9 @@ The hamiltonian class wraps most of the functionalty of the package. This object
 * _.H: returns the hermitian conjugate of the hamiltonian  
 
 
-####**methods of hamiltonian class**
+####**Methods of hamiltonian Class**
 
-#####**arithmetic operations**
+#####**Arithmetic Operations**
 The hamiltonian objects currectly support certain arithmetic operations with other hamiltonians, scipy sparse matrices or numpy dense arrays and scalars, as follows:
 
 * between other hamiltonians we have: ```+,-,*,+=,-=``` . Note that ```*``` only works between a static and static hamiltonians or a static and dynamic hamiltonians, but NOT between two dynamic hamiltonians.
@@ -272,7 +272,7 @@ The hamiltonian objects currectly support certain arithmetic operations with oth
 * negative operator '-H'
 * indexing and slicing: ```H[times,row,col]``` 
 
-#####**quantum (algebraic) operations**
+#####**Quantum (algebraic) Operations**
 We have included some basic functionality into the hamiltonian class, useful for quantum calculations:
 
 * matrix transformations:
@@ -365,7 +365,7 @@ The hamiltonian class also has built in methods which are useful for doing exact
     ```
   where ```**eigsh_args``` are optional arguments which are passed into the eigenvalue solvers. For more information checkout the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.eigsh.html).
 
-#####**other operations**
+#####**Other Operations**
 There are also some methods which are useful when interfacing qspin with functionality from other packages:
 
 * return copy of hamiltonian as csr matrix: 
@@ -412,7 +412,7 @@ There are also some methods which are useful when interfacing qspin with functio
  H_new = H.as_dense_format(copy=False)
  ```
 
-### **functions for hamiltonians**
+### **Functions for hamiltonians**
 
 ##### **commutator**
 ```python
@@ -426,7 +426,7 @@ anti_commutator(H1,H2)
 ```
 This function returns the anti-commutator of two Hamiltonians H1 and H2.
 
-###**exp_op class**
+###**exp_op Class**
 ```
 exp_O = exp_op(O, a=1.0, start=None, stop=None, num=None, endpoint=None, iterate=False)
 ```
@@ -468,7 +468,7 @@ This class constructs an object which acts on various objects with the matrix ex
 
 * _.step: returns the step size between the grid points
 
-####**methods of exp_op class**
+####**Methods of exp_op Class**
 
 * Transpose:
  ```python
@@ -527,7 +527,9 @@ for B in B_generator:
 	# code here
 ```
  
-###**HamiltonianOperator class**
+###**HamiltonianOperator Class**
+
+
 ```python
 H_operator = HamiltonianOperator(operator_list,system_arg,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args)
 ```
@@ -574,7 +576,7 @@ operator_list=[[opstr_1,[indx_11,...,indx_1m]],...]
 
 * _.LinearOperator: returns a linear operator of this object
 
-####**Method of HamiltonianOperator class**
+####**Method of HamiltonianOperator Class**
 * dot product from left and right:
 
  ```python
@@ -594,7 +596,7 @@ operator_list=[[opstr_1,[indx_11,...,indx_1m]],...]
  
 
 
-## **basis objects**
+## **basis Objects**
 
 The basis objects provide a way of constructing all the necessary information needed to construct a sparse matrix from a list of operators. All basis objects are derived from the same base object class and have mostly the same functionality. There are two subtypes of the base object class. The first type consists of basis objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, basis type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style basis type. For instance, basis type two can take two spin-chain bases and create the corresponding tensor product basis our of them.   
 
@@ -645,7 +647,7 @@ basis = spin_basis_1d(L,**symmetry_blocks)
 
 
 
-###**ho_basis**
+###**harmonic oscillator basis**
 This basis implements a single harmonic oscillator mode. The available operators are ```+,-,n,I```, corresponding to the raising, lowering, the number operator, and the identity, respectively.  
 
 usage of ho_basis:
@@ -666,7 +668,7 @@ basis = ho_basis(Np)
 
 * _.operators: returns string which lists information about the operators of this basis class. 
 
-###**tensor_basis class** 
+###**tensor_basis Objects** 
 
   The tensor_basis class will combine two basis objects b1 and b2 together into a new basis object which can be then used, e.g., to create the tensored hamiltonian of both basis:
 
@@ -686,7 +688,7 @@ indx = [1,5]
 
 if there are no operator strings on either side of the '|' then an identity operator is assumed.
 
-###**photon_basis class** 
+###**photon_basis Class** 
 
 This class allows the user to define a basis which couples to a single photon mode. The operators for the photon sector are the same as the harmonic oscilaltor basis: '+', '-', 'n', and 'I'. 
 
@@ -705,14 +707,14 @@ p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
 ```
 Here because the the nature of the interaction between the photon mode and the other basis, you must pass the constructor of the basis class into here as opposed to an already constructed basis. This is because the basis has to be constructed for each magnetization/particle sector of the basis. 
 
-###**checks on operator strings**
+###**Checks on Operator Strings**
 New in version 0.1.0 we have included new functionality classes which check various properties of a given static and dynamic operator lists. They include the following:
 
 * check if the final complete list of opertors obeys the requested symmetry of that basis. The check can be turned off with the flag ```check_symm=False ``` in the [hamiltonian](#hamiltonian-objects) class. 
 * check if the final complete list of operators are hermitian. The check can be turned out with the flag ```check_herm=False``` in the [hamiltonian](#hamiltonian-objects) class. 
 * check if the final complete list of opertors obeys particle number conservation (for spin systems this means that magnetization sectors do not mix). The check can be turned out with the flag ```check_pcon=False``` in the [hamiltonian](#hamiltonian-class) class. 
 
-###**Methods of Basis Classes**
+###**Methods of basis Classes**
 
 These functions are defined for every basis class:
 
