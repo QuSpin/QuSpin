@@ -1094,10 +1094,16 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 		for key,Obs in obs_dict.iteritems():
 			psi_l = Obs.dot(psi)
-			Expt_time[key]=[_np.vdot(psi,psi_l).real]
+			val = _np.vdot(psi,psi_l).real
+			dtype = _np.dtype(val)
+			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
+			Expt_time[key][0] = val
 
 		for key,ham in ham_dict.iteritems():
-			Expt_time[key]=[ham.matrix_ele(psi,psi,time=time).real]
+			val = ham.matrix_ele(psi,psi,time=time).real
+			dtype = _np.dtype(val)
+			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
+			Expt_time[key][0] = val
 
 
 		# get initial dictionary from ent_entropy function
@@ -1105,29 +1111,32 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 		if len(Sent_args) > 0:
 			Sent_time = ent_entropy(psi,**Sent_args)
 
-			for key in Sent_time.keys():
-				Sent_time[key] = [Sent_time[key]]
+			for key,val in Sent_time.iteritems():
+				dtype = _np.dtype(val)
+				Sent_time[key] = _np.zeros((len(times),),dtype=dtype)
+				Sent_time[key][0] = val
 
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
 			if psi.ndim == 2:
 				psi = psi.ravel()
 
-			time = times[m]
+			time = times[m+1]
 
 			for key,Obs in obs_dict.iteritems():
 				psi_l = Obs.dot(psi)
-				Expt_time[key].append(_np.vdot(psi,psi_l).real)
+				val = _np.vdot(psi,psi_l).real
+				Expt_time[key][m+1] = val 
 
 			for key,ham in ham_dict.iteritems():
-				Expt_time[key].append(ham.matrix_ele(psi,psi,time=time).real)
+				val = ham.matrix_ele(psi,psi,time=time).real
+				Expt_time[key][m+1] = val
 
 
 			if len(Sent_args) > 0:
 				Sent_time_update = ent_entropy(psi,**Sent_args)
-
 				for key in Sent_time.keys():
-					Sent_time[key].append(Sent_time_update[key])
+					Sent_time[key][m+1] = Sent_time_update[key]
 
 		
 	return_dict = {}
@@ -1136,7 +1145,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			for key,val in Expt_time.iteritems():
 				return_dict[key] = _np.asarray(val)
 		else:
-			return_dict[i] = _np.asarray(locals()[i])
+			return_dict[i] = locals()[i]
 
 	return return_dict
 
