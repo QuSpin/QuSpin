@@ -1,4 +1,28 @@
+"""
+This script constructs the non-zero matrix elements of an operator acting on a basis state. Consider, for example, the operator S^+ for a single two-level system.
 
+-----------------------
+standard QM notation:
+
+basis = {|1>,|0>}
+Sz = [[1,0],[0,-1]]
+|down> = |0> = [0,1]  <---
+|up> = |1> = [1,0]
+S^+ = [[0,1],[0,0]]
+-----------------------
+
+-----------------------
+QSPIN notation:
+
+basis = {|0>,|1>}
+Sz = [[-1,0],[0,1]]
+|down> = |0> = [1,0]  <---
+|up> = |1> = [0,1]
+S^+ = [[0,0],[1,0]]
+
+S_{ij} has i running over rows and j running over columns. Given the state |0>, the nonzero matrix element is <1|S^+|0>, which is S_{10} in the qspin basis. Thus, we need to return row index to store the matrix element. 
+-----------------------
+"""
 
 def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1,mode='c'] indx,{c_complex_type} J):
 
