@@ -309,7 +309,7 @@ class hamiltonian(object):
 
 			n = len(dynamic_other_list)
 
-			for i in xrange(n):
+			for i in range(n):
 				O,f,f_args = dynamic_other_list[i]
 				_test_function(f,f_args)
 				if _sp.issparse(O):
@@ -464,7 +464,7 @@ class hamiltonian(object):
 			i+=1;j=0
 
 		l = len(self._dynamic)
-		for i in xrange(l):
+		for i in range(l):
 			try:
 				self._dynamic[i][0].tocsr()
 				self._dynamic[i][0].sum_duplicates()
@@ -967,7 +967,7 @@ class hamiltonian(object):
 			function which diagonalizes hamiltonian using dense methods solves for eigen values 
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
-		eigvalsh_args["overwrite_a"] = True
+
 		
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
@@ -975,10 +975,10 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 
-		H_dense=_np.zeros(self._shape,dtype=self._dtype)
-		self.todense(time=time,out=H_dense)
-
-		E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		H_dense = self.todense(time=time)
+		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
+#		eigvalsh_args["overwrite_a"] = True
+#		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
@@ -1211,7 +1211,7 @@ class hamiltonian(object):
 
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				if _sp.issparse(self._dynamic[i][0]):
 					self._dynamic[i][0] = self._dynamic[i][0].todense()
@@ -1240,7 +1240,7 @@ class hamiltonian(object):
 			self._static = sparse_constuctor(self._static)
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = sparse_constuctor(self._dynamic[i][0])
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -1253,7 +1253,7 @@ class hamiltonian(object):
 		self._static = self._static.conj()
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 			self._dynamic[i][0] = self._dynamic[i][0].conj()
 			self._dynamic[i] = tuple(self._dynamic[i])
@@ -1273,7 +1273,7 @@ class hamiltonian(object):
 			self._static = self._static.T
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = self._dynamic[i][0].T
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -1295,7 +1295,7 @@ class hamiltonian(object):
 			self._static = self._static.astype(dtype)
 			self._dynamic = list(self._dynamic)
 			n = len(self._dynamic)
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = self._dynamic[i][0].astype(dtype)
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -1374,7 +1374,7 @@ class hamiltonian(object):
 		self._static = -self._static
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i][-1] = -self._dynamic[i][-1]
 
 		self._dynamic = tuple(self._dynamic)
@@ -1921,7 +1921,7 @@ class hamiltonian(object):
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
 		
-		for i in xrange(n):
+		for i in range(n):
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = new._dynamic[i][0] * other
 
@@ -1964,7 +1964,7 @@ class hamiltonian(object):
 
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			# convert tuple to list to do modifications inplace then convert back to tuple
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = other.dot(new._dynamic[i][0])
@@ -1998,7 +1998,7 @@ class hamiltonian(object):
 
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 
 			self._dynamic[i][0] = self._dynamic[0][i] * other
@@ -2040,12 +2040,12 @@ class hamiltonian(object):
 		n = len(new._dynamic)
 		
 		try:
-			for i in xrange(n):
+			for i in range(n):
 				new._dynamic[i] = list(new._dynamic[i])
 				new._dynamic[i][0] *= other
 				new._dynamic[i] = tuple(new._dynamic[i])
 		except NotImplementedError:
-			for i in xrange(n):
+			for i in range(n):
 				new._dynamic[i] = list(new._dynamic[i])
 				new._dynamic[i][0] = new._dynamic[i][0] * other
 				new._dynamic[i] = tuple(new._dynamic[i])
@@ -2075,13 +2075,13 @@ class hamiltonian(object):
 		n = len(self._dynamic)
 
 		try:
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] *= other
 				self._dynamic[i] = tuple(self._dynamic[i])
 
 		except NotImplementedError:
-			for i in xrange(n):
+			for i in range(n):
 				self._dynamic[i] = list(self._dynamic[i])
 				self._dynamic[i][0] = other * self._dynamic[0]
 				self._dynamic[i] = tuple(self._dynamic[i])
@@ -2205,7 +2205,7 @@ class hamiltonian(object):
 
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = new._dynamic[i][0] * other
 			new._dynamic[i] = tuple(new._dynamic[i])
@@ -2241,7 +2241,7 @@ class hamiltonian(object):
 
 		new._dynamic = list(new._dynamic)
 		n = len(new._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			new._dynamic[i] = list(new._dynamic[i])
 			new._dynamic[i][0] = other * new._dynamic[i][0]
 			new._dynamic[i] = tuple(new._dynamic[i])
@@ -2268,7 +2268,7 @@ class hamiltonian(object):
 
 		self._dynamic = list(self._dynamic)
 		n = len(self._dynamic)
-		for i in xrange(n):
+		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 			self._dynamic[i][0] = self._dynamic[i][0].dot(other)
 			self._dynamic[i] = tuple(self._dynamic[i])
@@ -2387,7 +2387,9 @@ class HamiltonianOperator(object):
 		if check_pcon:
 			self.basis.check_pcon(operator_list,[])
 
-			
+		self._unique_me = self.basis.unique_me
+		
+
 		self._transposed = False
 		self._conjugated = False
 		self._scale = dtype(1.0)
@@ -2453,8 +2455,68 @@ class HamiltonianOperator(object):
 		else:
 			return self.conj().transpose()
 
+	def __repr__(self):
+		return "<{0}x{1} qspin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+
 	def get_LinearOperator(self):
 		return self._LinearOperator
+
+	def __neg__(self):
+		return self.__mul__(-1)
+
+	def __add__(self,other):
+		if other.__class__ in [_np.ndarray,_np.matrix]:
+			dense = True
+		elif _sp.issparse(other):
+			dense = False
+		elif ishamiltonian(other):
+			return self._add_hamiltonian(other)
+		elif _np.isscalar(other):
+			return self._mul_scalar(other)
+		else:
+			dense = True
+			other = np.asanyarray(other)
+
+		if self.shape != other.shape:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+
+		if dense:
+			return self._add_dense(other)
+		else:
+			return self._add_sparse(other)
+
+	def __iadd__(self,other):
+		return NotImplemented
+
+	def __radd__(self,other):
+		return self.__add__(other)
+
+	def __sub__(self,other):
+		if other.__class__ in [_np.ndarray,_np.matrix]:
+			dense = True
+		elif _sp.issparse(other):
+			dense = False
+		elif ishamiltonian(other):
+			return self._sub_hamiltonian(other)
+		elif _np.isscalar(other):
+			return self._mul_scalar(other)
+		else:
+			dense = False
+			other = np.asanyarray(other)
+
+		if self.shape != other.shape:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+
+		if dense:
+			return self._sub_dense(other)
+		else:
+			return self._sub_sparse(other)
+
+	def __isub__(self,other):
+		return NotImplemented
+
+	def __rsub__(self,other):
+		return -(self.__sub__(other))
 
 	def __imul__(self,other):
 		if _np.isscalar(other):
@@ -2472,7 +2534,7 @@ class HamiltonianOperator(object):
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
-			dense = False
+			dense = True
 			other = np.asanyarray(other)
 
 		if self.shape[1] != other.shape[0]:
@@ -2498,7 +2560,7 @@ class HamiltonianOperator(object):
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
-			dense = False
+			dense = True
 			other = np.asanyarray(other)
 
 		if dense:
@@ -2521,35 +2583,6 @@ class HamiltonianOperator(object):
 	def rdot(self,other):
 		return self.__rmul__(other)
 
-	def _mul_scalar(self,other):
-		self._dtype = _np.result_type(self._dtype,other)
-		self._scale *= other
-
-	def _mul_hamiltonian(self,other):
-		return NotImplemented
-
-	def _rmul_hamiltonian(self,other):
-		return NotImplemented
-
-	def _mul_sparse(self,other):
-		result_dtype = _np.result_type(self._dtype,other.dtype)
-		new_other = _sp.lil_matrix(other.shape,dtype=result_dtype).asformat(other.getformat())
-		for opstr, bonds in self.operator_list:
-			for bond in bonds:
-				J = bond[0]
-				indx = _np.asarray(bond[1:])
-				if not self._transposed:
-					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-				else:
-					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
-
-				if self._conjugated:
-					ME = ME.conj()
-
-				new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
-
-		return new_other
-
 	def rmatvec(self,other):
 		return self.H.matvec(other)
 
@@ -2568,7 +2601,18 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				new_other[row] += other[col] * ME
+				if self._unique_me:
+					new_other[row] += (other[col] * ME)
+				else:
+					while len(row) > 0:
+						row_unique,args = _np.unique(row,return_index=True)
+						col_unique = col[args]
+
+						new_other[row_unique] += (other[col_unique] * ME[args])
+						row = _np.delete(row,args)
+						col = _np.delete(col,args)
+						ME = _np.delete(ME,args)
+
 
 		return new_other
 
@@ -2587,13 +2631,92 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				new_other[row] += (other[col].T * ME).T 
+
+				# if there are only one matirx element per row then the indexing should work
+				if self._unique_me:
+					new_other[row] += (other[col] * ME)
+				else:
+				# if there are multiply matrix elements per row as there are for some
+				# symmetries availible then do the indexing for unique elements then
+				# delete them from the list and then repeat until all elements have been 
+				# taken care of. This is less memory efficient but works well for when
+				# there are a few number of matrix elements per row. 
+					while len(row) > 0:
+						row_unique,args = _np.unique(row,return_index=True)
+						col_unique = col[args]
+
+						new_other[row_unique] += (other[col_unique] * ME[args])
+						row = _np.delete(row,args)
+						col = _np.delete(col,args)
+						ME = _np.delete(ME,args)
+	
+		if isinstance(other,_np.matrix):		
+			return _np.asmatrix(new_other)
+		else:
+			return new_other
+
+	def _mul_scalar(self,other):
+		self._dtype = _np.result_type(self._dtype,other)
+		self._scale *= other
+
+	def _mul_hamiltonian(self,other):
+		return NotImplemented
+
+	def _rmul_hamiltonian(self,other):
+		return NotImplemented
+
+	def _add_hamiltonian(self,other):
+		return NotImplemented
+
+	def _sub_hamiltonian(self,other):
+		return NotImplemented
+
+	def _mul_sparse(self,other):
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		new_other = other.__class__(other.shape,dtype=result_dtype)
+		for opstr, bonds in self.operator_list:
+			for bond in bonds:
+				J = bond[0]
+				indx = _np.asarray(bond[1:])
+				if not self._transposed:
+					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+				else:
+					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+
+				if self._conjugated:
+					ME = ME.conj()
+
+				new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
 
 		return new_other
+
+	def _add_sparse(self,other):
+		return NotImplemented
+
+	def _sub_sparse(self,other):
+		return NotImplemented
+
+	def _add_dense(self,other):
+		return NotImplemented
+
+	def _sub_dense(self,other):
+		return NotImplemented
 
 	def eigsh(self,**eigsh_args):
 		return _sla.eigsh(self.LinearOperator,**eigsh_args)
 
+	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
+		"""Method for compatibility with NumPy's ufuncs and dot
+		functions.
+		"""
+
+		if (func == np.dot) or (func == np.multiply):
+			if pos == 0:
+				return self.__mul__(inputs[1])
+			if pos == 1:
+				return self.__rmul__(inputs[0])
+			else:
+				return NotImplemented
 
 
 
@@ -2658,10 +2781,23 @@ class exp_op(object):
 		self._num = num
 		self._endpoint = endpoint
 		self._iterate = iterate
-
 		if self._iterate:
 			if [self._start, self._stop] == [None, None]:
 				raise ValueError("'iterate' can only be True with time discretization. must specify 'start' and 'stop' points.")
+
+			if num is not None:
+				if type(num) is not int:
+					raise ValueError("expecting integer for 'num'.")
+			else:
+				num = 50
+				self._num = num
+
+			if endpoint is not None:
+				if type(endpoint) is not bool:
+					raise ValueError("expecting bool for 'endpoint'.")
+			else: 
+				endpoint = True
+				self._endpoint = endpoint
 
 		 	self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 		else:
@@ -2682,13 +2818,19 @@ class exp_op(object):
 				if not (_np.isreal(start) and _np.isreal(stop)):
 					raise ValueError("expecting real values for 'start' and 'stop'")
 
-				if type(num) is not None:
+				if num is not None:
 					if type(num) is not int:
 						raise ValueError("expecting integer for 'num'.")
+				else:
+					num = 50
+					self._num = num
 
-				if type(endpoint) is not None:
+				if endpoint is not None:
 					if type(endpoint) is not bool:
 						raise ValueError("expecting bool for 'endpoint'.")
+				else: 
+					endpoint = True
+					self._endpoint = endpoint
 
 				self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
@@ -2843,7 +2985,7 @@ class exp_op(object):
 			if is_ham:
 				return _hamiltonian_iter_dot(M, other, self._step, self._grid)
 			else:
-				return _iter_dot(M, other, self.step, grid)
+				return _iter_dot(M, other, self.step, self._grid)
 
 		else:
 			if [self._grid, self._step] == [None, None]:

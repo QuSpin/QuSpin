@@ -4,19 +4,19 @@ def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_typ
 	cdef {c_basis_type} s
 	cdef int error,ss,i,Ns,qg
 	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(2,{np_basis_type})
-	cdef _np.ndarray[NP_INT32_t,ndim=1] col
+	cdef _np.ndarray[NP_INT32_t,ndim=1] row
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 	cdef {c_float_type} n
 
 	Ns = basis.shape[0]
 
-	col,ME,error = {type_code}_spinop(basis,opstr,indx,J)
+	row,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
-		return col,ME,error
+		return row,ME,error
 
 	for i in range(Ns):
-		s = col[i]
+		s = row[i]
 		RefState_PZ(s,L,R)
 
 		s = R[0]
@@ -24,7 +24,7 @@ def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_typ
 		
 		ss = findzstate(basis,Ns,s)
 
-		col[i] = ss
+		row[i] = ss
 		if ss == -1: continue
 
 		n = N[ss]
@@ -33,7 +33,7 @@ def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_typ
 
 		ME[i] *= (pzblock**qg)*sqrt(n)
 
-	return col,ME,error
+	return row,ME,error
 
 
 
