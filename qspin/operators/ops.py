@@ -967,7 +967,7 @@ class hamiltonian(object):
 			function which diagonalizes hamiltonian using dense methods solves for eigen values 
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
 		"""
-		eigvalsh_args["overwrite_a"] = True
+
 		
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
@@ -976,7 +976,9 @@ class hamiltonian(object):
 			return _np.asarray([])
 
 		H_dense = self.todense(time=time)
-		E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
+#		eigvalsh_args["overwrite_a"] = True
+#		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
