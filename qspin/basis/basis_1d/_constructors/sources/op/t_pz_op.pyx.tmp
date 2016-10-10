@@ -58,25 +58,25 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 	cdef {c_basis_type} s
 	cdef int error,ss,i,j,Ns,o,p,c,b,l,qg
 	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(3,{np_basis_type})
-	cdef _np.ndarray[NP_INT32_t,ndim=1] col
+	cdef _np.ndarray[NP_INT32_t,ndim=1] row
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 
 	cdef {c_float_type} k = (2.0*_np.pi*kblock*a)/L
 
 	Ns = basis.shape[0]
 
-	col,ME,error = {type_code}_spinop(basis,opstr,indx,J)
+	row,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
-		return col,ME,error
+		return row,ME,error
 
-	col = _np.resize(col,(2*Ns,))
-	col[Ns:] = -1
+	row = _np.resize(row,(2*Ns,))
+	row[Ns:] = -1
 	ME = _np.resize(ME,(2*Ns,))
 
 	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
 		for i in range(Ns):
-			s = col[i]
+			s = row[i]
 			RefState_T_PZ(s,L,a,R)
 
 			s = R[0]
@@ -85,7 +85,7 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 
 			t = s
 			ss = findzstate(basis,Ns,s)
-			col[i] = ss
+			row[i] = ss
 
 			if ss == -1:
 				continue
@@ -103,7 +103,7 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 			else:
 				o = 1
 
-			s = col[i]
+			s = row[i]
 			RefState_T_PZ(s,L,a,R)
 
 			s = R[0]
@@ -114,14 +114,14 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 
 			if ss == -1:
 				for j in range(i,i+o,1):
-					col[j] = -1
+					row[j] = -1
 				continue
 
 
 			if (ss == i) and (qg == 0) and (l == 0): #diagonal ME
 
 				for j in range(i,i+o,1):
-					col[j] = j
+					row[j] = j
 					ME[j] *= {type_code}_MatrixElement_PZ(L,pzblock,kblock,a,l,k,qg,N[j],N[j],m[j],m[j])
 
 			else: # off diagonal ME
@@ -136,11 +136,11 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 				for c in range(0,o,1):
 					for b in range(0,p,1):
 						j = i + c + Ns*b
-						col[j] = ss + b
+						row[j] = ss + b
 						ME[j] *= {type_code}_MatrixElement_PZ(L,pzblock,kblock,a,l,k,qg,N[i+c],N[ss+b],m[i+c],m[ss+b])
 		
 		
-	return col,ME,error
+	return row,ME,error
 
 
 

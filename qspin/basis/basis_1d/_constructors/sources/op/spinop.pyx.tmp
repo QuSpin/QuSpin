@@ -24,7 +24,7 @@ def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str
 	cdef char m = "-"
 
 
-	cdef _np.ndarray[NP_INT32_t, ndim=1] col = _np.zeros(Ns,dtype=NP_INT32)
+	cdef _np.ndarray[NP_INT32_t, ndim=1] row = _np.zeros(Ns,dtype=NP_INT32)
 	cdef _np.ndarray[{c_matrix_type}, ndim=1] ME = _np.ones(Ns,dtype={np_matrix_type})
 
 	error = 0
@@ -66,20 +66,20 @@ def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str
 			else:
 				error = 1
 
-				return col,ME,error
+				return row,ME,error
 
 		if {check_imag}:
 			if M_E.imag != 0.0:
 				error = -1
-				return col,ME,error
+				return row,ME,error
 
 			ME[i] = M_E.real
-			col[i] = r
+			row[i] = r
 		else:
 			ME[i] = M_E
-			col[i] = r
+			row[i] = r
 
-	return col,ME,error
+	return row,ME,error
 
 
 

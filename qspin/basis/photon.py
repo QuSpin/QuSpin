@@ -115,7 +115,7 @@ class photon_basis(tensor_basis):
 			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype)
 
 			# calculate total matrix element
-			ME *= ME_ph[self._n[row]]
+			ME *= ME_ph[self._n[col]]
 
 			mask = ME != dtype(0.0)
 			row = row[mask]
@@ -556,19 +556,19 @@ class ho_basis(basis):
 			if o == "I":
 				continue
 			elif o == "n":
-				ME *= dtype(_np.abs(col))
+				ME *= dtype(_np.abs(row))
 			elif o == "+":
-				col += 1
-				ME *= _np.sqrt(dtype(_np.abs(col)))
+				row += 1
+				ME *= _np.sqrt(dtype(_np.abs(row)))
 			elif o == "-":
-				ME *= _np.sqrt(dtype(_np.abs(col)))
-				col -= 1
+				ME *= _np.sqrt(dtype(_np.abs(row)))
+				row -= 1
 			else:
 				raise Exception("operator symbol {0} not recognized".format(o))
 
-		mask = ( col < 0)
-		mask += (col >= (self._Ns))
-		col[mask] = row[mask]
+		mask = ( row < 0)
+		mask += (row >= (self._Ns))
+		row[mask] = col[mask]
 		ME[mask] = 0.0
 
 		
