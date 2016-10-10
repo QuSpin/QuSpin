@@ -70,7 +70,7 @@ def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str
 				r = r ^ b
 			elif c_opstr[j] == y:
 				r = r ^ b
-				M_E *= 1.0j*(-1.0)**a
+				M_E *= 1.0j*(-1.0)**(a+1)
 			elif c_opstr[j] == p:
 				if a == 1:
 					r = -1
