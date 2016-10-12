@@ -16,8 +16,13 @@ seed()
 This test checks the functions 'obs_vs_time', 'KZ_div' and 'mean_level_spacing'.
 """
 
-dtypes={"float32":np.float32,"float64":np.float64,"float128":np.float128,
-		"complex64":np.complex64,"complex128":np.complex128,"complex256":np.complex256}
+dtypes={"float32":np.float32,
+		"float64":np.float64,
+#		"float128":np.float128,
+		"complex64":np.complex64,
+		"complex128":np.complex128,
+#		"complex256":np.complex256
+	}
 
 atols={"float32":1E-4,"float64":1E-13,"float128":1E-13,
 		"complex64":1E-4,"complex128":1E-13,"complex256":1E-13}
@@ -25,7 +30,7 @@ atols={"float32":1E-4,"float64":1E-13,"float128":1E-13,
 
 L=16
 basis = spin_basis_1d(L)
-basis2 = spin_basis_1d(L,Nup=L/2,kblock=0,pblock=1,zblock=1)
+basis2 = spin_basis_1d(L,Nup=L//2,kblock=0,pblock=1,zblock=1)
 
 
 J_zz = [[1.0,i,(i+1)%L] for i in range(0,L)] 

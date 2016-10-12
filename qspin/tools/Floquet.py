@@ -28,11 +28,12 @@ __all__ = ['Floquet_t_vec','Floquet']
 def range_iter(start,stop,step):
 	from itertools import count
 	counter = count(start,step)
-	i = counter.next()
-	yield i
-	while i < stop:
+	while True:
 		i = counter.next()
-		yield i
+		if i < stop:
+			yield i
+		else:
+			break
 
 
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):

@@ -60,14 +60,14 @@ def spin_photon_entropy(dtype,symm,Sent_args):
 		basis = photon_basis(spin_basis_1d,L=L,Nph=Nph)
 
 	# spin
-	x_field=[[-1.0,i] for i in xrange(L)]
-	z_field=[[-1.0,i] for i in xrange(L)]
-	J_nn=[[-1.0,i,(i+1)%L] for i in xrange(L)]
+	x_field=[[-1.0,i] for i in range(L)]
+	z_field=[[-1.0,i] for i in range(L)]
+	J_nn=[[-1.0,i,(i+1)%L] for i in range(L)]
 	# spin-photon
-	absorb=[[-0.5*1.0/np.sqrt(Nph),i] for i in xrange(L)]
-	emit=[[-0.5*np.conj(1.0)/np.sqrt(Nph),i] for i in xrange(L)]
+	absorb=[[-0.5*1.0/np.sqrt(Nph),i] for i in range(L)]
+	emit=[[-0.5*np.conj(1.0)/np.sqrt(Nph),i] for i in range(L)]
 	# photon
-	ph_energy = [[11.0/L,i] for i in xrange(L)]
+	ph_energy = [[11.0/L,i] for i in range(L)]
 
 	static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
 
@@ -100,14 +100,14 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 		basis = photon_basis(spin_basis_1d,L=L,Ntot=Ntot)
 
 	# spin
-	x_field=[[-1.0,i] for i in xrange(L)]
-	z_field=[[-1.0,i] for i in xrange(L)]
-	J_nn=[[-1.0,i,(i+1)%L] for i in xrange(L)]
+	x_field=[[-1.0,i] for i in range(L)]
+	z_field=[[-1.0,i] for i in range(L)]
+	J_nn=[[-1.0,i,(i+1)%L] for i in range(L)]
 	# spin-photon
-	absorb=[[-0.5*1.0/np.sqrt(Ntot),i] for i in xrange(L)]
-	emit=[[-0.5*np.conj(1.0)/np.sqrt(Ntot),i] for i in xrange(L)]
+	absorb=[[-0.5*1.0/np.sqrt(Ntot),i] for i in range(L)]
+	emit=[[-0.5*np.conj(1.0)/np.sqrt(Ntot),i] for i in range(L)]
 	# photon
-	ph_energy = [[11.0/L,i] for i in xrange(L)]
+	ph_energy = [[11.0/L,i] for i in range(L)]
 
 	static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
 
@@ -133,13 +133,13 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 
 
 
-for _r in xrange(10): # do 10 random checks
+for _r in range(10): # do 10 random checks
 
 	L=6
 	if uniform(0.0,1.0) < 0.5:
-		chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
+		chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	else:
-		chain_subsys=[r for r in xrange(L)]
+		chain_subsys=[r for r in range(L)]
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
@@ -199,13 +199,13 @@ for _r in xrange(10): # do 10 random checks
 
 
 
-for _r in xrange(10): # do 10 random checks
+for _r in range(10): # do 10 random checks
 
 	L=6
 	if uniform(0.0,1.0) < 0.5:
-		chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
+		chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	else:
-		chain_subsys=[r for r in xrange(L)]
+		chain_subsys=[r for r in range(L)]
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
@@ -263,10 +263,10 @@ for _r in xrange(10): # do 10 random checks
 
 
 
-for _r in xrange(10): # do 10 random checks
+for _r in range(10): # do 10 random checks
 
 	L=8
-	chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
+	chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
