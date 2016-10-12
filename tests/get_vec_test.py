@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 import sys,os
-qspin_path = os.path.join(os.getcwd(),"../")
+qspin_path = os.path.join(os.getcwd(),"..//")
 sys.path.insert(0,qspin_path)
 
 from qspin.operators import hamiltonian
@@ -133,13 +133,13 @@ def getvec_zA_zB(L,kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
 
 
 def check_getvec(L,a=1,sparse=True):
-	for k in range(-L/a,L/a):
+	for k in range(-L//a,L//a):
 		getvec(L,kblock=k,a=a,sparse=sparse)
 
 
 	for j in range(-1,2,2):
 		getvec(L,pblock=j,a=a,sparse=sparse)
-		for k in range(-L/a,L/a):
+		for k in range(-L//a,L//a):
 			getvec(L,kblock=k,pblock=j,a=a,sparse=sparse)
 
 	Nup=None
@@ -147,66 +147,66 @@ def check_getvec(L,a=1,sparse=True):
 	for i in range(-1,2,2):
 		for j in range(-1,2,2):
 			getvec(L,Nup=Nup,pblock=i,zblock=j,a=a,sparse=sparse)
-			for k in range(-L/a,L/a):
+			for k in range(-L//a,L//a):
 				getvec(L,kblock=k,Nup=Nup,pblock=i,zblock=j,a=a,sparse=sparse)
 
 	for j in range(-1,2,2):
 			getvec(L,Nup=Nup,pzblock=j,a=a,sparse=sparse)
-			for k in range(-L/a,L/a):
+			for k in range(-L//a,L//a):
 				 getvec(L,kblock=k,Nup=Nup,pzblock=j,a=a,sparse=sparse)
 
 	for j in range(-1,2,2):
 		getvec(L,Nup=Nup,zblock=j,a=a)
-		for k in range(-L/a,L/a):
+		for k in range(-L//a,L//a):
 			getvec(L,kblock=k,Nup=Nup,zblock=j,a=a,sparse=sparse)
 
 	for Nup in range(L+1):
-		for k in range(-L/a,L/a):
+		for k in range(-L//a,L//a):
 				getvec(L,Nup=Nup,kblock=k,a=a,sparse=sparse)
 
 	for Nup in range(0,L+1):
 		for j in range(-1,2,2):
 			getvec(L,Nup=Nup,pblock=j,a=a,sparse=sparse)
-			for k in range(-L/a,L/a):
+			for k in range(-L//a,L//a):
 				getvec(L,kblock=k,Nup=Nup,pblock=j,a=a,sparse=sparse)
 
 	if (L%2)==0:
-		Nup=L/2
+		Nup=L//2
 		for i in range(-1,2,2):
 			for j in range(-1,2,2):
 				getvec(L,Nup=Nup,pblock=i,zblock=j,a=a,sparse=sparse)
-				for k in range(-L/a,L/a):
+				for k in range(-L//a,L//a):
 					getvec(L,kblock=k,Nup=Nup,pblock=i,zblock=j,a=a,sparse=sparse)
 
 		for j in range(-1,2,2):
 				getvec(L,Nup=Nup,pzblock=j,a=a,sparse=sparse)
-				for k in range(-L/a,L/a):
+				for k in range(-L//a,L//a):
 					getvec(L,kblock=k,Nup=Nup,pzblock=j,a=a,sparse=sparse)
 
 		for j in range(-1,2,2):
 			getvec(L,Nup=Nup,zblock=j,a=a,sparse=sparse)
-			for k in range(-L/a,L/a):
+			for k in range(-L//a,L//a):
 				getvec(L,kblock=k,Nup=Nup,zblock=j,a=a,sparse=sparse)
 
 def check_getvec_zA_zB(L,a=2,sparse=True):
 
-	for k in range(-L/a,L/a):
+	for k in range(-L//a,L//a):
 		getvec_zA_zB(L,kblock=k,a=a,sparse=sparse)
 	
 	for j in range(-1,2,2):
 		getvec_zA_zB(L,zAblock=j,a=a,sparse=sparse)
-		for k in range(-L/a,L/a):
+		for k in range(-L//a,L//a):
 			getvec_zA_zB(L,kblock=k,zAblock=j,a=a,sparse=sparse)
 	
 	for j in range(-1,2,2):
 		getvec_zA_zB(L,zBblock=j,a=a,sparse=sparse)
-		for k in range(-L/a,L/a):
+		for k in range(-L//a,L//a):
 			getvec_zA_zB(L,kblock=k,zBblock=j,a=a,sparse=sparse)
 
 	for i in range(-1,2,2):
 		for j in range(-1,2,2):
 			getvec_zA_zB(L,zAblock=i,zBblock=j,a=a,sparse=sparse)
-			for k in range(-L/a,L/a):
+			for k in range(-L//a,L//a):
 				getvec_zA_zB(L,kblock=k,zAblock=i,zBblock=j,a=a,sparse=sparse)
 	
 
