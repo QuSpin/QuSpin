@@ -14,7 +14,7 @@ class basis(object):
 		self._unique_me = True
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
-                             " to be instantiated directly.")
+							 " to be instantiated directly.")
 
 
 	def __str__(self):

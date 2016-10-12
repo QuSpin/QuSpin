@@ -549,11 +549,11 @@ class _strobo_times():
 
 	@property
 	def inds(self):
-	    return self._inds
+		return self._inds
 
 	@property
 	def vals(self):
-	    return self._vals
+		return self._vals
 	
 		 
 
@@ -582,31 +582,31 @@ class _periodic_ramp():
 
 	@property
 	def N(self):
-	    return self._N
+		return self._N
 	
 	@property
 	def vals(self):
-	    return self._vals
+		return self._vals
 
 	@property
 	def i(self):
-	    return self._i
+		return self._i
 
 	@property
 	def f(self):
-	    return self._f
+		return self._f
 
 	@property
 	def tot(self):
-	    return self._tot
+		return self._tot
 
 	@property
 	def len(self):
-	    return self._len
+		return self._len
 
 	@property
 	def strobo(self):
-	    return self._strobo
+		return self._strobo
 	
 	
 	

@@ -871,7 +871,7 @@ class spin_basis_1d(basis):
 
 	@property
 	def L(self):
-	    return self._L
+		return self._L
 
 	@property
 	def N(self):

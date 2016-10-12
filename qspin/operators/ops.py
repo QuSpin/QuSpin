@@ -40,7 +40,7 @@ def anti_commutator(H1,H2):
 
 
 class HamiltonianEfficiencyWarning(Warning):
-    pass
+	pass
 
 
 #global names:
@@ -1392,7 +1392,7 @@ class hamiltonian(object):
 	##################################
 	# symbolic arithmetic operations #
 	# currently only have +,-,* like #
-	# operators implimented.         #
+	# operators implimented.		 #
 	##################################
 
 
@@ -2847,7 +2847,7 @@ class exp_op(object):
 
 	@property
 	def ndim(self):
-	    return self._ndim
+		return self._ndim
 	
 	@property
 	def H(self):

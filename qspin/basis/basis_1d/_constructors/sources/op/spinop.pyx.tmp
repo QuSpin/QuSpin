@@ -37,8 +37,7 @@ def {type_code}_spinop(_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] basis, str
 	cdef int N_indx = indx.shape[0]
 	Ns = basis.shape[0]
 
-	cdef char *c_opstr = <char *>malloc(N_indx * sizeof(char))
-	c_opstr = PyString_AsString(opstr)
+	cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
 
 	cdef char I = "I"
 	cdef char x = "x"
