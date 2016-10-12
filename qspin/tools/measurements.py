@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
@@ -220,12 +222,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 
 	if chain_subsys is not None:
+		try:
+			chain_subsys = [i for i in iter(chain_subsys)]
+		except TypeError:
+			raise TypeError("Expecting iterable for for 'chain_subsys'!")
 		if len(chain_subsys) == 0:
-			raise TypeError("Expecting a nonempty list for 'chain_subsys'!")
-		if not isinstance(chain_subsys,list):
-			raise TypeError("'subsys' must be a list of integers to label the lattice site numbers of the subsystem!")
+			raise TypeError("Expecting a nonempty iterable for 'chain_subsys'!")
 		elif min(chain_subsys) < 0:
-			raise TypeError("'subsys' must be a list of nonnegative numbers!")
+			raise TypeError("'subsys' must be contain nonnegative numbers!")
 		elif max(chain_subsys) > N-1:
 			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 		elif len(set(chain_subsys)) < len(chain_subsys):
@@ -323,7 +327,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
-			chain_subsys=[i for i in xrange( int(N/2) )]
+			chain_subsys=[i for i in range( N//2 )]
 			warnings.warn("Subsystem contains sites {}.".format(chain_subsys),stacklevel=4)
 		
 	
@@ -337,7 +341,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
-		[system.append(i) for i in xrange(N) if not i in chain_subsys]
+		[system.append(i) for i in range(N) if not i in chain_subsys]
 
 
 		'''
@@ -363,7 +367,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)
 			# update reshape tuple
-			reshape_tuple1 = (Ns,) + tuple([2 for i in xrange(N)])
+			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)])
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -373,7 +377,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			# performs 4)
 			v=v.transpose(system) 
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**N/Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
 			v = _np.reshape(v,reshape_tuple2)
 			
 
@@ -381,7 +385,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
-			chain_subsys=[i for i in xrange( int(N) )]
+			chain_subsys=[i for i in range( int(N) )]
 			warnings.warn("subsystem set to the entire chain.",stacklevel=4)
 
 
@@ -391,7 +395,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
-		[system.append(i) for i in xrange(N) if not i in chain_subsys]
+		[system.append(i) for i in range(N) if not i in chain_subsys]
 		
 		# re-write the state in the initial basis
 		if basis.Nph is not None: # no total particle conservation
@@ -432,7 +436,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
-			reshape_tuple1 = (Ns,) + tuple([2 for i in xrange(N)]) + (Nph+1,)
+			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)]) + (Nph+1,)
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -818,7 +822,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 	Expt_Diag_Vstate={}
 	# compute densities
-	for key,value in Expt_Diag.iteritems():
+	for key,value in Expt_Diag.items():
 		if densities:
 			if 'rdm' in key:
 				value *= 1.0/N_A
@@ -980,7 +984,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 	ham_dict={}
 	obs_dict={}
-	for key, val in Obs_dict.iteritems():
+	for key, val in Obs_dict.items():
 		if _ishamiltonian(val):
 			ham_dict[key]=val
 		else:
@@ -1071,11 +1075,11 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 		variables.append("Sent_time")
 	
 	if return_state:
-		for key,Obs in obs_dict.iteritems():
+		for key,Obs in obs_dict.items():
 			psi_l = Obs.dot(psi_t)
 			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
 	
-		for key,ham in ham_dict.iteritems():
+		for key,ham in ham_dict.items():
 			psi_l = ham.dot(psi_t,time=times,check=False)
 			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
 			
@@ -1092,14 +1096,14 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 		time = times[0]
 
-		for key,Obs in obs_dict.iteritems():
+		for key,Obs in obs_dict.items():
 			psi_l = Obs.dot(psi)
 			val = _np.vdot(psi,psi_l).real
 			dtype = _np.dtype(val)
 			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
 			Expt_time[key][0] = val
 
-		for key,ham in ham_dict.iteritems():
+		for key,ham in ham_dict.items():
 			val = ham.matrix_ele(psi,psi,time=time).real
 			dtype = _np.dtype(val)
 			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
@@ -1111,7 +1115,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 		if len(Sent_args) > 0:
 			Sent_time = ent_entropy(psi,**Sent_args)
 
-			for key,val in Sent_time.iteritems():
+			for key,val in Sent_time.items():
 				dtype = _np.dtype(val)
 				Sent_time[key] = _np.zeros((len(times),),dtype=dtype)
 				Sent_time[key][0] = val
@@ -1123,12 +1127,12 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 			time = times[m+1]
 
-			for key,Obs in obs_dict.iteritems():
+			for key,Obs in obs_dict.items():
 				psi_l = Obs.dot(psi)
 				val = _np.vdot(psi,psi_l).real
 				Expt_time[key][m+1] = val 
 
-			for key,ham in ham_dict.iteritems():
+			for key,ham in ham_dict.items():
 				val = ham.matrix_ele(psi,psi,time=time).real
 				Expt_time[key][m+1] = val
 
@@ -1142,7 +1146,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	return_dict = {}
 	for i in variables:
 		if i == 'Expt_time':
-			for key,val in Expt_time.iteritems():
+			for key,val in Expt_time.items():
 				return_dict[key] = _np.asarray(val)
 		else:
 			return_dict[i] = locals()[i]

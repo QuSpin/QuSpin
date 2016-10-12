@@ -271,7 +271,6 @@ def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
 	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,kblock,a)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
-
 	col = _np.arange(len(basis),dtype=_index_type)
 	mask = row >= 0
 	col = col[ mask ]

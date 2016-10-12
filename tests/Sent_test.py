@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
@@ -192,7 +194,7 @@ for _r in xrange(10): # do 10 random checks
 			Sent_args['svd_return_vec']=[1,1,1]
 			spin_entropy(dtype,symm,Sent_args)
 
-	print "entropy (photon, conserved) random check {} finished successfully".format(_r)
+	print("entropy (photon, conserved) random check {} finished successfully".format(_r))
 
 
 
@@ -257,7 +259,7 @@ for _r in xrange(10): # do 10 random checks
 			Sent_args['svd_return_vec']=[1,1,1]
 			spin_entropy(dtype,symm,Sent_args)
 
-	print "entropy (photon) random check {} finished successfully".format(_r)
+	print("entropy (photon) random check {} finished successfully".format(_r))
 
 
 
@@ -319,6 +321,6 @@ for _r in xrange(10): # do 10 random checks
 			Sent_args['svd_return_vec']=[1,1,1]
 			spin_entropy(dtype,symm,Sent_args)
 
-	print "entropy (spin) random check {} finished successfully".format(_r)
+	print("entropy (spin) random check {} finished successfully".format(_r))
 
-print "Entanglement entropy checks passed!"
+print("Entanglement entropy checks passed!")

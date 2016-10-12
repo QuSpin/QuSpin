@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 #local modules:
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
@@ -141,7 +142,7 @@ class hamiltonian(object):
 
 		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
 
- 		* _.ndim: number of dimensions, always 2.
+		* _.ndim: number of dimensions, always 2.
 		
 		* _.Ns: number of states in the hilbert space.
 
@@ -565,7 +566,7 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			time = _np.asarray(time)
 			if V.ndim == 2 and V.shape[0] > 1:
- 				if V.shape[0] != self._shape[1]:
+				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 				if V.shape[0] != len(time):
@@ -574,7 +575,7 @@ class hamiltonian(object):
 				return _np.vstack([self.rdot(v,time=t) for v,t in zip(V[:],time)])
 
 			else:
- 				if V.shape[1] != self._shape[0]:
+				if V.shape[1] != self._shape[0]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				return _np.vstack([self.dot(V,time=t) for t in time])
@@ -681,7 +682,7 @@ class hamiltonian(object):
 				raise ValueError("Expecting time.ndim < 2.")
 
 			if V.ndim == 2 and V.shape[1] > 1:
- 				if V.shape[0] != self._shape[1]:
+				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				if V.shape[1] != len(time):
@@ -690,7 +691,7 @@ class hamiltonian(object):
 				V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V.T[:],time)]).T
 				return V_dot
 			else:
- 				if V.shape[0] != self._shape[1]:
+				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 				
 				V_dot = _np.vstack([self.dot(V,time=t,check=check) for t in time]).T
@@ -1063,13 +1064,13 @@ class hamiltonian(object):
 		
 		for i,t in enumerate(times):
 			if t == t0:
-				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				v[i,:] = _np.array(v0)
 				continue
 
 			solver.integrate(t)
 			if solver.successful():
-				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= norm(solver._y)
 				v[i,:] = _np.array(solver.y)
 			else:
@@ -1084,14 +1085,14 @@ class hamiltonian(object):
 
 		for i,t in enumerate(times):
 			if t == t0:
-				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				yield _np.array(v0)
 				continue
 				
 
 			solver.integrate(t)
 			if solver.successful():
-				if verbose: print "evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y))
+				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= norm(solver._y)
 				yield _np.array(solver.y)
 			else:
@@ -1112,7 +1113,7 @@ class hamiltonian(object):
 			raise TypeError('expecting scalar argument for time')
 
 
-		H = _sp.csr_matrix(self._static)	
+		H = _sp.csr_matrix(self._static)
 
 		for Hd,f,f_args in self._dynamic:
 			Hd = _sp.csr_matrix(Hd)
@@ -1137,7 +1138,7 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
 
-		H = _sp.csc_matrix(self._static)	
+		H = _sp.csc_matrix(self._static)
 		for Hd,f,f_args in self._dynamic:
 			Hd = _sp.csc_matrix(Hd)
 			try:
@@ -2119,7 +2120,7 @@ class hamiltonian(object):
 
 		new.sum_duplicates()
 		
-		return new	
+		return new
 
 
 
@@ -2335,7 +2336,7 @@ class HamiltonianOperator(object):
 
 		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
 
- 		* _.ndim: number of dimensions, always 2.
+		* _.ndim: number of dimensions, always 2.
 		
 		* _.Ns: number of states in the hilbert space.
 
@@ -2799,7 +2800,7 @@ class exp_op(object):
 				endpoint = True
 				self._endpoint = endpoint
 
-		 	self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
+			self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 		else:
 			if [self._start, self._stop] == [None, None]:
 				if self._num != None:
@@ -2990,9 +2991,9 @@ class exp_op(object):
 		else:
 			if [self._grid, self._step] == [None, None]:
 				if is_ham:
-					return _hamiltonian_dot(M, other)		
+					return _hamiltonian_dot(M, other)
 				else:
-					return _expm_multiply(M, other)				
+					return _expm_multiply(M, other)
 			else:
 
 				if is_sp:
@@ -3000,7 +3001,7 @@ class exp_op(object):
 					return _np.array([mat for mat in mats])
 				elif is_ham:
 					mats = _hamiltonian_iter_dot(M, other, self._step, self._grid)
-					return _np.array([mat for mat in mats])				
+					return _np.array([mat for mat in mats])
 				else:
 					return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
@@ -3046,7 +3047,7 @@ class exp_op(object):
 					return _np.array([mat for mat in mats])
 				elif is_ham:
 					mats = _hamiltonian_iter_rdot(M, other.T, self._step, self._grid)
-					return _np.array([mat for mat in mats])				
+					return _np.array([mat for mat in mats])
 				else:
 					return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 

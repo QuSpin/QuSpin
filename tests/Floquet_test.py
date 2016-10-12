@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
@@ -89,8 +91,8 @@ for _r in xrange(10): # 10 random realisations
 
 			np.testing.assert_allclose(EF_H,EF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 		except AssertionError:
-			print 'dtype, (g,h,Omega) =', dtype, (g,h,Omega)
-			print 'exiting in line', lineno()+1
+			print('dtype, (g,h,Omega) =', dtype, (g,h,Omega))
+			print('exiting in line', lineno()+1)
 			exit()
 		###
 		# call Floquet class for evodict a coutinous H from a Hamiltonian object
@@ -113,8 +115,8 @@ for _r in xrange(10): # 10 random realisations
 			np.testing.assert_allclose(EF_H,EF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 			np.testing.assert_allclose(VF_H,VF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 		except AssertionError:
-			print 'dtype, (g,h,Omega) =', dtype, (g,h,Omega)
-			print 'exiting in line', lineno()+1
+			print('dtype, (g,h,Omega) =', dtype, (g,h,Omega))
+			print('exiting in line', lineno()+1)
 			exit()
 
 		###
@@ -143,8 +145,8 @@ for _r in xrange(10): # 10 random realisations
 			np.testing.assert_allclose(VF_H,VF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 			np.testing.assert_allclose(UF_H,UF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 		except AssertionError:
-			print 'dtype, (g,h,Omega) =', dtype, (g,h,Omega)
-			print 'exiting in line', lineno()+1
+			print('dtype, (g,h,Omega) =', dtype, (g,h,Omega))
+			print('exiting in line', lineno()+1)
 			exit()
 
 		###
@@ -178,8 +180,8 @@ for _r in xrange(10): # 10 random realisations
 			np.testing.assert_allclose(UF_H,UF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 			np.testing.assert_allclose(HF_H,HF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 		except AssertionError:
-			print 'dtype, (g,h,Omega) =', dtype, (g,h,Omega)
-			print 'exiting in line', lineno()+1
+			print('dtype, (g,h,Omega) =', dtype, (g,h,Omega))
+			print('exiting in line', lineno()+1)
 			exit()
 
 		###
@@ -218,8 +220,8 @@ for _r in xrange(10): # 10 random realisations
 			np.testing.assert_allclose(HF_H,HF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 			np.testing.assert_allclose(thetaF_H,thetaF_Hevolve,atol=atol,err_msg='Failed Floquet object comparison!')
 		except AssertionError:
-			print 'dtype, (g,h,Omega) =', dtype, (g,h,Omega)
-			print 'exiting in line', lineno()+1
+			print('dtype, (g,h,Omega) =', dtype, (g,h,Omega))
+			print('exiting in line', lineno()+1)
 			exit()
 
-	print "Floquet class random check {} finished successfully".format(_r)
+	print("Floquet class random check {} finished successfully".format(_r))

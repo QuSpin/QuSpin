@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
@@ -76,4 +78,4 @@ for _i in dtypes.keys():
 	E2 = H2.eigvalsh() 
 	mean_level_spacing(E2)
 
-print "project_op, KZ_div and mean_level_spacing checks passed!"
+print("project_op, KZ_div and mean_level_spacing checks passed!")

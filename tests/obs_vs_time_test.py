@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
@@ -75,7 +77,7 @@ for _i in dtypes.keys():
 	psi_t2=H.evolve(psi0,0.0,t,rtol=solver_rtol,atol=solver_atol)
 
 	Obs_list = {"Ozz_t":Ozz,"Ozz":Ozz(time=np.sqrt(np.exp(0.0)) )} 
-	Sent_args={'basis':basis,'chain_subsys':range(L/2)}
+	Sent_args={'basis':basis,'chain_subsys':range( L//2 )}
 
 	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
 	Obs2 = obs_vs_time(psi_t2,t,Obs_list,return_state=True,Sent_args=Sent_args)
@@ -129,6 +131,6 @@ for _i in dtypes.keys():
 	np.testing.assert_allclose(psi_t2,psi_t4,atol=atol,rtol=rtol,err_msg='Failed exp_op test!')
 
 
-print "obs_vs_time checks passed!"
+print("obs_vs_time checks passed!")
 
 

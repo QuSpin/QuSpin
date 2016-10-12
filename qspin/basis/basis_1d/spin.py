@@ -2,8 +2,8 @@ from ..base import basis,MAXPRINT
 from . import _constructors as _cn
 from ._1d_kblock_Ns import kblock_Ns
 from . import _check_spin_1d_symm as _check
-
 import numpy as _np
+from scipy.misc import comb
 from numpy import array,asarray
 from numpy import right_shift,left_shift,invert,bitwise_and,bitwise_or,bitwise_xor
 from numpy import cos,sin,exp,pi
@@ -91,7 +91,7 @@ class spin_basis_1d(basis):
 						raise ValueError("spin inversion symmetry not compatible with particle conserving photon_basis.")
 					
 					# loop over the first Np particle sectors (use the iterator initialization).
-					spin_basis_1d.__init__(self,L,Nup=xrange(_Np+1),_Np=None,**blocks)
+					spin_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
@@ -158,7 +158,7 @@ class spin_basis_1d(basis):
 		self._L=L
 		if type(Nup) is int:
 			self._conserved="M"
-			self._Ns=ncr(L,Nup) 
+			self._Ns=comb(L,Nup,exact=True)
 		else:
 			self._conserved=""
 			self._Ns=2**L
@@ -192,12 +192,15 @@ class spin_basis_1d(basis):
 
 		if kblock is not None and (a < L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
-			kblock = kblock % (L/a)
+			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
+			Nup_tup = Nup
+			if Nup is not None:
+				if Nup > L//2: Nup_tup = L - Nup
+			 
+				
 
-			if Nup > L/2: Nup_tup = L - Nup
-			else: Nup_tup = Nup
-			if kblock > L/(2*a): kblock_tup = L/a - kblock
+			if kblock > L//(2*a): kblock_tup = L//a - kblock
 			else: kblock_tup = kblock
 
 			self._Ns = kblock_Ns.get((L,a,Nup_tup,kblock_tup))
@@ -216,7 +219,7 @@ class spin_basis_1d(basis):
 			if (type(Nup) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
 				if (L % 2) != 0:
 					raise ValueError("spin inversion symmetry with magnetization conservation must be used with even number of sites")
-				if Nup != L/2:
+				if Nup != L//2:
 					raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
 
 			if (type(Nup) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
@@ -791,7 +794,7 @@ class spin_basis_1d(basis):
 				c[ind_neg] = -sin(dtype(k*r))
 				_np.divide(c,norms,c)
 		else:
-			ind_pos = _np.fromiter(xrange(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
+			ind_pos = _np.fromiter(range(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
 			ind_neg = _np.array([],dtype=_np.int32)
 			def C(r,k,c,norms,dtype,*args):
 				if k == 0.0:
@@ -862,10 +865,10 @@ class spin_basis_1d(basis):
 			base.check_pcon(self,static_list,dynamic_list)
 	"""
 
-	def check_symm(self,static_list,dynamic_list,basis=None):
-		if basis is None: 
-			basis = self
-		_check.check_symm(basis,static_list,dynamic_list,self._L)
+#	def check_symm(self,static_list,dynamic_list,basis=None):
+#		if basis is None: 
+#			basis = self
+#		_check.check_symm(basis,static_list,dynamic_list,self._L)
 
 
 
@@ -890,8 +893,8 @@ class spin_basis_1d(basis):
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(xrange(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
 			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis)]
 
@@ -977,7 +980,7 @@ class spin_basis_1d(basis):
 				return [tuple(op)]	
 		else:
 	 
-			i = len(opstr)/2
+			i = len(opstr)//2
 			op1 = list(op)
 			op1[0] = opstr[:i]
 			op1[1] = tuple(indx[:i])
@@ -1094,7 +1097,7 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	c = _np.zeros(basis.shape,dtype=v0.dtype)	
 	v = _np.zeros(shape,dtype=v0.dtype)
 
-	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in xrange(len(basis))])
+	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in range(len(basis))])
 
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
@@ -1102,7 +1105,7 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		k = 0.0
 		a = L
 
-	for r in xrange(0,L/a):
+	for r in range(0,L//a):
 #		print bits.format(*basis)
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
 		vc = (v0.T*c).T
@@ -1193,7 +1196,7 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 
 
 
-	for r in xrange(0,L/a):
+	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 
 		vc = (v0.T*c).T
@@ -1286,7 +1289,7 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 	v = _sm.csr_matrix(shape,dtype=dtype)
 
 
-	for r in xrange(0,L/a):
+	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 		data_pos = c[ind_pos]
 		data_neg = c[ind_neg]
@@ -1354,39 +1357,10 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def ncr(n, r):
-	import operator as _op
-# this function calculates n choose r used to find the total number of basis states when the magnetization is conserved.
-	r = min(r, n-r)
-	if r == 0: return 1
-	elif r < 0: return 0 
-	numer = reduce(_op.mul, xrange(n, n-r, -1))
-	denom = reduce(_op.mul, xrange(1, r+1))
-	return numer//denom
-
-
-
-
 def fliplr(x,length):
 	x1 = array(x)
 	x[:] = 0
-	for i in xrange(length):
+	for i in range(length):
 		x2 = array(x1)
 		x2 = right_shift(x2,i)
 		bitwise_and(x2,1,out=x2)
@@ -1402,12 +1376,12 @@ def flipall(x,length):
 
 def flip_sublat_A(x,length):
 	# flip all even bits: sublat A
-	mask = sum(2**i for i in xrange(0,length,2))
+	mask = sum(2**i for i in range(0,length,2))
 	bitwise_xor(x,mask,out=x)
 	
 def flip_sublat_B(x,length):
 	# flip all odd bits: sublat B
-	mask = sum(2**i for i in xrange(1,length,2))
+	mask = sum(2**i for i in range(1,length,2))
 	bitwise_xor(x,mask,out=x)
 
 
