@@ -206,7 +206,7 @@ class hamiltonian(object):
 			if basis is not None:
 				kwargs.pop('basis')
 				if len(kwargs) >= 0:
-					wrong_keys = kwargs.keys()
+					wrong_keys = set(kwargs.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
 					raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
 

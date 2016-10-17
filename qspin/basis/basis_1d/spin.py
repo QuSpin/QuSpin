@@ -66,11 +66,11 @@ class spin_basis_1d(basis):
 		if blocks.get("pauli") is None:
 			blocks["pauli"] = True
 
-		input_keys = blocks.keys()
+		input_keys = set(blocks.keys())
 		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","pauli","a"])
 
-		if input_keys <= expected_keys:
-			wrong_keys = keys - input_keys 
+		if not input_keys <= expected_keys:
+			wrong_keys = expected_keys - input_keys 
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
  
