@@ -201,7 +201,14 @@ class hamiltonian(object):
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
 			# check if user input basis
-			basis=kwargs.get('basis')	
+			basis=kwargs.get('basis')
+
+			if basis is not None:
+				kwargs.pop('basis')
+				if len(kwargs) >= 0:
+					wrong_keys = set(kwargs.keys())
+					temp = ", ".join(["{}" for key in wrong_keys])
+					raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
 
 			# if not
 			if basis is None: 

@@ -66,6 +66,14 @@ class spin_basis_1d(basis):
 		if blocks.get("pauli") is None:
 			blocks["pauli"] = True
 
+		input_keys = set(blocks.keys())
+		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","pauli","a"])
+
+		if not input_keys <= expected_keys:
+			wrong_keys = expected_keys - input_keys 
+			temp = ", ".join(["{}" for key in wrong_keys])
+			raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
+ 
 
 		if type(Nup) is int:
 			self._check_pcon=True
@@ -123,6 +131,7 @@ class spin_basis_1d(basis):
 
 	def _make_Nup_block(self,L,Nup=None,**blocks):
 		# getting arguments which are used in basis.
+		kwkeys = set(blocks.keys())
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
 		zAblock=blocks.get("zAblock")
