@@ -55,9 +55,9 @@ def spin_photon_entropy(dtype,symm,Sent_args):
 	Nph = 6
 
 	if symm:
-		basis = photon_basis(spin_basis_1d,L=L,Nph=Nph,kblock=0,pblock=1) 
+		basis = photon_basis(spin_basis_1d,L,Nph=Nph,kblock=0,pblock=1) 
 	else:
-		basis = photon_basis(spin_basis_1d,L=L,Nph=Nph)
+		basis = photon_basis(spin_basis_1d,L,Nph=Nph)
 
 	# spin
 	x_field=[[-1.0,i] for i in range(L)]
@@ -72,7 +72,7 @@ def spin_photon_entropy(dtype,symm,Sent_args):
 	static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
 
 
-	H=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_herm=False,check_symm=False)
+	H=hamiltonian(static,[],L,dtype=np.float64,basis=basis,check_herm=False,check_symm=False)
 
 
 	# diagonalise H
@@ -95,9 +95,9 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 	Ntot = L
 
 	if symm:
-		basis = photon_basis(spin_basis_1d,L=L,Ntot=Ntot,kblock=0,pblock=1) 
+		basis = photon_basis(spin_basis_1d,L,Ntot=Ntot,kblock=0,pblock=1) 
 	else:
-		basis = photon_basis(spin_basis_1d,L=L,Ntot=Ntot)
+		basis = photon_basis(spin_basis_1d,L,Ntot=Ntot)
 
 	# spin
 	x_field=[[-1.0,i] for i in range(L)]
@@ -112,7 +112,7 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 	static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
 
 
-	H=hamiltonian(static,[],L=L,dtype=np.float64,basis=basis,check_herm=False,check_symm=False,check_pcon=False)
+	H=hamiltonian(static,[],L,dtype=np.float64,basis=basis,check_herm=False,check_symm=False,check_pcon=False)
 
 
 	# diagonalise H

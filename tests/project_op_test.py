@@ -24,8 +24,8 @@ dtypes={"float32":np.float32,
 #		"complex256":np.complex256
 	}
 
-atols={"float32":1E-4,"float64":1E-13,"float128":1E-13,
-		"complex64":1E-4,"complex128":1E-13,"complex256":1E-13}
+atols={"float32":1E-4,"float64":1E-13,
+		"complex64":1E-4,"complex128":1E-13}
 
 
 L=16

@@ -66,6 +66,13 @@ class spin_basis_1d(basis):
 		if blocks.get("pauli") is None:
 			blocks["pauli"] = True
 
+		input_keys = set(blocks.keys())
+		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","pauli","a","count_spins","check_z_symm","L"])
+		if not input_keys <= expected_keys:
+			wrong_keys = expected_keys - input_keys 
+			temp = ", ".join(["{}" for key in wrong_keys])
+			raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
+ 
 
 		if type(Nup) is int:
 			self._check_pcon=True
@@ -123,6 +130,7 @@ class spin_basis_1d(basis):
 
 	def _make_Nup_block(self,L,Nup=None,**blocks):
 		# getting arguments which are used in basis.
+		kwkeys = set(blocks.keys())
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
 		zAblock=blocks.get("zAblock")
@@ -802,7 +810,7 @@ class spin_basis_1d(basis):
 				elif k == _np.pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(-dtype(1.0j*k*r))
+					c[:] = exp(dtype(1.0j*k*r))
 				_np.divide(c,norms,c)
 
 		if sparse:
@@ -828,7 +836,6 @@ class spin_basis_1d(basis):
 		zBblock = self._blocks.get("zBblock")
 		pzblock = self._blocks.get("pzblock")
 
-
 		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
 			mask = (self._N < 0)
 			ind_neg, = _np.nonzero(mask)
@@ -841,7 +848,7 @@ class spin_basis_1d(basis):
 				_np.divide(c,norms,c)
 		else:
 			if (type(kblock) is int):
-				if ((2*kblock*a) % self._L != 0) and _np.iscomplexobj(dtype(1.0)):
+				if ((2*kblock*a) % self._L != 0) and not _np.iscomplexobj(dtype(1.0)):
 					raise TypeError("symmetries give complex vector, requested dtype is not complex")
 
 			ind_pos = _np.arange(0,self._Ns,1)
@@ -852,7 +859,7 @@ class spin_basis_1d(basis):
 				elif k == _np.pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(-dtype(1.0j*k*r))
+					c[:] = exp(dtype(1.0j*k*r))
 				_np.divide(c,norms,c)
 
 		return _get_proj_sparse(self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks)
@@ -1105,8 +1112,7 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		k = 0.0
 		a = L
 
-	for r in range(0,L//a):
-#		print bits.format(*basis)
+	for r in xrange(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
 		vc = (v0.T*c).T
 		v[basis[ind_pos]] += vc[ind_pos]

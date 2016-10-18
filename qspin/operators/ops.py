@@ -202,7 +202,14 @@ class hamiltonian(object):
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
 			# check if user input basis
-			basis=kwargs.get('basis')	
+			basis=kwargs.get('basis')
+
+			if basis is not None:
+				kwargs.pop('basis')
+				if len(kwargs) > 0:
+					wrong_keys = set(kwargs.keys())
+					temp = ", ".join(["{}" for key in wrong_keys])
+					raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
 
 			# if not
 			if basis is None: 
@@ -1262,6 +1269,17 @@ class hamiltonian(object):
 		self._dynamic = tuple(self._dynamic)
 		return self
 
+
+	def trace(self,time=0):
+		if self.Ns <= 0:
+			return 0
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar argument for time')
+
+		trace = self._static.trace()
+		for Hd,f,f_args in self._dynamic:
+			trace += Hd.trace() * f(time,*f_args)
+ 		
 
 	def getH(self,copy=False):
 		return self.conj().transpose(copy=copy)
