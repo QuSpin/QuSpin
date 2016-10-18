@@ -208,7 +208,7 @@ class hamiltonian(object):
 				if len(kwargs) > 0:
 					wrong_keys = set(kwargs.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
-					raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
+					raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
 			# if not
 			if basis is None: 
@@ -2745,7 +2745,7 @@ class exp_op(object):
 		It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through 
 		the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the 
 		expm_multiply function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in 
-		the complex plane via the optional arguements. if this is specified then an array `grid` is created via the numpy function 
+		the complex plane via the optional arguments. if this is specified then an array `grid` is created via the numpy function 
 		linspace, then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
 
 		--- arguments ---
@@ -2821,10 +2821,10 @@ class exp_op(object):
 		else:
 			if [self._start, self._stop] == [None, None]:
 				if self._num != None:
-					raise ValueError("unexpected arguement 'num'.")
+					raise ValueError("unexpected argument 'num'.")
 
 				if self._endpoint != None:
-					raise ValueError("unexpected arguement 'endpoint'.")
+					raise ValueError("unexpected argument 'endpoint'.")
 
 				self._grid = None
 				self._step = None
