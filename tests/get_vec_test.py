@@ -40,7 +40,8 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	Ns = b.Ns
 	
 
-	static = [['xx',J(L,jb,2)],
+	static = [
+						['xx',J(L,jb,2)],
 						['yy',J(L,jb,2)],
 						['zz',J(L,jb,2)],
 						['+-',J(L,jb,2)],
@@ -70,8 +71,9 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	H1 = hamiltonian(static,[],N=L,dtype=dtype)
 	H2 = hamiltonian(static,[],basis=b,dtype=dtype)
 
-	E,v0=H2.eigh()
+	E,v0 = H2.eigh()
 	v = b.get_vec(v0,sparse=sparse)
+	P = b.get_proj(dtype=np.complex128)
 
 	if sp.issparse(v):
 		v = v.todense()
@@ -83,7 +85,7 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 		H2 = v0.T.conj() * (H2 * v0)
 		H1 = v.T.conj().dot(H1.dot(v))
 		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
-			raise Exception("get_vec() failed {0}".format(kblock))
+			raise Exception("get_vec() failed {0}".format(b.blocks))
 	else: 
 		pass
 
@@ -218,6 +220,17 @@ for L in xrange(4,8):
 for L in xrange(4,8,2):
 	check_getvec_zA_zB(L,sparse=True)
 	check_getvec_zA_zB(L,sparse=False)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

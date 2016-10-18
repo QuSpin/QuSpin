@@ -52,6 +52,9 @@ class photon_basis(tensor_basis):
 		Nph = blocks.get("Nph")
 		self.Nph = Nph
 		self.Ntot = Ntot
+		if Ntot is not None: blocks.pop("Ntot")
+		if Nph is not None: blocks.pop("Nph")
+
 		if Ntot is None:
 			if Nph is None: raise TypeError("If Ntot not specified, Nph must specify the cutoff on the number of photon states.")
 			if type(Nph) is not int: raise TypeError("Nph must be integer")
