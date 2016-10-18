@@ -29,7 +29,7 @@ def range_iter(start,stop,step):
 	from itertools import count
 	counter = count(start,step)
 	while True:
-		i = counter.next()
+		i = next(counter)
 		if i < stop:
 			yield i
 		else:

@@ -114,7 +114,7 @@ class spin_basis_1d(basis):
 				raise TypeError("Nup must be integer or iteratable object.")
 
 			blocks["check_z_symm"] = False
-			Nup = Nup_iter.next()
+			Nup = next(Nup_iter)
 #			print Nup
 			spin_basis_1d.__init__(self,L,Nup=Nup,**blocks)
 
@@ -646,8 +646,8 @@ class spin_basis_1d(basis):
 			c = _np.empty(self._m.shape,dtype=_np.int8)
 			nn = _np.array(c)
 			mm = _np.array(c)
-			_np.divide(self._m,(self._L+1)**2,out=c)
-			_np.divide(self._m,self._L+1,out=nn)
+			_np.floor_divide(self._m,(self._L+1)**2,out=c)
+			_np.floor_divide(self._m,self._L+1,out=nn)
 			_np.mod(nn,self._L+1,out=nn)
 			_np.mod(self._m,self._L+1,out=mm)
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
@@ -673,7 +673,7 @@ class spin_basis_1d(basis):
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
 			c = _np.empty(self._m.shape,dtype=_np.int8)
 			mm = _np.array(c)
-			_np.divide(self._m,(self._L+1),c)
+			_np.floor_divide(self._m,(self._L+1),c)
 			_np.mod(self._m,self._L+1,mm)
 			norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
@@ -800,7 +800,7 @@ class spin_basis_1d(basis):
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
 				c[ind_neg] = -sin(dtype(k*r))
-				_np.divide(c,norms,c)
+				_np.true_divide(c,norms,c)
 		else:
 			ind_pos = _np.fromiter(range(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
 			ind_neg = _np.array([],dtype=_np.int32)
@@ -811,7 +811,7 @@ class spin_basis_1d(basis):
 					c[:] = (-1.0)**r
 				else:
 					c[:] = exp(dtype(1.0j*k*r))
-				_np.divide(c,norms,c)
+				_np.true_divide(c,norms,c)
 
 		if sparse:
 			return _get_vec_sparse(v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks)
@@ -845,7 +845,7 @@ class spin_basis_1d(basis):
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
 				c[ind_neg] = -sin(dtype(k*r))
-				_np.divide(c,norms,c)
+				_np.true_divide(c,norms,c)
 		else:
 			if (type(kblock) is int):
 				if ((2*kblock*a) % self._L != 0) and not _np.iscomplexobj(dtype(1.0)):
@@ -860,7 +860,7 @@ class spin_basis_1d(basis):
 					c[:] = (-1.0)**r
 				else:
 					c[:] = exp(dtype(1.0j*k*r))
-				_np.divide(c,norms,c)
+				_np.true_divide(c,norms,c)
 
 		return _get_proj_sparse(self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks)
 
@@ -1112,7 +1112,7 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		k = 0.0
 		a = L
 
-	for r in xrange(0,L//a):
+	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
 		vc = (v0.T*c).T
 		v[basis[ind_pos]] += vc[ind_pos]

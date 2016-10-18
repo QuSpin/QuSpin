@@ -166,7 +166,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 		
 
 	if densities:
-		Sent *= 1.0/N_A
+		Sent /= N_A
 
 
 	# store variables to dictionar
@@ -338,7 +338,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
 		Ns_A = 2**N_A
-
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
@@ -357,10 +356,10 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( N_A x N/N_A ) and proceed with the SVD as below  
 		'''
 
-		if chain_subsys==range(min(chain_subsys), max(chain_subsys)+1): 
+		if chain_subsys == [i for i in range(min(chain_subsys), max(chain_subsys)+1)]: 
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			reshape_tuple2 = (Ns, Ns_A, 2**N/Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
@@ -425,7 +424,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				Ns_spin = basis.chain_Ns
 
 		#del basis
-		if sorted(chain_subsys)==range(min(chain_subsys), max(chain_subsys)+1): 
+		if sorted(chain_subsys) == [i for i in range(min(chain_subsys), max(chain_subsys)+1)]: 
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
 			if N_A==N: # chain_subsys equals entire lattice
@@ -825,9 +824,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	for key,value in Expt_Diag.items():
 		if densities:
 			if 'rdm' in key:
-				value *= 1.0/N_A
+				value /= N_A
 			else:
-				value *= 1.0/N
+				value /= N
 
 		Expt_Diag[key] = value
 		# calculate thermal expectations

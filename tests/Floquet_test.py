@@ -27,7 +27,7 @@ dtypes={"float32":np.float32,"float64":np.float64,"complex64":np.complex64,"comp
 atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
 
 
-for _r in xrange(10): # 10 random realisations
+for _r in range(10): # 10 random realisations
 
 	##### define model parameters #####
 	L=8 # system size
