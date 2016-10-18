@@ -1269,6 +1269,17 @@ class hamiltonian(object):
 		return self
 
 
+	def trace(self,time=0):
+		if self.Ns <= 0:
+			return 0
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar argument for time')
+
+		trace = self._static.trace()
+		for Hd,f,f_args in self._dynamic:
+			trace += Hd.trace() * f(time,*f_args)
+ 		
+
 	def getH(self,copy=False):
 		return self.conj().transpose(copy=copy)
 
