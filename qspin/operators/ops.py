@@ -863,7 +863,6 @@ class hamiltonian(object):
 
 	def project_to(self,proj):
 		if isinstance(proj,hamiltonian):
-			#raise NotImplementedError
 			new = self._rmul_hamiltonian(proj.getH())
 			return new._imul_hamiltonian(proj)
 
