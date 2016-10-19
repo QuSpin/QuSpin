@@ -1284,9 +1284,11 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
 
-		trace = self._static.trace()
+		trace = self._static.diagonal().sum()
 		for Hd,f,f_args in self._dynamic:
-			trace += Hd.trace() * f(time,*f_args)
+			trace += Hd.diagonal().sum() * f(time,*f_args)
+
+		return trace
  		
 
 	def getH(self,copy=False):
@@ -3100,7 +3102,7 @@ class exp_op(object):
 		if shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
-		M = self._a*self.O(time)
+		M = self._a.conjugate()*self.O.H(time)
 		if self._iterate:
 
 			if is_ham:
