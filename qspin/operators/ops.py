@@ -3091,7 +3091,7 @@ class exp_op(object):
 		if shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
-		M = self._a*self.O(time)
+		M = self._a.conjugate()*self.O.H(time)
 		if self._iterate:
 
 			if is_ham:
