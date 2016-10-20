@@ -867,11 +867,7 @@ class hamiltonian(object):
 			return new._imul_hamiltonian(proj)
 
 		elif isinstance(proj,exp_op):
-			proj=proj.get_mat() # turn to sparse
-
-			new = self._rmul_sparse(proj.getH())
-			new._shape = (proj.shape[1],proj.shape[1])
-			return new._imul_sparse(proj)
+			return proj.sandwich(self)
 
 		elif _sp.issparse(proj):
 			if self._shape[1] != proj.shape[0]:
