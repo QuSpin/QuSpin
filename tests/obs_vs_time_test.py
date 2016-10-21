@@ -1,13 +1,13 @@
 from __future__ import print_function, division
 
 import sys,os
-qspin_path = os.path.join(os.getcwd(),"../")
-sys.path.insert(0,qspin_path)
+quspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,quspin_path)
 
 
-from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
-from qspin.operators import hamiltonian, exp_op # Hamiltonian and observables
-from qspin.tools.measurements import obs_vs_time,ED_state_vs_time
+from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
+from quspin.operators import hamiltonian, exp_op # Hamiltonian and observables
+from quspin.tools.measurements import obs_vs_time,ED_state_vs_time
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed()

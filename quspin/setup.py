@@ -1,6 +1,6 @@
 def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
-	config = Configuration('qspin', parent_package, top_path)
+	config = Configuration('quspin', parent_package, top_path)
 	config.add_subpackage('basis')
 	config.add_subpackage('operators')
 	config.add_subpackage('tools')

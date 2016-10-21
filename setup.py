@@ -6,7 +6,7 @@ def configuration(parent_package='', top_path=None):
 	delegate_options_to_subpackages=True,
 	quiet=True)
 
-	config.add_subpackage('qspin')
+	config.add_subpackage('quspin')
 
 	return config
 
@@ -29,13 +29,13 @@ def setup_package():
 	io
 
 	metadata = dict(
-		name='qspin',
+		name='quspin',
 		version=version,
 		maintainer="Phillip Weinberg, Marin Bukov",
 		maintainer_email="weinbe58@bu.edu,mbukov.bu.edu",
 		download_url="https://github.com/weinbe58/qspin.git",
-		license='MET',
-		platforms=["Unix"]
+		license='BSD',
+		platforms=["Unix","Windows"]
 	)
 
 	from numpy.distutils.core import setup

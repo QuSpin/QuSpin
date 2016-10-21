@@ -1,9 +1,9 @@
 import sys,os
-qspin_path = os.path.join(os.getcwd(),"../")
-sys.path.insert(0,qspin_path)
+quspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,quspin_path)
 from numpy.testing import assert_almost_equal
-from qspin.operators import HamiltonianOperator,hamiltonian
-from qspin.basis import spin_basis_1d
+from quspin.operators import HamiltonianOperator,hamiltonian
+from quspin.basis import spin_basis_1d
 import numpy as np
 import scipy.sparse as sp
 
