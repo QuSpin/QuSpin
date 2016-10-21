@@ -1,9 +1,9 @@
 import sys,os
-qspin_path = os.path.join(os.getcwd(),"../")
-sys.path.insert(0,qspin_path)
+quspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,quspin_path)
 
-from qspin.operators import hamiltonian
-from qspin.basis import spin_basis_1d,photon_basis
+from quspin.operators import hamiltonian
+from quspin.basis import spin_basis_1d,photon_basis
 import numpy as np
 import scipy.sparse as sp
 from numpy.linalg import norm

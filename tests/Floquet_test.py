@@ -1,6 +1,6 @@
 import sys,os
-qspin_path = os.path.join(os.getcwd(),"../")
-sys.path.insert(0,qspin_path)
+quspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,quspin_path)
 
 # return line number
 import inspect
@@ -8,9 +8,9 @@ def lineno():
     """Returns the current line number in our program."""
     return inspect.currentframe().f_back.f_lineno
 
-from qspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
-from qspin.operators import hamiltonian # Hamiltonian and observables
-from qspin.tools.Floquet import  Floquet, Floquet_t_vec
+from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
+from quspin.operators import hamiltonian # Hamiltonian and observables
+from quspin.tools.Floquet import  Floquet, Floquet_t_vec
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed()
