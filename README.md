@@ -1,5 +1,5 @@
 # **QuSpin**
-qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+QuSpin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
 # **Contents**
 --------
@@ -32,15 +32,15 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 
 ### **automatic install**
 
-The latest version of the package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of qspin requires the Anaconda package manager for Python. Once Anaconda has been installed, all one has to do to install qspin is run:
+The latest version of the package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of QuSpin requires the Anaconda package manager for Python. Once Anaconda has been installed, all one has to do to install QuSpin is run:
 ```
-$ conda install -c weinbe58 qspin
+$ conda install -c weinbe58 QuSpin
 ```
 This will install the latest version on your computer. Right now the package is in its beta stages and so it may not be available for installation on all platforms using this method. In such a case one can also manually install the package.
 
 ### **manual install**
 
-To install qspin manually, download the source code either from the [master](https://github.com/weinbe58/qspin/archive/master.zip) branch, or by cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
+To install QuSpin manually, download the source code either from the [master](https://github.com/weinbe58/QuSpin/archive/master.zip) branch, or by cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
 
 Unix:
 ```
@@ -58,13 +58,13 @@ When installing the package manually, if you add the flag ```--record install.tx
 
 To update the package with Anaconda, all one has to do is run the installation command again.
 
-To safely update a manually installed version of qspin, one must first manually delete the entire package from the python 'site-packages/' directory. In Unix, provided the flag ```--record install.txt``` has been used in the manual installation, the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```. In Windows, it is easiest to just go to the folder and delete it from Windows Explorer. 
+To safely update a manually installed version of QuSpin, one must first manually delete the entire package from the python 'site-packages/' directory. In Unix, provided the flag ```--record install.txt``` has been used in the manual installation, the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```. In Windows, it is easiest to just go to the folder and delete it from Windows Explorer. 
 
 # **Basic package usage**
 
-All the calculations done with qspin happen through [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it (operators sharing the same time-dependence are a also summen together into a single matrix). Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the argument ```time```. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this, we provide a user-friendly representation for constructing the Hamiltonian matrices for many-body operators. 
+All the calculations done with QuSpin happen through [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it (operators sharing the same time-dependence are a also summen together into a single matrix). Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the argument ```time```. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this, we provide a user-friendly representation for constructing the Hamiltonian matrices for many-body operators. 
 
-Many-body operators in qspin are defined by a string of letters representing the operator types, together with a list which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
+Many-body operators in QuSpin are defined by a string of letters representing the operator types, together with a list which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
 
 |      operator string        |      site-coupling list          |               spin operator                 |
 |:-----------------:|:------------------:|:--------------------------------------:|
@@ -110,7 +110,7 @@ Note that not all platforms and all of Scipy and Numpy functions support ```dtyp
 constructing the hamiltonian object of the transverse field Ising model with time-dependent field for a $10$-site chain:
 ```python
 # python script
-from qspin.operators import hamiltonian
+from QuSpin.operators import hamiltonian
 import numpy as np
 
 # set total number of lattice sites
@@ -143,7 +143,7 @@ Notice that one needs to include both ```'-z+'``` and ```'+z-'``` operators to m
 
 ### **using basis objects**
 
-Basis objects are another very useful type included in qspin: they provide all of the functionality which calculates the matrix elements from the operator string representation of many-body operators. On top of this, they have been programmed to calculate the matrix elements in different symmetry blocks of the many-body Hamiltonian with the help of optional flags. To use a basis object to construct the Hamiltonian, one simply uses the basis keyword argument:
+Basis objects are another very useful type included in QuSpin: they provide all of the functionality which calculates the matrix elements from the operator string representation of many-body operators. On top of this, they have been programmed to calculate the matrix elements in different symmetry blocks of the many-body Hamiltonian with the help of optional flags. To use a basis object to construct the Hamiltonian, one simply uses the basis keyword argument:
 ```python
 H = hamiltonian(static_list,dynamic_list,...,basis=basis,...)
 ```
@@ -355,7 +355,7 @@ where ```**eigh_args``` are optional arguments which are passed into the eigenva
 where ```**eigsh_args``` are optional arguments which are passed into the eigenvalue solvers. For more information check out the scipy docs for [eigsh](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.eigsh.html).
 
 ##### **other operations**
-There are also some methods which are useful when interfacing qspin with functionality from other packages:
+There are also some methods which are useful when interfacing QuSpin with functionality from other packages:
 
 * return copy of hamiltonian as csr matrix: 
   ```python
