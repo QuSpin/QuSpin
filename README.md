@@ -34,7 +34,7 @@ QuSpin is a python library which wraps Scipy, Numpy, and custom fortran librarie
 
 The latest version of the package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of QuSpin requires the Anaconda package manager for Python. Once Anaconda has been installed, all one has to do to install QuSpin is run:
 ```
-$ conda install -c weinbe58 QuSpin
+$ conda install -c weinbe58 quspin
 ```
 This will install the latest version on your computer. Right now the package is in its beta stages and so it may not be available for installation on all platforms using this method. In such a case one can also manually install the package.
 
@@ -110,7 +110,7 @@ Note that not all platforms and all of Scipy and Numpy functions support ```dtyp
 constructing the hamiltonian object of the transverse field Ising model with time-dependent field for a $10$-site chain:
 ```python
 # python script
-from QuSpin.operators import hamiltonian
+from quspin.operators import hamiltonian
 import numpy as np
 
 # set total number of lattice sites
