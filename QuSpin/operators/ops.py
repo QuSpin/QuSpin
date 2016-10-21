@@ -863,7 +863,11 @@ class hamiltonian(object):
 
 	def project_to(self,proj):
 		if isinstance(proj,hamiltonian):
-			raise NotImplementedError
+			new = self._rmul_hamiltonian(proj.getH())
+			return new._imul_hamiltonian(proj)
+
+		elif isinstance(proj,exp_op):
+			return proj.sandwich(self)
 
 		elif _sp.issparse(proj):
 			if self._shape[1] != proj.shape[0]:
