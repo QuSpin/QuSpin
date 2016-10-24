@@ -24,14 +24,14 @@ __all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op"
 
 def commutator(H1,H2):
 	""" This function returns the commutator of two Hamiltonians H1 and H2. """
-	if _ishamiltonian(H1) or _ishamiltonian(H2):
+	if ishamiltonian(H1) or ishamiltonian(H2):
 		return H1*H2 - H2*H1
 	else:
 		return H1.dot(H2) - H2.dot(H1)
 
 def anti_commutator(H1,H2):
 	""" This function returns the anti-commutator of two Hamiltonians H1 and H2. """
-	if _ishamiltonian(H1) or _ishamiltonian(H2):
+	if ishamiltonian(H1) or ishamiltonian(H2):
 		return H1*H2 + H2*H1
 	else:
 		return H1.dot(H2) + H2.dot(H1)
@@ -3223,7 +3223,7 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
 		other = _hamiltonian_dot(M, other)
-		other = _hamiltonian_rdot(M, other.T.conj()).T.conj()
+		other = _hamiltonian_dot(M, other.T.conj()).T.conj()
 		M /= grid[0]
 
 	yield other.copy()
@@ -3231,7 +3231,7 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 	M *= step
 	for t in grid[1:]:
 		other = _hamiltonian_dot(M, other)
-		other = _hamiltonian_rdot(M, other.T.conj()).T.conj()
+		other = _hamiltonian_dot(M, other.T.conj()).T.conj()
 		yield other.copy()
 
 
