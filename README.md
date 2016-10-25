@@ -1,5 +1,8 @@
 # **QuSpin**
-QuSpin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+
+This documentation is also available as a jupyter [notebook](https://github.com/weinbe58/qspin/blob/master/documentation.ipynb). 
+
+qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
 # **Contents**
 --------
@@ -59,6 +62,7 @@ When installing the package manually, if you add the flag ```--record install.tx
 To update the package with Anaconda, all one has to do is run the installation command again.
 
 To safely update a manually installed version of QuSpin, one must first manually delete the entire package from the python 'site-packages/' directory. In Unix, provided the flag ```--record install.txt``` has been used in the manual installation, the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```. In Windows, it is easiest to just go to the folder and delete it from Windows Explorer. 
+
 
 # **Basic package usage**
 
@@ -197,20 +201,20 @@ The ```hamiltonian``` class wraps most of the functionalty of the package. This 
 
 * static_list: list or tuple (required), list of objects to calculate the static part of hamiltonian operator. The format goes like:
 
- ```python
- static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
- ```	
+```python
+static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
+```	
 
 * dynamic_list: list or tuple (required), list of objects to calculate the dynamic part of the hamiltonian operator. The format goes like:
 
- ```python
- dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
- ```
+```python
+dynamic_list=[[opstr_1,[indx_11,...,indx_1n],func_1,func_1_args],[matrix_2,func_2,func_2_args],...]
+```
 
  For the dynamic list ```func``` is the function which goes in front of the matrix or operator given in the same list. ```func_args``` is a tuple containing the extra arguments which go into the function to evaluate it like: 
- ```python
- f_val = func(t,*func_args)
- ```
+```python
+f_val = func(t,*func_args)
+```
 
 
 * N: integer (optional), number of sites to create the Hamiltonian with.
@@ -274,9 +278,9 @@ We have included some basic functionality into the ```hamiltonian``` class, usef
   H_herm = H.getH(copy=False)
   ```
  * conjugate
- ```
- H_conj = H.conj() # always inplace
- ```
+  ```
+  H_conj = H.conj() # always inplace
+  ```
 * matrix vector product / dense matrix:
 
   usage:
@@ -298,12 +302,13 @@ If either of these cases do not match then an error is thrown.
 which evaluates $\langle u|H(t=0)|v\rangle$ if ```u``` and ```v``` are vectors but (versions >= v0.0.2b) can also handle ```u``` and ```v``` as dense matrices. ```diagonal=True``` then the function will only return the diagonal part of the resulting matrix multiplication. The check option is the same as for 'dot' and 'rdot'. The vectorization with time is the same as for the 'dot' and 'rdot' functions. 
   **NOTE: the inputs should NOT be hermitian conjugated, the function will do that automatically.
 
-* project a Hamiltonian to a new basis:
+* project/rotate a Hamiltonian to a new basis:
 	```python
 	H_new = H.project_to(V)
-	H_new = H.rotate_by(K,generator=False,**exp_op_args)
+    H_new = H.rotate_by(V,generator=False)
+	H_new = H.rotate_by(K,generator=True,**exp_op_args)
 	```
-The first function returns a new hamiltonian object which is: $V^\dagger H V$. Note that ```V``` need not be a square matrix. The second function, when ```generator=False```, is the same as the first function but with ```generator=True``` the function uses ```K``` as the generator of a transformation. This function uses the [exp_op](#exp_op-class) class and the extra arguments ```**exp_op_args``` are optional arguments for the `exp_op` constructor. 
+`project_to` returns a new hamiltonian object which is: $V^\dagger H V$. Note that ```V``` need not be a square matrix. `rotate_by`, when ```generator=False```, is the same as `project_to`: $V^\dagger H V$, but with ```generator=True``` this function uses ```K``` as the generator of a transformation: $e^{a^\ast K^\dagger}He^{a K}$. This function uses the [exp_op](#exp_op-class) class and the extra arguments ```**exp_op_args``` are optional arguments for the `exp_op` constructor. 
   
 * Schrödinger dynamics:
 
@@ -417,9 +422,9 @@ This function returns the anti-commutator of two Hamiltonians H1 and H2.
 
 ### **exp_op class**
 ```python
-exp_O = exp_op(O, a=1.0, start=None, stop=None, num=None, endpoint=None, iterate=False)
+expO = exp_op(O, a=1.0, start=None, stop=None, num=None, endpoint=None, iterate=False)
 ```
-This class constructs the matrix exponential of the hamiltonian ```H```. It does not calculate the exact matrix exponential but instead computes the action of the matrix exponential through the Taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the [expm_multiply](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) function in Scipy's sparse library. 
+This class constructs the matrix exponential of the operator (`hamiltonian` object) ```O```. It does not calculate the exact matrix exponential but instead computes the action of the matrix exponential through the Taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the [expm_multiply](http://docs.scipy.org/doc/scipy-0.18.0/reference/generated/scipy.sparse.linalg.expm_multiply.html#scipy.sparse.linalg.expm_multiply) function in Scipy's sparse library. 
 
 This class also allows the option to specify a grid of points `grid` on a line in the complex plane via the optional arguments `start`, `stop`, `num`, and `endpoint`, so that the exponential is evaluated at each point `a*grid[i]*O`. When this option is specified, the array `grid` is created via the numpy function [linspace](http://docs.scipy.org/doc/numpy/reference/generated/numpy.linspace.html), as `grid=linspace(start,stop,num)`.
 
@@ -503,9 +508,9 @@ This class also allows the option to specify a grid of points `grid` on a line i
  B = expO.rdot(A,time=0)
  ```
  
-* rotate operator by ```expO```:
+* rotate operator `A` by ```expO```, $B=\left[e^{O}\right]^\dagger A e^{O}$:
  ```python
-   B = expO.sandwich(copy=False)
+   B = expO.sandwich(A,copy=False)
  ```
 here ```time``` is always a scalar which is the time point at which operator ```O``` is evaluated at for dynamic hamiltonians; for matrices or static hamiltonians this does not have any effect.  If ```iterate=True``` all these functions return generators to return values of the results over the grid points. For example:
 
@@ -1199,4 +1204,3 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 * `_.down` : refers to time vector of down-stage; inherits the above attributes except `_.T`, `_.dt`, and `._lenT`
 
 This object also acts like an array, you can iterate over it as well as index the values.
-

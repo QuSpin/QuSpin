@@ -71,7 +71,7 @@ class spin_basis_1d(basis):
 		if not input_keys <= expected_keys:
 			wrong_keys = expected_keys - input_keys 
 			temp = ", ".join(["{}" for key in wrong_keys])
-			raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
+			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
  
 
 		if type(Nup) is int:

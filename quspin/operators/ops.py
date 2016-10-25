@@ -209,7 +209,7 @@ class hamiltonian(object):
 				if len(kwargs) > 0:
 					wrong_keys = set(kwargs.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
-					raise ValueError(("unexpected optional arguement(s): "+temp).format(*wrong_keys))
+					raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
 			# if not
 			if basis is None: 
@@ -864,7 +864,11 @@ class hamiltonian(object):
 
 	def project_to(self,proj):
 		if isinstance(proj,hamiltonian):
-			raise NotImplementedError
+			new = self._rmul_hamiltonian(proj.getH())
+			return new._imul_hamiltonian(proj)
+
+		elif isinstance(proj,exp_op):
+			return proj.sandwich(self)
 
 		elif _sp.issparse(proj):
 			if self._shape[1] != proj.shape[0]:
@@ -1276,9 +1280,11 @@ class hamiltonian(object):
 		if not _np.isscalar(time):
 			raise TypeError('expecting scalar argument for time')
 
-		trace = self._static.trace()
+		trace = self._static.diagonal().sum()
 		for Hd,f,f_args in self._dynamic:
-			trace += Hd.trace() * f(time,*f_args)
+			trace += Hd.diagonal().sum() * f(time,*f_args)
+
+		return trace
  		
 
 	def getH(self,copy=False):
@@ -2746,7 +2752,7 @@ class exp_op(object):
 		It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through 
 		the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the 
 		expm_multiply function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in 
-		the complex plane via the optional arguements. if this is specified then an array `grid` is created via the numpy function 
+		the complex plane via the optional arguments. if this is specified then an array `grid` is created via the numpy function 
 		linspace, then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
 
 		--- arguments ---
@@ -2822,10 +2828,10 @@ class exp_op(object):
 		else:
 			if [self._start, self._stop] == [None, None]:
 				if self._num != None:
-					raise ValueError("unexpected arguement 'num'.")
+					raise ValueError("unexpected argument 'num'.")
 
 				if self._endpoint != None:
-					raise ValueError("unexpected arguement 'endpoint'.")
+					raise ValueError("unexpected argument 'endpoint'.")
 
 				self._grid = None
 				self._step = None
@@ -3092,7 +3098,7 @@ class exp_op(object):
 		if shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
-		M = self._a*self.O(time)
+		M = self._a.conjugate()*self.O.H(time)
 		if self._iterate:
 
 			if is_ham:
