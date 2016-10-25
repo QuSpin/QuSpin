@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 from ..operators import hamiltonian,ishamiltonian
 
 
@@ -17,6 +19,21 @@ import warnings
 __all__ = ['Floquet_t_vec','Floquet']
 
 #warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
+
+
+# xrange is replaced with range in python 3.
+# if python 2 is being used, range will cause memory overflow.
+# This function is a work around to get the functionality of 
+# xrange for both python 2 and 3 simultaineously. 
+def range_iter(start,stop,step):
+	from itertools import count
+	counter = count(start,step)
+	while True:
+		i = next(counter)
+		if i < stop:
+			yield i
+		else:
+			break
 
 
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
@@ -80,20 +97,20 @@ def _evolve_step_2(i,H,t_list,dt_list):
 ### USING JOBLIB ###
 def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in range_iter(0,H.Ns,1))
 
 	return vstack(sols)
 
 
 def _get_U_step_1(H_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in xrange(H_list[0].Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in range_iter(0,H_list[0].Ns,1))
 
 	return vstack(sols)
 
 def _get_U_step_2(H,t_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_2)(i,H,t_list,dt_list) for i in xrange(H.Ns))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_2)(i,H,t_list,dt_list) for i in range_iter(0,H.Ns,1))
 
 	return vstack(sols)
 
@@ -549,11 +566,11 @@ class _strobo_times():
 
 	@property
 	def inds(self):
-	    return self._inds
+		return self._inds
 
 	@property
 	def vals(self):
-	    return self._vals
+		return self._vals
 	
 		 
 
@@ -582,31 +599,31 @@ class _periodic_ramp():
 
 	@property
 	def N(self):
-	    return self._N
+		return self._N
 	
 	@property
 	def vals(self):
-	    return self._vals
+		return self._vals
 
 	@property
 	def i(self):
-	    return self._i
+		return self._i
 
 	@property
 	def f(self):
-	    return self._f
+		return self._f
 
 	@property
 	def tot(self):
-	    return self._tot
+		return self._tot
 
 	@property
 	def len(self):
-	    return self._len
+		return self._len
 
 	@property
 	def strobo(self):
-	    return self._strobo
+		return self._strobo
 	
 	
 	

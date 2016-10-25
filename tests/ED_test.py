@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import sys,os
 quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
@@ -22,11 +24,11 @@ def eps(dtype):
 
 def check_opstr(Lmax):
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1):
-			h=[[2.0*random()-1.0,i] for i in xrange(L)]
-			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-			J3=[[J2[i][0]*0.5,i,(i+1)%L] for i in xrange(L)]
+		for L in range(2,Lmax+1):
+			h=[[2.0*random()-1.0,i] for i in range(L)]
+			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
+			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
+			J3=[[J2[i][0]*0.5,i,(i+1)%L] for i in range(L)]
 
 			static1=[["zz",J1],["yy",J2],["xx",J2],["x",h]]
 			static2=[["zz",J1],["+-",J3],["-+",J3],["x",h]]
@@ -45,10 +47,10 @@ def check_opstr(Lmax):
 
 def check_m(Lmax):
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1):
-			h=[[2.0*random()-1.0,i] for i in xrange(L)]
-			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
-			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L)]
+		for L in range(2,Lmax+1):
+			h=[[2.0*random()-1.0,i] for i in range(L)]
+			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
+			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
 
 			static=[["zz",J1],["yy",J2],["xx",J2],["z",h]]
 
@@ -57,7 +59,7 @@ def check_m(Lmax):
 			E=H.eigvalsh()
 
 			Em=[]
-			for Nup in xrange(L+1):
+			for Nup in range(L+1):
 				H=hamiltonian(static,[],N=L,Nup=Nup,dtype=dtype,pauli=False)
 				Etemp=H.eigvalsh()
 				Em.append(Etemp)
@@ -72,13 +74,13 @@ def check_m(Lmax):
 
 def check_z(L,dtype,Nup=None):
 	if type(Nup) is int:
-		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
-		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
+		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
 		static=[["zz",J1],["yy",J2],["xx",J2]]
 	else:
-		h=[[2.0*random()-1.0,i] for i in xrange(L)]
-		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
-		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+		h=[[2.0*random()-1.0,i] for i in range(L)]
+		J1=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
+		J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
 		static=[["zz",J1],["x",h]]
 
 
@@ -103,9 +105,9 @@ def check_z(L,dtype,Nup=None):
 
 def check_zA(L,dtype):
 	
-	h=[[2.0*random()-1.0,i] for i in xrange(L)]
-	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in xrange(L-1)]
-	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+	h=[[2.0*random()-1.0,i] for i in range(L)]
+	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
+	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
 	static=[["zz",J1],["xx",J2],["x",h]]
 
 
@@ -129,9 +131,9 @@ def check_zA(L,dtype):
 
 def check_zB(L,dtype):
 	
-	h=[[2.0*random()-1.0,i] for i in xrange(L)]
-	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in xrange(L-1)]
-	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+	h=[[2.0*random()-1.0,i] for i in range(L)]
+	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
+	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
 	static=[["zz",J1],["xx",J2],["x",h]]
 
 
@@ -155,9 +157,9 @@ def check_zB(L,dtype):
 
 def check_zA_zB(L,dtype):
 	
-	h=[[2.0*random()-1.0,i] for i in xrange(L)]
-	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in xrange(L-1)]
-	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in xrange(L-1)]
+	h=[[2.0*random()-1.0,i] for i in range(L)]
+	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
+	J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
 	static=[["zz",J1],["xx",J2],["x",h]]
 
 
@@ -184,13 +186,13 @@ def check_zA_zB(L,dtype):
 
 def check_p(L,dtype,Nup=None):
 	L_2=int(L/2)
-	hr=[2.0*random()-1.0 for i in xrange(L_2)]
-	hi=[hr[i] for i in xrange(L_2)]
+	hr=[2.0*random()-1.0 for i in range(L_2)]
+	hi=[hr[i] for i in range(L_2)]
 	hi.reverse()
 	hi.extend(hr)
 	
-	h=[[hi[i],i] for i in xrange(L)]
-	J=[[1.0,i,(i+1)%L] for i in xrange(L-1)]
+	h=[[hi[i],i] for i in range(L)]
+	J=[[1.0,i,(i+1)%L] for i in range(L-1)]
 
 	if type(Nup) is int:
 		static=[["zz",J],["yy",J],["xx",J],["z",h]]
@@ -218,13 +220,13 @@ def check_p(L,dtype,Nup=None):
 
 def check_pz(L,dtype,Nup=None):
 	L_2=int(L/2)
-	hr=[(i+0.1)**2/float(L**2) for i in xrange(L_2)]
-	hi=[-(i+0.1)**2/float(L**2) for i in xrange(L_2)]
+	hr=[(i+0.1)**2/float(L**2) for i in range(L_2)]
+	hi=[-(i+0.1)**2/float(L**2) for i in range(L_2)]
 	hi.reverse()
 	hi.extend(hr)
 
-	h=[[hi[i],i] for i in xrange(L)]
-	J=[[1.0,i,(i+1)%L] for i in xrange(L-1)]
+	h=[[hi[i],i] for i in range(L)]
+	J=[[1.0,i,(i+1)%L] for i in range(L-1)]
 
 	static=[["zz",J],["yy",J],["xx",J],["z",h]]
 
@@ -249,8 +251,8 @@ def check_pz(L,dtype,Nup=None):
 
 
 def check_p_z(L,dtype,Nup=None):
-	h=[[1.0,i] for i in xrange(L)]
-	J=[[1.0,i,(i+1)%L] for i in xrange(L-1)]
+	h=[[1.0,i] for i in range(L)]
+	J=[[1.0,i,(i+1)%L] for i in range(L-1)]
 
 	if type(Nup) is int:
 		static=[["zz",J],["yy",J],["xx",J]]
@@ -289,34 +291,34 @@ def check_p_z(L,dtype,Nup=None):
 
 def check_obc(Lmax):
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_z(L,dtype,Nup=int(L/2))
 			check_z(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_zA(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_zB(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_zA_zB(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_p(L,dtype,Nup=int(L/2))
 			check_p(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_pz(L,dtype,Nup=int(L/2))
 			check_pz(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_p_z(L,dtype,Nup=int(L/2))
 			check_p_z(L,dtype) 
 
@@ -325,8 +327,8 @@ def check_obc(Lmax):
 def check_t(L,dtype,Nup=None):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+1)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+1)%L] for i in range(L)]
 	if type(Nup) is int:
 		static=[["zz",J1],["yy",J1],["xx",J1]]
 	else:
@@ -339,7 +341,7 @@ def check_t(L,dtype,Nup=None):
 	E=H.eigvalsh()
 
 	Et=np.array([])
-	for kblock in xrange(0,L):
+	for kblock in range(0,L):
 		Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=dtype,kblock=kblock)
 		Et=np.append(Et,Hk.eigvalsh())
 		
@@ -356,8 +358,8 @@ def check_t(L,dtype,Nup=None):
 def check_t_z(L,dtype,Nup=None):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+1)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+1)%L] for i in range(L)]
 	if type(Nup) is int:
 		static=[["zz",J1],["yy",J1],["xx",J1]]
 	else:
@@ -365,7 +367,7 @@ def check_t_z(L,dtype,Nup=None):
 
 	L_2=int(L/2)
 
-	for kblock in xrange(-L_2+1,L_2+1):
+	for kblock in range(-L_2+1,L_2+1):
 		Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=dtype,kblock=kblock)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
@@ -385,14 +387,14 @@ def check_t_z(L,dtype,Nup=None):
 def check_t_zA(L,dtype,a=2):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+2)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+2)%L] for i in range(L)]
 
 	static=[["zz",J1],["x",h]]
 
 	L_2=int(L/a)
 
-	for kblock in xrange(-L_2+2,L_2+2):
+	for kblock in range(-L_2+2,L_2+2):
 
 		Hk=hamiltonian(static,[],N=L,dtype=dtype,kblock=kblock,a=2)
 		Ns=Hk.Ns
@@ -412,15 +414,14 @@ def check_t_zA(L,dtype,a=2):
 def check_t_zB(L,dtype,a=2):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+2)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+2)%L] for i in range(L)]
 
 	static=[["zz",J1],["x",h]]
 
 	L_2=int(L/a)
 
-	for kblock in xrange(-L_2+2,L_2+2):
-		#print kblock
+	for kblock in range(-L_2+2,L_2+2):
 		Hk=hamiltonian(static,[],N=L,dtype=dtype,kblock=kblock,a=2)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
@@ -439,14 +440,14 @@ def check_t_zB(L,dtype,a=2):
 def check_t_zA_zB(L,dtype,a=2):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+2)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+2)%L] for i in range(L)]
 
 	static=[["zz",J1],["x",h]]
 	
 	L_2=int(L/a)
 
-	for kblock in xrange(0,L_2):
+	for kblock in range(0,L_2):
 
 		Hk=hamiltonian(static,[],N=L,dtype=dtype,kblock=kblock,a=a)
 		Ns=Hk.Ns
@@ -470,8 +471,8 @@ def check_t_zA_zB(L,dtype,a=2):
 def check_t_p(L,dtype,Nup=None):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+1)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+1)%L] for i in range(L)]
 	if type(Nup) is int:
 		static=[["zz",J1],["xx",J1],["yy",J1]] # 
 	else:
@@ -487,7 +488,7 @@ def check_t_p(L,dtype,Nup=None):
 		kdtype = dtype
 		
 
-	for kblock in xrange(-L_2+1,0):
+	for kblock in range(-L_2+1,0):
 		Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=kdtype,kblock=kblock)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
@@ -522,7 +523,7 @@ def check_t_p(L,dtype,Nup=None):
 
 
 	if L%2 == 0:	
-		for kblock in xrange(1,L_2):
+		for kblock in range(1,L_2):
 			Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=kdtype,kblock=kblock)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
@@ -556,7 +557,7 @@ def check_t_p(L,dtype,Nup=None):
 				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,int(L/2),np.dtype(dtype),Nup,norm(Ek-Ekp)) )
 
 	else:
-		for kblock in xrange(1,L_2+1):
+		for kblock in range(1,L_2+1):
 			Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=kdtype,kblock=kblock)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
@@ -586,9 +587,9 @@ def check_t_pz(L,dtype,Nup=None):
 	hx=random()*0.0
 	hz=random()*0.0
 	J=random()
-	h1=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+1)%L] for i in xrange(L)]
-	h2=[[hz*(-1)**i,i] for i in xrange(L)]
+	h1=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+1)%L] for i in range(L)]
+	h2=[[hz*(-1)**i,i] for i in range(L)]
 
 	if type(Nup) is int:
 		static=[["zz",J1],["xx",J1],["yy",J1],['z',h2]] 
@@ -605,7 +606,7 @@ def check_t_pz(L,dtype,Nup=None):
 	
 	a=2
 	L_2=int(L/(a*2))
-	for kblock in xrange(-L_2+1,0):
+	for kblock in range(-L_2+1,0):
 		Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
 		Ns=Hk.Ns
 		Ek=Hk.eigvalsh()
@@ -638,7 +639,7 @@ def check_t_pz(L,dtype,Nup=None):
 			raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,0,np.dtype(dtype),Nup,norm(Ek-Ekp)) )
 
 	if((L/a)%2 == 0):
-		for kblock in xrange(1,L_2):
+		for kblock in range(1,L_2):
 			Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
@@ -671,7 +672,7 @@ def check_t_pz(L,dtype,Nup=None):
 		if norm(Ek-Ekp) > Ns*eps(dtype):
 				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,int(L/2),np.dtype(dtype),Nup,norm(Ek-Ekp)) )
 	else:
-		for kblock in xrange(1,L_2+1):
+		for kblock in range(1,L_2+1):
 			Hk=hamiltonian(static,[],N=L,Nup=Nup,dtype=kdtype,kblock=kblock,a=a)
 			Ns=Hk.Ns
 			Ek=Hk.eigvalsh()
@@ -696,8 +697,8 @@ def check_t_pz(L,dtype,Nup=None):
 def check_t_p_z(L,dtype,Nup=None):
 	hx=random()
 	J=random()
-	h=[[hx,i] for i in xrange(L)]
-	J1=[[J,i,(i+1)%L] for i in xrange(L)]
+	h=[[hx,i] for i in range(L)]
+	J1=[[J,i,(i+1)%L] for i in range(L)]
 	if type(Nup) is int:
 		static=[["zz",J1],["xx",J1],["yy",J1]] 
 	else:
@@ -705,7 +706,7 @@ def check_t_p_z(L,dtype,Nup=None):
 
 	
 	L_2=int(L/2)
-	for kblock in xrange(-L_2+1,L_2+1):
+	for kblock in range(-L_2+1,L_2+1):
 		Hkp1=hamiltonian(static,[],N=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=+1)
 		Hkp2=hamiltonian(static,[],N=L,Nup=Nup,dtype=dtype,kblock=kblock,pblock=-1)
 		Ns=Hkp1.Ns
@@ -744,41 +745,41 @@ def check_t_p_z(L,dtype,Nup=None):
 
 def check_pbc(Lmax):
 	for dtype in (np.complex64,np.complex128):
-		for L in xrange(2,Lmax+1,1):
+		for L in range(2,Lmax+1,1):
 			check_t(L,dtype)
-			for Nup in xrange(L+1):
+			for Nup in range(L+1):
 				check_t(L,dtype,Nup=Nup)
 
 	for dtype in (np.complex64,np.complex128):
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_t_z(L,dtype,Nup=int(L/2))
 			check_t_z(L,dtype)
 
 	for dtype in (np.complex64,np.complex128):
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_t_zA(L,dtype)
 
 	for dtype in (np.complex64,np.complex128):
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_t_zB(L,dtype)
 
 	for dtype in (np.complex64,np.complex128):
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_t_zA_zB(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,1):
+		for L in range(2,Lmax+1,1):
 			check_t_p(L,dtype)
-			for Nup in xrange(L+1):
+			for Nup in range(L+1):
 				check_t_p(L,dtype,Nup=Nup)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_t_pz(L,dtype,Nup=int(L/2))
 			check_t_pz(L,dtype)
 
 	for dtype in dtypes:
-		for L in xrange(2,Lmax+1,2):
+		for L in range(2,Lmax+1,2):
 			check_t_p_z(L,dtype,Nup=int(L/2))
 			check_t_p_z(L,dtype) 
 

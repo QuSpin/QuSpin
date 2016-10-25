@@ -93,13 +93,13 @@ class photon_basis(tensor_basis):
 
 		if not self._check_pcon:
 			n = len(opstr.replace("|","")) - len(indx)
-			indx.extend([0 for i in xrange(n)])
+			indx.extend([0 for i in range(n)])
 
 			return tensor_basis.Op(self,opstr,indx,J,dtype)
 		else:
 			# read off spin and photon operators
 			n = len(opstr.replace("|","")) - len(indx)
-			indx.extend([0 for i in xrange(n)])
+			indx.extend([0 for i in range(n)])
 
 			if opstr.count("|") > 1: 
 				raise ValueError("only one '|' charactor allowed in opstr {0}".format(opstr))
@@ -183,11 +183,11 @@ class photon_basis(tensor_basis):
 
 	@property
 	def chain_Ns(self):
-	    return self._b1.Ns
+		return self._b1.Ns
 
 	@property
 	def chain_N(self):
-	    return self._b1.N
+		return self._b1.N
 	
 	
 
@@ -316,9 +316,9 @@ class photon_basis(tensor_basis):
 				n = len(opstr.replace("|","")) - len(indx)
 
 				if opstr1:
-					indx.extend([min(indx) for i in xrange(n)])
+					indx.extend([min(indx) for i in range(n)])
 				else:
-					indx.extend([0 for i in xrange(n)])
+					indx.extend([0 for i in range(n)])
 
 				J = complex(bond[0])
 				static_list.append((opstr,tuple(indx),J))
@@ -341,9 +341,9 @@ class photon_basis(tensor_basis):
 				n = len(opstr.replace("|","")) - len(indx)
 
 				if opstr1:
-					indx.extend([min(indx) for i in xrange(n)])
+					indx.extend([min(indx) for i in range(n)])
 				else:
-					indx.extend([0 for i in xrange(n)])
+					indx.extend([0 for i in range(n)])
 
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
@@ -385,7 +385,7 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 	v_ph[np_min] = 0
 	v0_mask[mask] = 0.0
 
-	for np in xrange(np_min+1,np_max+1,1):
+	for np in range(np_min+1,np_max+1,1):
 		v_ph[np] = 1
 		mask = p_basis._n == np
 		v0_mask[mask] = v0[mask]
@@ -435,7 +435,7 @@ def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 	v_ph[np_min] = 0
 
 
-	for np in xrange(np_min+1,np_max+1,1):
+	for np in range(np_min+1,np_max+1,1):
 		v_ph[np] = 1
 		mask = p_basis._n == np
 		proj_1_mask[:,mask] = proj_1[:,mask]
@@ -500,8 +500,8 @@ class ho_basis(basis):
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [temp.format(i,b) for i,b in zip(xrange(half),self._basis[:half])]
-			str_list.extend([temp.format(i,b) for i,b in zip(xrange(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [temp.format(i,b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([temp.format(i,b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
 			str_list = [temp.format(i,b) for i,b in enumerate(self._basis)]
 

@@ -89,7 +89,6 @@ def basis_ops_gen():
 		IO = open(op_template,"r")
 		filename = op_template.replace(".tmp","")
 		file_temp_str = IO.read()
-		print filename
 		replacements = []
 		for basis_type in basis_types:
 			for matrix_type in matrix_types:
@@ -100,12 +99,8 @@ def basis_ops_gen():
 
 		file_str = ""
 		for replace in replacements:
+			file_str += file_temp_str.format(**replace)
 
-			try:
-				file_str += file_temp_str.format(**replace)
-			except KeyError,e:
-				print filename,replace
-				raise KeyError(e)
 			
 
 		with open(filename,"w") as IO:
@@ -120,16 +115,11 @@ def basis_ops_gen():
 	for basis_template in basis_templates:
 		IO = open(basis_template,"r")
 		filename = basis_template.replace(".tmp","")
-		print filename
 		file_temp_str = IO.read()
 
 		file_str = ""
 		for replace in basis_types:
-			try:
-				file_str += file_temp_str.format(**replace)
-			except KeyError,e:
-				print filename,replace
-				raise KeyError(e)
+			file_str += file_temp_str.format(**replace)
 
 			
 
@@ -154,9 +144,7 @@ def cython_files():
 
 
 	if USE_CYTHON:
-		print "generating .pyx files"
 		basis_ops_gen()
-		print "cythonizing basis_ops.pyx"
 		cython_src =  os.path.join(package_dir,"basis_ops.pyx")
 		os.system("cython --cplus "+cython_src)
 

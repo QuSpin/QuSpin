@@ -14,7 +14,7 @@ class basis(object):
 		self._unique_me = True
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
-                             " to be instantiated directly.")
+							 " to be instantiated directly.")
 
 
 	def __str__(self):
@@ -27,13 +27,13 @@ class basis(object):
 			str_list = list(self._get__str__())
 			if self._Ns > MAXPRINT:
 				L_str = len(str_list[0])
-				t = (" ".join(["" for i in xrange(L_str/2)]))+":"
+				t = (" ".join(["" for i in range(L_str//2)]))+":"
 				str_list.insert(MAXPRINT//2,t)
 		
 			string += "\n".join(str_list)
 			return string
 		else:
-			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self)),UserWarning,stacklevel=3)
+			warnings.warn("basis class {0} missing _get__str__ function, can not print(out basis representatives.".format(type(self)),UserWarning,stacklevel=3)
 			return "reference states: \n\t not availible"
 
 	@property
@@ -178,7 +178,6 @@ class basis(object):
 		for i,op in enumerate(op_list):
 			new_ops = self.expand_opstr(op,[i])
 			for new_op in new_ops:
-#				print new_op
 				if self.non_zero(new_op):
 					op_list_exp.append(new_op)
 
@@ -275,9 +274,9 @@ class basis(object):
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
 			user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
 			if user_input == 'y':
-				print "   (opstr, indices, coupling)"
-				for i in xrange(len(diff)):
-					print "{}. {}".format(i+1, list(diff)[i])
+				print("   (opstr, indices, coupling)")
+				for i in range(len(diff)):
+					print("{}. {}".format(i+1, list(diff)[i]))
 			raise TypeError("Hamiltonian not hermitian! To turn this check off set check_herm=False in hamiltonian.")
 			
 			
@@ -292,12 +291,12 @@ class basis(object):
 			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
 			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
 			if user_input == 'y':
-				print "   (opstr, indices, coupling(t))"
-				for i in xrange(len(diff)):
-					print "{}. {}".format(i+1, list(diff)[i])
+				print("   (opstr, indices, coupling(t))")
+				for i in range(len(diff)):
+					print("{}. {}".format(i+1, list(diff)[i]))
 			raise TypeError("Hamiltonian not hermitian! To turn this check off set check_herm=False in hamiltonian.")
 
-		print "Hermiticity check passed!"
+		print("Hermiticity check passed!")
 
 
 
@@ -341,10 +340,10 @@ class basis(object):
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
 				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
 				if user_input == 'y':
-					print " these operators do not conserve particle number{0}:".format(con)
-					print "   (opstr, indices, coupling)"
+					print(" these operators do not conserve particle number{0}:".format(con))
+					print("   (opstr, indices, coupling)")
 					for i,op in enumerate(unique_odd_ops):
-						print "{0}. {1}".format(i+1, op)
+						print("{0}. {1}".format(i+1, op))
 				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
 
 			
@@ -367,13 +366,13 @@ class basis(object):
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
 				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
 				if user_input == 'y':
-					print " these operators do not conserve particle number{0}:".format(con)
-					print "   (opstr, indices, coupling)"
+					print(" these operators do not conserve particle number{0}:".format(con))
+					print("   (opstr, indices, coupling)")
 					for i,op in enumerate(unique_odd_ops):
-						print "{0}. {1}".format(i+1, op)
+						print("{0}. {1}".format(i+1, op))
 				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
 
-			print "Particle conservation check passed!"
+			print("Particle conservation check passed!")
 
 
 
@@ -402,15 +401,15 @@ class basis(object):
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
 					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
 					if user_input == 'y':
-						print " these operators are needed for {}:".format(symm)
-						print "   (opstr, indices, coupling)"
+						print(" these operators are needed for {}:".format(symm))
+						print("   (opstr, indices, coupling)")
 						for i,op in enumerate(unique_missing_ops):
-							print "{0}. {1}".format(i+1, op)
-						print 
-						print " these do not obey the {}:".format(symm)
-						print "   (opstr, indices, coupling)"
+							print("{0}. {1}".format(i+1, op))
+						print(" ")
+						print(" these do not obey the {}:".format(symm))
+						print("   (opstr, indices, coupling)")
 						for i,op in enumerate(unique_odd_ops):
-							print "{0}. {1}".format(i+1, op)
+							print("{0}. {1}".format(i+1, op))
 					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
 
 
@@ -423,10 +422,10 @@ class basis(object):
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
 					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
 					if user_input == 'y':
-						print " these operators are needed for {}:".format(symm)
-						print "   (opstr, indices, coupling)"
+						print(" these operators are needed for {}:".format(symm))
+						print("   (opstr, indices, coupling)")
 						for i,op in enumerate(unique_missing_ops):
-							print "{0}. {1}".format(i+1, op)
+							print("{0}. {1}".format(i+1, op))
 					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
 			else:
 				continue
@@ -446,15 +445,15 @@ class basis(object):
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
 					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
 					if user_input == 'y':
-						print " these operators are missing for {}:".format(symm)
-						print "   (opstr, indices, coupling)"
+						print(" these operators are missing for {}:".format(symm))
+						print("   (opstr, indices, coupling)")
 						for i,op in enumerate(unique_missing_ops):
-							print "{0}. {1}".format(i+1, op)
-						print 
-						print " these do not obey {}:".format(symm)
-						print "   (opstr, indices, coupling)"
+							print("{0}. {1}".format(i+1, op))
+						print(" ")
+						print(" these do not obey {}:".format(symm))
+						print("   (opstr, indices, coupling)")
 						for i,op in enumerate(unique_odd_ops):
-							print "{0}. {1}".format(i+1, op)
+							print("{0}. {1}".format(i+1, op))
 					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
 
 
@@ -467,15 +466,15 @@ class basis(object):
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
 					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
 					if user_input == 'y':
-						print " these operators are needed for {}:".format(symm)
-						print "   (opstr, indices, coupling)"
+						print(" these operators are needed for {}:".format(symm))
+						print("   (opstr, indices, coupling)")
 						for i,op in enumerate(unique_missing_ops):
-							print "{0}. {1}".format(i+1, op)
+							print("{0}. {1}".format(i+1, op))
 					raise TypeError("Hamiltonian does not obey {0}! To turn off check, use check_symm=False in hamiltonian.".format(symm))
 			else:
 				continue
 
-		print "Symmetry checks passed!"
+		print("Symmetry checks passed!")
 
 
 

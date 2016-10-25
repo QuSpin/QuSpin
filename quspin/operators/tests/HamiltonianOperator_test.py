@@ -28,7 +28,6 @@ def check_dot(H,H_op,v):
 def check_rdot(H,H_op,v):
 	u = H.rdot(v)
 	u_op = H_op.rdot(v)
-	print np.abs(u - u_op)
 	assert_almost_equal_dtype(todense(u),todense(u_op))
 
 def check_add(H,H_op,mat):
@@ -60,9 +59,9 @@ def check_mul(H,H_op,mat):
 
 def test_ops():
 	for L in range(1,5):
-		Jz = [[1.0,i,(i+1)] for i in xrange(L-1)]
-		Jx = [[2.0,i,(i+1)] for i in xrange(L-1)]
-		Jy = [[3.0,i,(i+1)] for i in xrange(L-1)]
+		Jz = [[1.0,i,(i+1)] for i in range(L-1)]
+		Jx = [[2.0,i,(i+1)] for i in range(L-1)]
+		Jy = [[3.0,i,(i+1)] for i in range(L-1)]
 		operator_list = [["zz",Jz],["xx",Jx],["yy",Jy]]
 		basis = spin_basis_1d(L,kblock=1,pblock=1)
 		if basis.Ns > 0:

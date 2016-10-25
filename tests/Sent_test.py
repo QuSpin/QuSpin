@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import sys,os
 quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
@@ -14,8 +16,8 @@ seed()
 dtypes={"float32":np.float32,"float64":np.float64,"float128":np.float128,
 		"complex64":np.complex64,"complex128":np.complex128,"complex256":np.complex256}
 
-atols={"float32":1E-4,"float64":1E-13,"float128":1E-13,
-		"complex64":1E-4,"complex128":1E-13,"complex256":1E-13}
+atols={"float32":1E-4,"float64":1E-12,"float128":1E-12,
+		"complex64":1E-4,"complex128":1E-12,"complex256":1E-12}
 
 
 
@@ -58,14 +60,14 @@ def spin_photon_entropy(dtype,symm,Sent_args):
 		basis = photon_basis(spin_basis_1d,L,Nph=Nph)
 
 	# spin
-	x_field=[[-1.0,i] for i in xrange(L)]
-	z_field=[[-1.0,i] for i in xrange(L)]
-	J_nn=[[-1.0,i,(i+1)%L] for i in xrange(L)]
+	x_field=[[-1.0,i] for i in range(L)]
+	z_field=[[-1.0,i] for i in range(L)]
+	J_nn=[[-1.0,i,(i+1)%L] for i in range(L)]
 	# spin-photon
-	absorb=[[-0.5*1.0/np.sqrt(Nph),i] for i in xrange(L)]
-	emit=[[-0.5*np.conj(1.0)/np.sqrt(Nph),i] for i in xrange(L)]
+	absorb=[[-0.5*1.0/np.sqrt(Nph),i] for i in range(L)]
+	emit=[[-0.5*np.conj(1.0)/np.sqrt(Nph),i] for i in range(L)]
 	# photon
-	ph_energy = [[11.0/L,i] for i in xrange(L)]
+	ph_energy = [[11.0/L,i] for i in range(L)]
 
 	static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
 
@@ -98,14 +100,14 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 		basis = photon_basis(spin_basis_1d,L,Ntot=Ntot)
 
 	# spin
-	x_field=[[-1.0,i] for i in xrange(L)]
-	z_field=[[-1.0,i] for i in xrange(L)]
-	J_nn=[[-1.0,i,(i+1)%L] for i in xrange(L)]
+	x_field=[[-1.0,i] for i in range(L)]
+	z_field=[[-1.0,i] for i in range(L)]
+	J_nn=[[-1.0,i,(i+1)%L] for i in range(L)]
 	# spin-photon
-	absorb=[[-0.5*1.0/np.sqrt(Ntot),i] for i in xrange(L)]
-	emit=[[-0.5*np.conj(1.0)/np.sqrt(Ntot),i] for i in xrange(L)]
+	absorb=[[-0.5*1.0/np.sqrt(Ntot),i] for i in range(L)]
+	emit=[[-0.5*np.conj(1.0)/np.sqrt(Ntot),i] for i in range(L)]
 	# photon
-	ph_energy = [[11.0/L,i] for i in xrange(L)]
+	ph_energy = [[11.0/L,i] for i in range(L)]
 
 	static = [["zz|",J_nn], ["z|",z_field], ["x|",x_field], ["x|-",absorb], ["x|+",emit], ["I|n",ph_energy]]
 
@@ -131,13 +133,13 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 
 
 
-for _r in xrange(10): # do 10 random checks
+for _r in range(10): # do 10 random checks
 
 	L=6
 	if uniform(0.0,1.0) < 0.5:
-		chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
+		chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	else:
-		chain_subsys=[r for r in xrange(L)]
+		chain_subsys=[r for r in range(L)]
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
@@ -192,18 +194,18 @@ for _r in xrange(10): # do 10 random checks
 			Sent_args['svd_return_vec']=[1,1,1]
 			spin_entropy(dtype,symm,Sent_args)
 
-	print "entropy (photon, conserved) random check {} finished successfully".format(_r)
+	print("entropy (photon, conserved) random check {} finished successfully".format(_r))
 
 
 
 
-for _r in xrange(10): # do 10 random checks
+for _r in range(10): # do 10 random checks
 
 	L=6
 	if uniform(0.0,1.0) < 0.5:
-		chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
+		chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	else:
-		chain_subsys=[r for r in xrange(L)]
+		chain_subsys=[r for r in range(L)]
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
@@ -257,14 +259,14 @@ for _r in xrange(10): # do 10 random checks
 			Sent_args['svd_return_vec']=[1,1,1]
 			spin_entropy(dtype,symm,Sent_args)
 
-	print "entropy (photon) random check {} finished successfully".format(_r)
+	print("entropy (photon) random check {} finished successfully".format(_r))
 
 
 
-for _r in xrange(10): # do 10 random checks
+for _r in range(10): # do 10 random checks
 
 	L=8
-	chain_subsys=list(np.unique([randint(0,L) for r in xrange(L/2)]))
+	chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	alpha=uniform(5)
 
 	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
@@ -319,6 +321,6 @@ for _r in xrange(10): # do 10 random checks
 			Sent_args['svd_return_vec']=[1,1,1]
 			spin_entropy(dtype,symm,Sent_args)
 
-	print "entropy (spin) random check {} finished successfully".format(_r)
+	print("entropy (spin) random check {} finished successfully".format(_r))
 
-print "Entanglement entropy checks passed!"
+print("Entanglement entropy checks passed!")
