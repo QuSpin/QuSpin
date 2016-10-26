@@ -281,6 +281,10 @@ We have included some basic functionality into the ```hamiltonian``` class, usef
   ```
   H_conj = H.conj() # always inplace
   ```
+ * trace
+  ```
+  H_tr = H.trace() 
+  ```
 * matrix vector product / dense matrix:
 
   usage:
