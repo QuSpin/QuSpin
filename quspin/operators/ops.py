@@ -1409,7 +1409,7 @@ class hamiltonian(object):
 
 	def __call__(self,time):
 		if self.is_dense:
-			return self.todense(time)
+			return self.toarray(time)
 		else:
 			return self.tocsr(time)
 
