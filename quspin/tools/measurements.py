@@ -125,7 +125,11 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	del system_state
 
 	if DM == False:
-		lmbda = _npla.svd(v, compute_uv=False)
+		if rho_d is not None: # need DM for Sent of a mixed system_state
+			U, lmbda, _ = _npla.svd(v, full_matrices=False)
+			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+		else:
+			lmbda = _npla.svd(v, compute_uv=False)
 	elif DM == 'chain_subsys':
 		U, lmbda, _ = _npla.svd(v, full_matrices=False)
 		if rho_d is not None:
@@ -148,15 +152,18 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 			DM_other_subsys = _np.einsum('nji,nj,njk->nik',V.conj(),lmbda**2,V )
 
 	del v
-	# add floating point number to zero elements
-	lmbda[lmbda<=1E-16] = _np.finfo(lmbda.dtype).eps
 
 	# calculate singular values of reduced DM and the corresponding probabilities
 	if rho_d is not None:
-		p = rho_d.dot(lmbda**2)
-		lmbda = _np.sqrt(p)
+		# diagonalise reduced DM
+		p = _np.linalg.eigvals(DM_chain_subsys)**2
+		if svd_return_vec[1]: # if lmdas requested by user
+			lmbda = _np.sqrt(p)
 	else:# calculate probabilities
 		p = (lmbda**2.0).T
+
+	# add floating point number to zero elements
+	p[p<=1E-16] = _np.finfo(p.dtype).eps
 		
 	# calculate entanglement _entropy of 'system_state'
 	if alpha == 1.0:
