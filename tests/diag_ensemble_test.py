@@ -20,7 +20,7 @@ dtypes={"float32":np.float32,"float64":np.float64,"float128":np.float128,
 atols={"float32":1E-4,"float64":1E-13,"float128":1E-13,
 		"complex64":1E-4,"complex128":1E-13,"complex256":1E-13}
 
-L=12
+L=10
 basis = spin_basis_1d(L,kblock=0,pblock=1,zblock=1)
 J_zz = [[1.0,i,(i+1)%L,(i+2)%L] for i in range(0,L)] 
 J_xy = [[1.0,i,(i+1)%L] for i in range(0,L)]

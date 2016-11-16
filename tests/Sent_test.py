@@ -155,6 +155,7 @@ for _r in range(10): # do 10 random checks
 		for symm in [0,1]:
 
 			S1=[]
+			#"""
 			# check entropies also between symmetries
 			for _i,_s in enumerate( spin_photon_entropy_cons(dtype,symm,Sent_args) ):
 				
@@ -168,6 +169,7 @@ for _r in range(10): # do 10 random checks
 			np.testing.assert_allclose(np.diff(S1),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			if symm == 2:
 				np.testing.assert_allclose(np.diff(S.ravel()),0.0,atol=atol,err_msg='Failed entropies comparison symm <--> no_symm!')
+			#"""
 			# check reduced DM's
 			Sent_args['DM']='both'
 			DM_chain_subsys=[]
@@ -184,7 +186,6 @@ for _r in range(10): # do 10 random checks
 					DM_other_subsys.append(_s['DM_other_subsys'])
 					S2.append(_s['Sent'])
 
-			
 			np.testing.assert_allclose(np.diff(S2),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			np.testing.assert_allclose(np.diff(DM_chain_subsys,axis=0),0.0,atol=atol,err_msg='Failed DM_chain_subsys comparison!')
 			np.testing.assert_allclose(np.diff(DM_other_subsys,axis=0),0.0,atol=atol,err_msg='Failed DM_other_subsys comparison!')
