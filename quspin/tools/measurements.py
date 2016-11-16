@@ -125,11 +125,11 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	del system_state
 
 	if DM == False:
-		if rho_d is not None: # need DM for Sent of a mixed system_state
+		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
 			U, lmbda, _ = _npla.svd(v, full_matrices=False)
 			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
 		else:
-			lmbda = _npla.svd(v, compute_uv=False)
+			lmbda = _npla.svd(v.squeeze(), compute_uv=False)
 	elif DM == 'chain_subsys':
 		U, lmbda, _ = _npla.svd(v, full_matrices=False)
 		if rho_d is not None:
@@ -154,27 +154,25 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	del v
 
 	# calculate singular values of reduced DM and the corresponding probabilities
-	if rho_d is not None:
+	if rho_d is not None and rho_d.shape!=(1,):
 		# diagonalise reduced DM
-		p = _np.linalg.eigvals(DM_chain_subsys)**2
+		p = _npla.eigvalsh(DM_chain_subsys)
 		if svd_return_vec[1]: # if lmdas requested by user
-			lmbda = _np.sqrt(p)
+			lmbda = _np.sqrt(abs(p))
 	else:# calculate probabilities
 		p = (lmbda**2.0).T
-
+	
 	# add floating point number to zero elements
 	p[p<=1E-16] = _np.finfo(p.dtype).eps
 		
 	# calculate entanglement _entropy of 'system_state'
 	if alpha == 1.0:
-		Sent = -_np.sum( p*_np.log(p),axis=0)
+		Sent = -_np.sum( p*_np.log(p),axis=0).squeeze()
 	else:
-		Sent =  1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha, axis=0))
-		
-
+		Sent =  1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha, axis=0)).squeeze()
+	
 	if densities:
 		Sent /= N_A
-
 
 	# store variables to dictionar
 	return_dict = {}
@@ -567,7 +565,8 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	# calculate diag ens ent _entropy in post-quench basis
 	if Srdm_Renyi is not False:
 		# calculate effective diagonal singular values, \lambda_i^{(n)} = Srdm_Renyi
-		rho_ent = (Srdm_Renyi**2).dot(rho) # has components (i,psi)
+		#rho_ent = (Srdm_Renyi**2).dot(rho) # has components (i,psi)
+		rho_ent = Srdm_Renyi # has components (i,psi)
 		Srdm_Renyi_d = _entropy(rho_ent,alpha)
 
 		
@@ -817,7 +816,17 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	if Srdm_Renyi:
 		# calculate singular values of columns of V2
 		v, _, N_A = _reshape_as_subsys({"V_states":V2},**Srdm_args)
-		Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
+		#"""
+		U, lmbda, _ = _npla.svd(v, full_matrices=False)
+		if istate in ['mixed','thermal']:
+			DM_chain_subsys = _np.einsum('nm,nij,nj,nkj->mik',rho,U,lmbda**2,U.conj() )
+		else:
+			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho,U,lmbda**2,U.conj() )
+			
+		Srdm_Renyi = _npla.eigvalsh(DM_chain_subsys).T # components (i,psi)
+		del v, U, DM_chain_subsys
+		#"""
+		#Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
 		
 	# clear up memory
 	del V2
