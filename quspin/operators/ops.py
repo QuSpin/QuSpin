@@ -1510,7 +1510,8 @@ class hamiltonian(object):
 			return self._imul_dense(other)
 
 
-
+	def __truediv__(self,other):
+		return self.__div__(other)
 
 	def __div__(self,other): # self / other
 		if isinstance(other,hamiltonian):			

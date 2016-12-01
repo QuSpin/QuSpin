@@ -1104,7 +1104,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 
 	else:
-		psi = psi_t.next() # get first state from iterator.
+		psi = next(psi_t) # get first state from iterator.
 		# do first loop calculations
 		if psi.ndim == 2:
 			psi = psi.ravel()
