@@ -3027,7 +3027,7 @@ class exp_op(object):
 		self._iterate = Value
 		
 
-	def get_mat(self,time=0.0):
+	def get_mat(self,time=0.0,shift=None):
 
 		if self.O.is_dense:
 			return _np.linalg.expm(self._a * self.O.todense(time))
@@ -3057,7 +3057,11 @@ class exp_op(object):
 		if shape[0] != self.get_shape[1]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
-		M = self._a * self.O(time)
+		if shift is not None:
+			M = self._a * (self.O(time) + shift*sp.identity(O.Ns,dtype=O.dtype))
+		else:
+			M = self._a * self.O(time)
+
 		if self._iterate:
 			if is_ham:
 				return _hamiltonian_iter_dot(M, other, self._step, self._grid)
@@ -3081,7 +3085,7 @@ class exp_op(object):
 				else:
 					return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
-	def rdot(self, other, time=0.0):
+	def rdot(self, other, time=0.0,shift=None):
 
 		is_sp = False
 		is_ham = False
@@ -3104,7 +3108,11 @@ class exp_op(object):
 		if shape[1] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
-		M = (self._a * self.O(time)).T
+		if shift is not None:
+			M = (self._a * (self.O(time) + shift*sp.identity(O.Ns,dtype=O.dtype))).T
+		else:
+			M = (self._a * self.O(time)).T
+
 		if self._iterate:
 			if is_ham:
 				return _hamiltonian_iter_rdot(M, other.T, self._step, self._grid)
@@ -3127,7 +3135,7 @@ class exp_op(object):
 				else:
 					return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
-	def sandwich(self, other, time=0.0):
+	def sandwich(self, other, time=0.0,shift=None):
 
 		is_ham = False
 		if ishamiltonian(other):
@@ -3150,7 +3158,11 @@ class exp_op(object):
 		if shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
-		M = self._a.conjugate()*self.O.H(time)
+		if shift is not None:
+			M = self._a.conjugate() * (self.O(time) + shift*sp.identity(O.Ns,dtype=O.dtype))
+		else:
+			M = self._a.conjugate() * self.O(time)
+			
 		if self._iterate:
 
 			if is_ham:
