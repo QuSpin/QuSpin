@@ -816,7 +816,7 @@ class hamiltonian(object):
 
 		if not check:
 			if diagonal:
-				return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+				return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 			else:
 				return Vl.T.conj().dot(Vr)
  
@@ -832,7 +832,7 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				if diagonal:
-					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.T.conj().dot(Vr)
 			else:
@@ -849,7 +849,7 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				if diagonal:
-					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.H.dot(Vr)
 			else:
@@ -872,7 +872,7 @@ class hamiltonian(object):
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 				if diagonal:
-					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.conj().dot(Vr)
 			elif Vl.ndim == 2:
