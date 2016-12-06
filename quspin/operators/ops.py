@@ -241,7 +241,6 @@ class hamiltonian(object):
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
 			self._basis=basis
-			self._Ns = basis.Ns
 
 
 		if static_other_list or dynamic_other_list:
@@ -392,7 +391,7 @@ class hamiltonian(object):
 				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 				self._dynamic = ()
 
-
+		self._Ns = self._shape[0]
 		self.sum_duplicates()
 
 	@property
@@ -1154,9 +1153,9 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= norm(solver._y)
 				if H_real:
-					v[i,:] = solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+					yield solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 				else:
-					v[i,:] = solver.y
+					yield solver.y
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
@@ -3034,7 +3033,7 @@ class exp_op(object):
 		else:
 			return _sp.linalg.expm(self._a * self.O.tocsc(time))
 
-	def dot(self, other, time=0.0):
+	def dot(self, other, time=0.0, shift=None):
 
 		is_sp = False
 		is_ham = False

@@ -188,23 +188,20 @@ class basis(object):
 	def _consolidate_lists(self,static_list,dynamic_list):
 		l = len(static_list)
 		i = 0
+
 		while (i < l):
 			j = 0
 			while (j < l):
 				if i != j:
 					opstr1,indx1,J1,i1 = tuple(static_list[i]) 
 					opstr2,indx2,J2,i2 = tuple(static_list[j])
+					#print(i,j,opstr1,opstr2,indx1,indx2,J1,J2)
 					if opstr1 == opstr2 and indx1 == indx2:
-						
 						del static_list[j]
-						if j < i: 
-							i -= 1
-						else:
-							j -= 1
-
-						if J1 == -J2: 
+						if j < i: i -= 1
+						if J1 == -J2:
+							if i < j: j -= 1				
 							del static_list[i]
-							i -= 1
 						else:
 							static_list[i] = list(static_list[i])
 							static_list[i][2] += J2
@@ -227,10 +224,10 @@ class basis(object):
 					opstr1,indx1,J1,f1,f1_args,i1 = tuple(dynamic_list[i]) 
 					opstr2,indx2,J2,f2,f2_args,i2 = tuple(dynamic_list[j])
 					if opstr1 == opstr2 and indx1 == indx2 and f1 == f2 and f1_args == f2_args:
-
 						del dynamic_list[j]
+						if j < i: i -= 1
 						if J1 == -J2: 
-							if j < i: i -= 1
+							if i < j: j -= 1
 							del dynamic_list[i]
 						else:
 							dynamic_list[i] = list(dynamic_list[i])
@@ -318,7 +315,6 @@ class basis(object):
 			static_list_exp = self.expand_list(static_list)
 			dynamic_list_exp = self.expand_list(dynamic_list)
 			static_list_exp,dynamic_list_exp = self.consolidate_lists(static_list_exp,dynamic_list_exp)
-
 			con = ""
 
 			odd_ops = []

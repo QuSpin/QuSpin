@@ -1,10 +1,16 @@
-from quspin.operators import hamiltonian
+from __future__ import print_function, division
+# QuSpin modules
+from ..operators import hamiltonian as _hamiltonian
+# numpy modules
 import numpy as _np # generic math functions
 from numpy import hstack
+# scipy modules
+import scipy.sparse as _sp
 from scipy.sparse.linalg import expm_multiply
+# multi-processing modules
 from multiprocessing import Process,Queue,Event
 from joblib import Parallel,delayed
-import scipy.sparse as sp
+
 from itertools import izip
 
 __all__=["block_diag_hamiltonian","block_ops"]
@@ -50,14 +56,19 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 
 	dynamic_list = [([],f,f_args) for _,_,f,f_args in dynamic]
 	static_mats = []
+	blocks = list(blocks)
+	if not isinstance(blocks[0],dict):
+		raise ValueError("blocks must be iterable of dictionaries.")
 
-	for block in iter(blocks):
+	dtype = _np.dtype(dtype)
+
+	for block in blocks:
 		b = basis_con(*basis_args,**block)
 		P = b.get_proj(dtype)
 		if b.Ns > 0:
 			P_list.append(P)
 
-		H = hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
+		H = _hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
 		check_symm = False
 		check_herm = False
 		check_pcon = False
@@ -66,14 +77,14 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 			dynamic_list[i][0].append(Hd.tocoo())
 
 
-	static = [sp.block_diag(static_mats,format="csr")]
+	static = [_sp.block_diag(static_mats,format="csr")]
 	dynamic = []
 	for mats,f,f_args in dynamic_list:
-		mats = sp.block_diag(mats,format="csr")
+		mats = _sp.block_diag(mats,format="csr")
 		dynamic.append([mats,f,f_args])
 
-	P = sp.hstack(P_list,format="csr")
-	return P,hamiltonian(static,dynamic,copy=False)
+	P = _sp.hstack(P_list,format="csr")
+	return P,_hamiltonian(static,dynamic,copy=False)
 
 
 
@@ -277,7 +288,6 @@ class block_ops(object):
 		blocks = list(blocks)
 		for block in blocks:
 			b = basis_con(*basis_args,**block)
-
 			if b.Ns >  0:
 				self._basis_dict[str(block)]=b
 
@@ -329,7 +339,6 @@ class block_ops(object):
 
 
 	def compute_all_blocks(self):
-		first=True
 		for key,b in self._basis_dict.iteritems():
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
@@ -337,10 +346,10 @@ class block_ops(object):
 
 			if self._H_dict.get(key) is None:
 				if not self._checked:
-					H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 					self._checked=True
 				else:
-					H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 				self._H_dict[key] = H
 
 
@@ -376,9 +385,6 @@ class block_ops(object):
 
 		"""
 
-		times = np.asanyarray(times).ravel()
-
-
 		P = []
 		H_list = []
 		psi_blocks = []
@@ -390,17 +396,18 @@ class block_ops(object):
 			else:
 				p = self._P_dict[key]
 
-			psi = p.T.dot(psi_0)
+			psi = p.H.dot(psi_0)
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
 
 				if self._H_dict.get(key) is None:
 					if not self._checked:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+						print(b)
+						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 						self._checked=True
 					else:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 
 					if self._save:
 						self._H_dict[key] = H
@@ -408,22 +415,25 @@ class block_ops(object):
 					H_list.append(H)
 				else:
 					H_list.append(self._H_dict[key])
-		
+
 		if len(H_list) > 0:
-			P = sp.hstack(P,csr="csr")
+			P = _sp.hstack(P,format="csr")
 			if iterate:
+				if _np.isscalar(times):
+					raise ValueError("If iterate=True times must be a list/array.")
+
 				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,solver_name,solver_args,n_jobs)
 			else:
-				psi_t = Parallel(n_jobs = n_jobs)(delayed(_block_evolve_helper)(H,psi,t0,times,H_real=H_real,solver_name,solver_args) for psi,H in zip(psi_blocks,H_list))
+				psi_t = Parallel(n_jobs = n_jobs)(delayed(_block_evolve_helper)(H,psi,t0,times,H_real,solver_name,solver_args) for psi,H in zip(psi_blocks,H_list))
 				psi_t = hstack(psi_t).T
 				psi_t = P.dot(psi_t).T
 				return psi_t
 		else:
-			raise RuntimeError("initial state has no projection onto specified blocks.")
+			raise RuntimeError("initial state has no projection on to specified blocks.")
 
 
 
-	def expm(self,psi_0,start,stop,H_time_eval=0.0,iterate=False,n_jobs=1,endpoint=True,num=50,a=-1j,shift=None):
+	def expm(self,psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
 		"""
 		this function is the creates blocks and then uses them to evolve state with expm_multiply in parallel.
 		
@@ -439,12 +449,7 @@ class block_ops(object):
 		* psi_0: (cumpulsory) ndarray/list/tuple of state which lives in the full hilbert space of you're problem. 
 		Does not need to obey and sort of symmetry.
 
-		* start: (cumpulsory) the inistial time the dynamics starts at.
-
-		* stop: (cumpulsory) either list or numpy array containing the times you would like to have solution at.
-		Must be some kind of iterable object.
-
-		* H_time_eval: (optional)
+		* H_time_eval: (optional) time to evaluate the hamiltonians at when doing the exponentiation. 
 
 		* iterate: (optional) tells the function to return generator or array of states.
 
@@ -456,6 +461,48 @@ class block_ops(object):
 		The rest of these are just arguements which are used by exp_op see Documentation for more detail. 
 
 		"""
+
+		if iterate:
+			if [start,stop] == [None, None]:
+				raise ValueError("'iterate' can only be True with time discretization. must specify 'start' and 'stop' points.")
+
+			if num is not None:
+				if type(num) is not int:
+					raise ValueError("expecting integer for 'num'.")
+			else:
+				num = 50
+
+			if endpoint is not None:
+				if type(endpoint) is not bool:
+					raise ValueError("expecting bool for 'endpoint'.")
+			else: 
+				endpoint = True
+
+		else:
+			if [start,stop] == [None, None]:
+				if num != None:
+					raise ValueError("unexpected argument 'num'.")
+				if endpoint != None:
+					raise ValueError("unexpected argument 'endpoint'.")
+			else:
+				if not (_np.isscalar(start)  and _np.isscalar(stop)):
+					raise ValueError("expecting scalar values for 'start' and 'stop'")
+
+				if not (_np.isreal(start) and _np.isreal(stop)):
+					raise ValueError("expecting real values for 'start' and 'stop'")
+
+				if num is not None:
+					if type(num) is not int:
+						raise ValueError("expecting integer for 'num'.")
+				else:
+					num = 50
+
+				if endpoint is not None:
+					if type(endpoint) is not bool:
+						raise ValueError("expecting bool for 'endpoint'.")
+				else: 
+					endpoint = True
+
 		P = []
 		H_list = []
 		psi_blocks = []
@@ -467,16 +514,16 @@ class block_ops(object):
 			else:
 				p = self._P_dict[key]
 
-			psi = p.T.dot(psi_0)
+			psi = p.H.dot(psi_0)
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
 				if self._H_dict.get(key) is None:
 					if not self._checked:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 						self._checked=True
 					else:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 
 					if self._save:
 						self._H_dict[key] = H
@@ -487,24 +534,24 @@ class block_ops(object):
 
 
 				if shift is not None:
-					H += a*shift*sp.identity(basis.Ns,dtype=self.dtype)
+					H += a*shift*_sp.identity(basis.Ns,dtype=self.dtype)
 
 				H_list.append(H)
 		
 		if len(H_list) > 0:
-			P = sp.hstack(P,format="csr")
+			P = _sp.hstack(P,format="csr")
 			if iterate:
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
-				if _np.iscomplex(a):
-					raise NotImplementedError("until Scipy v0.19.0 is released this function will not work properly for complex a. plase use iterate=True and store results as list.")
+				if _np.iscomplex(a) and (start,stop,num,steps) != (None,None,None,None):
+					raise NotImplementedError("until Scipy v0.19.0 is released this function will not work properly with grid for complex a. plase use iterate=True and store results as list.")
 
 				psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
 				psi_t = hstack(psi_t).T
 				psi_t = P.dot(psi_t).T
 				return psi_t
 		else:
-			raise RuntimeError("initial state has no projection onto specified blocks.")
+			raise RuntimeError("initial state has no projection on to specified blocks.")
 
 
 
