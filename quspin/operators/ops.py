@@ -3158,9 +3158,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a.conjugate() * (self.O(time) + shift*sp.identity(O.Ns,dtype=O.dtype))
+			M = self._a.conjugate() * (self.O.H(time) + shift*sp.identity(O.Ns,dtype=O.dtype))
 		else:
-			M = self._a.conjugate() * self.O(time)
+			M = self._a.conjugate() * self.O.H(time)
 			
 		if self._iterate:
 
