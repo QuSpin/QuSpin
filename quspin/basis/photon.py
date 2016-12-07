@@ -191,11 +191,8 @@ class photon_basis(tensor_basis):
 	
 	
 
-
-
 	def __name__(self):
 		return "<type 'qspin.basis.photon_basis'>"
-
 
 	def _get__str__(self):
 		if not self._check_pcon:
@@ -492,7 +489,14 @@ class ho_basis(basis):
 		else:
 			return v0
 
+	def __getitem__(self,key):
+		return self._basis.__getitem__(key)
 
+	def index(self,s):
+		return _np.searchsorted(self._basis,s)
+
+	def __iter__(self):
+		return self._basis.__iter__()
 
 	def _get__str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))

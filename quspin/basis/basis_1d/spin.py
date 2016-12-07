@@ -580,6 +580,15 @@ class spin_basis_1d(basis):
 		return self._blocks
 
 	@property
+	def L(self):
+		return self._L
+
+	@property
+	def N(self):
+		return self._L
+	
+
+	@property
 	def description(self):
 		blocks = ""
 		lat_space = "lattice spacing: a = {a}".format(**self._blocks)
@@ -606,7 +615,14 @@ class spin_basis_1d(basis):
 		return "<type 'qspin.basis.spin_basis_1d'>"
 
 
+	def __getitem__(self,key):
+		return self._basis.__getitem__(key)
 
+	def index(self,s):
+		return _np.searchsorted(self._basis,s)
+
+	def __iter__(self):
+		return self._basis.__iter__()
 
 
 	def Op(self,opstr,indx,J,dtype):
@@ -865,28 +881,7 @@ class spin_basis_1d(basis):
 		return _get_proj_sparse(self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks)
 
 
-	"""
-	def check_pcon(self,static_list,dynamic_list,_pcon=False):
-		Nup = self._blocks.get("Nup")
-		if (type(Nup) is int) or (type(self._pcon_mod) is int):
-			base.check_pcon(self,static_list,dynamic_list)
-	"""
 
-#	def check_symm(self,static_list,dynamic_list,basis=None):
-#		if basis is None: 
-#			basis = self
-#		_check.check_symm(basis,static_list,dynamic_list,self._L)
-
-
-
-	@property
-	def L(self):
-		return self._L
-
-	@property
-	def N(self):
-		return self._L
-	
 
 
 
@@ -1002,6 +997,7 @@ class spin_basis_1d(basis):
 
 			l1 = self._expand_opstr(op1,num)
 			l2 = self._expand_opstr(op2,num)
+
 			l = []
 			for op1 in l1:
 				for op2 in l2:
@@ -1010,7 +1006,7 @@ class spin_basis_1d(basis):
 					op[1] += op2[1]
 					op[2] *= op2[2]
 					l.append(tuple(op))
-				
+
 			return tuple(l)
 
 
