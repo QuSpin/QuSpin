@@ -36,6 +36,8 @@ class basis(object):
 			warnings.warn("basis class {0} missing _get__str__ function, can not print(out basis representatives.".format(type(self)),UserWarning,stacklevel=3)
 			return "reference states: \n\t not availible"
 
+
+
 	@property
 	def unique_me(self):
 		return self._unique_me
@@ -54,7 +56,14 @@ class basis(object):
 	def __name__(self):
 		return "<type 'qspin.basis.base'>"
 
+	def __iter__(self):
+		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for for iterating over basis!".format(self.__class__))
 
+	def __getitem__(self,key):
+		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for for '[]' operator!".format(self.__class__))
+
+	def index(self,s):
+		raise NotImplementedError("basis class: {0} missing implimentation of 'index' function!".format(self.__class__))
 
 
 	def Op(self,*args,**kwargs):
