@@ -246,7 +246,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				chain_subsys = sorted(chain_subsys)
 
 	
-
 	if isinstance(system_state,dict):
 		keys = set(system_state.keys())
 		if keys == set(['V_rho','rho_d']):
@@ -321,11 +320,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	del system_state
 
 
-
 	# define number of participating states in 'system_state'
 	Ns = psi[0,].size
-
-
 
 	
 	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
@@ -360,15 +356,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	 	   subsystem consistes of sites (k,l) then v should be reshuffled such that v[(k,l), (all other sites)]
 	 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( N_A x N/N_A ) and proceed with the SVD as below  
 		'''
-
-		if chain_subsys == [i for i in range(min(chain_subsys), max(chain_subsys)+1)]: 
+		if chain_subsys==list(range(len(chain_subsys))):
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
 			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
-		else: # if chain_subsys not consecutive
+		else: # if chain_subsys not consecutive or staring site not [0]
 			# performs 2) and 3)
 			# update reshape tuple
 			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)])
@@ -429,8 +424,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				Ns_spin = basis.chain_Ns
 
 		#del basis
-		if sorted(chain_subsys) == [i for i in range(min(chain_subsys), max(chain_subsys)+1)]: 
-			# chain_subsys sites come in consecutive order
+		if chain_subsys == list(range(len(chain_subsys))): 
+			# chain_subsys sites come in consecutive order or staring site not [0]
 			# define reshape tuple
 			if N_A==N: # chain_subsys equals entire lattice
 				reshape_tuple2 = (Ns, Ns_spin,Nph+1)
