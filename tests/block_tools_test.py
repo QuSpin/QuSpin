@@ -92,7 +92,7 @@ for psi_e_1,psi_e_2,psi_b_1,psi_b_2 in izip(psi_exact_1,psi_exact_2,psi_block_1,
 
 
 
-"""
+
 # same for iterate=False
 expH = exp_op(H,a=-1j,start=0,stop=10,iterate=False,num=50,endpoint=True)
 
@@ -111,5 +111,4 @@ for psi_e_1,psi_e_2,psi_b_1,psi_b_2 in izip(psi_exact_1,psi_exact_2,psi_block_1,
 	np.testing.assert_allclose(psi_b_1,psi_e_1,atol=1e-7)
 	np.testing.assert_allclose(psi_b_2,psi_e_2,atol=1e-7)
 
-"""
 

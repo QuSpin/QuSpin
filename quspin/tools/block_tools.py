@@ -5,6 +5,7 @@ from ..operators import hamiltonian as _hamiltonian
 import numpy as _np # generic math functions
 from numpy import hstack
 # scipy modules
+import scipy
 import scipy.sparse as _sp
 from scipy.sparse.linalg import expm_multiply
 # multi-processing modules
@@ -548,13 +549,15 @@ class block_ops(object):
 			if iterate:
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
-				if _np.iscomplex(a) and (start,stop,num,endpoint) != (None,None,None,None):
-					raise NotImplementedError("until Scipy v0.19.0 is released this function will not work properly with grid for complex a. plase use iterate=True and store results as list.")
-
-				psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
-				psi_t = hstack(psi_t).T
-				psi_t = P.dot(psi_t).T
-				return psi_t
+				ver = [int(v) for v in scipy.__version__.split(".")]
+				if _np.iscomplex(a) and (start,stop,num,endpoint) is not (None,None,None,None) and ver[1] < 19:
+					mats = _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
+					return _np.array([mat for mat in mats])
+				else:
+					psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
+					psi_t = hstack(psi_t).T
+					psi_t = P.dot(psi_t).T
+					return psi_t
 		else:
 			raise RuntimeError("initial state has no projection on to specified blocks.")
 

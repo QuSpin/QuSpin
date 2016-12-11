@@ -9,6 +9,7 @@ from .make_hamiltonian import test_function as _test_function
 
 
 # need linear algebra packages
+import scipy
 import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
 import scipy.sparse as _sp
@@ -23,6 +24,11 @@ from copy import deepcopy as _deepcopy
 import warnings
 
 __all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator"]
+
+
+
+
+
 
 
 def commutator(H1,H2):
@@ -3025,7 +3031,7 @@ class exp_op(object):
 			raise ValueError("iterate option must be true or false.")
 
 		if Value:
-			if [self._grid, self._step] == [None, None]:
+			if (self._grid, self._step) is (None, None):
 				raise ValueError("grid must be set in order to set iterate to be True.")
 
 		self._iterate = Value
@@ -3073,13 +3079,12 @@ class exp_op(object):
 				return _iter_dot(M, other, self.step, self._grid)
 
 		else:
-			if [self._grid, self._step] == [None, None]:
+			if (self._grid, self._step) is (None, None):
 				if is_ham:
 					return _hamiltonian_dot(M, other)
 				else:
 					return _expm_multiply(M, other)
 			else:
-
 				if is_sp:
 					mats = _iter_dot(M, other, self._step, self._grid)
 					return _np.array([mat for mat in mats])
@@ -3087,7 +3092,12 @@ class exp_op(object):
 					mats = _hamiltonian_iter_dot(M, other, self._step, self._grid)
 					return _np.array([mat for mat in mats])
 				else:
-					return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
+					ver = [int(v) for v in scipy.__version__.split(".")]
+					if _np.iscomplex(self._a) and ver[1] < 19:
+						mats = _iter_dot(M, other, self._step, self._grid)
+						return _np.array([mat for mat in mats])
+					else:
+						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
 	def rdot(self, other, time=0.0,shift=None):
 
@@ -3137,7 +3147,16 @@ class exp_op(object):
 					mats = _hamiltonian_iter_rdot(M, other.T, self._step, self._grid)
 					return _np.array([mat for mat in mats])
 				else:
-					return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
+					ver = [int(v) for v in scipy.__version__.split(".")]
+					if _np.iscomplex(self._a) and ver[1] < 19:
+						mats = _iter_rdot(M, other.T, self._step, self._grid)
+						return _np.array([mat for mat in mats])
+					else:
+						if other.ndim > 1:
+							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).transpose(0,2,1)
+						else:
+							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).
+
 
 	def sandwich(self, other, time=0.0,shift=None):
 
