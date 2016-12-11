@@ -29,7 +29,8 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 	 * [methods for basis objects](#methods-for-basis-objects)
 	* [tools](#tools)
 	 * [measusrements](#measurements)
-	 * [floquet](#floquet)
+	 * [periodically-driven systems](#Periodically-Driven-Systems)
+     * [block-diagonalisation](#Block-Diagonalisation)
 
 # **Installation**
 
@@ -1083,7 +1084,7 @@ KL_div(p1,p2)
 ```
 This routine returns the Kullback-Leibler divergence of the discrete probability distributions `p1` and `p2`. 
 
-### **floquet**
+### **Periodically-Driven Systems**
 This package contains tools which can be helpful in simulating periodically-driven (Floquet) systems. 
 
 #### **Floquet class**
@@ -1208,3 +1209,153 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 * `_.down` : refers to time vector of down-stage; inherits the above attributes except `_.T`, `_.dt`, and `._lenT`
 
 This object also acts like an array, you can iterate over it as well as index the values.
+
+
+
+
+### **Block Diagonalisation**
+
+#### ** block_diag_hamiltonian **
+
+```python
+P,H = block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,
+                             check_symm=True,check_herm=True,check_pcon=True)
+```
+This function constructs a hamiltonian object which is block diagonal with the blocks being created by the list 'blocks'.
+    
+RETURNS:
+
+* `P`: sparse matrix which is the projector to the block space.
+
+* `H`: hamiltonian object in block diagonal form.     
+    
+--- arguments ---
+
+* `blocks`: (required) list/tuple/iterator which contains a dictionary with the blocks the user would like to put into the hamiltonian constructor.
+
+* `static`: (required) the static operator list which is used to construct the block hamiltonians. Follows `hamiltonian` format.
+
+* `dynamic`: (required) the dynamic operator list which is used to construct the block hamiltonians. Follows `hamiltonian` format.
+
+* `basis_con`: (required) basis constructor to build the `basis` objects used to create the block diagonal Hamiltonian.
+
+* `basis_args`: (required) tuple passed as the first argument for `basis_con`, contains the required arguments. 
+
+* `dtype`: (required) data type of `hamiltonin` to be constructed.
+
+* `check_symm`: (optional) flag which tells the function to check the symmetry of the operators for the first hamiltonian constructed.
+
+* `check_herm`: (optional) same as `check_symm` but for hermiticity.
+
+* `check_pcon`: (optional) same as `check_symm` but for particle conservation.
+
+
+#### **`block_ops` class **
+
+``` python
+* block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
+                    compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True)
+```
+This class is used to split up the dynamics of a state over various symmetry sectors if the initial state does not obey the symmetry but the Hamiltonian does. Moreover we provide a multiprocessing option which allows the user to distribute the caculation of the dynamics over multiple cores.
+
+---arguments---
+
+* `blocks`: (required) list/tuple/iterator which contains the blocks the user would like to put into the Hamiltonian as dictionaries.
+
+* `static`: (required) the static operator list which is used to construct the block Hamiltonians. Follows `hamiltonian` format.
+
+* `dynamic`: (required) the dynamic operator list which is used to construct the block hamiltonians. Follows `hamiltonian` format.
+
+* `basis_con`: (required) basis constructor to build the `basis` objects which will create the block diagonal Hamiltonian.
+
+* `basis_args`: (required) tuple passed as the first argument for `basis_con`, contains required arguments. 
+
+* `dtype`: (required) data type of `hamiltonin` to be constructed.
+
+* `save_previous_data`: (optional) when doing the evolution this class constructs the Hamiltonians for the corresponding symmetry blocks. This takes some time and thus by setting this flag to `True`, the class will keep previously calculated Hamiltonians. This might be advantageous if at a later time one needs to do evolution in these blocks again so the corresponding Hamiltonians do not have to be calculated again.
+
+* `compute_all_blocks`: (optional) flag which tells the class to just compute all Hamiltonian blocks upon initialization. This option also sets `save_previous_data=True` by default. 
+
+* `check_symm`: (optional) flag which tells the function to check the symmetry of the operators for the first Hamiltonian constructed.
+
+* `check_herm`: (optional) same for `check_symm` but for hermiticity.
+
+* `check_pcon`: (optional) same for `check_symm` but for particle conservation. 
+
+--- `block_ops` attributes ---: '_. ' below stands for 'object. '
+
+`_.dtype`: the numpy data type the block Hamiltonians are stored with.
+
+`_.save_previous_data`: flag which tells the user if data is being saved. 
+
+`_.H_dict`: dictionary which contains the block hamiltonians under the key `str(block)` where block is the `block` dictionary.
+
+`_.P_dict`: dictionary which contains the block projectors under the same key `H_dict`.
+
+`_.basis_dict`: dictionary which contains the `basis` objects under the same key as `H_dict`. 
+
+`_.static`: list of the static operators used to construct the block Hamiltonians.
+
+`_.dynamic`: list of dynamic operators used to construct the block Hamiltonians.
+
+
+##### ** methods of `block_ops` class**
+
+The following functions are available as attributes of the `block_ops` class:
+
+###### ** `evolve`**
+
+```python
+block_H.evolve(psi_0,t0,times,iterate=False,n_jobs=1,H_real=False,solver_name="dop853",**solver_args)
+```
+This function is the creates blocks and then uses them to run H.evole in parallel.
+
+RETURNS:
+
+i) `iterate = True`
+    * returns generator which generates the time-dependent state in the full Hilbert space basis.
+
+ii) `iterate = False`
+    * returns numpy ndarray which has the time-dependent states in the full Hilbert space basis as rows.
+
+--- arguments ---
+
+* `psi_0`: (required) ndarray/list/tuple of state which defined on the full Hilbert space of the problem. Does not need to obey any symmetry.
+
+* `t0`: (required) time to initiate the dynamics at.
+
+* `times`: (required) list/numpy array (or other iterable) containing the times the solution is avaluated at.
+
+* `iterate`: (optional) if set to `True`, function returns the states as a generator, if set to `False` the states are returned as array.
+
+* `n_jobs`: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results. For optimal performance, all blocks should be approximately the same size and `n_jobs-1` must be a common devisor of the number of blocks, such that there is roughly the same workload for each process. Otherwise the computation will be as slow as the slowest process.
+
+* ...: the rest are just arguments which are used by `H.evolve`, see `hamiltonian` class for more details.
+
+
+###### ** `expm`**
+```python
+block_H.expm(psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,
+             a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
+```
+This function creates blocks and then uses them to evolve the quantum state using scipy.sparse routine `expm_multiply` in parallel.
+		
+RETURNS:
+
+i) `iterate = True`
+    * returns generator which generates the time-dependent state in the full Hilbert space basis.
+
+ii) `iterate = False`
+    * returns numpy ndarray which has the time-dependent states in the full Hilbert space basis as rows.
+
+--- arguments ---
+
+* `psi_0`: (required) ndarray/list/tuple of state which defined on the full Hilbert space of the problem. Does not need to obey any symmetry.
+
+* `H_time_eval`: (optional) times to evaluate the Hamiltonian at when doing the matrix exponentiation. 
+
+* `iterate`: (optional) if set to `True`, function returns the states as a generator, if set to `False` the states are returned as array.
+
+* `n_jobs`: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results. For optimal performance, all blocks should be approximately the same size and `n_jobs-1` must be a common devisor of the number of blocks, such that there is roughly the same workload for each process. Otherwise the computation will be as slow as the slowest process.
+
+* ...: the rest are just arguments which are used by the `exp_op` class, cf documentiation for more details.

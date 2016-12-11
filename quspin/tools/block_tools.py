@@ -405,7 +405,6 @@ class block_ops(object):
 
 				if self._H_dict.get(key) is None:
 					if not self._checked:
-						print(b)
 						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 						self._checked=True
 					else:
