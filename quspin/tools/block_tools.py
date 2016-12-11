@@ -221,6 +221,10 @@ def _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs):
 		psi_t = hstack(psi_blocks)
 		yield P.dot(psi_t)	
 
+# helper functions for doing evolution not with iterator
+def _block_evolve_helper(H,psi,t0,times,H_real,solver_name,solver_args):
+	return H.evolve(psi,t0,times,H_real=H_real,solver_name=solver_name,**solver_args)
+
 
 class block_ops(object):
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
@@ -535,7 +539,7 @@ class block_ops(object):
 
 
 				if shift is not None:
-					H += a*shift*_sp.identity(basis.Ns,dtype=self.dtype)
+					H += a*shift*_sp.identity(b.Ns,dtype=self.dtype)
 
 				H_list.append(H)
 		
@@ -544,7 +548,7 @@ class block_ops(object):
 			if iterate:
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
-				if _np.iscomplex(a) and (start,stop,num,steps) != (None,None,None,None):
+				if _np.iscomplex(a) and (start,stop,num,endpoint) != (None,None,None,None):
 					raise NotImplementedError("until Scipy v0.19.0 is released this function will not work properly with grid for complex a. plase use iterate=True and store results as list.")
 
 				psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))

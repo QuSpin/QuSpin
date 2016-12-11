@@ -1035,7 +1035,7 @@ class hamiltonian(object):
 				solver_args["atol"] = 1E-9
 
 
-
+		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 		
 		if v0.ndim <= 2:
 			v0 = v0.reshape((-1,))
@@ -1053,6 +1053,7 @@ class hamiltonian(object):
 			else:
 				solver = complex_ode(self.__ISO)
 		else:
+
 			if H_real:
 				v1 = v0
 				v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
@@ -1069,12 +1070,12 @@ class hamiltonian(object):
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real)
+			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n)
 		else:
 			if iterate:
-				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real)
+				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n)
 			else:
-				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time,H_real)
+				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n)
 
 			
 		
@@ -1084,7 +1085,7 @@ class hamiltonian(object):
 
 
 
-	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real):
+	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n):
 		from numpy.linalg import norm
 
 		if time == t0:
@@ -1095,7 +1096,7 @@ class hamiltonian(object):
 
 		solver.integrate(time)
 		if solver.successful():
-			if imag_time: solver._y /= norm(solver._y)
+			if imag_time: solver._y /= (norm(solver._y)/n)
 			if H_real:
 				return solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 			else:
@@ -1105,7 +1106,7 @@ class hamiltonian(object):
 
 
 
-	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time,H_real):
+	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n):
 		from numpy.linalg import norm
 
 		v = _np.empty((len(times),self.Ns),dtype=complex_type)
@@ -1122,7 +1123,7 @@ class hamiltonian(object):
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-				if imag_time: solver._y /= norm(solver._y)
+				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
 					v[i,:] = solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 				else:
@@ -1134,7 +1135,7 @@ class hamiltonian(object):
 
 
 
-	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real):
+	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n):
 		from numpy.linalg import norm
 
 		for i,t in enumerate(times):
@@ -1151,7 +1152,7 @@ class hamiltonian(object):
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-				if imag_time: solver._y /= norm(solver._y)
+				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
 					yield solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 				else:
@@ -2950,6 +2951,10 @@ class exp_op(object):
 		return self.O.get_shape
 
 	@property
+	def Ns(self):
+		return self.O.Ns
+
+	@property
 	def grid(self):
 		return self._grid
 
@@ -3026,7 +3031,7 @@ class exp_op(object):
 		self._iterate = Value
 		
 
-	def get_mat(self,time=0.0,shift=None):
+	def get_mat(self,time=0.0):
 
 		if self.O.is_dense:
 			return _np.linalg.expm(self._a * self.O.todense(time))
@@ -3057,7 +3062,7 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a * (self.O(time) + shift*sp.identity(O.Ns,dtype=O.dtype))
+			M = self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
 		else:
 			M = self._a * self.O(time)
 
@@ -3108,7 +3113,7 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
-			M = (self._a * (self.O(time) + shift*sp.identity(O.Ns,dtype=O.dtype))).T
+			M = (self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))).T
 		else:
 			M = (self._a * self.O(time)).T
 
@@ -3158,7 +3163,7 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a.conjugate() * (self.O.H(time) + shift*sp.identity(O.Ns,dtype=O.dtype))
+			M = self._a.conjugate() * (self.O.H(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
 		else:
 			M = self._a.conjugate() * self.O.H(time)
 			
