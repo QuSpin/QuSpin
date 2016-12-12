@@ -508,7 +508,7 @@ class block_ops(object):
 						raise ValueError("expecting bool for 'endpoint'.")
 				else: 
 					endpoint = True
-
+		
 		P = []
 		H_list = []
 		psi_blocks = []

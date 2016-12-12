@@ -3155,7 +3155,7 @@ class exp_op(object):
 						if other.ndim > 1:
 							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).transpose(0,2,1)
 						else:
-							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).
+							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
 
 	def sandwich(self, other, time=0.0,shift=None):
