@@ -155,10 +155,13 @@ def cython_files():
 
 
 def configuration(parent_package='', top_path=None):
-		import numpy
+		import numpy,os
 		from numpy.distutils.misc_util import Configuration
 		config = Configuration('_constructors',parent_package, top_path)
-		config.add_extension('basis_ops',sources=cython_files(),include_dirs=[numpy.get_include()],
+
+		package_dir = os.path.dirname(os.path.realpath(__file__))
+		src = os.path.join(package_dir,"basis_ops.cpp")
+		config.add_extension('basis_ops',sources=src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 		return config

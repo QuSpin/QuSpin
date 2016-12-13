@@ -5,6 +5,7 @@ from ..operators import hamiltonian as _hamiltonian
 import numpy as _np # generic math functions
 from numpy import hstack
 # scipy modules
+import scipy
 import scipy.sparse as _sp
 from scipy.sparse.linalg import expm_multiply
 # multi-processing modules
@@ -27,19 +28,17 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 	* H: hamiltonian object in block diagonal form. 
 
 	--- arguments ---
-	* blocks: (compulsory) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
+	* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
 
-	* static: (compulsory) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
+	* static: (required) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
 
-	* dynamic: (compulsory) the dynamic operator list which is used to construct the block hamiltonians. follows hamiltonian format.
+	* dynamic: (required) the dynamic operator list which is used to construct the block hamiltonians. follows hamiltonian format.
 
-	* basis_con: (compulsory) the basis constructor used to construct the basis objects which will create the block diagonal hamiltonians.
+	* basis_con: (required) the basis constructor used to construct the basis objects which will create the block diagonal hamiltonians.
 
-	* basis_args: (compulsory) tuple which gets passed as the first arguement for basis_con, contains cumpulsory arguments. 
+	* basis_args: (required) tuple which gets passed as the first argument for basis_con, contains required arguments. 
 
-	* check_symm: (optional) flag to check symmetry 
-
-	* dtype: (compulsory) the data type to construct the hamiltonian with.
+	* dtype: (required) the data type to construct the hamiltonian with.
 
 	* check_symm: (optional) flag which tells the function to check the symmetry of the operators for the first hamiltonian constructed.
 
@@ -54,7 +53,12 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 	H_list = []
 	P_list = []
 
-	dynamic_list = [([],f,f_args) for _,_,f,f_args in dynamic]
+	#dynamic_list = [([],f,f_args) for _,_,f,f_args in dynamic]
+	try:
+		dynamic_list=[([],f,f_args) for f,f_args in set(zip(*zip(*dynamic)[2:]) )]
+	except(TypeError):
+		raise TypeError("expecting a tuple for f_args.")
+		
 	static_mats = []
 	blocks = list(blocks)
 	if not isinstance(blocks[0],dict):
@@ -75,7 +79,6 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 		static_mats.append(H.static.tocoo())
 		for i,(Hd,_,_) in enumerate(H.dynamic):
 			dynamic_list[i][0].append(Hd.tocoo())
-
 
 	static = [_sp.block_diag(static_mats,format="csr")]
 	dynamic = []
@@ -142,7 +145,7 @@ def generate_parallel(n_process,n_iter,gen_func,args_list):
 
 		return 
 
-	# split up arguement list 
+	# split up argument list 
 	sub_lists = [args_list[0:n_left]]
 	sub_lists.extend([ args_list[n_left + i*n_pp:n_left + (i+1)*n_pp] for i in range(n_process-1)])
 
@@ -219,6 +222,10 @@ def _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs):
 		psi_t = hstack(psi_blocks)
 		yield P.dot(psi_t)	
 
+# helper functions for doing evolution not with iterator
+def _block_evolve_helper(H,psi,t0,times,H_real,solver_name,solver_args):
+	return H.evolve(psi,t0,times,H_real=H_real,solver_name=solver_name,**solver_args)
+
 
 class block_ops(object):
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
@@ -229,19 +236,19 @@ class block_ops(object):
 
 		---arguments---
 
-		* blocks: (compulsory) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
+		* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
 
-		* static: (compulsory) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
+		* static: (required) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
 
-		* dynamic: (compulsory) the dynamic operator list which is used to construct the block hamiltonians. follows hamiltonian format.
+		* dynamic: (required) the dynamic operator list which is used to construct the block hamiltonians. follows hamiltonian format.
 
-		* basis_con: (compulsory) the basis constructor used to construct the basis objects which will create the block diagonal hamiltonians.
+		* basis_con: (required) the basis constructor used to construct the basis objects which will create the block diagonal hamiltonians.
 
-		* basis_args: (compulsory) tuple which gets passed as the first arguement for basis_con, contains cumpulsory arguments. 
+		* basis_args: (required) tuple which gets passed as the first argument for basis_con, contains required arguments. 
 
 		* check_symm: (optional) flag to check symmetry 
 
-		* dtype: (compulsory) the data type to construct the hamiltonian with.
+		* dtype: (required) the data type to construct the hamiltonian with.
 
 		* save_previous_data: (optional) when doing the evolution this class has to construct the hamiltonians. this takes
 		some time and so by setting this to true, the class will keep previously calculated hamiltonians so that next time
@@ -366,22 +373,22 @@ class block_ops(object):
 
 		--- arguments ---
 
-		* psi_0: (cumpulsory) ndarray/list/tuple of state which lives in the full hilbert space of you're problem. 
+		* psi_0: (required) ndarray/list/tuple of state which lives in the full hilbert space of your problem. 
 		Does not need to obey and sort of symmetry.
 
-		* t0: (cumpulsory) the inistial time the dynamics starts at.
+		* t0: (required) the inistial time the dynamics starts at.
 
-		* times: (cumpulsory) either list or numpy array containing the times you would like to have solution at.
+		* times: (required) either list or numpy array containing the times you would like to have solution at.
 		Must be some kind of iterable object.
 
 		* iterate: (optional) tells the function to return generator or array of states.
 
 		* n_jobs: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results.
 		for best results all blocks should be approximately the same size and n_jobs-1 must be a common devisor of the number of
-		blocks such that there are roughly equal workload for each process. Otherwise you will also be as slow as you're
+		blocks such that there are roughly equal workload for each process. Otherwise you will also be as slow as your
 		slowest process.
 
-		The rest of these are just arguements which are used by H.evolve see Documentation for more detail. 
+		The rest of these are just arguments which are used by H.evolve see Documentation for more detail. 
 
 		"""
 
@@ -403,7 +410,6 @@ class block_ops(object):
 
 				if self._H_dict.get(key) is None:
 					if not self._checked:
-						print(b)
 						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 						self._checked=True
 					else:
@@ -446,7 +452,7 @@ class block_ops(object):
 
 		--- arguments ---
 
-		* psi_0: (cumpulsory) ndarray/list/tuple of state which lives in the full hilbert space of you're problem. 
+		* psi_0: (required) ndarray/list/tuple of state which lives in the full hilbert space of your problem. 
 		Does not need to obey and sort of symmetry.
 
 		* H_time_eval: (optional) time to evaluate the hamiltonians at when doing the exponentiation. 
@@ -455,10 +461,10 @@ class block_ops(object):
 
 		* n_jobs: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results.
 		for best results all blocks should be approximately the same size and n_jobs-1 must be a common devisor of the number of
-		blocks such that there are roughly equal workload for each process. Otherwise you will also be as slow as you're
+		blocks such that there are roughly equal workload for each process. Otherwise you will also be as slow as your
 		slowest process.
 
-		The rest of these are just arguements which are used by exp_op see Documentation for more detail. 
+		The rest of these are just arguments which are used by exp_op see Documentation for more detail. 
 
 		"""
 
@@ -502,7 +508,7 @@ class block_ops(object):
 						raise ValueError("expecting bool for 'endpoint'.")
 				else: 
 					endpoint = True
-
+		
 		P = []
 		H_list = []
 		psi_blocks = []
@@ -534,7 +540,7 @@ class block_ops(object):
 
 
 				if shift is not None:
-					H += a*shift*_sp.identity(basis.Ns,dtype=self.dtype)
+					H += a*shift*_sp.identity(b.Ns,dtype=self.dtype)
 
 				H_list.append(H)
 		
@@ -543,13 +549,15 @@ class block_ops(object):
 			if iterate:
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
-				if _np.iscomplex(a) and (start,stop,num,steps) != (None,None,None,None):
-					raise NotImplementedError("until Scipy v0.19.0 is released this function will not work properly with grid for complex a. plase use iterate=True and store results as list.")
-
-				psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
-				psi_t = hstack(psi_t).T
-				psi_t = P.dot(psi_t).T
-				return psi_t
+				ver = [int(v) for v in scipy.__version__.split(".")]
+				if _np.iscomplex(a) and (start,stop,num,endpoint) is not (None,None,None,None) and ver[1] < 19:
+					mats = _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
+					return _np.array([mat for mat in mats])
+				else:
+					psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
+					psi_t = hstack(psi_t).T
+					psi_t = P.dot(psi_t).T
+					return psi_t
 		else:
 			raise RuntimeError("initial state has no projection on to specified blocks.")
 
