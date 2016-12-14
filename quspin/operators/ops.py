@@ -309,7 +309,7 @@ class hamiltonian(object):
 						self._static = self._static + O.astype(self._dtype)
 				else:
 					O = _np.asanyarray(O)
-					self._mat_checks(O_a)
+					self._mat_checks(O)
 
 					self._is_dense=True			
 					try:
@@ -490,7 +490,7 @@ class hamiltonian(object):
 		
 
 
-		remove=[]
+		replace=[]
 		atol = 100*_np.finfo(self._dtype).eps
 		is_dense = False
 
@@ -507,16 +507,15 @@ class hamiltonian(object):
 		for i,(Hd,f,f_args) in enumerate(self._dynamic):
 			if _sp.issparse(Hd):
 				if _np.allclose(Hd.data,0,atol=atol):
-					remove.append(i)
+					self._dynamic[i] = list(self._dynamic[i])
+					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
+					self._dynamic[i] = tuple(self._dynamic[i])
 			else:
 				if _np.allclose(Hd,0,atol=atol):
-					remove.append(i)
+					self._dynamic[i] = list(self._dynamic[i])
+					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
+					self._dynamic[i] = tuple(self._dynamic[i])
 
-
-		remove.reverse()
-
-		for i in remove:
-			self._dynamic.pop(i)
 
 		self._dynamic=tuple(self._dynamic)
 
@@ -1042,6 +1041,7 @@ class hamiltonian(object):
 
 
 		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
 		
 		if v0.ndim <= 2:
 			v0 = v0.reshape((-1,))
@@ -1055,9 +1055,9 @@ class hamiltonian(object):
 		if imag_time:
 			v0 = v0.astype(self.dtype)
 			if _np.iscomplexobj(v0):
-				solver = ode(self.__ISO)
-			else:
 				solver = complex_ode(self.__ISO)
+			else:
+				solver = ode(self.__ISO)
 		else:
 
 			if H_real:
@@ -3093,11 +3093,12 @@ class exp_op(object):
 					return _np.array([mat for mat in mats])
 				else:
 					ver = [int(v) for v in scipy.__version__.split(".")]
-					if _np.iscomplex(self._a) and ver[1] < 19:
+
+					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
 						mats = _iter_dot(M, other, self._step, self._grid)
 						return _np.array([mat for mat in mats])
 					else:
-						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
+						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
 	def rdot(self, other, time=0.0,shift=None):
 
@@ -3148,7 +3149,7 @@ class exp_op(object):
 					return _np.array([mat for mat in mats])
 				else:
 					ver = [int(v) for v in scipy.__version__.split(".")]
-					if _np.iscomplex(self._a) and ver[1] < 19:
+					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
 						mats = _iter_rdot(M, other.T, self._step, self._grid)
 						return _np.array([mat for mat in mats])
 					else:

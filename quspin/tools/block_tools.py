@@ -48,29 +48,22 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 
 	"""
 
-
-
 	H_list = []
 	P_list = []
 
-	#dynamic_list = [([],f,f_args) for _,_,f,f_args in dynamic]
-	try:
-		dynamic_list=[([],f,f_args) for f,f_args in set(zip(*zip(*dynamic)[2:]) )]
-	except(TypeError):
-		raise TypeError("expecting a tuple for f_args.")
+	dynamic_list = [(tup[-2],tuple(tup[-1])) for tup in dynamic]
+	dynamic_list = [([],f,f_args) for f,f_args in set(dynamic_list)]
 		
 	static_mats = []
 	blocks = list(blocks)
 	if not isinstance(blocks[0],dict):
 		raise ValueError("blocks must be iterable of dictionaries.")
 
-	dtype = _np.dtype(dtype)
 
 	for block in blocks:
 		b = basis_con(*basis_args,**block)
 		P = b.get_proj(dtype)
-		if b.Ns > 0:
-			P_list.append(P)
+		P_list.append(P)
 
 		H = _hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
 		check_symm = False
@@ -122,7 +115,7 @@ def generate_parallel(n_process,n_iter,gen_func,args_list):
 	# calculate how to distribute generators over processes.
 	if n_items == n_process:
 		n_pp = 1
-		n_left = 1
+		n_left = 0
 	elif n_items < n_process and n_process > 0:
 		n_process = n_items
 		n_pp = 1
@@ -186,8 +179,8 @@ def generate_parallel(n_process,n_iter,gen_func,args_list):
 
 
 # generating function for evolution with H.evolve
-def _evolve_gen(psi,H,t0,times,H_real,solver_name,solver_args):
-	for psi in H.evolve(psi,t0,times,H_real=H_real,solver_name=solver_name,iterate=True,**solver_args):
+def _evolve_gen(psi,H,t0,times,H_real,imag_time,solver_name,solver_args):
+	for psi in H.evolve(psi,t0,times,H_real=H_real,imag_time=imag_time,solver_name=solver_name,iterate=True,**solver_args):
 		yield psi
 
 # generating function for evolution via expm_multiply
@@ -206,10 +199,10 @@ def _expm_gen(psi,H,times,dt):
 	H /= dt
 
 # using generate_parallel to get block evolution yields state in full H-space
-def _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,solver_name,solver_args,n_jobs):
-	args_list = [(psi_blocks[i],H_list[i],t0,times,H_real,solver_name,solver_args) for i in range(len(H_list))]
+def _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name,solver_args,n_jobs):
+	args_list = [(psi_blocks[i],H_list[i],t0,times,H_real,imag_time,solver_name,solver_args) for i in range(len(H_list))]
 
-	for psi_blocks in generate_parallel(n_jobs-1,len(times),_evolve_gen,args_list):
+	for psi_blocks in generate_parallel(n_jobs,len(times),_evolve_gen,args_list):
 		psi_t = hstack(psi_blocks)
 		yield P.dot(psi_t)
 
@@ -218,13 +211,13 @@ def _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs):
 	times,dt = _np.linspace(start,stop,num=num,endpoint=endpoint,retstep=True)
 	args_list = [(psi_blocks[i],H_list[i],times,dt) for i in range(len(H_list))]
 
-	for psi_blocks in generate_parallel(n_jobs-1,len(times),_expm_gen,args_list):
+	for psi_blocks in generate_parallel(n_jobs,len(times),_expm_gen,args_list):
 		psi_t = hstack(psi_blocks)
 		yield P.dot(psi_t)	
 
 # helper functions for doing evolution not with iterator
-def _block_evolve_helper(H,psi,t0,times,H_real,solver_name,solver_args):
-	return H.evolve(psi,t0,times,H_real=H_real,solver_name=solver_name,**solver_args)
+def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args):
+	return H.evolve(psi,t0,times,H_real=H_real,imag_time=imag_time,solver_name=solver_name,**solver_args)
 
 
 class block_ops(object):
@@ -291,6 +284,12 @@ class block_ops(object):
 		self._checks = {"check_symm":check_symm,"check_herm":check_herm,"check_pcon":check_pcon}
 		self._no_checks = {"check_symm":False,"check_herm":False,"check_pcon":False}
 		self._checked = False
+
+		if any([type(ele) not in [tuple,list] for ele in static]):
+			raise ValueError("block_ops only accepts operator strings in static list.")
+
+		if len(zip(*dynamic)) != 4:
+			raise ValueError("block_ops only accepts operator strings in dynamic list.")
 
 		blocks = list(blocks)
 		for block in blocks:
@@ -360,7 +359,7 @@ class block_ops(object):
 				self._H_dict[key] = H
 
 
-	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,H_real=False,solver_name="dop853",**solver_args):
+	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,H_real=False,imag_time=False,solver_name="dop853",**solver_args):
 		"""
 		this function is the creates blocks and then uses them to run H.evole in parallel.
 		
@@ -391,7 +390,8 @@ class block_ops(object):
 		The rest of these are just arguments which are used by H.evolve see Documentation for more detail. 
 
 		"""
-
+		if imag_time:
+			raise ValueError("imaginary time not supported for block evolution.")
 		P = []
 		H_list = []
 		psi_blocks = []
@@ -427,10 +427,9 @@ class block_ops(object):
 			if iterate:
 				if _np.isscalar(times):
 					raise ValueError("If iterate=True times must be a list/array.")
-
-				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,solver_name,solver_args,n_jobs)
+				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name,solver_args,n_jobs)
 			else:
-				psi_t = Parallel(n_jobs = n_jobs)(delayed(_block_evolve_helper)(H,psi,t0,times,H_real,solver_name,solver_args) for psi,H in zip(psi_blocks,H_list))
+				psi_t = Parallel(n_jobs = n_jobs)(delayed(_block_evolve_helper)(H,psi,t0,times,H_real,imag_time,solver_name,solver_args) for psi,H in zip(psi_blocks,H_list))
 				psi_t = hstack(psi_t).T
 				psi_t = P.dot(psi_t).T
 				return psi_t
@@ -485,7 +484,7 @@ class block_ops(object):
 				endpoint = True
 
 		else:
-			if [start,stop] == [None, None]:
+			if (start,stop) == (None, None):
 				if num != None:
 					raise ValueError("unexpected argument 'num'.")
 				if endpoint != None:
@@ -543,14 +542,16 @@ class block_ops(object):
 					H += a*shift*_sp.identity(b.Ns,dtype=self.dtype)
 
 				H_list.append(H)
-		
+
+		H_is_complex = _np.iscomplexobj([_np.float32(1.0).astype(H.dtype) for H in H_list])
+
 		if len(H_list) > 0:
 			P = _sp.hstack(P,format="csr")
 			if iterate:
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
 				ver = [int(v) for v in scipy.__version__.split(".")]
-				if _np.iscomplex(a) and (start,stop,num,endpoint) is not (None,None,None,None) and ver[1] < 19:
+				if H_is_complex and (start,stop,num,endpoint) != (None,None,None,None) and ver[1] < 19:
 					mats = _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 					return _np.array([mat for mat in mats])
 				else:
