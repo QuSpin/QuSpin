@@ -309,7 +309,7 @@ class hamiltonian(object):
 						self._static = self._static + O.astype(self._dtype)
 				else:
 					O = _np.asanyarray(O)
-					self._mat_checks(O_a)
+					self._mat_checks(O)
 
 					self._is_dense=True			
 					try:
@@ -490,7 +490,7 @@ class hamiltonian(object):
 		
 
 
-		remove=[]
+		replace=[]
 		atol = 100*_np.finfo(self._dtype).eps
 		is_dense = False
 
@@ -507,16 +507,15 @@ class hamiltonian(object):
 		for i,(Hd,f,f_args) in enumerate(self._dynamic):
 			if _sp.issparse(Hd):
 				if _np.allclose(Hd.data,0,atol=atol):
-					remove.append(i)
+					self._dynamic[i] = list(self._dynamic[i])
+					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
+					self._dynamic[i] = tuple(self._dynamic[i])
 			else:
 				if _np.allclose(Hd,0,atol=atol):
-					remove.append(i)
+					self._dynamic[i] = list(self._dynamic[i])
+					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
+					self._dynamic[i] = tuple(self._dynamic[i])
 
-
-		remove.reverse()
-
-		for i in remove:
-			self._dynamic.pop(i)
 
 		self._dynamic=tuple(self._dynamic)
 

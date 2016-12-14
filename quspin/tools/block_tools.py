@@ -48,29 +48,22 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 
 	"""
 
-
-
 	H_list = []
 	P_list = []
 
-	#dynamic_list = [([],f,f_args) for _,_,f,f_args in dynamic]
-	try:
-		dynamic_list=[([],f,f_args) for f,f_args in set(zip(*zip(*dynamic)[2:]) )]
-	except(TypeError):
-		raise TypeError("expecting a tuple for f_args.")
+	dynamic_list = [(tup[-2],tuple(tup[-1])) for tup in dynamic]
+	dynamic_list = [([],f,f_args) for f,f_args in set(dynamic_list)]
 		
 	static_mats = []
 	blocks = list(blocks)
 	if not isinstance(blocks[0],dict):
 		raise ValueError("blocks must be iterable of dictionaries.")
 
-	dtype = _np.dtype(dtype)
 
 	for block in blocks:
 		b = basis_con(*basis_args,**block)
 		P = b.get_proj(dtype)
-		if b.Ns > 0:
-			P_list.append(P)
+		P_list.append(P)
 
 		H = _hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
 		check_symm = False
@@ -291,6 +284,12 @@ class block_ops(object):
 		self._checks = {"check_symm":check_symm,"check_herm":check_herm,"check_pcon":check_pcon}
 		self._no_checks = {"check_symm":False,"check_herm":False,"check_pcon":False}
 		self._checked = False
+
+		if any([type(ele) not in [tuple,list] for ele in static]):
+			raise ValueError("block_ops only accepts operator strings in static list.")
+
+		if len(zip(*dynamic)) != 4:
+			raise ValueError("block_ops only accepts operator strings in dynamic list.")
 
 		blocks = list(blocks)
 		for block in blocks:
