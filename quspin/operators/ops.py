@@ -1041,6 +1041,7 @@ class hamiltonian(object):
 
 
 		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
 		
 		if v0.ndim <= 2:
 			v0 = v0.reshape((-1,))
@@ -1054,9 +1055,9 @@ class hamiltonian(object):
 		if imag_time:
 			v0 = v0.astype(self.dtype)
 			if _np.iscomplexobj(v0):
-				solver = ode(self.__ISO)
-			else:
 				solver = complex_ode(self.__ISO)
+			else:
+				solver = ode(self.__ISO)
 		else:
 
 			if H_real:
@@ -3092,11 +3093,12 @@ class exp_op(object):
 					return _np.array([mat for mat in mats])
 				else:
 					ver = [int(v) for v in scipy.__version__.split(".")]
-					if _np.iscomplex(self._a) and ver[1] < 19:
+
+					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
 						mats = _iter_dot(M, other, self._step, self._grid)
 						return _np.array([mat for mat in mats])
 					else:
-						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
+						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
 	def rdot(self, other, time=0.0,shift=None):
 
@@ -3147,7 +3149,7 @@ class exp_op(object):
 					return _np.array([mat for mat in mats])
 				else:
 					ver = [int(v) for v in scipy.__version__.split(".")]
-					if _np.iscomplex(self._a) and ver[1] < 19:
+					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
 						mats = _iter_rdot(M, other.T, self._step, self._grid)
 						return _np.array([mat for mat in mats])
 					else:
