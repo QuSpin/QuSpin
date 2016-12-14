@@ -485,7 +485,7 @@ class block_ops(object):
 				endpoint = True
 
 		else:
-			if [start,stop] == [None, None]:
+			if (start,stop) == (None, None):
 				if num != None:
 					raise ValueError("unexpected argument 'num'.")
 				if endpoint != None:
@@ -550,7 +550,7 @@ class block_ops(object):
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
 				ver = [int(v) for v in scipy.__version__.split(".")]
-				if _np.iscomplex(a) and (start,stop,num,endpoint) is not (None,None,None,None) and ver[1] < 19:
+				if _np.iscomplex(a) and (start,stop,num,endpoint) != (None,None,None,None) and ver[1] < 19:
 					mats = _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 					return _np.array([mat for mat in mats])
 				else:
