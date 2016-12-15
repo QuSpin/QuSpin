@@ -29,8 +29,8 @@ qspin is a python library which wraps Scipy, Numpy, and custom Cython libraries 
 	 * [methods for basis objects](#methods-for-basis-objects)
 	* [tools](#tools)
 	 * [measusrements](#measurements)
-	 * [periodically-driven systems](#Periodically-Driven-Systems)
-     * [block diagonalisation](#Block-Diagonalisation)
+	 * [periodically-driven systems](#periodically--driven-systems)
+     * [block diagonalisation](#block-diagonalisation)
 
 # **Installation**
 
@@ -1084,8 +1084,14 @@ KL_div(p1,p2)
 ```
 This routine returns the Kullback-Leibler divergence of the discrete probability distributions `p1` and `p2`. 
 
+
+
+
+
+
 ### **Periodically-Driven Systems**
-This package contains tools which can be helpful in simulating periodically-driven (Floquet) systems. 
+This package contains tools which can be helpful in simulating periodically-driven (Floquet) systems.
+
 
 #### **Floquet class**
 
@@ -1214,14 +1220,15 @@ This object also acts like an array, you can iterate over it as well as index th
 
 
 
-### **Block Diagonalisation**
+### **block diagonalisation**
+
 
 #### ** block_diag_hamiltonian **
 
 ```python
 P,H = block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,
                              check_symm=True,check_herm=True,check_pcon=True)
-```s
+```
 This function constructs a hamiltonian object which is block diagonal with the blocks being created by the list 'blocks'.
     
 RETURNS:
