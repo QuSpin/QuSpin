@@ -285,11 +285,6 @@ class block_ops(object):
 		self._no_checks = {"check_symm":False,"check_herm":False,"check_pcon":False}
 		self._checked = False
 
-		if any([type(ele) not in [tuple,list] for ele in static]):
-			raise ValueError("block_ops only accepts operator strings in static list.")
-
-		if len(zip(*dynamic)) != 4:
-			raise ValueError("block_ops only accepts operator strings in dynamic list.")
 
 		blocks = list(blocks)
 		for block in blocks:

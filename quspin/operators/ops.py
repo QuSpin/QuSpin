@@ -2855,7 +2855,6 @@ class exp_op(object):
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
-
 		self._a = a
 		self._time = time
 
@@ -3079,7 +3078,7 @@ class exp_op(object):
 				return _iter_dot(M, other, self.step, self._grid)
 
 		else:
-			if (self._grid, self._step) is (None, None):
+			if (self._grid, self._step) == (None, None):
 				if is_ham:
 					return _hamiltonian_dot(M, other)
 				else:
