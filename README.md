@@ -1209,7 +1209,7 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 * `_.down` : refers to time vector of down-stage; inherits the above attributes except `_.T`, `_.dt`, and `._lenT`
 
 This object also acts like an array, you can iterate over it as well as index the values.
-<<<<<<< HEAD
+
 
 
 
@@ -1221,7 +1221,7 @@ This object also acts like an array, you can iterate over it as well as index th
 ```python
 P,H = block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,
                              check_symm=True,check_herm=True,check_pcon=True)
-```
+```s
 This function constructs a hamiltonian object which is block diagonal with the blocks being created by the list 'blocks'.
     
 RETURNS:
@@ -1360,5 +1360,4 @@ ii) `iterate = False`
 * `n_jobs`: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results. For optimal performance, all blocks should be approximately the same size and `n_jobs-1` must be a common devisor of the number of blocks, such that there is roughly the same workload for each process. Otherwise the computation will be as slow as the slowest process.
 
 * ...: the rest are just arguments which are used by the `exp_op` class, cf documentiation for more details.
-=======
->>>>>>> b4ea0ad2af68136d8351760c9abe22ab2d08c07d
+
