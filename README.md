@@ -29,7 +29,7 @@ qspin is a python library which wraps Scipy, Numpy, and custom Cython libraries 
 	 * [methods for basis objects](#methods-for-basis-objects)
 	* [tools](#tools)
 	 * [measusrements](#measurements)
-	 * [periodically-driven systems](#periodically--driven-systems)
+	 * [periodically driven systems](#periodically-driven-systems)
      * [block diagonalisation](#block-diagonalisation)
 
 # **Installation**
@@ -1089,7 +1089,7 @@ This routine returns the Kullback-Leibler divergence of the discrete probability
 
 
 
-### **Periodically-Driven Systems**
+### **periodically driven systems**
 This package contains tools which can be helpful in simulating periodically-driven (Floquet) systems.
 
 
@@ -1223,7 +1223,7 @@ This object also acts like an array, you can iterate over it as well as index th
 ### **block diagonalisation**
 
 
-#### ** block_diag_hamiltonian **
+#### **block_diag_hamiltonian**
 
 ```python
 P,H = block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,
@@ -1258,7 +1258,7 @@ RETURNS:
 * `check_pcon`: (optional) same as `check_symm` but for particle conservation.
 
 
-#### **`block_ops` class **
+#### **`block_ops` class**
 
 ``` python
 * block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
@@ -1307,11 +1307,11 @@ This class is used to split up the dynamics of a state over various symmetry sec
 `_.dynamic`: list of dynamic operators used to construct the block Hamiltonians.
 
 
-##### ** methods of `block_ops` class**
+##### **methods of `block_ops` class**
 
 The following functions are available as attributes of the `block_ops` class:
 
-###### ** `evolve`**
+###### **`evolve`**
 
 ```python
 block_H.evolve(psi_0,t0,times,iterate=False,n_jobs=1,H_real=False,solver_name="dop853",**solver_args)
@@ -1341,7 +1341,7 @@ ii) `iterate = False`
 * ...: the rest are just arguments which are used by `H.evolve`, see `hamiltonian` class for more details.
 
 
-###### ** `expm`**
+###### **`expm`**
 ```python
 block_H.expm(psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,
              a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
