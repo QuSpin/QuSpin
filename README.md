@@ -30,7 +30,7 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 	* [tools](#tools)
 	 * [measusrements](#measurements)
 	 * [periodically-driven systems](#Periodically-Driven-Systems)
-     * [block-diagonalisation](#Block-Diagonalisation)
+     * [block diagonalisation](#Block-Diagonalisation)
 
 # **Installation**
 
