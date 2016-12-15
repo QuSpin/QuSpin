@@ -1210,7 +1210,7 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 
 * `_.up` : refers to time vector of the up-stage; inherits the above attributes (e.g. `_up.strobo.inds`), except for `_.T`, `_.dt`, and `._lenT`
 
-*`_.const` : refers to time vector of const-stage; inherits the above attributes, except for `_.T`, `_.dt`, and `._lenT`
+* `_.const` : refers to time vector of const-stage; inherits the above attributes, except for `_.T`, `_.dt`, and `._lenT`
 
 * `_.down` : refers to time vector of down-stage; inherits the above attributes except `_.T`, `_.dt`, and `._lenT`
 
@@ -1261,7 +1261,7 @@ RETURNS:
 #### **`block_ops` class**
 
 ``` python
-* block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
+block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
                     compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True)
 ```
 This class is used to split up the dynamics of a state over various symmetry sectors if the initial state does not obey the symmetry but the Hamiltonian does. Moreover we provide a multiprocessing option which allows the user to distribute the caculation of the dynamics over multiple cores.
