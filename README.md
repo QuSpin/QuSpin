@@ -2,7 +2,7 @@
 
 This documentation is also available as a jupyter [notebook](https://github.com/weinbe58/qspin/blob/master/documentation.ipynb). 
 
-qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+qspin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
 # **Contents**
 --------
@@ -29,8 +29,8 @@ qspin is a python library which wraps Scipy, Numpy, and custom fortran libraries
 	 * [methods for basis objects](#methods-for-basis-objects)
 	* [tools](#tools)
 	 * [measusrements](#measurements)
-	 * [periodically-driven systems](#Periodically-Driven-Systems)
-     * [block-diagonalisation](#Block-Diagonalisation)
+	 * [periodically driven systems](#periodically-driven-systems)
+     * [block diagonalisation](#block-diagonalisation)
 
 # **Installation**
 
@@ -1084,8 +1084,14 @@ KL_div(p1,p2)
 ```
 This routine returns the Kullback-Leibler divergence of the discrete probability distributions `p1` and `p2`. 
 
-### **Periodically-Driven Systems**
-This package contains tools which can be helpful in simulating periodically-driven (Floquet) systems. 
+
+
+
+
+
+### **periodically driven systems**
+This package contains tools which can be helpful in simulating periodically-driven (Floquet) systems.
+
 
 #### **Floquet class**
 
@@ -1204,7 +1210,7 @@ Returns a time vector (np.array) which hits the stroboscopic times, and has as a
 
 * `_.up` : refers to time vector of the up-stage; inherits the above attributes (e.g. `_up.strobo.inds`), except for `_.T`, `_.dt`, and `._lenT`
 
-*`_.const` : refers to time vector of const-stage; inherits the above attributes, except for `_.T`, `_.dt`, and `._lenT`
+* `_.const` : refers to time vector of const-stage; inherits the above attributes, except for `_.T`, `_.dt`, and `._lenT`
 
 * `_.down` : refers to time vector of down-stage; inherits the above attributes except `_.T`, `_.dt`, and `._lenT`
 
@@ -1213,9 +1219,11 @@ This object also acts like an array, you can iterate over it as well as index th
 
 
 
-### **Block Diagonalisation**
 
-#### ** block_diag_hamiltonian **
+### **block diagonalisation**
+
+
+#### **block_diag_hamiltonian**
 
 ```python
 P,H = block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,
@@ -1250,10 +1258,10 @@ RETURNS:
 * `check_pcon`: (optional) same as `check_symm` but for particle conservation.
 
 
-#### **`block_ops` class **
+#### **`block_ops` class**
 
 ``` python
-* block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
+block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
                     compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True)
 ```
 This class is used to split up the dynamics of a state over various symmetry sectors if the initial state does not obey the symmetry but the Hamiltonian does. Moreover we provide a multiprocessing option which allows the user to distribute the caculation of the dynamics over multiple cores.
@@ -1299,11 +1307,11 @@ This class is used to split up the dynamics of a state over various symmetry sec
 `_.dynamic`: list of dynamic operators used to construct the block Hamiltonians.
 
 
-##### ** methods of `block_ops` class**
+##### **methods of `block_ops` class**
 
 The following functions are available as attributes of the `block_ops` class:
 
-###### ** `evolve`**
+###### **`evolve`**
 
 ```python
 block_H.evolve(psi_0,t0,times,iterate=False,n_jobs=1,H_real=False,solver_name="dop853",**solver_args)
@@ -1333,7 +1341,7 @@ ii) `iterate = False`
 * ...: the rest are just arguments which are used by `H.evolve`, see `hamiltonian` class for more details.
 
 
-###### ** `expm`**
+###### **`expm`**
 ```python
 block_H.expm(psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,
              a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
@@ -1359,3 +1367,4 @@ ii) `iterate = False`
 * `n_jobs`: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results. For optimal performance, all blocks should be approximately the same size and `n_jobs-1` must be a common devisor of the number of blocks, such that there is roughly the same workload for each process. Otherwise the computation will be as slow as the slowest process.
 
 * ...: the rest are just arguments which are used by the `exp_op` class, cf documentiation for more details.
+
