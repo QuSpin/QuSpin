@@ -9,6 +9,7 @@ from .make_hamiltonian import test_function as _test_function
 
 
 # need linear algebra packages
+import scipy
 import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
 import scipy.sparse as _sp
@@ -23,6 +24,11 @@ from copy import deepcopy as _deepcopy
 import warnings
 
 __all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator"]
+
+
+
+
+
 
 
 def commutator(H1,H2):
@@ -241,7 +247,6 @@ class hamiltonian(object):
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
 			self._basis=basis
-			self._Ns = basis.Ns
 
 
 		if static_other_list or dynamic_other_list:
@@ -304,7 +309,7 @@ class hamiltonian(object):
 						self._static = self._static + O.astype(self._dtype)
 				else:
 					O = _np.asanyarray(O)
-					self._mat_checks(O_a)
+					self._mat_checks(O)
 
 					self._is_dense=True			
 					try:
@@ -392,7 +397,7 @@ class hamiltonian(object):
 				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 				self._dynamic = ()
 
-
+		self._Ns = self._shape[0]
 		self.sum_duplicates()
 
 	@property
@@ -485,7 +490,7 @@ class hamiltonian(object):
 		
 
 
-		remove=[]
+		replace=[]
 		atol = 100*_np.finfo(self._dtype).eps
 		is_dense = False
 
@@ -502,16 +507,15 @@ class hamiltonian(object):
 		for i,(Hd,f,f_args) in enumerate(self._dynamic):
 			if _sp.issparse(Hd):
 				if _np.allclose(Hd.data,0,atol=atol):
-					remove.append(i)
+					self._dynamic[i] = list(self._dynamic[i])
+					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
+					self._dynamic[i] = tuple(self._dynamic[i])
 			else:
 				if _np.allclose(Hd,0,atol=atol):
-					remove.append(i)
+					self._dynamic[i] = list(self._dynamic[i])
+					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
+					self._dynamic[i] = tuple(self._dynamic[i])
 
-
-		remove.reverse()
-
-		for i in remove:
-			self._dynamic.pop(i)
 
 		self._dynamic=tuple(self._dynamic)
 
@@ -817,7 +821,7 @@ class hamiltonian(object):
 
 		if not check:
 			if diagonal:
-				return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+				return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 			else:
 				return Vl.T.conj().dot(Vr)
  
@@ -833,7 +837,7 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				if diagonal:
-					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.T.conj().dot(Vr)
 			else:
@@ -850,7 +854,7 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 
 				if diagonal:
-					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.H.dot(Vr)
 			else:
@@ -873,7 +877,7 @@ class hamiltonian(object):
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
 				if diagonal:
-					return _np.einsum("ij,ij->i",Vl.conj(),Vr)
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.conj().dot(Vr)
 			elif Vl.ndim == 2:
@@ -1036,6 +1040,7 @@ class hamiltonian(object):
 				solver_args["atol"] = 1E-9
 
 
+		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
 		
 		if v0.ndim <= 2:
@@ -1050,10 +1055,11 @@ class hamiltonian(object):
 		if imag_time:
 			v0 = v0.astype(self.dtype)
 			if _np.iscomplexobj(v0):
-				solver = ode(self.__ISO)
-			else:
 				solver = complex_ode(self.__ISO)
+			else:
+				solver = ode(self.__ISO)
 		else:
+
 			if H_real:
 				v1 = v0
 				v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
@@ -1070,12 +1076,12 @@ class hamiltonian(object):
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real)
+			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n)
 		else:
 			if iterate:
-				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real)
+				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n)
 			else:
-				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time,H_real)
+				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n)
 
 			
 		
@@ -1085,7 +1091,7 @@ class hamiltonian(object):
 
 
 
-	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real):
+	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n):
 		from numpy.linalg import norm
 
 		if time == t0:
@@ -1096,7 +1102,7 @@ class hamiltonian(object):
 
 		solver.integrate(time)
 		if solver.successful():
-			if imag_time: solver._y /= norm(solver._y)
+			if imag_time: solver._y /= (norm(solver._y)/n)
 			if H_real:
 				return solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 			else:
@@ -1106,7 +1112,7 @@ class hamiltonian(object):
 
 
 
-	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time,H_real):
+	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n):
 		from numpy.linalg import norm
 
 		v = _np.empty((len(times),self.Ns),dtype=complex_type)
@@ -1123,7 +1129,7 @@ class hamiltonian(object):
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-				if imag_time: solver._y /= norm(solver._y)
+				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
 					v[i,:] = solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 				else:
@@ -1135,7 +1141,7 @@ class hamiltonian(object):
 
 
 
-	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real):
+	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n):
 		from numpy.linalg import norm
 
 		for i,t in enumerate(times):
@@ -1152,11 +1158,11 @@ class hamiltonian(object):
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-				if imag_time: solver._y /= norm(solver._y)
+				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
-					v[i,:] = solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+					yield solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
 				else:
-					v[i,:] = solver.y
+					yield solver.y
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
@@ -2849,7 +2855,6 @@ class exp_op(object):
 		if not _np.isscalar(a):
 			raise TypeError('expecting scalar argument for a')
 
-
 		self._a = a
 		self._time = time
 
@@ -2951,6 +2956,10 @@ class exp_op(object):
 		return self.O.get_shape
 
 	@property
+	def Ns(self):
+		return self.O.Ns
+
+	@property
 	def grid(self):
 		return self._grid
 
@@ -3021,7 +3030,7 @@ class exp_op(object):
 			raise ValueError("iterate option must be true or false.")
 
 		if Value:
-			if [self._grid, self._step] == [None, None]:
+			if (self._grid, self._step) is (None, None):
 				raise ValueError("grid must be set in order to set iterate to be True.")
 
 		self._iterate = Value
@@ -3034,7 +3043,7 @@ class exp_op(object):
 		else:
 			return _sp.linalg.expm(self._a * self.O.tocsc(time))
 
-	def dot(self, other, time=0.0):
+	def dot(self, other, time=0.0, shift=None):
 
 		is_sp = False
 		is_ham = False
@@ -3057,7 +3066,11 @@ class exp_op(object):
 		if shape[0] != self.get_shape[1]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
-		M = self._a * self.O(time)
+		if shift is not None:
+			M = self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
+		else:
+			M = self._a * self.O(time)
+
 		if self._iterate:
 			if is_ham:
 				return _hamiltonian_iter_dot(M, other, self._step, self._grid)
@@ -3065,13 +3078,12 @@ class exp_op(object):
 				return _iter_dot(M, other, self.step, self._grid)
 
 		else:
-			if [self._grid, self._step] == [None, None]:
+			if (self._grid, self._step) == (None, None):
 				if is_ham:
 					return _hamiltonian_dot(M, other)
 				else:
 					return _expm_multiply(M, other)
 			else:
-
 				if is_sp:
 					mats = _iter_dot(M, other, self._step, self._grid)
 					return _np.array([mat for mat in mats])
@@ -3079,9 +3091,15 @@ class exp_op(object):
 					mats = _hamiltonian_iter_dot(M, other, self._step, self._grid)
 					return _np.array([mat for mat in mats])
 				else:
-					return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
+					ver = [int(v) for v in scipy.__version__.split(".")]
 
-	def rdot(self, other, time=0.0):
+					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
+						mats = _iter_dot(M, other, self._step, self._grid)
+						return _np.array([mat for mat in mats])
+					else:
+						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
+
+	def rdot(self, other, time=0.0,shift=None):
 
 		is_sp = False
 		is_ham = False
@@ -3104,7 +3122,11 @@ class exp_op(object):
 		if shape[1] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
-		M = (self._a * self.O(time)).T
+		if shift is not None:
+			M = (self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))).T
+		else:
+			M = (self._a * self.O(time)).T
+
 		if self._iterate:
 			if is_ham:
 				return _hamiltonian_iter_rdot(M, other.T, self._step, self._grid)
@@ -3125,9 +3147,18 @@ class exp_op(object):
 					mats = _hamiltonian_iter_rdot(M, other.T, self._step, self._grid)
 					return _np.array([mat for mat in mats])
 				else:
-					return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
+					ver = [int(v) for v in scipy.__version__.split(".")]
+					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
+						mats = _iter_rdot(M, other.T, self._step, self._grid)
+						return _np.array([mat for mat in mats])
+					else:
+						if other.ndim > 1:
+							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).transpose(0,2,1)
+						else:
+							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
-	def sandwich(self, other, time=0.0):
+
+	def sandwich(self, other, time=0.0,shift=None):
 
 		is_ham = False
 		if ishamiltonian(other):
@@ -3150,7 +3181,11 @@ class exp_op(object):
 		if shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
-		M = self._a.conjugate()*self.O.H(time)
+		if shift is not None:
+			M = self._a.conjugate() * (self.O.H(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
+		else:
+			M = self._a.conjugate() * self.O.H(time)
+			
 		if self._iterate:
 
 			if is_ham:
