@@ -22,7 +22,6 @@ photon_only.py
 semiclassical.py
 semiclassical_ETH.py
 spin_only.py
-example*.py 
 spin_photon.py
 exp_op_test.py
 ~/Sent_test.py
