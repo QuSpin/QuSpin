@@ -6,8 +6,12 @@ sys.path.insert(0,quspin_path)
 from quspin.tools.block_tools import block_ops,block_diag_hamiltonian
 from quspin.operators import hamiltonian,exp_op
 from quspin.basis import spin_basis_1d
-from itertools import izip
 import numpy as np
+
+try:
+	from itertools import izip
+except ImportError:
+	izip = zip
 
 np.set_printoptions(linewidth=100000,precision=2)
 L=8
