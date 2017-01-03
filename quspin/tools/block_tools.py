@@ -12,7 +12,10 @@ from scipy.sparse.linalg import expm_multiply
 from multiprocessing import Process,Queue,Event
 from joblib import Parallel,delayed
 
-from itertools import izip
+try:
+	from itertools import izip
+except ImportError:
+	izip = zip
 
 __all__=["block_diag_hamiltonian","block_ops"]
 
