@@ -328,7 +328,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
-			chain_subsys=[i for i in range( N//2 )]
+			chain_subsys=list(i for i in range( N//2 ))
 			warnings.warn("Subsystem contains sites {}.".format(chain_subsys),stacklevel=4)
 		
 	
@@ -384,7 +384,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
-			chain_subsys=[i for i in range( int(N) )]
+			chain_subsys=list(range( int(N) ))
 			warnings.warn("subsystem set to the entire chain.",stacklevel=4)
 
 

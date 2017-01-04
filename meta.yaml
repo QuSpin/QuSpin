@@ -14,6 +14,7 @@ requirements:
     - python
     - numpy >=1.10
     - scipy >=0.14.0
+    - six
     - joblib
     - matplotlib
 

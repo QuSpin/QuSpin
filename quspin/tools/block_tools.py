@@ -11,6 +11,8 @@ from scipy.sparse.linalg import expm_multiply
 # multi-processing modules
 from multiprocessing import Process,Queue,Event
 from joblib import Parallel,delayed
+# six for python 2.* and 3.* dictionary compatibility
+from six import iteritems
 
 try:
 	from itertools import izip
@@ -351,7 +353,7 @@ class block_ops(object):
 
 
 	def compute_all_blocks(self):
-		for key,b in self._basis_dict.items():
+		for key,b in iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
 				self._P_dict[key] = p
@@ -401,7 +403,7 @@ class block_ops(object):
 		P = []
 		H_list = []
 		psi_blocks = []
-		for key,b in self._basis_dict.items():
+		for key,b in iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
 				if self._save:
@@ -517,7 +519,7 @@ class block_ops(object):
 		P = []
 		H_list = []
 		psi_blocks = []
-		for key,b in self._basis_dict.items():
+		for key,b in iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
 				if self._save:
