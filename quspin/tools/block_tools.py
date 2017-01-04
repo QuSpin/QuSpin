@@ -95,7 +95,11 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,chec
 # worker function which loops over one of more generators provided by gen_func and returns the result via queue 'q'.
 # waits for signal from 'e' before continuing. 
 def worker(gen_func,args_list,q,e):
-	from itertools import izip
+	try:
+		from itertools import izip
+	except ImportError:
+		izip = zip
+
 	gens = []
 	for arg in args_list:
 		gens.append(gen_func(*arg))
@@ -129,7 +133,11 @@ def generate_parallel(n_process,n_iter,gen_func,args_list):
 
 	# if one process specified just do the generator without sub processes.
 	if n_process <= 1:
-		from itertools import izip
+		try:
+			from itertools import izip
+		except ImportError:
+			izip = zip
+
 		gens = []
 		for arg in args_list:
 			gens.append(gen_func(*arg))
@@ -343,7 +351,7 @@ class block_ops(object):
 
 
 	def compute_all_blocks(self):
-		for key,b in self._basis_dict.iteritems():
+		for key,b in self._basis_dict.items():
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
 				self._P_dict[key] = p
@@ -393,7 +401,7 @@ class block_ops(object):
 		P = []
 		H_list = []
 		psi_blocks = []
-		for key,b in self._basis_dict.iteritems():
+		for key,b in self._basis_dict.items():
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
 				if self._save:
@@ -466,7 +474,7 @@ class block_ops(object):
 		"""
 
 		if iterate:
-			if [start,stop] == [None, None]:
+			if start is None and  stop is None:
 				raise ValueError("'iterate' can only be True with time discretization. must specify 'start' and 'stop' points.")
 
 			if num is not None:
@@ -482,7 +490,7 @@ class block_ops(object):
 				endpoint = True
 
 		else:
-			if (start,stop) == (None, None):
+			if start is None and  stop is None:
 				if num != None:
 					raise ValueError("unexpected argument 'num'.")
 				if endpoint != None:
@@ -509,7 +517,7 @@ class block_ops(object):
 		P = []
 		H_list = []
 		psi_blocks = []
-		for key,b in self._basis_dict.iteritems():
+		for key,b in self._basis_dict.items():
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype)
 				if self._save:

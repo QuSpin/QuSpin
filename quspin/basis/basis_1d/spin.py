@@ -1,7 +1,7 @@
 from ..base import basis,MAXPRINT
 from . import _constructors as _cn
 from ._1d_kblock_Ns import kblock_Ns
-from . import _check_spin_1d_symm as _check
+from . import _check_1d_symm as _check
 import numpy as _np
 from scipy.misc import comb
 from numpy import array,asarray
