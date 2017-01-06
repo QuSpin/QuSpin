@@ -163,6 +163,7 @@ def generate_parallel(n_process,n_iter,gen_func,args_list):
 		e = Event()
 		q = Queue(1)
 		p = Process(target=worker, args=(gen_func,sub_lists[i],q,e))
+		p.daemon = True
 		es.append(e)
 		qs.append(q)
 		ps.append(p)

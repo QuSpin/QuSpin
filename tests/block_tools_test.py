@@ -14,7 +14,7 @@ except ImportError:
 	izip = zip
 
 np.set_printoptions(linewidth=100000,precision=2)
-L=8
+L=5
 
 
 start = 0
@@ -30,7 +30,7 @@ h = [[1.0,i] for i in range(L)]
 
 
 static = [["xx",J],["yy",J],["zz",J]]
-dynamic = [["z",h,lambda t:np.sin(t),()]]
+dynamic = [["z",h,np.sin,()]]
 
 
 blocks = []
@@ -47,9 +47,11 @@ for t in np.linspace(0,2*np.pi):
 	E_blocks = H.eigvalsh(time=t)
 	np.testing.assert_allclose(E,E_blocks)
 
+def f(t):
+	return np.sin(t)*t
 
 static = [["zz",J]]
-dynamic = [["x",h,lambda t:t,[]]]
+dynamic = [["x",h,f,[]]]
 
 blocks = []
 for kblock in range(L):
@@ -73,10 +75,10 @@ psi0 /= np.linalg.norm(psi0)
 
 
 psi_exact_1 = H.evolve(psi0,0,times,iterate=True,atol=1e-15,rtol=1e-15)
-psi_block_1 = block_op.evolve(psi0,0,times,iterate=True,atol=1e-15,rtol=1e-15)
+psi_block_1 = block_op.evolve(psi0,0,times,iterate=True,atol=1e-15,rtol=1e-15,n_jobs=4)
 
 psi_exact_2 = expH.dot(psi0,time=0.3)
-psi_block_2 = block_op.expm(psi0,H_time_eval=0.3,start=start,stop=stop,iterate=True,num=num,endpoint=True)
+psi_block_2 = block_op.expm(psi0,H_time_eval=0.3,start=start,stop=stop,iterate=True,num=num,endpoint=True,n_jobs=4)
 
 
 
@@ -89,15 +91,17 @@ for psi_e_1,psi_e_2,psi_b_1,psi_b_2 in izip(psi_exact_1,psi_exact_2,psi_block_1,
 expH.set_iterate(False)
 
 psi_exact_1 = H.evolve(psi0,0,times,iterate=False,atol=1e-15,rtol=1e-15)
-psi_block_1 = block_op.evolve(psi0,0,times,iterate=False,atol=1e-15,rtol=1e-15)
+psi_block_1 = block_op.evolve(psi0,0,times,iterate=False,atol=1e-15,rtol=1e-15,n_jobs=4)
 
 psi_exact_2 = expH.dot(psi0,time=0.3)
-psi_block_2 = block_op.expm(psi0,H_time_eval=0.3,start=start,stop=stop,iterate=False,num=num,endpoint=True)
+psi_block_2 = block_op.expm(psi0,H_time_eval=0.3,start=start,stop=stop,iterate=False,num=num,endpoint=True,n_jobs=4)
 
 
 
-for psi_e_1,psi_e_2,psi_b_1,psi_b_2 in izip(psi_exact_1,psi_exact_2,psi_block_1,psi_block_2):
+for psi_e_1,psi_b_1 in izip(psi_exact_1,psi_block_1):
 	np.testing.assert_allclose(psi_b_1,psi_e_1,atol=1e-7)
+
+for psi_e_2,psi_b_2 in izip(psi_exact_2,psi_block_2):
 	np.testing.assert_allclose(psi_b_2,psi_e_2,atol=1e-7)
 
 
@@ -114,7 +118,7 @@ psi0 /= np.linalg.norm(psi0)
 
 
 psi_exact_2 = expH.dot(psi0,time=0.3,shift=-E0)
-psi_block_2 = block_op.expm(psi0,a=-1,shift=-E0,H_time_eval=0.3,start=start,stop=stop,iterate=True,num=num,endpoint=True,n_jobs=1)
+psi_block_2 = block_op.expm(psi0,a=-1,shift=-E0,H_time_eval=0.3,start=start,stop=stop,iterate=True,num=num,endpoint=True,n_jobs=4)
 
 
 for psi_e_2,psi_b_2 in izip(psi_exact_2,psi_block_2):
@@ -124,7 +128,7 @@ for psi_e_2,psi_b_2 in izip(psi_exact_2,psi_block_2):
 expH.set_iterate(False)
 
 psi_exact_2 = expH.dot(psi0,time=0.3,shift=-E0)
-psi_block_2 = block_op.expm(psi0,a=-1,shift=-E0,H_time_eval=0.3,start=start,stop=stop,iterate=False,num=num,endpoint=True)
+psi_block_2 = block_op.expm(psi0,a=-1,shift=-E0,H_time_eval=0.3,start=start,stop=stop,iterate=False,num=num,endpoint=True,n_jobs=4)
 
 
 for psi_e_2,psi_b_2 in izip(psi_exact_2,psi_block_2):
