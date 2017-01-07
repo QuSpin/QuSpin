@@ -135,7 +135,7 @@ def basis_ops_gen():
 def cython_files():
 	import os
 	try:
-		import Cython
+		from Cython.Build import cythonize
 		USE_CYTHON = True
 	except ImportError:
 		USE_CYTHON = False
@@ -146,7 +146,7 @@ def cython_files():
 	if USE_CYTHON:
 		basis_ops_gen()
 		cython_src =  os.path.join(package_dir,"basis_ops.pyx")
-		os.system("cython --cplus "+cython_src)
+		cythonize(cython_src,language="c++")
 
 
 	return  os.path.join(package_dir,"basis_ops.cpp")
