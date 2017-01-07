@@ -1,0 +1,46 @@
+
+
+cdef NP_INT8_t CheckState_P(int p, unsigned long long s, int L):
+	return CheckState_P_template(fliplr,p,s,L)
+
+cdef NP_INT8_t CheckState_PZ(int pz, unsigned long long s, int L):
+	return CheckState_PZ_template(fliplr,flip_all,pz,s,L)
+
+cdef NP_INT8_t CheckState_Z(unsigned long long s, int L):
+	return CheckState_Z_template(flip_all,s,L)
+
+cdef NP_INT8_t CheckState_P_Z(int p,int z, unsigned long long s, int L):
+	return CheckState_P_Z_template(fliplr,flip_all,p,z,s,L)
+
+cdef NP_INT8_t CheckState_ZA(unsigned long long s, int L):
+	return CheckState_ZA_template(flip_sublat_A,s,L)
+
+cdef NP_INT8_t CheckState_ZB(unsigned long long s, int L):
+	return CheckState_ZB_template(flip_sublat_B,s,L)
+
+cdef NP_INT8_t CheckState_ZA_ZB(unsigned long long s, int L):
+	return CheckState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,s,L)
+
+cdef NP_INT8_t CheckState_T(int kblock,int L,unsigned long long s,int T):
+	return CheckState_T_template(shift,kblock,L,s,T)
+
+cdef int CheckState_T_P(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_P_template(shift,fliplr,kblock,L,s,T,R)
+
+cdef int CheckState_T_Z(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_Z_template(shift,flip_all,kblock,L,s,T,R)
+
+cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_P_Z_template(shift,fliplr,flip_all,kblock,L,s,T,R)
+
+cdef int CheckState_T_PZ(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_PZ_template(shift,fliplr,flip_all,kblock,L,s,T,R)
+
+cdef int CheckState_T_ZA(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_ZA_template(shift,flip_sublat_A,kblock,L,s,T,R)
+
+cdef int CheckState_T_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_ZB_template(shift,flip_sublat_B,kblock,L,s,T,R)
+
+cdef int CheckState_T_ZA_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+	return CheckState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,kblock,L,s,T,R)

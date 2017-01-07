@@ -54,6 +54,8 @@ cdef extern from "sources/complex_ops.h":
 include "sources/bitops.pyx"
 include "sources/refstate.pyx"
 include "sources/checkstate.pyx"
+include "sources/checkstate_templates.pyx"
+#include "sources/spins.pyx"
 
 # basis sources
 

@@ -1,7 +1,7 @@
 
-cdef int findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,int N, {c_basis_type} s):
-	cdef {c_basis_type}  A_1
-	cdef int bmin, bmax, b
+cdef long long findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,long long N, unsigned long long s):
+	cdef unsigned long long  A_1
+	cdef long long bmin, bmax, b
 
 	bmin = 0
 	bmax = N-1
@@ -21,8 +21,8 @@ cdef int findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,int N, {c_basis_type
 
 
 
-cdef int RefState_P({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
-	cdef {c_basis_type} t
+cdef void RefState_P(unsigned long long s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	cdef unsigned long long t
 
 	R[0] = s
 	R[1] = 0
@@ -33,7 +33,7 @@ cdef int RefState_P({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,
 		R[0] = t
 		R[1] = 1
 
-	return 0
+	return
 
 
 
@@ -45,53 +45,53 @@ cdef int RefState_P({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,
 
 
 
-cdef int RefState_Z({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_Z(unsigned long long s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	R[0] = s
 	R[1] = 0
 
-	cdef {c_basis_type} t
+	cdef unsigned long long t
 	t = flip_all(s,L)
 	if t < s:
 		R[0] = t
 		R[1] = 1
 
-	return 0
+	return
 
 
 
 
-cdef int RefState_ZA({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_ZA(unsigned long long s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	R[0] = s
 	R[1] = 0
 
-	cdef {c_basis_type} t
+	cdef unsigned long long t
 	t = flip_sublat_A(s,L)
 	if t < s:
 		R[0] = t
 		R[1] = 1
 
-	return 0
+	return
 
 
-cdef int RefState_ZB({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_ZB(unsigned long long s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	R[0] = s
 	R[1] = 0
 
-	cdef {c_basis_type} t
+	cdef unsigned long long t
 	t = flip_sublat_B(s,L)
 	if t < s:
 		R[0] = t
 		R[1] = 1
 
-	return 0
+	return
 
 
-cdef int RefState_ZA_ZB({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_ZA_ZB(unsigned long long s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	R[0] = s
 	R[1] = 0
 	R[2] = 0
 
-	cdef {c_basis_type} t, r
+	cdef unsigned long long t, r
 	r = s
 
 	t = flip_sublat_A(s,L)
@@ -113,11 +113,11 @@ cdef int RefState_ZA_ZB({c_basis_type} s,int L,_np.ndarray[{np_basis_type}_t,ndi
 		R[2] = 1
 
 	R[0] = r
-	return 0
+	return
 
 
-cdef int RefState_PZ({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
-	cdef {c_basis_type} t
+cdef void RefState_PZ(unsigned long long s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	cdef unsigned long long t
 
 	R[0] = s
 	R[1] = 0
@@ -129,7 +129,7 @@ cdef int RefState_PZ({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=
 		R[0] = t
 		R[1] = 1
 
-	return 0
+	return
 
 
 
@@ -137,8 +137,8 @@ cdef int RefState_PZ({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=
 
 
 
-cdef int RefState_P_Z({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
-	cdef {c_basis_type} t,r
+cdef void RefState_P_Z(unsigned long long s,int L, _np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+	cdef unsigned long long t,r
 
 	R[0] = s
 	R[1] = 0
@@ -169,13 +169,13 @@ cdef int RefState_P_Z({c_basis_type} s,int L, _np.ndarray[{np_basis_type}_t,ndim
 
 	R[0] = r
 
-	return 0
+	return
 
 
 
-cdef int RefState_T({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -189,15 +189,15 @@ cdef int RefState_T({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,n
 	R[0] = r
 	R[1] = l
 
-	return 0
+	return
 
 
 
 
 
-cdef int RefState_T_Z({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_Z(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i,l,g
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -221,13 +221,13 @@ cdef int RefState_T_Z({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t
 	R[1] = l
 	R[2] = g
 
-	return 0
+	return
 
 
 
-cdef int RefState_T_ZA({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_ZA(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i,l,gA
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -251,12 +251,12 @@ cdef int RefState_T_ZA({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_
 	R[1] = l
 	R[2] = gA
 
-	return 0
+	return
 
 
-cdef int RefState_T_ZB({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_ZB(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i,l,gB
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -280,12 +280,12 @@ cdef int RefState_T_ZB({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_
 	R[1] = l
 	R[2] = gB
 
-	return 0
+	return
 
 
-cdef int RefState_T_ZA_ZB({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_ZA_ZB(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i,l,gA,gB
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -323,13 +323,13 @@ cdef int RefState_T_ZA_ZB({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_typ
 	R[2] = gA
 	R[3] = gB
 
-	return 0
+	return
 
 
 
-cdef int RefState_T_P({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_P(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i,l,q
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -353,7 +353,7 @@ cdef int RefState_T_P({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t
 	R[1] = l
 	R[2] = q
 
-	return 0
+	return
 
 
 
@@ -366,9 +366,9 @@ cdef int RefState_T_P({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t
 
 
 
-cdef int RefState_T_PZ({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_PZ(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i
-	cdef {c_basis_type} r,t,l,qg
+	cdef unsigned long long r,t,l,qg
 
 	r = s
 	t = s
@@ -393,7 +393,7 @@ cdef int RefState_T_PZ({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_
 	R[1] = l
 	R[2] = qg
 
-	return 0
+	return
 
 
 
@@ -405,9 +405,9 @@ cdef int RefState_T_PZ({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_
 
 
 
-cdef int RefState_T_P_Z({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
+cdef void RefState_T_P_Z(unsigned long long s,int L,int T,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef int i,l,q,g
-	cdef {c_basis_type} r,t
+	cdef unsigned long long r,t
 
 	r = s
 	t = s
@@ -446,5 +446,5 @@ cdef int RefState_T_P_Z({c_basis_type} s,int L,int T,_np.ndarray[{np_basis_type}
 	R[2] = q
 	R[3] = g
 
-	return 0
+	return
 

@@ -1,5 +1,4 @@
 
-
 def make_t_p_z_basis(int L ,int pblock,int zblock,{c_basis_type} kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[{np_basis_type}_t, ndim=1] basis):
 	cdef double k = (2.0*_np.pi*kblock*a)/L
 	cdef unsigned long long s

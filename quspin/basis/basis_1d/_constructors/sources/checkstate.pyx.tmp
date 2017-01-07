@@ -1,8 +1,8 @@
 
 
 
-cdef NP_INT8_t CheckState_P(int p, {c_basis_type} s, int L):
-	cdef {c_basis_type} t=s
+cdef NP_INT8_t CheckState_P(int p, unsigned long long s, int L):
+	cdef unsigned long long t=s
 	t=fliplr(t,L)
 	
 	if t > s: 
@@ -20,8 +20,8 @@ cdef NP_INT8_t CheckState_P(int p, {c_basis_type} s, int L):
 
 
 
-cdef NP_INT8_t CheckState_PZ(int pz,{c_basis_type} s,int L):
-	cdef {c_basis_type} t=s
+cdef NP_INT8_t CheckState_PZ(int pz,unsigned long long s,int L):
+	cdef unsigned long long t=s
 	
 	t=fliplr(t,L)
 	t=flip_all(t,L)
@@ -39,8 +39,8 @@ cdef NP_INT8_t CheckState_PZ(int pz,{c_basis_type} s,int L):
 
 
 
-cdef NP_INT8_t CheckState_Z({c_basis_type} s,int L):
-	cdef {c_basis_type} t=s
+cdef NP_INT8_t CheckState_Z(unsigned long long s,int L):
+	cdef unsigned long long t=s
 
 	t=flip_all(t,L)
 	if t > s:
@@ -49,7 +49,7 @@ cdef NP_INT8_t CheckState_Z({c_basis_type} s,int L):
 		return -1
 
 
-cdef NP_INT8_t CheckState_P_Z(int p,int z,{c_basis_type} s,int L):
+cdef NP_INT8_t CheckState_P_Z(int p,int z,unsigned long long s,int L):
 	cdef NP_INT8_t rp,rz,rps
 
 	rz = CheckState_Z(s,L)
@@ -71,8 +71,8 @@ cdef NP_INT8_t CheckState_P_Z(int p,int z,{c_basis_type} s,int L):
 
 
 
-cdef NP_INT8_t CheckState_ZA({c_basis_type} s,int L):
-	cdef {c_basis_type} t=s
+cdef NP_INT8_t CheckState_ZA(unsigned long long s,int L):
+	cdef unsigned long long t=s
 
 	t=flip_sublat_A(t,L)
 	if t > s:
@@ -81,8 +81,8 @@ cdef NP_INT8_t CheckState_ZA({c_basis_type} s,int L):
 		return -1
 
 
-cdef NP_INT8_t CheckState_ZB({c_basis_type} s,int L):
-	cdef {c_basis_type} t=s
+cdef NP_INT8_t CheckState_ZB(unsigned long long s,int L):
+	cdef unsigned long long t=s
 
 	t=flip_sublat_B(t,L)
 	if t > s:
@@ -92,8 +92,8 @@ cdef NP_INT8_t CheckState_ZB({c_basis_type} s,int L):
 
 
 
-cdef NP_INT8_t CheckState_ZA_ZB({c_basis_type} s,int L):
-	cdef {c_basis_type} t
+cdef NP_INT8_t CheckState_ZA_ZB(unsigned long long s,int L):
+	cdef unsigned long long t
 
 	t=flip_sublat_A(s,L)
 	if t < s:
@@ -115,14 +115,14 @@ cdef NP_INT8_t CheckState_ZA_ZB({c_basis_type} s,int L):
 
 
 
-cdef NP_INT8_t CheckState_T(int kblock,int L,{c_basis_type} s,int T):
+cdef NP_INT8_t CheckState_T(int kblock,int L,unsigned long long s,int T):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	cdef NP_INT8_t R=-1
 	cdef int i
 	for i in range(1,L/T+1):
@@ -143,14 +143,14 @@ cdef NP_INT8_t CheckState_T(int kblock,int L,{c_basis_type} s,int T):
 
 
 
-cdef int CheckState_T_P(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_P(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	cdef int i,r
 	R[0] = -1
 	R[1] = -1
@@ -186,14 +186,14 @@ cdef int CheckState_T_P(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_I
 
 
 
-cdef int CheckState_T_P_Z(int kblock,int L,{c_basis_type} s,int T, _np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	R[0] = -1
 	R[1] = -1
 	R[2] = -1
@@ -264,14 +264,14 @@ cdef int CheckState_T_P_Z(int kblock,int L,{c_basis_type} s,int T, _np.ndarray[N
 
 
 
-cdef int CheckState_T_PZ(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_PZ(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	R[0] = -1
 	R[1] = -1 
 	cdef int i,r
@@ -314,14 +314,14 @@ cdef int CheckState_T_PZ(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_
 
 
 
-cdef int CheckState_T_Z(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_Z(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
@@ -355,14 +355,14 @@ cdef int CheckState_T_Z(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_I
 
 
 
-cdef int CheckState_T_ZA(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_ZA(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
@@ -395,14 +395,14 @@ cdef int CheckState_T_ZA(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_
 	return 0
 
 
-cdef int CheckState_T_ZB(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
@@ -439,14 +439,14 @@ cdef int CheckState_T_ZB(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_
 
 
 
-cdef int CheckState_T_ZA_ZB(int kblock,int L,{c_basis_type} s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef int CheckState_T_ZA_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef {c_basis_type} t=s
+	cdef unsigned long long t=s
 	R[0] = -1
 	R[1] = -1
 	R[2] = -1
