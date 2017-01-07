@@ -18,7 +18,7 @@ def {type_code}_p_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type
 
 	for i in range(Ns):
 		s = col[i]
-		RefState_P(s,L,R)
+		RefState_P_template(fliplr,s,L,R)
 
 		s = R[0]
 		q = R[1]

@@ -7,7 +7,7 @@ def make_t_basis(int L,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.nd
 	Ns = 0
 
 	for s in range(1ull << L):
-		r=CheckState_T(kblock,L,s,a)
+		r=CheckState_T_template(shift,kblock,L,s,a)
 
 		if r>0:
 			N[Ns] = r				
@@ -39,7 +39,7 @@ def make_m_t_basis(int L, int Nup, int kblock, int a, _np.ndarray[NP_INT8_t,ndim
 	Ns = 0
 
 	while True:
-		r=CheckState_T(kblock,L,s,a)
+		r=CheckState_T_template(shift,kblock,L,s,a)
 
 		if r > 0:
 			N[Ns] = r				

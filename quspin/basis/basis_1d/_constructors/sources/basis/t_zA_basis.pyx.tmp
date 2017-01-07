@@ -21,7 +21,7 @@ def make_m_t_zA_basis(int L,int Nup,int zAblock,int kblock,int a, _np.ndarray[NP
 	
 
 	while True:
-		CheckState_T_ZA(kblock,L,s,a,R)
+		CheckState_T_ZA_template(shift,flip_sublat_A,kblock,L,s,a,R)
 		r = R[0]
 		mzA = R[1]
 
@@ -62,7 +62,7 @@ def make_t_zA_basis(int L,int zAblock,int kblock,int a, _np.ndarray[NP_INT8_t,nd
 	Ns = 0
 
 	for s in range(1ull << L):
-		CheckState_T_ZA(kblock,L,s,a,R)
+		CheckState_T_ZA_template(shift,flip_sublat_A,kblock,L,s,a,R)
 		r = R[0]
 		mzA = R[1]
 		if r > 0:

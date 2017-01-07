@@ -14,7 +14,7 @@ def make_m_z_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 	Ns = 0
 	while True:
 
-		rz = CheckState_Z(s,L)
+		rz = CheckState_Z_template(flip_all,s,L)
 		if rz > 0:
 			basis[Ns] = s
 			Ns += 1
@@ -46,7 +46,7 @@ def make_z_basis(int L, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 	Ns = 0
 
 	for s in range(1ull << L):
-		rz = CheckState_Z(s,L)
+		rz = CheckState_Z_template(flip_all,s,L)
 		if rz > 0:
 			basis[Ns] = s
 			Ns += 1

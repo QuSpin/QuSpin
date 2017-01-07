@@ -15,7 +15,7 @@ def {type_code}_zB_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _n
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_ZB(s,L,R)
+		RefState_ZB_template(flip_sublat_B,s,L,R)
 
 		s = R[0]
 		gB = R[1]

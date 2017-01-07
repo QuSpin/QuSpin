@@ -77,7 +77,7 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
 		for i in range(Ns):
 			s = row[i]
-			RefState_T_PZ(s,L,a,R)
+			RefState_T_PZ_template(shift,fliplr,flip_all,s,L,a,R)
 
 			s = R[0]
 			l = R[1]
@@ -104,7 +104,7 @@ def {type_code}_t_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 				o = 1
 
 			s = row[i]
-			RefState_T_PZ(s,L,a,R)
+			RefState_T_PZ_template(shift,fliplr,flip_all,s,L,a,R)
 
 			s = R[0]
 			l = R[1]

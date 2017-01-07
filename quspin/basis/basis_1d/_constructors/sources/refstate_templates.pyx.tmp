@@ -19,8 +19,6 @@ cdef long long findzstate(_np.ndarray[{np_basis_type}_t,ndim=1] A,long long N, u
 
 
 
-
-
 cdef void RefState_P_template(bitop fliplr,unsigned long long s,int L,_np.ndarray[{np_basis_type}_t,ndim=1,mode='c'] R):
 	cdef unsigned long long t
 

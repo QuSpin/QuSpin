@@ -17,7 +17,7 @@ def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_typ
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_PZ(s,L,R)
+		RefState_PZ_template(fliplr,flip_all,s,L,R)
 
 		s = R[0]
 		qg = R[1]

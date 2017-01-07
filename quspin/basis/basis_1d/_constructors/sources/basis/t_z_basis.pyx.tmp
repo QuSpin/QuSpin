@@ -20,7 +20,7 @@ def make_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a, _np.ndarray[NP_I
 	
 
 	while True:
-		CheckState_T_Z(kblock,L,s,a,R)
+		CheckState_T_Z_template(shift,flip_all,kblock,L,s,a,R)
 		r = R[0]
 		mz = R[1]
 
@@ -76,7 +76,7 @@ def make_t_z_basis(int L,int zblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim
 	Ns = 0
 
 	for s in range(1ull << L):
-		CheckState_T_Z(kblock,L,s,a,R)
+		CheckState_T_Z_template(shift,flip_all,kblock,L,s,a,R)
 		r = R[0]
 		mz = R[1]
 		if r > 0:

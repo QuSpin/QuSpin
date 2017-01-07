@@ -15,7 +15,7 @@ def {type_code}_z_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_Z(s,L,R)
+		RefState_Z_template(flip_all,s,L,R)
 
 		s = R[0]
 		g = R[1]

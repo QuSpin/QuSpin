@@ -18,7 +18,7 @@ def make_m_pz_basis(int L,int Nup,int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, 
 	stp = 0
 	Ns = 0
 	while True:
-		rpz = CheckState_PZ(pzblock,s,L)
+		rpz = CheckState_PZ_template(fliplr,flip_all,pzblock,s,L)
 		if rpz > 0:
 			basis[Ns] = s
 			N[Ns] = rpz
@@ -55,7 +55,7 @@ def make_pz_basis(int L, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarr
 	Ns = 0
 
 	for s in range(1ull << L):
-		rpz = CheckState_PZ(pzblock,s,L)
+		rpz = CheckState_PZ_template(fliplr,flip_all,pzblock,s,L)
 		if rpz > 0:
 			basis[Ns] = s
 			N[Ns] = rpz

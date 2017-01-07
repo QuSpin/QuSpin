@@ -68,7 +68,7 @@ def {type_code}_t_zA_zB_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_T_ZA_ZB(s,L,a,R)
+		RefState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,s,L,a,R)
 
 		s = R[0]
 		l = R[1]
