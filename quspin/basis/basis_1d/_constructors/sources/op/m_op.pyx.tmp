@@ -22,6 +22,3 @@ def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np
 
 
 
-
-
-

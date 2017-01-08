@@ -1,11 +1,12 @@
 
-cdef {c_basis_type} make_p_basis_template(bitop fliplr,ns_type next_state,unsigned long long MAX,{c_basis_type} s,
-												int L,int pblock, NP_INT8_t * N,{c_basis_type} * basis):
-	cdef {c_basis_type} Ns
+cdef state_type make_p_basis_template(bitop fliplr,ns_type next_state,
+											state_type MAX,state_type s,
+											int L,int pblock, NP_INT8_t * N,basis_type * basis):
+	cdef state_type Ns
 	cdef NP_INT8_t rp
 
 	cdef int j
-	cdef unsigned long long i
+	cdef state_type i
 
 	Ns = 0
 

@@ -1,10 +1,10 @@
 
-cdef {c_basis_type} make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B,
+cdef state_type make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B,
 											bitop flip_all,ns_type next_state,
-											unsigned long long MAX,unsigned long long s,
-											int L,{c_basis_type}*basis):
-	cdef {c_basis_type} Ns
-	cdef unsigned long long i
+											state_type MAX,state_type s,
+											int L,basis_type*basis):
+	cdef state_type Ns
+	cdef state_type i
 	cdef NP_INT8_t r
 	cdef int j
 
@@ -57,7 +57,7 @@ def make_m_zA_zB_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] bas
 
 
 def make_zA_zB_basis(int L, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
-	cdef unsigned long long s
+	cdef state_type s
 	cdef int Ns
 	cdef NP_INT8_t r
 

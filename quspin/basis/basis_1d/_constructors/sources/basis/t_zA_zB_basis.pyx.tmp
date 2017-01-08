@@ -1,13 +1,13 @@
 
-cdef {c_basis_type} make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,
+cdef state_type make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,
 												bitop flip_all,ns_type next_state,
-												unsigned long long MAX,unsigned long long s,
+												state_type MAX,state_type s,
 												int L,int zAblock,int zBblock,int kblock,int a,
-												NP_INT8_t*N,NP_INT16_t*m,{c_basis_type}*basis): 
+												NP_INT8_t*N,NP_INT16_t*m,basis_type*basis): 
 	cdef double k 
-	cdef {c_basis_type} Ns
+	cdef state_type Ns
 	cdef NP_INT8_t mzA,mzB,mz,r
-	cdef unsigned long long i
+	cdef state_type i
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
 	cdef int j
 	
@@ -130,7 +130,7 @@ def make_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,
 
 def make_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
-	cdef unsigned long long s
+	cdef state_type s
 	cdef int Ns
 	cdef NP_INT8_t mzA,mzB,mz,r
 	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)

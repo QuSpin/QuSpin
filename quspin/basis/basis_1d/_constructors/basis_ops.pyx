@@ -7,6 +7,7 @@ cimport numpy as _np
 import numpy as _np
 from scipy.misc import comb
 from libc.math cimport sin,cos,abs,sqrt
+from libcpp cimport bool
 from libc.stdlib cimport malloc, free
 from cpython.string cimport PyString_AsString
 
@@ -34,7 +35,10 @@ NP_FLOAT64 = _np.float64
 NP_COMPLEX64 = _np.complex64
 NP_COMPLEX128 = _np.complex128
 
-
+ctypedef _np.float32_t NP_FLOAT32_t
+ctypedef _np.float64_t NP_FLOAT64_t
+ctypedef _np.complex64_t NP_COMPLEX64_t
+ctypedef _np.complex128_t NP_COMPLEX128_t
 
 ctypedef _np.int64_t NP_INT64_t
 ctypedef _np.int32_t NP_INT32_t
@@ -46,13 +50,35 @@ ctypedef _np.uint32_t NP_UINT32_t
 ctypedef _np.uint16_t NP_UINT16_t
 ctypedef _np.uint8_t NP_UINT8_t
 
+
+ctypedef fused index_type:
+	NP_INT32_t
+	NP_INT64_t
+
 ctypedef fused basis_type:
 	NP_UINT8_t
 	NP_UINT16_t
 	NP_UINT32_t
 	NP_UINT64_t
 
+ctypedef fused ME_type:
+	NP_FLOAT32_t
+	NP_FLOAT64_t
+	NP_COMPLEX64_t
+	NP_COMPLEX128_t
 
+ctypedef fused complex_type:
+	NP_COMPLEX64_t
+	NP_COMPLEX128_t
+
+ctypedef _np.uint64_t state_type
+
+
+ctypedef state_type (*bitop)(state_type, int)
+ctypedef state_type (*shifter)(state_type, int, int)
+ctypedef state_type (*ns_type)(state_type)
+ctypedef int (*op_type)(state_type, basis_type*, int, str, int*, ME_type,
+						index_type*, ME_type*, complex_type, bool)
 
 
 # auxillary files
@@ -60,8 +86,8 @@ cdef extern from "sources/complex_ops.h":
 	pass
 
 include "sources/bitops.pyx"
-include "sources/refstate_templates.pyx"
-include "sources/checkstate_templates.pyx"
+include "sources/refstate.pyx"
+include "sources/checkstate.pyx"
 
 # basis sources
 
@@ -102,5 +128,5 @@ include "sources/op/t_pz_op.pyx"
 include "sources/op/t_p_z_op.pyx"
 
 # impliment templates for spins
-include "sources/spins.pyx"
+include "sources/spin.pyx"
 

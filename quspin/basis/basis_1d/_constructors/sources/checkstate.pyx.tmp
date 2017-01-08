@@ -1,8 +1,8 @@
 
 
 
-cdef NP_INT8_t CheckState_P(int p, unsigned long long s, int L):
-	cdef unsigned long long t=s
+cdef NP_INT8_t CheckState_P_template(bitop fliplr,int p, state_type s, int L):
+	cdef state_type t=s
 	t=fliplr(t,L)
 	
 	if t > s: 
@@ -20,8 +20,8 @@ cdef NP_INT8_t CheckState_P(int p, unsigned long long s, int L):
 
 
 
-cdef NP_INT8_t CheckState_PZ(int pz,unsigned long long s,int L):
-	cdef unsigned long long t=s
+cdef NP_INT8_t CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,state_type s,int L):
+	cdef state_type t=s
 	
 	t=fliplr(t,L)
 	t=flip_all(t,L)
@@ -39,8 +39,8 @@ cdef NP_INT8_t CheckState_PZ(int pz,unsigned long long s,int L):
 
 
 
-cdef NP_INT8_t CheckState_Z(unsigned long long s,int L):
-	cdef unsigned long long t=s
+cdef NP_INT8_t CheckState_Z_template(bitop flip_all,state_type s,int L):
+	cdef state_type t=s
 
 	t=flip_all(t,L)
 	if t > s:
@@ -49,18 +49,18 @@ cdef NP_INT8_t CheckState_Z(unsigned long long s,int L):
 		return -1
 
 
-cdef NP_INT8_t CheckState_P_Z(int p,int z,unsigned long long s,int L):
+cdef NP_INT8_t CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,state_type s,int L):
 	cdef NP_INT8_t rp,rz,rps
 
-	rz = CheckState_Z(s,L)
+	rz = CheckState_Z_template(flip_all,s,L)
 	if rz < 0:
 		return -1
 
-	rp = CheckState_P(p,s,L)
+	rp = CheckState_P_template(fliplr,p,s,L)
 	if rp < 0:
 		return -1
 
-	rpz = CheckState_PZ(z*p,s,L)
+	rpz = CheckState_PZ_template(fliplr,flip_all,z*p,s,L)
 	if rpz < 0:
 		return -1	
 
@@ -71,8 +71,8 @@ cdef NP_INT8_t CheckState_P_Z(int p,int z,unsigned long long s,int L):
 
 
 
-cdef NP_INT8_t CheckState_ZA(unsigned long long s,int L):
-	cdef unsigned long long t=s
+cdef NP_INT8_t CheckState_ZA_template(bitop flip_sublat_A,state_type s,int L):
+	cdef state_type t=s
 
 	t=flip_sublat_A(t,L)
 	if t > s:
@@ -81,8 +81,8 @@ cdef NP_INT8_t CheckState_ZA(unsigned long long s,int L):
 		return -1
 
 
-cdef NP_INT8_t CheckState_ZB(unsigned long long s,int L):
-	cdef unsigned long long t=s
+cdef NP_INT8_t CheckState_ZB_template(bitop flip_sublat_B,state_type s,int L):
+	cdef state_type t=s
 
 	t=flip_sublat_B(t,L)
 	if t > s:
@@ -92,8 +92,8 @@ cdef NP_INT8_t CheckState_ZB(unsigned long long s,int L):
 
 
 
-cdef NP_INT8_t CheckState_ZA_ZB(unsigned long long s,int L):
-	cdef unsigned long long t
+cdef NP_INT8_t CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,state_type s,int L):
+	cdef state_type t
 
 	t=flip_sublat_A(s,L)
 	if t < s:
@@ -115,14 +115,14 @@ cdef NP_INT8_t CheckState_ZA_ZB(unsigned long long s,int L):
 
 
 
-cdef NP_INT8_t CheckState_T(int kblock,int L,unsigned long long s,int T):
+cdef NP_INT8_t CheckState_T_template(shifter shift,int kblock,int L,state_type s,int T):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	cdef NP_INT8_t R=-1
 	cdef int i
 	for i in range(1,L/T+1):
@@ -143,29 +143,29 @@ cdef NP_INT8_t CheckState_T(int kblock,int L,unsigned long long s,int T):
 
 
 
-cdef int CheckState_T_P(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,state_type s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	cdef int i,r
 	R[0] = -1
 	R[1] = -1
 	r = 0
 
-	if CheckState_P(1,s,L) < 0:
-		return 0
+	if CheckState_P_template(fliplr,1,s,L) < 0:
+		return
 
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L) 
 		if t < s:
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break
@@ -175,25 +175,25 @@ cdef int CheckState_T_P(int kblock,int L,unsigned long long s,int T,_np.ndarray[
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
 		t = shift(t,-T,L) 
 
-	return 0
+	return
 
 
 
 
-cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,int kblock,int L,state_type s,int T, _np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	R[0] = -1
 	R[1] = -1
 	R[2] = -1
@@ -202,17 +202,17 @@ cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarr
 	cdef int i,r
 	r = L
 
-	if CheckState_P_Z(1,1,s,L) < 0:
-		return 0
+	if CheckState_P_Z_template(fliplr,flip_all,1,1,s,L) < 0:
+		return
 
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L)
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break	
@@ -222,7 +222,7 @@ cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarr
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
@@ -233,7 +233,7 @@ cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarr
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[2] = i
 			break
@@ -245,13 +245,13 @@ cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarr
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[3] = i
 			break
 		t = shift(t,-T,L)	
 
-	return 0
+	return
 
 
 
@@ -264,29 +264,29 @@ cdef int CheckState_T_P_Z(int kblock,int L,unsigned long long s,int T, _np.ndarr
 
 
 
-cdef int CheckState_T_PZ(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int kblock,int L,state_type s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	R[0] = -1
 	R[1] = -1 
 	cdef int i,r
 
-	if CheckState_PZ(1,s,L) < 0:
-		return 0
+	if CheckState_PZ_template(fliplr,flip_all,1,s,L) < 0:
+		return
 
 	r = L
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L)
 		if t < s:
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break
@@ -297,13 +297,13 @@ cdef int CheckState_T_PZ(int kblock,int L,unsigned long long s,int T,_np.ndarray
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
 		t = shift(t,-T,L) 
 
-	return 0
+	return
 
 
 
@@ -314,28 +314,28 @@ cdef int CheckState_T_PZ(int kblock,int L,unsigned long long s,int T,_np.ndarray
 
 
 
-cdef int CheckState_T_Z(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,state_type s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
-	if CheckState_Z(s,L) < 0:
-		return 0
+	if CheckState_Z_template(flip_all,s,L) < 0:
+		return
 
 	r = L
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L)
 		if t < s:
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break
@@ -345,38 +345,38 @@ cdef int CheckState_T_Z(int kblock,int L,unsigned long long s,int T,_np.ndarray[
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
 		t = shift(t,-T,L) 
 
-	return 0
+	return
 
 
 
-cdef int CheckState_T_ZA(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,int L,state_type s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
-	if CheckState_ZA(s,L) < 0:
-		return 0
+	if CheckState_ZA_template(flip_sublat_A,s,L) < 0:
+		return
 
 	r = L
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L)
 		if t < s:
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break
@@ -386,37 +386,37 @@ cdef int CheckState_T_ZA(int kblock,int L,unsigned long long s,int T,_np.ndarray
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
 		t = shift(t,-T,L) 
 
-	return 0
+	return
 
 
-cdef int CheckState_T_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,int L,state_type s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
-	if CheckState_ZB(s,L) < 0:
-		return 0
+	if CheckState_ZB_template(flip_sublat_B,s,L) < 0:
+		return
 
 	r = L
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L)
 		if t < s:
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break
@@ -426,44 +426,44 @@ cdef int CheckState_T_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
 		t = shift(t,-T,L) 
 
-	return 0
+	return
 
 
 
 
 
 
-cdef int CheckState_T_ZA_ZB(int kblock,int L,unsigned long long s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
+cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,int kblock,int L,state_type s,int T,_np.ndarray[NP_INT8_t,ndim=1,mode='c'] R):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
 	#		L: length of the system
 	#		s: integer which represents a spin config in Sz basis
 	#		T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
-	cdef unsigned long long t=s
+	cdef state_type t=s
 	R[0] = -1
 	R[1] = -1
 	R[2] = -1
 	R[3] = -1
 	cdef int i,r
-	if CheckState_ZA_ZB(s,L) < 0:
-		return 0
+	if CheckState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,s,L) < 0:
+		return
 
 
 	r = L
 	for i in range(1,L/T+1):
 		t = shift(t,-T,L)
 		if t < s:
-			return 0
+			return
 		elif t==s:
 			if kblock % (L/(T*i)) != 0: # need to check the shift condition 
-				return 0
+				return
 			R[0] = i
 			r = i
 			break
@@ -473,7 +473,7 @@ cdef int CheckState_T_ZA_ZB(int kblock,int L,unsigned long long s,int T,_np.ndar
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[1] = i
 			break
@@ -484,7 +484,7 @@ cdef int CheckState_T_ZA_ZB(int kblock,int L,unsigned long long s,int T,_np.ndar
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[2] = i
 			break
@@ -495,13 +495,13 @@ cdef int CheckState_T_ZA_ZB(int kblock,int L,unsigned long long s,int T,_np.ndar
 	for i in range(r):
 		if t < s:
 			R[0] = -1
-			return 0
+			return
 		elif t == s:
 			R[3] = i
 			break
 		t = shift(t,-T,L) 
 
-	return 0
+	return
 
 
 
