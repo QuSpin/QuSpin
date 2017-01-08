@@ -1,4 +1,26 @@
 
+cdef {c_basis_type} make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B,
+											bitop flip_all,ns_type next_state,
+											unsigned long long MAX,unsigned long long s,
+											int L,{c_basis_type}*basis):
+	cdef {c_basis_type} Ns
+	cdef unsigned long long i
+	cdef NP_INT8_t r
+	cdef int j
+
+	Ns = 0
+	for i in range(MAX):
+		r = CheckState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,s,L)
+		if r > 0:
+			basis[Ns] = s
+			Ns += 1
+
+		s = next_state(s)
+
+	return Ns
+
+
+"""
 def make_m_zA_zB_basis(int L, int Nup, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 	cdef {c_basis_type} s,Ns
 	cdef NP_INT8_t r
@@ -48,3 +70,4 @@ def make_zA_zB_basis(int L, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 			Ns += 1
 
 	return Ns
+"""

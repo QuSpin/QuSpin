@@ -265,10 +265,10 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 			if (type(Nup) is int):
-				# arguments get overwritten by _cn.make_...  
-				self._Ns = _cn.make_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+				# arguments get overwritten by _cn.spin_...  
+				self._Ns = _cn.spin_m_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
@@ -287,9 +287,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_zA_zB_basis(L,Nup,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_m_t_zA_zB_basis(L,Nup,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -306,9 +306,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_pz_basis(L,Nup,pzblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_m_t_pz_basis(L,Nup,pzblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_pz_basis(L,pzblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_pz_basis(L,pzblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -325,9 +325,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_m_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
 
 			self._N.resize((self._Ns,))
@@ -345,9 +345,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_z_basis(L,Nup,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_m_t_z_basis(L,Nup,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_z_basis(L,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_z_basis(L,zblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -365,9 +365,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_zA_basis(L,Nup,zAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_m_t_zA_basis(L,Nup,zAblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_zA_basis(L,zAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_zA_basis(L,zAblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -384,9 +384,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_zB_basis(L,Nup,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_m_t_zB_basis(L,Nup,zBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.make_t_zB_basis(L,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.spin_t_zB_basis(L,zBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -402,9 +402,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_p_z_basis(L,Nup,pblock,zblock,self._N,self._basis)
+				self._Ns = _cn.spin_m_p_z_basis(L,Nup,pblock,zblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.make_p_z_basis(L,pblock,zblock,self._N,self._basis)
+				self._Ns = _cn.spin_p_z_basis(L,pblock,zblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -420,9 +420,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_zA_zB_basis(L,Nup,self._basis)
+				self._Ns = _cn.spin_m_zA_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.make_zA_zB_basis(L,self._basis)
+				self._Ns = _cn.spin_zA_zB_basis(L,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -437,9 +437,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_p_basis(L,Nup,pblock,self._N,self._basis)
+				self._Ns = _cn.spin_m_p_basis(L,Nup,pblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.make_p_basis(L,pblock,self._N,self._basis)
+				self._Ns = _cn.spin_p_basis(L,pblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -454,9 +454,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_z_basis(L,Nup,self._basis)
+				self._Ns = _cn.spin_m_z_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.make_z_basis(L,self._basis)
+				self._Ns = _cn.spin_z_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -468,9 +468,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_zA_basis(L,Nup,self._basis)
+				self._Ns = _cn.spin_m_zA_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.make_zA_basis(L,self._basis)
+				self._Ns = _cn.spin_zA_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -482,9 +482,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_zB_basis(L,Nup,self._basis)
+				self._Ns = _cn.spin_m_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.make_zB_basis(L,self._basis)
+				self._Ns = _cn.spin_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -496,9 +496,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_pz_basis(L,Nup,pzblock,self._N,self._basis)
+				self._Ns = _cn.spin_m_pz_basis(L,Nup,pzblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.make_pz_basis(L,pzblock,self._N,self._basis)
+				self._Ns = _cn.spin_pz_basis(L,pzblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -512,9 +512,9 @@ class spin_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=_np.uint32)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.make_m_t_basis(L,Nup,kblock,a,self._N,self._basis)
+				self._Ns = _cn.spin_m_t_basis(L,Nup,kblock,a,self._N,self._basis)
 			else:
-				self._Ns = _cn.make_t_basis(L,kblock,a,self._N,self._basis)
+				self._Ns = _cn.spin_t_basis(L,kblock,a,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -523,7 +523,7 @@ class spin_basis_1d(basis):
 		else: 
 			if type(Nup) is int:
 				self._basis = _np.empty((self._Ns,),dtype=_np.uint32)
-				_cn.make_m_basis(L,Nup,self._Ns,self._basis)
+				_cn.spin_m_basis(L,Nup,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,2**L,1,dtype=_np.uint32)
 			self._op_args=[self._basis]

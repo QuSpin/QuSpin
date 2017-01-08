@@ -1,4 +1,56 @@
 
+cdef {c_basis_type} make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_state,
+											unsigned long long MAX,unsigned long long s,
+											int L,int pblock,int kblock,int a, 
+											NP_INT8_t*N,NP_INT8_t*m,{c_basis_type}*basis):
+	cdef {c_basis_type} Ns
+	cdef NP_INT8_t r_temp,r,mp
+	cdef int sigma,sigma_i,sigma_f,v
+	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef unsigned long long i
+	cdef double k = (2.0*_np.pi*kblock*a)/L
+
+	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
+		sigma_i = 1
+		sigma_f = 1
+	else:
+		sigma_i = -1
+		sigma_f = 1
+
+	Ns = 0
+
+	for i in range(MAX):
+		CheckState_T_P_template(shift,fliplr,kblock,L,s,a,R)
+		r = R[0]
+		mp = R[1]
+		if r > 0:
+			if mp != -1:
+				for sigma in range(sigma_i,sigma_f+1,2):
+					r_temp = r
+					if 1 + sigma*pblock*cos(mp*k) == 0:
+						r_temp = -1
+					if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
+						r_temp = -1
+	
+					if r_temp > 0:
+						m[Ns] = mp
+						N[Ns] = (sigma*r)				
+						basis[Ns] = s
+						Ns += 1
+			else:
+				for sigma in range(sigma_i,sigma_f+1,2):
+					m[Ns] = -1
+					N[Ns] = (sigma*r)				
+					basis[Ns] = s
+					Ns += 1
+
+		s = next_state(s)
+
+	return Ns
+
+
+
+"""
 def make_m_t_p_basis(int L, int Nup, int pblock, int kblock, int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis):
 	cdef {c_basis_type} Ns,s
 	cdef NP_INT8_t r_temp,r,mp
@@ -121,7 +173,4 @@ def make_t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndi
 
 
 	return Ns
-
-
-
-
+"""

@@ -1,4 +1,40 @@
+cdef {c_basis_type} make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_type next_state,
+											unsigned long long MAX,unsigned long long s,
+											int L,int zBblock,int kblock,int a,
+											NP_INT8_t*N, NP_INT8_t*m,{c_basis_type}*basis): 
+	cdef double k 
+	cdef {c_basis_type} Ns
+	cdef unsigned long long i
+	cdef NP_INT8_t mzB,r
+	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef int j
+	
 
+	k = 2.0*_np.pi*kblock*a/L
+	Ns = 0
+	
+	for i in range(MAX):
+		CheckState_T_ZB_template(shift,flip_sublat_B,kblock,L,s,a,R)
+		r = R[0]
+		mzB = R[1]
+
+		if r > 0:
+			if mzB != -1:
+				if 1 + zBblock*cos(k*mzB) == 0:
+					r = -1				
+
+			if r > 0:
+				m[Ns] = mzB
+				N[Ns] = r			
+				basis[Ns] = s
+				Ns += 1	
+		
+		s = next_state(s)
+
+	return Ns
+
+
+"""
 def make_m_t_zB_basis(int L,int Nup,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis): 
 	cdef double k 
 	cdef {c_basis_type} s,Ns
@@ -75,3 +111,4 @@ def make_t_zB_basis(int L,int zBblock,int kblock,int a, _np.ndarray[NP_INT8_t,nd
 
 
 	return Ns
+"""

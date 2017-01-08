@@ -72,6 +72,16 @@ cdef inline unsigned long long flip_sublat_B(unsigned long long I, int length):
 
 
 
+cdef unsigned long long next_state_pcon(unsigned long long v):
+	if v == 0:
+		return v
+
+	cdef unsigned long long t = (v | (v - 1)) + 1
+	return t | ((((t & -t) / (v & -v)) >> 1) - 1)
+
+cdef unsigned long long next_state_no_pcon(unsigned long long v):
+	return v + 1
+
 cdef unsigned long long next_state(unsigned long long v):
 	cdef unsigned long long t = (v | (v - 1)) + 1
 	return t | ((((t & -t) / (v & -v)) >> 1) - 1)
@@ -80,3 +90,4 @@ cdef unsigned long long next_state(unsigned long long v):
 
 ctypedef unsigned long long (*bitop)(unsigned long long,int)
 ctypedef unsigned long long (*shifter)(unsigned long long,int,int)
+ctypedef unsigned long long (*ns_type)(unsigned long long)
