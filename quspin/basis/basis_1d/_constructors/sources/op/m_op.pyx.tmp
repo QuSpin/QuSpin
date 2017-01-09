@@ -1,12 +1,18 @@
 
 def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx,{c_complex_type} J):
 
-	cdef int i,Ns 
-	cdef {c_basis_type} s
-	cdef _np.ndarray[NP_INT32_t,ndim=1] row
-	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
+	cdef int N_op
+	cdef state_type i
+	cdef state_type Ns
 
 	Ns = basis.shape[0]
+
+	cdef {c_basis_type} s
+	cdef _np.ndarray[NP_INT32_t,ndim=1] row 
+	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
+
+	N_op = len(opstr)
+#	error = spinop(Ns,&basis[0],N_op,opstr,&indx[0],J,&row[0],&ME[0],1.0)
 	row,ME,error = {type_code}_spinop(basis,opstr,indx,J)
 
 	if error != 0:
@@ -16,9 +22,5 @@ def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np
 		s = row[i]
 		row[i] = findzstate(basis,Ns,s)
 
-
-		
 	return row,ME,error
-
-
 

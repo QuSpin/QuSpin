@@ -4,6 +4,7 @@ float_type={
 			"type_code":"f",
 			"c_matrix_type":"float",
 			"np_matrix_type":"NP_FLOAT32",
+			"np_complex_type":"NP_COMPLEX64",
 			"c_complex_type":"float complex",
 			"c_float_type":"float",
 			"check_imag":"True"
@@ -13,6 +14,7 @@ double_type={
 				"type_code":"d",
 				"c_matrix_type":"double",
 				"np_matrix_type":"NP_FLOAT64",
+				"np_complex_type":"NP_COMPLEX128",
 				"c_complex_type":"double complex",
 				"c_float_type":"double",
 				"check_imag":"True"
@@ -22,6 +24,7 @@ long_double_type={
 					"type_code":"g",
 					"c_matrix_type":"long double",
 					"np_matrix_type":"NP_FLOAT128",
+					"np_complex_type":"NP_COMPLEX256",
 					"c_complex_type":"long double complex",
 					"c_float_type":"long double",
 					"check_imag":"True"
@@ -32,15 +35,18 @@ float_complex_type={
 					"type_code":"F",
 					"c_matrix_type":"float complex",
 					"np_matrix_type":"NP_COMPLEX64",
+					"np_complex_type":"NP_COMPLEX64",
 					"c_complex_type":"float complex",
 					"c_float_type":"float",
 					"check_imag":"False"
 					}
 
+
 double_complex_type={
 					"type_code":"D",
 					"c_matrix_type":"double complex",
 					"np_matrix_type":"NP_COMPLEX128",
+					"np_complex_type":"NP_COMPLEX128",
 					"c_complex_type":"double complex",
 					"c_float_type":"double",
 					"check_imag":"False"
@@ -50,6 +56,7 @@ long_double_complex_type={
 						"type_code":"G",
 						"c_matrix_type":"long double complex",
 						"np_matrix_type":"NP_COMPLEX256",
+						"np_complex_type":"NP_COMPLEX256",
 						"c_complex_type":"long double complex",
 						"c_float_type":"long double",
 						"check_imag":"False"
@@ -77,10 +84,10 @@ def basis_ops_gen():
 				]
 
 	matrix_types = [float_type,double_type,float_complex_type,double_complex_type]
-	if hasattr(numpy,"float128"): # architecture supports long double
-		matrix_types.append(long_double_type)
-	if hasattr(numpy,"complex256"): # architecture supports long double complex
-		matrix_types.append(long_double_complex_type)
+#	if hasattr(numpy,"float128"): # architecture supports long double
+#		matrix_types.append(long_double_type)
+#	if hasattr(numpy,"complex256"): # architecture supports long double complex
+#		matrix_types.append(long_double_complex_type)
 
 	op_templates = get_templates(['sources','op'],".tmp")
 

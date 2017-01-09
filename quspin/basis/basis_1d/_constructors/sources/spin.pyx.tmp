@@ -1,86 +1,7 @@
 
 
-
-
-cdef int spinop(state_type Ns, basis_type *basis,
-				int N_indx, str opstr,int *indx, ME_type J,
-				index_type *row, ME_type *ME, complex_type M_):
-
-	cdef state_type i
-	cdef state_type r,b
-	cdef int j,error
-	cdef char a
-
-	cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
-
-	cdef char I = "I"
-	cdef char x = "x"
-	cdef char y = "y"
-	cdef char z = "z"
-	cdef char p = "+"
-	cdef char m = "-"
-
-	error = 0
-
-	for i in range(Ns): #loop over basis
-		M_E = J
-		r = basis[i]
-		
-		for j in range(N_indx-1,-1,-1): #loop over the copstr
-
-			b = ( 1ull << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
-			a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
-
-			if c_opstr[j] == I:
-				continue
-			elif c_opstr[j] == z:
-				M_E *= (-1.0)**(a+1)
-			elif c_opstr[j] == x:
-				r = r ^ b
-			elif c_opstr[j] == y:
-				r = r ^ b
-				M_E *= 1.0j*(-1.0)**(a+1)
-			elif c_opstr[j] == p:
-				if a == 1:
-					r = -1
-					M_E = 0.0
-					break
-				r = r ^ b
-				M_E *= 2
-				
-			elif c_opstr[j] == m:
-				if a == 0:
-					r = -1
-					M_E = 0.0
-					break
-				r = r ^ b
-				M_E *= 2
-		
-			else:
-				error = 1
-				return error
-
-		if ME_type is NP_FLOAT32_t or ME_type is NP_FLOAT64_t:
-			if M_E.imag != 0.0:
-				error = -1
-				return error
-
-			ME[i] = M_E.real
-			row[i] = r
-		else:
-			ME[i] = M_E
-			row[i] = r
-
-	return error
-
-
-
 # magnetization 
-def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef int j
 
@@ -88,33 +9,11 @@ def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray basis):
 	for j in range(Nup):
 		s += ( 1ull << j )
 
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		make_basis[NP_UINT8_t](next_state_pcon,Ns,s,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		make_basis[NP_UINT16_t](next_state_pcon,Ns,s,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		make_basis[NP_UINT32_t](next_state_pcon,Ns,s,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		make_basis[NP_UINT64_t](next_state_pcon,Ns,s,&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	make_basis(next_state_pcon,Ns,s,&basis[0])
 
 
 # parity 
-def spin_m_p_basis(int L,int Nup,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_p_basis(int L,int Nup,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
@@ -123,63 +22,20 @@ def spin_m_p_basis(int L,int Nup,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N,_np.
 	for j in range(Nup):
 		s += ( 1ull << j )
 
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_p_basis_template[NP_UINT8_t](fliplr,next_state_pcon,MAX,s,L,pblock,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_p_basis_template[NP_UINT16_t](fliplr,next_state_pcon,MAX,s,L,pblock,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_p_basis_template[NP_UINT32_t](fliplr,next_state_pcon,MAX,s,L,pblock,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_p_basis_template[NP_UINT64_t](fliplr,next_state_pcon,MAX,s,L,pblock,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	return make_p_basis_template(fliplr,next_state_pcon,MAX,s,L,pblock,&N[0],&basis[0])
 
 	
 
 
-def spin_p_basis(int L,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_p_basis(int L,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s = 0
 	cdef state_type MAX=1ull<<L
 
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_p_basis_template[NP_UINT8_t](fliplr,next_state_no_pcon,MAX,s,L,pblock,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_p_basis_template[NP_UINT16_t](fliplr,next_state_no_pcon,MAX,s,L,pblock,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_p_basis_template[NP_UINT32_t](fliplr,next_state_no_pcon,MAX,s,L,pblock,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_p_basis_template[NP_UINT64_t](fliplr,next_state_no_pcon,MAX,s,L,pblock,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_p_basis_template(fliplr,next_state_no_pcon,MAX,s,L,pblock,&N[0],&basis[0])
 
 
 # parity-spin inversion
-def spin_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
@@ -187,836 +43,236 @@ def spin_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8
 	for j in range(Nup):
 		s += ( 1ull << j )
 
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_p_z_basis_template[NP_UINT8_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_p_z_basis_template[NP_UINT16_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_p_z_basis_template[NP_UINT32_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_p_z_basis_template[NP_UINT64_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	return make_p_z_basis_template(fliplr,flip_all,next_state_pcon,MAX,s,L,pblock,zblock,&N[0],&basis[0])
 	
 
-def spin_p_z_basis(int L, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_p_z_basis(int L, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
 
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_p_z_basis_template[NP_UINT8_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_p_z_basis_template[NP_UINT16_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_p_z_basis_template[NP_UINT32_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_p_z_basis_template[NP_UINT64_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pblock,zblock,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
-	
+	return make_p_z_basis_template(fliplr,flip_all,next_state_no_pcon,MAX,s,L,pblock,zblock,&N[0],&basis[0])
 
 
 # (parity)*(spin inversion)
-def spin_m_pz_basis(int L, int Nup, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_pz_basis(int L, int Nup, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_pz_basis_template[NP_UINT8_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_pz_basis_template[NP_UINT16_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_pz_basis_template[NP_UINT32_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_pz_basis_template[NP_UINT64_t](fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	return make_pz_basis_template(fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,&N[0],&basis[0])
 	
 
-def spin_pz_basis(int L, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_pz_basis(int L, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_pz_basis_template[NP_UINT8_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_pz_basis_template[NP_UINT16_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_pz_basis_template[NP_UINT32_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_pz_basis_template[NP_UINT64_t](fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
-	
+	return make_pz_basis_template(fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,&N[0],&basis[0])
 
 
 # translation
-def spin_m_t_basis(int L, int Nup, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_basis(int L, int Nup, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_basis_template[NP_UINT8_t](shift,next_state_pcon,MAX,s,L,kblock,a,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_basis_template[NP_UINT16_t](shift,next_state_pcon,MAX,s,L,kblock,a,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_basis_template[NP_UINT32_t](shift,next_state_pcon,MAX,s,L,kblock,a,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_basis_template[NP_UINT64_t](shift,next_state_pcon,MAX,s,L,kblock,a,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_basis_template(shift,next_state_pcon,MAX,s,L,kblock,a,&N[0],&basis[0])
 
 
-def spin_t_basis(int L, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_basis(int L, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_basis_template[NP_UINT8_t](shift,next_state_no_pcon,MAX,s,L,kblock,a,&N[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_basis_template[NP_UINT16_t](shift,next_state_no_pcon,MAX,s,L,kblock,a,&N[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_basis_template[NP_UINT32_t](shift,next_state_no_pcon,MAX,s,L,kblock,a,&N[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_basis_template[NP_UINT64_t](shift,next_state_no_pcon,MAX,s,L,kblock,a,&N[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
-	
+	return make_t_basis_template(shift,next_state_no_pcon,MAX,s,L,kblock,a,&N[0],&basis[0])
 
 
 # translation-parity
-def spin_m_t_p_basis(int L, int Nup,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_p_basis(int L, int Nup,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_p_basis_template[NP_UINT8_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_p_basis_template[NP_UINT16_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_p_basis_template[NP_UINT32_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_p_basis_template[NP_UINT64_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_p_basis_template(shift,fliplr,next_state_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
-def spin_t_p_basis(int L,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_p_basis(int L,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_p_basis_template[NP_UINT8_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_p_basis_template[NP_UINT16_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_p_basis_template[NP_UINT32_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_p_basis_template[NP_UINT64_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	return make_t_p_basis_template(shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,kblock,a,&N[0],&m[0],&basis[0])
 	
 
 
 # translation-parity-spin inversion
-def spin_m_t_p_z_basis(int L, int Nup,int pblock,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_p_z_basis(int L, int Nup,int pblock,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_p_z_basis_template[NP_UINT8_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_p_z_basis_template[NP_UINT16_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_p_z_basis_template[NP_UINT32_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_p_z_basis_template[NP_UINT64_t](shift,fliplr,next_state_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_p_z_basis_template(shift,fliplr,next_state_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&basis[0])
 
 	
 
-def spin_t_p_z_basis(int L,int pblock,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_p_z_basis(int L,int pblock,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_p_z_basis_template[NP_UINT8_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_p_z_basis_template[NP_UINT16_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_p_z_basis_template[NP_UINT32_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_p_z_basis_template[NP_UINT64_t](shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_p_z_basis_template(shift,fliplr,next_state_no_pcon,MAX,s,L,pblock,zblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
 # translation-(parity)*(spin inversion)
-def spin_m_t_pz_basis(int L, int Nup,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_pz_basis(int L, int Nup,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_pz_basis_template[NP_UINT8_t](shift,fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_pz_basis_template[NP_UINT16_t](shift,fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_pz_basis_template[NP_UINT32_t](shift,fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_pz_basis_template[NP_UINT64_t](shift,fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_pz_basis_template(shift,fliplr,flip_all,next_state_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&basis[0])
 	
 
-def spin_t_pz_basis(int L,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_pz_basis(int L,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_pz_basis_template[NP_UINT8_t](shift,fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_pz_basis_template[NP_UINT16_t](shift,fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_pz_basis_template[NP_UINT32_t](shift,fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_pz_basis_template[NP_UINT64_t](shift,fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_pz_basis_template(shift,fliplr,flip_all,next_state_no_pcon,MAX,s,L,pzblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
 # translation-spin inversion
-def spin_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_z_basis_template[NP_UINT8_t](shift,flip_all,next_state_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_z_basis_template[NP_UINT16_t](shift,flip_all,next_state_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_z_basis_template[NP_UINT32_t](shift,flip_all,next_state_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_z_basis_template[NP_UINT64_t](shift,flip_all,next_state_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_z_basis_template(shift,flip_all,next_state_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
-def spin_t_z_basis(int L,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_z_basis(int L,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_z_basis_template[NP_UINT8_t](shift,flip_all,next_state_no_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_z_basis_template[NP_UINT16_t](shift,flip_all,next_state_no_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_z_basis_template[NP_UINT32_t](shift,flip_all,next_state_no_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_z_basis_template[NP_UINT64_t](shift,flip_all,next_state_no_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_z_basis_template(shift,flip_all,next_state_no_pcon,MAX,s,L,zblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
 # translation-spin inversion A
-def spin_m_t_zA_basis(int L, int Nup,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_zA_basis(int L, int Nup,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_zA_basis_template[NP_UINT8_t](shift,flip_sublat_A,next_state_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_zA_basis_template[NP_UINT16_t](shift,flip_sublat_A,next_state_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_zA_basis_template[NP_UINT32_t](shift,flip_sublat_A,next_state_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_zA_basis_template[NP_UINT64_t](shift,flip_sublat_A,next_state_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_zA_basis_template(shift,flip_sublat_A,next_state_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
-def spin_t_zA_basis(int L,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_zA_basis(int L,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_zA_basis_template[NP_UINT8_t](shift,flip_sublat_A,next_state_no_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_zA_basis_template[NP_UINT16_t](shift,flip_sublat_A,next_state_no_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_zA_basis_template[NP_UINT32_t](shift,flip_sublat_A,next_state_no_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_zA_basis_template[NP_UINT64_t](shift,flip_sublat_A,next_state_no_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_zA_basis_template(shift,flip_sublat_A,next_state_no_pcon,MAX,s,L,zAblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
 # translation-spin inversion B
-def spin_m_t_zB_basis(int L, int Nup,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_zB_basis(int L, int Nup,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_zB_basis_template[NP_UINT8_t](shift,flip_sublat_B,next_state_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_zB_basis_template[NP_UINT16_t](shift,flip_sublat_B,next_state_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_zB_basis_template[NP_UINT32_t](shift,flip_sublat_B,next_state_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_zB_basis_template[NP_UINT64_t](shift,flip_sublat_B,next_state_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	return make_t_zB_basis_template(shift,flip_sublat_B,next_state_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&basis[0])
 	
 
-def spin_t_zB_basis(int L,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_zB_basis(int L,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_zB_basis_template[NP_UINT8_t](shift,flip_sublat_B,next_state_no_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_zB_basis_template[NP_UINT16_t](shift,flip_sublat_B,next_state_no_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_zB_basis_template[NP_UINT32_t](shift,flip_sublat_B,next_state_no_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_zB_basis_template[NP_UINT64_t](shift,flip_sublat_B,next_state_no_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_zB_basis_template(shift,flip_sublat_B,next_state_no_pcon,MAX,s,L,zBblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
 # translation-spin inversion A-spin inversion B
-def spin_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_zA_zB_basis_template[NP_UINT8_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_zA_zB_basis_template[NP_UINT16_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_zA_zB_basis_template[NP_UINT32_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_zA_zB_basis_template[NP_UINT64_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
 
 
-def spin_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_t_zA_zB_basis_template[NP_UINT8_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_t_zA_zB_basis_template[NP_UINT16_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_t_zA_zB_basis_template[NP_UINT32_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_t_zA_zB_basis_template[NP_UINT64_t](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_t_zA_zB_basis_template(shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&m[0],&basis[0])
 
 
 # spin inversion
-def spin_m_z_basis(int L,int Nup,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_z_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_z_basis_template[NP_UINT8_t](flip_all,next_state_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_z_basis_template[NP_UINT16_t](flip_all,next_state_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_z_basis_template[NP_UINT32_t](flip_all,next_state_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_z_basis_template[NP_UINT64_t](flip_all,next_state_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_z_basis_template(flip_all,next_state_pcon,MAX,s,L,&basis[0])
 
 
-def spin_z_basis(int L,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_z_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_z_basis_template[NP_UINT8_t](flip_all,next_state_no_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_z_basis_template[NP_UINT16_t](flip_all,next_state_no_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_z_basis_template[NP_UINT32_t](flip_all,next_state_no_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_z_basis_template[NP_UINT64_t](flip_all,next_state_no_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_z_basis_template(flip_all,next_state_no_pcon,MAX,s,L,&basis[0])
 
 
 # spin inversion A
-def spin_m_zA_basis(int L,int Nup,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_zA_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_zA_basis_template[NP_UINT8_t](flip_sublat_A,next_state_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_zA_basis_template[NP_UINT16_t](flip_sublat_A,next_state_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_zA_basis_template[NP_UINT32_t](flip_sublat_A,next_state_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_zA_basis_template[NP_UINT64_t](flip_sublat_A,next_state_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_zA_basis_template(flip_sublat_A,next_state_pcon,MAX,s,L,&basis[0])
 	
 
-def spin_zA_basis(int L,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_zA_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_zA_basis_template[NP_UINT8_t](flip_sublat_A,next_state_no_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_zA_basis_template[NP_UINT16_t](flip_sublat_A,next_state_no_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_zA_basis_template[NP_UINT32_t](flip_sublat_A,next_state_no_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_zA_basis_template[NP_UINT64_t](flip_sublat_A,next_state_no_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
-
-	
+	return make_zA_basis_template(flip_sublat_A,next_state_no_pcon,MAX,s,L,&basis[0])
 
 
 # spin inversion B
-def spin_m_zB_basis(int L,int Nup,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_zB_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_zB_basis_template[NP_UINT8_t](flip_sublat_B,next_state_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_zB_basis_template[NP_UINT16_t](flip_sublat_B,next_state_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_zB_basis_template[NP_UINT32_t](flip_sublat_B,next_state_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_zB_basis_template[NP_UINT64_t](flip_sublat_B,next_state_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_zB_basis_template(flip_sublat_B,next_state_pcon,MAX,s,L,&basis[0])
 
 	
 
-def spin_zB_basis(int L,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_zB_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_zB_basis_template[NP_UINT8_t](flip_sublat_B,next_state_no_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_zB_basis_template[NP_UINT16_t](flip_sublat_B,next_state_no_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_zB_basis_template[NP_UINT32_t](flip_sublat_B,next_state_no_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_zB_basis_template[NP_UINT64_t](flip_sublat_B,next_state_no_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
-
-	
+	return make_zB_basis_template(flip_sublat_B,next_state_no_pcon,MAX,s,L,&basis[0])
 
 
 # spin inversion A-spin inversion B
-def spin_m_zA_zB_basis(int L,int Nup,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_m_zA_zB_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s
 	cdef state_type MAX=comb(L,Nup,exact=True)
 	cdef int j
 	s = 0
 	for j in range(Nup):
 		s += ( 1ull << j )
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_zA_zB_basis_template[NP_UINT8_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_zA_zB_basis_template[NP_UINT16_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_zA_zB_basis_template[NP_UINT32_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_zA_zB_basis_template[NP_UINT64_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
-
+	return make_zA_zB_basis_template(flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon,MAX,s,L,&basis[0])
 	
 
-def spin_zA_zB_basis(int L,_np.ndarray basis):
-	cdef _np.ndarray[NP_UINT8_t,ndim=1] view_uint8
-	cdef _np.ndarray[NP_UINT16_t,ndim=1] view_uint16
-	cdef _np.ndarray[NP_UINT32_t,ndim=1] view_uint32
-	cdef _np.ndarray[NP_UINT64_t,ndim=1] view_uint64
+def spin_zA_zB_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 	cdef state_type s=0
 	cdef state_type MAX=1ull<<L
-	if basis.dtype == NP_UINT8:
-		view_uint8 = basis
-		return make_zA_zB_basis_template[NP_UINT8_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,&view_uint8[0])
-
-	elif basis.dtype == NP_UINT16:
-		view_uint16 = basis
-		return make_zA_zB_basis_template[NP_UINT16_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,&view_uint16[0])
-
-	elif basis.dtype == NP_UINT32:
-		view_uint32 = basis
-		return make_zA_zB_basis_template[NP_UINT32_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,&view_uint32[0])
-
-	elif basis.dtype == NP_UINT64:
-		view_uint64 = basis
-		return make_zA_zB_basis_template[NP_UINT64_t](flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,&view_uint64[0])
-		
-	else:
-		raise TypeError
+	return make_zA_zB_basis_template(flip_sublat_A,flip_sublat_B,flip_all,next_state_no_pcon,MAX,s,L,&basis[0])
 
 	

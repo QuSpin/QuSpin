@@ -14,11 +14,10 @@ from cpython.string cimport PyString_AsString
 
 _np.import_array()
 
-if hasattr(_np,"float128"):
-	NP_FLOAT128 = _np.float128
-
-if hasattr(_np,"complex256"):
-	NP_COMPLEX256 = _np.complex256
+#if hasattr(_np,"float128"):
+#	NP_FLOAT128 = _np.float128
+#if hasattr(_np,"complex256"):
+#	NP_COMPLEX256 = _np.complex256
 
 NP_INT64 = _np.int64
 NP_INT32 = _np.int32
@@ -56,12 +55,10 @@ ctypedef fused index_type:
 	NP_INT64_t
 
 ctypedef fused basis_type:
-	NP_UINT8_t
-	NP_UINT16_t
 	NP_UINT32_t
 	NP_UINT64_t
 
-ctypedef fused ME_type:
+ctypedef fused matrix_type:
 	NP_FLOAT32_t
 	NP_FLOAT64_t
 	NP_COMPLEX64_t
@@ -77,8 +74,10 @@ ctypedef _np.uint64_t state_type
 ctypedef state_type (*bitop)(state_type, int)
 ctypedef state_type (*shifter)(state_type, int, int)
 ctypedef state_type (*ns_type)(state_type)
-ctypedef int (*op_type)(state_type, basis_type*, int, str, int*, ME_type,
-						index_type*, ME_type*, complex_type, bool)
+ctypedef int (*op_type)(state_type, basis_type*, int, str, NP_INT32_t*, complex_type,
+						index_type*, matrix_type*, complex_type)
+
+
 
 
 # auxillary files
@@ -88,6 +87,7 @@ cdef extern from "sources/complex_ops.h":
 include "sources/bitops.pyx"
 include "sources/refstate.pyx"
 include "sources/checkstate.pyx"
+include "sources/spinop.pyx"
 
 # basis sources
 
