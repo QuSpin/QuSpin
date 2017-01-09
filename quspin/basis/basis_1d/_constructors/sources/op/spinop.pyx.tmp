@@ -26,8 +26,8 @@ S_ij has i running over rows and j running over columns. Given the state |0>, th
 
 def {type_code}_spinop(_np.ndarray[basis_type,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx,{c_complex_type} J):
 
-	cdef {c_basis_type} i,Ns
-	cdef {c_basis_type} r,b
+	cdef state_type i,Ns
+	cdef state_type r,b
 
 	cdef int j,error
 	cdef char a

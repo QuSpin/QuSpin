@@ -93,15 +93,8 @@ def basis_ops_gen():
 		IO = open(op_template,"r")
 		filename = op_template.replace(".tmp","")
 		file_temp_str = IO.read()
-		replacements = []
-		for basis_type in basis_types:
-			for matrix_type in matrix_types:
-				replace = basis_type.copy()	
-				replace.update(matrix_type)
-				replacements.append(replace)
-
 		file_str = ""
-		for replace in replacements:
+		for replace in matrix_types:
 			file_str += file_temp_str.format(**replace)
 
 		with open(filename,"w") as IO:
