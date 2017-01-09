@@ -85,7 +85,7 @@ cdef {c_float_type} {type_code}_MatrixElement_P_Z(int L,int pblock, int zblock, 
 def {type_code}_t_p_z_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int pblock,int zblock, int kblock, int a):
 	cdef {c_basis_type} s
 	cdef int error,ss,i,j,Ns,o,p,c,b,l,q,g
-	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(4,{np_basis_type})
+	cdef _np.ndarray[{np_basis_type}_t,ndim=1] R = _np.zeros(4,{np_basis_type})
 	cdef _np.ndarray[NP_INT32_t,ndim=1] row
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 

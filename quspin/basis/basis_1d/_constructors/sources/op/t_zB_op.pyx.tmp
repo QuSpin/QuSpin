@@ -30,7 +30,7 @@ cdef {c_matrix_type} {type_code}_MatrixElement_ZB(int L,int zBblock, int kblock,
 def {type_code}_t_zB_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int zBblock, int kblock, int a):
 	cdef {c_basis_type} s
 	cdef int error,ss,i,Ns,l,gB
-	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(3,{np_basis_type})
+	cdef _np.ndarray[{np_basis_type}_t,ndim=1] R = _np.zeros(3,{np_basis_type})
 	cdef _np.ndarray[NP_INT32_t,ndim=1] row
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 	cdef {c_float_type} k = (2.0*_np.pi*kblock*a)/L

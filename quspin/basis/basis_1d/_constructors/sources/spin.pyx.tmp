@@ -9,7 +9,7 @@ def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] ba
 	for j in range(Nup):
 		s += ( 1ull << j )
 
-	make_basis(next_state_pcon,Ns,s,&basis[0])
+	make_n_basis_template(next_state_pcon,Ns,s,&basis[0])
 
 
 # parity 
