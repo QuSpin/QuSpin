@@ -1,5 +1,5 @@
 
-def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx,{c_complex_type} J):
+def {type_code}_m_op(_np.ndarray[basis_type,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx,{c_complex_type} J):
 
 	cdef int N_op
 	cdef state_type i
@@ -7,7 +7,7 @@ def {type_code}_m_op(_np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np
 
 	Ns = basis.shape[0]
 
-	cdef {c_basis_type} s
+	cdef state_type s
 	cdef _np.ndarray[NP_INT32_t,ndim=1] row 
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 

@@ -1,8 +1,8 @@
 
-def {type_code}_zA_zB_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int zAblock, int zBblock):
-	cdef {c_basis_type} s
+def {type_code}_zA_zB_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int zAblock, int zBblock):
+	cdef state_type s
 	cdef int Ns,error,ss,i,gA,gB
-	cdef _np.ndarray[{np_basis_type}_t,ndim = 1] R = _np.zeros(3,{np_basis_type})
+	cdef _np.ndarray[basis_type,ndim = 1] R = _np.zeros(3,dtype=basis.dtype)
 	cdef _np.ndarray[NP_INT32_t,ndim=1] row
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 

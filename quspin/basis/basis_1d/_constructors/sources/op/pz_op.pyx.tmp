@@ -1,9 +1,9 @@
 
 
-def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[{np_basis_type}_t,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int pzblock):
-	cdef {c_basis_type} s
+def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis, str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, {c_complex_type} J, int L, int pzblock):
+	cdef state_type s
 	cdef int error,ss,i,Ns,qg
-	cdef _np.ndarray[{np_basis_type}_t,ndim=1] R = _np.zeros(2,{np_basis_type})
+	cdef _np.ndarray[basis_type,ndim=1] R = _np.zeros(2,dtype=basis.dtype)
 	cdef _np.ndarray[NP_INT32_t,ndim=1] row
 	cdef _np.ndarray[{c_matrix_type},ndim=1] ME
 	cdef {c_float_type} n

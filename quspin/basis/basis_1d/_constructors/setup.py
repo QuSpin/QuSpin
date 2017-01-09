@@ -79,9 +79,6 @@ def get_templates(folder,ext):
 
 def basis_ops_gen():
 	import numpy
-	basis_types = [
-					{"np_basis_type":"NP_UINT32","c_basis_type":"unsigned int"},
-				]
 
 	matrix_types = [float_type,double_type,float_complex_type,double_complex_type]
 #	if hasattr(numpy,"float128"): # architecture supports long double
@@ -103,32 +100,9 @@ def basis_ops_gen():
 				replace.update(matrix_type)
 				replacements.append(replace)
 
-
 		file_str = ""
 		for replace in replacements:
 			file_str += file_temp_str.format(**replace)
-
-			
-
-		with open(filename,"w") as IO:
-			IO.write(file_str)
-
-
-
-	basis_templates = get_templates(['sources','basis'],".tmp")
-	basis_templates += get_templates(['sources'],".tmp")
-
-
-	for basis_template in basis_templates:
-		IO = open(basis_template,"r")
-		filename = basis_template.replace(".tmp","")
-		file_temp_str = IO.read()
-
-		file_str = ""
-		for replace in basis_types:
-			file_str += file_temp_str.format(**replace)
-
-			
 
 		with open(filename,"w") as IO:
 			IO.write(file_str)
