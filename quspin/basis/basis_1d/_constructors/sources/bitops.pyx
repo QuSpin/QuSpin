@@ -59,14 +59,14 @@ cdef inline state_type flip_sublat_B(state_type I, int length):
 
 
 
-cdef state_type next_state_pcon(state_type v):
+cdef state_type next_state_pcon_hcb(state_type v):
 	if v == 0:
 		return v
 
 	cdef state_type t = (v | (v - 1)) + 1
 	return t | ((((t & -t) / (v & -v)) >> 1) - 1)
 
-cdef state_type next_state_no_pcon(state_type v):
+cdef state_type next_state_inc_1(state_type v):
 	return v + 1
 
 

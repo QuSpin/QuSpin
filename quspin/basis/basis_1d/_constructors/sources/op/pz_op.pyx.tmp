@@ -17,12 +17,12 @@ def {type_code}_pz_op(_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,nd
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_PZ_template(fliplr,flip_all,s,L,R)
+		RefState_PZ_template(fliplr,flip_all,s,L,&R[0])
 
 		s = R[0]
 		qg = R[1]
 		
-		ss = findzstate(basis,Ns,s)
+		ss = findzstate(&basis[0],Ns,s)
 
 		row[i] = ss
 		if ss == -1: continue

@@ -15,12 +15,12 @@ def {type_code}_zB_op(_np.ndarray[basis_type,ndim=1] basis, str opstr, _np.ndarr
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_ZB_template(flip_sublat_B,s,L,R)
+		RefState_ZB_template(flip_sublat_B,s,L,&R[0])
 
 		s = R[0]
 		gB = R[1]
 
-		ss = findzstate(basis,Ns,s)
+		ss = findzstate(&basis[0],Ns,s)
 		row[i] = ss
 		if ss == -1: continue
 		ME[i] *= (zBblock)**gB

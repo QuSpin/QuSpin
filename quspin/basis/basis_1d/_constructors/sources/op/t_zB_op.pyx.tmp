@@ -47,13 +47,13 @@ def {type_code}_t_zB_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,nd
 
 	for i in range(Ns):
 		s = row[i]
-		RefState_T_ZB_template(shift,flip_sublat_B,s,L,a,R)
+		RefState_T_ZB_template(shift,flip_sublat_B,s,L,a,&R[0])
 
 		s = R[0]
 		l = R[1]
 		gB = R[2]
 
-		ss = findzstate(basis,Ns,s)
+		ss = findzstate(&basis[0],Ns,s)
 		row[i] = ss
 		if ss == -1: continue
 

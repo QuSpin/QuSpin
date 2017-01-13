@@ -24,14 +24,13 @@ class OpstrError(Exception):
 
 
 def op(opstr,indx,J,dtype,basis,**blocks):
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_spinop"]
 	pauli = blocks.get('pauli')
 	# row: resilting basis states; -1: state is thrown out (cf FindZState)
 	# ME: array of dtype with matrix elements
 	# error: see line 11 above
-
-	row,ME,error = compiled_op(basis,opstr,indx,J)
+	row = _np.zeros_like(basis,dtype=_index_type)
+	ME = _np.zeros_like(basis,dtype=dtype)
+	error = basis_ops.spin_op(row,ME,opstr,indx,J,basis,**blocks)
 
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
@@ -56,10 +55,12 @@ def op(opstr,indx,J,dtype,basis,**blocks):
 
 def op_m(opstr,indx,J,dtype,basis,**blocks):
 
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_m_op"]
-	row,ME,error = compiled_op(basis,opstr,indx,J)
 	pauli = blocks.get('pauli')
+
+	row = _np.zeros_like(basis,dtype=_index_type)
+	ME = _np.zeros_like(basis,dtype=dtype)
+	error = basis_ops.spin_m_op(row,ME,opstr,indx,J,basis,**blocks)
+	
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -183,10 +184,13 @@ def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
 	pblock=blocks.get("pblock")
 	pauli=blocks.get("pauli")
 
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_p_op"]
-	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,pblock)
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_p_op"]
+#	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,pblock)
 
+	row = _np.zeros_like(basis,dtype=_index_type)
+	ME = _np.zeros_like(basis,dtype=dtype)
+	error = basis_ops.spin_p_op(row,ME,opstr,indx,J,N,basis,L,**blocks)
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
 	col = _np.arange(len(basis),dtype=_index_type)

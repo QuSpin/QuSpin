@@ -64,32 +64,25 @@ def {type_code}_spinop(_np.ndarray[basis_type,ndim=1] basis, str opstr, _np.ndar
 			if c_opstr[j] == I:
 				continue
 			elif c_opstr[j] == z:
-				M_E *= (-1.0)**(a+1)
+				M_E *= (1.0 if a else -1.0)
 			elif c_opstr[j] == x:
 				r = r ^ b
 			elif c_opstr[j] == y:
 				r = r ^ b
-				M_E *= 1.0j*(-1.0)**(a+1)
+				M_E *= (1.0j if a else -1.0j)
 			elif c_opstr[j] == p:
-				if a == 1:
-					r = -1
-					M_E = 0.0
-					break
 				r = r ^ b
-				M_E *= 2
-				
+				M_E *= (0.0 if a else 2.0)
 			elif c_opstr[j] == m:
-				if a == 0:
-					r = -1
-					M_E = 0.0
-					break
 				r = r ^ b
-				M_E *= 2
-		
+				M_E *= (2.0 if a else 0.0)
 			else:
 				error = 1
-
 				return row,ME,error
+
+			if M_E == 0.0:
+				r = basis[i]
+				break
 
 		if {check_imag}:
 			if M_E.imag != 0.0:

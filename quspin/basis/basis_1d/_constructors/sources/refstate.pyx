@@ -1,5 +1,5 @@
 
-cdef long long findzstate(_np.ndarray[basis_type,ndim=1] A,long long N, state_type s):
+cdef long long findzstate(basis_type * A,long long N, state_type s):
 	cdef state_type  A_1
 	cdef long long bmin, bmax, b
 
@@ -18,7 +18,7 @@ cdef long long findzstate(_np.ndarray[basis_type,ndim=1] A,long long N, state_ty
 	return -1
 
 
-cdef void RefState_P_template(bitop fliplr,state_type s,int L,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_P_template(bitop fliplr,state_type s,int L,basis_type * R):
 	cdef state_type t
 
 	R[0] = s
@@ -42,7 +42,7 @@ cdef void RefState_P_template(bitop fliplr,state_type s,int L,_np.ndarray[basis_
 
 
 
-cdef void RefState_Z_template(bitop fliplr,state_type s,int L,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_Z_template(bitop fliplr,state_type s,int L,basis_type * R):
 	R[0] = s
 	R[1] = 0
 
@@ -57,7 +57,7 @@ cdef void RefState_Z_template(bitop fliplr,state_type s,int L,_np.ndarray[basis_
 
 
 
-cdef void RefState_ZA_template(bitop flip_sublat_A,state_type s,int L,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_ZA_template(bitop flip_sublat_A,state_type s,int L,basis_type * R):
 	R[0] = s
 	R[1] = 0
 
@@ -70,7 +70,7 @@ cdef void RefState_ZA_template(bitop flip_sublat_A,state_type s,int L,_np.ndarra
 	return
 
 
-cdef void RefState_ZB_template(bitop flip_sublat_B,state_type s,int L,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_ZB_template(bitop flip_sublat_B,state_type s,int L,basis_type * R):
 	R[0] = s
 	R[1] = 0
 
@@ -83,7 +83,7 @@ cdef void RefState_ZB_template(bitop flip_sublat_B,state_type s,int L,_np.ndarra
 	return
 
 
-cdef void RefState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,state_type s,int L,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,state_type s,int L,basis_type * R):
 	R[0] = s
 	R[1] = 0
 	R[2] = 0
@@ -113,7 +113,7 @@ cdef void RefState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop 
 	return
 
 
-cdef void RefState_PZ_template(bitop fliplr,bitop flip_all,state_type s,int L, _np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_PZ_template(bitop fliplr,bitop flip_all,state_type s,int L, basis_type * R):
 	cdef state_type t
 
 	R[0] = s
@@ -134,7 +134,7 @@ cdef void RefState_PZ_template(bitop fliplr,bitop flip_all,state_type s,int L, _
 
 
 
-cdef void RefState_P_Z_template(bitop fliplr,bitop flip_all,state_type s,int L, _np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_P_Z_template(bitop fliplr,bitop flip_all,state_type s,int L, basis_type * R):
 	cdef state_type t,r
 
 	R[0] = s
@@ -170,7 +170,7 @@ cdef void RefState_P_Z_template(bitop fliplr,bitop flip_all,state_type s,int L, 
 
 
 
-cdef void RefState_T_template(shifter shift,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_template(shifter shift,state_type s,int L,int T,basis_type * R):
 	cdef int i
 	cdef state_type r,t
 
@@ -192,7 +192,7 @@ cdef void RefState_T_template(shifter shift,state_type s,int L,int T,_np.ndarray
 
 
 
-cdef void RefState_T_Z_template(shifter shift,bitop flip_all,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_Z_template(shifter shift,bitop flip_all,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,g
 	cdef state_type r,t
 
@@ -222,7 +222,7 @@ cdef void RefState_T_Z_template(shifter shift,bitop flip_all,state_type s,int L,
 
 
 
-cdef void RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,gA
 	cdef state_type r,t
 
@@ -251,7 +251,7 @@ cdef void RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,state_type s,
 	return
 
 
-cdef void RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,gB
 	cdef state_type r,t
 
@@ -280,7 +280,7 @@ cdef void RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,state_type s,
 	return
 
 
-cdef void RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,flip_all,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,flip_all,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,gA,gB
 	cdef state_type r,t
 
@@ -324,7 +324,7 @@ cdef void RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip
 
 
 
-cdef void RefState_T_P_template(shifter shift,bitop fliplr,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_P_template(shifter shift,bitop fliplr,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,q
 	cdef state_type r,t
 
@@ -363,7 +363,7 @@ cdef void RefState_T_P_template(shifter shift,bitop fliplr,state_type s,int L,in
 
 
 
-cdef void RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,state_type s,int L,int T,basis_type * R):
 	cdef int i
 	cdef state_type r,t,l,qg
 
@@ -402,7 +402,7 @@ cdef void RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,state
 
 
 
-cdef void RefState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,state_type s,int L,int T,_np.ndarray[basis_type,ndim=1] R):
+cdef void RefState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,q,g
 	cdef state_type r,t
 

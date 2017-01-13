@@ -106,14 +106,14 @@ def {type_code}_t_p_z_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,
 	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
 		for i in range(Ns):
 			s = row[i]
-			RefState_T_P_Z_template(shift,fliplr,flip_all,s,L,a,R)
+			RefState_T_P_Z_template(shift,fliplr,flip_all,s,L,a,&R[0])
 
 			s = R[0]
 			l = R[1]
 			q = R[2]
 			g = R[3]
 
-			ss = findzstate(basis,Ns,s)
+			ss = findzstate(&basis[0],Ns,s)
 			row[i] = ss
 
 			if ss == -1:
@@ -133,14 +133,14 @@ def {type_code}_t_p_z_op(_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,
 				o = 1
 
 			s = row[i]
-			RefState_T_P_Z_template(shift,fliplr,flip_all,s,L,a,R)
+			RefState_T_P_Z_template(shift,fliplr,flip_all,s,L,a,&R[0])
 
 			s = R[0]
 			l = R[1]
 			q = R[2]
 			g = R[3]
 
-			ss = findzstate(basis,Ns,s)
+			ss = findzstate(&basis[0],Ns,s)
 
 			if ss == -1:
 				for j in range(i,i+o,1):

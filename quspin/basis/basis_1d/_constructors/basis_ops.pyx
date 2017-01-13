@@ -51,31 +51,33 @@ ctypedef _np.uint8_t NP_UINT8_t
 
 
 ctypedef fused index_type:
-	NP_INT32_t
-	NP_INT64_t
+	int
+	long
+	long long
 
 ctypedef fused basis_type:
-	NP_UINT32_t
-	NP_UINT64_t
+	unsigned int
+	unsigned long
+	unsigned long long
+
+ctypedef long double longdouble
 
 ctypedef fused matrix_type:
-	NP_FLOAT32_t
-	NP_FLOAT64_t
-	NP_COMPLEX64_t
-	NP_COMPLEX128_t
-
-ctypedef fused complex_type:
-	NP_COMPLEX64_t
-	NP_COMPLEX128_t
-
-ctypedef _np.uint64_t state_type
-
+	float
+	double
+	long double
+	float complex
+	double complex
+	long double complex
+	
+ctypedef unsigned long long state_type
+ctypedef long double complex scalar_type
 
 ctypedef state_type (*bitop)(state_type, int)
 ctypedef state_type (*shifter)(state_type, int, int)
 ctypedef state_type (*ns_type)(state_type)
-ctypedef int (*op_type)(state_type, basis_type*, int, str, NP_INT32_t*, complex_type,
-						index_type*, matrix_type*, complex_type)
+ctypedef int (*op_type)(state_type, basis_type*, int, str, NP_INT32_t*,scalar_type,
+						index_type*, matrix_type*)
 
 
 
@@ -87,7 +89,6 @@ cdef extern from "sources/complex_ops.h":
 include "sources/bitops.pyx"
 include "sources/refstate.pyx"
 include "sources/checkstate.pyx"
-include "sources/spinop.pyx"
 
 # basis sources
 
@@ -110,7 +111,9 @@ include "sources/basis/t_p_z_basis.pyx"
 
 # op sources
 include "sources/op/spinop.pyx"
-include "sources/op/m_op.pyx"
+include "sources/op/op.pyx"
+include "sources/op/n_op.pyx"
+#include "sources/op/m_op.pyx"
 include "sources/op/z_op.pyx"
 include "sources/op/zA_op.pyx"
 include "sources/op/zB_op.pyx"
