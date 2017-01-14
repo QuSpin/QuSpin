@@ -71,7 +71,7 @@ def spin_op(_np.ndarray[index_type,ndim=1] row,_np.ndarray[matrix_type,ndim=1] M
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,**blocks):
     cdef state_type Ns = basis.shape[0]
-    return op[basis_type,index_type,matrix_type](spin_op_func,Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
+    return op_template[basis_type,index_type,matrix_type](spin_op_func,Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
 
 # magnetization 
 def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] basis):
@@ -89,7 +89,7 @@ def spin_m_op(_np.ndarray[index_type,ndim=1] row,_np.ndarray[matrix_type,ndim=1]
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,**blocks):
     cdef state_type Ns = basis.shape[0]
-    return n_op[basis_type,index_type,matrix_type](spin_op_func,Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
+    return n_op_template[basis_type,index_type,matrix_type](spin_op_func,Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
 
 
 # parity 
@@ -117,7 +117,7 @@ def spin_p_op(_np.ndarray[index_type,ndim=1] row,_np.ndarray[matrix_type,ndim=1]
             _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef state_type Ns = basis.shape[0]
     cdef int pblock = blocks["pblock"]
-    return p_op[basis_type,index_type,matrix_type](spin_op_func,fliplr,L,pblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
+    return p_op_template[basis_type,index_type,matrix_type](spin_op_func,fliplr,L,pblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
 
 
 
@@ -139,6 +139,14 @@ def spin_p_z_basis(int L, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] 
 
     return make_p_z_basis_template[basis_type](fliplr,flip_all,next_state_inc_1,MAX,s,L,pblock,zblock,&N[0],&basis[0])
 
+def spin_p_z_op(_np.ndarray[index_type,ndim=1] row,_np.ndarray[matrix_type,ndim=1] ME,
+            str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
+            _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
+    cdef state_type Ns = basis.shape[0]
+    cdef int pblock = blocks["pblock"]
+    cdef int zblock = blocks["zblock"]
+    return p_z_op_template[basis_type,index_type,matrix_type](spin_op_func,fliplr,flip_all,L,pblock,zblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
+
 
 # (parity)*(spin inversion)
 def spin_m_pz_basis(int L, int Nup, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
@@ -155,6 +163,13 @@ def spin_pz_basis(int L, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarr
     cdef state_type s=0
     cdef state_type MAX=1ull<<L
     return make_pz_basis_template[basis_type](fliplr,flip_all,next_state_inc_1,MAX,s,L,pzblock,&N[0],&basis[0])
+
+def spin_pz_op(_np.ndarray[index_type,ndim=1] row,_np.ndarray[matrix_type,ndim=1] ME,
+            str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
+            _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
+    cdef state_type Ns = basis.shape[0]
+    cdef int pzblock = blocks["pzblock"]
+    return pz_op_template[basis_type,index_type,matrix_type](spin_op_func,fliplr,flip_all,L,pzblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
 
 
 # translation

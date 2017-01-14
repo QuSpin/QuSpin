@@ -6,7 +6,8 @@ cimport numpy as _np
 
 import numpy as _np
 from scipy.misc import comb
-from libc.math cimport sin,cos,abs,sqrt
+from libc.math cimport sin,cos,sqrt
+from numpy.math cimport sinl,cosl,sqrtl
 from libcpp cimport bool
 from libc.stdlib cimport malloc, free
 from cpython.string cimport PyString_AsString
@@ -14,10 +15,6 @@ from cpython.string cimport PyString_AsString
 
 _np.import_array()
 
-#if hasattr(_np,"float128"):
-#	NP_FLOAT128 = _np.float128
-#if hasattr(_np,"complex256"):
-#	NP_COMPLEX256 = _np.complex256
 
 NP_INT64 = _np.int64
 NP_INT32 = _np.int32
@@ -52,23 +49,23 @@ ctypedef _np.uint8_t NP_UINT8_t
 
 ctypedef fused index_type:
 	int
-	long
-	long long
+#	long
+#	long long
 
 ctypedef fused basis_type:
 	unsigned int
-	unsigned long
-	unsigned long long
+#	unsigned long
+#	unsigned long long
 
 ctypedef long double longdouble
 
 ctypedef fused matrix_type:
 	float
 	double
-	long double
+#	long double
 	float complex
 	double complex
-	long double complex
+#	long double complex
 	
 ctypedef unsigned long long state_type
 ctypedef long double complex scalar_type

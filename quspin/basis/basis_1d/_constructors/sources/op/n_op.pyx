@@ -1,5 +1,5 @@
 
-cdef int n_op(op_type op_func, state_type Ns, basis_type *basis,
+cdef int n_op_template(op_type op_func, state_type Ns, basis_type *basis,
 			str opstr, NP_INT32_t *indx, scalar_type J, index_type *row, matrix_type *ME):
 	cdef long long s
 	cdef int error = 0
