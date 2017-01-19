@@ -280,7 +280,7 @@ cdef void RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,state_type s,
 	return
 
 
-cdef void RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,flip_all,state_type s,int L,int T,basis_type * R):
+cdef void RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,state_type s,int L,int T,basis_type * R):
 	cdef int i,l,gA,gB
 	cdef state_type r,t
 

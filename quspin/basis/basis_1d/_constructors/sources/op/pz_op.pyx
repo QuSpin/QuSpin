@@ -6,17 +6,16 @@
 
 
 
-cdef int pz_op_template(op_type op_func,bitop fliplr,bitop flip_all,int L,int pzblock, state_type Ns,
+cdef int pz_op_template(op_type op_func,bitop fliplr,bitop flip_all,int L,int pzblock, index_type Ns,
 						NP_INT8_t *N, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
 						index_type *row, matrix_type *ME):
-	cdef state_type s,i
-	cdef long long ss
+	cdef state_type s
+	cdef index_type ss,i
 	cdef int error,qg
-	cdef int N_op = len(opstr)
 	cdef basis_type[2] R
 	cdef long double n
 
-	error = op_func(Ns,&basis[0],N_op,opstr,&indx[0],J,&row[0],&ME[0])
+	error = op_func(Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
 
 	if error != 0:
 		return error

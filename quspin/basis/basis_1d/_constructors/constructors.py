@@ -81,81 +81,6 @@ def op_m(opstr,indx,J,dtype,basis,**blocks):
 
 
 
-def op_z(opstr,indx,J,dtype,basis,L,**blocks):
-	zblock=blocks.get("zblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_z_op"]
-
-	row,ME,error = compiled_op(basis,opstr,indx,J,L,zblock)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
-
-def op_zA(opstr,indx,J,dtype,basis,L,**blocks):
-	zAblock=blocks.get("zAblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_zA_op"]
-
-	row,ME,error = compiled_op(basis,opstr,indx,J,L,zAblock)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
-
-
-def op_zB(opstr,indx,J,dtype,basis,L,**blocks):
-	zBblock=blocks.get("zBblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_zB_op"]
-
-	row,ME,error = compiled_op(basis,opstr,indx,J,L,zBblock)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
-
-
-
 def op_p(opstr,indx,J,dtype,N,basis,L,**blocks):
 	pblock=blocks.get("pblock")
 	pauli=blocks.get("pauli")
@@ -250,40 +175,18 @@ def op_p_z(opstr,indx,J,dtype,N,basis,L,**blocks):
 
 
 
-
-def op_zA_zB(opstr,indx,J,dtype,N,basis,L,**blocks):
-	zAblock=blocks.get("zAblock")
-	zBblock=blocks.get("zBblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_zA_zB_op"]
-	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,zAblock,zBblock)
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-
-	return ME,row,col
-
-
 def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
-	a=blocks.get("a")
-	kblock=blocks.get("kblock")
 	pauli=blocks.get("pauli")
 
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_op"]
-	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,kblock,a)
+#	a=blocks.get("a")
+#	kblock=blocks.get("kblock")
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_op"]
+#	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,kblock,a)
+	row = _np.zeros_like(basis,dtype=_index_type)
+	ME = _np.zeros_like(basis,dtype=dtype)
+
+	error = basis_ops.spin_t_op(row,ME,opstr,indx,J,N,basis,L,**blocks)
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 	col = _np.arange(len(basis),dtype=_index_type)
@@ -301,109 +204,6 @@ def op_t(opstr,indx,J,dtype,N,basis,L,**blocks):
 	return ME,row,col
 
 
-
-
-def op_t_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
-	a=blocks.get("a")
-	kblock=blocks.get("kblock")
-	zblock=blocks.get("zblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_z_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zblock,kblock,a)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
-
-def op_t_zA(opstr,indx,J,dtype,N,m,basis,L,**blocks):
-	a=blocks.get("a")
-	kblock=blocks.get("kblock")
-	zAblock=blocks.get("zAblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_zA_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zAblock,kblock,a)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
-
-def op_t_zB(opstr,indx,J,dtype,N,m,basis,L,**blocks):
-	a=blocks.get("a")
-	kblock=blocks.get("kblock")
-	zBblock=blocks.get("zBblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_zB_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zBblock,kblock,a)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
-
-def op_t_zA_zB(opstr,indx,J,dtype,N,m,basis,L,**blocks):
-	a=blocks.get("a")
-	kblock=blocks.get("kblock")
-	zAblock=blocks.get("zAblock")
-	zBblock=blocks.get("zBblock")
-	pauli=blocks.get("pauli")
-
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_zA_zB_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zAblock,zBblock,kblock,a)
-
-	if error != 0: raise OpstrError(_basis_op_errors[error])
-
-	col = _np.arange(len(basis),dtype=_index_type)
-
-	mask = row >= 0
-	col = col[ mask ]
-	row = row[ mask ]
-	ME = ME[ mask ]
-
-	if not pauli:
-		Nop = len(opstr.replace("I",""))
-		ME /= 2.0**(Nop)
-
-
-	return ME,row,col
 
 
 def op_t_p(opstr,indx,J,dtype,N,m,basis,L,**blocks):
@@ -412,9 +212,15 @@ def op_t_p(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	pblock=blocks.get("pblock")
 	pauli=blocks.get("pauli")
 
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_p_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pblock,kblock,a)
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_p_op"]
+#	row_old,ME_old,error = compiled_op(N,m,basis,opstr,indx,J,L,pblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(2*Ns,dtype=_index_type)
+	ME = _np.zeros(2*Ns,dtype=dtype)
+	error = basis_ops.spin_t_p_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -441,9 +247,15 @@ def op_t_pz(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	pzblock=blocks.get("pzblock")
 	pauli=blocks.get("pauli")
 
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_pz_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pzblock,kblock,a)
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_pz_op"]
+#	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pzblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(2*Ns,dtype=_index_type)
+	ME = _np.zeros(2*Ns,dtype=dtype)
+	error = basis_ops.spin_t_pz_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
@@ -470,14 +282,21 @@ def op_t_p_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	zblock=blocks.get("zblock")
 	pauli=blocks.get("pauli")
 
-	char = _dtype(dtype).char
-	compiled_op = basis_ops.__dict__[char+"_t_p_z_op"]
-	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pblock,zblock,kblock,a)
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_p_z_op"]
+#	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,pblock,zblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(2*Ns,dtype=_index_type)
+	ME = _np.zeros(2*Ns,dtype=dtype)
+	error = basis_ops.spin_t_p_z_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
 
 	if error != 0: raise OpstrError(_basis_op_errors[error])
 
 	col = _np.arange(len(basis),dtype=_index_type)
-	col=_np.concatenate((col,col))
+
+	col = _np.concatenate((col,col))
 
 	mask = row >= 0
 	col = col[ mask ]
@@ -491,4 +310,259 @@ def op_t_p_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
 	return ME,row,col
 
 
+
+
+
+def op_t_z(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zblock=blocks.get("zblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_z_op"]
+#	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_t_z_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
+def op_t_zA(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zAblock=blocks.get("zAblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_zA_op"]
+#	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zAblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_t_zA_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
+def op_t_zB(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_zB_op"]
+#	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zBblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_t_zB_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
+def op_t_zA_zB(opstr,indx,J,dtype,N,m,basis,L,**blocks):
+	a=blocks.get("a")
+	kblock=blocks.get("kblock")
+	zAblock=blocks.get("zAblock")
+	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_t_zA_zB_op"]
+#	row,ME,error = compiled_op(N,m,basis,opstr,indx,J,L,zAblock,zBblock,kblock,a)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_t_zA_zB_op(row,ME,opstr,indx,J,N,m,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
 	
+
+
+
+
+
+def op_z(opstr,indx,J,dtype,basis,L,**blocks):
+	zblock=blocks.get("zblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_z_op"]
+#	row,ME,error = compiled_op(basis,opstr,indx,J,L,zblock)
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_z_op(row,ME,opstr,indx,J,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
+def op_zA(opstr,indx,J,dtype,basis,L,**blocks):
+	zAblock=blocks.get("zAblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_zA_op"]
+#	row,ME,error = compiled_op(basis,opstr,indx,J,L,zAblock)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_zA_op(row,ME,opstr,indx,J,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
+
+def op_zB(opstr,indx,J,dtype,basis,L,**blocks):
+	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_zB_op"]
+#	row,ME,error = compiled_op(basis,opstr,indx,J,L,zBblock)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_zB_op(row,ME,opstr,indx,J,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+	return ME,row,col
+
+
+
+
+
+def op_zA_zB(opstr,indx,J,dtype,N,basis,L,**blocks):
+	zAblock=blocks.get("zAblock")
+	zBblock=blocks.get("zBblock")
+	pauli=blocks.get("pauli")
+
+#	char = _dtype(dtype).char
+#	compiled_op = basis_ops.__dict__[char+"_zA_zB_op"]
+#	row,ME,error = compiled_op(N,basis,opstr,indx,J,L,zAblock,zBblock)
+
+	Ns = basis.shape[0]
+	row = _np.zeros(Ns,dtype=_index_type)
+	ME = _np.zeros(Ns,dtype=dtype)
+	error = basis_ops.spin_zA_zB_op(row,ME,opstr,indx,J,basis,L,**blocks)
+
+
+	if error != 0: raise OpstrError(_basis_op_errors[error])
+
+	col = _np.arange(len(basis),dtype=_index_type)
+	mask = row >= 0
+	col = col[ mask ]
+	row = row[ mask ]
+	ME = ME[ mask ]
+
+	if not pauli:
+		Nop = len(opstr.replace("I",""))
+		ME /= 2.0**(Nop)
+
+
+
+	return ME,row,col
+

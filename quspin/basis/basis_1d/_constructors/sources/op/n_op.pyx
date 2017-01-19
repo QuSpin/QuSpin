@@ -1,10 +1,10 @@
 
-cdef int n_op_template(op_type op_func, state_type Ns, basis_type *basis,
+cdef int n_op_template(op_type op_func, index_type Ns, basis_type *basis,
 			str opstr, NP_INT32_t *indx, scalar_type J, index_type *row, matrix_type *ME):
-	cdef long long s
+	cdef index_type i
+	cdef state_type s
 	cdef int error = 0
-	cdef int N_op = len(opstr)
-	error = op_func(Ns,&basis[0],N_op,opstr,&indx[0],J,&row[0],&ME[0])
+	error = op_func(Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
 
 	if error != 0:
 		return error
