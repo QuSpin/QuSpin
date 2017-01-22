@@ -1,4 +1,4 @@
-cdef state_type make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_all,ns_type next_state,
+cdef state_type make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_all,ns_type next_state, void *ns_pars,
 											state_type MAX,state_type s,
 											int L,int pzblock,int kblock,int a,
 											NP_INT8_t*N,NP_INT8_t*m,basis_type*basis):
@@ -8,7 +8,7 @@ cdef state_type make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_a
 	cdef state_type i
 	cdef int sigma,sigma_i,sigma_f
 	cdef NP_INT8_t r_temp,r,mpz
-	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(2,dtype=NP_INT8)
+	cdef NP_INT8_t R[2]
 	cdef int j
 	
 	k = 2.0*_np.pi*kblock*a/L
@@ -22,7 +22,7 @@ cdef state_type make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_a
 
 	Ns = 0
 	for i in range(MAX):
-		CheckState_T_PZ_template(shift,fliplr,flip_all,kblock,L,s,a,R)
+		CheckState_T_PZ_template(shift,fliplr,flip_all,kblock,L,s,a,R,ns_pars)
 		r = R[0]
 		mpz = R[1]
 		if r > 0:
@@ -46,6 +46,6 @@ cdef state_type make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_a
 					basis[Ns] = s
 					Ns += 1
 
-		s = next_state(s)
+		s = next_state(s,ns_pars)
 
 	return Ns

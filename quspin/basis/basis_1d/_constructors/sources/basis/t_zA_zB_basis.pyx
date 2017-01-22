@@ -1,6 +1,6 @@
 
 cdef state_type make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,
-												bitop flip_all,ns_type next_state,
+												bitop flip_all,ns_type next_state, void *ns_pars,
 												state_type MAX,state_type s,
 												int L,int zAblock,int zBblock,int kblock,int a,
 												NP_INT8_t*N,NP_INT16_t*m,basis_type*basis): 
@@ -8,14 +8,14 @@ cdef state_type make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bi
 	cdef state_type Ns
 	cdef NP_INT8_t mzA,mzB,mz,r
 	cdef state_type i
-	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
+	cdef NP_INT8_t R[4]
 	cdef int j
 	
 	k = 2.0*_np.pi*kblock*a/L
 	Ns = 0
 	
 	for i in range(MAX):
-		CheckState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,kblock,L,s,a,R)
+		CheckState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,kblock,L,s,a,R,ns_pars)
 		r = R[0]
 		mzA = R[1]
 		mzB = R[2]
@@ -49,6 +49,6 @@ cdef state_type make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bi
 					basis[Ns] = s
 					Ns += 1
 		
-		s = next_state(s)
+		s = next_state(s,ns_pars)
 				
 	return Ns

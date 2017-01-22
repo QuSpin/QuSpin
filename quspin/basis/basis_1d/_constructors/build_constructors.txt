@@ -1,0 +1,7 @@
+#first cythonize the basis_ops.pyx
+
+python setup.py build_templates
+
+#Next build the extension module
+
+python setup.py build_ext -i

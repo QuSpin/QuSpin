@@ -22,38 +22,55 @@ if hasattr(_np,"float128"): _dtypes["g"]=_np.float128
 if hasattr(_np,"complex256"): _dtypes["G"]=_np.complex256
 
 
-op={"":_cn.op,
-	"M":_cn.op_m,
-	"Z":_cn.op_z,
-	"ZA":_cn.op_zA,
-	"ZB":_cn.op_zB,
-	"ZA & ZB":_cn.op_zA_zB,
-	"M & Z":_cn.op_z,
-	"M & ZA":_cn.op_zA,
-	"M & ZB":_cn.op_zB,
-	"M & ZA & ZB":_cn.op_zA_zB,
-	"P":_cn.op_p,
-	"M & P":_cn.op_p,
-	"PZ":_cn.op_pz,
-	"M & PZ":_cn.op_pz,
-	"P & Z":_cn.op_p_z,
-	"M & P & Z":_cn.op_p_z,
-	"T":_cn.op_t,
-	"M & T":_cn.op_t,
-	"T & Z":_cn.op_t_z,
-	"T & ZA":_cn.op_t_zA,
-	"T & ZB":_cn.op_t_zB,
-	"T & ZA & ZB":_cn.op_t_zA_zB,
-	"M & T & Z":_cn.op_t_z,
-	"M & T & ZA":_cn.op_t_zA,
-	"M & T & ZB":_cn.op_t_zB,
-	"M & T & ZA & ZB":_cn.op_t_zA_zB,
-	"T & P":_cn.op_t_p,
-	"M & T & P":_cn.op_t_p,
-	"T & PZ":_cn.op_t_pz,
-	"M & T & PZ":_cn.op_t_pz,
-	"T & P & Z":_cn.op_t_p_z,
-	"M & T & P & Z":_cn.op_t_p_z
+_basis_op_errors={1:"opstr character not recognized.",
+				-1:"attemping to use real hamiltonian with complex matrix elements.",
+				-2:"index of operator not between 0 <= index <= L-1"}
+
+
+
+class OpstrError(Exception):
+	# this class defines an exception which can be raised whenever there is some sort of error which we can
+	# see will obviously break the code. 
+	def __init__(self,message):
+		self.message=message
+	def __str__(self):
+		return self.message
+
+
+
+
+op={"":_cn.spin_op,
+	"M":_cn.spin_m_op,
+	"Z":_cn.spin_z_op,
+	"ZA":_cn.spin_zA_op,
+	"ZB":_cn.spin_zB_op,
+	"ZA & ZB":_cn.spin_zA_zB_op,
+	"M & Z":_cn.spin_z_op,
+	"M & ZA":_cn.spin_zA_op,
+	"M & ZB":_cn.spin_zB_op,
+	"M & ZA & ZB":_cn.spin_zA_zB_op,
+	"P":_cn.spin_p_op,
+	"M & P":_cn.spin_p_op,
+	"PZ":_cn.spin_pz_op,
+	"M & PZ":_cn.spin_pz_op,
+	"P & Z":_cn.spin_p_z_op,
+	"M & P & Z":_cn.spin_p_z_op,
+	"T":_cn.spin_t_op,
+	"M & T":_cn.spin_t_op,
+	"T & Z":_cn.spin_t_z_op,
+	"T & ZA":_cn.spin_t_zA_op,
+	"T & ZB":_cn.spin_t_zB_op,
+	"T & ZA & ZB":_cn.spin_t_zA_zB_op,
+	"M & T & Z":_cn.spin_t_z_op,
+	"M & T & ZA":_cn.spin_t_zA_op,
+	"M & T & ZB":_cn.spin_t_zB_op,
+	"M & T & ZA & ZB":_cn.spin_t_zA_zB_op,
+	"T & P":_cn.spin_t_p_op,
+	"M & T & P":_cn.spin_t_p_op,
+	"T & PZ":_cn.spin_t_pz_op,
+	"M & T & PZ":_cn.spin_t_pz_op,
+	"T & P & Z":_cn.spin_t_p_z_op,
+	"M & T & P & Z":_cn.spin_t_p_z_op
 	}
 
 class spin_basis_1d(basis):
@@ -152,7 +169,12 @@ class spin_basis_1d(basis):
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-		if L>32: raise NotImplementedError('basis can only be constructed for L<=32')
+		if L <= 32: 
+			self._basis_type = _np.uint32
+		elif L <= 64:
+			self._basis_type = _np.uint64
+		else:
+			raise NotImplementedError('basis can only be constructed for L<=64')
 
 		if type(a) is not int:
 			raise TypeError('a must be integer')
@@ -202,20 +224,27 @@ class spin_basis_1d(basis):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
-			Nup_tup = Nup
-			if Nup is not None:
-				if Nup > L//2: Nup_tup = L - Nup
+#			Nup_tup = Nup
+#			if Nup is not None:
+#				if Nup > L//2: Nup_tup = L - Nup
 			 
 				
 
-			if kblock > L//(2*a): kblock_tup = L//a - kblock
-			else: kblock_tup = kblock
+#			if kblock > L//(2*a): kblock_tup = L//a - kblock
+#			else: kblock_tup = kblock
+#			self._Ns = kblock_Ns.get((L,a,Nup_tup,kblock_tup))
+#			if self._Ns is None:
+#				self._Ns = 1
+		if type(Nup) is int:
+			self._Ns = comb(L,Nup,exact=True)
+		else:
+			self._Ns = (1 << L)
 
-			self._Ns = kblock_Ns.get((L,a,Nup_tup,kblock_tup))
 
-			if self._Ns is None:
-				self._Ns = 1
-		
+		if type(kblock) is int:
+			self._Ns = _cn.kblock_Ns_estimate(self._Ns,L,a)
+
+
 
 		# shout out if pblock and zA/zB blocks defined simultaneously
 		if type(pblock) is int and ((type(zAblock) is int) or (type(zBblock) is int)):
@@ -253,7 +282,6 @@ class spin_basis_1d(basis):
 		# allocates memory for number of basis states
 		frac = 1.0
 
-		self._basis_type = _np.uint32
 		self._unique_me = True	
 		
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
@@ -420,15 +448,13 @@ class spin_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
 				self._Ns = _cn.spin_m_zA_zB_basis(L,Nup,self._basis)
 			else:
 				self._Ns = _cn.spin_zA_zB_basis(L,self._basis)
 
-			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._basis,self._L]
+			self._op_args=[self._basis,self._L]
 
 
 
@@ -527,10 +553,11 @@ class spin_basis_1d(basis):
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 				_cn.spin_m_basis(L,Nup,self._Ns,self._basis)
 			else:
-				self._basis = _np.arange(0,2**L,1,dtype=self._basis_type)
+				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
 
 		if count_spins: self._Np = _np.full_like(self._basis,Nup,dtype=_np.int8)
+		self._index_type = (_np.int32 if _np.can_cast(_np.min_scalar_type(-self.Ns),_np.int32) else _np.int64)
 
 
 
@@ -640,11 +667,25 @@ class spin_basis_1d(basis):
 		if self._Ns <= 0:
 			return [],[],[]
 
-		ME,row,col = op[self._conserved](opstr,indx,J,dtype,*self._op_args,**self._blocks)
-		mask = ME != 0.0
-		row = row[mask]
-		col = col[mask]
-		ME = ME[mask]
+		pauli = self._blocks['pauli']
+
+		N_op = _cn.op_array_size[self._conserved]*self.Ns
+		col = _np.zeros(N_op,dtype=self._index_type)
+		row = _np.zeros(N_op,dtype=self._index_type)
+		ME = _np.zeros(N_op,dtype=dtype)
+
+		error = op[self._conserved](row,col,ME,opstr,indx,J,*self._op_args,**self._blocks)
+
+		if error != 0: raise OpstrError(_basis_op_errors[error])
+
+		mask = row >= 0
+		col = col[ mask ]
+		row = row[ mask ]
+		ME = ME[ mask ]
+
+		if not pauli:
+			Nop = len(opstr.replace("I",""))
+			ME /= (1 << Nop)
 
 		return ME,row,col		
 

@@ -1,5 +1,5 @@
 
-cdef state_type make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next_state,
+cdef state_type make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next_state, void *ns_pars,
 												state_type MAX,state_type s,
 												int L, int pblock, int zblock, int kblock, int a,
 												NP_INT8_t*N, NP_INT16_t*m, basis_type*basis):
@@ -8,7 +8,7 @@ cdef state_type make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type nex
 	cdef state_type i
 	cdef NP_INT8_t r,r_temp,mp,mz,mpz
 	cdef int sigma,sigma_i,sigma_f
-	cdef _np.ndarray[NP_INT8_t,ndim=1] R = _np.zeros(4,dtype=NP_INT8)
+	cdef NP_INT8_t R[4]
 
 	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
 		sigma_i = 1
@@ -20,7 +20,7 @@ cdef state_type make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type nex
 	cdef int j
 
 	for i in range(MAX):
-		CheckState_T_P_Z_template(shift,fliplr,flip_all,kblock,L,s,a,R)
+		CheckState_T_P_Z_template(shift,fliplr,flip_all,kblock,L,s,a,R,ns_pars)
 		r = R[0]
 		mp = R[1]
 		mz = R[2]
@@ -79,6 +79,6 @@ cdef state_type make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type nex
 						basis[Ns] = s
 						Ns += 1
 
-		s = next_state(s)
+		s = next_state(s,ns_pars)
 
 	return Ns

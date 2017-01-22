@@ -50,9 +50,9 @@ cdef long double MatrixElement_P(int L,int pblock, int kblock, int a, int l, lon
 
 
 
-cdef int t_p_op_template(op_type op_func,shifter shift,bitop fliplr,int L,int kblock,int pblock,int a, index_type Ns,
+cdef int t_p_op_template(op_type op_func,void *op_pars,shifter shift,bitop fliplr,void *ref_pars,int L,int kblock,int pblock,int a, index_type Ns,
 						NP_INT8_t *N, NP_INT8_t *m, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, matrix_type *ME):
+						index_type *row, index_type *col, matrix_type *ME):
 	cdef state_type s
 	cdef index_type ss,i,j,o,p,c,b,l,q
 	cdef int error
@@ -61,7 +61,7 @@ cdef int t_p_op_template(op_type op_func,shifter shift,bitop fliplr,int L,int kb
 
 	cdef long double k = (2.0*_np.pi*kblock*a)/L
 
-	error = op_func(Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0])
+	error = op_func(Ns,&basis[0],opstr,&indx[0],J,&row[0],&ME[0],op_pars)
 
 	if error != 0:
 		return error
@@ -69,12 +69,14 @@ cdef int t_p_op_template(op_type op_func,shifter shift,bitop fliplr,int L,int kb
 	for i in range(Ns):
 		ME[Ns+i] = ME[i]
 		row[Ns+i] = -1
+		col[i] = i
+		col[Ns+i] = i
 
 
 	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
 		for i in range(Ns):
 			s = row[i]
-			RefState_T_P_template(shift,fliplr,s,L,a,&R[0])
+			RefState_T_P_template(shift,fliplr,s,L,a,&R[0],ref_pars)
 
 			s = R[0]
 			l = R[1]
@@ -100,7 +102,7 @@ cdef int t_p_op_template(op_type op_func,shifter shift,bitop fliplr,int L,int kb
 				o = 1
 
 			s = row[i]
-			RefState_T_P_template(shift,fliplr,s,L,a,&R[0])
+			RefState_T_P_template(shift,fliplr,s,L,a,&R[0],ref_pars)
 
 			s = R[0]
 			l = R[1]

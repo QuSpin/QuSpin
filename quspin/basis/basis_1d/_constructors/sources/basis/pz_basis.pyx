@@ -1,5 +1,5 @@
 
-cdef state_type make_pz_basis_template(bitop fliplr,bitop flip_all,ns_type next_state,
+cdef state_type make_pz_basis_template(bitop fliplr,bitop flip_all,ns_type next_state, void *ns_pars,
 										state_type MAX,state_type s,int L, int pzblock,
 										NP_INT8_t * N, basis_type * basis):
 	cdef state_type Ns
@@ -8,12 +8,12 @@ cdef state_type make_pz_basis_template(bitop fliplr,bitop flip_all,ns_type next_
 
 	Ns = 0
 	for i in range(MAX):
-		rpz = CheckState_PZ_template(fliplr,flip_all,pzblock,s,L)
+		rpz = CheckState_PZ_template(fliplr,flip_all,pzblock,s,L,ns_pars)
 		if rpz > 0:
 			basis[Ns] = s
 			N[Ns] = rpz
 			Ns += 1
 		
-		s = next_state(s)
+		s = next_state(s,ns_pars)
 
 	return Ns

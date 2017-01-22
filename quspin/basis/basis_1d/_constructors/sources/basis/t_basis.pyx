@@ -1,5 +1,5 @@
 
-cdef state_type make_t_basis_template(shifter shift,ns_type next_state,
+cdef state_type make_t_basis_template(shifter shift,ns_type next_state, void *ns_pars,
 										state_type MAX,state_type s,int L,
 										int kblock,int a,NP_INT8_t * N, basis_type * basis):
 	cdef state_type Ns
@@ -8,12 +8,12 @@ cdef state_type make_t_basis_template(shifter shift,ns_type next_state,
 
 	Ns = 0
 	for i in range(MAX):
-		r=CheckState_T_template(shift,kblock,L,s,a)
+		r=CheckState_T_template(shift,kblock,L,s,a,ns_pars)
 		if r > 0:
 			N[Ns] = r				
 			basis[Ns] = s
 			Ns += 1		
-		
-		s = next_state(s)
+
+		s = next_state(s,ns_pars)
 
 	return Ns
