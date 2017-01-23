@@ -2,7 +2,7 @@
 def hcb_m_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef int j
-    cdef state_type MAX = Ns
+    cdef state_type MAX = comb(L,Nup,exact=True)
     s = 0
     for j in range(Nup):
         s += ( 1ull << j )
