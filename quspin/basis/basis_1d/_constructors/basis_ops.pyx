@@ -149,3 +149,7 @@ include "sources/op/t_p_z_op.pyx"
 include "sources/spin_ops.pyx"
 include "sources/spin_basis.pyx"
 
+# impliment templates for hard-core bosons
+include "sources/hcb_ops.pyx"
+include "sources/hcb_basis.pyx"
+

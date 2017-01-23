@@ -1,7 +1,7 @@
-#first cythonize the basis_ops.pyx
+#first cythonize the basis_ops.pyx from ../_constructors
 
 python setup.py build_templates
 
-#Next build the extension module
+#Next build the extension module; -i puts all binaries in current directory
 
 python setup.py build_ext -i
