@@ -18,7 +18,7 @@ col=np.zeros_like(row)
 ME=np.zeros_like(row,dtype=np.float32) # need to change to np.complex64 for cpx symmetries
 
 opstr='xz' # a single string
-indx=np.array([1,2],dtype=np.int32)
+indx=np.array([1,2],dtype=np.int32) # opstr acts at
 J=1.0 # scalar arguments are taken care of automatically by cython
 
 basis=np.arange(Ns,dtype=np.uint32) # unsigned integers 32
