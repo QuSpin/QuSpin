@@ -13,7 +13,7 @@ cdef int hcb_op_func(index_type Ns, basis_type *basis,
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
 
     cdef char I = "I"
-    cdef char x = "n"
+    cdef char n = "n"
     cdef char z = "z"
     cdef char p = "+"
     cdef char m = "-"
@@ -26,13 +26,13 @@ cdef int hcb_op_func(index_type Ns, basis_type *basis,
         
         for j in range(N_indx-1,-1,-1): #loop over the copstr
 
-            b = ( 1ull << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+            b = ( 1ull << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbit
             a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
 
             if c_opstr[j] == I:
                 continue
             elif c_opstr[j] == z:
-                M_E *= (1.0 if a else -1.0)
+                M_E *= (0.5 if a else -0.5)
             elif c_opstr[j] == n:
                 M_E *= (1.0 if a else 0.0)
             elif c_opstr[j] == p:

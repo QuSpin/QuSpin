@@ -9,6 +9,8 @@ from scipy.misc import comb
 1) start from spin_basis and re-write functions for hb (should be the same)
 2) create the hcb_ops.pyx
 3) in basis_ops.pyx add "include ..." in the end
+
+1) m->n, z -> ph
 """
 
 ## w/o symmetries: use full basis
@@ -48,7 +50,7 @@ print(error)
 Nup=L/2
 print(basis)
 pblock=1
-Ns_m_p=basis_ops.hcb_m_p_basis(L,Nup,pblock,Ns,basis)
+Ns_m_p=basis_ops.hcb_m_p_basis(L,Nup,pblock,N,basis)
 print(Ns_m_p)
 basis=basis[:Ns_m_p]
 print(basis)
