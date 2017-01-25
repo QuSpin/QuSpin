@@ -29,7 +29,7 @@ cdef int fermion_op_func(index_type Ns, basis_type *basis,
             b = ( 1ull << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbit
             a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
             # calculate fermionic ME sign
-            if bit_count(indx[j],indx[-1]+1) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
+            if bit_count(r,indx[j]-1) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
                 sign=1
             else:
                 sign=-1
