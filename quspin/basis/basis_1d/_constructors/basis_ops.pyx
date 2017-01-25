@@ -153,3 +153,7 @@ include "sources/spin_basis.pyx"
 include "sources/hcb_ops.pyx"
 include "sources/hcb_basis.pyx"
 
+# impliment templates for spinless fermions
+include "sources/fermion_ops.pyx"
+include "sources/fermion_basis.pyx"
+
