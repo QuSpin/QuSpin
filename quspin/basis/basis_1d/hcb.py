@@ -39,41 +39,41 @@ class OpstrError(Exception):
 
 
 
-op={"":_cn.spin_op,
-	"M":_cn.spin_n_op,
-	"Z":_cn.spin_z_op,
-	"ZA":_cn.spin_zA_op,
-	"ZB":_cn.spin_zB_op,
-	"ZA & ZB":_cn.spin_zA_zB_op,
-	"M & Z":_cn.spin_z_op,
-	"M & ZA":_cn.spin_zA_op,
-	"M & ZB":_cn.spin_zB_op,
-	"M & ZA & ZB":_cn.spin_zA_zB_op,
-	"P":_cn.spin_p_op,
-	"M & P":_cn.spin_p_op,
-	"PZ":_cn.spin_pz_op,
-	"M & PZ":_cn.spin_pz_op,
-	"P & Z":_cn.spin_p_z_op,
-	"M & P & Z":_cn.spin_p_z_op,
-	"T":_cn.spin_t_op,
-	"M & T":_cn.spin_t_op,
-	"T & Z":_cn.spin_t_z_op,
-	"T & ZA":_cn.spin_t_zA_op,
-	"T & ZB":_cn.spin_t_zB_op,
-	"T & ZA & ZB":_cn.spin_t_zA_zB_op,
-	"M & T & Z":_cn.spin_t_z_op,
-	"M & T & ZA":_cn.spin_t_zA_op,
-	"M & T & ZB":_cn.spin_t_zB_op,
-	"M & T & ZA & ZB":_cn.spin_t_zA_zB_op,
-	"T & P":_cn.spin_t_p_op,
-	"M & T & P":_cn.spin_t_p_op,
-	"T & PZ":_cn.spin_t_pz_op,
-	"M & T & PZ":_cn.spin_t_pz_op,
-	"T & P & Z":_cn.spin_t_p_z_op,
-	"M & T & P & Z":_cn.spin_t_p_z_op
+op={"":_cn.hcb_op,
+	"M":_cn.hcb_n_op,
+	"Z":_cn.hcb_z_op,
+	"ZA":_cn.hcb_zA_op,
+	"ZB":_cn.hcb_zB_op,
+	"ZA & ZB":_cn.hcb_zA_zB_op,
+	"M & Z":_cn.hcb_z_op,
+	"M & ZA":_cn.hcb_zA_op,
+	"M & ZB":_cn.hcb_zB_op,
+	"M & ZA & ZB":_cn.hcb_zA_zB_op,
+	"P":_cn.hcb_p_op,
+	"M & P":_cn.hcb_p_op,
+	"PZ":_cn.hcb_pz_op,
+	"M & PZ":_cn.hcb_pz_op,
+	"P & Z":_cn.hcb_p_z_op,
+	"M & P & Z":_cn.hcb_p_z_op,
+	"T":_cn.hcb_t_op,
+	"M & T":_cn.hcb_t_op,
+	"T & Z":_cn.hcb_t_z_op,
+	"T & ZA":_cn.hcb_t_zA_op,
+	"T & ZB":_cn.hcb_t_zB_op,
+	"T & ZA & ZB":_cn.hcb_t_zA_zB_op,
+	"M & T & Z":_cn.hcb_t_z_op,
+	"M & T & ZA":_cn.hcb_t_zA_op,
+	"M & T & ZB":_cn.hcb_t_zB_op,
+	"M & T & ZA & ZB":_cn.hcb_t_zA_zB_op,
+	"T & P":_cn.hcb_t_p_op,
+	"M & T & P":_cn.hcb_t_p_op,
+	"T & PZ":_cn.hcb_t_pz_op,
+	"M & T & PZ":_cn.hcb_t_pz_op,
+	"T & P & Z":_cn.hcb_t_p_z_op,
+	"M & T & P & Z":_cn.hcb_t_p_z_op
 	}
 
-class spin_basis_1d(basis):
+class hcb_basis_1d(basis):
 	def __init__(self,L,Nup=None,_Np=None,**blocks):
 
 		if blocks.get("a") is None: # by default a = 1
@@ -84,7 +84,7 @@ class spin_basis_1d(basis):
 			blocks["pauli"] = True
 
 		input_keys = set(blocks.keys())
-		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","pauli","a","count_spins","check_z_symm","L"])
+		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_spins","check_c_symm","L"])
 		if not input_keys <= expected_keys:
 			wrong_keys = expected_keys - input_keys 
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -102,20 +102,20 @@ class spin_basis_1d(basis):
 					raise ValueError("Np must be integer")
 
 				if _Np == -1: 
-					spin_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
+					hcb_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
 				elif _Np >= 0:
 					if _Np+1 > L: _Np = L
 					blocks["count_spins"] = True
 
-					zblock = blocks.get("zblock")
-					zAblock = blocks.get("zAblock")
-					zBblock = blocks.get("zAblock")
+					cblock = blocks.get("cblock")
+					cAblock = blocks.get("cAblock")
+					cBblock = blocks.get("cAblock")
 				
-					if (type(zblock) is int) or (type(zAblock) is int) or (type(zBblock) is int):
-						raise ValueError("spin inversion symmetry not compatible with particle conserving photon_basis.")
+					if (type(cblock) is int) or (type(cAblock) is int) or (type(cBblock) is int):
+						raise ValueError("particle-hole symmetry not compatible with particle conserving photon_basis.")
 					
 					# loop over the first Np particle sectors (use the iterator initialization).
-					spin_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
+					hcb_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
@@ -130,14 +130,14 @@ class spin_basis_1d(basis):
 			except TypeError:
 				raise TypeError("Nup must be integer or iteratable object.")
 
-			blocks["check_z_symm"] = False
+			blocks["check_c_symm"] = False
 			Nup = next(Nup_iter)
 #			print Nup
-			spin_basis_1d.__init__(self,L,Nup=Nup,**blocks)
+			hcb_basis_1d.__init__(self,L,Nup=Nup,**blocks)
 
 			for Nup in Nup_iter:
 #				print Nup
-				temp_basis = spin_basis_1d(L,Nup=Nup,**blocks)
+				temp_basis = hcb_basis_1d(L,Nup=Nup,**blocks)
 				self.append(temp_basis)	
 		
 
@@ -149,11 +149,11 @@ class spin_basis_1d(basis):
 		# getting arguments which are used in basis.
 		kwkeys = set(blocks.keys())
 		kblock=blocks.get("kblock")
-		zblock=blocks.get("zblock")
-		zAblock=blocks.get("zAblock")
-		zBblock=blocks.get("zBblock")
+		cblock=blocks.get("cblock")
+		cAblock=blocks.get("cAblock")
+		cBblock=blocks.get("cBblock")
 		pblock=blocks.get("pblock")
-		pzblock=blocks.get("pzblock")
+		pcblock=blocks.get("pcblock")
 		a=blocks.get("a")
 
 
@@ -161,9 +161,9 @@ class spin_basis_1d(basis):
 		if count_spins is None:
 			count_spins=False
 
-		check_z_symm = blocks.get("check_z_symm")
-		if check_z_symm is None:
-			check_z_symm=True
+		check_c_symm = blocks.get("check_c_symm")
+		if check_c_symm is None:
+			check_c_symm=True
 
 
 		if type(L) is not int:
@@ -204,21 +204,21 @@ class spin_basis_1d(basis):
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
 			if abs(pblock) != 1: raise ValueError("pblock must be +/- 1")
 
-		if zblock is not None:
-			if type(zblock) is not int: raise TypeError('zblock must be integer')
-			if abs(zblock) != 1: raise ValueError("zblock must be +/- 1")
+		if cblock is not None:
+			if type(cblock) is not int: raise TypeError('cblock must be integer')
+			if abs(cblock) != 1: raise ValueError("cblock must be +/- 1")
 
-		if zAblock is not None:
-			if type(zAblock) is not int: raise TypeError('zAblock must be integer')
-			if abs(zAblock) != 1: raise ValueError("zAblock must be +/- 1")
+		if cAblock is not None:
+			if type(cAblock) is not int: raise TypeError('cAblock must be integer')
+			if abs(cAblock) != 1: raise ValueError("cAblock must be +/- 1")
 
-		if zBblock is not None:
-			if type(zBblock) is not int: raise TypeError('zBblock must be integer')
-			if abs(zBblock) != 1: raise ValueError("zBblock must be +/- 1")
+		if cBblock is not None:
+			if type(cBblock) is not int: raise TypeError('cBblock must be integer')
+			if abs(cBblock) != 1: raise ValueError("cBblock must be +/- 1")
 
-		if pzblock is not None:
-			if type(pzblock) is not int: raise TypeError('pzblock must be integer')
-			if abs(pzblock) != 1: raise ValueError("pzblock must be +/- 1")
+		if pcblock is not None:
+			if type(pcblock) is not int: raise TypeError('pcblock must be integer')
+			if abs(pcblock) != 1: raise ValueError("pcblock must be +/- 1")
 
 		if kblock is not None and (a < L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
@@ -246,24 +246,24 @@ class spin_basis_1d(basis):
 
 
 
-		# shout out if pblock and zA/zB blocks defined simultaneously
-		if type(pblock) is int and ((type(zAblock) is int) or (type(zBblock) is int)):
-			raise ValueError("zA and zB symmetries incompatible with parity symmetry")
+		# shout out if pblock and cA/cB blocks defined simultaneously
+		if type(pblock) is int and ((type(cAblock) is int) or (type(cBblock) is int)):
+			raise ValueError("cA and cB symmetries incompatible with parity symmetry")
 
-		if check_z_symm:
+		if check_c_symm:
 			blocks["Nup"] = Nup
-			# checking if spin inversion is compatible with Nup and L
-			if (type(Nup) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
+			# checking if particle-hole is compatible with Nup and L
+			if (type(Nup) is int) and ((type(cblock) is int) or (type(pcblock) is int)):
 				if (L % 2) != 0:
-					raise ValueError("spin inversion symmetry with magnetization conservation must be used with even number of sites")
+					raise ValueError("particle-hole symmetry with particla-hole conservation must be used with even number of sites")
 				if Nup != L//2:
-					raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
+					raise ValueError("particle-hole symmetry only reduces the 0 particle-hole sector")
 
-			if (type(Nup) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-				raise ValueError("zA and zB symmetries incompatible with magnetisation symmetry")
+			if (type(Nup) is int) and ((type(cAblock) is int) or (type(cBblock) is int)):
+				raise ValueError("cA and zB symmetries incompatible with particle-hole symmetry")
 
-			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
-			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+			# checking if ZA/ZB particle-hole is compatible with unit cell of translation symemtry
+			if (type(kblock) is int) and ((type(cAblock) is int) or (type(cBblock) is int)):
 				if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
 					raise ValueError("unit cell size 'a' must be even")
 
@@ -271,12 +271,13 @@ class spin_basis_1d(basis):
 
 
 		self._blocks=blocks
-		self._operators = ("availible operators for spin_basis_1d:"+
+		self._operators = ("availible operators for hcb_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
-							"\n\tx: x pauli/spin operator"+
-							"\n\ty: y pauli/spin operator"+
+							"\n\tn: density"+
+#							"\n\tx: x pauli/spin operator"+
+#							"\n\ty: y pauli/spin operator"+
 							"\n\tz: z pauli/spin operator")
 
 		# allocates memory for number of basis states
@@ -284,21 +285,21 @@ class spin_basis_1d(basis):
 
 		self._unique_me = True	
 		
-		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
+		if (type(kblock) is int) and (type(pblock) is int) and (type(cblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & P & Z"
 			else: self._conserved = "T & P & Z"
-			self._blocks["pzblock"] = pblock*zblock
+			self._blocks["pcblock"] = pblock*cblock
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
-			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
+			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
 			if (type(Nup) is int):
-				# arguments get overwritten by _cn.spin_...  
-				self._Ns = _cn.spin_n_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+				# arguments get overwritten by _cn.hcb_...  
+				self._Ns = _cn.hcb_n_t_p_c_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_p_c_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
@@ -306,27 +307,27 @@ class spin_basis_1d(basis):
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
-		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
+		elif (type(kblock) is int) and (type(cAblock) is int) and (type(cBblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZA & ZB"
 			else: self._conserved = "T & ZA & ZB"
-			self._blocks["zblock"] = zAblock*zBblock
+			self._blocks["cblock"] = cAblock*cBblock
 
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_zA_zB_basis(L,Nup,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_cA_cB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_cA_cB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
-		elif (type(kblock) is int) and (type(pzblock) is int):
+		elif (type(kblock) is int) and (type(pcblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & PZ"
 			else: self._conserved = "T & PZ"
@@ -334,11 +335,11 @@ class spin_basis_1d(basis):
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
+			self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_pz_basis(L,Nup,pzblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_pc_basis(L,Nup,pcblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_pz_basis(L,pzblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -355,9 +356,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
 
 			self._N.resize((self._Ns,))
@@ -365,7 +366,7 @@ class spin_basis_1d(basis):
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
-		elif (type(kblock) is int) and (type(zblock) is int):
+		elif (type(kblock) is int) and (type(cblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & Z"
 			else: self._conserved = "T & Z"
@@ -375,9 +376,9 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_z_basis(L,Nup,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_c_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_z_basis(L,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_c_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -385,7 +386,7 @@ class spin_basis_1d(basis):
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
 
-		elif (type(kblock) is int) and (type(zAblock) is int):
+		elif (type(kblock) is int) and (type(cAblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZA"
 			else: self._conserved = "T & ZA"
@@ -395,16 +396,16 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_zA_basis(L,Nup,zAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_cA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_zA_basis(L,zAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_cA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
-		elif (type(kblock) is int) and (type(zBblock) is int):
+		elif (type(kblock) is int) and (type(cBblock) is int):
 			self._k=2*(_np.pi)*a*kblock/L
 			if self._conserved: self._conserved += " & T & ZB"
 			else: self._conserved = "T & ZB"
@@ -414,44 +415,44 @@ class spin_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_zB_basis(L,Nup,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_cB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_zB_basis(L,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_cB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._m,self._basis,self._L]
 
-		elif (type(pblock) is int) and (type(zblock) is int):
+		elif (type(pblock) is int) and (type(cblock) is int):
 			if self._conserved: self._conserved += " & P & Z"
 			else: self._conserved += "P & Z"
-			self._blocks["pzblock"] = pblock*zblock
+			self._blocks["pcblock"] = pblock*cblock
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_p_z_basis(L,Nup,pblock,zblock,self._N,self._basis)
+				self._Ns = _cn.hcb_n_p_c_basis(L,Nup,pblock,cblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_p_z_basis(L,pblock,zblock,self._N,self._basis)
+				self._Ns = _cn.hcb_p_c_basis(L,pblock,cblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._basis,self._L]
 
 
-		elif (type(zAblock) is int) and (type(zBblock) is int):
+		elif (type(cAblock) is int) and (type(cBblock) is int):
 			if self._conserved: self._conserved += " & ZA & ZB"
 			else: self._conserved += "ZA & ZB"
-			self._blocks["zblock"] = zAblock*zBblock
+			self._blocks["cblock"] = cAblock*cBblock
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_zA_zB_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_cA_cB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_zA_zB_basis(L,self._basis)
+				self._Ns = _cn.hcb_cA_cB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -465,9 +466,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_p_basis(L,Nup,pblock,self._N,self._basis)
+				self._Ns = _cn.hcb_n_p_basis(L,Nup,pblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_p_basis(L,pblock,self._N,self._basis)
+				self._Ns = _cn.hcb_p_basis(L,pblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -475,58 +476,58 @@ class spin_basis_1d(basis):
 
 
 
-		elif type(zblock) is int:
+		elif type(cblock) is int:
 			if self._conserved: self._conserved += " & Z"
 			else: self._conserved += "Z"
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_z_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_c_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_z_basis(L,self._basis)
+				self._Ns = _cn.hcb_c_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
 
-		elif type(zAblock) is int:
+		elif type(cAblock) is int:
 			if self._conserved: self._conserved += " & ZA"
 			else: self._conserved += "ZA"
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_zA_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_cA_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_zA_basis(L,self._basis)
+				self._Ns = _cn.hcb_cA_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
 
 
-		elif type(zBblock) is int:
+		elif type(cBblock) is int:
 			if self._conserved: self._conserved += " & ZB"
 			else: self._conserved += "ZB"
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_zB_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_cB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_zB_basis(L,self._basis)
+				self._Ns = _cn.hcb_cB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
 				
-		elif type(pzblock) is int:
+		elif type(pcblock) is int:
 			if self._conserved: self._conserved += " & PZ"
 			else: self._conserved += "PZ"
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_pz_basis(L,Nup,pzblock,self._N,self._basis)
+				self._Ns = _cn.hcb_n_pc_basis(L,Nup,pcblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_pz_basis(L,pzblock,self._N,self._basis)
+				self._Ns = _cn.hcb_pc_basis(L,pcblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -540,9 +541,9 @@ class spin_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
+				self._Ns = _cn.hcb_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_t_basis(L,kblock,a,self._N,self._basis)
+				self._Ns = _cn.hcb_t_basis(L,kblock,a,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -551,7 +552,7 @@ class spin_basis_1d(basis):
 		else: 
 			if type(Nup) is int:
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				_cn.spin_n_basis(L,Nup,self._Ns,self._basis)
+				_cn.hcb_n_basis(L,Nup,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
@@ -562,12 +563,12 @@ class spin_basis_1d(basis):
 
 
 	def append(self,other):
-		if not isinstance(other,spin_basis_1d):
-			raise TypeError("can only append spin_basis_1d object to another")
+		if not isinstance(other,hcb_basis_1d):
+			raise TypeError("can only append hcb_basis_1d object to another")
 		if self._L != other._L:
-			raise ValueError("spin_basis_1d appending incompatible system sizes with: {0} and {1}".format(self._L,other._L))
+			raise ValueError("hcb_basis_1d appending incompatible system sizes with: {0} and {1}".format(self._L,other._L))
 		if self._blocks != other._blocks:
-			raise ValueError("spin_basis_1d appending incompatible blocks: {0} and {1}".format(self._blocks,other._blocks))
+			raise ValueError("hcb_basis_1d appending incompatible blocks: {0} and {1}".format(self._blocks,other._blocks))
 		
 
 		Ns = self._Ns + other._Ns
@@ -635,13 +636,13 @@ class spin_basis_1d(basis):
 		else:
 			symm = "symmetries"
 
-		string = """1d spin 1/2 basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
+		string = """1d hcb 1/2 basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
 		string += self.operators
 		return string 
 
 
 	def __type__(self):
-		return "<type 'qspin.basis.spin_basis_1d'>"
+		return "<type 'qspin.basis.hcb_basis_1d'>"
 
 
 	def __getitem__(self,key):
@@ -695,13 +696,13 @@ class spin_basis_1d(basis):
 		a = self._blocks.get("a")
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
-		zblock = self._blocks.get("zblock")
-		zAblock = self._blocks.get("zAblock")
-		zBblock = self._blocks.get("zBblock")
-		pzblock = self._blocks.get("pzblock")
+		cblock = self._blocks.get("cblock")
+		cAblock = self._blocks.get("cAblock")
+		cBblock = self._blocks.get("cBblock")
+		pcblock = self._blocks.get("pcblock")
 
 
-		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
+		if (type(kblock) is int) and (type(pblock) is int) and (type(cblock) is int):
 			c = _np.empty(self._m.shape,dtype=_np.int8)
 			nn = _np.array(c)
 			mm = _np.array(c)
@@ -720,16 +721,16 @@ class spin_basis_1d(basis):
 			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
 			# c = 3
 			mask = (c == 3)
-			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
+			norm[mask] *= (1.0 + cblock*_np.cos(self._k*nn[mask]))	
 			# c = 4
 			mask = (c == 4)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*mm[mask]))	
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pcblock*_np.cos(self._k*mm[mask]))	
 			# c = 5
 			mask = (c == 5)
 			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
-			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
+			norm[mask] *= (1.0 + cblock*_np.cos(self._k*nn[mask]))	
 			del mask
-		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
+		elif (type(kblock) is int) and (type(cAblock) is int) and (type(cBblock) is int):
 			c = _np.empty(self._m.shape,dtype=_np.int8)
 			mm = _np.array(c)
 			_np.floor_divide(self._m,(self._L+1),c)
@@ -738,13 +739,13 @@ class spin_basis_1d(basis):
 			norm /= self._N
 			# c = 2
 			mask = (c == 2)
-			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*mm[mask]))
+			norm[mask] *= (1.0 + cAblock*_np.cos(self._k*mm[mask]))
 			# c = 3
 			mask = (c == 3)
-			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*mm[mask]))	
+			norm[mask] *= (1.0 + cBblock*_np.cos(self._k*mm[mask]))	
 			# c = 4
 			mask = (c == 4)
-			norm[mask] *= (1.0 + zblock*_np.cos(self._k*mm[mask]))	
+			norm[mask] *= (1.0 + cblock*_np.cos(self._k*mm[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(pblock) is int):
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
@@ -757,7 +758,7 @@ class spin_basis_1d(basis):
 			mask = (self._m >= 0)
 			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*self._m[mask]))
 			del mask
-		elif (type(kblock) is int) and (type(pzblock) is int):
+		elif (type(kblock) is int) and (type(pcblock) is int):
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
 				norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			else:
@@ -766,42 +767,42 @@ class spin_basis_1d(basis):
 			norm /= self._N
 			# m >= 0 
 			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*self._m[mask]))
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pcblock*_np.cos(self._k*self._m[mask]))
 			del mask
-		elif (type(kblock) is int) and (type(zblock) is int):
+		elif (type(kblock) is int) and (type(cblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# m >= 0 
 			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + zblock*_np.cos(self._k*self._m[mask]))
+			norm[mask] *= (1.0 + cblock*_np.cos(self._k*self._m[mask]))
 			del mask
-		elif (type(kblock) is int) and (type(zAblock) is int):
+		elif (type(kblock) is int) and (type(cAblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# m >= 0 
 			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*self._m[mask]))
+			norm[mask] *= (1.0 + cAblock*_np.cos(self._k*self._m[mask]))
 			del mask
-		elif (type(kblock) is int) and (type(zBblock) is int):
+		elif (type(kblock) is int) and (type(cBblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# m >= 0 
 			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*self._m[mask]))
+			norm[mask] *= (1.0 + cBblock*_np.cos(self._k*self._m[mask]))
 			del mask
-		elif (type(pblock) is int) and (type(zblock) is int):
+		elif (type(pblock) is int) and (type(cblock) is int):
 			norm = _np.array(self._N,dtype=dtype)
-		elif (type(zAblock) is int) and (type(zBblock) is int):
+		elif (type(cAblock) is int) and (type(cBblock) is int):
 			norm = _np.full(self._basis.shape,4.0,dtype=dtype)
 		elif (type(pblock) is int):
 			norm = _np.array(self._N,dtype=dtype)
-		elif (type(pzblock) is int):
+		elif (type(pcblock) is int):
 			norm = _np.array(self._N,dtype=dtype)
-		elif (type(zblock) is int):
+		elif (type(cblock) is int):
 			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
-		elif (type(zAblock) is int):
+		elif (type(cAblock) is int):
 			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
-		elif (type(zBblock) is int):
+		elif (type(cBblock) is int):
 			norm = _np.full(self._basis.shape,2.0,dtype=dtype)
 		elif (type(kblock) is int):
 			norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
@@ -844,13 +845,13 @@ class spin_basis_1d(basis):
 		a = self._blocks.get("a")
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
-		zblock = self._blocks.get("zblock")
-		zAblock = self._blocks.get("zAblock")
-		zBblock = self._blocks.get("zBblock")
-		pzblock = self._blocks.get("pzblock")
+		cblock = self._blocks.get("cblock")
+		cAblock = self._blocks.get("cAblock")
+		cBblock = self._blocks.get("cBblock")
+		pcblock = self._blocks.get("pcblock")
 
 
-		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
+		if (type(kblock) is int) and ((type(pblock) is int) or (type(pcblock) is int)):
 			mask = (self._N < 0)
 			ind_neg, = _np.nonzero(mask)
 			mask = (self._N > 0)
@@ -890,12 +891,12 @@ class spin_basis_1d(basis):
 		a = self._blocks.get("a")
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
-		zblock = self._blocks.get("zblock")
-		zAblock = self._blocks.get("zAblock")
-		zBblock = self._blocks.get("zBblock")
-		pzblock = self._blocks.get("pzblock")
+		cblock = self._blocks.get("cblock")
+		cAblock = self._blocks.get("cAblock")
+		cBblock = self._blocks.get("cBblock")
+		pcblock = self._blocks.get("pcblock")
 
-		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
+		if (type(kblock) is int) and ((type(pblock) is int) or (type(pcblock) is int)):
 			mask = (self._N < 0)
 			ind_neg, = _np.nonzero(mask)
 			mask = (self._N > 0)
@@ -1057,10 +1058,10 @@ class spin_basis_1d(basis):
 	def _check_symm(self,static,dynamic,basis=None):
 		kblock = self._blocks.get("kblock")
 		pblock = self._blocks.get("pblock")
-		zblock = self._blocks.get("zblock")
-		pzblock = self._blocks.get("pzblock")
-		zAblock = self._blocks.get("zAblock")
-		zBblock = self._blocks.get("zBblock")
+		cblock = self._blocks.get("cblock")
+		pcblock = self._blocks.get("pcblock")
+		cAblock = self._blocks.get("cAblock")
+		cBblock = self._blocks.get("cBblock")
 		a = self._blocks.get("a")
 		L = self.L
 
@@ -1085,7 +1086,7 @@ class spin_basis_1d(basis):
 			missing_ops = _check.check_P(basis,dynamic_list,L)
 			if missing_ops:	dynamic_blocks["P symm"] = (tuple(missing_ops),)
 
-		if zblock is not None:
+		if cblock is not None:
 			odd_ops,missing_ops = _check.check_Z(basis,static_list)
 			if missing_ops or odd_ops:
 				static_blocks["Z symm"] = (tuple(odd_ops),tuple(missing_ops))
@@ -1094,7 +1095,7 @@ class spin_basis_1d(basis):
 			if missing_ops or odd_ops:
 				dynamic_blocks["Z symm"] = (tuple(odd_ops),tuple(missing_ops))
 
-		if zAblock is not None:
+		if cAblock is not None:
 			odd_ops,missing_ops = _check.check_ZA(basis,static_list)
 			if missing_ops or odd_ops:
 				static_blocks["ZA symm"] = (tuple(odd_ops),tuple(missing_ops))
@@ -1103,7 +1104,7 @@ class spin_basis_1d(basis):
 			if missing_ops or odd_ops:
 				dynamic_blocks["ZA symm"] = (tuple(odd_ops),tuple(missing_ops))
 
-		if zBblock is not None:
+		if cBblock is not None:
 			odd_ops,missing_ops = _check.check_ZB(basis,static_list)
 			if missing_ops or odd_ops:
 				static_blocks["ZB symm"] = (tuple(odd_ops),tuple(missing_ops))
@@ -1112,7 +1113,7 @@ class spin_basis_1d(basis):
 			if missing_ops or odd_ops:
 				dynamic_blocks["ZB symm"] = (tuple(odd_ops),tuple(missing_ops))
 
-		if pzblock is not None:
+		if pcblock is not None:
 			missing_ops = _check.check_PZ(basis,static_list,L)
 			if missing_ops:	static_blocks["PZ symm"] = (tuple(missing_ops),)
 
@@ -1134,10 +1135,10 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	a = blocks.get("a")
 	kblock = blocks.get("kblock")
 	pblock = blocks.get("pblock")
-	zblock = blocks.get("zblock")
-	zAblock = blocks.get("zAblock")
-	zBblock = blocks.get("zBblock")
-	pzblock = blocks.get("pzblock")
+	cblock = blocks.get("cblock")
+	cAblock = blocks.get("cAblock")
+	cBblock = blocks.get("cBblock")
+	pcblock = blocks.get("pcblock")
 
 
 	c = _np.zeros(basis.shape,dtype=v0.dtype)	
@@ -1157,22 +1158,22 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v[basis[ind_pos]] += vc[ind_pos]
 		v[basis[ind_neg]] += vc[ind_neg]
 
-		if type(zAblock) is int:
+		if type(cAblock) is int:
 			flip_sublat_A(basis,L)
-			v[basis[ind_pos]] += vc[ind_pos]*zAblock
-			v[basis[ind_neg]] += vc[ind_neg]*zAblock
+			v[basis[ind_pos]] += vc[ind_pos]*cAblock
+			v[basis[ind_neg]] += vc[ind_neg]*cAblock
 			flip_sublat_A(basis,L)
 		
-		if type(zBblock) is int:
+		if type(cBblock) is int:
 			flip_sublat_B(basis,L)
-			v[basis[ind_pos]] += vc[ind_pos]*zBblock
-			v[basis[ind_neg]] += vc[ind_neg]*zBblock
+			v[basis[ind_pos]] += vc[ind_pos]*cBblock
+			v[basis[ind_neg]] += vc[ind_neg]*cBblock
 			flip_sublat_B(basis,L)
 		
-		if type(zblock) is int:
+		if type(cblock) is int:
 			flipall(basis,L)
-			v[basis[ind_pos]] += vc[ind_pos]*zblock
-			v[basis[ind_neg]] += vc[ind_neg]*zblock
+			v[basis[ind_pos]] += vc[ind_pos]*cblock
+			v[basis[ind_neg]] += vc[ind_neg]*cblock
 			flipall(basis,L)
 
 		if type(pblock) is int:
@@ -1181,11 +1182,11 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			v[basis[ind_neg]] += vc[ind_neg]*pblock
 			fliplr(basis,L)
 
-		if type(pzblock) is int:
+		if type(pcblock) is int:
 			fliplr(basis,L)
 			flipall(basis,L)
-			v[basis[ind_pos]] += vc[ind_pos]*pzblock
-			v[basis[ind_neg]] += vc[ind_neg]*pzblock
+			v[basis[ind_pos]] += vc[ind_pos]*pcblock
+			v[basis[ind_neg]] += vc[ind_neg]*pcblock
 			fliplr(basis,L)
 			flipall(basis,L)
 		
@@ -1203,10 +1204,10 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	a = blocks.get("a")
 	kblock = blocks.get("kblock")
 	pblock = blocks.get("pblock")
-	zblock = blocks.get("zblock")
-	zAblock = blocks.get("zAblock")
-	zBblock = blocks.get("zBblock")
-	pzblock = blocks.get("pzblock")
+	cblock = blocks.get("cblock")
+	cAblock = blocks.get("cAblock")
+	cBblock = blocks.get("cBblock")
+	pcblock = blocks.get("pcblock")
 
 	m = shape[1]
 
@@ -1250,34 +1251,34 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
-		if type(zAblock) is int:
+		if type(cAblock) is int:
 			flip_sublat_A(basis,L)
-			data_pos *= zAblock
-			data_neg *= zAblock
+			data_pos *= cAblock
+			data_neg *= cAblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
-			data_pos *= zAblock
-			data_neg *= zAblock
+			data_pos *= cAblock
+			data_neg *= cAblock
 			flip_sublat_A(basis,L)
 
-		if type(zBblock) is int:
+		if type(cBblock) is int:
 			flip_sublat_B(basis,L)
-			data_pos *= zBblock
-			data_neg *= zBblock
+			data_pos *= cBblock
+			data_neg *= cBblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
-			data_pos *= zBblock
-			data_neg *= zBblock
+			data_pos *= cBblock
+			data_neg *= cBblock
 			flip_sublat_B(basis,L)
 
-		if type(zblock) is int:
+		if type(cblock) is int:
 			flipall(basis,L)
-			data_pos *= zblock
-			data_neg *= zblock
+			data_pos *= cblock
+			data_neg *= cblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
-			data_pos *= zblock
-			data_neg *= zblock
+			data_pos *= cblock
+			data_neg *= cblock
 			flipall(basis,L)
 
 		if type(pblock) is int:
@@ -1290,15 +1291,15 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			data_neg *= pblock
 			fliplr(basis,L)
 
-		if type(pzblock) is int:
+		if type(pcblock) is int:
 			fliplr(basis,L)
 			flipall(basis,L)
-			data_pos *= pzblock
-			data_neg *= pzblock
+			data_pos *= pcblock
+			data_neg *= pcblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
-			data_pos *= pzblock
-			data_neg *= pzblock
+			data_pos *= pcblock
+			data_neg *= pcblock
 			fliplr(basis,L)
 			flipall(basis,L)
 
@@ -1316,10 +1317,10 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 	a = blocks.get("a")
 	kblock = blocks.get("kblock")
 	pblock = blocks.get("pblock")
-	zblock = blocks.get("zblock")
-	zAblock = blocks.get("zAblock")
-	zBblock = blocks.get("zBblock")
-	pzblock = blocks.get("pzblock")
+	cblock = blocks.get("cblock")
+	cAblock = blocks.get("cAblock")
+	cBblock = blocks.get("cBblock")
+	pcblock = blocks.get("pcblock")
 
 
 	if type(kblock) is int:
@@ -1341,34 +1342,34 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 		v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 
-		if type(zAblock) is int:
+		if type(cAblock) is int:
 			flip_sublat_A(basis,L)
-			data_pos *= zAblock
-			data_neg *= zAblock
+			data_pos *= cAblock
+			data_neg *= cAblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
-			data_pos *= zAblock
-			data_neg *= zAblock
+			data_pos *= cAblock
+			data_neg *= cAblock
 			flip_sublat_A(basis,L)
 
-		if type(zBblock) is int:
+		if type(cBblock) is int:
 			flip_sublat_B(basis,L)
-			data_pos *= zBblock
-			data_neg *= zBblock
+			data_pos *= cBblock
+			data_neg *= cBblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
-			data_pos *= zBblock
-			data_neg *= zBblock
+			data_pos *= cBblock
+			data_neg *= cBblock
 			flip_sublat_B(basis,L)
 
-		if type(zblock) is int:
+		if type(cblock) is int:
 			flipall(basis,L)
-			data_pos *= zblock
-			data_neg *= zblock
+			data_pos *= cblock
+			data_neg *= cblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
-			data_pos *= zblock
-			data_neg *= zblock
+			data_pos *= cblock
+			data_neg *= cblock
 			flipall(basis,L)
 
 		if type(pblock) is int:
@@ -1381,15 +1382,15 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 			data_neg *= pblock
 			fliplr(basis,L)
 
-		if type(pzblock) is int:
+		if type(pcblock) is int:
 			fliplr(basis,L)
 			flipall(basis,L)
-			data_pos *= pzblock
-			data_neg *= pzblock
+			data_pos *= pcblock
+			data_neg *= pcblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
-			data_pos *= pzblock
-			data_neg *= pzblock
+			data_pos *= pcblock
+			data_neg *= pcblock
 			fliplr(basis,L)
 			flipall(basis,L)
 
@@ -1454,6 +1455,5 @@ def shiftc(x,shift,period):
 		bitwise_or(x,x1,out=x)
 
 	del x1
-
 
 

@@ -1,7 +1,7 @@
 
 
 # magnetization 
-def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef int j
     cdef state_type MAX = comb(L,Nup,exact=True)
@@ -15,7 +15,7 @@ def spin_m_basis(int L, int Nup, state_type Ns,_np.ndarray[basis_type,ndim=1] ba
 
 
 # parity 
-def spin_m_p_basis(int L,int Nup,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_p_basis(int L,int Nup,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -35,7 +35,7 @@ def spin_p_basis(int L,int pblock,_np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[b
 
 
 # parity-spin inversion
-def spin_m_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
+def spin_n_p_z_basis(int L, int Nup, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -54,7 +54,7 @@ def spin_p_z_basis(int L, int pblock, int zblock, _np.ndarray[NP_INT8_t,ndim=1] 
 
 
 # (parity)*(spin inversion)
-def spin_m_pz_basis(int L, int Nup, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
+def spin_n_pz_basis(int L, int Nup, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -71,7 +71,7 @@ def spin_pz_basis(int L, int pzblock, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarr
 
 
 # translation
-def spin_m_t_basis(int L, int Nup, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_basis(int L, int Nup, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -88,7 +88,7 @@ def spin_t_basis(int L, int kblock,int a, _np.ndarray[NP_INT8_t,ndim=1] N, _np.n
 
 
 # translation-parity
-def spin_m_t_p_basis(int L, int Nup,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_p_basis(int L, int Nup,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -107,7 +107,7 @@ def spin_t_p_basis(int L,int pblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=
 
 
 # translation-parity-spin inversion
-def spin_m_t_p_z_basis(int L, int Nup,int pblock,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_p_z_basis(int L, int Nup,int pblock,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -126,7 +126,7 @@ def spin_t_p_z_basis(int L,int pblock,int zblock,int kblock,int a,_np.ndarray[NP
 
 
 # translation-(parity)*(spin inversion)
-def spin_m_t_pz_basis(int L, int Nup,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_pz_basis(int L, int Nup,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -143,7 +143,7 @@ def spin_t_pz_basis(int L,int pzblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndi
 
 
 # translation-spin inversion
-def spin_m_t_z_basis(int L,int Nup,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_z_basis(int L,int Nup,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -162,7 +162,7 @@ def spin_t_z_basis(int L,int zblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=
 
 
 # translation-spin inversion A
-def spin_m_t_zA_basis(int L, int Nup,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_zA_basis(int L, int Nup,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -180,7 +180,7 @@ def spin_t_zA_basis(int L,int zAblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndi
 
 
 # translation-spin inversion B
-def spin_m_t_zB_basis(int L, int Nup,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_zB_basis(int L, int Nup,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT8_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -199,7 +199,7 @@ def spin_t_zB_basis(int L,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndi
 
 
 # translation-spin inversion A-spin inversion B
-def spin_m_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_t_zA_zB_basis(int L,int Nup,int zAblock,int zBblock,int kblock,int a,_np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[NP_INT16_t,ndim=1] m,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -218,7 +218,7 @@ def spin_t_zA_zB_basis(int L,int zAblock,int zBblock,int kblock,int a,_np.ndarra
 
 
 # spin inversion
-def spin_m_z_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_z_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -237,7 +237,7 @@ def spin_z_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 
 
 # spin inversion A
-def spin_m_zA_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_zA_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -256,7 +256,7 @@ def spin_zA_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 
 
 # spin inversion B
-def spin_m_zB_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_zB_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j
@@ -275,7 +275,7 @@ def spin_zB_basis(int L,_np.ndarray[basis_type,ndim=1] basis):
 
 
 # spin inversion A-spin inversion B
-def spin_m_zA_zB_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
+def spin_n_zA_zB_basis(int L,int Nup,_np.ndarray[basis_type,ndim=1] basis):
     cdef state_type s
     cdef state_type MAX=comb(L,Nup,exact=True)
     cdef int j

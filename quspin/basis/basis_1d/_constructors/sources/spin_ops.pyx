@@ -76,7 +76,7 @@ def spin_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] c
     return op_template[index_type,basis_type,matrix_type](spin_op_func,NULL,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def spin_m_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def spin_n_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,**blocks):
     cdef index_type Ns = basis.shape[0]

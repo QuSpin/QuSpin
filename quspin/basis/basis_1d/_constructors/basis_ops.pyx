@@ -29,19 +29,19 @@ ctypedef _np.uint8_t NP_UINT8_t
 
 ctypedef fused index_type:
 	NP_INT32_t
-#	NP_INT64_t
+	NP_INT64_t
 
 ctypedef fused basis_type:
 	NP_UINT32_t
-#	NP_UINT64_t
+	NP_UINT64_t
 
 ctypedef fused matrix_type:
 	float
-#	double
-#	long double
+	double
+	long double
 	float complex
-#	double complex
-#	long double complex
+	double complex
+	long double complex
 
 	
 ctypedef unsigned long long state_type

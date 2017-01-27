@@ -90,7 +90,7 @@ def fermion_p_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim
     return p_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,fliplr,NULL,L,pblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_p_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_p_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -99,7 +99,7 @@ def fermion_p_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,n
     return p_z_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,fliplr,flip_all,NULL,L,pblock,zblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_pph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_pz_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -128,7 +128,7 @@ def fermion_t_p_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,nd
     return t_p_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,fliplr,NULL,L,kblock,pblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_t_p_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_t_p_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
                 _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -140,7 +140,7 @@ def fermion_t_p_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type
     return t_p_z_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,fliplr,flip_all,NULL,L,kblock,pblock,zblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_t_pph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_t_pz_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -151,7 +151,7 @@ def fermion_t_pph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,
     return t_pz_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,fliplr,flip_all,NULL,L,kblock,pzblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_t_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_t_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -162,7 +162,7 @@ def fermion_t_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,n
     return t_z_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,flip_all,NULL,L,kblock,zblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_t_phA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_t_zA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -173,7 +173,7 @@ def fermion_t_phA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,
     return t_zA_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,flip_sublat_A,NULL,L,kblock,zAblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_t_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_t_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -184,7 +184,7 @@ def fermion_t_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,
     return t_zB_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,flip_sublat_B,NULL,L,kblock,zBblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_t_phA_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_t_zA_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
                 _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -196,7 +196,7 @@ def fermion_t_phA_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_t
     return t_zA_zB_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,shift,flip_sublat_A,flip_sublat_B,flip_all,NULL,L,kblock,zAblock,zBblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -204,7 +204,7 @@ def fermion_ph_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndi
     return z_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,flip_all,NULL,L,zblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_phA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_zA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -212,7 +212,7 @@ def fermion_phA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,nd
     return zA_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,flip_sublat_A,NULL,L,zAblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
@@ -220,7 +220,7 @@ def fermion_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,nd
     return zB_op_template[index_type,basis_type,matrix_type](fermion_op_func,NULL,flip_sublat_B,NULL,L,zBblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
-def fermion_phA_phB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def fermion_zA_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
