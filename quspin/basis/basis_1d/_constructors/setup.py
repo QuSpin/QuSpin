@@ -20,7 +20,6 @@ def cython_files():
 
 
 	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-
 	if USE_CYTHON:
 		cythonize(cython_src,language="c++")
 
