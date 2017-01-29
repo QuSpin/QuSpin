@@ -89,7 +89,7 @@ def hcb_p_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1
             _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
     cdef int pblock = blocks["pblock"]
-    cdef int zblock = blocks["zblock"]
+    cdef int zblock = blocks["cblock"]
     return p_z_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,fliplr,flip_all,NULL,L,pblock,zblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
@@ -97,7 +97,7 @@ def hcb_pz_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1]
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
-    cdef int pzblock = blocks["pzblock"]
+    cdef int pzblock = blocks["pcblock"]
     return pz_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,fliplr,flip_all,NULL,L,pzblock,Ns,&N[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
@@ -128,7 +128,7 @@ def hcb_t_p_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim
     cdef index_type Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
-    cdef int zblock = blocks["zblock"]
+    cdef int zblock = blocks["cblock"]
     cdef int a = blocks["a"]
 
     return t_p_z_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,shift,fliplr,flip_all,NULL,L,kblock,pblock,zblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
@@ -139,7 +139,7 @@ def hcb_t_pz_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int pzblock = blocks["pzblock"]
+    cdef int pzblock = blocks["pcblock"]
     cdef int a = blocks["a"]
 
     return t_pz_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,shift,fliplr,flip_all,NULL,L,kblock,pzblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
@@ -150,7 +150,7 @@ def hcb_t_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zblock = blocks["zblock"]
+    cdef int zblock = blocks["cblock"]
     cdef int a = blocks["a"]
 
     return t_z_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,shift,flip_all,NULL,L,kblock,zblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
@@ -161,7 +161,7 @@ def hcb_t_zA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zAblock = blocks["zAblock"]
+    cdef int zAblock = blocks["cAblock"]
     cdef int a = blocks["a"]
 
     return t_zA_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,shift,flip_sublat_A,NULL,L,kblock,zAblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
@@ -172,7 +172,7 @@ def hcb_t_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=
                 _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zBblock = blocks["zBblock"]
+    cdef int zBblock = blocks["cBblock"]
     cdef int a = blocks["a"]
 
     return t_zB_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,shift,flip_sublat_B,NULL,L,kblock,zBblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
@@ -183,8 +183,8 @@ def hcb_t_zA_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,nd
                 _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef index_type Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zAblock = blocks["zAblock"]
-    cdef int zBblock = blocks["zBblock"]
+    cdef int zAblock = blocks["cAblock"]
+    cdef int zBblock = blocks["cBblock"]
     cdef int a = blocks["a"]
 
     return t_zA_zB_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,shift,flip_sublat_A,flip_sublat_B,flip_all,NULL,L,kblock,zAblock,zBblock,a,Ns,&N[0],&m[0],&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
@@ -194,7 +194,7 @@ def hcb_z_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1] 
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
-    cdef int zblock = blocks["zblock"]
+    cdef int zblock = blocks["cblock"]
     return z_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,flip_all,NULL,L,zblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
@@ -202,7 +202,7 @@ def hcb_zA_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1]
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
-    cdef int zAblock = blocks["zAblock"]
+    cdef int zAblock = blocks["cAblock"]
     return zA_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,flip_sublat_A,NULL,L,zAblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
@@ -210,7 +210,7 @@ def hcb_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim=1]
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
-    cdef int zBblock = blocks["zBblock"]
+    cdef int zBblock = blocks["cBblock"]
     return zB_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,flip_sublat_B,NULL,L,zBblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
@@ -218,8 +218,8 @@ def hcb_zA_zB_op(_np.ndarray[index_type,ndim=1] row, _np.ndarray[index_type,ndim
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef index_type Ns = basis.shape[0]
-    cdef int zBblock = blocks["zBblock"]
-    cdef int zAblock = blocks["zAblock"]
+    cdef int zBblock = blocks["cBblock"]
+    cdef int zAblock = blocks["cAblock"]
     return zA_zB_op_template[index_type,basis_type,matrix_type](hcb_op_func,NULL,flip_sublat_A,flip_sublat_B,flip_all,NULL,L,zAblock,zBblock,Ns,&basis[0],opstr,&indx[0],J,&row[0],&col[0],&ME[0])
 
 
