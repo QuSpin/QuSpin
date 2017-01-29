@@ -20,7 +20,7 @@ import warnings
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 if hasattr(_np,"float128"): _dtypes["g"]=_np.float128
 if hasattr(_np,"complex256"): _dtypes["G"]=_np.complex256
-
+	
 
 _basis_op_errors={1:"opstr character not recognized.",
 				-1:"attemping to use real hamiltonian with complex matrix elements.",
@@ -84,7 +84,7 @@ class hcb_basis_1d(basis):
 			blocks["pauli"] = True
 
 		input_keys = set(blocks.keys())
-		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_spins","check_c_symm","L"])
+		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","pauli","a","count_spins","check_c_symm","L"])
 		if not input_keys <= expected_keys:
 			wrong_keys = expected_keys - input_keys 
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -297,9 +297,9 @@ class hcb_basis_1d(basis):
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
 			if (type(Nup) is int):
 				# arguments get overwritten by _cn.hcb_...  
-				self._Ns = _cn.hcb_n_t_p_c_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_p_z_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_p_c_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
@@ -318,9 +318,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_cA_cB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_zA_zB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_cA_cB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -376,9 +376,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_c_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_z_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_c_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -396,9 +396,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_cA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_zA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_cA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -415,9 +415,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_cB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_zB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_cB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -433,9 +433,9 @@ class hcb_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_p_c_basis(L,Nup,pblock,cblock,self._N,self._basis)
+				self._Ns = _cn.hcb_n_p_z_basis(L,Nup,pblock,cblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.hcb_p_c_basis(L,pblock,cblock,self._N,self._basis)
+				self._Ns = _cn.hcb_p_z_basis(L,pblock,cblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -450,9 +450,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_cA_cB_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_zA_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_cA_cB_basis(L,self._basis)
+				self._Ns = _cn.hcb_zA_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -483,9 +483,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_c_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_z_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_c_basis(L,self._basis)
+				self._Ns = _cn.hcb_z_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -497,9 +497,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_cA_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_zA_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_cA_basis(L,self._basis)
+				self._Ns = _cn.hcb_zA_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -511,9 +511,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_cB_basis(L,Nup,self._basis)
+				self._Ns = _cn.hcb_n_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_cB_basis(L,self._basis)
+				self._Ns = _cn.hcb_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -636,7 +636,7 @@ class hcb_basis_1d(basis):
 		else:
 			symm = "symmetries"
 
-		string = """1d hcb 1/2 basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
+		string = """1d hcb basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
 		string += self.operators
 		return string 
 
@@ -674,7 +674,7 @@ class hcb_basis_1d(basis):
 		col = _np.zeros(N_op,dtype=self._index_type)
 		row = _np.zeros(N_op,dtype=self._index_type)
 		ME = _np.zeros(N_op,dtype=dtype)
-
+		
 		error = op[self._conserved](row,col,ME,opstr,indx,J,*self._op_args,**self._blocks)
 
 		if error != 0: raise OpstrError(_basis_op_errors[error])
@@ -947,6 +947,7 @@ class hcb_basis_1d(basis):
 		return tuple(str_list)
 
 
+	"""
 
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
@@ -1122,6 +1123,7 @@ class hcb_basis_1d(basis):
 
 		return static_blocks,dynamic_blocks
 
+	"""
 
 
 
