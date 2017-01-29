@@ -1,7 +1,7 @@
 
 
 cdef state_type shift(state_type I,int shift,int period,void *pars):
-# this functino is used to shift the bits of an integer by 'shift' bits.
+# this function is used to shift the bits of an integer by 'shift' bits.
 # it is used when constructing the momentum states
 	cdef state_type Imax = ((1llu << period) -1 if period < 64 else ~0llu)
 	cdef int l1,l2
