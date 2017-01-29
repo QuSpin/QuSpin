@@ -39,41 +39,41 @@ class OpstrError(Exception):
 
 
 
-op={"":_cn.hcb_op,
-	"M":_cn.hcb_n_op,
-	"Z":_cn.hcb_z_op,
-	"ZA":_cn.hcb_zA_op,
-	"ZB":_cn.hcb_zB_op,
-	"ZA & ZB":_cn.hcb_zA_zB_op,
-	"M & Z":_cn.hcb_z_op,
-	"M & ZA":_cn.hcb_zA_op,
-	"M & ZB":_cn.hcb_zB_op,
-	"M & ZA & ZB":_cn.hcb_zA_zB_op,
-	"P":_cn.hcb_p_op,
-	"M & P":_cn.hcb_p_op,
-	"PZ":_cn.hcb_pz_op,
-	"M & PZ":_cn.hcb_pz_op,
-	"P & Z":_cn.hcb_p_z_op,
-	"M & P & Z":_cn.hcb_p_z_op,
-	"T":_cn.hcb_t_op,
-	"M & T":_cn.hcb_t_op,
-	"T & Z":_cn.hcb_t_z_op,
-	"T & ZA":_cn.hcb_t_zA_op,
-	"T & ZB":_cn.hcb_t_zB_op,
-	"T & ZA & ZB":_cn.hcb_t_zA_zB_op,
-	"M & T & Z":_cn.hcb_t_z_op,
-	"M & T & ZA":_cn.hcb_t_zA_op,
-	"M & T & ZB":_cn.hcb_t_zB_op,
-	"M & T & ZA & ZB":_cn.hcb_t_zA_zB_op,
-	"T & P":_cn.hcb_t_p_op,
-	"M & T & P":_cn.hcb_t_p_op,
-	"T & PZ":_cn.hcb_t_pz_op,
-	"M & T & PZ":_cn.hcb_t_pz_op,
-	"T & P & Z":_cn.hcb_t_p_z_op,
-	"M & T & P & Z":_cn.hcb_t_p_z_op
+op={"":_cn.fermion_op,
+	"M":_cn.fermion_n_op,
+	"Z":_cn.fermion_z_op,
+	"ZA":_cn.fermion_zA_op,
+	"ZB":_cn.fermion_zB_op,
+	"ZA & ZB":_cn.fermion_zA_zB_op,
+	"M & Z":_cn.fermion_z_op,
+	"M & ZA":_cn.fermion_zA_op,
+	"M & ZB":_cn.fermion_zB_op,
+	"M & ZA & ZB":_cn.fermion_zA_zB_op,
+	"P":_cn.fermion_p_op,
+	"M & P":_cn.fermion_p_op,
+	"PZ":_cn.fermion_pz_op,
+	"M & PZ":_cn.fermion_pz_op,
+	"P & Z":_cn.fermion_p_z_op,
+	"M & P & Z":_cn.fermion_p_z_op,
+	"T":_cn.fermion_t_op,
+	"M & T":_cn.fermion_t_op,
+	"T & Z":_cn.fermion_t_z_op,
+	"T & ZA":_cn.fermion_t_zA_op,
+	"T & ZB":_cn.fermion_t_zB_op,
+	"T & ZA & ZB":_cn.fermion_t_zA_zB_op,
+	"M & T & Z":_cn.fermion_t_z_op,
+	"M & T & ZA":_cn.fermion_t_zA_op,
+	"M & T & ZB":_cn.fermion_t_zB_op,
+	"M & T & ZA & ZB":_cn.fermion_t_zA_zB_op,
+	"T & P":_cn.fermion_t_p_op,
+	"M & T & P":_cn.fermion_t_p_op,
+	"T & PZ":_cn.fermion_t_pz_op,
+	"M & T & PZ":_cn.fermion_t_pz_op,
+	"T & P & Z":_cn.fermion_t_p_z_op,
+	"M & T & P & Z":_cn.fermion_t_p_z_op
 	}
 
-class hcb_basis_1d(basis):
+class fermion_basis_1d(basis):
 	def __init__(self,L,Nup=None,_Np=None,**blocks):
 
 		if blocks.get("a") is None: # by default a = 1
@@ -102,7 +102,7 @@ class hcb_basis_1d(basis):
 					raise ValueError("Np must be integer")
 
 				if _Np == -1: 
-					hcb_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
+					fermion_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
 				elif _Np >= 0:
 					if _Np+1 > L: _Np = L
 					blocks["count_spins"] = True
@@ -115,7 +115,7 @@ class hcb_basis_1d(basis):
 						raise ValueError("particle-hole symmetry not compatible with particle conserving photon_basis.")
 					
 					# loop over the first Np particle sectors (use the iterator initialization).
-					hcb_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
+					fermion_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
@@ -133,11 +133,11 @@ class hcb_basis_1d(basis):
 			blocks["check_c_symm"] = False
 			Nup = next(Nup_iter)
 #			print Nup
-			hcb_basis_1d.__init__(self,L,Nup=Nup,**blocks)
+			fermion_basis_1d.__init__(self,L,Nup=Nup,**blocks)
 
 			for Nup in Nup_iter:
 #				print Nup
-				temp_basis = hcb_basis_1d(L,Nup=Nup,**blocks)
+				temp_basis = fermion_basis_1d(L,Nup=Nup,**blocks)
 				self.append(temp_basis)	
 		
 
@@ -271,7 +271,7 @@ class hcb_basis_1d(basis):
 
 
 		self._blocks=blocks
-		self._operators = ("availible operators for hcb_basis_1d:"+
+		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
@@ -296,10 +296,10 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
 			if (type(Nup) is int):
-				# arguments get overwritten by _cn.hcb_...  
-				self._Ns = _cn.hcb_n_t_p_z_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				# arguments get overwritten by _cn.fermion_...  
+				self._Ns = _cn.fermion_n_t_p_z_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
@@ -318,9 +318,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_zA_zB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_zA_zB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -337,9 +337,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_pc_basis(L,Nup,pcblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_pc_basis(L,Nup,pcblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -356,9 +356,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
 
 			self._N.resize((self._Ns,))
@@ -376,9 +376,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_z_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_z_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -396,9 +396,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_zA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_zA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -415,9 +415,9 @@ class hcb_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_zB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_zB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -433,9 +433,9 @@ class hcb_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_p_z_basis(L,Nup,pblock,cblock,self._N,self._basis)
+				self._Ns = _cn.fermion_n_p_z_basis(L,Nup,pblock,cblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.hcb_p_z_basis(L,pblock,cblock,self._N,self._basis)
+				self._Ns = _cn.fermion_p_z_basis(L,pblock,cblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -450,9 +450,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_zA_zB_basis(L,Nup,self._basis)
+				self._Ns = _cn.fermion_n_zA_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_zA_zB_basis(L,self._basis)
+				self._Ns = _cn.fermion_zA_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -466,9 +466,9 @@ class hcb_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_p_basis(L,Nup,pblock,self._N,self._basis)
+				self._Ns = _cn.fermion_n_p_basis(L,Nup,pblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.hcb_p_basis(L,pblock,self._N,self._basis)
+				self._Ns = _cn.fermion_p_basis(L,pblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -483,9 +483,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_z_basis(L,Nup,self._basis)
+				self._Ns = _cn.fermion_n_z_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_z_basis(L,self._basis)
+				self._Ns = _cn.fermion_z_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -497,9 +497,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_zA_basis(L,Nup,self._basis)
+				self._Ns = _cn.fermion_n_zA_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_zA_basis(L,self._basis)
+				self._Ns = _cn.fermion_zA_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -511,9 +511,9 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_zB_basis(L,Nup,self._basis)
+				self._Ns = _cn.fermion_n_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.hcb_zB_basis(L,self._basis)
+				self._Ns = _cn.fermion_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -525,9 +525,9 @@ class hcb_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_pc_basis(L,Nup,pcblock,self._N,self._basis)
+				self._Ns = _cn.fermion_n_pc_basis(L,Nup,pcblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.hcb_pc_basis(L,pcblock,self._N,self._basis)
+				self._Ns = _cn.fermion_pc_basis(L,pcblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -541,9 +541,9 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
+				self._Ns = _cn.fermion_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
 			else:
-				self._Ns = _cn.hcb_t_basis(L,kblock,a,self._N,self._basis)
+				self._Ns = _cn.fermion_t_basis(L,kblock,a,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -552,7 +552,7 @@ class hcb_basis_1d(basis):
 		else: 
 			if type(Nup) is int:
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				_cn.hcb_n_basis(L,Nup,self._Ns,self._basis)
+				_cn.fermion_n_basis(L,Nup,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
@@ -563,12 +563,12 @@ class hcb_basis_1d(basis):
 
 
 	def append(self,other):
-		if not isinstance(other,hcb_basis_1d):
-			raise TypeError("can only append hcb_basis_1d object to another")
+		if not isinstance(other,fermion_basis_1d):
+			raise TypeError("can only append fermion_basis_1d object to another")
 		if self._L != other._L:
-			raise ValueError("hcb_basis_1d appending incompatible system sizes with: {0} and {1}".format(self._L,other._L))
+			raise ValueError("fermion_basis_1d appending incompatible system sizes with: {0} and {1}".format(self._L,other._L))
 		if self._blocks != other._blocks:
-			raise ValueError("hcb_basis_1d appending incompatible blocks: {0} and {1}".format(self._blocks,other._blocks))
+			raise ValueError("fermion_basis_1d appending incompatible blocks: {0} and {1}".format(self._blocks,other._blocks))
 		
 
 		Ns = self._Ns + other._Ns
@@ -636,13 +636,13 @@ class hcb_basis_1d(basis):
 		else:
 			symm = "symmetries"
 
-		string = """1d hcb basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
+		string = """1d fermion basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
 		string += self.operators
 		return string 
 
 
 	def __type__(self):
-		return "<type 'qspin.basis.hcb_basis_1d'>"
+		return "<type 'qspin.basis.fermion_basis_1d'>"
 
 
 	def __getitem__(self,key):
