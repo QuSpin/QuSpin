@@ -678,10 +678,10 @@ class spin_basis_1d(basis):
 
 		if error != 0: raise OpstrError(_basis_op_errors[error])
 
-		mask = row >= 0
-		col = col[ mask ]
-		row = row[ mask ]
-		ME = ME[ mask ]
+		mask = _np.logical_not(_np.isnan(ME))
+		col = col[mask]
+		row = row[mask]
+		ME = ME[mask]
 
 		if not pauli:
 			Nop = len(opstr.replace("I",""))
