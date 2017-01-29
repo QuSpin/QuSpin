@@ -558,7 +558,7 @@ class fermion_basis_1d(basis):
 			self._op_args=[self._basis]
 
 		if count_spins: self._Np = _np.full_like(self._basis,Nup,dtype=_np.int8)
-		self._index_type = (_np.int32 if _np.can_cast(_np.min_scalar_type(-self.Ns),_np.int32) else _np.int64)
+
 
 
 
@@ -671,8 +671,8 @@ class fermion_basis_1d(basis):
 		pauli = self._blocks['pauli']
 
 		N_op = _cn.op_array_size[self._conserved]*self.Ns
-		col = _np.zeros(N_op,dtype=self._index_type)
-		row = _np.zeros(N_op,dtype=self._index_type)
+		col = _np.zeros(N_op,dtype=self._basis_type)
+		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
 		
 		error = op[self._conserved](row,col,ME,opstr,indx,J,*self._op_args,**self._blocks)

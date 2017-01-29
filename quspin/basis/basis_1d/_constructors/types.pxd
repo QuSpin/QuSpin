@@ -17,11 +17,6 @@ ctypedef _np.uint32_t NP_UINT32_t
 ctypedef _np.uint16_t NP_UINT16_t
 ctypedef _np.uint8_t NP_UINT8_t
 
-
-ctypedef fused index_type:
-	NP_INT32_t
-#	NP_INT64_t
-
 ctypedef fused basis_type:
 	NP_UINT32_t
 #	NP_UINT64_t
@@ -45,7 +40,7 @@ ctypedef basis_type (*bitop)(basis_type, int, void*)
 ctypedef basis_type (*shifter)(basis_type, int, int, void*)
 ctypedef basis_type (*ns_type)(basis_type, void*)
 ctypedef int (*op_type)(npy_intp, basis_type*, str, NP_INT32_t*,scalar_type,
-						index_type*, matrix_type*,void*)
+						basis_type*, matrix_type*,void*)
 
 
 

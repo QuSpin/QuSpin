@@ -1,7 +1,7 @@
 
 
 cdef int op_template(op_type op_func, void *op_pars, npy_intp Ns, basis_type *basis,
-					 str opstr, NP_INT32_t *indx, scalar_type J, index_type *row, index_type *col, matrix_type *ME):
+					 str opstr, NP_INT32_t *indx, scalar_type J, basis_type *row, basis_type *col, matrix_type *ME):
 	cdef npy_intp i
 
 	for i in range(Ns):
@@ -13,7 +13,7 @@ cdef int op_template(op_type op_func, void *op_pars, npy_intp Ns, basis_type *ba
 
 
 cdef int n_op_template(op_type op_func,void *op_pars, npy_intp Ns, basis_type *basis,
-			str opstr, NP_INT32_t *indx, scalar_type J, index_type *row, index_type *col, matrix_type *ME):
+			str opstr, NP_INT32_t *indx, scalar_type J, basis_type *row, basis_type *col, matrix_type *ME):
 	cdef npy_intp i
 	cdef basis_type s
 	cdef int error = 0
@@ -43,7 +43,7 @@ cdef int n_op_template(op_type op_func,void *op_pars, npy_intp Ns, basis_type *b
 
 cdef int p_op_template(op_type op_func,void *op_pars,bitop fliplr,void *ref_pars,int L,int pblock, npy_intp Ns,
 						NP_INT8_t *N, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 
 	cdef basis_type s
 	cdef npy_intp i
@@ -80,7 +80,7 @@ cdef int p_op_template(op_type op_func,void *op_pars,bitop fliplr,void *ref_pars
 
 cdef int pz_op_template(op_type op_func,void *op_pars,bitop fliplr,bitop flip_all,void *ref_pars,int L,int pzblock, npy_intp Ns,
 						NP_INT8_t *N, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,qg
@@ -123,7 +123,7 @@ cdef int pz_op_template(op_type op_func,void *op_pars,bitop fliplr,bitop flip_al
 
 cdef int p_z_op_template(op_type op_func,void *op_pars,bitop fliplr,bitop flip_all,void *ref_pars,int L,int pblock,int zblock, npy_intp Ns,
 						NP_INT8_t *N, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,q,g
@@ -184,7 +184,7 @@ cdef int p_z_op_template(op_type op_func,void *op_pars,bitop fliplr,bitop flip_a
 
 cdef int t_op_template(op_type op_func,void *op_pars,shifter shift,void *ref_pars,int L,int kblock,int a, npy_intp Ns,
 						NP_INT8_t *N, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,l
@@ -284,7 +284,7 @@ cdef long double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, l
 
 cdef int t_p_op_template(op_type op_func,void *op_pars,shifter shift,bitop fliplr,void *ref_pars,int L,int kblock,int pblock,int a, npy_intp Ns,
 						NP_INT8_t *N, NP_INT8_t *m, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i,j,o,p,c,b
 	cdef matrix_type me[2]
@@ -459,7 +459,7 @@ cdef long double MatrixElement_T_P_Z(int L,int pblock, int zblock, int kblock, i
 
 cdef int t_p_z_op_template(op_type op_func,void *op_pars,shifter shift,bitop fliplr,bitop flip_all,void *ref_pars,int L,int kblock,int pblock,int zblock,int a,
 						npy_intp Ns, NP_INT8_t *N, NP_INT16_t *m, basis_type *basis, str opstr, NP_INT32_t *indx,
-						scalar_type J, index_type *row, index_type *col, matrix_type *ME):
+						scalar_type J, basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i,j,o,p,c,b
 	cdef matrix_type me[2]
@@ -612,7 +612,7 @@ cdef long double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l,
 
 cdef int t_pz_op_template(op_type op_func,void *op_pars,shifter shift,bitop fliplr,bitop flip_all,void *ref_pars,int L,int kblock,int pzblock,int a,
 						npy_intp Ns, NP_INT8_t *N, NP_INT8_t *m, basis_type *basis, str opstr, NP_INT32_t *indx,
-						scalar_type J, index_type *row, index_type *col, matrix_type *ME):
+						scalar_type J, basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i,j,o,p,c,b
 	cdef matrix_type me[2]
@@ -738,7 +738,7 @@ cdef long double complex MatrixElement_T_ZA(int L,int zAblock, int kblock, int a
 
 cdef int t_zA_op_template(op_type op_func,void *op_pars,shifter shift,bitop flip_sublat_A,void *ref_pars,int L,int kblock,int zAblock,int a, npy_intp Ns,
 						NP_INT8_t *N, NP_INT8_t *m, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,l,gA
@@ -850,7 +850,7 @@ cdef long double complex MatrixElement_T_ZA_ZB(int L,int zAblock,int zBblock, in
 cdef int t_zA_zB_op_template(op_type op_func,void *op_pars,shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,void *ref_pars,
 						int L,int kblock,int zAblock,int zBblock,int a, npy_intp Ns, NP_INT8_t *N, NP_INT16_t *m,
 						basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,l,gA,gB
@@ -935,7 +935,7 @@ cdef long double complex MatrixElement_T_ZB(int L,int zBblock, int kblock, int a
 
 cdef int t_zB_op_template(op_type op_func,void *op_pars,shifter shift,bitop flip_sublat_B,void *ref_pars,int L,int kblock,int zBblock,int a, npy_intp Ns,
 						NP_INT8_t *N, NP_INT8_t *m, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i 
 	cdef int error,l,gB
@@ -1014,7 +1014,7 @@ cdef long double complex MatrixElement_T_Z(int L,int zblock, int kblock, int a, 
 
 cdef int t_z_op_template(op_type op_func,void *op_pars,shifter shift,bitop flip_all,void *ref_pars,int L,int kblock,int zblock,int a, npy_intp Ns,
 						NP_INT8_t *N, NP_INT8_t *m, basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,l,g
@@ -1069,7 +1069,7 @@ cdef int t_z_op_template(op_type op_func,void *op_pars,shifter shift,bitop flip_
 
 cdef int zA_op_template(op_type op_func, void *op_pars,bitop flip_sublat_A,void *ref_pars,int L,int zAblock, npy_intp Ns,
 						basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,gA
@@ -1105,7 +1105,7 @@ cdef int zA_op_template(op_type op_func, void *op_pars,bitop flip_sublat_A,void 
 cdef int zA_zB_op_template(op_type op_func,void *op_pars,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,void *ref_pars,
 						int L,int zAblock,int zBblock, npy_intp Ns,
 						basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,gA,gB
@@ -1143,7 +1143,7 @@ cdef int zA_zB_op_template(op_type op_func,void *op_pars,bitop flip_sublat_A,bit
 
 cdef int zB_op_template(op_type op_func,void *op_pars,bitop flip_sublat_B,void *ref_pars,int L,int zBblock, npy_intp Ns,
 						basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,gB
@@ -1174,7 +1174,7 @@ cdef int zB_op_template(op_type op_func,void *op_pars,bitop flip_sublat_B,void *
 
 cdef int z_op_template(op_type op_func,void *op_pars,bitop flip_all,void *ref_pars,int L,int zblock, npy_intp Ns,
 						basis_type *basis, str opstr, NP_INT32_t *indx, scalar_type J,
-						index_type *row, index_type *col, matrix_type *ME):
+						basis_type *row, basis_type *col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,g
