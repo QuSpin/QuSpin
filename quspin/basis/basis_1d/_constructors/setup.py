@@ -1,104 +1,6 @@
 
 
-float_type={
-			"type_code":"f",
-			"c_matrix_type":"float",
-			"np_matrix_type":"NP_FLOAT32",
-			"np_complex_type":"NP_COMPLEX64",
-			"c_complex_type":"float complex",
-			"c_float_type":"float",
-			"check_imag":"True"
-			}
 
-double_type={
-				"type_code":"d",
-				"c_matrix_type":"double",
-				"np_matrix_type":"NP_FLOAT64",
-				"np_complex_type":"NP_COMPLEX128",
-				"c_complex_type":"double complex",
-				"c_float_type":"double",
-				"check_imag":"True"
-			}
-
-long_double_type={
-					"type_code":"g",
-					"c_matrix_type":"long double",
-					"np_matrix_type":"NP_FLOAT128",
-					"np_complex_type":"NP_COMPLEX256",
-					"c_complex_type":"long double complex",
-					"c_float_type":"long double",
-					"check_imag":"True"
-				}
-
-
-float_complex_type={
-					"type_code":"F",
-					"c_matrix_type":"float complex",
-					"np_matrix_type":"NP_COMPLEX64",
-					"np_complex_type":"NP_COMPLEX64",
-					"c_complex_type":"float complex",
-					"c_float_type":"float",
-					"check_imag":"False"
-					}
-
-
-double_complex_type={
-					"type_code":"D",
-					"c_matrix_type":"double complex",
-					"np_matrix_type":"NP_COMPLEX128",
-					"np_complex_type":"NP_COMPLEX128",
-					"c_complex_type":"double complex",
-					"c_float_type":"double",
-					"check_imag":"False"
-					}
-
-long_double_complex_type={
-						"type_code":"G",
-						"c_matrix_type":"long double complex",
-						"np_matrix_type":"NP_COMPLEX256",
-						"np_complex_type":"NP_COMPLEX256",
-						"c_complex_type":"long double complex",
-						"c_float_type":"long double",
-						"check_imag":"False"
-						}
-
-
-
-def get_templates(folder,ext):
-	import os,glob
-	package_dir = os.path.dirname(os.path.realpath(__file__))
-	sources_dir = os.path.join(*([package_dir]+folder))
-	sources=glob.glob(os.path.join(sources_dir,"*"+ext))
-
-
-	return sources
-
-
-
-
-
-def basis_ops_gen():
-	import numpy
-
-	matrix_types = [float_type,double_type,float_complex_type,double_complex_type]
-#	if hasattr(numpy,"float128"): # architecture supports long double
-#		matrix_types.append(long_double_type)
-#	if hasattr(numpy,"complex256"): # architecture supports long double complex
-#		matrix_types.append(long_double_complex_type)
-
-	op_templates = get_templates(['sources','op'],".tmp")
-
-
-	for op_template in op_templates:
-		IO = open(op_template,"r")
-		filename = op_template.replace(".tmp","")
-		file_temp_str = IO.read()
-		file_str = ""
-		for replace in matrix_types:
-			file_str += file_temp_str.format(**replace)
-
-		with open(filename,"w") as IO:
-			IO.write(file_str)
 
 
 
@@ -107,7 +9,7 @@ def basis_ops_gen():
 
 
 def cython_files():
-	import os
+	import os,glob
 	try:
 		from Cython.Build import cythonize
 		USE_CYTHON = True
@@ -117,13 +19,12 @@ def cython_files():
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 
 
+	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
 	if USE_CYTHON:
-		basis_ops_gen()
-		cython_src =  os.path.join(package_dir,"basis_ops.pyx")
 		cythonize(cython_src,language="c++")
 
 
-	return  os.path.join(package_dir,"basis_ops.cpp")
+
 		
 
 
@@ -134,8 +35,21 @@ def configuration(parent_package='', top_path=None):
 		config = Configuration('_constructors',parent_package, top_path)
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
-		src = os.path.join(package_dir,"basis_ops.cpp")
-		config.add_extension('basis_ops',sources=src,include_dirs=[numpy.get_include()],
+
+		spin_src = os.path.join(package_dir,"spin_basis_ops.cpp")
+		hcb_src = os.path.join(package_dir,"hcb_basis_ops.cpp")
+		fermion_src = os.path.join(package_dir,"fermion_basis_ops.cpp")	
+		
+
+		config.add_extension('spin_basis_ops',sources=spin_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
+		config.add_extension('hcb_basis_ops',sources=hcb_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
+		config.add_extension('fermion_basis_ops',sources=fermion_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 		return config
