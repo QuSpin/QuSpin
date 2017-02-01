@@ -20,7 +20,7 @@ cdef long long findzstate(basis_type * A,long long N, basis_type s):
 """
 
 
-cdef npy_intp findzstate(basis_type * A,npy_intp N, basis_type s,bool * found):
+cdef npy_intp findzstate(object[basis_type,ndim=1,mode="c"] A,npy_intp N, basis_type s,bool * found):
 	cdef basis_type  A_1
 	cdef npy_intp bmin, bmax, b
 
@@ -41,7 +41,7 @@ cdef npy_intp findzstate(basis_type * A,npy_intp N, basis_type s,bool * found):
 	return 0
 
 
-cdef basis_type RefState_P_template(bitop fliplr,basis_type s,int L, int * R, void *bitop_pars):
+cdef basis_type RefState_P_template(bitop fliplr,basis_type s,int L, int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t
 
 	R[0] = 0
@@ -58,7 +58,7 @@ cdef basis_type RefState_P_template(bitop fliplr,basis_type s,int L, int * R, vo
 
 
 
-cdef basis_type RefState_PZ_template(bitop fliplr,bitop flip_all,basis_type s,int L, int * R, void *bitop_pars):
+cdef basis_type RefState_PZ_template(bitop fliplr,bitop flip_all,basis_type s,int L, int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t
 
 	R[0] = 0
@@ -77,7 +77,7 @@ cdef basis_type RefState_PZ_template(bitop fliplr,bitop flip_all,basis_type s,in
 
 
 
-cdef basis_type RefState_P_Z_template(bitop fliplr,bitop flip_all,basis_type s,int L, int * R, void *bitop_pars):
+cdef basis_type RefState_P_Z_template(bitop fliplr,bitop flip_all,basis_type s,int L, int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t,r
 
 	R[0] = 0
@@ -115,7 +115,7 @@ cdef basis_type RefState_P_Z_template(bitop fliplr,bitop flip_all,basis_type s,i
 
 
 
-cdef basis_type RefState_Z_template(bitop fliplr,basis_type s,int L,int * R, void *bitop_pars):
+cdef basis_type RefState_Z_template(bitop fliplr,basis_type s,int L,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t
 	R[0] = 0
 
@@ -129,7 +129,7 @@ cdef basis_type RefState_Z_template(bitop fliplr,basis_type s,int L,int * R, voi
 
 
 
-cdef basis_type RefState_ZA_template(bitop flip_sublat_A,basis_type s,int L,int * R, void *bitop_pars):
+cdef basis_type RefState_ZA_template(bitop flip_sublat_A,basis_type s,int L,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t
 	R[0] = 0
 
@@ -142,7 +142,7 @@ cdef basis_type RefState_ZA_template(bitop flip_sublat_A,basis_type s,int L,int 
 	return s
 
 
-cdef basis_type RefState_ZB_template(bitop flip_sublat_B,basis_type s,int L,int * R, void *bitop_pars):
+cdef basis_type RefState_ZB_template(bitop flip_sublat_B,basis_type s,int L,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t
 	R[0] = 0
 
@@ -154,7 +154,7 @@ cdef basis_type RefState_ZB_template(bitop flip_sublat_B,basis_type s,int L,int 
 	return s
 
 
-cdef basis_type RefState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L,int * R, void *bitop_pars):
+cdef basis_type RefState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t, r
 
 	R[0] = 0
@@ -184,7 +184,7 @@ cdef basis_type RefState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,
 
 
 
-cdef basis_type RefState_T_template(shifter shift,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_template(shifter shift,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l
 	cdef basis_type r,t
 
@@ -205,7 +205,7 @@ cdef basis_type RefState_T_template(shifter shift,basis_type s,int L,int T,int *
 
 
 
-cdef basis_type RefState_T_Z_template(shifter shift,bitop flip_all,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_Z_template(shifter shift,bitop flip_all,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l,g
 	cdef basis_type r,t
 
@@ -234,7 +234,7 @@ cdef basis_type RefState_T_Z_template(shifter shift,bitop flip_all,basis_type s,
 
 
 
-cdef basis_type RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l,gA
 	cdef basis_type r,t
 
@@ -262,7 +262,7 @@ cdef basis_type RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,basis_t
 	return r
 
 
-cdef basis_type RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l,gB
 	cdef basis_type r,t
 
@@ -290,7 +290,7 @@ cdef basis_type RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,basis_t
 	return r
 
 
-cdef basis_type RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l,gA,gB
 	cdef basis_type r,t
 
@@ -333,7 +333,7 @@ cdef basis_type RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bito
 
 
 
-cdef basis_type RefState_T_P_template(shifter shift,bitop fliplr,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_P_template(shifter shift,bitop fliplr,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l,q
 	cdef basis_type r,t
 
@@ -371,7 +371,7 @@ cdef basis_type RefState_T_P_template(shifter shift,bitop fliplr,basis_type s,in
 
 
 
-cdef basis_type RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i
 	cdef basis_type r,t,l,qg
 
@@ -409,7 +409,7 @@ cdef basis_type RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all
 
 
 
-cdef basis_type RefState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,basis_type s,int L,int T,int * R, void *bitop_pars):
+cdef basis_type RefState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,basis_type s,int L,int T,int * R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int i,l,q,g
 	cdef basis_type r,t
 

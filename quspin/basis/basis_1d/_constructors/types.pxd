@@ -19,7 +19,10 @@ ctypedef _np.uint8_t NP_UINT8_t
 
 ctypedef fused basis_type:
 	NP_UINT32_t
-#	NP_UINT64_t
+	NP_UINT64_t
+	object
+
+
 
 ctypedef fused matrix_type:
 	float
@@ -29,6 +32,8 @@ ctypedef fused matrix_type:
 	double complex
 #	long double complex
 
+
+
 	
 #ctypedef unsigned long long state_type
 #ctypedef unsigned long long loop_type
@@ -36,11 +41,11 @@ ctypedef long double complex scalar_type
 ctypedef long double longdouble
 
 
-ctypedef basis_type (*bitop)(basis_type, int, void*)
-ctypedef basis_type (*shifter)(basis_type, int, int, void*)
-ctypedef basis_type (*ns_type)(basis_type, void*)
-ctypedef int (*op_type)(npy_intp, basis_type*, str, NP_INT32_t*,scalar_type,
-						basis_type*, matrix_type*,void*)
+ctypedef basis_type (*bitop)(basis_type, int, object[basis_type,ndim=1,mode="c"])
+ctypedef basis_type (*shifter)(basis_type, int, int, object[basis_type,ndim=1,mode="c"])
+ctypedef basis_type (*ns_type)(basis_type, object[basis_type,ndim=1,mode="c"])
+ctypedef int (*op_type)(npy_intp, object[basis_type,ndim=1,mode="c"], str, NP_INT32_t*,scalar_type,
+						object[basis_type,ndim=1,mode="c"], matrix_type*,object[basis_type,ndim=1,mode="c"])
 
 
 

@@ -174,7 +174,7 @@ class spin_basis_1d(basis):
 		elif L <= 64:
 			self._basis_type = _np.uint64
 		else:
-			raise NotImplementedError('basis can only be constructed for L<=64')
+			self._basis_type = _np.object
 
 		if type(a) is not int:
 			raise TypeError('a must be integer')

@@ -1,4 +1,4 @@
-
+import numpy as _np
 
 # tells whether or not the inputs into the ops needs Ns or 2*Ns elements
 op_array_size={"":1,

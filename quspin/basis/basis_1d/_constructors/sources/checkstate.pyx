@@ -1,7 +1,7 @@
 
 
 
-cdef NP_INT8_t CheckState_P_template(bitop fliplr,int p, basis_type s, int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_P_template(bitop fliplr,int p, basis_type s, int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 	t=fliplr(t,L,bitop_pars)
 	
@@ -20,7 +20,7 @@ cdef NP_INT8_t CheckState_P_template(bitop fliplr,int p, basis_type s, int L, vo
 
 
 
-cdef NP_INT8_t CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,basis_type s,int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 	
 	t=fliplr(t,L,bitop_pars)
@@ -39,7 +39,7 @@ cdef NP_INT8_t CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,basis_t
 
 
 
-cdef NP_INT8_t CheckState_Z_template(bitop flip_all,basis_type s,int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_Z_template(bitop flip_all,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 
 	t=flip_all(t,L,bitop_pars)
@@ -49,7 +49,7 @@ cdef NP_INT8_t CheckState_Z_template(bitop flip_all,basis_type s,int L, void *bi
 		return -1
 
 
-cdef NP_INT8_t CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_type s,int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef NP_INT8_t rp,rz,rps
 
 	rz = CheckState_Z_template(flip_all,s,L,bitop_pars)
@@ -71,7 +71,7 @@ cdef NP_INT8_t CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,b
 
 
 
-cdef NP_INT8_t CheckState_ZA_template(bitop flip_sublat_A,basis_type s,int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_ZA_template(bitop flip_sublat_A,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 
 	t=flip_sublat_A(t,L,bitop_pars)
@@ -81,7 +81,7 @@ cdef NP_INT8_t CheckState_ZA_template(bitop flip_sublat_A,basis_type s,int L, vo
 		return -1
 
 
-cdef NP_INT8_t CheckState_ZB_template(bitop flip_sublat_B,basis_type s,int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_ZB_template(bitop flip_sublat_B,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 
 	t=flip_sublat_B(t,L,bitop_pars)
@@ -92,7 +92,7 @@ cdef NP_INT8_t CheckState_ZB_template(bitop flip_sublat_B,basis_type s,int L, vo
 
 
 
-cdef NP_INT8_t CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L, void *bitop_pars):
+cdef NP_INT8_t CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t
 
 	t=flip_sublat_A(s,L,bitop_pars)
@@ -115,7 +115,7 @@ cdef NP_INT8_t CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B
 
 
 
-cdef NP_INT8_t CheckState_T_template(shifter shift,int kblock,int L,basis_type s,int T, void *bitop_pars):
+cdef NP_INT8_t CheckState_T_template(shifter shift,int kblock,int L,basis_type s,int T, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -143,7 +143,7 @@ cdef NP_INT8_t CheckState_T_template(shifter shift,int kblock,int L,basis_type s
 
 
 
-cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,basis_type s,int T,NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,basis_type s,int T,NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -186,7 +186,7 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
 
 
 
-cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,int kblock,int L,basis_type s,int T, NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,int kblock,int L,basis_type s,int T, NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -264,7 +264,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
 
 
 
-cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int kblock,int L,basis_type s,int T,NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int kblock,int L,basis_type s,int T,NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -314,7 +314,7 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
 
 
 
-cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,basis_type s,int T,NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,basis_type s,int T,NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -355,7 +355,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
 
 
 
-cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,int L,basis_type s,int T,NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,int L,basis_type s,int T,NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -395,7 +395,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
 	return
 
 
-cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,int L,basis_type s,int T,NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,int L,basis_type s,int T,NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)
@@ -439,7 +439,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
 
 
 
-cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,int kblock,int L,basis_type s,int T,NP_INT8_t *R, void *bitop_pars):
+cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,int kblock,int L,basis_type s,int T,NP_INT8_t *R, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	# this is a function defined in [1]
 	# It is used to check if the integer inputed is a reference state for a state with momentum k.
 	#		kblock: the number associated with the momentum (i.e. k=2*pi*kblock/L)

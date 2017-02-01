@@ -74,7 +74,7 @@ op={"":_cn.hcb_op,
 	}
 
 class hcb_basis_1d(basis):
-	def __init__(self,L,Nup=None,_Np=None,**blocks):
+	def __init__(self,L,Nb=None,_Np=None,**blocks):
 
 		if blocks.get("a") is None: # by default a = 1
 			a=1
@@ -91,18 +91,18 @@ class hcb_basis_1d(basis):
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
  
 
-		if type(Nup) is int:
+		if type(Nb) is int:
 			self._check_pcon=True
-			self._make_Nup_block(L,Nup=Nup,**blocks)
+			self._make_Nb_block(L,Nb=Nb,**blocks)
 	
-		elif Nup is None: # User hasn't specified Nup,
+		elif Nb is None: # User hasn't specified Nb,
 			if _Np is not None: # check to see if photon_basis can create the particle sectors.
 
 				if type(_Np) is not int:
 					raise ValueError("Np must be integer")
 
 				if _Np == -1: 
-					hcb_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
+					hcb_basis_1d.__init__(self,L,Nb=None,_Np=None,**blocks)
 				elif _Np >= 0:
 					if _Np+1 > L: _Np = L
 					blocks["count_spins"] = True
@@ -115,29 +115,29 @@ class hcb_basis_1d(basis):
 						raise ValueError("particle-hole symmetry not compatible with particle conserving photon_basis.")
 					
 					# loop over the first Np particle sectors (use the iterator initialization).
-					hcb_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
+					hcb_basis_1d.__init__(self,L,Nb=range(_Np+1),_Np=None,**blocks)
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 			else: # if _Np is None then assume user wants to not specify Magnetization sector
 				self._check_pcon = False
-				self._make_Nup_block(L,Nup=Nup,**blocks)
+				self._make_Nb_block(L,Nb=Nb,**blocks)
 
 
-		else: # try to interate over Nup 
+		else: # try to interate over Nb 
 			try:
-				Nup_iter = iter(Nup)
+				Nb_iter = iter(Nb)
 			except TypeError:
-				raise TypeError("Nup must be integer or iteratable object.")
+				raise TypeError("Nb must be integer or iteratable object.")
 
 			blocks["check_c_symm"] = False
-			Nup = next(Nup_iter)
-#			print Nup
-			hcb_basis_1d.__init__(self,L,Nup=Nup,**blocks)
+			Nb = next(Nb_iter)
+#			print Nb
+			hcb_basis_1d.__init__(self,L,Nb=Nb,**blocks)
 
-			for Nup in Nup_iter:
-#				print Nup
-				temp_basis = hcb_basis_1d(L,Nup=Nup,**blocks)
+			for Nb in Nb_iter:
+#				print Nb
+				temp_basis = hcb_basis_1d(L,Nb=Nb,**blocks)
 				self.append(temp_basis)	
 		
 
@@ -145,7 +145,7 @@ class hcb_basis_1d(basis):
 				
 
 
-	def _make_Nup_block(self,L,Nup=None,**blocks):
+	def _make_Nb_block(self,L,Nb=None,**blocks):
 		# getting arguments which are used in basis.
 		kwkeys = set(blocks.keys())
 		kblock=blocks.get("kblock")
@@ -169,12 +169,14 @@ class hcb_basis_1d(basis):
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-		if L <= 32: 
-			self._basis_type = _np.uint32
-		elif L <= 64:
-			self._basis_type = _np.uint64
-		else:
-			raise NotImplementedError('basis can only be constructed for L<=64')
+#		if L <= 32: 
+#			self._basis_type = _np.uint32
+#		elif L <= 64:
+#			self._basis_type = _np.uint64
+#		else:
+#			raise NotImplementedError('basis can only be constructed for L<=64')
+		
+		self._basis_type = _cn.hardcore_particle_dtype(L,Nb)
 
 		if type(a) is not int:
 			raise TypeError('a must be integer')
@@ -186,9 +188,9 @@ class hcb_basis_1d(basis):
 
 
 		self._L=L
-		if type(Nup) is int:
+		if type(Nb) is int:
 			self._conserved="M"
-			self._Ns=comb(L,Nup,exact=True)
+			self._Ns=comb(L,Nb,exact=True)
 		else:
 			self._conserved=""
 			self._Ns=2**L
@@ -196,9 +198,9 @@ class hcb_basis_1d(basis):
 
 
 		# checking type, and value of blocks
-		if Nup is not None:
-			if type(Nup) is not int: raise TypeError('Nup must be integer')
-			if Nup < 0 or Nup > L: raise ValueError("0 <= Nup <= %d" % L)
+		if Nb is not None:
+			if type(Nb) is not int: raise TypeError('Nb must be integer')
+			if Nb < 0 or Nb > L: raise ValueError("0 <= Nb <= %d" % L)
 
 		if pblock is not None:
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
@@ -224,19 +226,9 @@ class hcb_basis_1d(basis):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
-#			Nup_tup = Nup
-#			if Nup is not None:
-#				if Nup > L//2: Nup_tup = L - Nup
-			 
-				
 
-#			if kblock > L//(2*a): kblock_tup = L//a - kblock
-#			else: kblock_tup = kblock
-#			self._Ns = kblock_Ns.get((L,a,Nup_tup,kblock_tup))
-#			if self._Ns is None:
-#				self._Ns = 1
-		if type(Nup) is int:
-			self._Ns = comb(L,Nup,exact=True)
+		if type(Nb) is int:
+			self._Ns = comb(L,Nb,exact=True)
 		else:
 			self._Ns = (1 << L)
 
@@ -251,15 +243,15 @@ class hcb_basis_1d(basis):
 			raise ValueError("cA and cB symmetries incompatible with parity symmetry")
 
 		if check_c_symm:
-			blocks["Nup"] = Nup
-			# checking if particle-hole is compatible with Nup and L
-			if (type(Nup) is int) and ((type(cblock) is int) or (type(pcblock) is int)):
+			blocks["Nb"] = Nb
+			# checking if particle-hole is compatible with Nb and L
+			if (type(Nb) is int) and ((type(cblock) is int) or (type(pcblock) is int)):
 				if (L % 2) != 0:
 					raise ValueError("particle-hole symmetry with particla-hole conservation must be used with even number of sites")
-				if Nup != L//2:
+				if Nb != L//2:
 					raise ValueError("particle-hole symmetry only reduces the 0 particle-hole sector")
 
-			if (type(Nup) is int) and ((type(cAblock) is int) or (type(cBblock) is int)):
+			if (type(Nb) is int) and ((type(cAblock) is int) or (type(cBblock) is int)):
 				raise ValueError("cA and zB symmetries incompatible with particle-hole symmetry")
 
 			# checking if ZA/ZB particle-hole is compatible with unit cell of translation symemtry
@@ -295,9 +287,9 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
-			if (type(Nup) is int):
+			if (type(Nb) is int):
 				# arguments get overwritten by _cn.hcb_...  
-				self._Ns = _cn.hcb_n_t_p_z_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.hcb_n_t_p_z_basis(L,Nb,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 
@@ -317,8 +309,8 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_zA_zB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_zA_zB_basis(L,Nb,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 
@@ -336,8 +328,8 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_pc_basis(L,Nup,pcblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_pc_basis(L,Nb,pcblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
 
@@ -355,8 +347,8 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_p_basis(L,Nb,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
@@ -375,8 +367,8 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_z_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_z_basis(L,Nb,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
 
@@ -395,8 +387,8 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_zA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_zA_basis(L,Nb,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
 
@@ -414,8 +406,8 @@ class hcb_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_zB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_zB_basis(L,Nb,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
 
@@ -432,8 +424,8 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_p_z_basis(L,Nup,pblock,cblock,self._N,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_p_z_basis(L,Nb,pblock,cblock,self._N,self._basis)
 			else:
 				self._Ns = _cn.hcb_p_z_basis(L,pblock,cblock,self._N,self._basis)
 
@@ -449,8 +441,8 @@ class hcb_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_zA_zB_basis(L,Nup,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_zA_zB_basis(L,Nb,self._basis)
 			else:
 				self._Ns = _cn.hcb_zA_zB_basis(L,self._basis)
 
@@ -465,8 +457,8 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_p_basis(L,Nup,pblock,self._N,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_p_basis(L,Nb,pblock,self._N,self._basis)
 			else:
 				self._Ns = _cn.hcb_p_basis(L,pblock,self._N,self._basis)
 
@@ -482,8 +474,8 @@ class hcb_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_z_basis(L,Nup,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_z_basis(L,Nb,self._basis)
 			else:
 				self._Ns = _cn.hcb_z_basis(L,self._basis)
 
@@ -496,8 +488,8 @@ class hcb_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_zA_basis(L,Nup,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_zA_basis(L,Nb,self._basis)
 			else:
 				self._Ns = _cn.hcb_zA_basis(L,self._basis)
 
@@ -510,8 +502,8 @@ class hcb_basis_1d(basis):
 			else: self._conserved += "ZB"
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_zB_basis(L,Nup,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_zB_basis(L,Nb,self._basis)
 			else:
 				self._Ns = _cn.hcb_zB_basis(L,self._basis)
 
@@ -524,8 +516,8 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_pc_basis(L,Nup,pcblock,self._N,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_pc_basis(L,Nb,pcblock,self._N,self._basis)
 			else:
 				self._Ns = _cn.hcb_pc_basis(L,pcblock,self._N,self._basis)
 
@@ -540,8 +532,8 @@ class hcb_basis_1d(basis):
 			
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.hcb_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
+			if (type(Nb) is int):
+				self._Ns = _cn.hcb_n_t_basis(L,Nb,kblock,a,self._N,self._basis)
 			else:
 				self._Ns = _cn.hcb_t_basis(L,kblock,a,self._N,self._basis)
 
@@ -550,14 +542,14 @@ class hcb_basis_1d(basis):
 			self._op_args=[self._N,self._basis,self._L]
 
 		else: 
-			if type(Nup) is int:
+			if type(Nb) is int:
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				_cn.hcb_n_basis(L,Nup,self._Ns,self._basis)
+				_cn.hcb_n_basis(L,Nb,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
 
-		if count_spins: self._Np = _np.full_like(self._basis,Nup,dtype=_np.int8)
+		if count_spins: self._Np = _np.full_like(self._basis,Nb,dtype=_np.int8)
 
 
 

@@ -74,7 +74,7 @@ op={"":_cn.fermion_op,
 	}
 
 class fermion_basis_1d(basis):
-	def __init__(self,L,Nup=None,_Np=None,**blocks):
+	def __init__(self,L,Nf=None,_Np=None,**blocks):
 
 		if blocks.get("a") is None: # by default a = 1
 			a=1
@@ -91,18 +91,18 @@ class fermion_basis_1d(basis):
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
  
 
-		if type(Nup) is int:
+		if type(Nf) is int:
 			self._check_pcon=True
-			self._make_Nup_block(L,Nup=Nup,**blocks)
+			self._make_Nf_block(L,Nf=Nf,**blocks)
 	
-		elif Nup is None: # User hasn't specified Nup,
+		elif Nf is None: # User hasn't specified Nf,
 			if _Np is not None: # check to see if photon_basis can create the particle sectors.
 
 				if type(_Np) is not int:
 					raise ValueError("Np must be integer")
 
 				if _Np == -1: 
-					fermion_basis_1d.__init__(self,L,Nup=None,_Np=None,**blocks)
+					fermion_basis_1d.__init__(self,L,Nf=None,_Np=None,**blocks)
 				elif _Np >= 0:
 					if _Np+1 > L: _Np = L
 					blocks["count_spins"] = True
@@ -115,29 +115,29 @@ class fermion_basis_1d(basis):
 						raise ValueError("particle-hole symmetry not compatible with particle conserving photon_basis.")
 					
 					# loop over the first Np particle sectors (use the iterator initialization).
-					fermion_basis_1d.__init__(self,L,Nup=range(_Np+1),_Np=None,**blocks)
+					fermion_basis_1d.__init__(self,L,Nf=range(_Np+1),_Np=None,**blocks)
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 			else: # if _Np is None then assume user wants to not specify Magnetization sector
 				self._check_pcon = False
-				self._make_Nup_block(L,Nup=Nup,**blocks)
+				self._make_Nf_block(L,Nf=Nf,**blocks)
 
 
-		else: # try to interate over Nup 
+		else: # try to interate over Nf 
 			try:
-				Nup_iter = iter(Nup)
+				Nf_iter = iter(Nf)
 			except TypeError:
-				raise TypeError("Nup must be integer or iteratable object.")
+				raise TypeError("Nf must be integer or iteratable object.")
 
 			blocks["check_c_symm"] = False
-			Nup = next(Nup_iter)
-#			print Nup
-			fermion_basis_1d.__init__(self,L,Nup=Nup,**blocks)
+			Nf = next(Nf_iter)
+#			print Nf
+			fermion_basis_1d.__init__(self,L,Nf=Nf,**blocks)
 
-			for Nup in Nup_iter:
-#				print Nup
-				temp_basis = fermion_basis_1d(L,Nup=Nup,**blocks)
+			for Nf in Nf_iter:
+#				print Nf
+				temp_basis = fermion_basis_1d(L,Nf=Nf,**blocks)
 				self.append(temp_basis)	
 		
 
@@ -145,7 +145,7 @@ class fermion_basis_1d(basis):
 				
 
 
-	def _make_Nup_block(self,L,Nup=None,**blocks):
+	def _make_Nf_block(self,L,Nf=None,**blocks):
 		# getting arguments which are used in basis.
 		kwkeys = set(blocks.keys())
 		kblock=blocks.get("kblock")
@@ -174,7 +174,7 @@ class fermion_basis_1d(basis):
 		elif L <= 64:
 			self._basis_type = _np.uint64
 		else:
-			raise NotImplementedError('basis can only be constructed for L<=64')
+			self._basis_type = _np.object
 
 		if type(a) is not int:
 			raise TypeError('a must be integer')
@@ -186,9 +186,9 @@ class fermion_basis_1d(basis):
 
 
 		self._L=L
-		if type(Nup) is int:
+		if type(Nf) is int:
 			self._conserved="M"
-			self._Ns=comb(L,Nup,exact=True)
+			self._Ns=comb(L,Nf,exact=True)
 		else:
 			self._conserved=""
 			self._Ns=2**L
@@ -196,9 +196,9 @@ class fermion_basis_1d(basis):
 
 
 		# checking type, and value of blocks
-		if Nup is not None:
-			if type(Nup) is not int: raise TypeError('Nup must be integer')
-			if Nup < 0 or Nup > L: raise ValueError("0 <= Nup <= %d" % L)
+		if Nf is not None:
+			if type(Nf) is not int: raise TypeError('Nf must be integer')
+			if Nf < 0 or Nf > L: raise ValueError("0 <= Nf <= %d" % L)
 
 		if pblock is not None:
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
@@ -224,19 +224,19 @@ class fermion_basis_1d(basis):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
-#			Nup_tup = Nup
-#			if Nup is not None:
-#				if Nup > L//2: Nup_tup = L - Nup
+#			Nf_tup = Nf
+#			if Nf is not None:
+#				if Nf > L//2: Nf_tup = L - Nf
 			 
 				
 
 #			if kblock > L//(2*a): kblock_tup = L//a - kblock
 #			else: kblock_tup = kblock
-#			self._Ns = kblock_Ns.get((L,a,Nup_tup,kblock_tup))
+#			self._Ns = kblock_Ns.get((L,a,Nf_tup,kblock_tup))
 #			if self._Ns is None:
 #				self._Ns = 1
-		if type(Nup) is int:
-			self._Ns = comb(L,Nup,exact=True)
+		if type(Nf) is int:
+			self._Ns = comb(L,Nf,exact=True)
 		else:
 			self._Ns = (1 << L)
 
@@ -251,15 +251,15 @@ class fermion_basis_1d(basis):
 			raise ValueError("cA and cB symmetries incompatible with parity symmetry")
 
 		if check_c_symm:
-			blocks["Nup"] = Nup
-			# checking if particle-hole is compatible with Nup and L
-			if (type(Nup) is int) and ((type(cblock) is int) or (type(pcblock) is int)):
+			blocks["Nf"] = Nf
+			# checking if particle-hole is compatible with Nf and L
+			if (type(Nf) is int) and ((type(cblock) is int) or (type(pcblock) is int)):
 				if (L % 2) != 0:
 					raise ValueError("particle-hole symmetry with particla-hole conservation must be used with even number of sites")
-				if Nup != L//2:
+				if Nf != L//2:
 					raise ValueError("particle-hole symmetry only reduces the 0 particle-hole sector")
 
-			if (type(Nup) is int) and ((type(cAblock) is int) or (type(cBblock) is int)):
+			if (type(Nf) is int) and ((type(cAblock) is int) or (type(cBblock) is int)):
 				raise ValueError("cA and zB symmetries incompatible with particle-hole symmetry")
 
 			# checking if ZA/ZB particle-hole is compatible with unit cell of translation symemtry
@@ -295,9 +295,9 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
-			if (type(Nup) is int):
+			if (type(Nf) is int):
 				# arguments get overwritten by _cn.fermion_...  
-				self._Ns = _cn.fermion_n_t_p_z_basis(L,Nup,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _cn.fermion_n_t_p_z_basis(L,Nf,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 
@@ -317,8 +317,8 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_zA_zB_basis(L,Nup,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_zA_zB_basis(L,Nf,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 
@@ -336,8 +336,8 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_pc_basis(L,Nup,pcblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_pc_basis(L,Nf,pcblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
 
@@ -355,8 +355,8 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_p_basis(L,Nf,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
@@ -375,8 +375,8 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_z_basis(L,Nup,cblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_z_basis(L,Nf,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
 
@@ -395,8 +395,8 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_zA_basis(L,Nup,cAblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_zA_basis(L,Nf,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
 
@@ -414,8 +414,8 @@ class fermion_basis_1d(basis):
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_zB_basis(L,Nup,cBblock,kblock,a,self._N,self._m,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_zB_basis(L,Nf,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
 
@@ -432,8 +432,8 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_p_z_basis(L,Nup,pblock,cblock,self._N,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_p_z_basis(L,Nf,pblock,cblock,self._N,self._basis)
 			else:
 				self._Ns = _cn.fermion_p_z_basis(L,pblock,cblock,self._N,self._basis)
 
@@ -449,8 +449,8 @@ class fermion_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_zA_zB_basis(L,Nup,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_zA_zB_basis(L,Nf,self._basis)
 			else:
 				self._Ns = _cn.fermion_zA_zB_basis(L,self._basis)
 
@@ -465,8 +465,8 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_p_basis(L,Nup,pblock,self._N,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_p_basis(L,Nf,pblock,self._N,self._basis)
 			else:
 				self._Ns = _cn.fermion_p_basis(L,pblock,self._N,self._basis)
 
@@ -482,8 +482,8 @@ class fermion_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_z_basis(L,Nup,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_z_basis(L,Nf,self._basis)
 			else:
 				self._Ns = _cn.fermion_z_basis(L,self._basis)
 
@@ -496,8 +496,8 @@ class fermion_basis_1d(basis):
 
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_zA_basis(L,Nup,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_zA_basis(L,Nf,self._basis)
 			else:
 				self._Ns = _cn.fermion_zA_basis(L,self._basis)
 
@@ -510,8 +510,8 @@ class fermion_basis_1d(basis):
 			else: self._conserved += "ZB"
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_zB_basis(L,Nup,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_zB_basis(L,Nf,self._basis)
 			else:
 				self._Ns = _cn.fermion_zB_basis(L,self._basis)
 
@@ -524,8 +524,8 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_pc_basis(L,Nup,pcblock,self._N,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_pc_basis(L,Nf,pcblock,self._N,self._basis)
 			else:
 				self._Ns = _cn.fermion_pc_basis(L,pcblock,self._N,self._basis)
 
@@ -540,8 +540,8 @@ class fermion_basis_1d(basis):
 			
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			if (type(Nup) is int):
-				self._Ns = _cn.fermion_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
+			if (type(Nf) is int):
+				self._Ns = _cn.fermion_n_t_basis(L,Nf,kblock,a,self._N,self._basis)
 			else:
 				self._Ns = _cn.fermion_t_basis(L,kblock,a,self._N,self._basis)
 
@@ -550,14 +550,14 @@ class fermion_basis_1d(basis):
 			self._op_args=[self._N,self._basis,self._L]
 
 		else: 
-			if type(Nup) is int:
+			if type(Nf) is int:
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				_cn.fermion_n_basis(L,Nup,self._Ns,self._basis)
+				_cn.fermion_n_basis(L,Nf,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
 
-		if count_spins: self._Np = _np.full_like(self._basis,Nup,dtype=_np.int8)
+		if count_spins: self._Np = _np.full_like(self._basis,Nf,dtype=_np.int8)
 
 
 

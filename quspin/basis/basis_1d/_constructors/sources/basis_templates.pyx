@@ -1,5 +1,5 @@
 
-cdef void make_n_basis_template(ns_type next_state,void *ns_pars,npy_uintp MAX,basis_type s,basis_type*basis):
+cdef void make_n_basis_template(ns_type next_state,object[basis_type,ndim=1,mode="c"] ns_pars,npy_uintp MAX,basis_type s,object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp i
 	for i in range(MAX):
 		basis[i] = s
@@ -7,9 +7,9 @@ cdef void make_n_basis_template(ns_type next_state,void *ns_pars,npy_uintp MAX,b
 
 
 
-cdef npy_uintp make_p_basis_template(bitop fliplr,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_p_basis_template(bitop fliplr,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX, basis_type s,
-											int L,int pblock, NP_INT8_t * N, basis_type * basis):
+											int L,int pblock, NP_INT8_t * N, object[basis_type,ndim=1,mode="c"]  basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t rp
 
@@ -33,9 +33,9 @@ cdef npy_uintp make_p_basis_template(bitop fliplr,ns_type next_state, void *ns_p
 
 
 
-cdef npy_uintp make_p_z_basis_template(bitop fliplr,bitop flip_all,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_p_z_basis_template(bitop fliplr,bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 									npy_uintp MAX,basis_type s,int L, int pblock, int zblock,
-									NP_INT8_t * N, basis_type * basis):
+									NP_INT8_t * N, object[basis_type,ndim=1,mode="c"]  basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t rpz
 	cdef npy_uintp i
@@ -55,9 +55,9 @@ cdef npy_uintp make_p_z_basis_template(bitop fliplr,bitop flip_all,ns_type next_
 
 
 
-cdef npy_uintp make_pz_basis_template(bitop fliplr,bitop flip_all,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_pz_basis_template(bitop fliplr,bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 										npy_uintp MAX,basis_type s,int L, int pzblock,
-										NP_INT8_t * N, basis_type * basis):
+										NP_INT8_t * N, object[basis_type,ndim=1,mode="c"]  basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t rpz
 	cdef npy_uintp i
@@ -78,9 +78,9 @@ cdef npy_uintp make_pz_basis_template(bitop fliplr,bitop flip_all,ns_type next_s
 
 
 
-cdef npy_uintp make_t_basis_template(shifter shift,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_basis_template(shifter shift,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 										npy_uintp MAX,basis_type s,int L,
-										int kblock,int a,NP_INT8_t * N, basis_type * basis):
+										int kblock,int a,NP_INT8_t * N, object[basis_type,ndim=1,mode="c"]  basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t r
 	cdef npy_uintp i
@@ -101,10 +101,10 @@ cdef npy_uintp make_t_basis_template(shifter shift,ns_type next_state, void *ns_
 
 
 
-cdef npy_uintp make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
 											int L,int pblock,int kblock,int a, 
-											NP_INT8_t*N,NP_INT8_t*m,basis_type*basis):
+											NP_INT8_t*N,NP_INT8_t*m,object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t r_temp,r,mp
 	cdef int sigma,sigma_i,sigma_f,v
@@ -158,10 +158,10 @@ cdef npy_uintp make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_s
 
 
 
-cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 												npy_uintp MAX,basis_type s,
 												int L, int pblock, int zblock, int kblock, int a,
-												NP_INT8_t*N, NP_INT16_t*m, basis_type*basis):
+												NP_INT8_t*N, NP_INT16_t*m, object[basis_type,ndim=1,mode="c"] basis):
 	cdef double k = 2.0*_np.pi*kblock*a/L
 	cdef npy_uintp Ns=0
 	cdef npy_uintp i
@@ -251,10 +251,10 @@ cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next
 
 
 
-cdef npy_uintp make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_all,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
 											int L,int pzblock,int kblock,int a,
-											NP_INT8_t*N,NP_INT8_t*m,basis_type*basis):
+											NP_INT8_t*N,NP_INT8_t*m,object[basis_type,ndim=1,mode="c"] basis):
 	cdef double k 
 	
 	cdef npy_uintp Ns
@@ -310,10 +310,10 @@ cdef npy_uintp make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_al
 
 
 
-cdef npy_uintp make_t_zA_basis_template(shifter shift,bitop flip_sublat_A,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_zA_basis_template(shifter shift,bitop flip_sublat_A,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 												npy_uintp MAX,basis_type s,
 												int L,int zAblock,int kblock,int a,
-												NP_INT8_t*N, NP_INT8_t*m, basis_type*basis): 
+												NP_INT8_t*N, NP_INT8_t*m, object[basis_type,ndim=1,mode="c"] basis): 
 	cdef double k 
 	cdef npy_uintp i
 	cdef npy_uintp Ns
@@ -353,10 +353,10 @@ cdef npy_uintp make_t_zA_basis_template(shifter shift,bitop flip_sublat_A,ns_typ
 
 
 cdef npy_uintp make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,
-												bitop flip_all,ns_type next_state, void *ns_pars,
+												bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 												npy_uintp MAX,basis_type s,
 												int L,int zAblock,int zBblock,int kblock,int a,
-												NP_INT8_t*N,NP_INT16_t*m,basis_type*basis): 
+												NP_INT8_t*N,NP_INT16_t*m,object[basis_type,ndim=1,mode="c"] basis): 
 	cdef double k 
 	cdef npy_uintp Ns
 	cdef NP_INT8_t mzA,mzB,mz,r
@@ -414,10 +414,10 @@ cdef npy_uintp make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bit
 
 
 
-cdef npy_uintp make_t_z_basis_template(shifter shift,bitop flip_all,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_z_basis_template(shifter shift,bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
 											int L,int zblock,int kblock,int a,
-											NP_INT8_t*N,NP_INT8_t*m,basis_type*basis): 
+											NP_INT8_t*N,NP_INT8_t*m,object[basis_type,ndim=1,mode="c"] basis): 
 	cdef double k 
 	cdef npy_uintp Ns
 	cdef npy_uintp i
@@ -458,10 +458,10 @@ cdef npy_uintp make_t_z_basis_template(shifter shift,bitop flip_all,ns_type next
 
 	
 
-cdef npy_uintp make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
 											int L,int zBblock,int kblock,int a,
-											NP_INT8_t*N, NP_INT8_t*m,basis_type*basis): 
+											NP_INT8_t*N, NP_INT8_t*m,object[basis_type,ndim=1,mode="c"] basis): 
 	cdef double k 
 	cdef npy_uintp Ns
 	cdef npy_uintp i
@@ -499,9 +499,9 @@ cdef npy_uintp make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_typ
 
 
 
-cdef npy_uintp make_zA_basis_template(bitop flip_sublat_A,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_zA_basis_template(bitop flip_sublat_A,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
-											int L, basis_type*basis):
+											int L, object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t rzA
 	cdef int j
@@ -524,9 +524,9 @@ cdef npy_uintp make_zA_basis_template(bitop flip_sublat_A,ns_type next_state, vo
 
 
 cdef npy_uintp make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B,
-											bitop flip_all,ns_type next_state, void *ns_pars,
+											bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
-											int L,basis_type*basis):
+											int L,object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef npy_uintp i
 	cdef NP_INT8_t r
@@ -547,9 +547,9 @@ cdef npy_uintp make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B
 
 
 
-cdef npy_uintp make_z_basis_template(bitop flip_all,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_z_basis_template(bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 										npy_uintp MAX,basis_type s,
-										int L,basis_type*basis):
+										int L,object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t rz
 	cdef int j
@@ -570,9 +570,9 @@ cdef npy_uintp make_z_basis_template(bitop flip_all,ns_type next_state, void *ns
 
 
 
-cdef npy_uintp make_zB_basis_template(bitop flip_sublat_B,ns_type next_state, void *ns_pars,
+cdef npy_uintp make_zB_basis_template(bitop flip_sublat_B,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
-											int L, basis_type*basis):
+											int L, object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef NP_INT8_t rzB
 	cdef int j
