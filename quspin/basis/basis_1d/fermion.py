@@ -683,6 +683,7 @@ class fermion_basis_1d(basis):
 		col = col[ mask ]
 		row = row[ mask ]
 		ME = ME[ mask ]
+	
 
 		if not pauli:
 			Nop = len(opstr.replace("I",""))
