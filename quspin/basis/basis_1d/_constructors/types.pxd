@@ -22,21 +22,25 @@ ctypedef fused basis_type:
 	NP_UINT64_t
 	object
 
+ctypedef fused N_type:
+	NP_INT8_t
+	NP_INT32_t
 
+ctypedef fused m_type:
+	NP_INT16_t
+	NP_INT32_t
 
 ctypedef fused matrix_type:
 	float
 	double
-#	long double
+	long double
 	float complex
 	double complex
-#	long double complex
+	long double complex
 
 
 
 	
-#ctypedef unsigned long long state_type
-#ctypedef unsigned long long loop_type
 ctypedef long double complex scalar_type
 ctypedef long double longdouble
 

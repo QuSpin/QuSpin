@@ -1,23 +1,5 @@
 
-"""
-cdef long long findzstate(basis_type * A,long long N, basis_type s):
-	cdef basis_type  A_1
-	cdef long long bmin, bmax, b
 
-	bmin = 0
-	bmax = N-1
-	while (bmin <= bmax):
-		b = (bmin + bmax)/2
-		A_1 = A[b]
-		if ( A_1 < s ):
-			bmin = b + 1
-		elif ( A_1 > s ):
-			bmax = b - 1
-		else:
-			return b
-
-	return -1
-"""
 
 
 cdef npy_intp findzstate(object[basis_type,ndim=1,mode="c"] A,npy_intp N, basis_type s,bool * found):

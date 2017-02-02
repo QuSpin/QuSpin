@@ -169,14 +169,15 @@ class hcb_basis_1d(basis):
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-#		if L <= 32: 
-#			self._basis_type = _np.uint32
-#		elif L <= 64:
-#			self._basis_type = _np.uint64
-#		else:
-#			raise NotImplementedError('basis can only be constructed for L<=64')
+		if L <= 32: 
+			self._basis_type = _np.uint32
+		elif L <= 64:
+			self._basis_type = _np.uint64
+		else:
+			self._basis_type = _np.object
+
 		
-		self._basis_type = _cn.hardcore_particle_dtype(L,Nb)
+
 
 		if type(a) is not int:
 			raise TypeError('a must be integer')
@@ -285,8 +286,14 @@ class hcb_basis_1d(basis):
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
-			self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+
 			if (type(Nb) is int):
 				# arguments get overwritten by _cn.hcb_...  
 				self._Ns = _cn.hcb_n_t_p_z_basis(L,Nb,pblock,cblock,kblock,a,self._N,self._m,self._basis)
@@ -307,8 +314,14 @@ class hcb_basis_1d(basis):
 
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int16)
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._m=_np.empty(self._basis.shape,dtype=_np.int16)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_zA_zB_basis(L,Nb,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
@@ -326,8 +339,14 @@ class hcb_basis_1d(basis):
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_pc_basis(L,Nb,pcblock,kblock,a,self._N,self._m,self._basis)
 			else:
@@ -345,8 +364,14 @@ class hcb_basis_1d(basis):
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_p_basis(L,Nb,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
@@ -365,8 +390,14 @@ class hcb_basis_1d(basis):
 
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:			
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_z_basis(L,Nb,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
@@ -385,8 +416,14 @@ class hcb_basis_1d(basis):
 
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_zA_basis(L,Nb,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
@@ -404,8 +441,14 @@ class hcb_basis_1d(basis):
 
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-			self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int32) # normalisation*sigma
+				self._m=_np.empty(self._basis.shape,dtype=_np.int32) #m = mp + (L+1)mc + (L+1)^2c; Anders' paper
+			else:
+				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_zB_basis(L,Nb,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
@@ -424,6 +467,7 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_p_z_basis(L,Nb,pblock,cblock,self._N,self._basis)
 			else:
@@ -457,6 +501,7 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_p_basis(L,Nb,pblock,self._N,self._basis)
 			else:
@@ -516,6 +561,7 @@ class hcb_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_pc_basis(L,Nb,pcblock,self._N,self._basis)
 			else:
@@ -531,7 +577,12 @@ class hcb_basis_1d(basis):
 			else: self._conserved = "T"
 			
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+
+			if self._basis_type == _np.object:
+				self._N=_np.empty((self._Ns,),dtype=_np.int32)
+			else:
+				self._N=_np.empty((self._Ns,),dtype=_np.int8)
+
 			if (type(Nb) is int):
 				self._Ns = _cn.hcb_n_t_basis(L,Nb,kblock,a,self._N,self._basis)
 			else:
@@ -670,7 +721,7 @@ class hcb_basis_1d(basis):
 
 		if error != 0: raise OpstrError(_basis_op_errors[error])
 
-		mask = row >= 0
+		mask = _np.logical_not(_np.isnan(ME))
 		col = col[ mask ]
 		row = row[ mask ]
 		ME = ME[ mask ]

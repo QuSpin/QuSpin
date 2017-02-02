@@ -12,6 +12,7 @@ cdef int spin_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
     cdef bool a
     cdef scalar_type M_E
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+    cdef basis_type one = 1
 
     cdef char I = "I"
     cdef char x = "x"
@@ -28,7 +29,7 @@ cdef int spin_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
         
         for j in range(N_indx-1,-1,-1): #loop over the copstr
 
-            b = ( 1ull << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+            b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
             a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
 
             if c_opstr[j] == I:
@@ -85,116 +86,116 @@ def spin_n_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1]
 
 def spin_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
-            _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
+            _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int pblock = blocks["pblock"]
-    return p_op_template[basis_type,matrix_type](spin_op_func,None,fliplr,None,L,pblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return p_op_template[basis_type,matrix_type,N_type](spin_op_func,None,fliplr,None,L,pblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
-            _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
+            _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int pblock = blocks["pblock"]
     cdef int zblock = blocks["zblock"]
-    return p_z_op_template[basis_type,matrix_type](spin_op_func,None,fliplr,flip_all,None,L,pblock,zblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return p_z_op_template[basis_type,matrix_type,N_type](spin_op_func,None,fliplr,flip_all,None,L,pblock,zblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
-            _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
+            _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int pzblock = blocks["pzblock"]
-    return pz_op_template[basis_type,matrix_type](spin_op_func,None,fliplr,flip_all,None,L,pzblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return pz_op_template[basis_type,matrix_type,N_type](spin_op_func,None,fliplr,flip_all,None,L,pzblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
-            _np.ndarray[NP_INT8_t,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
+            _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int a = blocks["a"]
-    return t_op_template[basis_type,matrix_type](spin_op_func,None,shift,None,L,kblock,a,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_op_template[basis_type,matrix_type,N_type](spin_op_func,None,shift,None,L,kblock,a,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 
 def spin_t_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
     cdef int a = blocks["a"]
 
-    return t_p_op_template[basis_type,matrix_type](spin_op_func,None,shift,fliplr,None,L,kblock,pblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_p_op_template[basis_type,matrix_type,N_type](spin_op_func,None,shift,fliplr,None,L,kblock,pblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[m_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
     cdef int zblock = blocks["zblock"]
     cdef int a = blocks["a"]
 
-    return t_p_z_op_template[basis_type,matrix_type](spin_op_func,None,shift,fliplr,flip_all,None,L,kblock,pblock,zblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_p_z_op_template[basis_type,matrix_type,N_type,m_type](spin_op_func,None,shift,fliplr,flip_all,None,L,kblock,pblock,zblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pzblock = blocks["pzblock"]
     cdef int a = blocks["a"]
 
-    return t_pz_op_template[basis_type,matrix_type](spin_op_func,None,shift,fliplr,flip_all,None,L,kblock,pzblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_pz_op_template[basis_type,matrix_type,N_type](spin_op_func,None,shift,fliplr,flip_all,None,L,kblock,pzblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zblock = blocks["zblock"]
     cdef int a = blocks["a"]
 
-    return t_z_op_template[basis_type,matrix_type](spin_op_func,None,shift,flip_all,None,L,kblock,zblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_z_op_template[basis_type,matrix_type,N_type](spin_op_func,None,shift,flip_all,None,L,kblock,zblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_zA_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zAblock = blocks["zAblock"]
     cdef int a = blocks["a"]
 
-    return t_zA_op_template[basis_type,matrix_type](spin_op_func,None,shift,flip_sublat_A,None,L,kblock,zAblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_zA_op_template[basis_type,matrix_type,N_type](spin_op_func,None,shift,flip_sublat_A,None,L,kblock,zAblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT8_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zBblock = blocks["zBblock"]
     cdef int a = blocks["a"]
 
-    return t_zB_op_template[basis_type,matrix_type](spin_op_func,None,shift,flip_sublat_B,None,L,kblock,zBblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_zB_op_template[basis_type,matrix_type,N_type](spin_op_func,None,shift,flip_sublat_B,None,L,kblock,zBblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_t_zA_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
-                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[NP_INT8_t,ndim=1] N,
-                _np.ndarray[NP_INT16_t,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
+                str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
+                _np.ndarray[m_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zAblock = blocks["zAblock"]
     cdef int zBblock = blocks["zBblock"]
     cdef int a = blocks["a"]
 
-    return t_zA_zB_op_template[basis_type,matrix_type](spin_op_func,None,shift,flip_sublat_A,flip_sublat_B,flip_all,None,L,kblock,zAblock,zBblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_zA_zB_op_template[basis_type,matrix_type,N_type,m_type](spin_op_func,None,shift,flip_sublat_A,flip_sublat_B,flip_all,None,L,kblock,zAblock,zBblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def spin_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
