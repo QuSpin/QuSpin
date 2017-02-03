@@ -1,6 +1,7 @@
 from ..base import basis,MAXPRINT
-from . import _constructors as _cn
-from ._1d_kblock_Ns import kblock_Ns
+from ._constructors import kblock_Ns_estimate,op_array_size
+from ._constructors import spin_basis_ops as _ops
+#from ._1d_kblock_Ns import kblock_Ns
 from . import _check_1d_symm as _check
 import numpy as _np
 from scipy.misc import comb
@@ -39,38 +40,38 @@ class OpstrError(Exception):
 
 
 
-op={"":_cn.spin_op,
-	"M":_cn.spin_n_op,
-	"Z":_cn.spin_z_op,
-	"ZA":_cn.spin_zA_op,
-	"ZB":_cn.spin_zB_op,
-	"ZA & ZB":_cn.spin_zA_zB_op,
-	"M & Z":_cn.spin_z_op,
-	"M & ZA":_cn.spin_zA_op,
-	"M & ZB":_cn.spin_zB_op,
-	"M & ZA & ZB":_cn.spin_zA_zB_op,
-	"P":_cn.spin_p_op,
-	"M & P":_cn.spin_p_op,
-	"PZ":_cn.spin_pz_op,
-	"M & PZ":_cn.spin_pz_op,
-	"P & Z":_cn.spin_p_z_op,
-	"M & P & Z":_cn.spin_p_z_op,
-	"T":_cn.spin_t_op,
-	"M & T":_cn.spin_t_op,
-	"T & Z":_cn.spin_t_z_op,
-	"T & ZA":_cn.spin_t_zA_op,
-	"T & ZB":_cn.spin_t_zB_op,
-	"T & ZA & ZB":_cn.spin_t_zA_zB_op,
-	"M & T & Z":_cn.spin_t_z_op,
-	"M & T & ZA":_cn.spin_t_zA_op,
-	"M & T & ZB":_cn.spin_t_zB_op,
-	"M & T & ZA & ZB":_cn.spin_t_zA_zB_op,
-	"T & P":_cn.spin_t_p_op,
-	"M & T & P":_cn.spin_t_p_op,
-	"T & PZ":_cn.spin_t_pz_op,
-	"M & T & PZ":_cn.spin_t_pz_op,
-	"T & P & Z":_cn.spin_t_p_z_op,
-	"M & T & P & Z":_cn.spin_t_p_z_op
+op={"":_ops.spin_op,
+	"M":_ops.spin_n_op,
+	"Z":_ops.spin_z_op,
+	"ZA":_ops.spin_zA_op,
+	"ZB":_ops.spin_zB_op,
+	"ZA & ZB":_ops.spin_zA_zB_op,
+	"M & Z":_ops.spin_z_op,
+	"M & ZA":_ops.spin_zA_op,
+	"M & ZB":_ops.spin_zB_op,
+	"M & ZA & ZB":_ops.spin_zA_zB_op,
+	"P":_ops.spin_p_op,
+	"M & P":_ops.spin_p_op,
+	"PZ":_ops.spin_pz_op,
+	"M & PZ":_ops.spin_pz_op,
+	"P & Z":_ops.spin_p_z_op,
+	"M & P & Z":_ops.spin_p_z_op,
+	"T":_ops.spin_t_op,
+	"M & T":_ops.spin_t_op,
+	"T & Z":_ops.spin_t_z_op,
+	"T & ZA":_ops.spin_t_zA_op,
+	"T & ZB":_ops.spin_t_zB_op,
+	"T & ZA & ZB":_ops.spin_t_zA_zB_op,
+	"M & T & Z":_ops.spin_t_z_op,
+	"M & T & ZA":_ops.spin_t_zA_op,
+	"M & T & ZB":_ops.spin_t_zB_op,
+	"M & T & ZA & ZB":_ops.spin_t_zA_zB_op,
+	"T & P":_ops.spin_t_p_op,
+	"M & T & P":_ops.spin_t_p_op,
+	"T & PZ":_ops.spin_t_pz_op,
+	"M & T & PZ":_ops.spin_t_pz_op,
+	"T & P & Z":_ops.spin_t_p_z_op,
+	"M & T & P & Z":_ops.spin_t_p_z_op
 	}
 
 class spin_basis_1d(basis):
@@ -224,17 +225,7 @@ class spin_basis_1d(basis):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
-#			Nup_tup = Nup
-#			if Nup is not None:
-#				if Nup > L//2: Nup_tup = L - Nup
-			 
-				
 
-#			if kblock > L//(2*a): kblock_tup = L//a - kblock
-#			else: kblock_tup = kblock
-#			self._Ns = kblock_Ns.get((L,a,Nup_tup,kblock_tup))
-#			if self._Ns is None:
-#				self._Ns = 1
 		if type(Nup) is int:
 			self._Ns = comb(L,Nup,exact=True)
 		else:
@@ -242,7 +233,7 @@ class spin_basis_1d(basis):
 
 
 		if type(kblock) is int:
-			self._Ns = _cn.kblock_Ns_estimate(self._Ns,L,a)
+			self._Ns = kblock_Ns_estimate(self._Ns,L,a)
 
 
 
@@ -301,10 +292,10 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 
 			if (type(Nup) is int):
-				# arguments get overwritten by _cn.spin_...  
-				self._Ns = _cn.spin_n_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+				# arguments get overwritten by _ops.spin_...  
+				self._Ns = _ops.spin_n_t_p_z_basis(L,Nup,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_p_z_basis(L,pblock,zblock,kblock,a,self._N,self._m,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
@@ -329,9 +320,9 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_zA_zB_basis(L,Nup,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_n_t_zA_zB_basis(L,Nup,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -354,9 +345,9 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_pz_basis(L,Nup,pzblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_n_t_pz_basis(L,Nup,pzblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_pz_basis(L,pzblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_pz_basis(L,pzblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -379,9 +370,9 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_n_t_p_basis(L,Nup,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
 
 			self._N.resize((self._Ns,))
@@ -405,9 +396,9 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_z_basis(L,Nup,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_n_t_z_basis(L,Nup,zblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_z_basis(L,zblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_z_basis(L,zblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -431,9 +422,9 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_zA_basis(L,Nup,zAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_n_t_zA_basis(L,Nup,zAblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_zA_basis(L,zAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_zA_basis(L,zAblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -456,9 +447,9 @@ class spin_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_zB_basis(L,Nup,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_n_t_zB_basis(L,Nup,zBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.spin_t_zB_basis(L,zBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.spin_t_zB_basis(L,zBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -474,9 +465,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_p_z_basis(L,Nup,pblock,zblock,self._N,self._basis)
+				self._Ns = _ops.spin_n_p_z_basis(L,Nup,pblock,zblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_p_z_basis(L,pblock,zblock,self._N,self._basis)
+				self._Ns = _ops.spin_p_z_basis(L,pblock,zblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -491,9 +482,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_zA_zB_basis(L,Nup,self._basis)
+				self._Ns = _ops.spin_n_zA_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_zA_zB_basis(L,self._basis)
+				self._Ns = _ops.spin_zA_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -507,9 +498,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_p_basis(L,Nup,pblock,self._N,self._basis)
+				self._Ns = _ops.spin_n_p_basis(L,Nup,pblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_p_basis(L,pblock,self._N,self._basis)
+				self._Ns = _ops.spin_p_basis(L,pblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -524,9 +515,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_z_basis(L,Nup,self._basis)
+				self._Ns = _ops.spin_n_z_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_z_basis(L,self._basis)
+				self._Ns = _ops.spin_z_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -538,9 +529,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_zA_basis(L,Nup,self._basis)
+				self._Ns = _ops.spin_n_zA_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_zA_basis(L,self._basis)
+				self._Ns = _ops.spin_zA_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -552,9 +543,9 @@ class spin_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_zB_basis(L,Nup,self._basis)
+				self._Ns = _ops.spin_n_zB_basis(L,Nup,self._basis)
 			else:
-				self._Ns = _cn.spin_zB_basis(L,self._basis)
+				self._Ns = _ops.spin_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -566,9 +557,9 @@ class spin_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_pz_basis(L,Nup,pzblock,self._N,self._basis)
+				self._Ns = _ops.spin_n_pz_basis(L,Nup,pzblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_pz_basis(L,pzblock,self._N,self._basis)
+				self._Ns = _ops.spin_pz_basis(L,pzblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -587,9 +578,9 @@ class spin_basis_1d(basis):
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nup) is int):
-				self._Ns = _cn.spin_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
+				self._Ns = _ops.spin_n_t_basis(L,Nup,kblock,a,self._N,self._basis)
 			else:
-				self._Ns = _cn.spin_t_basis(L,kblock,a,self._N,self._basis)
+				self._Ns = _ops.spin_t_basis(L,kblock,a,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -598,7 +589,7 @@ class spin_basis_1d(basis):
 		else: 
 			if type(Nup) is int:
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				_cn.spin_n_basis(L,Nup,self._Ns,self._basis)
+				_ops.spin_n_basis(L,Nup,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
@@ -715,7 +706,7 @@ class spin_basis_1d(basis):
 
 		pauli = self._blocks['pauli']
 
-		N_op = _cn.op_array_size[self._conserved]*self.Ns
+		N_op = op_array_size[self._conserved]*self.Ns
 		col = _np.zeros(N_op,dtype=self._basis_type)
 		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
@@ -1204,38 +1195,38 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v[basis[ind_neg]] += vc[ind_neg]
 
 		if type(zAblock) is int:
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*zAblock
 			v[basis[ind_neg]] += vc[ind_neg]*zAblock
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 		
 		if type(zBblock) is int:
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*zBblock
 			v[basis[ind_neg]] += vc[ind_neg]*zBblock
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 		
 		if type(zblock) is int:
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*zblock
 			v[basis[ind_neg]] += vc[ind_neg]*zblock
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		if type(pblock) is int:
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*pblock
 			v[basis[ind_neg]] += vc[ind_neg]*pblock
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 
 		if type(pzblock) is int:
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*pzblock
 			v[basis[ind_neg]] += vc[ind_neg]*pzblock
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 		
-		shiftc(basis,-a,L)
+		_ops.py_shift(basis,a,L)
 	
 	return v
 
@@ -1297,60 +1288,60 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 			data_pos *= zAblock
 			data_neg *= zAblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_neg *= zAblock
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 
 		if type(zBblock) is int:
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 			data_pos *= zBblock
 			data_neg *= zBblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_neg *= zBblock
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 
 		if type(zblock) is int:
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= zblock
 			data_neg *= zblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		if type(pblock) is int:
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 			data_pos *= pblock
 			data_neg *= pblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 
 		if type(pzblock) is int:
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		v.sum_duplicates()
 		v.eliminate_zeros()
-		shiftc(basis,-a,L)
+		_ops.py_shift(basis,a,L)
 
 	return v
 
@@ -1388,118 +1379,61 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 			data_pos *= zAblock
 			data_neg *= zAblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_neg *= zAblock
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 
 		if type(zBblock) is int:
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 			data_pos *= zBblock
 			data_neg *= zBblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_neg *= zBblock
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 
 		if type(zblock) is int:
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= zblock
 			data_neg *= zblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		if type(pblock) is int:
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 			data_pos *= pblock
 			data_neg *= pblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 
 		if type(pzblock) is int:
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 
-		shiftc(basis,-a,L)
+		_ops.py_shift(basis,a,L)
 
 
 	return v
-
-
-
-
-
-def fliplr(x,length):
-	x1 = array(x)
-	x[:] = 0
-	for i in range(length):
-		x2 = array(x1)
-		x2 = right_shift(x2,i)
-		bitwise_and(x2,1,out=x2)
-		left_shift(x2,length-1-i,out=x2)
-		x += x2
-
-
-def flipall(x,length):
-	mask = 2**length-1
-	invert(x,out=x)
-	bitwise_and(x,mask,out=x)
-
-
-def flip_sublat_A(x,length):
-	# flip all even bits: sublat A
-	mask = sum(2**i for i in range(0,length,2))
-	bitwise_xor(x,mask,out=x)
-	
-def flip_sublat_B(x,length):
-	# flip all odd bits: sublat B
-	mask = sum(2**i for i in range(1,length,2))
-	bitwise_xor(x,mask,out=x)
-
-
-def shiftc(x,shift,period):
-	Imax=2**period-1
-
-	bitwise_and(x,Imax,x)
-	x1 = array(x)
-	if shift < 0:	
-		shift=abs(shift)
-		shift = shift % period
-		m_shift = period - shift
-
-		left_shift(x,shift,out=x)
-		bitwise_and(x,Imax,out=x)
-		right_shift(x1,m_shift,out=x1)
-		bitwise_or(x,x1,out=x)
-	else:
-		shift = shift % period
-		m_shift = period - shift
-
-		right_shift(x,shift,out=x)
-		left_shift(x1,m_shift,out=x1)
-		bitwise_and(x1,Imax,out=x1)
-		bitwise_or(x,x1,out=x)
-
-	del x1
 
 
 

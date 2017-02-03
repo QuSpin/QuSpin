@@ -23,6 +23,13 @@ cdef basis_type shift(basis_type I,int shift,int period,object[basis_type,ndim=1
 		return ((I << l1) & Imax) | ((I & Imax) >> l2)
 
 
+def py_shift(object[basis_type,ndim=1,mode="c"] x,int d,int length):
+	cdef npy_intp i 
+	cdef npy_intp Ns = x.shape[0]
+	for i in range(Ns):
+		x[i] = shift(x[i],d,length,None)
+
+
 
 cdef NP_INT8_t bit_count(basis_type I, int length):
 	cdef NP_INT8_t out = 0
@@ -50,6 +57,16 @@ cdef basis_type fliplr(basis_type I, int length, object[basis_type,ndim=1,mode="
 
 
 
+def py_fliplr(object[basis_type,ndim=1,mode="c"] x,int length):
+	cdef npy_intp i 
+	cdef npy_intp Ns = x.shape[0]
+	for i in range(Ns):
+		x[i] = fliplr(x[i],length,None)
+
+
+
+
+
 cdef basis_type flip_all(basis_type I, int length,object[basis_type,ndim=1,mode="c"] pars):
 #	 flip all bits
 	cdef basis_type one = 1
@@ -65,6 +82,15 @@ cdef basis_type flip_all(basis_type I, int length,object[basis_type,ndim=1,mode=
 
 
 	return I^(Imax & (~zero))
+
+
+def py_flip_all(object[basis_type,ndim=1,mode="c"] x,int length):
+	cdef npy_intp i 
+	cdef npy_intp Ns = x.shape[0]
+	for i in range(Ns):
+		x[i] = flip_all(x[i],length,None)
+
+
 
 
 cdef basis_type flip_sublat_A(basis_type I, int length,object[basis_type,ndim=1,mode="c"] pars):
@@ -85,11 +111,19 @@ cdef basis_type flip_sublat_A(basis_type I, int length,object[basis_type,ndim=1,
 		return I^(Imax&6148914691236517205llu)
 	else:
 		Imax = (one << length) - 1 
-		stag = 0
-		for i in range(0,length,2):
-			stag += (one << i)
+		stag = sum((one << i) for i in range(0,length,2))
 
-		return I^(Imax&stag)	
+		return I^(Imax&stag)
+
+
+def py_flip_sublat_A(object[basis_type,ndim=1,mode="c"] x,int length):
+	cdef npy_intp i 
+	cdef npy_intp Ns = x.shape[0]
+	for i in range(Ns):
+		x[i] = flip_sublat_A(x[i],length,None)
+
+
+
 
 cdef basis_type flip_sublat_B(basis_type I, int length,object[basis_type,ndim=1,mode="c"] pars):
 #	 flip all odd bits: sublat B
@@ -108,11 +142,21 @@ cdef basis_type flip_sublat_B(basis_type I, int length,object[basis_type,ndim=1,
 		return I^(Imax&12297829382473034410llu)
 	else:
 		Imax = (one << length) -1 
-		stag = 0
-		for i in range(1,length,2):
-			stag += (one << i)
+		stag = sum((one << i) for i in range(1,length,2))
 
 		return I^(Imax&stag)
+
+
+
+def py_flip_sublat_B(object[basis_type,ndim=1,mode="c"] x,int length):
+	cdef npy_intp i 
+	cdef npy_intp Ns = x.shape[0]
+	for i in range(Ns):
+		x[i] = flip_sublat_B(x[i],length,None)
+
+
+
+
 
 
 cdef basis_type next_state_pcon_hcb(basis_type v,object[basis_type,ndim=1,mode="c"] pars):

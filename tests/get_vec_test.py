@@ -219,6 +219,7 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 for L in range(4,8):
 	check_getvec(L,sparse=True)
 	check_getvec(L,sparse=False)
+
 for L in range(4,8,2):
 	check_getvec_zA_zB(L,sparse=True)
 	check_getvec_zA_zB(L,sparse=False)

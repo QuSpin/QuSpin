@@ -1,5 +1,6 @@
 from ..base import basis,MAXPRINT
-from . import _constructors as _cn
+from ._constructors import kblock_Ns_estimate,op_array_size
+from ._constructors import fermion_basis_ops as _ops
 from ._1d_kblock_Ns import kblock_Ns
 from . import _check_1d_symm as _check
 import numpy as _np
@@ -39,38 +40,38 @@ class OpstrError(Exception):
 
 
 
-op={"":_cn.fermion_op,
-	"M":_cn.fermion_n_op,
-	"Z":_cn.fermion_z_op,
-	"ZA":_cn.fermion_zA_op,
-	"ZB":_cn.fermion_zB_op,
-	"ZA & ZB":_cn.fermion_zA_zB_op,
-	"M & Z":_cn.fermion_z_op,
-	"M & ZA":_cn.fermion_zA_op,
-	"M & ZB":_cn.fermion_zB_op,
-	"M & ZA & ZB":_cn.fermion_zA_zB_op,
-	"P":_cn.fermion_p_op,
-	"M & P":_cn.fermion_p_op,
-	"PZ":_cn.fermion_pz_op,
-	"M & PZ":_cn.fermion_pz_op,
-	"P & Z":_cn.fermion_p_z_op,
-	"M & P & Z":_cn.fermion_p_z_op,
-	"T":_cn.fermion_t_op,
-	"M & T":_cn.fermion_t_op,
-	"T & Z":_cn.fermion_t_z_op,
-	"T & ZA":_cn.fermion_t_zA_op,
-	"T & ZB":_cn.fermion_t_zB_op,
-	"T & ZA & ZB":_cn.fermion_t_zA_zB_op,
-	"M & T & Z":_cn.fermion_t_z_op,
-	"M & T & ZA":_cn.fermion_t_zA_op,
-	"M & T & ZB":_cn.fermion_t_zB_op,
-	"M & T & ZA & ZB":_cn.fermion_t_zA_zB_op,
-	"T & P":_cn.fermion_t_p_op,
-	"M & T & P":_cn.fermion_t_p_op,
-	"T & PZ":_cn.fermion_t_pz_op,
-	"M & T & PZ":_cn.fermion_t_pz_op,
-	"T & P & Z":_cn.fermion_t_p_z_op,
-	"M & T & P & Z":_cn.fermion_t_p_z_op
+op={"":_ops.fermion_op,
+	"M":_ops.fermion_n_op,
+	"Z":_ops.fermion_z_op,
+	"ZA":_ops.fermion_zA_op,
+	"ZB":_ops.fermion_zB_op,
+	"ZA & ZB":_ops.fermion_zA_zB_op,
+	"M & Z":_ops.fermion_z_op,
+	"M & ZA":_ops.fermion_zA_op,
+	"M & ZB":_ops.fermion_zB_op,
+	"M & ZA & ZB":_ops.fermion_zA_zB_op,
+	"P":_ops.fermion_p_op,
+	"M & P":_ops.fermion_p_op,
+	"PZ":_ops.fermion_pz_op,
+	"M & PZ":_ops.fermion_pz_op,
+	"P & Z":_ops.fermion_p_z_op,
+	"M & P & Z":_ops.fermion_p_z_op,
+	"T":_ops.fermion_t_op,
+	"M & T":_ops.fermion_t_op,
+	"T & Z":_ops.fermion_t_z_op,
+	"T & ZA":_ops.fermion_t_zA_op,
+	"T & ZB":_ops.fermion_t_zB_op,
+	"T & ZA & ZB":_ops.fermion_t_zA_zB_op,
+	"M & T & Z":_ops.fermion_t_z_op,
+	"M & T & ZA":_ops.fermion_t_zA_op,
+	"M & T & ZB":_ops.fermion_t_zB_op,
+	"M & T & ZA & ZB":_ops.fermion_t_zA_zB_op,
+	"T & P":_ops.fermion_t_p_op,
+	"M & T & P":_ops.fermion_t_p_op,
+	"T & PZ":_ops.fermion_t_pz_op,
+	"M & T & PZ":_ops.fermion_t_pz_op,
+	"T & P & Z":_ops.fermion_t_p_z_op,
+	"M & T & P & Z":_ops.fermion_t_p_z_op
 	}
 
 class fermion_basis_1d(basis):
@@ -224,17 +225,7 @@ class fermion_basis_1d(basis):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
-#			Nf_tup = Nf
-#			if Nf is not None:
-#				if Nf > L//2: Nf_tup = L - Nf
-			 
-				
 
-#			if kblock > L//(2*a): kblock_tup = L//a - kblock
-#			else: kblock_tup = kblock
-#			self._Ns = kblock_Ns.get((L,a,Nf_tup,kblock_tup))
-#			if self._Ns is None:
-#				self._Ns = 1
 		if type(Nf) is int:
 			self._Ns = comb(L,Nf,exact=True)
 		else:
@@ -242,7 +233,7 @@ class fermion_basis_1d(basis):
 
 
 		if type(kblock) is int:
-			self._Ns = _cn.kblock_Ns_estimate(self._Ns,L,a)
+			self._Ns = kblock_Ns_estimate(self._Ns,L,a)
 
 
 
@@ -302,10 +293,10 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 
 			if (type(Nf) is int):
-				# arguments get overwritten by _cn.fermion_...  
-				self._Ns = _cn.fermion_n_t_p_z_basis(L,Nf,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				# arguments get overwritten by _ops.fermion_...  
+				self._Ns = _ops.fermion_n_t_p_z_basis(L,Nf,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_p_z_basis(L,pblock,cblock,kblock,a,self._N,self._m,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
@@ -330,9 +321,9 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int16)
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_zA_zB_basis(L,Nf,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_n_t_zA_zB_basis(L,Nf,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_zA_zB_basis(L,cAblock,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -355,9 +346,9 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8) 
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_pc_basis(L,Nf,pcblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_n_t_pc_basis(L,Nf,pcblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_pc_basis(L,pcblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -380,9 +371,9 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_p_basis(L,Nf,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_n_t_p_basis(L,Nf,pblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_p_basis(L,pblock,kblock,a,self._N,self._m,self._basis)
 
 
 			self._N.resize((self._Ns,))
@@ -406,9 +397,9 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_z_basis(L,Nf,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_n_t_z_basis(L,Nf,cblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_z_basis(L,cblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -432,9 +423,9 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_zA_basis(L,Nf,cAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_n_t_zA_basis(L,Nf,cAblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_zA_basis(L,cAblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -457,9 +448,9 @@ class fermion_basis_1d(basis):
 				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_zB_basis(L,Nf,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_n_t_zB_basis(L,Nf,cBblock,kblock,a,self._N,self._m,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
+				self._Ns = _ops.fermion_t_zB_basis(L,cBblock,kblock,a,self._N,self._m,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._m.resize((self._Ns,))
@@ -476,9 +467,9 @@ class fermion_basis_1d(basis):
 			self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_p_z_basis(L,Nf,pblock,cblock,self._N,self._basis)
+				self._Ns = _ops.fermion_n_p_z_basis(L,Nf,pblock,cblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.fermion_p_z_basis(L,pblock,cblock,self._N,self._basis)
+				self._Ns = _ops.fermion_p_z_basis(L,pblock,cblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -493,9 +484,9 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_zA_zB_basis(L,Nf,self._basis)
+				self._Ns = _ops.fermion_n_zA_zB_basis(L,Nf,self._basis)
 			else:
-				self._Ns = _cn.fermion_zA_zB_basis(L,self._basis)
+				self._Ns = _ops.fermion_zA_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -509,9 +500,9 @@ class fermion_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_p_basis(L,Nf,pblock,self._N,self._basis)
+				self._Ns = _ops.fermion_n_p_basis(L,Nf,pblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.fermion_p_basis(L,pblock,self._N,self._basis)
+				self._Ns = _ops.fermion_p_basis(L,pblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -526,9 +517,9 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_z_basis(L,Nf,self._basis)
+				self._Ns = _ops.fermion_n_z_basis(L,Nf,self._basis)
 			else:
-				self._Ns = _cn.fermion_z_basis(L,self._basis)
+				self._Ns = _ops.fermion_z_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -540,9 +531,9 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_zA_basis(L,Nf,self._basis)
+				self._Ns = _ops.fermion_n_zA_basis(L,Nf,self._basis)
 			else:
-				self._Ns = _cn.fermion_zA_basis(L,self._basis)
+				self._Ns = _ops.fermion_zA_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -554,9 +545,9 @@ class fermion_basis_1d(basis):
 			
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_zB_basis(L,Nf,self._basis)
+				self._Ns = _ops.fermion_n_zB_basis(L,Nf,self._basis)
 			else:
-				self._Ns = _cn.fermion_zB_basis(L,self._basis)
+				self._Ns = _ops.fermion_zB_basis(L,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L]
@@ -568,9 +559,9 @@ class fermion_basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_pc_basis(L,Nf,pcblock,self._N,self._basis)
+				self._Ns = _ops.fermion_n_pc_basis(L,Nf,pcblock,self._N,self._basis)
 			else:
-				self._Ns = _cn.fermion_pc_basis(L,pcblock,self._N,self._basis)
+				self._Ns = _ops.fermion_pc_basis(L,pcblock,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -588,9 +579,9 @@ class fermion_basis_1d(basis):
 			else:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 			if (type(Nf) is int):
-				self._Ns = _cn.fermion_n_t_basis(L,Nf,kblock,a,self._N,self._basis)
+				self._Ns = _ops.fermion_n_t_basis(L,Nf,kblock,a,self._N,self._basis)
 			else:
-				self._Ns = _cn.fermion_t_basis(L,kblock,a,self._N,self._basis)
+				self._Ns = _ops.fermion_t_basis(L,kblock,a,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -599,7 +590,7 @@ class fermion_basis_1d(basis):
 		else: 
 			if type(Nf) is int:
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				_cn.fermion_n_basis(L,Nf,self._Ns,self._basis)
+				_ops.fermion_n_basis(L,Nf,self._Ns,self._basis)
 			else:
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis]
@@ -717,7 +708,7 @@ class fermion_basis_1d(basis):
 
 		pauli = self._blocks['pauli']
 
-		N_op = _cn.op_array_size[self._conserved]*self.Ns
+		N_op = op_array_size[self._conserved]*self.Ns
 		col = _np.zeros(N_op,dtype=self._basis_type)
 		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
@@ -1208,38 +1199,38 @@ def _get_vec_dense(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v[basis[ind_neg]] += vc[ind_neg]
 
 		if type(cAblock) is int:
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*cAblock
 			v[basis[ind_neg]] += vc[ind_neg]*cAblock
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 		
 		if type(cBblock) is int:
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*cBblock
 			v[basis[ind_neg]] += vc[ind_neg]*cBblock
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 		
 		if type(cblock) is int:
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*cblock
 			v[basis[ind_neg]] += vc[ind_neg]*cblock
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		if type(pblock) is int:
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*pblock
 			v[basis[ind_neg]] += vc[ind_neg]*pblock
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 
 		if type(pcblock) is int:
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 			v[basis[ind_pos]] += vc[ind_pos]*pcblock
 			v[basis[ind_neg]] += vc[ind_neg]*pcblock
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 		
-		shiftc(basis,-a,L)
+		_ops.py_shift(basis,a,L)
 	
 	return v
 
@@ -1301,60 +1292,60 @@ def _get_vec_sparse(v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
 		if type(cAblock) is int:
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 			data_pos *= cAblock
 			data_neg *= cAblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= cAblock
 			data_neg *= cAblock
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 
 		if type(cBblock) is int:
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 			data_pos *= cBblock
 			data_neg *= cBblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= cBblock
 			data_neg *= cBblock
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 
 		if type(cblock) is int:
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= cblock
 			data_neg *= cblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= cblock
 			data_neg *= cblock
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		if type(pblock) is int:
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 			data_pos *= pblock
 			data_neg *= pblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 
 		if type(pcblock) is int:
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= pcblock
 			data_neg *= pcblock
 			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pcblock
 			data_neg *= pcblock
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		v.sum_duplicates()
 		v.eliminate_zeros()
-		shiftc(basis,-a,L)
+		_ops.py_shift(basis,a,L)
 
 	return v
 
@@ -1392,117 +1383,61 @@ def _get_proj_sparse(basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 		v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 
 		if type(cAblock) is int:
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 			data_pos *= cAblock
 			data_neg *= cAblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= cAblock
 			data_neg *= cAblock
-			flip_sublat_A(basis,L)
+			_ops.py_flip_sublat_A(basis,L)
 
 		if type(cBblock) is int:
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 			data_pos *= cBblock
 			data_neg *= cBblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= cBblock
 			data_neg *= cBblock
-			flip_sublat_B(basis,L)
+			_ops.py_flip_sublat_B(basis,L)
 
 		if type(cblock) is int:
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= cblock
 			data_neg *= cblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= cblock
 			data_neg *= cblock
-			flipall(basis,L)
+			_ops.py_flip_all(basis,L)
 
 		if type(pblock) is int:
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 			data_pos *= pblock
 			data_neg *= pblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
-			fliplr(basis,L)
+			_ops.py_fliplr(basis,L)
 
 		if type(pcblock) is int:
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 			data_pos *= pcblock
 			data_neg *= pcblock
 			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
 			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pcblock
 			data_neg *= pcblock
-			fliplr(basis,L)
-			flipall(basis,L)
+			_ops.py_fliplr(basis,L)
+			_ops.py_flip_all(basis,L)
 
-		shiftc(basis,-a,L)
+		_ops.py_shift(basis,a,L)
 
 
 	return v
 
-
-
-
-
-def fliplr(x,length):
-	x1 = array(x)
-	x[:] = 0
-	for i in range(length):
-		x2 = array(x1)
-		x2 = right_shift(x2,i)
-		bitwise_and(x2,1,out=x2)
-		left_shift(x2,length-1-i,out=x2)
-		x += x2
-
-
-def flipall(x,length):
-	mask = 2**length-1
-	invert(x,out=x)
-	bitwise_and(x,mask,out=x)
-
-
-def flip_sublat_A(x,length):
-	# flip all even bits: sublat A
-	mask = sum(2**i for i in range(0,length,2))
-	bitwise_xor(x,mask,out=x)
-	
-def flip_sublat_B(x,length):
-	# flip all odd bits: sublat B
-	mask = sum(2**i for i in range(1,length,2))
-	bitwise_xor(x,mask,out=x)
-
-
-def shiftc(x,shift,period):
-	Imax=2**period-1
-
-	bitwise_and(x,Imax,x)
-	x1 = array(x)
-	if shift < 0:	
-		shift=abs(shift)
-		shift = shift % period
-		m_shift = period - shift
-
-		left_shift(x,shift,out=x)
-		bitwise_and(x,Imax,out=x)
-		right_shift(x1,m_shift,out=x1)
-		bitwise_or(x,x1,out=x)
-	else:
-		shift = shift % period
-		m_shift = period - shift
-
-		right_shift(x,shift,out=x)
-		left_shift(x1,m_shift,out=x1)
-		bitwise_and(x1,Imax,out=x1)
-		bitwise_or(x,x1,out=x)
-
-	del x1
 
 
