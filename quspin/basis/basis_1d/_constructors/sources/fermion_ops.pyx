@@ -30,7 +30,7 @@ cdef int fermion_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
             b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbit
             a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
             # calculate fermionic ME sign
-            if bit_count(r,indx[j]-1) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
+            if bit_count(r,indx[j]) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
                 sign=1
             else:
                 sign=-1

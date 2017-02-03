@@ -324,7 +324,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	Ns = psi[0,].size
 
 	
-	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
+	if basis.__class__.__name__[:-9] in ['spin','hcb','fermion']:
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
