@@ -1,3 +1,9 @@
+from __future__ import print_function, division
+
+import sys,os
+quspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,quspin_path)
+
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spin_basis_1d, hcb_basis_1d, fermion_basis_1d # Hilbert space spin basis
 import numpy as np # generic math functions
@@ -19,7 +25,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 		J_pp=[[-J,i,(i+1)%L] for i in range(L)] # PBC
 		J_mm=[[+J,i,(i+1)%L] for i in range(L)] # PBC
 
-		basis_fermion = fermion_basis_1d(L=L,Nup=xrange(1,L+1,2))#,a=1,kblock=0,pblock=1)
+		basis_fermion = fermion_basis_1d(L=L,Nf=xrange(1,L+1,2))
 
 	elif PBC==-1:
 
@@ -33,12 +39,12 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 		J_pp.append([+J,L-1,0])
 		J_mm.append([-J,L-1,0])
 
-		basis_fermion = fermion_basis_1d(L=L,Nup=xrange(0,L+1,2))#,a=1,kblock=0,pblock=1)
+		basis_fermion = fermion_basis_1d(L=L,Nf=xrange(0,L+1,2))
 
 
 	static_fermion =[["+-",J_pm],["-+",J_mp],["++",J_pp],["--",J_mm],['z',x_field]]
 
-	H_fermion=hamiltonian(static_fermion,[],basis=basis_fermion,dtype=np.float32,check_herm=False,check_symm=False,check_pcon=False)
+	H_fermion=hamiltonian(static_fermion,[],basis=basis_fermion,dtype=np.float32,check_pcon=False)
 	E_fermion=H_fermion.eigvalsh()
 
 	#### define spin model
@@ -53,7 +59,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 
 	static_spin =[["zz",J_zz],["x",x_field]]
 
-	H_spin=hamiltonian(static_spin,[],basis=basis_spin,dtype=np.float32,check_herm=False,check_symm=False,check_pcon=False)
+	H_spin=hamiltonian(static_spin,[],basis=basis_spin,dtype=np.float32)
 	E_spin=H_spin.eigvalsh()
 
 
@@ -69,7 +75,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 
 	static_hcb =[["zz",J_zz],["+",x_field],["-",x_field]]
 
-	H_hcb=hamiltonian(static_hcb,[],basis=basis_hcb,dtype=np.float32,check_herm=False,check_symm=False,check_pcon=False)
+	H_hcb=hamiltonian(static_hcb,[],basis=basis_hcb,dtype=np.float32)
 	E_hcb=H_hcb.eigvalsh()
 
 

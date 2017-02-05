@@ -990,8 +990,6 @@ class hcb_basis_1d(basis):
 		return tuple(str_list)
 
 
-	"""
-
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
 			raise ValueError("'|' character found in op: {0},{1}".format(op[0],op[1]))
@@ -1006,6 +1004,8 @@ class hcb_basis_1d(basis):
 			op[0] = "".join(op1)
 			op[1] = tuple(op2)
 		return tuple(op)
+
+
 
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
@@ -1035,67 +1035,9 @@ class hcb_basis_1d(basis):
 
 
 	def _expand_opstr(self,op,num):
-		opstr = str(op[0])
-		indx = list(op[1])
-		J = op[2]
- 
-		if len(opstr) <= 1:
-			if opstr == "x":
-				op1 = list(op)
-				op1[0] = op1[0].replace("x","+")
-				op1[2] *= 0.5
-				op1.append(num)
-
-				op2 = list(op)
-				op2[0] = op2[0].replace("x","-")
-				op2[2] *= 0.5
-				op2.append(num)
-
-				return (tuple(op1),tuple(op2))
-			elif opstr == "y":
-				op1 = list(op)
-				op1[0] = op1[0].replace("y","+")
-				op1[2] *= -0.5j
-				op1.append(num)
-
-				op2 = list(op)
-				op2[0] = op2[0].replace("y","-")
-				op2[2] *= 0.5j
-				op2.append(num)
-
-				return (tuple(op1),tuple(op2))
-			else:
-				op = list(op)
-				op.append(num)
-				return [tuple(op)]	
-		else:
-	 
-			i = len(opstr)//2
-			op1 = list(op)
-			op1[0] = opstr[:i]
-			op1[1] = tuple(indx[:i])
-			op1[2] = complex(J)
-			op1 = tuple(op1)
-
-			op2 = list(op)
-			op2[0] = opstr[i:]
-			op2[1] = tuple(indx[i:])
-			op2[2] = complex(1)
-			op2 = tuple(op2)
-
-			l1 = self._expand_opstr(op1,num)
-			l2 = self._expand_opstr(op2,num)
-
-			l = []
-			for op1 in l1:
-				for op2 in l2:
-					op = list(op1)
-					op[0] += op2[0]
-					op[1] += op2[1]
-					op[2] *= op2[2]
-					l.append(tuple(op))
-
-			return tuple(l)
+		op = list(op)
+		op.append(num)
+		return [tuple(op)]	
 
 
 
@@ -1166,7 +1108,6 @@ class hcb_basis_1d(basis):
 
 		return static_blocks,dynamic_blocks
 
-	"""
 
 
 

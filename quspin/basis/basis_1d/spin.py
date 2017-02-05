@@ -1,12 +1,10 @@
 from ..base import basis,MAXPRINT
 from ._constructors import kblock_Ns_estimate,op_array_size
 from ._constructors import spin_basis_ops as _ops
-#from ._1d_kblock_Ns import kblock_Ns
 from . import _check_1d_symm as _check
 import numpy as _np
 from scipy.misc import comb
 from numpy import array,asarray
-from numpy import right_shift,left_shift,invert,bitwise_and,bitwise_or,bitwise_xor
 from numpy import cos,sin,exp,pi
 from numpy.linalg import norm
 
@@ -998,6 +996,8 @@ class spin_basis_1d(basis):
 			op[0] = "".join(op1)
 			op[1] = tuple(op2)
 		return tuple(op)
+
+
 
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
