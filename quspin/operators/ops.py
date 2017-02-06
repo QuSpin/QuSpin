@@ -3036,12 +3036,14 @@ class exp_op(object):
 		self._iterate = Value
 		
 
-	def get_mat(self,time=0.0):
+	def get_mat(self,time=0.0,dense=False):
 
-		if self.O.is_dense:
+		if self.O.is_dense or dense:
 			return _np.linalg.expm(self._a * self.O.todense(time))
 		else:
 			return _sp.linalg.expm(self._a * self.O.tocsc(time))
+
+
 
 	def dot(self, other, time=0.0, shift=None):
 
