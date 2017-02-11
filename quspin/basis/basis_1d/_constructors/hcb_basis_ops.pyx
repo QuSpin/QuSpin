@@ -12,7 +12,6 @@ from types cimport *
 
 
 import numpy as _np
-from numpy import array,right_shift,left_shift,invert,bitwise_and,bitwise_xor,bitwise_or
 from scipy.misc import comb
 
 _np.import_array()
