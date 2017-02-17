@@ -14,6 +14,7 @@ import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
 import scipy.sparse as _sp
 import numpy as _np
+import functools
 
 from numpy import zeros_like
 
@@ -105,6 +106,9 @@ def ishamiltonian(obj):
 def isexp_op(obj):
 	return isinstance(obj,exp_op)
 
+# used to create linear operator of a hamiltonian
+def hamiltonian_dot(hamiltonian,time,v):
+	return hamiltonian.dot(v,time=time,check=False)
 
 class hamiltonian(object):
 	def __init__(self,static_list,dynamic_list,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
@@ -950,13 +954,8 @@ class hamiltonian(object):
 		if char in ("g","G"):
 			raise TypeError("eigsh not supported by long double types")
 
-		def matvec(v):
-			return self.dot(v,time=time,check=False)
 
-
-		LO = _sla.LinearOperator(self.get_shape,matvec)
-
-		return _sla.eigsh(LO,**eigsh_args)
+		return _sla.eigsh(self.aslinearoperator(time),**eigsh_args)
 
 
 
@@ -1377,7 +1376,23 @@ class hamiltonian(object):
 			return self
 		
 
+	def aslinearoperator(self,time=0):
+		if not _np.isscalar(time):
+			raise ValueError("time must be scalar when creating LinearOperator")
+			
+		matvec = functools.partial(hamiltonian_dot,self,time)
+		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)				
 
+
+	def matvec(self,V):
+		return self.dot(V)
+
+	def rmatvec(self,V):
+		return self.H.dot(V)
+
+	def matmat(self,V):
+		return self.dot(V)
 
 
 	def copy(self):
@@ -2794,7 +2809,8 @@ class HamiltonianOperator(object):
 
 
 
-
+def operator_dot(op,pars,v):
+	return op.dot(v,pars=pars,check=False)
 
 class operator(object):
 	def __init__(self,operator_dict,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
@@ -3123,6 +3139,21 @@ class operator(object):
 		return hamiltonian(static,dynamic,dtype=self._dtype)
 
 
+	def aslinearoperator(self,pars={}):
+		pars = self._check_scalar_pars(pars)
+		matvec = functools.partial(operator_dot,self,pars)
+		rmatvec = functools.partial(operator_dot,self.H,pars)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)				
+
+
+	def matvec(self,V):
+		return self.dot(V)
+
+	def rmatvec(self,V):
+		return self.H.dot(V)
+
+	def matmat(self,V):
+		return self.dot(V)
 
 	def rdot(self,V,pars={},check=True): # V * H(time)
 		if self.Ns <= 0:
@@ -3370,7 +3401,8 @@ class operator(object):
 				return Vl.T.conj().dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
-		
+
+
 
 
 
@@ -3383,12 +3415,7 @@ class operator(object):
 		if char in ("g","G"):
 			raise TypeError("eigsh not supported by long double types")
 
-		def matvec(v):
-			return self.dot(v,pars=pars,check=False)
-
-		LO = _sla.LinearOperator(self.get_shape,matvec)
-
-		return _sla.eigsh(LO,**eigsh_args)
+		return _sla.eigsh(self.aslinearoperator(pars),**eigsh_args)
 
 
 	def eigh(self,pars={},**eigh_args):
@@ -3739,7 +3766,6 @@ class exp_op(object):
 			return _np.linalg.expm(self._a * self.O.todense(time))
 		else:
 			return _sp.linalg.expm(self._a * self.O.tocsc(time))
-
 
 
 	def dot(self, other, time=0.0, shift=None):
