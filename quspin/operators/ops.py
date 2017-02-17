@@ -23,7 +23,8 @@ from scipy.sparse.linalg import expm_multiply as _expm_multiply
 from copy import deepcopy as _deepcopy
 import warnings
 
-__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator"]
+__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator",
+			"exp_op","isexp_op","HamiltonianOperator","operator"]
 
 
 
@@ -617,7 +618,7 @@ class hamiltonian(object):
 		if not check:
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
 			return V_dot
 
 
@@ -633,7 +634,7 @@ class hamiltonian(object):
 	
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
 
 			if reshape:
 				return V_dot.reshape((-1,))
@@ -644,7 +645,7 @@ class hamiltonian(object):
 	
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
 
 
 		elif V.__class__ is _np.matrix:
@@ -659,7 +660,7 @@ class hamiltonian(object):
 
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
 
 			if reshape:
 				return V_dot.reshape((-1,))
@@ -681,7 +682,7 @@ class hamiltonian(object):
 
 			V_dot = self._static.__rmul__(V)
 			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd,__rmul__(V))
+				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
 
 		return V_dot
 
@@ -750,6 +751,7 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 
+			return V_dot
 
 		elif _sp.issparse(V):
 			if V.shape[0] != self._shape[1]:
@@ -758,6 +760,7 @@ class hamiltonian(object):
 			V_dot = self._static.dot(V)	
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd.dot(V))
+
 			return V_dot
 
 		elif V.__class__ is _np.matrix:
@@ -768,23 +771,10 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 
-		elif V.__class__ == exp_op: # matrix op right dot
-
-			return V.rdot(self.__call__(time),time=time)
-			"""
-			V = V.expm()
-
-			if not _sp.issparse(V):
-				raise ValueError("Expecting a sparse matrix for 'V'!")
-			
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = self._static.dot(V)	
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.dot(V))
 			return V_dot
-			"""
+
+		elif V.__class__ == exp_op: # matrix op right dot
+			return V.rdot(self.__call__(time),time=time)
 		else:
 			V = _np.asanyarray(V)
 			if V.ndim not in [1,2]:
@@ -797,7 +787,7 @@ class hamiltonian(object):
 			for Hd,f,f_args in self._dynamic:
 				V_dot += f(time,*f_args)*(Hd.dot(V))
 
-		return V_dot
+			return V_dot
 
 
 
@@ -953,21 +943,22 @@ class hamiltonian(object):
 			solves for eigen values and eigen vectors, but can only solve for a few of them accurately.
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
-		if not _np.isscalar(time):
-			raise TypeError('expecting scalar argument for time')
-
-		if self.Ns <= 0:
-			return _np.asarray([]), _np.asarray([[]])
+		if self.Ns == 0:
+			return np.array([]),np.array([[]])
 
 		char = _np.dtype(self._dtype).char
-		if char == "g":
-			H = self.tocsr(time=time).astype(_np.float64)
-		elif char == "G": 
-			H = self.tocsr(time=time).astype(_np.complex128)
-		else:
-			H = self.tocsr(time=time)
+		if char in ("g","G"):
+			raise TypeError("eigsh not supported by long double types")
 
-		return _sla.eigsh(H,**eigsh_args)
+		def matvec(v):
+			return self.dot(v,time=time,check=False)
+
+
+		LO = _sla.LinearOperator(self.get_shape,matvec)
+
+		return _sla.eigsh(LO,**eigsh_args)
+
+
 
 
 
@@ -2800,6 +2791,712 @@ class HamiltonianOperator(object):
 				return self.__rmul__(inputs[0])
 			else:
 				return NotImplemented
+
+
+
+
+
+class operator(object):
+	def __init__(self,operator_dict,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
+		self._is_dense = False
+		self._ndim = 2
+		self._basis = None
+
+
+
+		if not (dtype in supported_dtypes):
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
+		else:
+			self._dtype=dtype
+		
+
+		opstr_dict = {}
+		other_dict = {}
+		self._operator_dict = {}
+		if isinstance(operator_dict,dict):
+			for key,op in operator_dict.items():
+				if type(op) not in [list,tuple]:
+					raise ValueError("operator_dict must contain values which are lists/tuples.")
+				opstr_list = []
+				other_list = []
+				for ele in op:
+					if check_static(ele):
+						opstr_list.append(ele)
+					else:
+						other_list.append(ele)
+
+				if opstr_list:
+					opstr_dict[key] = opstr_list
+				if other_list:
+					other_dict[key] = other_list
+		else: 
+			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
+
+
+
+		if opstr_dict:
+			# check if user input basis
+			basis=kwargs.get('basis')
+
+			if basis is not None:
+				kwargs.pop('basis')
+				if len(kwargs) > 0:
+					wrong_keys = set(kwargs.keys())
+					temp = ", ".join(["{}" for key in wrong_keys])
+					raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
+
+			# if not
+			if basis is None: 
+				if N is None: # if L is missing 
+					raise Exception('if opstrs in use, argument N needed for basis class')
+
+				if type(N) is not int: # if L is not int
+					raise TypeError('argument N must be integer')
+
+				basis=_default_basis(N,**kwargs)
+
+			elif not _isbasis(basis):
+				raise TypeError('expecting instance of basis class for argument: basis')
+
+
+			static_opstr_list = []
+			for key,opstr_list in opstr_dict.items():
+				static_opstr_list.extend(opstr_list)
+
+			if check_herm:
+				basis.check_hermitian(static_opstr_list, [])
+
+			if check_symm:
+				basis.check_symm(static_opstr_list,[])
+
+			if check_pcon:
+				basis.check_pcon(static_opstr_list,[])
+
+			self._basis=basis
+			self._shape=(basis.Ns,basis.Ns)
+
+			for key,opstr_list in opstr_dict.items():
+				self._operator_dict[key]=_make_static(basis,opstr_list,dtype)
+
+		if other_dict:
+			if not hasattr(self,"_shape"):
+				found = False
+				if shape is None: # if no shape argument found, search to see if the inputs have shapes.
+					for key,O in other_dict.items():
+						try: # take the first shape found
+							shape = O.shape
+							found = True
+							break
+						except AttributeError: 
+							continue
+				else:
+					found = True
+
+				if not found:
+					raise ValueError('missing argument shape')
+				if shape[0] != shape[1]:
+					raise ValueError('operator must be square matrix')
+
+				self._shape=shape
+
+
+
+			for key,O_list in other_dict.items():
+				for i,O in enumerate(O_list):
+					if _sp.issparse(O):
+						self._mat_checks(O)
+						if i == 0:
+							self._operator_dict[key] = O
+						else:
+							self._operator_dict[key] = self._operator_dict[key] + O
+					elif O.__class__ is _np.ndarray:
+						self._mat_checks(O)
+						self._is_dense=True
+						if i == 0:
+							self._operator_dict[key] = O
+						else:
+							self._operator_dict[key] = self._operator_dict[key] + O
+					elif O.__class__ is _np.matrix:
+						self._mat_checks(O)
+						self._is_dense=True
+						if i == 0:
+							self._operator_dict[key] = O
+						else:
+							self._operator_dict[key] = self._operator_dict[key] + O
+					else:
+						O = _np.asanyarray(O)
+						self._mat_checks(O)
+						if i == 0:
+							self._operator_dict[key] = O
+						else:
+							self._operator_dict[key] = self._operator_dict[key] + O
+					
+
+		else:
+			if not hasattr(self,"_shape"):
+				if shape is None:
+					# check if user input basis
+					basis=kwargs.get('basis')	
+
+					# if not
+					if basis is None: 
+						if N is None: # if N is missing 
+							raise Exception("argument N or shape needed to create empty hamiltonian")
+
+						if type(N) is not int: # if L is not int
+							raise TypeError('argument N must be integer')
+
+						basis=_default_basis(N,**kwargs)
+
+					elif not _isbasis(basis):
+						raise TypeError('expecting instance of basis class for argument: basis')
+
+					shape = (basis.Ns,basis.Ns)
+
+				else:
+					basis=kwargs.get('basis')	
+					if not basis is None: 
+						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
+
+			
+				if len(shape) != 2:
+					raise ValueError('expecting ndim = 2')
+				if shape[0] != shape[1]:
+					raise ValueError('hamiltonian must be square matrix')
+
+				self._shape=shape
+
+		self._Ns = self._shape[0]
+
+	@property
+	def basis(self):
+		if self._basis is not None:
+			return self._basis
+		else:
+			raise AttributeError("object has no attribute 'basis'")
+
+	@property
+	def ndim(self):
+		return self._ndim
+	
+	@property
+	def Ns(self):
+		return self._Ns
+
+	@property
+	def get_shape(self):
+		return self._shape
+
+	@property
+	def is_dense(self):
+		return self._is_dense
+
+	@property
+	def dtype(self):
+		return _np.dtype(self._dtype).name
+
+	@property
+	def T(self):
+		return self.transpose()
+
+	@property
+	def H(self):
+		return self.getH()
+
+	def copy(self):
+		return _deepcopy(self)
+
+	def transpose(self,copy = False):
+		for key,op in self._operator_dict.items():
+			self._operator_dict[key] = op.transpose()
+		return self
+
+	def conj(self):
+		for key,op in self._operator_dict.items():
+			self._operator_dict[key] = op.conj()
+		return self	
+
+	def getH(self,copy=False):
+		return self.conj().transpose(copy=copy)
+
+	def astype(self,dtype):
+		if dtype not in supported_dtypes:
+			raise ValueError("operator can only be cast to floating point types")
+
+		for key,op in self._operator_dict.items():
+			self._operator_dict[key] = op.astype(dtype)
+		return self	
+
+
+	def tocsr(self,pars={}):
+		pars = self._check_scalar_pars(pars)
+
+		H = _sp.csr_matrix(self.get_shape,dtype=self._dtype)
+
+		for key,J in pars.items():
+			try:
+				H += J*_sp.csr_matrix(self._operator_dict[key])
+			except:
+				H = H + J*_sp.csr_matrix(self._operator_dict[key])
+
+		return H
+
+	def tocsc(self,pars={}):
+		pars = self._check_scalar_pars(pars)
+
+		H = _sp.csc_matrix(self.get_shape,dtype=self._dtype)
+
+		for key,J in pars.items():
+			try:
+				H += J*_sp.csc_matrix(self._operator_dict[key])
+			except:
+				H = H + J*_sp.csc_matrix(self._operator_dict[key])
+
+		return H
+
+
+	
+	def todense(self,out=None,pars={}):
+		"""
+		args:
+			time=0, the time to evalute drive at.
+
+		description:
+			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
+			This function can overflow memory if not careful.
+		"""
+		pars = self._check_scalar_pars(pars)
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+			out = _np.asmatrix(out)
+
+		for key,J in pars.items():
+			out += J * self._operator_dict[key]
+		
+		return out
+
+
+	def toarray(self,pars={},out=None):
+		"""
+		args:
+			time=0, the time to evalute drive at.
+
+		description:
+			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
+			This function can overflow memory if not careful.
+		"""
+
+		pars = self._check_scalar_pars(pars)
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+
+		for key,J in pars.items():
+			out += J * self._operator_dict[key]
+		
+		return out
+
+
+	def __call__(self,**pars):
+		pars = self._check_scalar_pars(pars)
+		if self.is_dense:
+			return self.todense(pars)
+		else:
+			return self.tocsr(pars)
+
+	def tohamiltonian(self,**pars):
+		pars = self._check_hamiltonian_pars(pars)
+
+		static=[]
+		dynamic=[]
+
+		for key,J in pars.items():
+			if type(J) is tuple and len(J) == 2:
+				dynamic.append([self._operator_dict[key],J[0],J[1]])
+			elif _np.isscalar(J):
+				if J == 1.0:
+					static.append(self._operator_dict[key])
+				else:
+					static.append(J*self._operator_dict[key])
+
+		return hamiltonian(static,dynamic,dtype=self._dtype)
+
+
+
+	def rdot(self,V,pars={},check=True): # V * H(time)
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		pars = self._check_scalar_pars(pars)
+
+		if not check:
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].__rmul__(V)
+			return V_dot
+
+		if V.ndim > 2:
+			raise ValueError("Expecting V.ndim < 3.")
+
+
+				
+
+
+		if V.__class__ is _np.ndarray:
+			if V.ndim != 2:
+				reshape = True
+				V = V.reshape((1,-1))
+			else:
+				reshape = False 
+				
+			if V.shape[1] != self._shape[0]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+	
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].__rmul__(V)
+
+
+			if reshape:
+				return V_dot.reshape((-1,))
+
+		elif _sp.issparse(V):
+			if V.shape[1] != self._shape[0]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+	
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].__rmul__(V)
+
+
+		elif V.__class__ is _np.matrix:
+			if V.ndim != 2:
+				reshape = True
+				V = V.reshape((1,-1))
+			else:
+				reshape = False 
+
+			if V.shape[1] != self._shape[0]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].__rmul__(V)
+
+			if reshape:
+				return V_dot.reshape((-1,))
+
+
+		else:
+			V = _np.asanyarray(V)
+
+			if V.ndim != 2:
+				reshape = True
+				V = V.reshape((1,-1))
+			else:
+				reshape = False 
+
+			if V.shape[1] != self._shape[0]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].__rmul__(V)
+
+			if reshape:
+				return V_dot.reshape((-1,))
+
+		return V_dot
+
+		
+
+	def dot(self,V,pars={},check=True):
+		"""
+		args:
+			V, the vector to multiple with
+			time=0, the time to evalute drive at.
+
+		description:
+			This function does the spare matrix vector multiplication of V with the Hamiltonian evaluated at 
+			the specified time. It is faster in this case to multiple each individual parts of the Hamiltonian 
+			first, then add all those vectors together.
+		"""
+
+		
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		pars = self._check_scalar_pars(pars)
+
+		if not check:
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].dot(V)
+			return V_dot
+
+		if V.ndim > 2:
+			raise ValueError("Expecting V.ndim < 3.")
+
+
+
+
+		if V.__class__ is _np.ndarray:
+			if V.shape[0] != self._shape[1]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+	
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].dot(V)
+
+
+		elif _sp.issparse(V):
+			if V.shape[0] != self._shape[1]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)	
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].dot(V)
+
+
+
+		elif V.__class__ is _np.matrix:
+			if V.shape[0] != self._shape[1]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].dot(V)
+
+		else:
+			V = _np.asanyarray(V)
+			if V.ndim not in [1,2]:
+				raise ValueError("Expecting 1 or 2 dimensional array")
+
+			if V.shape[0] != self._shape[1]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			for key,J in pars.items():
+				V_dot += J*self._operator_dict[key].dot(V)
+
+
+		return V_dot
+
+
+	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
+		"""
+		args:
+			Vl, the vector to multiple with on left side
+			Vr, the vector to multiple with on the right side
+			time=0, the time to evalute drive at.
+
+		description:
+			This function takes the matrix element of the Hamiltonian at the specified time
+			between Vl and Vr.
+		"""
+		if self.Ns <= 0:
+			return np.array([])
+
+		pars = self._check_scalar_pars(pars)
+
+		Vr=self.dot(Vr,pars=pars,check=check)
+
+		if not check:
+			if diagonal:
+				return _np.einsum("ij,ij->j",Vl.conj(),Vr)
+			else:
+				return Vl.T.conj().dot(Vr)
+ 
+
+		if Vl.__class__ is _np.ndarray:
+			if Vl.ndim == 1:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+
+				return Vl.conj().dot(Vr)
+			elif Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+
+				if diagonal:
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
+				else:
+					return Vl.T.conj().dot(Vr)
+			else:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+
+		elif Vl.__class__ is _np.matrix:
+			if Vl.ndim == 1:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+
+				return Vl.conj().dot(Vr)
+			elif Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+
+				if diagonal:
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
+				else:
+					return Vl.H.dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
+
+		elif _sm.issparse(Vl):
+			if Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError('dimension mismatch')
+				if diagonal:
+					return Vl.H.dot(Vr).diagonal()
+				else:
+					return Vl.H.dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
+
+		else:
+			Vl = _np.asanyarray(Vl)
+			if Vl.ndim == 1:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+				if diagonal:
+					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
+				else:
+					return Vl.conj().dot(Vr)
+			elif Vl.ndim == 2:
+				if Vl.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+
+				return Vl.T.conj().dot(Vr)
+			else:
+				raise ValueError('Expecting Vl to have ndim < 3')
+		
+
+
+
+	def eigsh(self,pars={},**eigsh_args):
+
+		if self.Ns == 0:
+			return np.array([]),np.array([[]])
+
+		char = _np.dtype(self._dtype).char
+		if char in ("g","G"):
+			raise TypeError("eigsh not supported by long double types")
+
+		def matvec(v):
+			return self.dot(v,pars=pars,check=False)
+
+		LO = _sla.LinearOperator(self.get_shape,matvec)
+
+		return _sla.eigsh(LO,**eigsh_args)
+
+
+	def eigh(self,pars={},**eigh_args):
+		"""
+		args:
+			time=0, time to evaluate drive at.
+
+		description:
+			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
+			uses wrapped lapack functions which are contained in module py_lapack
+		"""
+		eigh_args["overwrite_a"] = True
+		
+		if self.Ns <= 0:
+			return _np.asarray([]),_np.asarray([[]])
+
+		# fill dense array with hamiltonian
+		H_dense = self.todense(pars=pars)		
+		# calculate eigh
+		E,H_dense = _la.eigh(H_dense,**eigh_args)
+		return E,H_dense
+
+
+
+	def eigvalsh(self,pars={},**eigvalsh_args):
+		"""
+		args:
+			time=0, time to evaluate drive at.
+
+		description:
+			function which diagonalizes hamiltonian using dense methods solves for eigen values 
+			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
+		"""
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		H_dense = self.todense(pars=pars)
+		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
+#		eigvalsh_args["overwrite_a"] = True
+#		E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		return E
+
+
+	def _check_hamiltonian_pars(self,pars):
+
+		if not isinstance(pars,dict):
+			raise ValueError("expecing dictionary for parameters.")
+
+		extra =  set(pars.keys()) - set(self._operator_dict.keys())
+		if extra:
+			raise ValueError("unexpected couplings: {}".format(extra))
+
+		missing =  set(self._operator_dict.keys()) - set(pars.keys())
+		for key in missing:
+			pars[key] = 1.0
+
+
+		for key,J in pars.items():
+			if not( (type(J) is tuple and len(J) == 2) or _np.isscalar(J) ):
+				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
+
+
+		return pars
+
+	def _check_scalar_pars(self,pars):
+
+		if not isinstance(pars,dict):
+			raise ValueError("expecing dictionary for parameters.")
+
+		extra =  set(pars.keys()) - set(self._operator_dict.keys())
+		if extra:
+			raise ValueError("unexpected couplings: {}".format(extra))
+
+
+		missing =  set(self._operator_dict.keys()) - set(pars.keys())
+		for key in missing:
+			pars[key] = 1.0
+
+		for J in pars.values():
+			if not _np.isscalar(J):
+				raise ValueError("Expecting scalar values for elements of pars")
+
+
+		return pars
+
+	# checks
+	def _mat_checks(self,other,casting="same_kind"):
+		if other.shape != self._shape: # only accepts square matricies 
+			raise ValueError('shapes do not match')
+		if not _np.can_cast(other.dtype,self._dtype,casting=casting):
+			raise ValueError('cannot cast types')
+
+	"""
+	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
+		'''
+		Method for compatibility with NumPy's ufuncs and dot
+		functions.
+		'''
+
+		if (func == np.dot) or (func == np.multiply):
+			if pos == 0:
+				return self.__mul__(inputs[1])
+			if pos == 1:
+				return self.__rmul__(inputs[0])
+			else:
+				return NotImplemented
+	"""
 
 
 
