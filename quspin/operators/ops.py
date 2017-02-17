@@ -25,7 +25,7 @@ from copy import deepcopy as _deepcopy
 import warnings
 
 __all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator",
-			"exp_op","isexp_op","HamiltonianOperator","operator"]
+			"exp_op","isexp_op","HamiltonianOperator","ops_dict"]
 
 
 
@@ -1379,7 +1379,7 @@ class hamiltonian(object):
 	def aslinearoperator(self,time=0):
 		if not _np.isscalar(time):
 			raise ValueError("time must be scalar when creating LinearOperator")
-			
+
 		matvec = functools.partial(hamiltonian_dot,self,time)
 		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)				
@@ -1452,10 +1452,10 @@ class hamiltonian(object):
 						"bsr":"Block Sparse Row"
 						}
 		if self.is_dense:
-			return "<{0}x{1} qspin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+			return "<{0}x{1} QuSpin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 		else:
 			fmt = matrix_format[self._static.getformat()]
-			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
+			return "<{0}x{1} QuSpin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
 
 
 	def __neg__(self): # -self
@@ -2545,7 +2545,7 @@ class HamiltonianOperator(object):
 			return self.conj().transpose()
 
 	def __repr__(self):
-		return "<{0}x{1} qspin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+		return "<{0}x{1} QuSpin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 
 	def get_LinearOperator(self):
 		return self._LinearOperator
@@ -2808,12 +2808,15 @@ class HamiltonianOperator(object):
 				return NotImplemented
 
 
-
-def operator_dot(op,pars,v):
+# function used to create LinearOperator with fixed set of parameters. 
+def ops_dict_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
-class operator(object):
-	def __init__(self,operator_dict,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
+class ops_dict(object):
+	def __init__(self,input_dict,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
+		"""
+
+		"""
 		self._is_dense = False
 		self._ndim = 2
 		self._basis = None
@@ -2828,11 +2831,14 @@ class operator(object):
 
 		opstr_dict = {}
 		other_dict = {}
-		self._operator_dict = {}
-		if isinstance(operator_dict,dict):
-			for key,op in operator_dict.items():
+		self._ops_dict = {}
+		if isinstance(input_dict,dict):
+			for key,op in input_dict.items():
+				if type(key) is not str:
+					raise ValueError("keys to input_dict must be strings.")
+					
 				if type(op) not in [list,tuple]:
-					raise ValueError("operator_dict must contain values which are lists/tuples.")
+					raise ValueError("input_dict must contain values which are lists/tuples.")
 				opstr_list = []
 				other_list = []
 				for ele in op:
@@ -2847,7 +2853,6 @@ class operator(object):
 					other_dict[key] = other_list
 		else: 
 			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
-
 
 
 		if opstr_dict:
@@ -2892,19 +2897,20 @@ class operator(object):
 			self._shape=(basis.Ns,basis.Ns)
 
 			for key,opstr_list in opstr_dict.items():
-				self._operator_dict[key]=_make_static(basis,opstr_list,dtype)
+				self._ops_dict[key]=_make_static(basis,opstr_list,dtype)
 
 		if other_dict:
 			if not hasattr(self,"_shape"):
 				found = False
 				if shape is None: # if no shape argument found, search to see if the inputs have shapes.
-					for key,O in other_dict.items():
-						try: # take the first shape found
-							shape = O.shape
-							found = True
-							break
-						except AttributeError: 
-							continue
+					for key,O_list in other_dict.items():
+						for O in O_list:
+							try: # take the first shape found
+								shape = O.shape
+								found = True
+								break
+							except AttributeError: 
+								continue
 				else:
 					found = True
 
@@ -2922,30 +2928,46 @@ class operator(object):
 					if _sp.issparse(O):
 						self._mat_checks(O)
 						if i == 0:
-							self._operator_dict[key] = O
+							self._ops_dict[key] = O
 						else:
-							self._operator_dict[key] = self._operator_dict[key] + O
+							try:
+								self._ops_dict[key] += O
+							except NotImplementedError:
+								self._ops_dict[key] = self._ops_dict[key] + O
+
 					elif O.__class__ is _np.ndarray:
 						self._mat_checks(O)
 						self._is_dense=True
 						if i == 0:
-							self._operator_dict[key] = O
+							self._ops_dict[key] = O
 						else:
-							self._operator_dict[key] = self._operator_dict[key] + O
+							try:
+								self._ops_dict[key] += O
+							except NotImplementedError:
+								self._ops_dict[key] = self._ops_dict[key] + O
+
 					elif O.__class__ is _np.matrix:
 						self._mat_checks(O)
 						self._is_dense=True
 						if i == 0:
-							self._operator_dict[key] = O
+							self._ops_dict[key] = O
 						else:
-							self._operator_dict[key] = self._operator_dict[key] + O
+							try:
+								self._ops_dict[key] += O
+							except NotImplementedError:
+								self._ops_dict[key] = self._ops_dict[key] + O
+
 					else:
 						O = _np.asanyarray(O)
 						self._mat_checks(O)
 						if i == 0:
-							self._operator_dict[key] = O
+							self._ops_dict[key] = O
 						else:
-							self._operator_dict[key] = self._operator_dict[key] + O
+							try:
+								self._ops_dict[key] += O
+							except NotImplementedError:
+								self._ops_dict[key] = self._ops_dict[key] + O
+
 					
 
 		else:
@@ -3023,13 +3045,13 @@ class operator(object):
 		return _deepcopy(self)
 
 	def transpose(self,copy = False):
-		for key,op in self._operator_dict.items():
-			self._operator_dict[key] = op.transpose()
+		for key,op in self._ops_dict.items():
+			self._ops_dict[key] = op.transpose()
 		return self
 
 	def conj(self):
-		for key,op in self._operator_dict.items():
-			self._operator_dict[key] = op.conj()
+		for key,op in self._ops_dict.items():
+			self._ops_dict[key] = op.conj()
 		return self	
 
 	def getH(self,copy=False):
@@ -3039,8 +3061,8 @@ class operator(object):
 		if dtype not in supported_dtypes:
 			raise ValueError("operator can only be cast to floating point types")
 
-		for key,op in self._operator_dict.items():
-			self._operator_dict[key] = op.astype(dtype)
+		for key,op in self._ops_dict.items():
+			self._ops_dict[key] = op.astype(dtype)
 		return self	
 
 
@@ -3051,9 +3073,9 @@ class operator(object):
 
 		for key,J in pars.items():
 			try:
-				H += J*_sp.csr_matrix(self._operator_dict[key])
+				H += J*_sp.csr_matrix(self._ops_dict[key])
 			except:
-				H = H + J*_sp.csr_matrix(self._operator_dict[key])
+				H = H + J*_sp.csr_matrix(self._ops_dict[key])
 
 		return H
 
@@ -3064,9 +3086,9 @@ class operator(object):
 
 		for key,J in pars.items():
 			try:
-				H += J*_sp.csc_matrix(self._operator_dict[key])
+				H += J*_sp.csc_matrix(self._ops_dict[key])
 			except:
-				H = H + J*_sp.csc_matrix(self._operator_dict[key])
+				H = H + J*_sp.csc_matrix(self._ops_dict[key])
 
 		return H
 
@@ -3088,7 +3110,7 @@ class operator(object):
 			out = _np.asmatrix(out)
 
 		for key,J in pars.items():
-			out += J * self._operator_dict[key]
+			out += J * self._ops_dict[key]
 		
 		return out
 
@@ -3109,7 +3131,7 @@ class operator(object):
 			out = _np.zeros(self._shape,dtype=self.dtype)
 
 		for key,J in pars.items():
-			out += J * self._operator_dict[key]
+			out += J * self._ops_dict[key]
 		
 		return out
 
@@ -3129,20 +3151,20 @@ class operator(object):
 
 		for key,J in pars.items():
 			if type(J) is tuple and len(J) == 2:
-				dynamic.append([self._operator_dict[key],J[0],J[1]])
+				dynamic.append([self._ops_dict[key],J[0],J[1]])
 			elif _np.isscalar(J):
 				if J == 1.0:
-					static.append(self._operator_dict[key])
+					static.append(self._ops_dict[key])
 				else:
-					static.append(J*self._operator_dict[key])
+					static.append(J*self._ops_dict[key])
 
 		return hamiltonian(static,dynamic,dtype=self._dtype)
 
 
 	def aslinearoperator(self,pars={}):
 		pars = self._check_scalar_pars(pars)
-		matvec = functools.partial(operator_dot,self,pars)
-		rmatvec = functools.partial(operator_dot,self.H,pars)
+		matvec = functools.partial(ops_dict_dot,self,pars)
+		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)				
 
 
@@ -3155,98 +3177,11 @@ class operator(object):
 	def matmat(self,V):
 		return self.dot(V)
 
-	def rdot(self,V,pars={},check=True): # V * H(time)
-		if self.Ns <= 0:
-			return _np.asarray([])
-
-		pars = self._check_scalar_pars(pars)
-
-		if not check:
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
-			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].__rmul__(V)
-			return V_dot
-
-		if V.ndim > 2:
-			raise ValueError("Expecting V.ndim < 3.")
-
-
-				
-
-
-		if V.__class__ is _np.ndarray:
-			if V.ndim != 2:
-				reshape = True
-				V = V.reshape((1,-1))
-			else:
-				reshape = False 
-				
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
-			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].__rmul__(V)
-
-
-			if reshape:
-				return V_dot.reshape((-1,))
-
-		elif _sp.issparse(V):
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
-			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].__rmul__(V)
-
-
-		elif V.__class__ is _np.matrix:
-			if V.ndim != 2:
-				reshape = True
-				V = V.reshape((1,-1))
-			else:
-				reshape = False 
-
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
-			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].__rmul__(V)
-
-			if reshape:
-				return V_dot.reshape((-1,))
-
-
-		else:
-			V = _np.asanyarray(V)
-
-			if V.ndim != 2:
-				reshape = True
-				V = V.reshape((1,-1))
-			else:
-				reshape = False 
-
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
-			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].__rmul__(V)
-
-			if reshape:
-				return V_dot.reshape((-1,))
-
-		return V_dot
-
-		
-
 	def dot(self,V,pars={},check=True):
 		"""
 		args:
 			V, the vector to multiple with
-			time=0, the time to evalute drive at.
+			pars, dictionary to evaluate couples at. 
 
 		description:
 			This function does the spare matrix vector multiplication of V with the Hamiltonian evaluated at 
@@ -3263,7 +3198,7 @@ class operator(object):
 		if not check:
 			V_dot = _np.zeros(V.shape,dtype=self._dtype)
 			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].dot(V)
+				V_dot += J*self._ops_dict[key].dot(V)
 			return V_dot
 
 		if V.ndim > 2:
@@ -3278,7 +3213,7 @@ class operator(object):
 	
 			V_dot = _np.zeros(V.shape,dtype=self._dtype)
 			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].dot(V)
+				V_dot += J*self._ops_dict[key].dot(V)
 
 
 		elif _sp.issparse(V):
@@ -3287,7 +3222,7 @@ class operator(object):
 
 			V_dot = _np.zeros(V.shape,dtype=self._dtype)	
 			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].dot(V)
+				V_dot += J*self._ops_dict[key].dot(V)
 
 
 
@@ -3297,7 +3232,7 @@ class operator(object):
 
 			V_dot = _np.zeros(V.shape,dtype=self._dtype)
 			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].dot(V)
+				V_dot += J*self._ops_dict[key].dot(V)
 
 		else:
 			V = _np.asanyarray(V)
@@ -3309,7 +3244,7 @@ class operator(object):
 
 			V_dot = _np.zeros(V.shape,dtype=self._dtype)
 			for key,J in pars.items():
-				V_dot += J*self._operator_dict[key].dot(V)
+				V_dot += J*self._ops_dict[key].dot(V)
 
 
 		return V_dot
@@ -3465,11 +3400,11 @@ class operator(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
-		extra =  set(pars.keys()) - set(self._operator_dict.keys())
+		extra =  set(pars.keys()) - set(self._ops_dict.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
-		missing =  set(self._operator_dict.keys()) - set(pars.keys())
+		missing =  set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
 			pars[key] = 1.0
 
@@ -3486,12 +3421,12 @@ class operator(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
-		extra =  set(pars.keys()) - set(self._operator_dict.keys())
+		extra =  set(pars.keys()) - set(self._ops_dict.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
 
-		missing =  set(self._operator_dict.keys()) - set(pars.keys())
+		missing =  set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
 			pars[key] = 1.0
 
