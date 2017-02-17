@@ -3165,7 +3165,23 @@ class ops_dict(object):
 		pars = self._check_scalar_pars(pars)
 		matvec = functools.partial(ops_dict_dot,self,pars)
 		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)				
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)		
+
+	def SO_LinearOperator(self,pars={}):
+		pars = self._check_scalar_pars(pars)
+
+		i_pars = {}
+		i_pars_c = {}
+		for key,J in pars.items():
+			i_pars[key] = -1j*J
+			i_pars_c[key] = 1j*J
+
+		matvec = functools.partial(ops_dict_dot,self,i_pars)
+		rmatvec = functools.partial(ops_dict_dot,self.H,i_pars_c)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=np.complex128)		
+
+
+
 
 
 	def matvec(self,V):
