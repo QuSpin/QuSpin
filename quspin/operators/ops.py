@@ -809,7 +809,7 @@ class hamiltonian(object):
 			between Vl and Vr.
 		"""
 		if self.Ns <= 0:
-			return np.array([])
+			return _np.array([])
 
 		Vr=self.dot(Vr,time=time,check=check)
 
@@ -948,7 +948,7 @@ class hamiltonian(object):
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
 		if self.Ns == 0:
-			return np.array([]),np.array([[]])
+			return _np.array([]),_np.array([[]])
 
 		char = _np.dtype(self._dtype).char
 		if char in ("g","G"):
@@ -2376,7 +2376,7 @@ class hamiltonian(object):
 		functions.
 		"""
 
-		if (func == np.dot) or (func == np.multiply):
+		if (func == _np.dot) or (func == _np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:
@@ -2564,7 +2564,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if self.shape != other.shape:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
@@ -2591,7 +2591,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = False
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if self.shape != other.shape:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
@@ -2624,7 +2624,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if self.shape[1] != other.shape[0]:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
@@ -2650,7 +2650,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if dense:
 			if other.ndim == 1:
@@ -2799,7 +2799,7 @@ class HamiltonianOperator(object):
 		functions.
 		"""
 
-		if (func == np.dot) or (func == np.multiply):
+		if (func == _np.dot) or (func == _np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:
@@ -3061,8 +3061,10 @@ class ops_dict(object):
 		if dtype not in supported_dtypes:
 			raise ValueError("operator can only be cast to floating point types")
 
-		for key,op in self._ops_dict.items():
-			self._ops_dict[key] = op.astype(dtype)
+		self._dtype = dtype
+		for key in self._ops_dict.keys():
+			self._ops_dict[key] = self._ops_dict[key].astype(dtype)
+
 		return self	
 
 
@@ -3176,12 +3178,10 @@ class ops_dict(object):
 			i_pars[key] = -1j*J
 			i_pars_c[key] = 1j*J
 
-		matvec = functools.partial(ops_dict_dot,self,i_pars)
-		rmatvec = functools.partial(ops_dict_dot,self.H,i_pars_c)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=np.complex128)		
-
-
-
+		new = self.astype(_np.complex128)
+		matvec = functools.partial(ops_dict_dot,new,i_pars)
+		rmatvec = functools.partial(ops_dict_dot,new.H,i_pars_c)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=_np.complex128)		
 
 
 	def matvec(self,V):
@@ -3278,7 +3278,7 @@ class ops_dict(object):
 			between Vl and Vr.
 		"""
 		if self.Ns <= 0:
-			return np.array([])
+			return _np.array([])
 
 		pars = self._check_scalar_pars(pars)
 
@@ -3360,7 +3360,7 @@ class ops_dict(object):
 	def eigsh(self,pars={},**eigsh_args):
 
 		if self.Ns == 0:
-			return np.array([]),np.array([[]])
+			return _np.array([]),_np.array([[]])
 
 		char = _np.dtype(self._dtype).char
 		if char in ("g","G"):
@@ -3467,7 +3467,7 @@ class ops_dict(object):
 		functions.
 		'''
 
-		if (func == np.dot) or (func == np.multiply):
+		if (func == _np.dot) or (func == _np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:
@@ -3597,7 +3597,7 @@ class exp_op(object):
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
 				self._O = hamiltonian([O], [],dtype=O.dtype)
 			else:
-				O = np.asanyarray(O)
+				O = _np.asanyarray(O)
 				self._O = hamiltonian([O],[],dtype=O.dtype)
 	
 		self._ndim = 2
