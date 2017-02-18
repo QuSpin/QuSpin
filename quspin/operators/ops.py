@@ -3211,8 +3211,10 @@ class ops_dict(object):
 
 		pars = self._check_scalar_pars(pars)
 
+
 		if not check:
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			result_dtype = _np.result_type(V,self._dtype)
+			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
 				V_dot += J*self._ops_dict[key].dot(V)
 			return V_dot
@@ -3226,8 +3228,8 @@ class ops_dict(object):
 		if V.__class__ is _np.ndarray:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			result_dtype = _np.result_type(V,self._dtype)
+			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
 				V_dot += J*self._ops_dict[key].dot(V)
 
@@ -3236,7 +3238,8 @@ class ops_dict(object):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)	
+			result_dtype = _np.result_type(V,self._dtype)
+			V_dot = _np.zeros(V.shape,dtype=result_dtype)	
 			for key,J in pars.items():
 				V_dot += J*self._ops_dict[key].dot(V)
 
@@ -3246,7 +3249,8 @@ class ops_dict(object):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			result_dtype = _np.result_type(V,self._dtype)
+			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
 				V_dot += J*self._ops_dict[key].dot(V)
 
@@ -3258,7 +3262,8 @@ class ops_dict(object):
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-			V_dot = _np.zeros(V.shape,dtype=self._dtype)
+			result_dtype = _np.result_type(V,self._dtype)
+			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
 				V_dot += J*self._ops_dict[key].dot(V)
 
