@@ -32,7 +32,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_
 	* H: hamiltonian object in block diagonal form. 
 
 	--- arguments ---
-	* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
+	* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries or hamiltonian objects.
 
 	* static: (required) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
 
@@ -410,6 +410,9 @@ class block_ops(object):
 		blocks such that there are roughly equal workload for each process. Otherwise you will also be as slow as your
 		slowest process.
 
+		* block_diag: (optional) tells the function whether the blocks should be put into list and looped over or to put the blocks
+						in a block diagonal matrix for the cumputation. This is useful if their are a lot of smaller blocks.
+
 		The rest of these are just arguments which are used by H.evolve see Documentation for more detail. 
 
 		"""
@@ -508,6 +511,9 @@ class block_ops(object):
 		for best results all blocks should be approximately the same size and n_jobs-1 must be a common devisor of the number of
 		blocks such that there are roughly equal workload for each process. Otherwise you will also be as slow as your
 		slowest process.
+
+		* block_diag: (optional) tells the function whether the blocks should be put into list and looped over or to put the blocks
+						in a block diagonal matrix for the cumputation.
 
 		The rest of these are just arguments which are used by exp_op see Documentation for more detail. 
 

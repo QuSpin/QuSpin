@@ -3228,6 +3228,7 @@ class ops_dict(object):
 		if V.__class__ is _np.ndarray:
 			if V.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
 			result_dtype = _np.result_type(V,self._dtype)
 			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
@@ -3416,6 +3417,34 @@ class ops_dict(object):
 		return E
 
 
+	def __add__(self,other):
+		self._is_dense = self._is_dense or other._is_dense
+		if isinstance(other,ops_dict):
+			for key,values in other._operator_dict.items():
+				if key in self._operator_dict:
+					self._operator_dict[key] = self._operator_dict[key] + values
+				else:
+					self._operator_dict[key] = values
+		else:
+			return NotImplemented
+
+
+	def __sub__(self,other):
+		self._is_dense = self._is_dense or other._is_dense
+		if isinstance(other,ops_dict):
+			for key,values in other._operator_dict.items():
+				if key in self._operator_dict:
+					self._operator_dict[key] = self._operator_dict[key] - values
+				else:
+					self._operator_dict[key] = -values
+		else:
+			return NotImplemented
+
+
+
+
+
+
 	def _check_hamiltonian_pars(self,pars):
 
 		if not isinstance(pars,dict):
@@ -3464,6 +3493,7 @@ class ops_dict(object):
 			raise ValueError('shapes do not match')
 		if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 			raise ValueError('cannot cast types')
+
 
 	"""
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
