@@ -3544,7 +3544,7 @@ class exp_op(object):
 		self._endpoint = endpoint
 		self._iterate = iterate
 		if self._iterate:
-			if [self._start, self._stop] == [None, None]:
+			if self._start is None and self._stop is None:
 				raise ValueError("'iterate' can only be True with time discretization. must specify 'start' and 'stop' points.")
 
 			if num is not None:
@@ -3563,7 +3563,7 @@ class exp_op(object):
 
 			self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 		else:
-			if [self._start, self._stop] == [None, None]:
+			if self._start is None and self._stop is None:
 				if self._num != None:
 					raise ValueError("unexpected argument 'num'.")
 
@@ -3759,7 +3759,7 @@ class exp_op(object):
 				return _iter_dot(M, other, self.step, self._grid)
 
 		else:
-			if (self._grid, self._step) == (None, None):
+			if self._grid is None and self._step is None:
 				if is_ham:
 					return _hamiltonian_dot(M, other)
 				else:
@@ -3814,7 +3814,7 @@ class exp_op(object):
 			else:
 				return _iter_rdot(M, other.T, self._step, self._grid)
 		else:
-			if [self._step, self._grid] == [None, None]:
+			if self._grid is None and self._step is None:
 
 				if is_ham:
 					return _hamiltonian_rdot(M, other.T).T
@@ -3876,7 +3876,7 @@ class exp_op(object):
 
 			return mat_iter
 		else:
-			if [self._step, self._grid] == [None, None]:
+			if self._grid is None and self._step is None:
 
 				other = self.dot(other,time=time)
 				other = self.H.rdot(other,time=time)
