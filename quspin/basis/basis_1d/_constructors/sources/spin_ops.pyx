@@ -1,6 +1,5 @@
 
-
-
+# cython template[basis_type,matrix_type,N_type], do not call from script
 cdef int spin_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
                     str opstr,NP_INT32_t *indx,scalar_type J,
                     object[basis_type,ndim=1,mode="c"] row, matrix_type *ME,object[basis_type,ndim=1,mode="c"] op_pars):

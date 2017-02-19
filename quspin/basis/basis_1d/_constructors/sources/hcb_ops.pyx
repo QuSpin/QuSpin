@@ -62,8 +62,6 @@ cdef int hcb_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
 
     return error
 
-
-
 # operator
 def hcb_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,

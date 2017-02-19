@@ -123,6 +123,13 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	# calculate reshaped system_state
 	v, rho_d, N_A = _reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
+	
+	"""
+	This function has room for improvement: if only DM is requested, it can be obtained by
+	DM_chain_subsys = v[0].dot(v[0].T)
+	DM_other_subsys = v[0].T.dot(v[0])
+	so there's NO NEED for an SVD!!!
+	"""
 
 	if DM == False:
 		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
