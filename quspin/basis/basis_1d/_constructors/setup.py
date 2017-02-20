@@ -19,7 +19,12 @@ def cython_files():
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 
 
+<<<<<<< HEAD
 	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+=======
+#	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+	cython_src = glob.glob(os.path.join(package_dir,"boson_basis_ops.pyx"))
+>>>>>>> boson
 	if USE_CYTHON:
 		cythonize(cython_src,language="c++")
 
@@ -41,7 +46,6 @@ def configuration(parent_package='', top_path=None):
 		hcb_src = os.path.join(package_dir,"hcb_basis_ops.cpp")
 		fermion_src = os.path.join(package_dir,"fermion_basis_ops.cpp")	
 		inplace_src = os.path.join(package_dir,"inplace_ops.cpp")
-
 		config.add_extension('inplace_ops',sources=inplace_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")		
@@ -57,8 +61,14 @@ def configuration(parent_package='', top_path=None):
 
 		"""
 
+
 		hcp_src = os.path.join(package_dir,"hcp_basis_ops.cpp")	
 		config.add_extension('hcp_basis_ops',sources=hcp_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
+		boson_src = os.path.join(package_dir,"boson_basis_ops.cpp")	
+		config.add_extension('boson_basis_ops',sources=boson_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 

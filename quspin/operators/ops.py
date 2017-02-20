@@ -860,7 +860,7 @@ class hamiltonian(object):
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
 
-		elif _sm.issparse(Vl):
+		elif _sp.issparse(Vl):
 			if Vl.ndim == 2:
 				if Vl.shape[0] != self._shape[1]:
 					raise ValueError('dimension mismatch')
