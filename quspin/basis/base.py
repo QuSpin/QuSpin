@@ -23,18 +23,14 @@ class basis(object):
 		if self._Ns == 0:
 			return string
 		
-		if hasattr(self,"_get__str__"):
-			str_list = list(self._get__str__())
-			if self._Ns > MAXPRINT:
-				L_str = len(str_list[0])
-				t = (" ".join(["" for i in range(L_str//2)]))+":"
-				str_list.insert(MAXPRINT//2,t)
+		str_list = list(self._get__str__())
+		if self._Ns > MAXPRINT:
+			L_str = len(str_list[0])
+			t = (" ".join(["" for i in range(L_str//2)]))+":"
+			str_list.insert(MAXPRINT//2,t)
 		
-			string += "\n".join(str_list)
-			return string
-		else:
-			warnings.warn("basis class {0} missing _get__str__ function, can not print(out basis representatives.".format(type(self)),UserWarning,stacklevel=3)
-			return "reference states: \n\t not availible"
+		string += "\n".join(str_list)
+		return string
 
 
 
@@ -50,90 +46,91 @@ class basis(object):
 	def operators(self):
 		return self._operators
 
-	def __repr__(self):
-		return "< instance of 'qspin.basis.base' with {0} states >".format(self._Ns)
+	def _get__str__(self):
+		temp1 = "\t{0:"+str(len(str(self.Ns)))+"d}.  "
+		n_space = len(str(self.m))
+		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
 
-	def __name__(self):
-		return "<type 'qspin.basis.base'>"
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.m**i)%self.m for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.m**i)%self.m for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.m**i)%self.m for i in range(self.N)])) for i,b in enumerate(self._basis)]
 
+		return tuple(str_list)
+
+
+	# this methods are optional and are not required for main functions:
 	def __iter__(self):
 		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for for iterating over basis!".format(self.__class__))
 
-	def __getitem__(self,key):
+	def __getitem__(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for for '[]' operator!".format(self.__class__))
 
-	def index(self,s):
+	def index(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'index' function!".format(self.__class__))
 
+#	def _get__str__(self,*args,**kwargs):
+#		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print basis!".format(self.__class__))		
 
+
+	# this method is required in order to create manybody hamiltonians/operators
 	def Op(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for for creating hamiltonians!".format(self.__class__))
-		
+
+	# this method is required in order to use entanglement entropy functions		
 	def get_vec(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec'!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec' required for entanglement entropy calculations!".format(self.__class__))
 
+	@property
+	def m(self):
+		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'm' required for entanglement entropy calculations!".format(self.__class__))
+
+	# this method is required for the block_tools functions
 	def get_proj(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'get_proj'!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of 'get_proj' required for entanglement block_tools calculations!".format(self.__class__))
 
-
-
-
+	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
 	def _hc_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
 
 	def _sort_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks! turn this check off by setting check_herm=False".format(self.__class__))
 
 	def _expand_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
 
 	def _non_zero(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
 
 
-	# These methods are required for every basis class.
-	# for examples see spin.py
-	def hc_opstr(self,op):
-		return self.__class__._hc_opstr(self,op)
-
-	def sort_opstr(self,op):
-		return self.__class__._sort_opstr(self,op)
-
-	def expand_opstr(self,op,num):
-		return self.__class__._expand_opstr(self,op,num)
-
-	def non_zero(self,op):
-		return self.__class__._non_zero(self,op)
-
-
-	# these methods can be overriden in the even the ones implimented below do not work
+	# these methods can be overwritten in the event that the ones implimented below do not work
 	# for whatever reason
-	def sort_list(self,op_list):
-		return self.__class__._sort_list(self,op_list)
+	def sort_local_list(self,op_list):
+		return self.__class__._sort_local_list(self,op_list)
 
-	def get_lists(self,static,dynamic):
-		return self.__class__._get_lists(self,static,dynamic)
+	def get_local_lists(self,static,dynamic):
+		return self.__class__._get_local_lists(self,static,dynamic)
 
-	def get_hc_lists(self,static_list,dynamic_list):
-		return self.__class__._get_hc_lists(self,static_list,dynamic_list)
+	def get_hc_local_lists(self,static_list,dynamic_list):
+		return self.__class__._get_hc_local_lists(self,static_list,dynamic_list)
 
-	def consolidate_lists(self,static_list,dynamic_list):
-		return self.__class__._consolidate_lists(self,static_list,dynamic_list)
+	def consolidate_local_lists(self,static_list,dynamic_list):
+		return self.__class__._consolidate_local_lists(self,static_list,dynamic_list)
 
-	def expand_list(self,op_list):
-		return self.__class__._expand_list(self,op_list)
+	def expand_local_list(self,op_list):
+		return self.__class__._expand_local_list(self,op_list)
 
 	def expanded_form(self,static_list,dynamic_list):
 		return self.__class__._expanded_form(self,static_list,dynamic_list)
 
 
 
-
-
-	def _sort_list(self,op_list):
+	def _sort_local_list(self,op_list):
 		sorted_op_list = []
 		for op in op_list:
-			sorted_op_list.append(self.sort_opstr(op))
+			sorted_op_list.append(self._sort_opstr(op))
 		sorted_op_list = tuple(sorted_op_list)
 
 		return sorted_op_list
@@ -142,7 +139,7 @@ class basis(object):
 	# this function flattens out the static and dynamics lists to: 
 	# [[opstr1,indx11,J11,...],[opstr1,indx12,J12,...],...,[opstrn,indxnm,Jnm,...]]
 	# this function gets overridden in photon_basis because the index must be extended to include the photon index.
-	def _get_lists(self,static,dynamic):
+	def _get_local_lists(self,static,dynamic):
 		static_list = []
 		for opstr,bonds in static:
 			for bond in bonds:
@@ -157,13 +154,13 @@ class basis(object):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,indx,J,f,f_args))
 
-		return self.sort_list(static_list),self.sort_list(dynamic_list)
+		return self.sort_local_list(static_list),self.sort_local_list(dynamic_list)
 
-	# takes the list from the format given by get_lists and takes the hermitian conjugate of operators.
-	def _get_hc_lists(self,static_list,dynamic_list):
+	# takes the list from the format given by get_local_lists and takes the hermitian conjugate of operators.
+	def _get_hc_local_lists(self,static_list,dynamic_list):
 		static_list_hc = []
 		for op in static_list:
-			static_list_hc.append(self.hc_opstr(op))
+			static_list_hc.append(self._hc_opstr(op))
 
 		static_list_hc = tuple(static_list_hc)
 
@@ -176,28 +173,28 @@ class basis(object):
 		for opstr,indx,J,f,f_args in dynamic_list:
 			J *= f(t,*f_args)
 			op = (opstr,indx,J)
-			dynamic_list_hc.append(self.hc_opstr(op))
-			dynamic_list_eval.append(self.sort_opstr(op))
+			dynamic_list_hc.append(self._hc_opstr(op))
+			dynamic_list_eval.append(self._sort_opstr(op))
 
 		dynamic_list_hc = tuple(dynamic_list_hc)
 		
 		return static_list,static_list_hc,dynamic_list_eval,dynamic_list_hc
 
 
-	# this function takes the list format giveb by get_lists and expands any operators into the most basic components
-	# 'n'(or 'z' for spins),'+','-' If by default one doesn't need to do this then expand_opstr must do nothing. 
-	def _expand_list(self,op_list):
+	# this function takes the list format giveb by get_local_lists and expands any operators into the most basic components
+	# 'n'(or 'z' for spins),'+','-' If by default one doesn't need to do this then _expand_opstr must do nothing. 
+	def _expand_local_list(self,op_list):
 		op_list_exp = []
 		for i,op in enumerate(op_list):
-			new_ops = self.expand_opstr(op,[i])
+			new_ops = self._expand_opstr(op,[i])
 			for new_op in new_ops:
-				if self.non_zero(new_op):
+				if self._non_zero(new_op):
 					op_list_exp.append(new_op)
 
-		return self.sort_list(op_list_exp)
+		return self.sort_local_list(op_list_exp)
 
 
-	def _consolidate_lists(self,static_list,dynamic_list):
+	def _consolidate_local_lists(self,static_list,dynamic_list):
 
 		static_dict={}
 		for opstr,indx,J,ii in static_list:
@@ -233,17 +230,17 @@ class basis(object):
 		for opstr,opstr_dict in dynamic_dict.items():
 			for indx,(J,f,f_args,ii) in opstr_dict.items():
 				if J != 0:
-					static_list.append((opstr,indx,J,f,f_args,ii))
+					dynamic_list.append((opstr,indx,J,f,f_args,ii))
 
 
 		return static_list,dynamic_list
 
 
 	def _expanded_form(self,static,dynamic):
-		static_list,dynamic_list = self.get_lists(static,dynamic)
-		static_list = self.expand_list(static_list)
-		dynamic_list = self.expand_list(dynamic_list)
-		static_list,dynamic_list = self.consolidate_lists(static_list,dynamic_list)
+		static_list,dynamic_list = self.get_local_lists(static,dynamic)
+		static_list = self.expand_local_list(static_list)
+		dynamic_list = self.expand_local_list(dynamic_list)
+		static_list,dynamic_list = self.consolidate_local_lists(static_list,dynamic_list)
 
 		static_dict={}
 		for opstr,indx,J,ii in static_list:
@@ -278,8 +275,8 @@ class basis(object):
 
 	def check_hermitian(self,static_list,dynamic_list):
 
-		static_list,dynamic_list = self.get_lists(static_list,dynamic_list)
-		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self.get_hc_lists(static_list,dynamic_list)
+		static_list,dynamic_list = self.get_local_lists(static_list,dynamic_list)
+		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self.get_hc_local_lists(static_list,dynamic_list)
 		# calculate non-hermitian elements
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
 		
@@ -328,10 +325,10 @@ class basis(object):
 			return
 
 		if self._check_pcon:
-			static_list,dynamic_list = self.get_lists(static,dynamic)
-			static_list_exp = self.expand_list(static_list)
-			dynamic_list_exp = self.expand_list(dynamic_list)
-			static_list_exp,dynamic_list_exp = self.consolidate_lists(static_list_exp,dynamic_list_exp)
+			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+			static_list_exp = self.expand_local_list(static_list)
+			dynamic_list_exp = self.expand_local_list(dynamic_list)
+			static_list_exp,dynamic_list_exp = self.consolidate_local_lists(static_list_exp,dynamic_list_exp)
 			con = ""
 
 			odd_ops = []

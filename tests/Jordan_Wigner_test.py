@@ -5,7 +5,7 @@ quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
 
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import spin_basis_1d, hcb_basis_1d, fermion_basis_1d # Hilbert space spin basis
+from quspin.basis import spin_basis_1d, boson_basis_1d, fermion_basis_1d # Hilbert space spin basis
 import numpy as np # generic math functions
 
 ##### define model parameters #####
@@ -69,9 +69,9 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 	x_field=[[-h,i] for i in range(L)]
 
 	if PBC==1:
-		basis_hcb = hcb_basis_1d(L=L,cblock=-1)#,a=1,kblock=0,pblock=1)
+		basis_hcb = boson_basis_1d(L=L,cblock=-1)#,a=1,kblock=0,pblock=1)
 	elif PBC==-1:
-		basis_hcb = hcb_basis_1d(L=L,cblock=1)#,a=1,kblock=0,pblock=1)
+		basis_hcb = boson_basis_1d(L=L,cblock=1)#,a=1,kblock=0,pblock=1)
 
 	static_hcb =[["zz",J_zz],["+",x_field],["-",x_field]]
 

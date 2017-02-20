@@ -24,7 +24,7 @@ def flip_sublat(opstr,indx,lat=0):
 
 
 
-def check_T(basis,operator_list,L,a):
+def check_T(sort_opstr,operator_list,L,a):
 	missing_ops=[]
 	for i in range(0,L//a,1):
 		for op in operator_list:
@@ -36,7 +36,7 @@ def check_T(basis,operator_list,L,a):
 			new_op = list(op)
 			new_op[1] = indx
 
-			new_op = basis.sort_opstr(new_op)
+			new_op = sort_opstr(new_op)
 			
 			if not (new_op in operator_list):
 				missing_ops.append(new_op)
@@ -46,7 +46,7 @@ def check_T(basis,operator_list,L,a):
 
 
 
-def check_Z(basis,operator_list):
+def check_Z(sort_opstr,operator_list):
 	missing_ops=[]
 	odd_ops=[]
 	for op in operator_list:
@@ -65,7 +65,7 @@ def check_Z(basis,operator_list):
 
 		new_op = list(op)
 		new_op[0] = new_op[0][:i].replace("+","#").replace("-","+").replace("#","-") + op[0][i:]
-		new_op = basis.sort_opstr(new_op)
+		new_op = sort_opstr(new_op)
 		if not (new_op in operator_list):
 			missing_ops.append(new_op)
 
@@ -73,7 +73,7 @@ def check_Z(basis,operator_list):
 
 
 
-def check_P(basis,operator_list,L):
+def check_P(sort_opstr,operator_list,L):
 	missing_ops = []
 	for op in operator_list:
 		indx = list(op[1])
@@ -82,7 +82,7 @@ def check_P(basis,operator_list,L):
 
 		new_op = list(op)
 		new_op[1] = indx
-		new_op = basis.sort_opstr(new_op)
+		new_op = sort_opstr(new_op)
 		if not (new_op in operator_list):
 			missing_ops.append(new_op)
 
@@ -91,7 +91,7 @@ def check_P(basis,operator_list,L):
 
 
 
-def check_PZ(basis,operator_list,L):
+def check_PZ(sort_opstr,operator_list,L):
 	missing_ops = []
 	for op in operator_list:
 		opstr = str(op[0])
@@ -111,7 +111,7 @@ def check_PZ(basis,operator_list,L):
 		new_op[0] = new_op[0][:i].replace("+","#").replace("-","+").replace("#","-") + op[0][i:]
 		new_op[1] = indx
 		new_op[2] *= sign
-		new_op = basis.sort_opstr(new_op)
+		new_op = sort_opstr(new_op)
 		if not (new_op in operator_list):
 			missing_ops.append(new_op)
 
@@ -122,7 +122,7 @@ def check_PZ(basis,operator_list,L):
 
 
 
-def check_ZA(basis,operator_list):
+def check_ZA(sort_opstr,operator_list):
 	missing_ops=[]
 	odd_ops=[]
 
@@ -143,7 +143,7 @@ def check_ZA(basis,operator_list):
 
 		new_op = list(op)
 		new_op[0] = new_opstr + opstr[i:]
-		new_op = basis.sort_opstr(new_op)
+		new_op = sort_opstr(new_op)
 		
 
 		if not (new_op in operator_list):
@@ -153,7 +153,7 @@ def check_ZA(basis,operator_list):
 
 
 
-def check_ZB(basis,operator_list):
+def check_ZB(sort_opstr,operator_list):
 	missing_ops=[]
 	odd_ops=[]
 
@@ -174,7 +174,7 @@ def check_ZB(basis,operator_list):
 
 		new_op = list(op)
 		new_op[0] = new_opstr + opstr[i:]
-		new_op = basis.sort_opstr(new_op)
+		new_op = sort_opstr(new_op)
 
 		if not (new_op in operator_list):
 			missing_ops.append(new_op)

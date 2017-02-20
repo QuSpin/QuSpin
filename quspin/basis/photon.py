@@ -189,7 +189,9 @@ class photon_basis(tensor_basis):
 	def chain_N(self):
 		return self._b1.N
 	
-	
+	@property
+	def chain_m(self):
+		return self._b1.m	
 
 	def __name__(self):
 		return "<type 'qspin.basis.photon_basis'>"
@@ -202,17 +204,15 @@ class photon_basis(tensor_basis):
 				warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b1)),UserWarning,stacklevel=3)
 				return "reference states: \n\t not availible"
 
-			n_digits = int(_np.ceil(_np.log10(self._Ns)))
-
+			n_digits = len(str(self.Ns))+1
+			n_space = len(str(self.Ntot))
 			str_list_1 = self._b1._get__str__()
 			temp = "\t{0:"+str(n_digits)+"d}.  "
 			str_list=[]
 			for b1 in str_list_1:
-				b1 = b1.replace(".","")
-				b1 = b1.split()
-				s1 = b1[1]
-				i1 = int(b1[0])
-				s2 = "|{0}>".format(self._n[i1])
+				b1,s1 = b1.split(".  ")
+				i1 = int(b1)
+				s2 = ("|{:"+str(n_space)+"d}>").format(self._n[i1])
 				str_list.append((temp.format(i1))+"\t"+s1+s2)
 
 			if self._Ns > MAXPRINT:
@@ -258,8 +258,8 @@ class photon_basis(tensor_basis):
 		op2[0] = opstr2
 		op2[1] = tuple([ind_min for i in opstr2])
 		
-		op1 = self._b1.sort_opstr(op1)
-		op2 = self._b2.sort_opstr(op2)
+		op1 = self._b1._sort_opstr(op1)
+		op2 = self._b2._sort_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
@@ -294,7 +294,7 @@ class photon_basis(tensor_basis):
 
 
 
-	def _get_lists(self,static,dynamic): #overwrite the default get_lists from base.
+	def _get_local_lists(self,static,dynamic): #overwrite the default get_local_lists from base.
 		static_list = []
 		for opstr,bonds in static:
 			if opstr.count("|") == 0: 
@@ -345,7 +345,7 @@ class photon_basis(tensor_basis):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
 
-		return tensor_basis.sort_list(self,static_list),tensor_basis.sort_list(self,dynamic_list)
+		return tensor_basis.sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
 
 
 
@@ -457,6 +457,7 @@ class ho_basis(basis):
 
 		self._Np = Np
 		self._Ns = Np+1
+		self._N = 1
 		self._dtype = _np.min_scalar_type(-self.Ns)
 		self._basis = _np.arange(self.Ns,dtype=_np.min_scalar_type(self.Ns))
 		self._operators = ("availible operators for ho_basis:"+
@@ -470,6 +471,14 @@ class ho_basis(basis):
 	@property
 	def Np(self):
 		return self._Np
+
+	@property
+	def N(self):
+		return 1
+
+	@property
+	def m(self):
+		return self._Np+1
 
 	def get_vec(self,v0,sparse=True):
 		if self._Ns <= 0:
@@ -498,7 +507,7 @@ class ho_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
-	def _get__str__(self):
+	#def _get__str__(self):
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
 		temp = "\t{0:"+str(n_digits)+"d}.  "+"|{1}>"
 

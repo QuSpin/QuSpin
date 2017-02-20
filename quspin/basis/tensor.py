@@ -157,8 +157,8 @@ class tensor_basis(basis):
 		op2[0] = opstr2
 		op2[1] = tuple(indx2)
 		
-		op1 = self._b1.sort_opstr(op1)
-		op2 = self._b2.sort_opstr(op2)
+		op1 = self._b1._sort_opstr(op1)
+		op2 = self._b2._sort_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
@@ -295,14 +295,12 @@ class tensor_basis(basis):
 		temp = "\t{0:"+str(n_digits)+"d}.  "
 		str_list=[]
 		for b1 in str_list_1:
-			b1 = b1.replace(".","").split()
-			s1 = b1[1]
-			i1 = int(b1[0])
+			b1,s1 = b1.split(".  ")
+			i1 = int(b1)
 			for b2 in str_list_2:
-				b2 = b2.replace(".","").split()
-				s2 = b2[1]
-				i2 = int(b2[0])
-				str_list.append((temp.format(i2+Ns2*i1))+"\t"+s1+s2)
+				b2,s2 = b2.split(".  ")
+				i2 = int(b2)
+				str_list.append((temp.format(i2+Ns2*i1))+s1+s2)
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT//2

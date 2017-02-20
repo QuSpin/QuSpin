@@ -16,7 +16,7 @@ from scipy.misc import comb
 
 _np.import_array()
 
-include "sources/bitops.pyx"
+include "sources/hcp_bitops.pyx"
 include "sources/refstate.pyx"
 include "sources/checkstate.pyx"
 include "sources/basis_templates.pyx"

@@ -33,14 +33,21 @@ class OpstrError(Exception):
 		return self.message
 
 
+class bitops:
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)
+
 
 class basis_1d(basis):
 	def __init__(self,ops,L,Np=None,_Np=None,pars=None,**blocks):
 
+		if self.__class__.__name__ == "basis_1d":
+			raise ValueError("This class is not intended"
+							 " to be instantiated directly.")
+
 		if type(Np) is int:
-			self._ops = ops
 			self._check_pcon=True
-			self._make_Np_block(L,Np=Np,pars=pars,**blocks)
+			self._make_Np_block(ops,L,Np=Np,pars=pars,**blocks)
 	
 		elif Np is None: # User hasn't specified Np,
 			if _Np is not None: # check to see if photon_basis can create the particle sectors.
@@ -49,7 +56,7 @@ class basis_1d(basis):
 					raise ValueError("Np must be integer")
 
 				if _Np == -1: 
-					self.__init__(L,_Np=None,pars=pars,**blocks)
+					self._make_Np_block(ops,L,pars=pars,**blocks)
 				elif _Np >= 0:
 					if _Np+1 > L: _Np = L
 					blocks["count_particles"] = True
@@ -62,14 +69,14 @@ class basis_1d(basis):
 						raise ValueError("spin inversion symmetry not compatible with particle conserving photon_basis.")
 					
 					# loop over the first Np particle sectors (use the iterator initialization).
-					self.__init__(L,Np=range(_Np+1),pars=pars,**blocks)
+					Np = list(range(_Np+1))
+					self.__init__(L,Np,**blocks)
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 			else: # if _Np is None then assume user wants to not specify Magnetization sector
-				self._ops = ops
 				self._check_pcon = False
-				self._make_Np_block(L,pars=pars,**blocks)
+				self._make_Np_block(ops,L,pars=pars,**blocks)
 
 
 		else: # try to interate over Np 
@@ -81,10 +88,10 @@ class basis_1d(basis):
 			blocks["check_z_symm"] = False
 			Np = next(Nup_iter)
 
-			self._make_Np_block(L,Np=Np,pars=pars,**blocks)
+			self._make_Np_block(ops,L,Np=Np,pars=pars,**blocks)
 
 			for Np in Nup_iter:
-				temp_basis =self.__class__(L,Np,pars=pars,**blocks)
+				temp_basis =self.__class__(L,Np,**blocks)
 				self.append(temp_basis)	
 		
 
@@ -92,7 +99,7 @@ class basis_1d(basis):
 				
 
 
-	def _make_Np_block(self,L,Np=None,pars=None,**blocks):
+	def _make_Np_block(self,ops,L,Np=None,pars=None,**blocks):
 		# getting arguments which are used in basis.
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
@@ -154,14 +161,19 @@ class basis_1d(basis):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
-
+			self._k = 2*(_np.pi)*a*kblock/L
 
 
 		self._L = L
-		self._Ns = self._ops.get_Ns(L,Np,**blocks)
-		self._basis_type = self._ops.get_basis_type(L,Np,**blocks)
-		self._pars = pars
-		if type(kblock) is int: self._k = 2*(_np.pi)*a*kblock/L
+		self._Ns = ops.get_Ns(L,Np,**blocks)
+		self._basis_type = ops.get_basis_type(L,Np,**blocks)
+		self._pars = _np.asarray(pars,dtype=self._basis_type)
+
+		self._bitops = bitops(py_fliplr=ops.py_fliplr,
+						   py_shift=ops.py_shift,
+						   py_flip_all=ops.py_flip_all,
+						   py_flip_sublat_A=ops.py_flip_sublat_A,
+						   py_flip_sublat_B=ops.py_flip_sublat_B)
 
 		if type(Np) is int:
 			self._conserved = "N"
@@ -204,26 +216,26 @@ class basis_1d(basis):
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_p_z_op
+			self._op = ops.t_p_z_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
-				self._m=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
+				self._M=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 
 			if (type(Np) is int):
 				# arguments get overwritten by ops.spin_...  
-				self._Ns = self._ops.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_p_z_basis(L,pblock,zblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_p_z_basis(L,pblock,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 			# cut off extra memory for overestimated state number
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & T & ZA & ZB"
@@ -232,24 +244,24 @@ class basis_1d(basis):
 
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_zA_zB_op
+			self._op = ops.t_zA_zB_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._m=_np.empty(self._basis.shape,dtype=_np.int16)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int16)
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(pzblock) is int):
 			if self._conserved: self._conserved += " & T & PZ"
@@ -257,24 +269,24 @@ class basis_1d(basis):
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_pz_op
+			self._op = ops.t_pz_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:			
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._m=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
+				self._M=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_pz_basis(L,pzblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_pz_basis(L,pzblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(pblock) is int):
 			if self._conserved: self._conserved += " & T & P"
@@ -282,107 +294,107 @@ class basis_1d(basis):
 			self._unique_me = False
 
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_p_op
+			self._op = ops.t_p_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:			
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_p_basis(L,pblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_p_basis(L,pblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & T & Z"
 			else: self._conserved = "T & Z"
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_z_op
+			self._op = ops.t_z_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_z_basis(L,zblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_z_basis(L,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 
 		elif (type(kblock) is int) and (type(zAblock) is int):
 			if self._conserved: self._conserved += " & T & ZA"
 			else: self._conserved = "T & ZA"
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_zA_op
+			self._op = ops.t_zA_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:			
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_zA_basis(L,zAblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_zA_basis(L,zAblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & T & ZB"
 			else: self._conserved = "T & ZB"
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_zB_op
+			self._op = ops.t_zB_op
 
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._m=_np.empty(self._basis.shape,dtype=_np.int32)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:			
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._m=_np.empty(self._basis.shape,dtype=_np.int8)
+				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
-				self._Ns = self._ops.t_zB_basis(L,zBblock,kblock,a,self._pars,self._N,self._m,self._basis)
+				self._Ns = ops.t_zB_basis(L,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
 
 			self._N.resize((self._Ns,))
-			self._m.resize((self._Ns,))
+			self._M.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
-			self._op_args=[self._N,self._m,self._basis,self._L,self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(pblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & P & Z"
 			else: self._conserved += "P & Z"
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			self._op = self._ops.p_z_op
+			self._op = ops.p_z_op
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_p_z_basis(L,Np,pblock,zblock,self._pars,self._N,self._basis)
+				self._Ns = ops.n_p_z_basis(L,Np,pblock,zblock,self._pars,self._N,self._basis)
 			else:
-				self._Ns = self._ops.p_z_basis(L,pblock,zblock,self._pars,self._N,self._basis)
+				self._Ns = ops.p_z_basis(L,pblock,zblock,self._pars,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -392,11 +404,14 @@ class basis_1d(basis):
 		elif (type(zAblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & ZA & ZB"
 			else: self._conserved += "ZA & ZB"
+
+			self._op = ops.zA_zB_op
+
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			if (type(Np) is int):
-				self._Ns = self._ops.n_zA_zB_basis(L,Np,self._pars,self._basis)
+				self._Ns = ops.n_zA_zB_basis(L,Np,self._pars,self._basis)
 			else:
-				self._Ns = self._ops.zA_zB_basis(L,self._pars,self._basis)
+				self._Ns = ops.zA_zB_basis(L,self._pars,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L,self._pars]
@@ -408,12 +423,12 @@ class basis_1d(basis):
 			else: self._conserved = "P"
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			self._op = self._ops.p_op
+			self._op = ops.p_op
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_p_basis(L,Np,pblock,self._pars,self._N,self._basis)
+				self._Ns = ops.n_p_basis(L,Np,pblock,self._pars,self._N,self._basis)
 			else:
-				self._Ns = self._ops.p_basis(L,pblock,self._pars,self._N,self._basis)
+				self._Ns = ops.p_basis(L,pblock,self._pars,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -425,12 +440,12 @@ class basis_1d(basis):
 			if self._conserved: self._conserved += " & Z"
 			else: self._conserved += "Z"
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.z_op
+			self._op = ops.z_op
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_z_basis(L,Np,self._pars,self._basis)
+				self._Ns = ops.n_z_basis(L,Np,self._pars,self._basis)
 			else:
-				self._Ns = self._ops.z_basis(L,self._pars,self._basis)
+				self._Ns = ops.z_basis(L,self._pars,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L,self._pars]
@@ -439,12 +454,12 @@ class basis_1d(basis):
 			if self._conserved: self._conserved += " & ZA"
 			else: self._conserved += "ZA"
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.zA_op
+			self._op = ops.zA_op
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_zA_basis(L,Np,self._pars,self._basis)
+				self._Ns = ops.n_zA_basis(L,Np,self._pars,self._basis)
 			else:
-				self._Ns = self._ops.zA_basis(L,self._pars,self._basis)
+				self._Ns = ops.zA_basis(L,self._pars,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L,self._pars]
@@ -454,12 +469,12 @@ class basis_1d(basis):
 			if self._conserved: self._conserved += " & ZB"
 			else: self._conserved += "ZB"
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.zB_op
+			self._op = ops.zB_op
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_zB_basis(L,Np,self._pars,self._basis)
+				self._Ns = ops.n_zB_basis(L,Np,self._pars,self._basis)
 			else:
-				self._Ns = self._ops.zB_basis(L,self._pars,self._basis)
+				self._Ns = ops.zB_basis(L,self._pars,self._basis)
 
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._basis,self._L,self._pars]
@@ -469,12 +484,12 @@ class basis_1d(basis):
 			else: self._conserved += "PZ"
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
-			self._op = self._ops.pz_op
+			self._op = ops.pz_op
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_pz_basis(L,Np,pzblock,self._pars,self._N,self._basis)
+				self._Ns = ops.n_pz_basis(L,Np,pzblock,self._pars,self._N,self._basis)
 			else:
-				self._Ns = self._ops.pz_basis(L,pzblock,self._pars,self._N,self._basis)
+				self._Ns = ops.pz_basis(L,pzblock,self._pars,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -484,7 +499,7 @@ class basis_1d(basis):
 			if self._conserved: self._conserved += " & T"
 			else: self._conserved = "T"
 			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
-			self._op = self._ops.t_op
+			self._op = ops.t_op
 			
 			if self._basis_type == _np.object:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
@@ -492,9 +507,9 @@ class basis_1d(basis):
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = self._ops.n_t_basis(L,Np,kblock,a,self._pars,self._N,self._basis)
+				self._Ns = ops.n_t_basis(L,Np,kblock,a,self._pars,self._N,self._basis)
 			else:
-				self._Ns = self._ops.t_basis(L,kblock,a,self._pars,self._N,self._basis)
+				self._Ns = ops.t_basis(L,kblock,a,self._pars,self._N,self._basis)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -502,13 +517,15 @@ class basis_1d(basis):
 
 		else: 
 			if type(Np) is int:
+				self._op = ops.n_op
 				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				self._ops.n_basis(L,Np,self._pars,self._Ns,self._basis)
+				ops.n_basis(L,Np,self._Ns,self._pars,self._basis)
 			else:
+				self._op = ops.op
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
-			self._op_args=[self._basis]
+			self._op_args=[self._basis,self._pars]
 
-		if count_particles: self._Np = _np.full_like(self._basis,Np,dtype=_np.int8)
+		if count_particles: self._Np = _np.full(self._basis.shape,Np,dtype=_np.int8)
 
 
 
@@ -523,34 +540,34 @@ class basis_1d(basis):
 
 		Ns = self._Ns + other._Ns
 
-		if self._conserved == "" or self._conserved == "M":
-			self._op_args=[]
+		if self._conserved == "" or self._conserved == "N":
+			self._op_args=[self._pars]
 		else:
-			self._op_args=[self._L]
+			self._op_args=[self._L,self._pars]
 
 
 		self._basis.resize((Ns,),refcheck=False)
 		self._basis[self._Ns:] = other._basis[:]
 		arg = _np.argsort(self._basis)
-		self._basis = self._basis[arg]
+		self._basis = self._basis[arg].copy()
 
 		self._op_args.insert(0,self._basis)
 
 		if hasattr(self,"_Np"):
 			self._Np.resize((Ns,),refcheck=False)
 			self._Np[self._Ns:] = other._Np[:]
-			self._Np = self._Np[arg]
+			self._Np = self._Np[arg].copy()
 
-		if hasattr(self,"_m"):
-			self._m.resize((Ns,),refcheck=False)
-			self._m[self._Ns:] = other._m[:]
-			self._m = self._m[arg]
-			self._op_args.insert(0,self._m)	
+		if hasattr(self,"_M"):
+			self._M.resize((Ns,),refcheck=False)
+			self._M[self._Ns:] = other._M[:]
+			self._M = self._M[arg].copy()
+			self._op_args.insert(0,self._M)	
 
 		if hasattr(self,"_N"):
 			self._N.resize((Ns,),refcheck=False)
 			self._N[self._Ns:] = other._N[:]
-			self._N = self._N[arg]
+			self._N = self._N[arg].copy()
 			self._op_args.insert(0,self._N)
 
 		self._Ns = Ns
@@ -568,15 +585,14 @@ class basis_1d(basis):
 		return self._L
 
 	@property
+	def m(self):
+		return self._m
+
+	@property
 	def conserved(self):
 		return self._conserved
 
-	@property
-	def operators(self):
-		return self._operators
-	@property
-	def m(self):
-		return self._blocks_1d["m"]
+
 	
 
 	@property
@@ -602,12 +618,6 @@ class basis_1d(basis):
 		return string 
 
 
-	def _get_basis_type(L,Np,**blocks):
-		raise NotImplementedError("specializations of basis_1d must implement _get_basis_type function which determines the dtype for the size of the integer representation.")
-
-	def _get_Ns(L,Np,**blocks):
-		raise NotImplementedError("specializations of basis_1d must implement _get_Ns function to estimate the size of the hilbert space given the symmetry sectors.")
-
 	def __getitem__(self,key):
 		return self._basis.__getitem__(key)
 
@@ -623,8 +633,14 @@ class basis_1d(basis):
 
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
+
 		if _np.any(indx >= self._L) or _np.any(indx < 0):
 			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr) - self._allowed_ops
+		if extra_ops:
+			raise ValueError("unrecognized charactors {} in operator string.".format(extra_ops))
+
 
 		if self._Ns <= 0:
 			return [],[],[]
@@ -658,13 +674,13 @@ class basis_1d(basis):
 
 
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
-			c = _np.empty(self._m.shape,dtype=_np.int8)
+			c = _np.empty(self._M.shape,dtype=_np.int8)
 			nn = array(c)
 			mm = array(c)
-			_np.floor_divide(self._m,(self._L+1)**2,out=c)
-			_np.floor_divide(self._m,self._L+1,out=nn)
+			_np.floor_divide(self._M,(self._L+1)**2,out=c)
+			_np.floor_divide(self._M,self._L+1,out=nn)
 			_np.mod(nn,self._L+1,out=nn)
-			_np.mod(self._m,self._L+1,out=mm)
+			_np.mod(self._M,self._L+1,out=mm)
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
 				norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			else:
@@ -686,10 +702,10 @@ class basis_1d(basis):
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
-			c = _np.empty(self._m.shape,dtype=_np.int8)
+			c = _np.empty(self._M.shape,dtype=_np.int8)
 			mm = array(c)
-			_np.floor_divide(self._m,(self._L+1),c)
-			_np.mod(self._m,self._L+1,mm)
+			_np.floor_divide(self._M,(self._L+1),c)
+			_np.mod(self._M,self._L+1,mm)
 			norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# c = 2
@@ -710,8 +726,8 @@ class basis_1d(basis):
 			norm *= _np.sign(self._N)
 			norm /= self._N
 			# m >= 0 
-			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*self._m[mask]))
+			mask = (self._M >= 0)
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*self._M[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(pzblock) is int):
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
@@ -721,29 +737,29 @@ class basis_1d(basis):
 			norm *= _np.sign(self._N)
 			norm /= self._N
 			# m >= 0 
-			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*self._m[mask]))
+			mask = (self._M >= 0)
+			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*self._M[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# m >= 0 
-			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + zblock*_np.cos(self._k*self._m[mask]))
+			mask = (self._M >= 0)
+			norm[mask] *= (1.0 + zblock*_np.cos(self._k*self._M[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zAblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# m >= 0 
-			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*self._m[mask]))
+			mask = (self._M >= 0)
+			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*self._M[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zBblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
 			# m >= 0 
-			mask = (self._m >= 0)
-			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*self._m[mask]))
+			mask = (self._M >= 0)
+			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*self._M[mask]))
 			del mask
 		elif (type(pblock) is int) and (type(zblock) is int):
 			norm = array(self._N,dtype=dtype)
@@ -829,12 +845,12 @@ class basis_1d(basis):
 				_np.true_divide(c,norms,c)
 
 		if sparse:
-			return _get_vec_sparse(self._ops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
+			return _get_vec_sparse(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 		else:
 			if ravel:
-				return  _get_vec_dense(self._ops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d).ravel()
+				return  _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d).ravel()
 			else:
-				return  _get_vec_dense(self._ops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
+				return  _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 
 
 	def get_proj(self,dtype):
@@ -877,7 +893,7 @@ class basis_1d(basis):
 					c[:] = exp(dtype(1.0j*k*r))
 				_np.true_divide(c,norms,c)
 
-		return _get_proj_sparse(self._ops,self._pars,self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks_1d)
+		return _get_proj_sparse(self._bitops,self._pars,self._basis,norms,ind_neg,ind_pos,dtype,C,self._L,**self._blocks_1d)
 
 
 
@@ -899,58 +915,59 @@ class basis_1d(basis):
 
 		if basis is None:
 			basis = self
-
-		static_list,dynamic_list = basis.get_lists(static,dynamic)
+		
+		basis_sort_opstr = basis._sort_opstr
+		static_list,dynamic_list = basis.get_local_lists(static,dynamic)
 
 		static_blocks = {}
 		dynamic_blocks = {}
 		if kblock is not None:
-			missingops = _check.check_T(basis,static_list,L,a)
+			missingops = _check.check_T(basis_sort_opstr,static_list,L,a)
 			if missingops:	static_blocks["T symm"] = (tuple(missingops),)
 
-			missingops = _check.check_T(basis,dynamic_list,L,a)
+			missingops = _check.check_T(basis_sort_opstr,dynamic_list,L,a)
 			if missingops:	dynamic_blocks["T symm"] = (tuple(missingops),)
 
 		if pblock is not None:
-			missingops = _check.check_P(basis,static_list,L)
+			missingops = _check.check_P(basis_sort_opstr,static_list,L)
 			if missingops:	static_blocks["P symm"] = (tuple(missingops),)
 
-			missingops = _check.check_P(basis,dynamic_list,L)
+			missingops = _check.check_P(basis_sort_opstr,dynamic_list,L)
 			if missingops:	dynamic_blocks["P symm"] = (tuple(missingops),)
 
 		if zblock is not None:
-			oddops,missingops = _check.check_Z(basis,static_list)
+			oddops,missingops = _check.check_Z(basis_sort_opstr,static_list)
 			if missingops or oddops:
-				static_blocks["Z symm"] = (tuple(oddops),tuple(missingops))
+				static_blocks["Z(C) symm"] = (tuple(oddops),tuple(missingops))
 
-			oddops,missingops = _check.check_Z(basis,dynamic_list)
+			oddops,missingops = _check.check_Z(basis_sort_opstr,dynamic_list)
 			if missingops or oddops:
-				dynamic_blocks["Z symm"] = (tuple(oddops),tuple(missingops))
+				dynamic_blocks["Z/C symm"] = (tuple(oddops),tuple(missingops))
 
 		if zAblock is not None:
-			oddops,missingops = _check.check_ZA(basis,static_list)
+			oddops,missingops = _check.check_ZA(basis_sort_opstr,static_list)
 			if missingops or oddops:
-				static_blocks["ZA symm"] = (tuple(oddops),tuple(missingops))
+				static_blocks["ZA/CA symm"] = (tuple(oddops),tuple(missingops))
 
-			oddops,missingops = _check.check_ZA(basis,dynamic_list)
+			oddops,missingops = _check.check_ZA(basis_sort_opstr,dynamic_list)
 			if missingops or oddops:
-				dynamic_blocks["ZA symm"] = (tuple(oddops),tuple(missingops))
+				dynamic_blocks["ZA/CA symm"] = (tuple(oddops),tuple(missingops))
 
 		if zBblock is not None:
-			oddops,missingops = _check.check_ZB(basis,static_list)
+			oddops,missingops = _check.check_ZB(basis_sort_opstr,static_list)
 			if missingops or oddops:
-				static_blocks["ZB symm"] = (tuple(oddops),tuple(missingops))
+				static_blocks["ZB/CB symm"] = (tuple(oddops),tuple(missingops))
 
-			oddops,missingops = _check.check_ZB(basis,dynamic_list)
+			oddops,missingops = _check.check_ZB(basis_sort_opstr,dynamic_list)
 			if missingops or oddops:
-				dynamic_blocks["ZB symm"] = (tuple(oddops),tuple(missingops))
+				dynamic_blocks["ZB/CB symm"] = (tuple(oddops),tuple(missingops))
 
 		if pzblock is not None:
-			missingops = _check.check_PZ(basis,static_list,L)
-			if missingops:	static_blocks["PZ symm"] = (tuple(missingops),)
+			missingops = _check.check_PZ(basis_sort_opstr,static_list,L)
+			if missingops:	static_blocks["PZ/C symm"] = (tuple(missingops),)
 
-			missingops = _check.check_PZ(basis,dynamic_list,L)
-			if missingops:	dynamic_blocks["PZ symm"] = (tuple(missingops),)
+			missingops = _check.check_PZ(basis_sort_opstr,dynamic_list,L)
+			if missingops:	dynamic_blocks["PZ/C symm"] = (tuple(missingops),)
 
 		return static_blocks,dynamic_blocks
 
