@@ -20,7 +20,6 @@ def cython_files():
 
 
 	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-#	cython_src = glob.glob(os.path.join(package_dir,"spin_basis_ops.pyx"))
 	if USE_CYTHON:
 		cythonize(cython_src,language="c++")
 
@@ -37,32 +36,32 @@ def configuration(parent_package='', top_path=None):
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
 
-		spin_src = os.path.join(package_dir,"spin_basis_ops.cpp")
-		inplace_src = os.path.join(package_dir,"inplace_ops.cpp")
+		"""
+		pin_src = os.path.join(package_dir,"spin_basis_ops.cpp")
 		hcb_src = os.path.join(package_dir,"hcb_basis_ops.cpp")
 		fermion_src = os.path.join(package_dir,"fermion_basis_ops.cpp")	
-		hcp_src = os.path.join(package_dir,"hcp_basis_ops.cpp")	
+		inplace_src = os.path.join(package_dir,"inplace_ops.cpp")
 
 		config.add_extension('inplace_ops',sources=inplace_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")		
-
 		config.add_extension('spin_basis_ops',sources=spin_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
-		
-
 		config.add_extension('hcb_basis_ops',sources=hcb_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
+		config.add_extension('fermion_basis_ops',sources=fermion_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
 
+		"""
+
+		hcp_src = os.path.join(package_dir,"hcp_basis_ops.cpp")	
 		config.add_extension('hcp_basis_ops',sources=hcp_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
-		config.add_extension('fermion_basis_ops',sources=fermion_src,include_dirs=[numpy.get_include()],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
 
 		return config
 
