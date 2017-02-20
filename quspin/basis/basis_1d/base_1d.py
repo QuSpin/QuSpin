@@ -938,7 +938,7 @@ class basis_1d(basis):
 		if zblock is not None:
 			oddops,missingops = _check.check_Z(basis_sort_opstr,static_list)
 			if missingops or oddops:
-				static_blocks["Z(C) symm"] = (tuple(oddops),tuple(missingops))
+				static_blocks["Z/C symm"] = (tuple(oddops),tuple(missingops))
 
 			oddops,missingops = _check.check_Z(basis_sort_opstr,dynamic_list)
 			if missingops or oddops:
@@ -964,10 +964,10 @@ class basis_1d(basis):
 
 		if pzblock is not None:
 			missingops = _check.check_PZ(basis_sort_opstr,static_list,L)
-			if missingops:	static_blocks["PZ/C symm"] = (tuple(missingops),)
+			if missingops:	static_blocks["PZ/PC symm"] = (tuple(missingops),)
 
 			missingops = _check.check_PZ(basis_sort_opstr,dynamic_list,L)
-			if missingops:	dynamic_blocks["PZ/C symm"] = (tuple(missingops),)
+			if missingops:	dynamic_blocks["PZ/PC symm"] = (tuple(missingops),)
 
 		return static_blocks,dynamic_blocks
 
