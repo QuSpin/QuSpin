@@ -72,19 +72,19 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
 
 
 # operator
-def boson_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     return op_template[basis_type,matrix_type](boson_op_func,pars,Ns,basis,opstr,&indx[0],J,row,col,&ME[0])
 
-def boson_n_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def n_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
               str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
               _np.ndarray[basis_type,ndim=1] basis,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     return n_op_template[basis_type,matrix_type](boson_op_func,pars,Ns,basis,opstr,&indx[0],J,row,col,&ME[0])
 
-def boson_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
@@ -93,27 +93,27 @@ def boson_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1
     return p_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,fliplr,pars,L,pblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int pblock = blocks["pblock"]
-    cdef int zblock = blocks["cblock"]
+    cdef int zblock = blocks["zblock"]
 
     return p_z_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,fliplr,flip_all,pars,L,pblock,zblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
-    cdef int pzblock = blocks["pcblock"]
+    cdef int pzblock = blocks["pzblock"]
 
     return pz_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,fliplr,flip_all,pars,L,pzblock,Ns,&N[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 
-def boson_t_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[N_type,ndim=1] N,_np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
@@ -124,7 +124,7 @@ def boson_t_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1
 
 
 
-def boson_t_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
@@ -135,109 +135,109 @@ def boson_t_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim
     return t_p_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,shift,fliplr,pars,L,kblock,pblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_t_p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[m_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
-    cdef int zblock = blocks["cblock"]
+    cdef int zblock = blocks["zblock"]
     cdef int a = blocks["a"]
 
     return t_p_z_op_template[basis_type,matrix_type,N_type,m_type](boson_op_func,pars,shift,fliplr,flip_all,pars,L,kblock,pblock,zblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_t_pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int pzblock = blocks["pcblock"]
+    cdef int pzblock = blocks["pzblock"]
     cdef int a = blocks["a"]
 
     return t_pz_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,shift,fliplr,flip_all,pars,L,kblock,pzblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_t_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zblock = blocks["cblock"]
+    cdef int zblock = blocks["zblock"]
     cdef int a = blocks["a"]
 
     return t_z_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,shift,flip_all,pars,L,kblock,zblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_t_zA_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_zA_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zAblock = blocks["cAblock"]
+    cdef int zAblock = blocks["zAblock"]
     cdef int a = blocks["a"]
 
     return t_zA_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,shift,flip_sublat_A,pars,L,kblock,zAblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_t_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[N_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zBblock = blocks["cBblock"]
+    cdef int zBblock = blocks["zBblock"]
     cdef int a = blocks["a"]
 
     return t_zB_op_template[basis_type,matrix_type,N_type](boson_op_func,pars,shift,flip_sublat_B,pars,L,kblock,zBblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_t_zA_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def t_zA_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
                 _np.ndarray[m_type,ndim=1] m, _np.ndarray[basis_type,ndim=1] basis, int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
-    cdef int zAblock = blocks["cAblock"]
-    cdef int zBblock = blocks["cBblock"]
+    cdef int zAblock = blocks["zAblock"]
+    cdef int zBblock = blocks["zBblock"]
     cdef int a = blocks["a"]
 
     return t_zA_zB_op_template[basis_type,matrix_type,N_type,m_type](boson_op_func,pars,shift,flip_sublat_A,flip_sublat_B,flip_all,pars,L,kblock,zAblock,zBblock,a,Ns,&N[0],&m[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
-    cdef int zblock = blocks["cblock"]
+    cdef int zblock = blocks["zblock"]
 
     return z_op_template[basis_type,matrix_type](boson_op_func,pars,flip_all,pars,L,zblock,Ns,basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 
-def boson_zA_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def zA_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
-    cdef int zAblock = blocks["cAblock"]
+    cdef int zAblock = blocks["zAblock"]
 
     return zA_op_template[basis_type,matrix_type](boson_op_func,pars,flip_sublat_A,pars,L,zAblock,Ns,basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
-def boson_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
-    cdef int zBblock = blocks["cBblock"]
+    cdef int zBblock = blocks["zBblock"]
 
     return zB_op_template[basis_type,matrix_type](boson_op_func,pars,flip_sublat_B,pars,L,zBblock,Ns,basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 
-def boson_zA_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
+def zA_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
             str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J,
             _np.ndarray[basis_type,ndim=1] basis,int L,_np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
-    cdef int zBblock = blocks["cBblock"]
-    cdef int zAblock = blocks["cAblock"]
+    cdef int zBblock = blocks["zBblock"]
+    cdef int zAblock = blocks["zAblock"]
 
     return zA_zB_op_template[basis_type,matrix_type](boson_op_func,pars,flip_sublat_A,flip_sublat_B,flip_all,pars,L,zAblock,zBblock,Ns,basis,opstr,&indx[0],J,row,col,&ME[0])
 
