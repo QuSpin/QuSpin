@@ -90,13 +90,13 @@ class boson_basis_1d(basis_1d):
 		return dict(self._blocks)
 
 	def __type__(self):
-		return "<type 'qspin.basis.spin_basis_1d'>"
+		return "<type 'qspin.basis.boson_basis_1d'>"
 
 	def __repr__(self):
-		return "< instance of 'qspin.basis.spin_basis_1d' with {0} states >".format(self._Ns)
+		return "< instance of 'qspin.basis.boson_basis_1d' with {0} states >".format(self._Ns)
 
 	def __name__(self):
-		return "<type 'qspin.basis.spin_basis_1d'>"
+		return "<type 'qspin.basis.boson_basis_1d'>"
 
 
 	# functions called in base class:
