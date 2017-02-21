@@ -4,6 +4,7 @@ from . import _check_1d_symm as _check
 import numpy as _np
 from numpy import array,cos,sin,exp,pi
 from numpy.linalg import norm
+from types import ModuleType
 
 import scipy.sparse as _sm
 
@@ -45,6 +46,10 @@ class basis_1d(basis):
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
 
+			
+		if type(ops) is not ModuleType:
+			raise ValueError("ops must be module which contains basis construction functions for 1-d symmetries")
+			
 		if type(Np) is int:
 			self._check_pcon=True
 			self._make_Np_block(ops,L,Np=Np,pars=pars,**blocks)
