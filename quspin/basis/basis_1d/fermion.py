@@ -45,7 +45,7 @@ class fermion_basis_1d(basis_1d):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["cblock"] = zAblock*zBblock
 
-		self._m = 2
+		self._sps = 2
 
 		pars = _np.array([1]) # set sign to be calculated
 		self._operators = ("availible operators for ferion_basis_1d:"+

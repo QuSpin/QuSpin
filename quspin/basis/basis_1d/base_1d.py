@@ -148,7 +148,7 @@ class basis_1d(basis):
 		# checking type, and value of blocks
 		if Np is not None:
 			if type(Np) is not int: raise TypeError('Nup/Nb/Nf must be integer')
-			if Np < 0 or Np > L*(self.m-1): raise ValueError("0 <= Number of particles <= %d" % L*(self.m-1))
+			if Np < 0 or Np > L*(self.sps-1): raise ValueError("0 <= Number of particles <= %d" % (L*(self.sps-1)))
 
 		if pblock is not None:
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
@@ -178,8 +178,8 @@ class basis_1d(basis):
 
 
 		self._L = L
-		self._Ns = ops.get_Ns(L,Np,self.m,**blocks) # estimate how many states in H-space to preallocate memory.
-		self._basis_type = ops.get_basis_type(L,Np,self.m,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
+		self._Ns = ops.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
+		self._basis_type = ops.get_basis_type(L,Np,self.sps,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
 		self._bitops = bitops(ops,**blocks)
 
@@ -197,9 +197,9 @@ class basis_1d(basis):
 			blocks["Np"] = Np
 			# checking if spin inversion is compatible with Np and L
 			if (type(Np) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
-				if (L*(self.m-1) % 2) != 0:
+				if (L*(self.sps-1) % 2) != 0:
 					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
-				if Np != L*(self.m-1)//2:
+				if Np != L*(self.sps-1)//2:
 					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
 
 			if (type(Np) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
@@ -595,8 +595,8 @@ class basis_1d(basis):
 		return self._L
 
 	@property
-	def m(self):
-		return self._m
+	def sps(self):
+		return self._sps
 
 	@property
 	def conserved(self):

@@ -48,15 +48,15 @@ class basis(object):
 
 	def _get__str__(self):
 		temp1 = "\t{0:"+str(len(str(self.Ns)))+"d}.  "
-		n_space = len(str(self.m))
+		n_space = len(str(self.sps))
 		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.m**i)%self.m for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.m**i)%self.m for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.m**i)%self.m for i in range(self.N)])) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
@@ -84,7 +84,7 @@ class basis(object):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec' required for entanglement entropy calculations!".format(self.__class__))
 
 	@property
-	def m(self):
+	def sps(self):
 		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'm' required for entanglement entropy calculations!".format(self.__class__))
 
 	# this method is required for the block_tools functions

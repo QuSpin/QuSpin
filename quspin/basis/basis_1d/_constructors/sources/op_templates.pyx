@@ -458,7 +458,7 @@ cdef long double MatrixElement_T_P_Z(int L,int pblock, int zblock, int kblock, i
 
 
 cdef int t_p_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pars,shifter shift,bitop fliplr,bitop flip_all,object[basis_type,ndim=1,mode="c"] ref_pars,int L,int kblock,int pblock,int zblock,int a,
-						npy_intp Ns, N_type *N, m_type *m, object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx,
+						npy_intp Ns, N_type *N, M_type *m, object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx,
 						scalar_type J, object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i,j,o,p,c,b
@@ -848,7 +848,7 @@ cdef long double complex MatrixElement_T_ZA_ZB(int L,int zAblock,int zBblock, in
 
 
 cdef int t_zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pars,shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,object[basis_type,ndim=1,mode="c"] ref_pars,
-						int L,int kblock,int zAblock,int zBblock,int a, npy_intp Ns, N_type *N, m_type *m,
+						int L,int kblock,int zAblock,int zBblock,int a, npy_intp Ns, N_type *N, M_type *m,
 						object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
 						object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef basis_type s

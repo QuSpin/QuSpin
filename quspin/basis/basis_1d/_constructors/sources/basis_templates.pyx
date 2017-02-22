@@ -161,7 +161,7 @@ cdef npy_uintp make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_s
 cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 												npy_uintp MAX,basis_type s,
 												int L, int pblock, int zblock, int kblock, int a,
-												N_type *N, m_type *m, object[basis_type,ndim=1,mode="c"] basis):
+												N_type *N, M_type *m, object[basis_type,ndim=1,mode="c"] basis):
 	cdef double k = 2.0*_np.pi*kblock*a/L
 	cdef npy_uintp Ns=0
 	cdef npy_uintp i
@@ -356,7 +356,7 @@ cdef npy_uintp make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bit
 												bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 												npy_uintp MAX,basis_type s,
 												int L,int zAblock,int zBblock,int kblock,int a,
-												N_type *N,m_type *m,object[basis_type,ndim=1,mode="c"] basis): 
+												N_type *N,M_type *m,object[basis_type,ndim=1,mode="c"] basis): 
 	cdef double k 
 	cdef npy_uintp Ns
 	cdef int mzA,mzB,mz,r

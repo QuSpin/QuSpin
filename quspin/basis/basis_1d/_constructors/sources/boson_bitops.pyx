@@ -12,17 +12,17 @@ cdef basis_type shift(basis_type s,int shift,int length,object[basis_type,ndim=1
 	s: integer representation of bosonic state to be shifted
 	length: total number of sites
 	shift: number of sites the occupations to be shifted by to the right
-	m: number of states per site
-	M = [m**i for i in range(L)]
+	sps: number of states per site
+	M = [sps**i for i in range(L+1)]
 	"""
 	cdef basis_type v = 0
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 	cdef int i,j
-	cdef int m = M[1]	
+	cdef int sps = M[1]	
 
 	for i in range(length):
 		j = (i-shift+length)%length
-		v += ( (s/M[i])%m ) * M[j]
+		v += ( (s/M[i])%sps ) * M[j]
 
 	return v
 
@@ -43,17 +43,17 @@ cdef basis_type fliplr(basis_type s, int length, object[basis_type,ndim=1,mode="
 
 	s: integer representation of bosonic state to be shifted
 	length: total number of sites
-	m: number of states per site
+	sps: number of states per site
 	"""
 	cdef basis_type v = 0
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i,j
-	cdef int m = M[1]
+	cdef int sps = M[1]
 
 	for i in range(length):
 		j = (length-1) - i
-		v += ( (s/M[j])%m ) * M[i]
+		v += ( (s/M[j])%sps ) * M[i]
 	return v
 
 def py_fliplr(object[basis_type,ndim=1,mode="c"] x,int length, object[basis_type,ndim=1,mode="c"] pars):
@@ -73,17 +73,17 @@ cdef basis_type flip_all(basis_type s, int length,object[basis_type,ndim=1,mode=
 
 	s: integer representation of bosonic state to be shifted
 	length: total number of sites
-	m: number of states per site
-	M = [m**i for i in range(L)]
+	sps: number of states per site
+	M = [sps**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i
-	cdef int m = M[1]
+	cdef int sps = M[1]
 
 	for i in range(length):
-		v += ( m - (s/M[i])%m -1 ) * M[i]
+		v += ( sps - (s/M[i])%sps -1 ) * M[i]
 
 	return v
 
@@ -105,19 +105,19 @@ cdef basis_type flip_sublat_A(basis_type s, int length,object[basis_type,ndim=1,
 
 	s: integer representation of bosonic state to be shifted
 	length: total number of sites
-	m: number of states per site
-	M = [m**i for i in range(L)]
+	sps: number of states per site
+	M = [sps**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i
-	cdef int m = M[1]
+	cdef int sps = M[1]
 
 	for i in range(length):
 
 		if i%2==0: # flip site occupation
-			v += ( m - (s/M[i])%M[1] -1 ) * M[i]
+			v += ( sps - (s/M[i])%M[1] -1 ) * M[i]
 		else: # shift state by 0 sites
 			v += ( (s/M[i])%M[1] ) * M[i]
 
@@ -141,21 +141,21 @@ cdef basis_type flip_sublat_B(basis_type s, int length,object[basis_type,ndim=1,
 
 	s: integer representation of bosonic state to be shifted
 	length: total number of sites
-	m: number of states per site
-	M = [m**i for i in range(L)]
+	sps: number of states per site
+	M = [sps**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i
-	cdef int m = M[1]
+	cdef int sps = M[1]
 
 	for i in range(length):
 		
 		if i%2==1: # flip site occupation
-			v += ( m - (s/M[i])%m -1 ) * M[i]
+			v += ( sps - (s/M[i])%sps -1 ) * M[i]
 		else: # shift state by 0 sites
-			v += ( (s/M[i])%m ) * M[i]
+			v += ( (s/M[i])%sps ) * M[i]
 
 	return v
 
@@ -177,22 +177,22 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 
 	s: integer representation of bosonic state to be shifted
 	L: total number of lattice sites
-	m: number of states per site
-	M = [m**i for i in range(L)]
+	sps: number of states per site
+	M = [sps**i for i in range(L)]
 	"""
 	cdef int L = pars[0]
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
-	cdef basis_type m = M[1]
+	cdef basis_type sps = M[1]
 	cdef int N = 0
 	cdef basis_type b1,b2
 	cdef int i,j,l
 
 	for i in range(L-1):
-		b1 = (s/M[i])%m
+		b1 = (s/M[i])%sps
 		N += b1
 		if b1 > 0:
-			b2 = (s/M[i+1])%m
-			if b2 < (m-1):
+			b2 = (s/M[i+1])%sps
+			if b2 < (sps-1):
 				N -= 1
 				# shift one particle right 
 				s -= M[i] 
@@ -206,17 +206,17 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 #					N += (s/M[i])%M[1]
 
 				# find the length of sub system which that number fits into (up to a remainder)
-				l = N/(m-1)
+				l = N/(sps-1)
 
 				# replace the current particle occupations in each site with new 
 				# occupation where they are all shifted as left as possible
 				for j in range(i+1):
 					if j < l:
-						s += ((m-1) - (s/M[j])%m)*M[j]
+						s += ((sps-1) - (s/M[j])%sps)*M[j]
 					elif j == l:
-						s += (N%(m-1) - (s/M[j])%m)*M[j]
+						s += (N%(sps-1) - (s/M[j])%sps)*M[j]
 					else:
-						s -= (s/M[j])%m*M[j]
+						s -= (s/M[j])%sps*M[j]
 
 
 				return s

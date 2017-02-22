@@ -62,23 +62,23 @@ def H_dim(N,length,m_max):
 
 
 
-def get_basis_type(L, Np, m, **blocks):
+def get_basis_type(L, Np, sps, **blocks):
     # calculates the datatype which will fit the largest representative state in basis
     if Np is None:
-        # if no particle conservation the largest representative is m**L
-        dtype = _np.min_scalar_type(int(m**L-1))
+        # if no particle conservation the largest representative is sps**L
+        dtype = _np.min_scalar_type(int(sps**L-1))
         return _np.result_type(dtype,_np.uint32)
     else:
         # if particles are conservated the largest representative is placing all particles as far left
         # as possible. 
-        l=Np/(m-1)
-        s_max = sum((m-1)*m**(L-1-i)  for i in range(l))
-        s_max += (Np%(m-1))*m**(L-l-1)
+        l=Np/(sps-1)
+        s_max = sum((sps-1)*sps**(L-1-i)  for i in range(l))
+        s_max += (Np%(sps-1))*sps**(L-l-1)
         dtype = _np.min_scalar_type(int(s_max))
         return _np.result_type(dtype,_np.uint32)
 
 
-def get_Ns(L, Np, m, **blocks):
+def get_Ns(L, Np, sps, **blocks):
     # this function esimate the size of the hilbert space 
     # here we only estaimte a reduction of there is momentum consrvations
     # as the size of the blocks for partiy are very hard to get for small systems.
@@ -86,9 +86,9 @@ def get_Ns(L, Np, m, **blocks):
     a = blocks.get("a")
     
     if Np is None:
-        Ns = m**L
+        Ns = sps**L
     else:
-        Ns = H_dim(Np,L,m-1)
+        Ns = H_dim(Np,L,sps-1)
 
     if kblock is not None:
         # return Ns/L + some extra goes to zero as the system increases. 

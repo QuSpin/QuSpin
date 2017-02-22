@@ -148,14 +148,14 @@ def t_p_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] co
 
 def t_p_z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
-                _np.ndarray[m_type,ndim=1] M, _np.ndarray[basis_type,ndim=1] basis, int L, _np.ndarray[basis_type,ndim=1] pars,**blocks):
+                _np.ndarray[M_type,ndim=1] M, _np.ndarray[basis_type,ndim=1] basis, int L, _np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
     cdef int zblock = blocks["zblock"]
     cdef int a = blocks["a"]
 
-    return t_p_z_op_template[basis_type,matrix_type,N_type,m_type](hcp_op_func,pars,shift,fliplr,flip_all,pars,L,kblock,pblock,zblock,a,Ns,&N[0],&M[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_p_z_op_template[basis_type,matrix_type,N_type,M_type](hcp_op_func,pars,shift,fliplr,flip_all,pars,L,kblock,pblock,zblock,a,Ns,&N[0],&M[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def t_pz_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
@@ -204,14 +204,14 @@ def t_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] c
 
 def t_zA_zB_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,
                 str opstr, _np.ndarray[NP_INT32_t,ndim=1] indx, scalar_type J, _np.ndarray[N_type,ndim=1] N,
-                _np.ndarray[m_type,ndim=1] M, _np.ndarray[basis_type,ndim=1] basis, int L, _np.ndarray[basis_type,ndim=1] pars,**blocks):
+                _np.ndarray[M_type,ndim=1] M, _np.ndarray[basis_type,ndim=1] basis, int L, _np.ndarray[basis_type,ndim=1] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zAblock = blocks["zAblock"]
     cdef int zBblock = blocks["zBblock"]
     cdef int a = blocks["a"]
 
-    return t_zA_zB_op_template[basis_type,matrix_type,N_type,m_type](hcp_op_func,pars,shift,flip_sublat_A,flip_sublat_B,flip_all,pars,L,kblock,zAblock,zBblock,a,Ns,&N[0],&M[0],basis,opstr,&indx[0],J,row,col,&ME[0])
+    return t_zA_zB_op_template[basis_type,matrix_type,N_type,M_type](hcp_op_func,pars,shift,flip_sublat_A,flip_sublat_B,flip_all,pars,L,kblock,zAblock,zBblock,a,Ns,&N[0],&M[0],basis,opstr,&indx[0],J,row,col,&ME[0])
 
 
 def z_op(_np.ndarray[basis_type,ndim=1] row, _np.ndarray[basis_type,ndim=1] col, _np.ndarray[matrix_type,ndim=1] ME,

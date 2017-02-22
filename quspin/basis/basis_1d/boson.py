@@ -10,7 +10,7 @@ S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):i+1 for i in xrange(1,1001)}
 
 
 class boson_basis_1d(basis_1d):
-	def __init__(self,L,Nb=None,Nmax_ps=None,_Np=None,**blocks):
+	def __init__(self,L,Nb=None,sps=None,_Np=None,**blocks):
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
@@ -19,18 +19,18 @@ class boson_basis_1d(basis_1d):
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
-		if Nb is None and Nmax_ps is None:
-			raise ValueError("Must specify either Nb or Nmax_ps")
+		if Nb is None and sps is None:
+			raise ValueError("Must specify either Nb or sps")
 
-		if Nmax_ps is not None:
-			if type(Nmax_ps) is not int:
-				raise TypeError("Nmax_ps must be integer >= 1.")
-			if Nmax_ps < 1:
-				raise ValueError("Nmax_ps must be >= 1 or None")
+		if sps is not None:
+			if type(sps) is not int:
+				raise TypeError("sps must be integer >= 1.")
+			if sps < 1:
+				raise ValueError("sps must be >= 1 or None")
 
 
-		if type(Nb) is int and Nmax_ps is None:
-			Nmax_ps = Nb
+		if type(Nb) is int and sps is None:
+			sps = Nb+1
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
@@ -62,9 +62,9 @@ class boson_basis_1d(basis_1d):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["cblock"] = zAblock*zBblock
 
-		self._m = Nmax_ps + 1
+		self._sps = sps
 
-		if self._m <= 2:
+		if self._sps <= 2:
 			pars = _np.array([0]) # set sign to not be calculated
 			self._operators = ("availible operators for boson_basis_1d:"+
 								"\n\tI: identity "+
@@ -77,7 +77,7 @@ class boson_basis_1d(basis_1d):
 			basis_1d.__init__(self,hcp_basis_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 		else:
 			pars = [L]
-			pars.extend([self._m**i for i in range(L+1)])
+			pars.extend([self._sps**i for i in range(L+1)])
 			pars.append(0) # flag to turn off higher spin matrix elements for +/- operators
 			pars = _np.asarray(pars)
 			self._operators = ("availible operators for ferion_basis_1d:"+
@@ -87,7 +87,7 @@ class boson_basis_1d(basis_1d):
 								"\n\tn: number operator"+
 								"\n\tz: ph-symm number operator")
 
-			self._allowed_ops = set(["I","+","-","z"])
+			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,boson_basis_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 
 
