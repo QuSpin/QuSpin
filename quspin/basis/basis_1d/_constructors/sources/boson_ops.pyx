@@ -14,7 +14,7 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
     cdef basis_type Nmax = op_pars[2] # max number of particles allowed per site (equals m-1)
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
     cdef int L = op_pars[0]
-    cdef object[basis_type,ndim=1,mode="c"] M = op_pars[1:L]
+    cdef object[basis_type,ndim=1,mode="c"] M = op_pars[1:]
 
     cdef char I = "I"
     cdef char n = "n"
@@ -50,6 +50,7 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
                 return error
 
             if F_c == 0.0:
+                r = basis[i]
                 break
 
         M_E = J*sqrtl(F_c)

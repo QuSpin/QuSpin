@@ -19,12 +19,7 @@ def cython_files():
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-<<<<<<< HEAD
 	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-=======
-#	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-	cython_src = glob.glob(os.path.join(package_dir,"boson_basis_ops.pyx"))
->>>>>>> boson
 	if USE_CYTHON:
 		cythonize(cython_src,language="c++")
 

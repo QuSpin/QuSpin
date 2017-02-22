@@ -1,5 +1,5 @@
 from ..base import basis,MAXPRINT
-from ._constructors import kblock_Ns_estimate,op_array_size
+from ._constructors import op_array_size
 from . import _check_1d_symm as _check
 import numpy as _np
 from numpy import array,cos,sin,exp,pi
@@ -35,8 +35,21 @@ class OpstrError(Exception):
 
 
 class bitops:
-    def __init__(self, **kwds):
-        self.__dict__.update(kwds)
+    def __init__(self,ops_module,**blocks):
+		def try_add(func_str,block):
+			try:
+				self.__dict__[func_str] = ops_module.__dict__[func_str]
+			except KeyError:
+				if blocks.get(block) is not None:
+					raise AttributeError("module {} missing implementation of {}.".format(module.__name__,func))
+
+		try_add("py_fliplr","pblock")
+		try_add("py_shift","kblock")
+		try_add("py_flip_all","zblock")
+		try_add("py_flip_sublat_A","zAblock")
+		try_add("py_flip_sublat_B","zBblock")
+
+
 
 
 class basis_1d(basis):
@@ -46,10 +59,6 @@ class basis_1d(basis):
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
 
-			
-		if type(ops) is not ModuleType:
-			raise ValueError("ops must be module which contains basis construction functions for 1-d symmetries")
-			
 		if type(Np) is int:
 			self._check_pcon=True
 			self._make_Np_block(ops,L,Np=Np,pars=pars,**blocks)
@@ -136,31 +145,30 @@ class basis_1d(basis):
 		if(L%a != 0):
 			raise ValueError('L must be interger multiple of lattice spacing a')
 
-
 		# checking type, and value of blocks
 		if Np is not None:
-			if type(Np) is not int: raise TypeError('Np must be integer')
-			if Np < 0 or Np > L: raise ValueError("0 <= Number of particles <= %d" % L)
+			if type(Np) is not int: raise TypeError('Nup/Nb/Nf must be integer')
+			if Np < 0 or Np > L*(self.m-1): raise ValueError("0 <= Number of particles <= %d" % L*(self.m-1))
 
 		if pblock is not None:
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
 			if abs(pblock) != 1: raise ValueError("pblock must be +/- 1")
 
 		if zblock is not None:
-			if type(zblock) is not int: raise TypeError('zblock must be integer')
-			if abs(zblock) != 1: raise ValueError("zblock must be +/- 1")
+			if type(zblock) is not int: raise TypeError('zblock/cblock must be integer')
+			if abs(zblock) != 1: raise ValueError("zblock/cblock must be +/- 1")
 
 		if zAblock is not None:
-			if type(zAblock) is not int: raise TypeError('zAblock must be integer')
-			if abs(zAblock) != 1: raise ValueError("zAblock must be +/- 1")
+			if type(zAblock) is not int: raise TypeError('zAblock/cAblock must be integer')
+			if abs(zAblock) != 1: raise ValueError("zAblock/cAblock must be +/- 1")
 
 		if zBblock is not None:
-			if type(zBblock) is not int: raise TypeError('zBblock must be integer')
-			if abs(zBblock) != 1: raise ValueError("zBblock must be +/- 1")
+			if type(zBblock) is not int: raise TypeError('zBblock/cBblock must be integer')
+			if abs(zBblock) != 1: raise ValueError("zBblock/cBblock must be +/- 1")
 
 		if pzblock is not None:
-			if type(pzblock) is not int: raise TypeError('pzblock must be integer')
-			if abs(pzblock) != 1: raise ValueError("pzblock must be +/- 1")
+			if type(pzblock) is not int: raise TypeError('pzblock/pcblock must be integer')
+			if abs(pzblock) != 1: raise ValueError("pzblock/pcblock must be +/- 1")
 
 		if kblock is not None and (a < L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
@@ -170,15 +178,10 @@ class basis_1d(basis):
 
 
 		self._L = L
-		self._Ns = ops.get_Ns(L,Np,**blocks)
-		self._basis_type = ops.get_basis_type(L,Np,**blocks)
+		self._Ns = ops.get_Ns(L,Np,self.m,**blocks) # estimate how many states in H-space to preallocate memory.
+		self._basis_type = ops.get_basis_type(L,Np,self.m,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
-
-		self._bitops = bitops(py_fliplr=ops.py_fliplr,
-						   py_shift=ops.py_shift,
-						   py_flip_all=ops.py_flip_all,
-						   py_flip_sublat_A=ops.py_flip_sublat_A,
-						   py_flip_sublat_B=ops.py_flip_sublat_B)
+		self._bitops = bitops(ops,**blocks)
 
 		if type(Np) is int:
 			self._conserved = "N"
@@ -194,13 +197,13 @@ class basis_1d(basis):
 			blocks["Np"] = Np
 			# checking if spin inversion is compatible with Np and L
 			if (type(Np) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
-				if (L % 2) != 0:
-					raise ValueError("spin inversion symmetry with magnetization conservation must be used with even number of sites")
-				if Np != L//2:
-					raise ValueError("spin inversion symmetry only reduces the 0 magnetization sector")
+				if (L*(self.m-1) % 2) != 0:
+					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
+				if Np != L*(self.m-1)//2:
+					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
 
 			if (type(Np) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-				raise ValueError("zA and zB symmetries incompatible with magnetisation symmetry")
+				raise ValueError("zA/cA and zB/cB symmetries incompatible with magnetisation/particle symmetry")
 
 			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
 			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
@@ -224,14 +227,16 @@ class basis_1d(basis):
 			self._op = ops.t_p_z_op
 
 			if self._basis_type == _np.object:
+				# if object is basis type then must likely this is for single particle stuff in which case the 
+				# normalizations need to be large ~ 1000 or more which won't fit in int8/int16.
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
 				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
 			else:
 				self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
-				self._M=_np.empty(self._basis.shape,dtype=_np.int16) #m = mp + (L+1)mz + (L+1)^2c; Anders' paper
+				self._M=_np.empty(self._basis.shape,dtype=_np.int16) # m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 
 			if (type(Np) is int):
-				# arguments get overwritten by ops.spin_...  
+				# arguments get overwritten by ops.-_basis 
 				self._Ns = ops.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
 			else:
 				self._Ns = ops.t_p_z_basis(L,pblock,zblock,kblock,a,self._pars,self._N,self._M,self._basis)

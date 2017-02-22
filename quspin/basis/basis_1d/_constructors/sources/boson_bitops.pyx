@@ -16,13 +16,13 @@ cdef basis_type shift(basis_type s,int shift,int length,object[basis_type,ndim=1
 	M = [m**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:length]
-
+	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 	cdef int i,j
-	
+	cdef int m = M[1]	
+
 	for i in range(length):
-		j = (i+shift)%length
-		v += ( (s/M[i])%M[1] ) * M[j]
+		j = (i-shift+length)%length
+		v += ( (s/M[i])%m ) * M[j]
 
 	return v
 
@@ -45,15 +45,15 @@ cdef basis_type fliplr(basis_type s, int length, object[basis_type,ndim=1,mode="
 	length: total number of sites
 	m: number of states per site
 	"""
-	cdef basis_type v
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:length]
+	cdef basis_type v = 0
+	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i,j
+	cdef int m = M[1]
 
 	for i in range(length):
-		j = (length-i-1)
-		v += ( (s/M[i])%M[1] ) * M[j]
-
+		j = (length-1) - i
+		v += ( (s/M[j])%m ) * M[i]
 	return v
 
 def py_fliplr(object[basis_type,ndim=1,mode="c"] x,int length, object[basis_type,ndim=1,mode="c"] pars):
@@ -77,12 +77,13 @@ cdef basis_type flip_all(basis_type s, int length,object[basis_type,ndim=1,mode=
 	M = [m**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:length]
+	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i
+	cdef int m = M[1]
 
 	for i in range(length):
-		v += ( M[1] - (s/M[i])%M[1] -1 ) * M[i]
+		v += ( m - (s/M[i])%m -1 ) * M[i]
 
 	return v
 
@@ -108,14 +109,15 @@ cdef basis_type flip_sublat_A(basis_type s, int length,object[basis_type,ndim=1,
 	M = [m**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:length]
+	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i
+	cdef int m = M[1]
 
 	for i in range(length):
 
 		if i%2==0: # flip site occupation
-			v += ( M[1] - (s/M[i])%M[1] -1 ) * M[i]
+			v += ( m - (s/M[i])%M[1] -1 ) * M[i]
 		else: # shift state by 0 sites
 			v += ( (s/M[i])%M[1] ) * M[i]
 
@@ -143,16 +145,17 @@ cdef basis_type flip_sublat_B(basis_type s, int length,object[basis_type,ndim=1,
 	M = [m**i for i in range(L)]
 	"""
 	cdef basis_type v = 0
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:length]
+	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 
 	cdef int i
+	cdef int m = M[1]
 
 	for i in range(length):
 		
 		if i%2==1: # flip site occupation
-			v += ( M[1] - (s/M[i])%M[1] -1 ) * M[i]
+			v += ( m - (s/M[i])%m -1 ) * M[i]
 		else: # shift state by 0 sites
-			v += ( (s/M[i])%M[1] ) * M[i]
+			v += ( (s/M[i])%m ) * M[i]
 
 	return v
 
@@ -178,17 +181,19 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 	M = [m**i for i in range(L)]
 	"""
 	cdef int L = pars[0]
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:L]
+	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
 	cdef int m = M[1]
-
+	cdef int N = 0
 	cdef basis_type b1,b2
-	cdef int N,i,j,l
+	cdef int i,j,l
 
 	for i in range(L-1):
-		b1 = (s/M[i])%M[1]
+		b1 = (s/M[i])%m
+		N += b1
 		if b1 > 0:
-			b2 = (s/M[i+1])%M[1]
-			if b2 < (M[1]-1):
+			b2 = (s/M[i+1])%m
+			if b2 < (m-1):
+				N -= 1
 				# shift one particle right 
 				s -= M[i] 
 				s += M[i+1]
@@ -196,22 +201,22 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 				# shift the rest of the particles as far left as possible
 
 				# count number of particles 
-				N = 0
-				for i in range(i+1):
-					N += (s/M[i])%M[1]
+#				N = 0
+#				for i in range(i+1):
+#					N += (s/M[i])%M[1]
 
 				# find the length of sub system which that number fits into (up to a remainder)
-				l = N/(M[1]-1)
+				l = N/(m-1)
 
 				# replace the current particle occupations in each site with new 
 				# occupation where they are all shifted as left as possible
 				for j in range(i+1):
 					if j < l:
-						s += ((m-1) - (s/M[j])%M[1])*M[j]
+						s += ((m-1) - (s/M[j])%m)*M[j]
 					elif j == l:
-						s += (N%(m-1) - (s/M[j])%M[1])*M[j]
+						s += (N%(m-1) - (s/M[j])%m)*M[j]
 					else:
-						s -= (s/M[j])%M[1]*M[j]
+						s -= (s/M[j])%m*M[j]
 
 
 				return s

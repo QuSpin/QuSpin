@@ -1,5 +1,5 @@
 from ._constructors import hcp_basis_ops
-#from ._constructors import boson_basis_ops
+from ._constructors import boson_basis_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -10,7 +10,7 @@ S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):i+1 for i in xrange(1,1001)}
 
 
 class boson_basis_1d(basis_1d):
-	def __init__(self,L,Nb=None,_Np=None,Nmax_ps=1,**blocks):
+	def __init__(self,L,Nb=None,Nmax_ps=None,_Np=None,**blocks):
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
@@ -19,16 +19,24 @@ class boson_basis_1d(basis_1d):
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
-		if Nmax_ps < 1:
-			raise ValueError("Nmax_ps must be >= 1")
+		if Nb is None and Nmax_ps is None:
+			raise ValueError("Must specify either Nb or Nmax_ps")
+
+		if Nmax_ps is not None:
+			if type(Nmax_ps) is not int:
+				raise TypeError("Nmax_ps must be integer >= 1.")
+			if Nmax_ps < 1:
+				raise ValueError("Nmax_ps must be >= 1 or None")
+
+
+		if type(Nb) is int and Nmax_ps is None:
+			Nmax_ps = Nb
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
 
 		self._blocks = blocks
 		
-		self._blocks = blocks
-
 		pblock = blocks.get("pblock")
 		zblock = blocks.get("cblock")
 		zAblock = blocks.get("cAblock")
@@ -68,11 +76,9 @@ class boson_basis_1d(basis_1d):
 			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,hcp_basis_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 		else:
-			raise NotImplementedError("softcore bosons not implemented yet")
-			''' uncomment when bosons are done
 			pars = [L]
-			pars.extend([self._m**i for i in range(L)])
-			pars = np.asarray(pars)
+			pars.extend([self._m**i for i in range(L+1)])
+			pars = _np.asarray(pars)
 			self._operators = ("availible operators for ferion_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
@@ -82,7 +88,6 @@ class boson_basis_1d(basis_1d):
 
 			self._allowed_ops = set(["I","+","-","z"])
 			basis_1d.__init__(self,boson_basis_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
-			'''
 
 
 	@property
@@ -100,21 +105,6 @@ class boson_basis_1d(basis_1d):
 
 
 	# functions called in base class:
-
-
-	def _get__str__(self):
-		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp1 = "\t{0:"+str(n_digits)+"d}.  "
-		temp2 = ">{0:0"+str(self._L)+"b}|"
-
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(b))[::-1] for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [(temp1.format(i))+(temp2.format(b))[::-1] for i,b in enumerate(self._basis)]
-
-		return tuple(str_list)
 
 
 	def _sort_opstr(self,op):

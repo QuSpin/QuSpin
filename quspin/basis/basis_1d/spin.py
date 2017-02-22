@@ -1,5 +1,5 @@
 from ._constructors import hcp_basis_ops
-#from ._constructors import boson_basis_ops
+from ._constructors import boson_basis_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -54,12 +54,10 @@ class spin_basis_1d(basis_1d):
 			self._allowed_ops = set(["I","+","-","x","y","z"])
 			basis_1d.__init__(self,hcp_basis_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 		else:
-			raise NotImplementedError("higher spins not implemented yet")
-			''' uncomment when bosons are done
 			self._pauli = False
 			pars = [L]
 			pars.extend([self._m**i for i in range(L)])
-			pars = np.asarray(pars)
+			pars = _np.asarray(pars)
 			self._operators = ("availible operators for spin_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
@@ -68,7 +66,6 @@ class spin_basis_1d(basis_1d):
 
 			self._allowed_ops = set(["I","+","-","z"])
 			basis_1d.__init__(self,boson_basis_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
-			'''
 
 
 	def Op(self,opstr,indx,J,dtype):

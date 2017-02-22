@@ -68,6 +68,7 @@ cdef int hcp_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
                 return error
 
             if M_E == 0.0:
+                r = basis[i]
                 break
 
         M_E *= J
