@@ -182,7 +182,7 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 	"""
 	cdef int L = pars[0]
 	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
-	cdef int m = M[1]
+	cdef basis_type m = M[1]
 	cdef int N = 0
 	cdef basis_type b1,b2
 	cdef int i,j,l

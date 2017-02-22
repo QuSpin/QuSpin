@@ -56,7 +56,8 @@ class spin_basis_1d(basis_1d):
 		else:
 			self._pauli = False
 			pars = [L]
-			pars.extend([self._m**i for i in range(L)])
+			pars.extend([self._m**i for i in range(L+1)])
+			pars.append(1) # flag to turn on higher spin matrix elements for +/- operators
 			pars = _np.asarray(pars)
 			self._operators = ("availible operators for spin_basis_1d:"+
 								"\n\tI: identity "+

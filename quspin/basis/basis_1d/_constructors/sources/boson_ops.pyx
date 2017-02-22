@@ -15,6 +15,8 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
     cdef int L = op_pars[0]
     cdef object[basis_type,ndim=1,mode="c"] M = op_pars[1:]
+    cdef bool spin_me = op_pars[-1]
+    cdef long double S = Nmax/2.0
 
     cdef char I = "I"
     cdef char n = "n"
@@ -23,7 +25,6 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
     cdef char m = "-"
 
     error = 0
-
     for i in range(Ns): #loop over basis
         F_c = 1.0
         r = basis[i]
@@ -36,15 +37,17 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
             if c_opstr[j] == I:
                 continue
             elif c_opstr[j] == z: # S^z = n - (m-1)/2 for 2S=2,34,... and m=2S+1
-                F_c *=  ( occ-Nmax/2.0 )*( occ-Nmax/2.0 )
+                F_c *=  ( occ-S )*( occ-S )
             elif c_opstr[j] == n:
                 F_c *= occ*occ # square root taken below
             elif c_opstr[j] == p:
-                F_c *= (0.0 if occ==Nmax else occ+1)
-                r += b
+                F_c *= (occ+1 if occ<Nmax else 0.0)
+                F_c *= (Nmax-occ if spin_me else 1.0)
+                r   += (b if occ<Nmax else 0)
             elif c_opstr[j] == m:
-                F_c *= (0.0 if occ==0 else occ)
-                r -= b
+                F_c *= occ
+                F_c *= (Nmax-occ+1 if spin_me else 1.0)
+                r   -= (b if occ>0 else 0)
             else:
                 error = 1
                 return error
