@@ -10,7 +10,7 @@ S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):i+1 for i in xrange(1,1001)}
 
 
 class spin_basis_1d(basis_1d):
-	def __init__(self,L,Nup=None,_Np=None,S="1/2",pauli=False,**blocks):
+	def __init__(self,L,Nup=None,_Np=None,S="1/2",pauli=True,**blocks):
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
@@ -71,8 +71,7 @@ class spin_basis_1d(basis_1d):
 
 	def Op(self,opstr,indx,J,dtype):
 		ME,row,col = basis_1d.Op(self,opstr,indx,J,dtype)
-
-		if not self._pauli:
+		if self._pauli:
 			n_ops = len(opstr.replace("I",""))
 			ME *= (1<<n_ops)
 
