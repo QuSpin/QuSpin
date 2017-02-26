@@ -98,7 +98,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	# initiate variables
 	variables = ["Sent"]
-	
+
 	if DM=='chain_subsys':
 		variables.append("DM_chain_subsys")
 		if svd_return_vec[0]:
@@ -114,6 +114,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 			variables.append('U')
 		if svd_return_vec[2]:
 			variables.append('V')
+	elif DM and DM not in ['chain_subsys','other_subsys','both']:
+		raise TypeError("Unexpected keyword argument for 'DM'!")
 
 	if svd_return_vec[1]:
 		variables.append('lmbda')
@@ -331,7 +333,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	Ns = psi[0,].size
 
 	
-	if basis.__class__.__name__[:-9] in ['spin','hcb','fermion']:
+	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
@@ -340,19 +342,19 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		
 	
 		# re-write the state in the initial basis
-		if basis.Ns<2**N:
+		if basis.Ns<basis.sps**N:
 			psi = basis.get_vec(psi,sparse=False)
 			
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
-		Ns_A = 2**N_A
+		Ns_A = basis.sps**N_A
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
 
-
 		'''
-		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows:
+		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
+		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
 
 		1) the initial state psi has 2^N entries corresponding to the spin-z configs
 		2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
@@ -366,14 +368,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		if chain_subsys==list(range(len(chain_subsys))):
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive or staring site not [0]
 			# performs 2) and 3)
 			# update reshape tuple
-			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)])
+			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)])
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -383,7 +385,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			# performs 4)
 			v=v.transpose(system) 
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			v = _np.reshape(v,reshape_tuple2)
 			
 
@@ -397,7 +399,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
-		Ns_A = 2**N_A
+		Ns_A = basis.sps**N_A
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
@@ -410,39 +412,38 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				if N_A!=N: # doesn't make use of chain symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
 				else: # makes use of symmetries
-					Ns_spin = basis.chain_Ns
+					Ns_chain = basis.chain_Ns
 			else:
-				Ns_spin = 2**N
+				Ns_chain = basis.sps**N
 
 		elif basis.Ntot is not None: # total particle-conservation
 			Nph = basis.Ntot
 			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
 				if N_A==N: # make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
-					Ns_spin = basis.chain_Ns
+					Ns_chain = basis.chain_Ns
 				else: # doesn't make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-					Ns_spin = 2**N
+					Ns_chain = basis.sps**N
 			else: # no chain symmetries present
 				if N_A==N:
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
 				else:
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-				Ns_spin = basis.chain_Ns
+				Ns_chain = basis.chain_Ns
 
-		#del basis
 		if chain_subsys == list(range(len(chain_subsys))): 
 			# chain_subsys sites come in consecutive order or staring site not [0]
 			# define reshape tuple
 			if N_A==N: # chain_subsys equals entire lattice
-				reshape_tuple2 = (Ns, Ns_spin,Nph+1)
+				reshape_tuple2 = (Ns, Ns_chain,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
-				reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+				reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
 			v = _np.reshape(psi.T,reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
-			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)]) + (Nph+1,)
+			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)]) + (Nph+1,)
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -453,7 +454,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system.append(len(system))
 			v=v.transpose(system)
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
 			v = _np.reshape(v,reshape_tuple2)
 				
 	else:

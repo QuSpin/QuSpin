@@ -809,11 +809,11 @@ class basis_1d(basis):
 			return array([])
 		if v0.ndim == 1:
 			ravel=True
-			shape = (2**self._L,1)
+			shape = (self._sps**self._L,1)
 			v0 = v0.reshape((-1,1))
 		elif v0.ndim == 2:
 			ravel=False
-			shape = (2**self._L,v0.shape[1])
+			shape = (self._sps**self._L,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
@@ -1188,7 +1188,7 @@ def _get_proj_sparse(ops,pars,basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 		k = 0.0
 		a = L
 
-	shape = (2**L,basis.shape[0])
+	shape = (basis.sps**L,basis.shape[0])
 
 	c = _np.zeros(basis.shape,dtype=dtype)	
 	v = _sm.csr_matrix(shape,dtype=dtype)
