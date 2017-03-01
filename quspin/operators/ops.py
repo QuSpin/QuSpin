@@ -100,11 +100,145 @@ def check_dynamic(sub_list):
 
 	
 
+
+def test_function(func,func_args):
+	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+	func_val=func(t,*func_args)
+	if not _np.isscalar(func_val):
+		raise TypeError("function must return scalar values")
+
+
+def static_op(object):
+	def __init__(self,O,dtype):
+		if isinstance(O,dynamic_op):
+			raise TypeError("can't convert dynamic_op to statis_op")
+
+		if not _sp.issparse(O):
+			O = np.asanyarray(O,dtype=dtype)
+
+		if O.ndim > 2 or O.ndim < 2:
+			raise ValueError("expecting square sparse or dense array for O.")
+
+		if O.shape[0] != O.shape[1]:
+			raise ValueError("expecting square sparse or dense array for O.")
+
+		self._O = O.astype(dtype)		
+
+
+	@property
+	def dtype(self):
+		return self._O.dtype
+
+	def transpose(self):
+		self._O = self._O.transpose()
+		return self
+
+
+	def conj(self):
+		self._O = self._O.conj()
+		return self
+
+
+	def toarray(self,time,out=None):
+		if out is None:
+			if _sp.issparse(self._O):
+				out = self._O.toarray()
+			else:
+				out = _np.asarray(self._O)
+		else:
+			if _sp.issparse(self._O):
+				self._O.toarray(out=out)
+			else:
+				out[:] = self._O[:]
+		return out
+
+
+	def todense(self,time,out=None):
+		if out is None:
+			if _sp.issparse(self._O):
+				out = self._O.todense()
+			else:
+				out = _np.asmatrix(self._O)
+		else:
+			if _sp.issparse(self._O):
+				self._O.todense(out=out)
+			else:
+				out[:] = self._O[:]
+		return out
+
+
+	def dot(self,V,time=0.0):
+		return self._O.dot(V)
+
+
+	def rdot(self,other,time=0.0):
+		try:
+			tr = other.transpose()
+		except AttributeError:
+			tr = np.asarray(other).transpose()
+
+		return (self.transpose().dot(tr)).transpose()
+
+
+
+
+
+def dynamic_op(static_op):
+	def __init__(self,O,f,f_args,dtype):
+		test_function(f,f_args)
+		self._f = f
+		self._f_args = f_args
+		self._conj = False
+		super().__init__(O,dtype)
+
+
+	def todense(self,time=0.0,out=None):
+		a = self._f(time,*self._f_args)
+
+		if out is None:
+			out = super().todense()
+		else:
+			super().todense(out=out)
+
+		out *= (a.conjugate() if self._conj else a)
+
+		return out
+
+
+	def toarray(self,out=None):
+		a = self._f(time,*self._f_args)
+		
+		if out is None:
+			out = super().toarray()
+		else:
+			super().toarray(out=out)
+
+		out *= (a.conjugate() if self._conj else a)
+
+		return out
+
+
+	def conj(self):
+		self._conj = not self._conj
+		return super().conj()
+
+
+	def dot(self,other,time=0.0):
+		a = self._f(time,*self._f_args)
+		return (a.conjugate() if self._conj else a)*self._O.dot(other)
+
+
+
+
+
+
+
 def ishamiltonian(obj):
 	return isinstance(obj,hamiltonian)
 
 def isexp_op(obj):
 	return isinstance(obj,exp_op)
+
 
 # used to create linear operator of a hamiltonian
 def hamiltonian_dot(hamiltonian,time,v):
@@ -1006,8 +1140,8 @@ class hamiltonian(object):
 
 		H_dense = self.todense(time=time)
 		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
-#		eigvalsh_args["overwrite_a"] = True
-#		E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		#eigvalsh_args["overwrite_a"] = True
+		#E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
@@ -1516,7 +1650,7 @@ class hamiltonian(object):
 
 	def __rmul__(self,other): # other * self
 		if isinstance(other,hamiltonian):
-#			self._hamiltonian_checks(other,casting="unsafe")
+			#self._hamiltonian_checks(other,casting="unsafe")
 			return self._rmul_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -2383,14 +2517,6 @@ class hamiltonian(object):
 				return self.__rmul__(inputs[0])
 			else:
 				return NotImplemented
-
-
-
-
-
-
-
-
 
 
 
@@ -3412,8 +3538,8 @@ class ops_dict(object):
 
 		H_dense = self.todense(pars=pars)
 		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
-#		eigvalsh_args["overwrite_a"] = True
-#		E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		#eigvalsh_args["overwrite_a"] = True
+		#E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
