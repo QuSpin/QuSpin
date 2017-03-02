@@ -41,3 +41,4 @@ E_ho=H_ho.eigvalsh()
 #### 
 
 np.testing.assert_allclose(E_boson-E_ho,0.0,atol=1E-5,err_msg='Failed boson and ho energies comparison!')
+
