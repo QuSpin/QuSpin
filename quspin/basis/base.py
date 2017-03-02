@@ -1,4 +1,5 @@
 import numpy as _np
+import scipy.sparse as _sp
 import warnings
 
 MAXPRINT = 50
@@ -495,4 +496,123 @@ class basis(object):
 def isbasis(x):
 	return isinstance(x,basis)
 
+
+
+####################################################
+# set of helper functions to implement the partial # 
+# trace of lattice density matrices. They do not   #
+# have any checks and states are assumed to be     #
+# in the non-symmetry reduced basis.               #
+####################################################
+
+
+def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sorted(sub_sys_B))
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	T_tup = tuple(sub_sys_A)+tuple(sub_sys_B) 
+	T_tup = (0,) + tuple(1 + i for i in T_tup)
+	R_tup = (-1,) + tuple(sps for i in range(L))
+
+
+	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
+	psi_v = psi_v.reshape((-1,Ns_A,Ns_B))
+
+	if return_rdm == "A":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
+	elif return_rdm == "B":
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+	elif return_rdm == "both":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v)),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+
+
+
+
+
+
+def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sorted(sub_sys_B))
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	# T_tup tells numpy how to reshuffle the indices such that when I reshape the array to the 
+	# 4-_tensor rho_{ik,jl} i,j are for sub_sys_A and k,l are for sub_sys_B
+	# which means I need (sub_sys_A,sub_sys_B,sub_sys_A+L,sub_sys_B+L)
+
+	T_tup = sub_sys_A+sub_sys_B
+	T_tup = (0,) + tuple(s+1 for s in T_tup) + tuple(L+s+1 for s in T_tup)
+
+	R_tup = (-1,) + tuple(sps for i in range(2*L))
+
+	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
+	rho_v = rho_v.reshape((-1,Ns_A,Ns_B,Ns_A,Ns_B)) 
+
+	if return_rdm == "A":
+		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
+	elif return_rdm == "B":
+		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
+	elif return_rdm == "both":
+		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
+
+
+
+
+
+def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sorted(sub_sys_B))
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	psi = psi.tocoo()
+
+	T_tup = sub_sys_A+sub_sys_B
+
+	
+	# reshuffle indices for the sub-systems.
+	if T_tup != tuple(range(L)):
+		indx = _np.zeros(psi.row.shape,dtype=psi.row.dtype)
+		for i_new,i_old in enumerate(T_tup):
+			indx += ((psi.row//(sps**i_old)) % sps)*(sps**i_new)
+	else:
+		indx = psi.row
+
+
+	# make shift way of reshaping array
+	psi._shape = (Ns_A,Ns_B)
+	psi.col[:] = indx / Ns_A
+	psi.row[:] = indx % Ns_A
+
+	psi = psi.tocsr()
+
+	if return_rdm == "A":
+		return psi.dot(psi.T)
+	elif return_rdm == "B":
+		return psi.T.dot(psi)
+	elif return_rdm == "both":
+		return psi.dot(psi.T),psi.T.dot(psi)
 

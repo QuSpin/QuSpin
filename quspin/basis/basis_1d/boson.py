@@ -5,9 +5,6 @@ import numpy as _np
 
 
 
-S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):i+1 for i in xrange(1,1001)}
-
-
 
 class boson_basis_1d(basis_1d):
 	def __init__(self,L,Nb=None,sps=None,_Np=None,**blocks):

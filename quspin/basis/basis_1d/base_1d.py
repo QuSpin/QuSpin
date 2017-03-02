@@ -1,12 +1,15 @@
 from ..base import basis,MAXPRINT
+from ..base import _lattice_partial_trace_pure
+from ..base import _lattice_partial_trace_mixed
+from ..base import _lattice_partial_trace_sparse_pure
 from ._constructors import op_array_size
 from . import _check_1d_symm as _check
 import numpy as _np
 from numpy import array,cos,sin,exp,pi
-from numpy.linalg import norm
+from numpy.linalg import norm,eigvalsh
 from types import ModuleType
 
-import scipy.sparse as _sm
+import scipy.sparse as _sp
 
 import warnings
 
@@ -35,7 +38,7 @@ class OpstrError(Exception):
 
 
 class bitops:
-    def __init__(self,ops_module,**blocks):
+	def __init__(self,ops_module,**blocks):
 		def try_add(func_str,block):
 			try:
 				self.__dict__[func_str] = ops_module.__dict__[func_str]
@@ -799,7 +802,7 @@ class basis_1d(basis):
 
 
 	def get_vec(self,v0,sparse=True):
-		if _sm.issparse(v0):
+		if _sp.issparse(v0):
 			raise TypeError("expecting v0 to be dense array")
 
 		if not hasattr(v0,"shape"):
@@ -808,11 +811,9 @@ class basis_1d(basis):
 		if self._Ns <= 0:
 			return array([])
 		if v0.ndim == 1:
-			ravel=True
 			shape = (2**self._L,1)
 			v0 = v0.reshape((-1,1))
 		elif v0.ndim == 2:
-			ravel=False
 			shape = (2**self._L,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
@@ -857,10 +858,7 @@ class basis_1d(basis):
 		if sparse:
 			return _get_vec_sparse(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 		else:
-			if ravel:
-				return  _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d).ravel()
-			else:
-				return  _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
+			return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
 
 
 	def get_proj(self,dtype):
@@ -907,6 +905,110 @@ class basis_1d(basis):
 
 
 
+
+
+	def partial_trace(self,state,sub_sys_A=None,sparse=False,state_type="pure",return_rdm="A"):
+		if sub_sys_A is None:
+			sub_sys_A = tuple(range(self.L//2))
+
+		sub_sys_A = list(sub_sys_A)
+
+		if any(s < 0 or s > self.L for s in sub_sys_A) or any(type(s) is not int for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+
+		sps = self.sps
+		L = self.L
+
+		if state_type == "pure":
+			if _sp.issparse(state):
+				if state.shape[0] != self.Ns:
+					raise ValueError("pure state must have dimension equal to basis size.")
+				state = self.get_proj(state.dtype).dot(state)
+			else:
+				state = self.get_vec(state,sparse=sparse)
+
+			if _sp.issparse(state):
+				if state.shape[1] == 1:
+					return _lattice_partial_trace_sparse_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
+				else:
+					state = state.tocsc()
+					return _np.array([_lattice_partial_trace_sparse_pure(state.getcol(i),sub_sys_A,L,sps,return_rdm=return_rdm)])
+			else:
+				return _lattice_partial_trace_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
+
+		elif state_type == "mixed":
+			if sparse or _sp.issparse(state):
+				raise NotImplementedError("only pure state calculation implemeted for sparse arrays")
+			if state.ndim != 2 or state.shape[0] != state.shape[1]:
+				raise ValueError("mixed state input must be a 2-d square array.")
+			
+			proj = self.get_proj(state.dtype)
+
+			state = (proj.dot(state)).dot(proj.T)
+
+			return _lattice_partial_trace_mixed(state,sub_sys_A,L,sps,return_rdm=return_rdm)
+
+
+		else:
+			raise ValueError("state_type '{}' not recognized.".format(state_type))
+
+
+
+
+	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,sparse=False,state_type="pure",alpha=1.0):
+		if sub_sys_A is None:
+			sub_sys_A = tuple(range(L))
+
+		L_A = len(sub_sys_A)
+		L_B = self.L - L_A
+
+		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type=state_type,sparse=sparse)
+
+		if return_rdm is None:
+			if L_A <= L_B:
+				rdm = self.partial_trace(state,**partial_trace_args)
+			else:
+				rdm = self.partial_trace(state,**partial_trace_args)
+
+		elif return_rdm == "A" and L_A <= L_B:
+			rdm_A = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_A
+
+		elif return_rdm == "B" and L_B <= L_A:
+			partial_trace_args["return_rdm"] = "B"
+			rdm_B = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_B
+
+		else:
+			partial_trace_args["return_rdm"] = "both"
+			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
+
+			if L_A < L_B:
+				rdm = rdm_A
+			else:
+				rdm = rdm_B
+
+		try:
+			E = eigvalsh(rdm.todense()) + _np.finfo(rdm.dtype).eps
+		except AttributeError:
+			E = eigvalsh(rdm) + _np.finfo(rdm.dtype).eps
+
+		if alpha == 1.0:
+			Sent = - (E * _np.log(E)).sum(axis=-1)
+		elif alpha >= 0.0:
+			Sent = (_np.log(_np.power(E,alpha))/(1-alpha)).sum(axis=-1)
+		else:
+			raise ValueError("alpha >= 0")
+
+		
+		if return_rdm is None:
+			return Sent
+		elif return_rdm == "A":
+			return Sent,rdm_A
+		elif return_rdm == "B":
+			return Sent,rdm_B
+		elif return_rdm == "both":
+			return Sent,rdm_A,rdm_B
 
 
 
@@ -1097,7 +1199,7 @@ def _get_vec_sparse(ops,pars,v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		a = L
 
 	c = _np.zeros(basis.shape,dtype=v0.dtype)	
-	v = _sm.csr_matrix(shape,dtype=v0.dtype)
+	v = _sp.csr_matrix(shape,dtype=v0.dtype)
 
 
 
@@ -1107,15 +1209,15 @@ def _get_vec_sparse(ops,pars,v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 		vc = (v0.T*c).T
 		data_pos = vc[ind_pos].flatten()
 		data_neg = vc[ind_neg].flatten()
-		v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
-		v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+		v = v + _sp.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+		v = v + _sp.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis,L,pars)
 			data_pos *= zAblock
 			data_neg *= zAblock
-			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_neg *= zAblock
 			ops.py_flip_sublat_A(basis,L,pars)
@@ -1124,8 +1226,8 @@ def _get_vec_sparse(ops,pars,v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			ops.py_flip_sublat_B(basis,L,pars)
 			data_pos *= zBblock
 			data_neg *= zBblock
-			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_neg *= zBblock
 			ops.py_flip_sublat_B(basis,L,pars)
@@ -1134,8 +1236,8 @@ def _get_vec_sparse(ops,pars,v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			ops.py_flip_all(basis,L,pars)
 			data_pos *= zblock
 			data_neg *= zblock
-			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
 			ops.py_flip_all(basis,L,pars)
@@ -1144,8 +1246,8 @@ def _get_vec_sparse(ops,pars,v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			ops.py_fliplr(basis,L,pars)
 			data_pos *= pblock
 			data_neg *= pblock
-			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
 			ops.py_fliplr(basis,L,pars)
@@ -1155,8 +1257,8 @@ def _get_vec_sparse(ops,pars,v0,basis,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 			ops.py_flip_all(basis,L,pars)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			v = v + _sm.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			ops.py_fliplr(basis,L,pars)
@@ -1191,22 +1293,22 @@ def _get_proj_sparse(ops,pars,basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 	shape = (2**L,basis.shape[0])
 
 	c = _np.zeros(basis.shape,dtype=dtype)	
-	v = _sm.csr_matrix(shape,dtype=dtype)
+	v = _sp.csr_matrix(shape,dtype=dtype)
 
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 		data_pos = c[ind_pos]
 		data_neg = c[ind_neg]
-		v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
-		v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+		v = v + _sp.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+		v = v + _sp.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis,L,pars)
 			data_pos *= zAblock
 			data_neg *= zAblock
-			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_neg *= zAblock
 			ops.py_flip_sublat_A(basis,L,pars)
@@ -1215,8 +1317,8 @@ def _get_proj_sparse(ops,pars,basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 			ops.py_flip_sublat_B(basis,L,pars)
 			data_pos *= zBblock
 			data_neg *= zBblock
-			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_neg *= zBblock
 			ops.py_flip_sublat_B(basis,L,pars)
@@ -1225,8 +1327,8 @@ def _get_proj_sparse(ops,pars,basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 			ops.py_flip_all(basis,L,pars)
 			data_pos *= zblock
 			data_neg *= zblock
-			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
 			ops.py_flip_all(basis,L,pars)
@@ -1235,8 +1337,8 @@ def _get_proj_sparse(ops,pars,basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 			ops.py_fliplr(basis,L,pars)
 			data_pos *= pblock
 			data_neg *= pblock
-			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
 			ops.py_fliplr(basis,L,pars)
@@ -1246,8 +1348,8 @@ def _get_proj_sparse(ops,pars,basis,norms,ind_neg,ind_pos,dtype,C,L,**blocks):
 			ops.py_flip_all(basis,L,pars)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			v = v + _sm.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
-			v = v + _sm.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_pos,(basis[ind_pos],ind_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg,(basis[ind_neg],ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			ops.py_fliplr(basis,L,pars)

@@ -4,6 +4,7 @@ import numpy as _np
 from scipy import sparse as _sp
 from scipy.sparse import linalg as _sla
 from scipy import linalg as _la
+from numpy.linalg import eigvalsh
 import warnings
 
 
@@ -87,7 +88,6 @@ class tensor_basis(basis):
 
 
 
-
 	def get_vec(self,v0,sparse=True,full_1=True,full_2=True):
 		if self._Ns <= 0:
 			return _np.array([])
@@ -122,6 +122,107 @@ class tensor_basis(basis):
 
 
 		return _sp.kron(proj1,proj2,format="csr")
+
+
+
+	def partial_trace(self,state,sub_sys_A="left",state_type="pure"):
+		if sub_sys_A not in set(["left","right","both"]):
+			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
+
+		if _sp.issparse(state):
+			if state_type == "pure":
+				if state.shape[0] != self.Ns:
+					raise ValueError("pure state must have dimension equal to basis size.")
+
+				if state.shape[1] == 1:
+					return _tensor_partial_trace_sparse_pure(state,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
+				else:
+					state = state.tocsc()
+					return _np.array([_tensor_partial_trace_sparse_pure(state.getcol(i),self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)],dtype=_np.object)
+
+			elif state_type == "mixed":
+				raise NotImplementedError("only pure state calculation implemeted for sparse arrays")
+
+			else:
+				raise ValueError("state_type '{}' not recognized.".format(state_type))
+
+		else:
+			state = _np.asanyarray(state)
+			if state_type == "pure":
+
+				if state.ndim == 1:
+					if state.shape[0] != self.Ns:
+						raise ValueError("expecting 1-d array containing pure state.")
+
+					return _tensor_partial_trace_pure(state,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
+
+				elif state.ndim == 2:
+					if state.shape[0] != self.Ns:
+						raise ValueError("expecting 2-d array containing pure states in columns of array.")
+
+					return _tensor_partial_trace_pure(state.T,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
+
+				else:
+					raise ValueError("pure state calculation expecting arrays with ndim < 3.")
+
+					
+			elif state_type == "mixed":
+				if state.ndim != 2 or state.shape[0] != state.shape[1]:
+					raise ValueError("mixed state input must be a 2-d square array")
+				
+				return _tensor_partial_trace_mixed(state,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
+
+			else:
+				raise ValueError("state_type '{}' not recognized.".format(state_type))
+
+
+
+	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0):
+
+		if return_rdm is None:
+			if self._b1.Ns <= self._b2.Ns:
+				rdm = self.partial_trace(state,sub_sys_A="left",state_type=state_type)
+			else:
+				rdm = self.partial_trace(state,sub_sys_A="right",state_type=state_type)
+
+		elif return_rdm == "left" and self._b1.Ns <= self._b2.Ns:
+			rdm_left = self.partial_trace(state,sub_sys_A="left",state_type=state_type)
+			rdm = rdm_left
+
+		elif return_rdm == "right" and self._b2.Ns <= self._b1.Ns:
+			rdm_right = self.partial_trace(state,sub_sys_A="right",state_type=state_type)
+			rdm = rdm_right
+
+		else:
+			rdm_left,rdm_right = self.partial_trace(state,sub_sys_A=return_rdm,state_type=state_type)
+
+			if self._b1.Ns < self._b2.Ns:
+				rdm = rdm_left
+			else:
+				rdm = rdm_right
+
+		try:
+			E = eigvalsh(rdm.todense()) + _np.finfo(rdm.dtype).eps
+		except AttributeError:
+			E = eigvalsh(rdm) + _np.finfo(rdm.dtype).eps
+
+		if alpha == 1.0:
+			Sent = - (E * _np.log(E)).sum(axis=-1)
+		elif alpha >= 0.0:
+			Sent = (_np.log(_np.power(E,alpha))/(1-alpha)).sum(axis=-1)
+		else:
+			raise ValueError("alpha >= 0")
+
+		
+		if return_rdm is None:
+			return Sent
+		elif return_rdm == "left":
+			return Sent,rdm_left
+		elif return_rdm == "right":
+			return Sent,rdm_right
+		elif return_rdm == "both":
+			return Sent,rdm_left,rdm_right
+
 
 
 
@@ -284,7 +385,7 @@ class tensor_basis(basis):
 			return "reference states: \n\t not availible"
 
 		if not hasattr(self._b2,"_get__str__"):
-			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self_b2)),UserWarning,stacklevel=3)
+			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b2)),UserWarning,stacklevel=3)
 			return "reference states: \n\t not availible"
 
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
@@ -419,6 +520,53 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 
 
 
+def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
+	psi_v = psi.reshape((-1,Ns_r,Ns_l))
+
+	if sub_sys_A == "left":
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+	elif sub_sys_A == "right":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
+	elif sub_sys_A == "both":
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v)),_np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
+	else:
+		raise Exception
+	
+
+def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
+	if not _sp.issparse(psi):
+		raise Exception
+
+	if psi.shape[1] > 1:
+		raise Exception
+
+	# make shift way of reshaping array 
+	psi = psi.tocoo()
+	psi._shape = (Ns_r,Ns_l)
+	psi.col[:] = psi.row / Ns_r
+	psi.row[:] = psi.row % Ns_r
+	psi = psi.tocsr()
+
+	if sub_sys_A == "left":
+		return psi.T.dot(psi)
+	elif sub_sys_A == "right":
+		return psi.dot(psi.T)
+	elif sub_sys_A == "both":
+		return psi.T.dot(psi),psi.dot(psi.T)
+	else:
+		raise Exception
+
+def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):
+	psi_v = psi.reshape((-1,Ns_r,Ns_l,Ns_r,Ns_l))
+
+	if sub_sys_A == "left":
+		return _np.squeeze(_np.einsum("...jijk->...ik",psi_v))
+	elif sub_sys_A == "right":
+		return _np.squeeze(_np.einsum("...ijkj->...ik",psi_v))
+	elif sub_sys_A == "both":
+		return _np.squeeze(_np.einsum("...jijk->...ik",psi_v)),_np.squeeze(_np.einsum("...ijkj->...ik",psi_v))
+	else:
+		raise Exception
 
 
 
