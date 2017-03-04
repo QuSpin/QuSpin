@@ -496,60 +496,9 @@ cdef npy_uintp make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_typ
 	return Ns
 
 
-
-
-
-cdef npy_uintp make_zA_basis_template(bitop flip_sublat_A,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
-											npy_uintp MAX,basis_type s,
-											int L, object[basis_type,ndim=1,mode="c"] basis):
-	cdef npy_uintp Ns
-	cdef int rzA
-	cdef int j
-	cdef npy_uintp i
-
-	Ns = 0
-	for i in range(MAX):
-		rzA = CheckState_ZA_template[basis_type](flip_sublat_A,s,L,ns_pars)
-		if rzA > 0:
-			basis[Ns] = s
-			Ns += 1
-
-		s = next_state(s,ns_pars)
-
-	return Ns
-
-
-
-
-
-
-cdef npy_uintp make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B,
-											bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
-											npy_uintp MAX,basis_type s,
-											int L,object[basis_type,ndim=1,mode="c"] basis):
-	cdef npy_uintp Ns
-	cdef npy_uintp i
-	cdef int r
-	cdef int j
-
-	Ns = 0
-	for i in range(MAX):
-		r = CheckState_ZA_ZB_template[basis_type](flip_sublat_A,flip_sublat_B,flip_all,s,L,ns_pars)
-		if r > 0:
-			basis[Ns] = s
-			Ns += 1
-
-		s = next_state(s,ns_pars)
-
-	return Ns
-
-
-
-
-
 cdef npy_uintp make_z_basis_template(bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 										npy_uintp MAX,basis_type s,
-										int L,object[basis_type,ndim=1,mode="c"] basis):
+										int L,int zblock,N_type *N,object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef int rz
 	cdef int j
@@ -557,9 +506,10 @@ cdef npy_uintp make_z_basis_template(bitop flip_all,ns_type next_state, object[b
 
 	Ns = 0
 	for i in range(MAX):
-		rz = CheckState_Z_template[basis_type](flip_all,s,L,ns_pars)
+		rz = CheckState_Z_template[basis_type](flip_all,zblock,s,L,ns_pars)
 		if rz > 0:
 			basis[Ns] = s
+			N[Ns] = rz
 			Ns += 1
 
 		s = next_state(s,ns_pars)
@@ -568,11 +518,30 @@ cdef npy_uintp make_z_basis_template(bitop flip_all,ns_type next_state, object[b
 
 
 
+cdef npy_uintp make_zA_basis_template(bitop flip_sublat_A,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
+											npy_uintp MAX,basis_type s,
+											int L,int zAblock, N_type *N, object[basis_type,ndim=1,mode="c"] basis):
+	cdef npy_uintp Ns
+	cdef int rzA
+	cdef int j
+	cdef npy_uintp i
+
+	Ns = 0
+	for i in range(MAX):
+		rzA = CheckState_ZA_template[basis_type](flip_sublat_A,zAblock,s,L,ns_pars)
+		if rzA > 0:
+			basis[Ns] = s
+			N[Ns] = rzA
+			Ns += 1
+
+		s = next_state(s,ns_pars)
+
+	return Ns
 
 
 cdef npy_uintp make_zB_basis_template(bitop flip_sublat_B,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
 											npy_uintp MAX,basis_type s,
-											int L, object[basis_type,ndim=1,mode="c"] basis):
+											int L,int zBblock,N_type *N, object[basis_type,ndim=1,mode="c"] basis):
 	cdef npy_uintp Ns
 	cdef int rzB
 	cdef int j
@@ -580,9 +549,10 @@ cdef npy_uintp make_zB_basis_template(bitop flip_sublat_B,ns_type next_state, ob
 
 	Ns = 0
 	for i in range(MAX):
-		rzB = CheckState_ZB_template(flip_sublat_B,s,L,ns_pars)
+		rzB = CheckState_ZB_template(flip_sublat_B,zBblock,s,L,ns_pars)
 		if rzB > 0:
 			basis[Ns] = s
+			N[Ns] = rzB
 			Ns += 1
 
 		s = next_state(s,ns_pars)
@@ -592,4 +562,23 @@ cdef npy_uintp make_zB_basis_template(bitop flip_sublat_B,ns_type next_state, ob
 
 
 
+cdef npy_uintp make_zA_zB_basis_template(bitop flip_sublat_A,bitop flip_sublat_B,
+											bitop flip_all,ns_type next_state, object[basis_type,ndim=1,mode="c"] ns_pars,
+											npy_uintp MAX,basis_type s,
+											int L,int zAblock,int zBblock,N_type *N,object[basis_type,ndim=1,mode="c"] basis):
+	cdef npy_uintp Ns
+	cdef npy_uintp i
+	cdef int r
+	cdef int j
 
+	Ns = 0
+	for i in range(MAX):
+		r = CheckState_ZA_ZB_template[basis_type](flip_sublat_A,flip_sublat_B,flip_all,zAblock,zBblock,s,L,ns_pars)
+		if r > 0:
+			basis[Ns] = s
+			N[Ns] = r
+			Ns += 1
+
+		s = next_state(s,ns_pars)
+
+	return Ns

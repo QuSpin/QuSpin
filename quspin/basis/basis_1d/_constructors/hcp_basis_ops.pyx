@@ -19,15 +19,16 @@ from scipy.misc import comb
 _np.import_array()
 
 include "sources/hcp_bitops.pyx"
-include "sources/refstate.pyx"
 include "sources/checkstate.pyx"
 include "sources/basis_templates.pyx"
-include "sources/op_templates.pyx"
-
-
-# impliment templates for spins
-include "sources/hcp_ops.pyx"
 include "sources/hcp_basis.pyx"
+
+
+include "sources/hcp_bitops.pyx"
+include "sources/refstate.pyx"
+include "sources/op_templates.pyx"
+include "sources/hcp_ops.pyx"
+
 
 
 

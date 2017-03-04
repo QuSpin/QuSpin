@@ -507,6 +507,9 @@ def isbasis(x):
 
 
 def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	extra_dims = psi.shape[:-1]
+	n_dims = len(extra_dims)
+
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)
@@ -519,13 +522,12 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	Ns_B = (sps**L_B)
 
 	T_tup = tuple(sub_sys_A)+tuple(sub_sys_B) 
-	T_tup = (0,) + tuple(1 + i for i in T_tup)
-	R_tup = (-1,) + tuple(sps for i in range(L))
-
+	T_tup = tuple(range(n_dims)) + tuple(n_dims + s for s in T_tup)
+	R_tup = extra_dims + tuple(sps for i in range(L))
 
 	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
-	psi_v = psi_v.reshape((-1,Ns_A,Ns_B))
+	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
@@ -540,6 +542,8 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 
 def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+	extra_dims = rho.shape[:-2]
+	n_dims = len(extra_dims)
 
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
@@ -557,13 +561,13 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	# which means I need (sub_sys_A,sub_sys_B,sub_sys_A+L,sub_sys_B+L)
 
 	T_tup = sub_sys_A+sub_sys_B
-	T_tup = (0,) + tuple(s+1 for s in T_tup) + tuple(L+s+1 for s in T_tup)
+	T_tup = tuple(range(n_dims)) + tuple(s+n_dims for s in T_tup) + tuple(L+n_dims+s for s in T_tup)
 
-	R_tup = (-1,) + tuple(sps for i in range(2*L))
+	R_tup = extra_dims + tuple(sps for i in range(2*L))
 
 	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
-	rho_v = rho_v.reshape((-1,Ns_A,Ns_B,Ns_A,Ns_B)) 
+	rho_v = rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B)) 
 
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
@@ -595,17 +599,21 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	
 	# reshuffle indices for the sub-systems.
 	if T_tup != tuple(range(L)):
-		indx = _np.zeros(psi.row.shape,dtype=psi.row.dtype)
+		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
 		for i_new,i_old in enumerate(T_tup):
-			indx += ((psi.row//(sps**i_old)) % sps)*(sps**i_new)
+			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
 	else:
-		indx = psi.row
+		indx = psi.col
 
 
 	# make shift way of reshaping array
+	# j = j_A + Ns_A * j_B
+	# j_A = j % Ns_A
+	# j_B = j / Ns_A
+
 	psi._shape = (Ns_A,Ns_B)
-	psi.col[:] = indx / Ns_A
 	psi.row[:] = indx % Ns_A
+	psi.col[:] = indx / Ns_A
 
 	psi = psi.tocsr()
 

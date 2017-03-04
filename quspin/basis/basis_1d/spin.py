@@ -1,5 +1,5 @@
-from ._constructors import hcp_basis_ops
-from ._constructors import boson_basis_ops
+from ._constructors import hcp_basis,hcp_ops
+from ._constructors import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -53,7 +53,7 @@ class spin_basis_1d(basis_1d):
 								"\n\tz: z pauli/spin operator")
 
 			self._allowed_ops = set(["I","+","-","x","y","z"])
-			basis_1d.__init__(self,hcp_basis_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 		else:
 			self._pauli = False
 			pars = [L]
@@ -67,7 +67,7 @@ class spin_basis_1d(basis_1d):
 								"\n\tz: z pauli/spin operator")
 
 			self._allowed_ops = set(["I","+","-","z"])
-			basis_1d.__init__(self,boson_basis_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 
 
 	def Op(self,opstr,indx,J,dtype):

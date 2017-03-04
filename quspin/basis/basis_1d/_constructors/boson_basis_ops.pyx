@@ -1,6 +1,6 @@
 #!python
-###cython: boundscheck=False
-####cython: wraparound=False
+#cython: boundscheck=False
+#cython: wraparound=False
 # distutils: language=c++
 
 
@@ -20,14 +20,6 @@ _np.import_array()
 
 include "sources/boson_bitops.pyx"
 include "sources/refstate.pyx"
-include "sources/checkstate.pyx"
-include "sources/basis_templates.pyx"
 include "sources/op_templates.pyx"
-
-
-# impliment templates for spins
 include "sources/boson_ops.pyx"
-include "sources/boson_basis.pyx"
-
-
 

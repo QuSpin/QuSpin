@@ -1,4 +1,4 @@
-from ._constructors import hcp_basis_ops
+from ._constructors import hcp_basis,hcp_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -56,7 +56,7 @@ class fermion_basis_1d(basis_1d):
 							"\n\tz: c-symm number operator")
 
 		self._allowed_ops = set(["I","+","-","n","z"])
-		basis_1d.__init__(self,hcp_basis_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
+		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
 
 
 

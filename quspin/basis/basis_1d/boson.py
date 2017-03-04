@@ -1,5 +1,5 @@
-from ._constructors import hcp_basis_ops
-from ._constructors import boson_basis_ops
+from ._constructors import hcp_basis,hcp_ops
+from ._constructors import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -71,7 +71,7 @@ class boson_basis_1d(basis_1d):
 								"\n\tz: c-symm number operator")
 
 			self._allowed_ops = set(["I","+","-","n","z"])
-			basis_1d.__init__(self,hcp_basis_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 		else:
 			pars = [L]
 			pars.extend([self._sps**i for i in range(L+1)])
@@ -85,7 +85,7 @@ class boson_basis_1d(basis_1d):
 								"\n\tz: ph-symm number operator")
 
 			self._allowed_ops = set(["I","+","-","n","z"])
-			basis_1d.__init__(self,boson_basis_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 
 
 	@property

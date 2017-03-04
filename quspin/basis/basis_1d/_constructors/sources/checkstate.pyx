@@ -39,12 +39,17 @@ cdef int CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,basis_type s,
 
 
 
-cdef int CheckState_Z_template(bitop flip_all,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
+cdef int CheckState_Z_template(bitop flip_all,int z,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
-
 	t=flip_all(t,L,bitop_pars)
-	if t > s:
+	
+	if t > s: 
 		return 2
+	elif t == s:
+		if z != -1:
+			return 4
+		else:
+			return -1
 	else:
 		return -1
 
@@ -52,7 +57,7 @@ cdef int CheckState_Z_template(bitop flip_all,basis_type s,int L, object[basis_t
 cdef int CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef int rp,rz,rps
 
-	rz = CheckState_Z_template(flip_all,s,L,bitop_pars)
+	rz = CheckState_Z_template(flip_all,z,s,L,bitop_pars)
 	if rz < 0:
 		return -1
 
@@ -64,50 +69,60 @@ cdef int CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_t
 	if rpz < 0:
 		return -1	
 
-	return rp*rpz
+	return rp*rpz*rz
 
 
 
 
 
 
-cdef int CheckState_ZA_template(bitop flip_sublat_A,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
+cdef int CheckState_ZA_template(bitop flip_sublat_A,int zA,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 
 	t=flip_sublat_A(t,L,bitop_pars)
-	if t > s:
+	if t > s: 
 		return 2
+	elif t == s:
+		if zA != -1:
+			return 4
+		else:
+			return -1
 	else:
 		return -1
 
 
-cdef int CheckState_ZB_template(bitop flip_sublat_B,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
+cdef int CheckState_ZB_template(bitop flip_sublat_B,int zB,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
 	cdef basis_type t=s
 
 	t=flip_sublat_B(t,L,bitop_pars)
-	if t > s:
+	if t > s: 
 		return 2
+	elif t == s:
+		if zB != -1:
+			return 4
+		else:
+			return -1
 	else:
 		return -1
 
 
 
-cdef int CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
-	cdef basis_type t
+cdef int CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,int zA,int zB,basis_type s,int L, object[basis_type,ndim=1,mode="c"] bitop_pars):
+	cdef int rA,rB,rAB
 
-	t=flip_sublat_A(s,L,bitop_pars)
-	if t < s:
+	rA = CheckState_ZA_template(flip_sublat_A,zA,s,L,bitop_pars)
+	if rA < 0:
 		return -1
 
-	t=flip_sublat_B(s,L,bitop_pars)
-	if t < s:
+	rB = CheckState_ZB_template(flip_sublat_B,zB,s,L,bitop_pars)
+	if rB < 0:
 		return -1
 
-	t=flip_all(s,L,bitop_pars)
-	if t < s:
-		return -1
+	rAB = CheckState_Z_template(flip_all,zA*zB,s,L,bitop_pars)
+	if rAB < 0:
+		return -1	
 
-	return 1
+	return rA*rB*rAB
 
 
 
@@ -325,7 +340,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
-	if CheckState_Z_template(flip_all,s,L,bitop_pars) < 0:
+	if CheckState_Z_template(flip_all,1,s,L,bitop_pars) < 0:
 		return
 
 	r = L
@@ -366,7 +381,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
-	if CheckState_ZA_template(flip_sublat_A,s,L,bitop_pars) < 0:
+	if CheckState_ZA_template(flip_sublat_A,1,s,L,bitop_pars) < 0:
 		return
 
 	r = L
@@ -406,7 +421,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
 	R[0] = -1
 	R[1] = -1
 	cdef int i,r
-	if CheckState_ZB_template(flip_sublat_B,s,L,bitop_pars) < 0:
+	if CheckState_ZB_template(flip_sublat_B,1,s,L,bitop_pars) < 0:
 		return
 
 	r = L
@@ -452,7 +467,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
 	R[2] = -1
 	R[3] = -1
 	cdef int i,r
-	if CheckState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,s,L,bitop_pars) < 0:
+	if CheckState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,1,1,s,L,bitop_pars) < 0:
 		return
 
 

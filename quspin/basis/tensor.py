@@ -7,7 +7,6 @@ from scipy import linalg as _la
 from numpy.linalg import eigvalsh
 import warnings
 
-
 # gives the basis for the kronecker/Tensor product of two basis: b1 (x) b2
 class tensor_basis(basis):
 
@@ -20,19 +19,26 @@ class tensor_basis(basis):
 			raise TypeError("Can only create tensor basis with non-tensor type basis")
 		if isinstance(b2,tensor_basis): 
 			raise TypeError("Can only create tensor basis with non-tensor type basis")
-		self._b1=b1
-		self._b2=b2
+		self._basis_left=b1
+		self._basis_right=b2
 
 		self._Ns = b1.Ns*b2.Ns
 		self._dtype = _np.min_scalar_type(-self._Ns)
 
-		self._blocks = self._b1._blocks.copy()
-		self._blocks.update(self._b2._blocks)
+		self._blocks = self._basis_left._blocks.copy()
+		self._blocks.update(self._basis_right._blocks)
 
 		self._unique_me = b1.unique_me and b1.unique_me
-		self._operators = self._b1._operators +"\n"+ self._b2._operators
-#		self._check_pcon = self._b1._check_pcon and self._b2._check_pcon
+		self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
+#		self._check_pcon = self._basis_left._check_pcon and self._basis_right._check_pcon
 
+
+	@property
+	def basis_left(self):
+		return self._basis_left
+
+	def basis_right(self):
+		return self._basis_right
 
 	def Op(self,opstr,indx,J,dtype):
 		if opstr.count("|") > 1: 
@@ -42,41 +48,41 @@ class tensor_basis(basis):
 			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
-		indx1 = indx[:i]
-		indx2 = indx[i:]
+		indx_left = indx[:i]
+		indx_right = indx[i:]
 
-		opstr1,opstr2=opstr.split("|")
+		opstr_left,opstr_right=opstr.split("|")
 
-		if self._b1._Ns < self._b2._Ns:
-			ME1,row1,col1 = self._b1.Op(opstr1,indx1,J,dtype)
-			ME2,row2,col2 = self._b2.Op(opstr2,indx2,1.0,dtype)
+		if self._basis_left._Ns < self._basis_right._Ns:
+			ME_left,row_left,col_left = self._basis_left.Op(opstr_left,indx_left,J,dtype)
+			ME_right,row_right,col_right = self._basis_right.Op(opstr_right,indx_right,1.0,dtype)
 		else:
-			ME1,row1,col1 = self._b1.Op(opstr1,indx1,1.0,dtype)
-			ME2,row2,col2 = self._b2.Op(opstr2,indx2,J,dtype)
+			ME_left,row_left,col_left = self._basis_left.Op(opstr_left,indx_left,1.0,dtype)
+			ME_right,row_right,col_right = self._basis_right.Op(opstr_right,indx_right,J,dtype)
 			
 
-		n1 = row1.shape[0]
-		n2 = row2.shape[0]
+		n1 = row_left.shape[0]
+		n2 = row_right.shape[0]
 
 
 		if n1 > 0 and n2 > 0:
-			row1 = row1.astype(self._dtype)
-			row1 *= self._b2.Ns
-			row = _np.kron(row1,_np.ones_like(row2,dtype=_np.int8))
-			row += _np.kron(_np.ones_like(row1,dtype=_np.int8),row2)
+			row_left = row_left.astype(self._dtype)
+			row_left *= self._basis_right.Ns
+			row = _np.kron(row_left,_np.ones_like(row_right,dtype=_np.int8))
+			row += _np.kron(_np.ones_like(row_left,dtype=_np.int8),row_right)
 
-			del row1,row2
+			del row_left,row_right
 
-			col1 = col1.astype(self._dtype)
-			col1 *= self._b2.Ns
-			col = _np.kron(col1,_np.ones_like(col2,dtype=_np.int8))
-			col += _np.kron(_np.ones_like(col1,dtype=_np.int8),col2)
+			col_left = col_left.astype(self._dtype)
+			col_left *= self._basis_right.Ns
+			col = _np.kron(col_left,_np.ones_like(col_right,dtype=_np.int8))
+			col += _np.kron(_np.ones_like(col_left,dtype=_np.int8),col_right)
 
-			del col1,col2
+			del col_left,col_right
 
-			ME = _np.kron(ME1,ME2)
+			ME = _np.kron(ME_left,ME_right)
 
-			del ME1,ME2
+			del ME_left,ME_right
 		else:
 			row = _np.array([])
 			col = _np.array([])
@@ -111,14 +117,14 @@ class tensor_basis(basis):
 
 	def get_proj(self,dtype,full_1=True,full_2=True):
 		if full_1:
-			proj1 = self._b1.get_proj(dtype)
+			proj1 = self._basis_left.get_proj(dtype)
 		else:
-			proj1 = _sp.identity(self._b1.Ns,dtype=dtype)
+			proj1 = _sp.identity(self._basis_left.Ns,dtype=dtype)
 
 		if full_2:
-			proj2 = self._b2.get_proj(dtype)
+			proj2 = self._basis_right.get_proj(dtype)
 		else:
-			proj2 = _sp.identity(self._b2.Ns,dtype=dtype)
+			proj2 = _sp.identity(self._basis_right.Ns,dtype=dtype)
 
 
 		return _sp.kron(proj1,proj2,format="csr")
@@ -129,16 +135,22 @@ class tensor_basis(basis):
 		if sub_sys_A not in set(["left","right","both"]):
 			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
 
+		Ns = self._basis_left.Ns*self._basis_right.Ns
+
 		if _sp.issparse(state):
 			if state_type == "pure":
-				if state.shape[0] != self.Ns:
-					raise ValueError("pure state must have dimension equal to basis size.")
+				if state.shape[-1] != Ns:
+					raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
-				if state.shape[1] == 1:
-					return _tensor_partial_trace_sparse_pure(state,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
+				if state.shape[0] == 1:
+					return _tensor_partial_trace_sparse_pure(state,self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A)
 				else:
-					state = state.tocsc()
-					return _np.array([_tensor_partial_trace_sparse_pure(state.getcol(i),self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)],dtype=_np.object)
+					state = state.tocsr()
+					try:
+						gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A) for i in xrange(state.shape[0]))
+					except NameError:
+						gen = gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A) for i in range(state.shape[0]))
+					return _np.stack(gen)
 
 			elif state_type == "mixed":
 				raise NotImplementedError("only pure state calculation implemeted for sparse arrays")
@@ -148,55 +160,46 @@ class tensor_basis(basis):
 
 		else:
 			state = _np.asanyarray(state)
+			if state.shape[-1] != Ns:
+				raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
+
 			if state_type == "pure":
 
-				if state.ndim == 1:
-					if state.shape[0] != self.Ns:
-						raise ValueError("expecting 1-d array containing pure state.")
-
-					return _tensor_partial_trace_pure(state,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
-
-				elif state.ndim == 2:
-					if state.shape[0] != self.Ns:
-						raise ValueError("expecting 2-d array containing pure states in columns of array.")
-
-					return _tensor_partial_trace_pure(state.T,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
-
-				else:
-					raise ValueError("pure state calculation expecting arrays with ndim < 3.")
-
-					
-			elif state_type == "mixed":
-				if state.ndim != 2 or state.shape[0] != state.shape[1]:
-					raise ValueError("mixed state input must be a 2-d square array")
+				return _tensor_partial_trace_pure(state,self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A)
 				
-				return _tensor_partial_trace_mixed(state,self._b1.Ns,self._b2.Ns,sub_sys_A=sub_sys_A)
+			elif state_type == "mixed":
+				if state.ndim < 2:
+					raise ValueError("mixed state input must be a single or collection of 2-d square array(s)")
+
+				if state.shape[-1] != state.shape[-2]:
+					raise ValueError("mixed state input must be a single or collection of 2-d square array(s)")
+
+				return _tensor_partial_trace_mixed(state,self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A)
 
 			else:
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
 
 
-
 	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0):
 
 		if return_rdm is None:
-			if self._b1.Ns <= self._b2.Ns:
+			if self._basis_left.Ns <= self._basis_right.Ns:
 				rdm = self.partial_trace(state,sub_sys_A="left",state_type=state_type)
 			else:
 				rdm = self.partial_trace(state,sub_sys_A="right",state_type=state_type)
 
-		elif return_rdm == "left" and self._b1.Ns <= self._b2.Ns:
+		elif return_rdm == "left" and self._basis_left.Ns <= self._basis_right.Ns:
 			rdm_left = self.partial_trace(state,sub_sys_A="left",state_type=state_type)
 			rdm = rdm_left
 
-		elif return_rdm == "right" and self._b2.Ns <= self._b1.Ns:
+		elif return_rdm == "right" and self._basis_right.Ns <= self._basis_left.Ns:
 			rdm_right = self.partial_trace(state,sub_sys_A="right",state_type=state_type)
 			rdm = rdm_right
 
 		else:
-			rdm_left,rdm_right = self.partial_trace(state,sub_sys_A=return_rdm,state_type=state_type)
+			rdm_left,rdm_right = self.partial_trace(state,sub_sys_A="both",state_type=state_type)
 
-			if self._b1.Ns < self._b2.Ns:
+			if self._basis_left.Ns < self._basis_right.Ns:
 				rdm = rdm_left
 			else:
 				rdm = rdm_right
@@ -204,7 +207,11 @@ class tensor_basis(basis):
 		try:
 			E = eigvalsh(rdm.todense()) + _np.finfo(rdm.dtype).eps
 		except AttributeError:
-			E = eigvalsh(rdm) + _np.finfo(rdm.dtype).eps
+			if rdm.dtype == _np.object:
+				E_gen = (eigvalsh(dm.todense())+_np.finfo(dm.dtype).eps for dm in rdm[:])
+				E = _np.stack(E_gen)
+			else:
+				E = eigvalsh(rdm) + _np.finfo(rdm.dtype).eps
 
 		if alpha == 1.0:
 			Sent = - (E * _np.log(E)).sum(axis=-1)
@@ -245,21 +252,21 @@ class tensor_basis(basis):
 			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
-		indx1 = indx[:i]
-		indx2 = indx[i:]
+		indx_left = indx[:i]
+		indx_right = indx[i:]
 
-		opstr1,opstr2=opstr.split("|")
+		opstr_left,opstr_right=opstr.split("|")
 
 		op1 = list(op)
-		op1[0] = opstr1
-		op1[1] = tuple(indx1)
+		op1[0] = opstr_left
+		op1[1] = tuple(indx_left)
 
 		op2 = list(op)
-		op2[0] = opstr2
-		op2[1] = tuple(indx2)
+		op2[0] = opstr_right
+		op2[1] = tuple(indx_right)
 		
-		op1 = self._b1._sort_opstr(op1)
-		op2 = self._b2._sort_opstr(op2)
+		op1 = self._basis_left._sort_opstr(op1)
+		op2 = self._basis_right._sort_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
@@ -281,21 +288,21 @@ class tensor_basis(basis):
 			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
-		indx1 = indx[:i]
-		indx2 = indx[i:]
+		indx_left = indx[:i]
+		indx_right = indx[i:]
 
-		opstr1,opstr2=opstr.split("|")
+		opstr_left,opstr_right=opstr.split("|")
 
 		op1 = list(op)
-		op1[0] = opstr1
-		op1[1] = indx1
+		op1[0] = opstr_left
+		op1[1] = indx_left
 
 		op2 = list(op)
-		op2[0] = opstr2
-		op2[1] = indx2
+		op2[0] = opstr_right
+		op2[1] = indx_right
 		
-		op1 = self._b1.hc_opstr(op1)
-		op2 = self._b2.hc_opstr(op2)
+		op1 = self._basis_left.hc_opstr(op1)
+		op2 = self._basis_right.hc_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
@@ -317,20 +324,20 @@ class tensor_basis(basis):
 			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
-		indx1 = indx[:i]
-		indx2 = indx[i:]
+		indx_left = indx[:i]
+		indx_right = indx[i:]
 
-		opstr1,opstr2=opstr.split("|")
+		opstr_left,opstr_right=opstr.split("|")
 
 		op1 = list(op)
-		op1[0] = opstr1
-		op1[1] = indx1
+		op1[0] = opstr_left
+		op1[1] = indx_left
 
 		op2 = list(op)
-		op2[0] = opstr2
-		op2[1] = indx2
+		op2[0] = opstr_right
+		op2[1] = indx_right
 
-		return (self._b1.non_zero(op1) and self._b2.non_zero(op2))
+		return (self._basis_left.non_zero(op1) and self._basis_right.non_zero(op2))
 
 
 
@@ -346,21 +353,21 @@ class tensor_basis(basis):
 			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
-		indx1 = indx[:i]
-		indx2 = indx[i:]
+		indx_left = indx[:i]
+		indx_right = indx[i:]
 
-		opstr1,opstr2=opstr.split("|")
+		opstr_left,opstr_right=opstr.split("|")
 
 		op1 = list(op)
-		op1[0] = opstr1
-		op1[1] = indx1
+		op1[0] = opstr_left
+		op1[1] = indx_left
 
 		op2 = list(op)
-		op2[0] = opstr2
-		op2[1] = indx2
+		op2[0] = opstr_right
+		op2[1] = indx_right
 
-		op1_list = self._b1.expand_opstr(op1,num)
-		op2_list = self._b2.expand_opstr(op2,num)
+		op1_list = self._basis_left.expand_opstr(op1,num)
+		op2_list = self._basis_right.expand_opstr(op2,num)
 
 		op_list = []
 		for new_op1 in op1_list:
@@ -380,19 +387,19 @@ class tensor_basis(basis):
 
 
 	def _get__str__(self):
-		if not hasattr(self._b1,"_get__str__"):
-			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b1)),UserWarning,stacklevel=3)
+		if not hasattr(self._basis_left,"_get__str__"):
+			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_left)),UserWarning,stacklevel=3)
 			return "reference states: \n\t not availible"
 
-		if not hasattr(self._b2,"_get__str__"):
-			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b2)),UserWarning,stacklevel=3)
+		if not hasattr(self._basis_right,"_get__str__"):
+			warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_right)),UserWarning,stacklevel=3)
 			return "reference states: \n\t not availible"
 
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
 
-		str_list_1 = self._b1._get__str__()
-		str_list_2 = self._b2._get__str__()
-		Ns2 = self._b2.Ns
+		str_list_1 = self._basis_left._get__str__()
+		str_list_2 = self._basis_right._get__str__()
+		Ns2 = self._basis_right.Ns
 		temp = "\t{0:"+str(n_digits)+"d}.  "
 		str_list=[]
 		for b1 in str_list_1:
@@ -521,52 +528,55 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 
 
 def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
-	psi_v = psi.reshape((-1,Ns_r,Ns_l))
+	extra_dims = psi.shape[:-1]
+	psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
 
 	if sub_sys_A == "left":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
-	elif sub_sys_A == "right":
 		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
+	elif sub_sys_A == "right":
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
 	elif sub_sys_A == "both":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v)),_np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
-	else:
-		raise Exception
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v)),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+
 	
 
 def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
 	if not _sp.issparse(psi):
 		raise Exception
 
-	if psi.shape[1] > 1:
+	if psi.shape[0] > 1:
 		raise Exception
 
-	# make shift way of reshaping array 
 	psi = psi.tocoo()
-	psi._shape = (Ns_r,Ns_l)
-	psi.col[:] = psi.row / Ns_r
-	psi.row[:] = psi.row % Ns_r
+	# make shift way of reshaping array
+	# j = j_l + Ns_r * j_l
+	# j_l = j / Ns_r
+	# j_r = j % Ns_r 
+	psi._shape = (Ns_l,Ns_r)
+	psi.row[:] = psi.col / Ns_r
+	psi.col[:] = psi.col % Ns_r
+
 	psi = psi.tocsr()
 
 	if sub_sys_A == "left":
-		return psi.T.dot(psi)
-	elif sub_sys_A == "right":
 		return psi.dot(psi.T)
+	elif sub_sys_A == "right":
+		return psi.T.dot(psi)
 	elif sub_sys_A == "both":
-		return psi.T.dot(psi),psi.dot(psi.T)
-	else:
-		raise Exception
+		return psi.dot(psi.T),psi.T.dot(psi)
+
 
 def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):
-	psi_v = psi.reshape((-1,Ns_r,Ns_l,Ns_r,Ns_l))
+	extra_dims = rho.shape[:-2]
+	psi_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
 
 	if sub_sys_A == "left":
-		return _np.squeeze(_np.einsum("...jijk->...ik",psi_v))
-	elif sub_sys_A == "right":
 		return _np.squeeze(_np.einsum("...ijkj->...ik",psi_v))
+	elif sub_sys_A == "right":
+		return _np.squeeze(_np.einsum("...jijk->...ik",psi_v))
 	elif sub_sys_A == "both":
-		return _np.squeeze(_np.einsum("...jijk->...ik",psi_v)),_np.squeeze(_np.einsum("...ijkj->...ik",psi_v))
-	else:
-		raise Exception
+		return _np.squeeze(_np.einsum("...ijkj->...ik",psi_v)),_np.squeeze(_np.einsum("...jijk->...ik",psi_v))
+
 
 
 

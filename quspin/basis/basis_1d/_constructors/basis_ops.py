@@ -71,7 +71,7 @@ def get_basis_type(L, Np, sps, **blocks):
     else:
         # if particles are conservated the largest representative is placing all particles as far left
         # as possible. 
-        l=Np/(sps-1)
+        l=Np//(sps-1)
         s_max = sum((sps-1)*sps**(L-1-i)  for i in range(l))
         s_max += (Np%(sps-1))*sps**(L-l-1)
         dtype = _np.min_scalar_type(int(s_max))
