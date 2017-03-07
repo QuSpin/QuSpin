@@ -7,7 +7,7 @@ from scipy import linalg as _la
 from numpy.linalg import eigvalsh
 import warnings
 
-# gives the basis for the kronecker/Tensor product of two basis: b1 (x) b2
+# gives the basis for the kronecker/Tensor product of two basis: |basis_left> (x) |basis_right>
 class tensor_basis(basis):
 
 	def __init__(self,b1,b2):
@@ -131,7 +131,7 @@ class tensor_basis(basis):
 
 
 
-	def partial_trace(self,state,sub_sys_A="left",state_type="pure"):
+	def partial_trace(self,state,sub_sys_A="left",state_type="pure",sparse=False):
 		if sub_sys_A not in set(["left","right","both"]):
 			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
 
@@ -180,24 +180,24 @@ class tensor_basis(basis):
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
 
 
-	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0):
+	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0,sparse=False):
 
 		if return_rdm is None:
 			if self._basis_left.Ns <= self._basis_right.Ns:
-				rdm = self.partial_trace(state,sub_sys_A="left",state_type=state_type)
+				rdm = self.partial_trace(state,sub_sys_A="left",state_type=state_type,sparse=sparse)
 			else:
-				rdm = self.partial_trace(state,sub_sys_A="right",state_type=state_type)
+				rdm = self.partial_trace(state,sub_sys_A="right",state_type=state_type,sparse=sparse)
 
 		elif return_rdm == "left" and self._basis_left.Ns <= self._basis_right.Ns:
-			rdm_left = self.partial_trace(state,sub_sys_A="left",state_type=state_type)
+			rdm_left = self.partial_trace(state,sub_sys_A="left",state_type=state_type,sparse=sparse)
 			rdm = rdm_left
 
 		elif return_rdm == "right" and self._basis_right.Ns <= self._basis_left.Ns:
-			rdm_right = self.partial_trace(state,sub_sys_A="right",state_type=state_type)
+			rdm_right = self.partial_trace(state,sub_sys_A="right",state_type=state_type,sparse=sparse)
 			rdm = rdm_right
 
 		else:
-			rdm_left,rdm_right = self.partial_trace(state,sub_sys_A="both",state_type=state_type)
+			rdm_left,rdm_right = self.partial_trace(state,sub_sys_A="both",state_type=state_type,sparse=sparse)
 
 			if self._basis_left.Ns < self._basis_right.Ns:
 				rdm = rdm_left
@@ -222,14 +222,13 @@ class tensor_basis(basis):
 
 		
 		if return_rdm is None:
-			return Sent
+			return dict(Sent=Sent)
 		elif return_rdm == "left":
-			return Sent,rdm_left
+			return dict(Sent=Sent,rdm_left=rdm_left)
 		elif return_rdm == "right":
-			return Sent,rdm_right
+			return dict(Sent=Sent,rdm_right=rdm_right)
 		elif return_rdm == "both":
-			return Sent,rdm_left,rdm_right
-
+			return dict(Sent=Sent,rdm_left=rdm_left,rdm_right=rdm_right)
 
 
 
@@ -532,11 +531,11 @@ def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
 	psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
 
 	if sub_sys_A == "left":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
 	elif sub_sys_A == "right":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 	elif sub_sys_A == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v)),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 
 	
 
@@ -559,11 +558,11 @@ def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
 	psi = psi.tocsr()
 
 	if sub_sys_A == "left":
-		return psi.dot(psi.T)
+		return psi.dot(psi.H)
 	elif sub_sys_A == "right":
-		return psi.T.dot(psi)
+		return psi.H.dot(psi)
 	elif sub_sys_A == "both":
-		return psi.dot(psi.T),psi.T.dot(psi)
+		return psi.dot(psi.H),psi.H.dot(psi)
 
 
 def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):

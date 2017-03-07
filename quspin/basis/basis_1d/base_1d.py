@@ -918,7 +918,8 @@ class basis_1d(basis):
 
 
 
-	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",state_type="pure"):
+	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure"):
+
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
 
@@ -942,7 +943,10 @@ class basis_1d(basis):
 		proj = self.get_proj(state.dtype)
 
 
-		if _sp.issparse(state):
+		if _sp.issparse(state) or sparse:
+			if sparse:
+				state = _sp.csr_matrix(state)
+
 			if state_type == "pure":
 				state = proj.dot(state.T).T
 
@@ -1003,14 +1007,14 @@ class basis_1d(basis):
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
 
 
-	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",alpha=1.0):
+	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0):
 		if sub_sys_A is None:
-			sub_sys_A = tuple(range(L))
+			sub_sys_A = tuple(range(self.L//2))
 
 		L_A = len(sub_sys_A)
 		L_B = self.L - L_A
 
-		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type=state_type)
+		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type=state_type,sparse=sparse)
 
 		if return_rdm is None:
 			if L_A <= L_B:
@@ -1043,7 +1047,7 @@ class basis_1d(basis):
 			E = eigvalsh(rdm.todense()) + _np.finfo(rdm.dtype).eps
 		except AttributeError:
 			if rdm.dtype == _np.object:
-				E_gen = (eigvalsh(dm.todense())+_np.finfo(dm.dtype).eps for dm in rdm[:])
+				E_gen = (eigvalsh(dm.todense()) + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				E = _np.stack(E_gen)
 			else:
 				E = eigvalsh(rdm) + _np.finfo(rdm.dtype).eps
@@ -1051,19 +1055,19 @@ class basis_1d(basis):
 		if alpha == 1.0:
 			Sent = - (E * _np.log(E)).sum(axis=-1)
 		elif alpha >= 0.0:
-			Sent = (_np.log(_np.power(E,alpha))/(1-alpha)).sum(axis=-1)
+			Sent = (_np.log(_np.power(E,alpha).sum(axis=-1))/(1-alpha))
 		else:
 			raise ValueError("alpha >= 0")
 
 		
 		if return_rdm is None:
-			return Sent
+			return dict(Sent=Sent)
 		elif return_rdm == "A":
-			return Sent,rdm_A
+			return dict(Sent=Sent,rdm_A=rdm_A)
 		elif return_rdm == "B":
-			return Sent,rdm_B
+			return dict(Sent=Sent,rdm_B=rdm_B)
 		elif return_rdm == "both":
-			return Sent,rdm_A,rdm_B
+			return dict(Sent=Sent,rdm_A=rdm_A,rdm_B=rdm_B)
 
 
 

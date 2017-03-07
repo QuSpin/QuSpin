@@ -530,11 +530,11 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
 	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
 	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v)),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 
 
 
@@ -598,6 +598,9 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 	
 	# reshuffle indices for the sub-systems.
+	# j = sum( j[i]*(sps**i) for i in range(L))
+	# this reshuffles the j[i] similar to the transpose operation
+	# on the dense arrays psi_v.transpose(T_tup)
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
 		for i_new,i_old in enumerate(T_tup):
@@ -618,9 +621,9 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	psi = psi.tocsr()
 
 	if return_rdm == "A":
-		return psi.dot(psi.T)
+		return psi.dot(psi.H)
 	elif return_rdm == "B":
-		return psi.T.dot(psi)
+		return psi.H.dot(psi)
 	elif return_rdm == "both":
-		return psi.dot(psi.T),psi.T.dot(psi)
+		return psi.dot(psi.H),psi.H.dot(psi)
 

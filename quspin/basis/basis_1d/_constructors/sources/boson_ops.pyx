@@ -15,7 +15,7 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
     cdef int L = op_pars[0]
     cdef object[basis_type,ndim=1,mode="c"] M = op_pars[1:]
-    cdef bool spin_me = op_pars[L+3]
+    cdef bool spin_me = op_pars[L+2]
     cdef long double S = Nmax/2.0
 
     cdef char I = "I"

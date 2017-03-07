@@ -217,9 +217,12 @@ class photon_basis(tensor_basis):
 		proj = self.get_proj(state.dtype,full_part=False)
 
 		# this gets the projection onto the basis where the photon
-		if _sp.issparse(state):
+		if _sp.issparse(state) or sparse:
+			if sparse:
+				state = _sp.csr_matrix(state)
+
 			if state_type == "pure":
-				state = self.get_proj(state.dtype,full_part=False).dot(state.T).T
+				state = proj.dot(state.T).T
 			elif state_type == "mixed":
 				raise ValueError("mixed state calculations not implemented for sparse arrays.")
 			else:
@@ -261,12 +264,21 @@ class photon_basis(tensor_basis):
 		return tensor_basis.partial_trace(self,state,sub_sys_A=tensor_dict[sub_sys_A],state_type=state_type)
 
 
-	def ent_entropy(self,state,state_type="pure",return_rdm=None,alpha=1.0):
+	def ent_entropy(self,state,state_type="pure",return_rdm=None,sparse=False,alpha=1.0):
 		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
 		if return_rdm in tensor_dict:
-			return tensor_basis.ent_entropy(self,state,state_type=state_type,return_rdm=tensor_dict[return_rdm],alpha=alpha)
+			result = tensor_basis.ent_entropy(self,state,state_type=state_type,return_rdm=tensor_dict[return_rdm],alpha=alpha,sparse=sparse)
 		else:
 			raise ValueError("sub_sys_A '{}' not recognized".format(return_rdm))
+
+		if return_rdm is None:
+			return dict(Sent=result["Sent"])
+		elif return_rdm == "particles":
+			return dict(Sent=result["Sent"],rdm_particles=result["rdm_left"])
+		elif return_rdm == "photons":
+			return dict(Sent=result["Sent"],rdm_photons=result["rdm_right"])
+		elif return_rdm == "both":
+			return dict(Sent=results["Sent"],rdm_particles=result["rdm_left"],rdm_photons=result["rdm_right"])
 
 
 	def __name__(self):

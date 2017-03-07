@@ -939,7 +939,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 
-def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1089,7 +1089,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	# calculate observables and Sent
 	Expt_time = {}
 
-	if len(Sent_args) > 0:
+	if len(Sent_args) > 0 or basis is not None:
+		if basis is None:
+			raise ValueError("Sent requires basis for calculation")
+		calc_Sent = True
 		variables.append("Sent_time")
 	
 	if return_state:
@@ -1103,7 +1106,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+			Sent_time = basis.ent_entropy(psi_t,**Sent_args)
 
 
 	else:
@@ -1130,12 +1133,13 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 		# get initial dictionary from ent_entropy function
 		# use this to set up dictionary for the rest of calculation.
-		if len(Sent_args) > 0:
-			Sent_time = ent_entropy(psi,**Sent_args)
+		if calc_Sent:
+			Sent_time = basis.ent_entropy(psi,**Sent_args)
 
 			for key,val in Sent_time.items():
 				dtype = _np.dtype(val)
-				Sent_time[key] = _np.zeros((len(times),),dtype=dtype)
+				shape = (len(times),) + val.shape
+				Sent_time[key] = _np.zeros(shape,dtype=dtype)
 				Sent_time[key][0] = val
 
 		# loop over psi generator
@@ -1155,8 +1159,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 				Expt_time[key][m+1] = val
 
 
-			if len(Sent_args) > 0:
-				Sent_time_update = ent_entropy(psi,**Sent_args)
+			if calc_Sent:
+				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
 				for key in Sent_time.keys():
 					Sent_time[key][m+1] = Sent_time_update[key]
 
