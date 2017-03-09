@@ -1175,7 +1175,6 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 
 	return return_dict
 
-
 def project_op(Obs,proj,dtype=_np.complex128):
 	"""
 	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
@@ -1247,8 +1246,6 @@ def project_op(Obs,proj,dtype=_np.complex128):
 
 	return return_dict
 
-
-
 def KL_div(p1,p2):
 	"""
 	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
@@ -1282,9 +1279,6 @@ def KL_div(p1,p2):
 
 	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
 
-
-
-
 def mean_level_spacing(E):
 	"""
 	This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
@@ -1314,5 +1308,128 @@ def mean_level_spacing(E):
 	aux[:,1] = _np.roll(sn,-1)
 
 	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
+
+
+
+def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate=False,**evolve_args):
+		from scipy.integrate import complex_ode
+		from scipy.integrate import ode
+
+		solver_args = evolve_args['solver_args']
+		ode_args = evolve_args['ode_args']
+
+		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
+
+		Ns = _np.squeeze(v0).shape[0]
+		if real:
+			v1 = v0
+			v0 = _np.zeros(2*Ns,dtype=v1.real.dtype)
+			v0[Ns:] = v1.real
+			v0[:Ns] = v1.imag
+		
+		if _np.iscomplexobj(times):
+			raise ValueError("times must be real number(s).")
+
+		if solver_name in ["dop853","dopri5"]:
+			if solver_args.get("nsteps") is None:
+				solver_args["nsteps"] = _np.iinfo(_np.int32).max
+			if solver_args.get("rtol") is None:
+				solver_args["rtol"] = 1E-9
+			if solver_args.get("atol") is None:
+				solver_args["atol"] = 1E-9
+
+				
+		# y_f = ODE(t,y,*args)
+		if _np.iscomplexobj(v0):
+			solver = complex_ode(ODE)
+		else:
+			solver = ode(ODE)		
+
+		solver.set_integrator(solver_name,**solver_args)
+		solver.set_f_params(*ode_args)
+		solver.set_initial_value(v0, t0)
+
+		if _np.isscalar(times):
+			return _evolve_scalar(solver,v0,t0,times,real,Ns)
+		else:
+			if iterate:
+				return _evolve_iter(solver,v0,t0,times,verbose,real,Ns)
+			else:
+				return _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns)
+
+
+def _evolve_scalar(solver,v0,t0,time,real,Ns):
+	from numpy.linalg import norm
+
+	if time == t0:
+		if real:
+			return v0[:Ns] + 1j*v0[Ns:]
+		else:
+			return _np.array(v0)
+
+	solver.integrate(time)
+	if solver.successful():
+		if real:
+			return solver.y[Ns:] + 1j*solver.y[:Ns]
+		else:
+			return _np.array(solver.y)
+	else:
+		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
+
+
+
+def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns):
+	#from numpy.linalg import norm
+
+	v = _np.empty((len(times),Ns),dtype=complex_type)
+	
+	for i,t in enumerate(times):
+
+		if t == t0:
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if real:
+				v[i,:] = v0[:Ns] + 1j*v0[Ns:]
+			else:
+				v[i,:] = _np.array(v0)
+			continue
+
+		solver.integrate(t)
+		if solver.successful():
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if real:
+				v[i,:] = solver.y[Ns:] + 1j*solver.y[:Ns]
+			else:
+				v[i,:] = solver.y
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
+			
+
+	return v
+
+
+
+def _evolve_iter(solver,v0,t0,times,verbose,real,Ns):
+	#from numpy.linalg import norm
+
+	for i,t in enumerate(times):
+		if t == t0:
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if real:
+				yield v0[:Ns] + 1j*v0[Ns:]
+			else:
+				yield _np.array(v0)
+			continue
+			continue
+			
+
+		solver.integrate(t)
+		if solver.successful():
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if real:
+				yield solver.y[Ns:] + 1j*solver.y[:Ns]
+			else:
+				yield solver.y
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 
 
