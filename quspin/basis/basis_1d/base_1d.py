@@ -919,14 +919,53 @@ class basis_1d(basis):
 
 
 	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure"):
+		"""
+		This function calculates the reduced density matrix (DM), performing a partial trace 
+		of a quantum state.
+
+		RETURNS: reduced DM
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
+						[by python convention the first site of the chain is labelled j=0]. 
+						Default is tuple(range(L//2)).
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'A': str, returns reduced DM of subsystem A
+
+				-- 'B': str, returns reduced DM of subsystem B
+
+				-- 'both': str, returns reduced DM of both subsystems A and B
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		"""
+
 
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
 
 		sub_sys_A = tuple(sub_sys_A)
-
-		if any(type(s) is not int for s in sub_sys_A):
-			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
 
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
@@ -940,7 +979,7 @@ class basis_1d(basis):
 		if state.shape[-1] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
-		proj = self.get_proj(state.dtype)
+		proj = self.get_proj(_dtypes[state.dtype.char])
 
 
 		if _sp.issparse(state) or sparse:
@@ -995,7 +1034,7 @@ class basis_1d(basis):
 				state = state.reshape((-1,)+matrix_shape)
 				gen = (proj*s*proj.H for s in state[:])
 
-				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=state.dtype)
+				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
 
 				for i,s in enumerate(gen):
 					proj_state[i,...] += s[...]
@@ -1008,8 +1047,55 @@ class basis_1d(basis):
 
 
 	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0):
+		"""
+		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
+		density matrix.
+
+		RETURNS: dictionary with keys:
+
+		'Sent': entanglement entropy.
+		'rdm_A': (optional) reduced density matrix of subsystem A
+		'rdm_B': (optional) reduced density matrix of subsystem B
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
+						[by python convention the first site of the chain is labelled j=0]. 
+						Default is tuple(range(L//2)).
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'A': str, returns reduced DM of subsystem A
+
+				-- 'B': str, returns reduced DM of subsystem B
+
+				-- 'both': str, returns reduced DM of both subsystems A and B
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+
+		"""
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
+		elif len(sub_sys_A)==self.L:
+			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
 
 		L_A = len(sub_sys_A)
 		L_B = self.L - L_A

@@ -23,12 +23,12 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
-	This function calculates the entanglement _entropy of a lattice quantum subsystem based on the Singular
-	Value Decomposition (svd).
+	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
+	reduced subsystem. 
 
 	RETURNS:	dictionary with keys:
 
-	'Sent': entanglement _entropy.
+	'Sent': entanglement entropy.
 
 	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
 
@@ -248,6 +248,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 		elif len(set(chain_subsys)) < len(chain_subsys):
 			raise TypeError("'subsys' cannot contain repeating site indices!")
+		elif any(not _np.issubdtype(type(s),_np.integer) for s in chain_subsys):
+			raise ValueError("'subsys' must iterable of integers with values in {0,...,L-1}!")
 		elif subsys_ordering:
 			if len(set(chain_subsys))==len(chain_subsys) and sorted(chain_subsys)!=chain_subsys:
 				# if chain subsys is def with unordered sites, order them
