@@ -17,6 +17,7 @@ import numpy as _np
 import functools
 
 from numpy import zeros_like
+from operator import mul
 
 # needed for exp_op class
 from scipy.sparse.linalg import expm_multiply as _expm_multiply
@@ -101,136 +102,6 @@ def check_dynamic(sub_list):
 	
 
 
-def test_function(func,func_args):
-	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
-	func_val=func(t,*func_args)
-	if not _np.isscalar(func_val):
-		raise TypeError("function must return scalar values")
-
-
-def static_op(object):
-	def __init__(self,O,dtype):
-		if isinstance(O,dynamic_op):
-			raise TypeError("can't convert dynamic_op to statis_op")
-
-		if not _sp.issparse(O):
-			O = np.asanyarray(O,dtype=dtype)
-
-		if O.ndim > 2 or O.ndim < 2:
-			raise ValueError("expecting square sparse or dense array for O.")
-
-		if O.shape[0] != O.shape[1]:
-			raise ValueError("expecting square sparse or dense array for O.")
-
-		self._O = O.astype(dtype)		
-
-
-	@property
-	def dtype(self):
-		return self._O.dtype
-
-	def transpose(self):
-		self._O = self._O.transpose()
-		return self
-
-
-	def conj(self):
-		self._O = self._O.conj()
-		return self
-
-
-	def toarray(self,time,out=None):
-		if out is None:
-			if _sp.issparse(self._O):
-				out = self._O.toarray()
-			else:
-				out = _np.asarray(self._O)
-		else:
-			if _sp.issparse(self._O):
-				self._O.toarray(out=out)
-			else:
-				out[:] = self._O[:]
-		return out
-
-
-	def todense(self,time,out=None):
-		if out is None:
-			if _sp.issparse(self._O):
-				out = self._O.todense()
-			else:
-				out = _np.asmatrix(self._O)
-		else:
-			if _sp.issparse(self._O):
-				self._O.todense(out=out)
-			else:
-				out[:] = self._O[:]
-		return out
-
-
-	def dot(self,V,time=0.0):
-		return self._O.dot(V)
-
-
-	def rdot(self,other,time=0.0):
-		try:
-			tr = other.transpose()
-		except AttributeError:
-			tr = np.asarray(other).transpose()
-
-		return (self.transpose().dot(tr)).transpose()
-
-
-
-
-
-def dynamic_op(static_op):
-	def __init__(self,O,f,f_args,dtype):
-		test_function(f,f_args)
-		self._f = f
-		self._f_args = f_args
-		self._conj = False
-		super().__init__(O,dtype)
-
-
-	def todense(self,time=0.0,out=None):
-		a = self._f(time,*self._f_args)
-
-		if out is None:
-			out = super().todense()
-		else:
-			super().todense(out=out)
-
-		out *= (a.conjugate() if self._conj else a)
-
-		return out
-
-
-	def toarray(self,out=None):
-		a = self._f(time,*self._f_args)
-		
-		if out is None:
-			out = super().toarray()
-		else:
-			super().toarray(out=out)
-
-		out *= (a.conjugate() if self._conj else a)
-
-		return out
-
-
-	def conj(self):
-		self._conj = not self._conj
-		return super().conj()
-
-
-	def dot(self,other,time=0.0):
-		a = self._f(time,*self._f_args)
-		return (a.conjugate() if self._conj else a)*self._O.dot(other)
-
-
-
-
-
 
 
 def ishamiltonian(obj):
@@ -238,6 +109,9 @@ def ishamiltonian(obj):
 
 def isexp_op(obj):
 	return isinstance(obj,exp_op)
+
+def isops_dict(obj):
+	return isinstance(obj,ops_dict)
 
 
 # used to create linear operator of a hamiltonian
@@ -1145,9 +1019,6 @@ class hamiltonian(object):
 		return E
 
 
-
-
-
 	def evolve(self,v0,t0,times,solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
@@ -1617,6 +1488,12 @@ class hamiltonian(object):
 	# operators implimented.		 #
 	##################################
 
+	def __pow__(self,power):
+		if type(power) is not int:
+			raise TypeError("hamiltonian can only be raised to integer power.")
+
+		return reduce(mul,(self for i in range(power)))
+
 
 
 	def __mul__(self,other): # self * other
@@ -1977,7 +1854,7 @@ class hamiltonian(object):
 		except: pass
 
 		
-		a=tuple([(-Hd,f,f_args) for Hd,f,f_args in other._dynamic])
+		a=tuple((-Hd,f,f_args) for Hd,f,f_args in other._dynamic)
 		new._dynamic += a
 		new.sum_duplicates()
 
@@ -2000,7 +1877,7 @@ class hamiltonian(object):
 			self._static.eliminate_zeros()
 		except: pass
 
-		a=tuple([(-Hd,f,f_args) for Hd,f,f_args in other._dynamic])
+		a=tuple((-Hd,f,f_args) for Hd,f,f_args in other._dynamic)
 		self._dynamic += a
 		self.sum_duplicates()
 	
@@ -2009,7 +1886,8 @@ class hamiltonian(object):
 
 	def _mul_hamiltonian(self,other): # self * other
 		if self.dynamic and other.dynamic:
-			raise TypeError("unsupported operand type(s) for *: 'hamiltonian' and 'hamiltonian' which both have dynamic parts.")
+			new = self.copy()
+			return new.__imul__(other)
 		elif self.dynamic:
 			return self.__mul__(other.static)
 		elif other.dynamic:
@@ -2020,7 +1898,8 @@ class hamiltonian(object):
 
 	def _rmul_hamiltonian(self,other): # other * self
 		if self.dynamic and other.dynamic:
-			raise TypeError("unsupported operand type(s) for *: 'hamiltonian' and 'hamiltonian' which both have dynamic parts.")
+			new = other.copy()
+			return (new.T.__imul__(self.T)).T #lazy implementation
 		elif self.dynamic:
 			return self.__rmul__(other.static)
 		elif other.dynamic:
@@ -2030,7 +1909,47 @@ class hamiltonian(object):
 
 	def _imul_hamiltonian(self,other): # self *= other
 		if self.dynamic and other.dynamic:
-			raise TypeError("unsupported operand type(s) for *: 'hamiltonian' and 'hamiltonian' which both have dynamic parts.")
+			self._is_dense = self._is_dense or other._is_dense
+
+			new_dynamic_ops = []
+
+			# create new dynamic operators coming from
+			# self.static * other
+			for Hd,f,f_args in other.dynamic:
+				if _sp.issparse(self.static):
+					Hmul = self.static.dot(Hd)
+				elif _sp.issparse(Hd):
+					Hmul = self.static * Hd
+				else:
+					Hmul = _np.matmul(self.static,Hd)
+
+				new_dynamic_ops.append((Hmul,f,f_args))
+
+			# create new dynamic operators coming from:
+			# other.dynamic * self.dynamic
+			for H1,f1,f1_args in self.dynamic:
+				for H2,f2,f2_args in other.dynamic:
+					f12 = lambda t,f1,f1_args,f2,f2_args:f1(t,*f1_args)*f2(t,*f2_args)
+					f12_args = (f1,f1_args,f2,f2_args)
+
+					if _sp.issparse(H1):
+						H12 = H1.dot(H2)
+					elif _sp.issparse(H2):
+						H12 = H1 * H2
+					else:
+						H12 = _np.matmul(H1,H2)
+
+					new_dynamic_ops.append((H12,f12,f12_args))
+
+			# (self.dynamic + self.static) * other.static do inplace
+			# this happens last so not to effect the previous calculations.
+			self.__imul__(other.static)
+			# add new dynamic operators to the dynamic list
+			self._dynamic += tuple(new_dynamic_ops)
+
+			self.sum_duplicates()
+
+			return self
 		elif self.dynamic:
 			return self.__imul__(other.static)
 		elif other.dynamic:
@@ -2224,7 +2143,7 @@ class hamiltonian(object):
 		for i in range(n):
 			self._dynamic[i] = list(self._dynamic[i])
 
-			self._dynamic[i][0] = self._dynamic[0][i] * other
+			self._dynamic[i][0] = self._dynamic[i][0] * other
 			try:
 				self._dynamic[i][0].tocsr()
 				self._dynamic[i][0].sum_duplicates()
@@ -3246,7 +3165,8 @@ class ops_dict(object):
 	def toarray(self,pars={},out=None):
 		"""
 		args:
-			time=0, the time to evalute drive at.
+			pars, dictionary to evaluate couples at. 
+			out, array to output results too.
 
 		description:
 			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
@@ -3503,9 +3423,6 @@ class ops_dict(object):
 
 	def eigh(self,pars={},**eigh_args):
 		"""
-		args:
-			time=0, time to evaluate drive at.
-
 		description:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
 			uses wrapped lapack functions which are contained in module py_lapack
@@ -3525,9 +3442,6 @@ class ops_dict(object):
 
 	def eigvalsh(self,pars={},**eigvalsh_args):
 		"""
-		args:
-			time=0, time to evaluate drive at.
-
 		description:
 			function which diagonalizes hamiltonian using dense methods solves for eigen values 
 			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
@@ -3620,22 +3534,6 @@ class ops_dict(object):
 		if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 			raise ValueError('cannot cast types')
 
-
-	"""
-	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
-		'''
-		Method for compatibility with NumPy's ufuncs and dot
-		functions.
-		'''
-
-		if (func == _np.dot) or (func == _np.multiply):
-			if pos == 0:
-				return self.__mul__(inputs[1])
-			if pos == 1:
-				return self.__rmul__(inputs[0])
-			else:
-				return NotImplemented
-	"""
 
 
 
@@ -3754,6 +3652,8 @@ class exp_op(object):
 
 		if ishamiltonian(O):
 			self._O = O
+		if isops_dict(O):
+			self._O = O.tohamiltonian()
 		else:
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
 				self._O = hamiltonian([O], [],dtype=O.dtype)
