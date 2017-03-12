@@ -87,7 +87,7 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 		H2 = v0.T.conj() * (H2 * v0)
 		H1 = v.T.conj().dot(H1.dot(v))
 		if np.abs(np.linalg.norm(H1-H2)) > 10**(-10):
-			raise Exception("get_vec() failed {0}".format(b.blocks))
+			raise Exception("get_vec() TPZ symmetries failed for L={0} {1}".format(b.N,b.blocks))
 	else: 
 		pass
 
@@ -129,7 +129,7 @@ def getvec_zA_zB(L,kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
 		H2_zA_zB = v0_zA_zB.T.conj() * (H2_zA_zB * v0_zA_zB)
 		H1 = v_zA_zB.T.conj() * ( H1 * v_zA_zB)
 		if np.abs(np.linalg.norm(H1-H2_zA_zB)) > 10**(-10):
-			raise Exception("get_vec() zA_zB failed {0}")
+			raise Exception("get_vec() zA_zB Symmetries failed for L={0} {1}".format(b.N,b.blocks))
 	else: 
 		pass	
 
@@ -216,13 +216,14 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 
 
 
-for L in range(4,8):
+for L in range(4,9):
 	check_getvec(L,sparse=True)
 	check_getvec(L,sparse=False)
+	if L%2 == 0:
+		check_getvec_zA_zB(L,sparse=True)
+		check_getvec_zA_zB(L,sparse=False)
 
-for L in range(4,8,2):
-	check_getvec_zA_zB(L,sparse=True)
-	check_getvec_zA_zB(L,sparse=False)
+
 
 
 
