@@ -231,7 +231,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	try:
 		N = basis.N
 	except AttributeError:
-		N = basis.chain_N
+		N = basis.particle_N
 
 
 
@@ -1108,7 +1108,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = basis.ent_entropy(psi_t,**Sent_args)
+			Sent_time = basis.ent_entropy(psi_t.T,**Sent_args)
 
 
 	else:

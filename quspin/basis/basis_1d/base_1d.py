@@ -138,7 +138,8 @@ class basis_1d(basis):
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-
+		if self.sps < 2:
+			raise ValueError("invalid value for sps, sps >= 2.")
 
 
 		if type(a) is not int:
@@ -814,11 +815,14 @@ class basis_1d(basis):
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
 
+		squeeze = False
+		
 		if self._Ns <= 0:
 			return array([])
 		if v0.ndim == 1:
 			shape = (self._sps**self._L,1)
 			v0 = v0.reshape((-1,1))
+			squeeze = True
 		elif v0.ndim == 2:
 			shape = (self._sps**self._L,v0.shape[1])
 		else:
@@ -867,7 +871,10 @@ class basis_1d(basis):
 		if sparse:
 			return _get_vec_sparse(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 		else:
-			return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
+			if squeeze:
+				return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
+			else:
+				return _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 
 
 	def get_proj(self,dtype):
