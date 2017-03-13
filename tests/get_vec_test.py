@@ -44,34 +44,36 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 
 	static = [
 						['xx',J(L,jb,2)],
-						['yy',J(L,jb,2)],
+#						['yy',J(L,jb,2)],
 						['zz',J(L,jb,2)],
-						['+-',J(L,jb,2)],
-						['-+',J(L,jb,2)],
-						['zzzz',J(L,jb,4)],
-						['xxxx',J(L,jb,4)],
-						['yyyy',J(L,jb,4)],
-						['xxzz',J(L,jb,4)],
-						['zzxx',J(L,jb,4)],
-						['yyzz',J(L,jb,4)],
-						['zzyy',J(L,jb,4)],
-						['yyxx',J(L,jb,4)],
-						['xxyy',J(L,jb,4)],
-						['+zz-',J(L,jb,4)],
-						['-zz+',J(L,jb,4)],
-						['+xx-',J(L,jb,4)],
-						['-xx+',J(L,jb,4)],
-						['+yy-',J(L,jb,4)],
-						['-yy+',J(L,jb,4)],
-						['++--',J(L,jb,4)],
-						['--++',J(L,jb,4)],
-						['+-+-',J(L,jb,4)],
-						['-+-+',J(L,jb,4)],
+#						['+-',J(L,jb,2)],
+#						['-+',J(L,jb,2)],
+#						['zzzz',J(L,jb,4)],
+#						['xxxx',J(L,jb,4)],
+#						['yyyy',J(L,jb,4)],
+#						['xxzz',J(L,jb,4)],
+#						['zzxx',J(L,jb,4)],
+#						['yyzz',J(L,jb,4)],
+#						['zzyy',J(L,jb,4)],
+#						['yyxx',J(L,jb,4)],
+#						['xxyy',J(L,jb,4)],
+#						['+zz-',J(L,jb,4)],
+#						['-zz+',J(L,jb,4)],
+#						['+xx-',J(L,jb,4)],
+#						['-xx+',J(L,jb,4)],
+#						['+yy-',J(L,jb,4)],
+#						['-yy+',J(L,jb,4)],
+#						['++--',J(L,jb,4)],
+#						['--++',J(L,jb,4)],
+#						['+-+-',J(L,jb,4)],
+#						['-+-+',J(L,jb,4)],
 					]
 
 
 	H1 = hamiltonian(static,[],N=L,dtype=dtype)
 	H2 = hamiltonian(static,[],basis=b,dtype=dtype)
+
+	E1,V = H1.eigh()
 
 	E,v0 = H2.eigh()
 	v = b.get_vec(v0,sparse=sparse)
@@ -216,7 +218,7 @@ def check_getvec_zA_zB(L,a=2,sparse=True):
 
 
 
-for L in range(4,8):
+for L in range(2,4,8):
 	check_getvec(L,sparse=True)
 	check_getvec(L,sparse=False)
 

@@ -37,7 +37,7 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
             # loop over site positions
             if c_opstr[j] == I:
                 continue
-            elif c_opstr[j] == z: # S^z = n - (m-1)/2 for 2S=2,34,... and m=2S+1
+            elif c_opstr[j] == z: # S^z = n - (m-1)/2 for 2S=2,3,4,... and m=2S+1
                 M_E_diag *= occ-S 
             elif c_opstr[j] == n:
                 M_E_diag *= occ # square root taken below

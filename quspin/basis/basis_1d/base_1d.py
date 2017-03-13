@@ -230,7 +230,7 @@ class basis_1d(basis):
 			self._op = ops_module.t_p_z_op
 
 			if self._basis_type == _np.object:
-				# if object is basis type then must likely this is for single particle stuff in which case the 
+				# if object is basis type then most likely this is for single particle stuff in which case the 
 				# normalizations need to be large ~ 1000 or more which won't fit in int8/int16.
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
 				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
@@ -403,12 +403,11 @@ class basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			self._op = ops_module.p_z_op
-
+			
 			if (type(Np) is int):
 				self._Ns = basis_module.n_p_z_basis(L,Np,pblock,zblock,self._pars,self._N,self._basis)
 			else:
 				self._Ns = basis_module.p_z_basis(L,pblock,zblock,self._pars,self._N,self._basis)
-
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -443,7 +442,9 @@ class basis_1d(basis):
 			if (type(Np) is int):
 				self._Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,self._N,self._basis)
 			else:
+				print('h',self._N)
 				self._Ns = basis_module.p_basis(L,pblock,self._pars,self._N,self._basis)
+				print('hhh',self._N)
 
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
@@ -692,7 +693,6 @@ class basis_1d(basis):
 		zAblock = self._blocks_1d.get("zAblock")
 		zBblock = self._blocks_1d.get("zBblock")
 		pzblock = self._blocks_1d.get("pzblock")
-
 
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			c = _np.empty(self._M.shape,dtype=_np.int8)
@@ -1398,8 +1398,8 @@ def _get_vec_sparse(ops,pars,v0,basis_arr,norms,ind_neg,ind_pos,shape,C,L,**bloc
 			ops.py_fliplr(basis_arr,L,pars)
 
 		if type(pzblock) is int:
-			ops.py_fliplr(basis_arr,L,pars)
 			ops.py_flip_all(basis_arr,L,pars)
+			ops.py_fliplr(basis_arr,L,pars)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			v = v + _sp.csr_matrix((data_pos,(basis_arr[row_pos],col_pos)),shape,dtype=v.dtype)

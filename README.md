@@ -1,8 +1,11 @@
 # **QuSpin**
 
-This documentation is also available as a jupyter [notebook](https://github.com/weinbe58/qspin/blob/master/documentation.ipynb). 
+This documentation is also available as a [jupyter notebook](https://github.com/weinbe58/qspin/blob/master/documentation.ipynb) which displays the LaTeX code properly. 
 
-qspin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin-1/2 chains with length up to 32 sites (including). The interface allows the user to define any Hamiltonian which can be constructed from spin-1/2 operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+qspin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional spin, fermion and boson chains with length up to 32 sites (including). The interface allows the user to define any many-body Hamiltonian which can be constructed from single-particle operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+
+If you do use this package for you scientific work we ask you to please cite our paper: https://scipost.org/10.21468/SciPostPhys.2.1.003.
+
 
 # **Contents**
 --------
@@ -21,7 +24,10 @@ qspin is a python library which wraps Scipy, Numpy, and custom Cython libraries 
 	 * [matrix exponential](#exp_op-class)
 	 * [HamiltonianOperator class](#HamiltonianOperator-class)
 	* [basis objects](#basis-objects)
-	 * [spin_basis in 1d](#spin_basis_1d-class)
+	 * [spin basis in 1d](#spin_basis_1d-class)
+     * [hard-core boson basis in 1d](#hcb_basis_1d-class)
+     * [boson basis in 1d](#boson_basis_1d-class)
+     * [fermion basis in 1d](#fermion_basis_1d-class)
 	 * [harmonic oscillator basis](#ho_basis-class)
 	 * [tensor basis objects](#tensor_basis-class)
      * [photon basis in 1d](#photon_basis-class)
@@ -501,9 +507,9 @@ This class also allows the option to specify a grid of points `grid` on a line i
    expO= expO.set_iterate(value)
  ```
  
-* return matrix at given grid point:
+* return matrix at given grid point. If `dense=True` the output format is dense.
  ```python
-   expO_mat = expO.get_mat(index=None, time=0)
+   expO_mat = expO.get_mat(index=None, time=0, dense=False)
  ```
  
 #### **mathematical functions**
@@ -600,7 +606,7 @@ The `basis` objects provide a way of constructing all the necessary information 
 
 ### **spin_basis_1d class**
 
-The `spin_basis_1d` class provides everything necessary to create the `hamiltonian` for any spin-$1/2$ system in 1d. The available operators one can use are the the standard spin operators: ```x,y,z,+,-``` which either represent the Pauli operators (matrices) or spin-1/2 operators. The ```+/-``` operators are always constructed as ```x +/- i y```.
+The `spin_basis_1d` class provides everything necessary to create the `hamiltonian` for any spin-$S$ system in 1d with $S=1/2,1,3/2,2,5/2,3,\dots$. The available operators one can use are the standard spin operators: ```I,+,-,z``` which either represent the Pauli operators (matrices) or spin-1/2 operators. Additionally, for spin-$1/2$ one can also define the operators ```x,y``` which are always constructed as ```+/- = x +/- i y```.
 
 It is also possible to create the `hamiltonian` in a given symmetry-reduced block as follows:
 
@@ -611,7 +617,7 @@ It is also possible to create the `hamiltonian` in a given symmetry-reduced bloc
 * spin inversion symmetry: ```zblock = +/- 1```
 * (spin inversion)*(parity) symmetry: ```pzblock = +/- 1 ```
 * spin inversion on sublattice A (even sites, lattice site `i=0` is even): ```zAblock = +/- 1```
-* spin inversion on sublattice B (odd sites): ```zAblock = +/- 1```
+* spin inversion on sublattice B (odd sites): ```zBblock = +/- 1```
 * translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
 
 Other optional arguments include:
@@ -622,11 +628,13 @@ Other optional arguments include:
 Usage of `spin_basis_1d`:
 
 ```python
-basis = spin_basis_1d(L,**symmetry_blocks)
+basis = spin_basis_1d(L,S="1/2",**symmetry_blocks)
 ```
 ---arguments---
 
 * L: int (required) length of chain to construct `basis` for
+
+* S: str (optional) string specifying the total spin (e.g. S="5/2" is spin-5/2, S="2" is spin-2). 
 
 * symmetry_blocks: (optional) specify which block of a particular symmetry to construct `basis` for. 
 
@@ -636,11 +644,147 @@ basis = spin_basis_1d(L,**symmetry_blocks)
 
 * _.N: returns number of sites in chain as integer
 
-* _.Ns: returns number of states in the hilbert space
+* _.Ns: returns number of states in the Hilbert space
 
 * _.operators: returns string which lists information about the operators of this basis class. 
 
+* _.sps: returns integer with number of states per site (sps=2 for spin-1/2, sps=3 for spin-1, etc.)
 
+
+
+### **hcb_basis_1d class**
+
+The `hcb_basis_1d` class provides everything necessary to create the `hamiltonian` for a system of hard-core bosons in 1d. The available operators one can use are the standard particle operators: ```I,+,-,n``` which define the raising and lowering operators, the number operator, and the spin-1/2 ```z``` operator ```z=n+1/2```. 
+
+It is also possible to create the `hamiltonian` in a given symmetry-reduced block as follows:
+
+* particle number symmetries: 
+ * ```Nb=0,1,...,L # pick single particle number sector```
+ * ```Nb = [0,1,...] # pick list of particle number sectors```
+* parity (reflection about middle of chain) symmetry: ```pblock = +/- 1```
+* parcticle-hole (charge) symmetry: ```cblock = +/- 1```
+* (particle-hole)*(parity) symmetry: ```pcblock = +/- 1 ```
+* particle-hole on sublattice A (even sites, lattice site `i=0` is even): ```cAblock = +/- 1```
+* particle-hole on sublattice B (odd sites): ```cBblock = +/- 1```
+* translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
+
+Other optional arguments include:
+
+* a: the unit cell size for the translational symmetry. Default is ```a = 1```. For example, in the presence of a staggered potential and translation symmetry use `a=2`. 
+
+Usage of `hcb_basis_1d`:
+
+```python
+basis = hcb_basis_1d(L,**symmetry_blocks)
+```
+---arguments---
+
+* L: int (required) length of chain to construct `basis` for
+
+* symmetry_blocks: (optional) specify which block of a particular symmetry to construct `basis` for. 
+
+--- `hcb_basis_1d` attributes ---: '_. ' below stands for 'object. '
+
+* _.L: returns length of the chain as integer
+
+* _.N: returns number of sites in chain as integer
+
+* _.Ns: returns number of states in the Hilbert space
+
+* _.operators: returns string which lists information about the operators of this basis class. 
+
+* _.sps: returns integer with number of states per site (sps=2 for hardcore-bosons)
+
+
+
+### **boson_basis_1d class**
+
+The `boson_basis_1d` class provides everything necessary to create the `hamiltonian` for a system of bosons in 1d. The available operators one can use are the standard particle operators: ```I,+,-,n``` which define the raising and lowering operators, the number operator, and the higher spin ```z``` operator ```z = n - (sps-1)/2``` with ```sps``` denoting the total number of states per site. 
+
+It is also possible to create the `hamiltonian` in a given symmetry-reduced block as follows:
+
+* particle number symmetries: 
+ * ```Nb=0,1,...,L # pick single particle number sector```
+ * ```Nb = [0,1,...] # pick list of particle number sectors```
+* parity (reflection about middle of chain) symmetry: ```pblock = +/- 1```
+* parcticle-hole (charge) symmetry: ```cblock = +/- 1```
+* (particle-hole)*(parity) symmetry: ```pcblock = +/- 1 ```
+* particle-hole on sublattice A (even sites, lattice site `i=0` is even): ```cAblock = +/- 1```
+* particle-hole on sublattice B (odd sites): ```cBblock = +/- 1```
+* translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
+
+Other optional arguments include:
+
+* a: the unit cell size for the translational symmetry. Default is ```a = 1```. For example, in the presence of a staggered potential and translation symmetry use `a=2`. 
+
+Usage of `boson_basis_1d`:
+
+```python
+basis = boson_basis_1d(L,sps=None**,symmetry_blocks)
+```
+---arguments---
+
+* L: int (required) length of chain to construct `basis` for
+
+* sps: int (optional) number of states per site. Either ```Nb``` (see particle symmetries above) or ```sps``` must be specified. If ```Nb``` is specified the default is ```sps=Nb+1```.
+
+* symmetry_blocks: (optional) specify which block of a particular symmetry to construct `basis` for. 
+
+--- `boson_basis_1d` attributes ---: '_. ' below stands for 'object. '
+
+* _.L: returns length of the chain as integer
+
+* _.N: returns number of sites in chain as integer
+
+* _.Ns: returns number of states in the Hilbert space
+
+* _.operators: returns string which lists information about the operators of this basis class. 
+
+* _.sps: returns integer with number of states per site
+
+
+### **fermion_basis_1d class**
+
+The `fermion_basis_1d` class provides everything necessary to create the `hamiltonian` for a system of spinless fermions in 1d. The available operators one can use are the standard particle operators: ```I,+,-,n``` which define the raising and lowering operators, the number operator, and the spin-1/2 ```z``` operator ```z=n+1/2```. 
+
+It is also possible to create the `hamiltonian` in a given symmetry-reduced block as follows:
+
+* particle number symmetries: 
+ * ```Nf=0,1,...,L # pick single particle number sector```
+ * ```Nf = [0,1,...] # pick list of particle number sectors```
+* parity (reflection about middle of chain) symmetry: ```pblock = +/- 1```
+* parcticle-hole (charge) symmetry: ```cblock = +/- 1```
+* (particle-hole)*(parity) symmetry: ```pcblock = +/- 1 ```
+* particle-hole on sublattice A (even sites, lattice site `i=0` is even): ```cAblock = +/- 1```
+* particle-hole on sublattice B (odd sites): ```cBblock = +/- 1```
+* translational symmetry: ```kblock = ...,-1,0,1,.... # all integers available```
+
+Other optional arguments include:
+
+* a: the unit cell size for the translational symmetry. Default is ```a = 1```. For example, in the presence of a staggered potential and translation symmetry use `a=2`. 
+
+Usage of `fermion_basis_1d`:
+
+```python
+basis = fermion_basis_1d(L,**symmetry_blocks)
+```
+---arguments---
+
+* L: int (required) length of chain to construct `basis` for
+
+* symmetry_blocks: (optional) specify which block of a particular symmetry to construct `basis` for. 
+
+--- `hcb_basis_1d` attributes ---: '_. ' below stands for 'object. '
+
+* _.L: returns length of the chain as integer
+
+* _.N: returns number of sites in chain as integer
+
+* _.Ns: returns number of states in the Hilbert space
+
+* _.operators: returns string which lists information about the operators of this basis class. 
+
+* _.sps: returns integer with number of states per site (sps=2 for spinless fermions)
 
 
 ### **ho_basis class**
@@ -717,6 +861,7 @@ The following functions are defined for every `basis` class:
 basis.Op(opstr,indx,J,dtype)
 ```
 This function takes the string of operators `opstr`, the sites on which they act `indx`, the coupling `J` and the corresponding data dype `dtype`, and returns the matrix elements, their row index and column index in the Hamiltonian matrix for the symmetry sector the basis was initialized with.
+
 ---arguments--- (*all required*)
 
 * opstr: string which contains the operator string.
@@ -734,6 +879,7 @@ RETURNS:
 basis.get_vec(v)
 ```
 This function converts a state defined in the symmetry-reduced basis to the full, symmetry-free basis.
+
 ---arguments---
 
 * v: two options
@@ -747,12 +893,66 @@ state or states in the full basis as columns of the returned array.
 basis.get_proj(dtype)
 ```
 This function returns the transformation from the symmetry-reduced basis to the full basis
+
 ---arguments---
 
 * dtype: data type to cast projector matrix in. 
 
 RETURNS:
-projector to the full basis as a sparse matrix. 
+projector to the full basis as a sparse matrix.
+
+```python
+partial_trace(state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure")
+```
+This function calculates the reduced density matrix (DM), performing a partial trace of a quantum state.
+
+--- arguments ---
+
+* `state`: (required) the state of the quantum system. Can be a
+  1. pure state (default) [numpy array of shape (Ns,)].
+  2. density matrix [numpy array of shape (Ns,Ns)].
+  3. collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
+* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
+* `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
+  These arguments differ when used with `photon` or `tensor` basis.
+  1. 'A': str, returns reduced DM of subsystem A 
+  2. 'B': str, returns reduced DM of subsystem B
+  3. 'both': str, returns reduced DM of both subsystems A and B
+* `state_type`: (optional) flag to determine if 'state' is a collection of pure states or a density matrix
+  1. 'pure': (default) (a collection of) pure state(s)
+  2. 'mixed': mixed state (i.e. a density matrix)
+* `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+RETURNS: reduced DM
+
+```python
+ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0)
+```
+This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
+density matrix.
+
+--- arguments ---
+
+* `state`: (required) the state of the quantum system. Can be a:
+  1. pure state (default) [numpy array of shape (Ns,)].
+  2.density matrix [numpy array of shape (Ns,Ns)].
+  3.collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
+* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
+* `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
+  1. 'A': str, returns reduced DM of subsystem A
+  2. 'B': str, returns reduced DM of subsystem B
+  3. 'both': str, returns reduced DM of both subsystems A and B
+* `state_type`: (optional) flag to determine if 'state' is a collection of pure states or a density matrix
+  1. 'pure': (default) (a collection of) pure state(s)
+  2. 'mixed': mixed state (i.e. a density matrix)
+* `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
+* `alpha`: (optional) Renyi alpha parameter. Default is 'alpha=1.0'.
+
+RETURNS: dictionary with keys:
+
+'Sent': entanglement entropy.
+'rdm_A': (optional) reduced density matrix of subsystem A
+'rdm_B': (optional) reduced density matrix of subsystem B
 
 ## **tools**
 
