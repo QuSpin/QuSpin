@@ -443,10 +443,8 @@ class basis_1d(basis):
 			if (type(Np) is int):
 				self._Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,self._N,self._basis)
 			else:
-				print('h',self._N)
 				self._Ns = basis_module.p_basis(L,pblock,self._pars,self._N,self._basis)
-				print('hhh',self._N)
-
+				
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._basis,self._L,self._pars]
