@@ -73,6 +73,8 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	H1 = hamiltonian(static,[],N=L,dtype=dtype)
 	H2 = hamiltonian(static,[],basis=b,dtype=dtype)
 
+	E1,V = H1.eigh()
+
 	E,v0 = H2.eigh()
 	v = b.get_vec(v0,sparse=sparse)
 	P = b.get_proj(dtype=np.complex128)
