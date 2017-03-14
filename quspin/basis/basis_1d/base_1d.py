@@ -2,7 +2,6 @@ from ..base import basis,MAXPRINT
 from ..base import _lattice_partial_trace_pure
 from ..base import _lattice_partial_trace_mixed
 from ..base import _lattice_partial_trace_sparse_pure
-from ._constructors import op_array_size
 from . import _check_1d_symm as _check
 import numpy as _np
 from numpy import array,cos,sin,exp,pi
@@ -179,7 +178,6 @@ class basis_1d(basis):
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
 			self._k = 2*(_np.pi)*a*kblock/L
-
 
 		self._L = L
 		self._Ns = basis_module.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
@@ -667,7 +665,11 @@ class basis_1d(basis):
 		if self._Ns <= 0:
 			return [],[],[]
 
-		N_op = op_array_size[self._conserved]*self.Ns
+		if self._unique_me:
+			N_op = self.Ns
+		else:
+			N_op = 2*self.Ns
+
 		col = _np.zeros(N_op,dtype=self._basis_type)
 		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
