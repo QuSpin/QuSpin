@@ -2,6 +2,7 @@ import numpy as _np
 from scipy.misc import comb
 
 # tells whether or not the inputs into the ops needs Ns or 2*Ns elements
+"""
 op_array_size={"":1,
 				"N":1,
 				"Z":1,
@@ -35,7 +36,7 @@ op_array_size={"":1,
 				"T & P & Z":2,
 				"N & T & P & Z":2
 				}
-
+"""
 
 
 def H_dim(N,length,m_max):

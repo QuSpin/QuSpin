@@ -641,7 +641,18 @@ class basis_1d(basis):
 		return self._basis.__getitem__(key)
 
 	def index(self,s):
-		return _np.searchsorted(self._basis,s)
+		if type(s) is int:
+			pass
+		elif type(s) is str:
+			s = long(s[::-1],self.sps)
+		else:
+			raise ValueError("s must be integer or state")
+
+		indx = _np.argwhere(self._basis == s)
+		if indx:
+			return _np.squeeze(indx)
+		else:
+			raise ValueError("s must be representive state in basis. ")
 
 	def __iter__(self):
 		return self._basis.__iter__()

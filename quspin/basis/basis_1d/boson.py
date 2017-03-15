@@ -7,7 +7,7 @@ import numpy as _np
 
 
 class boson_basis_1d(basis_1d):
-	def __init__(self,L,Nb=None,sps=None,_Np=None,**blocks):
+	def __init__(self,L,Nb=None,nb=None,sps=None,_Np=None,**blocks):
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
@@ -60,6 +60,15 @@ class boson_basis_1d(basis_1d):
 			self._blocks["cblock"] = zAblock*zBblock
 
 		self._sps = sps
+
+		if Nb is None and nb is not None:
+			if nb < 0 or nb > 1:
+				raise ValueError("nb must be between 0 and 1")			
+			Nb = int(nb*L)
+
+		if Nb is not None and nb is not None:
+			raise ValueError("Cannot Nb and nb simultaineously.")
+
 
 		if self._sps <= 2:
 			pars = _np.array([0]) # set sign to not be calculated

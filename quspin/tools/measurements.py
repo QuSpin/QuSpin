@@ -941,7 +941,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 
-def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None):
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1090,8 +1090,9 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 	
 	# calculate observables and Sent
 	Expt_time = {}
-
-	if len(Sent_args) > 0 or basis is not None:
+	calc_Sent = False
+	
+	if len(Sent_args) > 0:
 		if basis is None:
 			raise ValueError("Sent requires basis for calculation")
 		calc_Sent = True
@@ -1150,6 +1151,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 				psi = psi.ravel()
 
 			time = times[m+1]
+
+			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in obs_dict.items():
 				psi_l = Obs.dot(psi)
