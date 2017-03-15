@@ -5,17 +5,18 @@ from quspin.tools.measurements import obs_vs_time
 
 
 
-L = 16
+L = 10
 N = L//2
-w = 10.0
+w = 1.0
 J = 1.0
-U = 4.0
-beta = 0.721
-phi = np.e
+U = 10.0
 
-#if L%4 != 0:
-#	raise ValueError("L must be multiple of 4")
+start=0
+stop=100
+num=101
 
+n_real = 10
+n_boot = 10*n_real
 
 N_up = N//2
 N_down = N-N_up
@@ -27,15 +28,14 @@ basis_up = fermion_basis_1d(L,Nf=N_up)
 basis_down = fermion_basis_1d(L,Nf=N_down)
 basis = tensor_basis(basis_up,basis_down)
 
-print basis.Ns
+
 
 J_right = [[J,i,i+1] for i in range(L-1)]
 J_left = [[-J,i,i+1] for i in range(L-1)]
 U_list = [[U,i,i] for i in range(L)]
-V_list = [[w*np.sin(2*beta*np.pi*i+phi),i] for i in range(L)]
 
-sublat_A_list = [[1,i] for i in range(0,L,2)]
-sublat_B_list = [[1,i] for i in range(1,L,2)]
+
+sublat_list = [[(-1)**i,i] for i in range(0,L)]
 
 static = [	
 			["+-|",J_left], # up hopping
@@ -44,39 +44,46 @@ static = [
 			["|-+",J_right],
 			["n|n",U_list], # onsite interaction
 			["n|",V_list], # onsite potential
-			["|n",V_list], 
 		 ]
 dynamic = []
 
 
 # set up hamiltonian, evolution operator, and observable
-H = hamiltonian(static,dynamic,basis=basis,check_pcon=False,check_symm=False)
-expH = exp_op(H,a=-1j,start=0,stop=100,num=1001,endpoint=True,iterate=True)
-n_A = hamiltonian([["n|",sublat_A_list],["|n",sublat_A_list]],[],basis=basis,check_pcon=False,check_symm=False)
-n_B = hamiltonian([["n|",sublat_B_list],["|n",sublat_B_list]],[],basis=basis,check_pcon=False,check_symm=False)
-I = (n_A - n_B)/N
-
-times = expH.grid
+H0 = hamiltonian(static,dynamic,basis=basis,check_pcon=False,check_symm=False)
+I = hamiltonian([["n|",sublat_list],["|n",sublat_list]],[],basis=basis,check_pcon=False,check_symm=False)/N
 
 # setting up initial state
 s_up = sum((1 << i) for i in range(2,L,2*L//N))
 s_down = sum((1 << i) for i in range(0,L,2*L//N))
-state = list(">{:010b},{:010b}|".format(s_up,s_down))
+state = list((">{:0"+str(L)+"b},{:0"+str(L)+"b}|").format(s_up,s_down))
 state.reverse()
 print "".join(state)
 
 i_0 = basis.index(s_up,s_down)
-
 psi_0 = np.zeros(basis.Ns)
 psi_0[i_0] = 1.0
 
-psi_t = expH.dot(psi_0)
+def realization(H0,I,psi_0,w,start,stop,num,i):
+	print i
+	basis = H0.basis
 
-obs_t = obs_vs_time(psi_t,times,dict(I=I,n_A=n_A,n_B=n_B),disp=True)
+	V_list = [[np.random.uniform(-w,w),i] for i in range(L)]
+	H = H0 + hamiltonian([["n|",V_list]],[],basis=basis)
+	expH = exp_op(H,start=start,stop=stop,num=num,iterate=True,endpoint=True)
 
 
-import matplotlib.pyplot as plt
-print obs_t["I"][0],obs_t["n_A"][0],obs_t["n_B"][0]
-plt.plot(times,obs_t["I"],marker=".")
-plt.show()
+	times = expH.grid
 
+	psi_t = expH.dot(psi_0)
+
+	obs_t = obs_vs_time(psi_t,times,dict(I=I))
+
+	return obs_t["I"]
+
+
+
+I_data = np.vstack((realization(H0,I,psi_0,w,start,stop,num) for i in range(n_real)))
+
+bootstraps = np.choice(n_real,size=(n_real,n_boot))
+
+I_boot = I[:,bootstraps]
