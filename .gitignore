@@ -48,7 +48,7 @@ install.txt
 *.f90
 
 # cython source file #
-*.pyx
+#*.pyx
 
 # backup files from gedit #
 *~

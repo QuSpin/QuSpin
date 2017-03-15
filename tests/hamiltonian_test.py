@@ -1,11 +1,10 @@
+from __future__ import print_function
 import sys,os
+
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 import numpy as np
-from qspin.operators import hamiltonian
-
-
-
+from quspin.operators import hamiltonian
 
 
 
@@ -15,6 +14,9 @@ def test_trace():
 	H_trace = H.trace()
 	trace = np.trace(M)
 	np.testing.assert_equal(H_trace,trace)
+
+
+
 
 
 test_trace()

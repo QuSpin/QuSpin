@@ -23,12 +23,12 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
-	This function calculates the entanglement _entropy of a lattice quantum subsystem based on the Singular
-	Value Decomposition (svd).
+	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
+	reduced subsystem. 
 
 	RETURNS:	dictionary with keys:
 
-	'Sent': entanglement _entropy.
+	'Sent': entanglement entropy.
 
 	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
 
@@ -98,7 +98,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	# initiate variables
 	variables = ["Sent"]
-	
+
 	if DM=='chain_subsys':
 		variables.append("DM_chain_subsys")
 		if svd_return_vec[0]:
@@ -114,6 +114,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 			variables.append('U')
 		if svd_return_vec[2]:
 			variables.append('V')
+	elif DM and DM not in ['chain_subsys','other_subsys','both']:
+		raise TypeError("Unexpected keyword argument for 'DM'!")
 
 	if svd_return_vec[1]:
 		variables.append('lmbda')
@@ -123,6 +125,13 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	# calculate reshaped system_state
 	v, rho_d, N_A = _reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
+	
+	"""
+	This function has room for improvement: if only DM is requested, it can be obtained by
+	DM_chain_subsys = v[0].dot(v[0].T)
+	DM_other_subsys = v[0].T.dot(v[0])
+	so there's NO NEED for an SVD!!!
+	"""
 
 	if DM == False:
 		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
@@ -222,7 +231,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	try:
 		N = basis.N
 	except AttributeError:
-		N = basis.chain_N
+		N = basis.particle_N
 
 
 
@@ -239,6 +248,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 		elif len(set(chain_subsys)) < len(chain_subsys):
 			raise TypeError("'subsys' cannot contain repeating site indices!")
+		elif any(not _np.issubdtype(type(s),_np.integer) for s in chain_subsys):
+			raise ValueError("'subsys' must iterable of integers with values in {0,...,L-1}!")
 		elif subsys_ordering:
 			if len(set(chain_subsys))==len(chain_subsys) and sorted(chain_subsys)!=chain_subsys:
 				# if chain subsys is def with unordered sites, order them
@@ -328,24 +339,24 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
-			chain_subsys=[i for i in range( N//2 )]
+			chain_subsys=list(i for i in range( N//2 ))
 			warnings.warn("Subsystem contains sites {}.".format(chain_subsys),stacklevel=4)
 		
 	
 		# re-write the state in the initial basis
-		if basis.Ns<2**N:
+		if basis.Ns<basis.sps**N:
 			psi = basis.get_vec(psi,sparse=False)
 			
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
-		Ns_A = 2**N_A
+		Ns_A = basis.sps**N_A
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
 
-
 		'''
-		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows:
+		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
+		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
 
 		1) the initial state psi has 2^N entries corresponding to the spin-z configs
 		2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
@@ -359,14 +370,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		if chain_subsys==list(range(len(chain_subsys))):
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive or staring site not [0]
 			# performs 2) and 3)
 			# update reshape tuple
-			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)])
+			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)])
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -376,7 +387,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			# performs 4)
 			v=v.transpose(system) 
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			v = _np.reshape(v,reshape_tuple2)
 			
 
@@ -384,13 +395,13 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
-			chain_subsys=[i for i in range( int(N) )]
+			chain_subsys=list(range( int(N) ))
 			warnings.warn("subsystem set to the entire chain.",stacklevel=4)
 
 
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
-		Ns_A = 2**N_A
+		Ns_A = basis.sps**N_A
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
@@ -403,39 +414,38 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				if N_A!=N: # doesn't make use of chain symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
 				else: # makes use of symmetries
-					Ns_spin = basis.chain_Ns
+					Ns_chain = basis.chain_Ns
 			else:
-				Ns_spin = 2**N
+				Ns_chain = basis.sps**N
 
 		elif basis.Ntot is not None: # total particle-conservation
 			Nph = basis.Ntot
 			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
 				if N_A==N: # make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
-					Ns_spin = basis.chain_Ns
+					Ns_chain = basis.chain_Ns
 				else: # doesn't make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-					Ns_spin = 2**N
+					Ns_chain = basis.sps**N
 			else: # no chain symmetries present
 				if N_A==N:
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
 				else:
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-				Ns_spin = basis.chain_Ns
+				Ns_chain = basis.chain_Ns
 
-		#del basis
 		if chain_subsys == list(range(len(chain_subsys))): 
 			# chain_subsys sites come in consecutive order or staring site not [0]
 			# define reshape tuple
 			if N_A==N: # chain_subsys equals entire lattice
-				reshape_tuple2 = (Ns, Ns_spin,Nph+1)
+				reshape_tuple2 = (Ns, Ns_chain,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
-				reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+				reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
 			v = _np.reshape(psi.T,reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
-			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)]) + (Nph+1,)
+			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)]) + (Nph+1,)
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -446,7 +456,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system.append(len(system))
 			v=v.transpose(system)
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
 			v = _np.reshape(v,reshape_tuple2)
 				
 	else:
@@ -931,7 +941,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 
-def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1080,8 +1090,12 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	
 	# calculate observables and Sent
 	Expt_time = {}
-
+	calc_Sent = False
+	
 	if len(Sent_args) > 0:
+		if basis is None:
+			raise ValueError("Sent requires basis for calculation")
+		calc_Sent = True
 		variables.append("Sent_time")
 	
 	if return_state:
@@ -1095,7 +1109,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+			Sent_time = basis.ent_entropy(psi_t.T,**Sent_args)
 
 
 	else:
@@ -1122,12 +1136,13 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 		# get initial dictionary from ent_entropy function
 		# use this to set up dictionary for the rest of calculation.
-		if len(Sent_args) > 0:
-			Sent_time = ent_entropy(psi,**Sent_args)
+		if calc_Sent:
+			Sent_time = basis.ent_entropy(psi,**Sent_args)
 
 			for key,val in Sent_time.items():
 				dtype = _np.dtype(val)
-				Sent_time[key] = _np.zeros((len(times),),dtype=dtype)
+				shape = (len(times),) + val.shape
+				Sent_time[key] = _np.zeros(shape,dtype=dtype)
 				Sent_time[key][0] = val
 
 		# loop over psi generator
@@ -1136,6 +1151,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 				psi = psi.ravel()
 
 			time = times[m+1]
+
+			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in obs_dict.items():
 				psi_l = Obs.dot(psi)
@@ -1147,8 +1164,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 				Expt_time[key][m+1] = val
 
 
-			if len(Sent_args) > 0:
-				Sent_time_update = ent_entropy(psi,**Sent_args)
+			if calc_Sent:
+				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
 				for key in Sent_time.keys():
 					Sent_time[key][m+1] = Sent_time_update[key]
 
