@@ -117,7 +117,7 @@ class tensor_basis(basis):
 	def index(self,s_left,s_right):
 		s_left = self.basis_left.index(s_left)
 		s_right = self.basis_right.index(s_right)
-		return s_left + self.basis_left.Ns*s_right
+		return s_right + self.basis_right.Ns*s_left
 
 
 	def get_proj(self,dtype,full_left=True,full_right=True):
