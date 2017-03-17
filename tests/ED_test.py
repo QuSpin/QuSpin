@@ -99,7 +99,6 @@ def check_z(L,dtype,Nup=None):
 	Ez=np.concatenate((E1,E2))
 	Ez.sort()
 
-
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
 

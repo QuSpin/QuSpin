@@ -36,15 +36,26 @@ def configuration(parent_package='', top_path=None):
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
 
-		hcp_src = os.path.join(package_dir,"hcp_basis_ops.cpp")	
-		config.add_extension('hcp_basis_ops',sources=hcp_src,include_dirs=[numpy.get_include()],
+		hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	
+		config.add_extension('hcp_basis',sources=hcp_basis_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
-		boson_src = os.path.join(package_dir,"boson_basis_ops.cpp")	
-		config.add_extension('boson_basis_ops',sources=boson_src,include_dirs=[numpy.get_include()],
+		hcp_ops_src = os.path.join(package_dir,"hcp_ops.cpp")	
+		config.add_extension('hcp_ops',sources=hcp_ops_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
+
+		boson_basis_src = os.path.join(package_dir,"boson_basis.cpp")	
+		config.add_extension('boson_basis',sources=boson_basis_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
+		boson_ops_src = os.path.join(package_dir,"boson_ops.cpp")	
+		config.add_extension('boson_ops',sources=boson_ops_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
 
 		return config
 

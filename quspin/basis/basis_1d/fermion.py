@@ -1,11 +1,11 @@
-from ._constructors import hcp_basis_ops
+from ._constructors import hcp_basis,hcp_ops
 from .base_1d import basis_1d
 import numpy as _np
 
 
 
 class fermion_basis_1d(basis_1d):
-	def __init__(self,L,Nf=None,_Np=None,**blocks):
+	def __init__(self,L,Nf=None,nf=None,_Np=None,**blocks):
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
@@ -45,6 +45,14 @@ class fermion_basis_1d(basis_1d):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["cblock"] = zAblock*zBblock
 
+		if Nf is not None and nf is not None:
+			raise ValueError("Cannot Nf and nf simultaineously.")
+		elif Nf is None and nf is not None:
+			if nf < 0 or nf > 1:
+				raise ValueError("nf must be between 0 and 1")
+			Nf = int(nf*L)
+
+
 		self._sps = 2
 
 		pars = _np.array([1]) # set sign to be calculated
@@ -56,7 +64,7 @@ class fermion_basis_1d(basis_1d):
 							"\n\tz: c-symm number operator")
 
 		self._allowed_ops = set(["I","+","-","n","z"])
-		basis_1d.__init__(self,hcp_basis_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
+		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
 
 
 
@@ -104,7 +112,6 @@ class fermion_basis_1d(basis_1d):
 			op[0] = "".join(op1)
 			op[1] = tuple(op2)
 			op[2] *= (1 if anticommutes%2 == 0 else -1)
-
 		return tuple(op)
 
 	

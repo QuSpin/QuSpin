@@ -2,6 +2,7 @@ import numpy as _np
 from scipy.misc import comb
 
 # tells whether or not the inputs into the ops needs Ns or 2*Ns elements
+"""
 op_array_size={"":1,
 				"N":1,
 				"Z":1,
@@ -35,7 +36,7 @@ op_array_size={"":1,
 				"T & P & Z":2,
 				"N & T & P & Z":2
 				}
-
+"""
 
 
 def H_dim(N,length,m_max):
@@ -71,7 +72,7 @@ def get_basis_type(L, Np, sps, **blocks):
     else:
         # if particles are conservated the largest representative is placing all particles as far left
         # as possible. 
-        l=Np/(sps-1)
+        l=Np//(sps-1)
         s_max = sum((sps-1)*sps**(L-1-i)  for i in range(l))
         s_max += (Np%(sps-1))*sps**(L-l-1)
         dtype = _np.min_scalar_type(int(s_max))

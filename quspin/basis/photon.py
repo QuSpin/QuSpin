@@ -69,16 +69,39 @@ class photon_basis(tensor_basis):
 			if Ntot < 0: raise ValueError("Ntot must be an integer >= 0.")
 
 			self._check_pcon=True
-			self._b1 = basis_constructor(*constructor_args,_Np=Ntot,**blocks)
-			if isinstance(self._b1,tensor_basis): raise TypeError("Can only create photon basis with non-tensor type basis")
-			if not isinstance(self._b1,basis): raise TypeError("Can only create photon basis with basis type")
-			self._b2 = ho_basis(Ntot)
-			self._n = Ntot - self._b1._Np 
-			self._blocks = self._b1._blocks
-			self._Ns = self._b1._Ns
-			self._unique_me = self._b1.unique_me
-			self._operators = self._b1._operators +"\n"+ self._b2._operators
+			self._basis_left = basis_constructor(*constructor_args,_Np=Ntot,**blocks)
+			if isinstance(self._basis_left,tensor_basis): raise TypeError("Can only create photon basis with non-tensor type basis")
+			if not isinstance(self._basis_left,basis): raise TypeError("Can only create photon basis with basis type")
+			self._basis_right = ho_basis(Ntot)
+			self._n = Ntot - self._basis_left._Np 
+			self._blocks = self._basis_left._blocks
+			self._Ns = self._basis_left._Ns
+			self._unique_me = self._basis_left.unique_me
+			self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
 			
+
+	@property
+	def Ns(self):
+		if self._check_pcon:
+			return self.particle_Ns
+		else:
+			return self._basis_left.Ns*self._basis_right.Ns
+
+	@property
+	def particle_basis(self):
+		return self._basis_left
+
+	@property
+	def particle_Ns(self):
+		return self._basis_left.Ns
+
+	@property
+	def particle_N(self):
+		return self._basis_left.N
+	
+	@property
+	def particle_sps(self):
+		return self._basis_left.sps	
 
 
 	def Op(self,opstr,indx,J,dtype):
@@ -113,9 +136,9 @@ class photon_basis(tensor_basis):
 			opstr1,opstr2=opstr.split("|")
 
 			# calculates matrix elements of spin and photon basis
-			# the coupling 1.0 in self._b2.Op is used in order not to square the coupling J
-			ME_ph,row_ph,col_ph =  self._b2.Op(opstr2,indx2,1.0,dtype)
-			ME, row, col  =	self._b1.Op(opstr1,indx1,J,dtype)
+			# the coupling 1.0 in self._basis_right.Op is used in order not to square the coupling J
+			ME_ph,row_ph,col_ph =  self._basis_right.Op(opstr2,indx2,1.0,dtype)
+			ME, row, col  =	self._basis_left.Op(opstr1,indx1,J,dtype)
 
 			# calculate total matrix element
 			ME *= ME_ph[self._n[col]]
@@ -176,22 +199,166 @@ class photon_basis(tensor_basis):
 			if Nph < self.Ntot:
 				raise ValueError("Nph must be larger or equal to {0}".format(self.Ntot))
 
-#			raise NotImplementedError("get_proj not implimented for particle conservation symm.")
-			# still needs testing...
 			return _conserved_get_proj(self,dtype,Nph,full_part)
 
 
-	@property
-	def chain_Ns(self):
-		return self._b1.Ns
+	def partial_trace(self,state,sub_sys_A="particles",state_type="pure"):
+		"""
+		This function calculates the reduced density matrix (DM), performing a partial trace 
+		of a quantum state.
 
-	@property
-	def chain_N(self):
-		return self._b1.N
-	
-	@property
-	def chain_m(self):
-		return self._b1.m	
+		RETURNS: reduced DM
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) flag to define the subsystem retained after the partial trace is taken.
+
+				-- 'particles': (default) subsystem is the chain
+
+				-- 'photons': str, subsystem is the photons
+
+				-- 'both': str, DM corresponding to both photons and particles are returned.
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		"""
+
+		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
+
+		if sub_sys_A not in tensor_dict:
+			raise ValueError("sub_sys_A '{}' not recognized".format(sub_sys_A))
+
+		if not hasattr(state,"shape"):
+			state = _np.asanyarray(state)
+
+		if state.shape[-1] != self.Ns:
+			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
+
+		proj = self.get_proj(state.dtype,full_part=False)
+
+		# this gets the projection onto the basis where the photon
+		if _sp.issparse(state) or sparse:
+			if sparse:
+				state = _sp.csr_matrix(state)
+
+			if state_type == "pure":
+				state = proj.dot(state.T).T
+			elif state_type == "mixed":
+				raise ValueError("mixed state calculations not implemented for sparse arrays.")
+			else:
+				raise ValueError("state_type '{}' not recognized.".format(state_type))
+		else:
+
+			if state_type == "pure":
+				extra_shape = state.shape[:-1]
+				matrix_shape = state.shape[-1:]
+
+				state = state.reshape((-1,)+matrix_shape)
+				state = proj.dot(state.T).T.reshape(extra_shape+(proj.shape[0],))
+
+			elif state_type == "mixed":
+				if state.ndim < 2:
+					raise ValueError("mixed state input must be a single or a collection of 2-d square array(s).")
+
+				if state.shape[-2] != state.shape[-1]:
+					raise ValueError("mixed state input must be a single or a collection of 2-d square array(s).")
+
+				Ns_full = proj.shape[0]
+				extra_shape = state.shape[:-2]
+				matrix_shape = state.shape[-2:]
+				new_shape = extra_shape+(Ns_full,Ns_full)
+				n_dm = int(_np.product(extra_shape))
+
+				state = state.reshape((-1,)+matrix_shape)
+				gen = ((proj*s)*proj.H for s in state[:])
+
+				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=state.dtype)
+				for i,s in enumerate(gen):
+					proj_state[i,...] = s[...]
+
+				state = proj_state.reshape(new_shape)				
+
+			else:
+				raise ValueError("state_type '{}' not recognized.".format(state_type))
+
+		return tensor_basis.partial_trace(self,state,sub_sys_A=tensor_dict[sub_sys_A],state_type=state_type)
+
+
+	def ent_entropy(self,state,state_type="pure",return_rdm=None,sparse=False,alpha=1.0):
+		"""
+		This function calculates the entanglement entropy of the photon and chain subsystems, and 
+		the corresponding reduced density matrix.
+
+		RETURNS: dictionary with keys:
+
+		'Sent': entanglement entropy.
+		'rdm_particles': (optional) reduced density matrix of subsystem A
+		'rdm_photons': (optional) reduced density matrix of subsystem B
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'particles': str, returns reduced DM of photon 
+
+				-- 'photons': str, returns reduced DM of chain
+
+				-- 'both': str, returns reduced DM of both photon and chain
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+
+		"""
+
+
+		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
+		if return_rdm in tensor_dict:
+			result = tensor_basis.ent_entropy(self,state,state_type=state_type,return_rdm=tensor_dict[return_rdm],alpha=alpha,sparse=sparse)
+		else:
+			raise ValueError("sub_sys_A '{}' not recognized".format(return_rdm))
+
+		if return_rdm is None:
+			return dict(Sent=result["Sent"])
+		elif return_rdm == "particles":
+			return dict(Sent=result["Sent"],rdm_particles=result["rdm_left"])
+		elif return_rdm == "photons":
+			return dict(Sent=result["Sent"],rdm_photons=result["rdm_right"])
+		elif return_rdm == "both":
+			return dict(Sent=results["Sent"],rdm_particles=result["rdm_left"],rdm_photons=result["rdm_right"])
+
 
 	def __name__(self):
 		return "<type 'qspin.basis.photon_basis'>"
@@ -200,13 +367,13 @@ class photon_basis(tensor_basis):
 		if not self._check_pcon:
 			return tensor_basis._get__str__(self)
 		else:
-			if not hasattr(self._b1,"_get__str__"):
-				warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._b1)),UserWarning,stacklevel=3)
+			if not hasattr(self._basis_left,"_get__str__"):
+				warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_left)),UserWarning,stacklevel=3)
 				return "reference states: \n\t not availible"
 
 			n_digits = len(str(self.Ns))+1
 			n_space = len(str(self.Ntot))
-			str_list_1 = self._b1._get__str__()
+			str_list_1 = self._basis_left._get__str__()
 			temp = "\t{0:"+str(n_digits)+"d}.  "
 			str_list=[]
 			for b1 in str_list_1:
@@ -258,8 +425,8 @@ class photon_basis(tensor_basis):
 		op2[0] = opstr2
 		op2[1] = tuple([ind_min for i in opstr2])
 		
-		op1 = self._b1._sort_opstr(op1)
-		op2 = self._b2._sort_opstr(op2)
+		op1 = self._basis_left._sort_opstr(op1)
+		op2 = self._basis_right._sort_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
@@ -290,7 +457,7 @@ class photon_basis(tensor_basis):
 			if opstr1:
 				new_dynamic.append([opstr,bonds,f,f_args])
 		
-		return self._b1._check_symm(new_static,new_dynamic,basis=self)
+		return self._basis_left._check_symm(new_static,new_dynamic,basis=self)
 
 
 

@@ -1068,12 +1068,13 @@ cdef int t_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 
 
 cdef int zA_op_template(op_type op_func, object[basis_type,ndim=1,mode="c"] op_pars,bitop flip_sublat_A,object[basis_type,ndim=1,mode="c"] ref_pars,int L,int zAblock, npy_intp Ns,
-						object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
+						N_type *N, object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
 						object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,gA
 	cdef bool found
+	cdef long double n
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -1085,13 +1086,16 @@ cdef int zA_op_template(op_type op_func, object[basis_type,ndim=1,mode="c"] op_p
 
 	for i in range(Ns):
 		s = RefState_ZA_template(flip_sublat_A,row[i],L,&gA,ref_pars)
-		row[i] = findzstate(basis,Ns,s,&found)
+		s = findzstate(basis,Ns,s,&found)
 
 		if not found:
 			ME[i] = _np.nan
 			continue
 
-		ME[i] *= (zAblock)**gA
+		row[i] = s
+		n =  N[s]
+		n /= N[i]
+		ME[i] *= (zAblock)**gA*sqrtl(n)
 
 
 	return error
@@ -1104,13 +1108,14 @@ cdef int zA_op_template(op_type op_func, object[basis_type,ndim=1,mode="c"] op_p
 
 cdef int zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pars,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,object[basis_type,ndim=1,mode="c"] ref_pars,
 						int L,int zAblock,int zBblock, npy_intp Ns,
-						object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
+						N_type *N, object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
 						object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,gA,gB
 	cdef int R[2]
 	cdef bool found
+	cdef long double n
 
 	R[0] = 0
 	R[1] = 0
@@ -1129,25 +1134,29 @@ cdef int zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op
 		gA = R[0]
 		gB = R[1]
 		
-		row[i] = findzstate(basis,Ns,s,&found)
+		s = findzstate(basis,Ns,s,&found)
 
 		if not found:
 			ME[i] = _np.nan
 			continue
 
-		ME[i] *= (zAblock**gA)*(zBblock**gB)
+		row[i] = s
+		n =  N[s]
+		n /= N[i]
+		ME[i] *= (zAblock**gA)*(zBblock**gB)*sqrtl(n)
 
 	return error
 
 
 
 cdef int zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pars,bitop flip_sublat_B,object[basis_type,ndim=1,mode="c"] ref_pars,int L,int zBblock, npy_intp Ns,
-						object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
+						N_type *N, object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
 						object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp ss,i
 	cdef int error,gB
 	cdef bool found
+	cdef long double n
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -1159,13 +1168,16 @@ cdef int zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pa
 
 	for i in range(Ns):
 		s = RefState_ZB_template(flip_sublat_B,row[i],L,&gB,ref_pars)
-		row[i] = findzstate(basis,Ns,s,&found)
+		s = findzstate(basis,Ns,s,&found)
 
 		if not found:
 			ME[i] = _np.nan
 			continue
 
-		ME[i] *= (zBblock)**gB
+		row[i] = s
+		n =  N[s]
+		n /= N[i]
+		ME[i] *= (zBblock)**gB*sqrtl(n)
 
 
 	return error
@@ -1173,12 +1185,13 @@ cdef int zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pa
 
 
 cdef int z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pars,bitop flip_all,object[basis_type,ndim=1,mode="c"] ref_pars,int L,int zblock, npy_intp Ns,
-						object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
+						N_type *N, object[basis_type,ndim=1,mode="c"] basis, str opstr, NP_INT32_t *indx, scalar_type J,
 						object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,g
 	cdef bool found
+	cdef long double n
 
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -1191,13 +1204,16 @@ cdef int z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 
 	for i in range(Ns):
 		s = RefState_Z_template(flip_all,row[i],L,&g,ref_pars)
-		row[i] = findzstate(basis,Ns,s,&found)
+		s = findzstate(basis,Ns,s,&found)
 
 		if not found:
 			ME[i] = _np.nan
 			continue
 
-		ME[i] *= (zblock)**g
+		row[i] = s
+		n =  N[s]
+		n /= N[i]
+		ME[i] *= (zblock)**g*sqrtl(n)
 
 
 	return error

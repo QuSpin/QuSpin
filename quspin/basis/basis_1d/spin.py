@@ -1,16 +1,17 @@
-from ._constructors import hcp_basis_ops
-from ._constructors import boson_basis_ops
+from ._constructors import hcp_basis,hcp_ops
+from ._constructors import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
-
-
-S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):i+1 for i in xrange(1,1001)}
+try:
+	S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):(i+1,i/2.0) for i in xrange(1,10001)}
+except NameError:
+	S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):(i+1,i/2.0) for i in range(1,10001)}
 
 
 
 class spin_basis_1d(basis_1d):
-	def __init__(self,L,Nup=None,_Np=None,S="1/2",pauli=True,**blocks):
+	def __init__(self,L,Nup=None,m=None,_Np=None,S="1/2",pauli=True,**blocks):
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
@@ -38,7 +39,17 @@ class spin_basis_1d(basis_1d):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["zblock"] = zAblock*zBblock
 
-		self._sps = S_dict[S]
+		self._sps,S = S_dict[S]
+
+		if Nup is not None and m is not None:
+			raise ValueError("Cannot use Nup and m at the same time")
+		elif Nup is None and m is not None:
+			if m < -S or m > S:
+				raise ValueError("M must be between -S and S")
+
+			Nup = int((m+S)*L)
+
+
 
 		if self._sps <= 2:
 			self._pauli = pauli
@@ -52,7 +63,7 @@ class spin_basis_1d(basis_1d):
 								"\n\tz: z pauli/spin operator")
 
 			self._allowed_ops = set(["I","+","-","x","y","z"])
-			basis_1d.__init__(self,hcp_basis_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 		else:
 			self._pauli = False
 			pars = [L]
@@ -66,7 +77,7 @@ class spin_basis_1d(basis_1d):
 								"\n\tz: z pauli/spin operator")
 
 			self._allowed_ops = set(["I","+","-","z"])
-			basis_1d.__init__(self,boson_basis_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 
 
 	def Op(self,opstr,indx,J,dtype):
