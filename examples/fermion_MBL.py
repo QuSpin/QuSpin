@@ -2,17 +2,18 @@ import numpy as np
 from quspin.basis import tensor_basis,fermion_basis_1d
 from quspin.operators import hamiltonian,exp_op
 from quspin.tools.measurements import obs_vs_time
+import matplotlib.pyplot as plt
 
 
 
 L = 10
 N = L//2
-w = 1.0
+w = 10.0
 J = 1.0
 U = 10.0
 
 start=0
-stop=100
+stop=30
 num=101
 
 n_real = 10
@@ -28,7 +29,7 @@ basis_up = fermion_basis_1d(L,Nf=N_up)
 basis_down = fermion_basis_1d(L,Nf=N_down)
 basis = tensor_basis(basis_up,basis_down)
 
-
+print basis.Ns
 
 J_right = [[J,i,i+1] for i in range(L-1)]
 J_left = [[-J,i,i+1] for i in range(L-1)]
@@ -43,7 +44,6 @@ static = [
 			["|+-",J_left], # down hopping
 			["|-+",J_right],
 			["n|n",U_list], # onsite interaction
-			["n|",V_list], # onsite potential
 		 ]
 dynamic = []
 
@@ -63,13 +63,17 @@ i_0 = basis.index(s_up,s_down)
 psi_0 = np.zeros(basis.Ns)
 psi_0[i_0] = 1.0
 
+times = np.linspace(start,stop,num=num,endpoint=True)
+
+
 def realization(H0,I,psi_0,w,start,stop,num,i):
 	print i
 	basis = H0.basis
 
 	V_list = [[np.random.uniform(-w,w),i] for i in range(L)]
-	H = H0 + hamiltonian([["n|",V_list]],[],basis=basis)
-	expH = exp_op(H,start=start,stop=stop,num=num,iterate=True,endpoint=True)
+	V = hamiltonian([["n|",V_list],["|n",V_list]],[],basis=basis,check_pcon=False,check_symm=False,check_herm=False)
+	H = H0 + V
+	expH = exp_op(H,a=-1j,start=start,stop=stop,num=num,iterate=True,endpoint=True)
 
 
 	times = expH.grid
@@ -82,8 +86,13 @@ def realization(H0,I,psi_0,w,start,stop,num,i):
 
 
 
-I_data = np.vstack((realization(H0,I,psi_0,w,start,stop,num) for i in range(n_real)))
+I_data = np.vstack((realization(H0,I,psi_0,w,start,stop,num,i) for i in range(n_real)))
 
-bootstraps = np.choice(n_real,size=(n_real,n_boot))
 
-I_boot = I[:,bootstraps]
+I = I_data.mean(axis=0)
+bootstraps = np.random.choice(I_data.shape[0],size=(n_boot,))
+dI = np.sqrt(((I_data[bootstraps] - I)**2).sum(axis=0)/(n_boot*n_real))
+
+
+plt.errorbar(times,I,dI,marker=".")
+plt.show()
