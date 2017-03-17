@@ -1050,14 +1050,14 @@ typedef long double __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_long
 /* Declarations.proto */
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
-    typedef ::std::complex< long double > __pyx_t_long_double_complex;
+    typedef ::std::complex< float > __pyx_t_float_complex;
   #else
-    typedef long double _Complex __pyx_t_long_double_complex;
+    typedef float _Complex __pyx_t_float_complex;
   #endif
 #else
-    typedef struct { long double real, imag; } __pyx_t_long_double_complex;
+    typedef struct { float real, imag; } __pyx_t_float_complex;
 #endif
-static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double, long double);
+static CYTHON_INLINE __pyx_t_float_complex __pyx_t_float_complex_from_parts(float, float);
 
 /* Declarations.proto */
 #if CYTHON_CCOMPLEX
@@ -1074,14 +1074,14 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
 /* Declarations.proto */
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
-    typedef ::std::complex< float > __pyx_t_float_complex;
+    typedef ::std::complex< long double > __pyx_t_long_double_complex;
   #else
-    typedef float _Complex __pyx_t_float_complex;
+    typedef long double _Complex __pyx_t_long_double_complex;
   #endif
 #else
-    typedef struct { float real, imag; } __pyx_t_float_complex;
+    typedef struct { long double real, imag; } __pyx_t_long_double_complex;
 #endif
-static CYTHON_INLINE __pyx_t_float_complex __pyx_t_float_complex_from_parts(float, float);
+static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double, long double);
 
 
 /*--- Type declarations ---*/
@@ -1868,11 +1868,20 @@ static int __Pyx_ValidateAndInit_memviewslice(
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_float(PyObject *);
 
-/* FromPy.proto */
-static __pyx_t_long_double_complex __Pyx_PyComplex_As___pyx_t_long_double_complex(PyObject*);
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyObject *);
 
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_long__double(PyObject *);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(PyObject *);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(PyObject *);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_long_double_complex(PyObject *);
 
 /* RealImag.proto */
 #if CYTHON_CCOMPLEX
@@ -1894,6 +1903,82 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
 #else
     #define __Pyx_SET_CREAL(z,x) __Pyx_CREAL(z) = (x)
     #define __Pyx_SET_CIMAG(z,y) __Pyx_CIMAG(z) = (y)
+#endif
+
+/* Arithmetic.proto */
+#if CYTHON_CCOMPLEX
+    #define __Pyx_c_eq_float(a, b)   ((a)==(b))
+    #define __Pyx_c_sum_float(a, b)  ((a)+(b))
+    #define __Pyx_c_diff_float(a, b) ((a)-(b))
+    #define __Pyx_c_prod_float(a, b) ((a)*(b))
+    #define __Pyx_c_quot_float(a, b) ((a)/(b))
+    #define __Pyx_c_neg_float(a)     (-(a))
+  #ifdef __cplusplus
+    #define __Pyx_c_is_zero_float(z) ((z)==(float)0)
+    #define __Pyx_c_conj_float(z)    (::std::conj(z))
+    #if 1
+        #define __Pyx_c_abs_float(z)     (::std::abs(z))
+        #define __Pyx_c_pow_float(a, b)  (::std::pow(a, b))
+    #endif
+  #else
+    #define __Pyx_c_is_zero_float(z) ((z)==0)
+    #define __Pyx_c_conj_float(z)    (conjf(z))
+    #if 1
+        #define __Pyx_c_abs_float(z)     (cabsf(z))
+        #define __Pyx_c_pow_float(a, b)  (cpowf(a, b))
+    #endif
+ #endif
+#else
+    static CYTHON_INLINE int __Pyx_c_eq_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_sum_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_diff_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_prod_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_quot_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_neg_float(__pyx_t_float_complex);
+    static CYTHON_INLINE int __Pyx_c_is_zero_float(__pyx_t_float_complex);
+    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_conj_float(__pyx_t_float_complex);
+    #if 1
+        static CYTHON_INLINE float __Pyx_c_abs_float(__pyx_t_float_complex);
+        static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_pow_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    #endif
+#endif
+
+/* Arithmetic.proto */
+#if CYTHON_CCOMPLEX
+    #define __Pyx_c_eq_double(a, b)   ((a)==(b))
+    #define __Pyx_c_sum_double(a, b)  ((a)+(b))
+    #define __Pyx_c_diff_double(a, b) ((a)-(b))
+    #define __Pyx_c_prod_double(a, b) ((a)*(b))
+    #define __Pyx_c_quot_double(a, b) ((a)/(b))
+    #define __Pyx_c_neg_double(a)     (-(a))
+  #ifdef __cplusplus
+    #define __Pyx_c_is_zero_double(z) ((z)==(double)0)
+    #define __Pyx_c_conj_double(z)    (::std::conj(z))
+    #if 1
+        #define __Pyx_c_abs_double(z)     (::std::abs(z))
+        #define __Pyx_c_pow_double(a, b)  (::std::pow(a, b))
+    #endif
+  #else
+    #define __Pyx_c_is_zero_double(z) ((z)==0)
+    #define __Pyx_c_conj_double(z)    (conj(z))
+    #if 1
+        #define __Pyx_c_abs_double(z)     (cabs(z))
+        #define __Pyx_c_pow_double(a, b)  (cpow(a, b))
+    #endif
+ #endif
+#else
+    static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex);
+    static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex);
+    #if 1
+        static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex);
+        static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    #endif
 #endif
 
 /* Arithmetic.proto */
@@ -1934,90 +2019,20 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
     #endif
 #endif
 
+/* FromPy.proto */
+static __pyx_t_long_double_complex __Pyx_PyComplex_As___pyx_t_long_double_complex(PyObject*);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value);
+
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_int32(npy_int32 value);
 
-/* Arithmetic.proto */
-#if CYTHON_CCOMPLEX
-    #define __Pyx_c_eq_double(a, b)   ((a)==(b))
-    #define __Pyx_c_sum_double(a, b)  ((a)+(b))
-    #define __Pyx_c_diff_double(a, b) ((a)-(b))
-    #define __Pyx_c_prod_double(a, b) ((a)*(b))
-    #define __Pyx_c_quot_double(a, b) ((a)/(b))
-    #define __Pyx_c_neg_double(a)     (-(a))
-  #ifdef __cplusplus
-    #define __Pyx_c_is_zero_double(z) ((z)==(double)0)
-    #define __Pyx_c_conj_double(z)    (::std::conj(z))
-    #if 1
-        #define __Pyx_c_abs_double(z)     (::std::abs(z))
-        #define __Pyx_c_pow_double(a, b)  (::std::pow(a, b))
-    #endif
-  #else
-    #define __Pyx_c_is_zero_double(z) ((z)==0)
-    #define __Pyx_c_conj_double(z)    (conj(z))
-    #if 1
-        #define __Pyx_c_abs_double(z)     (cabs(z))
-        #define __Pyx_c_pow_double(a, b)  (cpow(a, b))
-    #endif
- #endif
-#else
-    static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex);
-    static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex);
-    #if 1
-        static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex);
-        static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    #endif
-#endif
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
-
-/* Arithmetic.proto */
-#if CYTHON_CCOMPLEX
-    #define __Pyx_c_eq_float(a, b)   ((a)==(b))
-    #define __Pyx_c_sum_float(a, b)  ((a)+(b))
-    #define __Pyx_c_diff_float(a, b) ((a)-(b))
-    #define __Pyx_c_prod_float(a, b) ((a)*(b))
-    #define __Pyx_c_quot_float(a, b) ((a)/(b))
-    #define __Pyx_c_neg_float(a)     (-(a))
-  #ifdef __cplusplus
-    #define __Pyx_c_is_zero_float(z) ((z)==(float)0)
-    #define __Pyx_c_conj_float(z)    (::std::conj(z))
-    #if 1
-        #define __Pyx_c_abs_float(z)     (::std::abs(z))
-        #define __Pyx_c_pow_float(a, b)  (::std::pow(a, b))
-    #endif
-  #else
-    #define __Pyx_c_is_zero_float(z) ((z)==0)
-    #define __Pyx_c_conj_float(z)    (conjf(z))
-    #if 1
-        #define __Pyx_c_abs_float(z)     (cabsf(z))
-        #define __Pyx_c_pow_float(a, b)  (cpowf(a, b))
-    #endif
- #endif
-#else
-    static CYTHON_INLINE int __Pyx_c_eq_float(__pyx_t_float_complex, __pyx_t_float_complex);
-    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_sum_float(__pyx_t_float_complex, __pyx_t_float_complex);
-    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_diff_float(__pyx_t_float_complex, __pyx_t_float_complex);
-    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_prod_float(__pyx_t_float_complex, __pyx_t_float_complex);
-    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_quot_float(__pyx_t_float_complex, __pyx_t_float_complex);
-    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_neg_float(__pyx_t_float_complex);
-    static CYTHON_INLINE int __Pyx_c_is_zero_float(__pyx_t_float_complex);
-    static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_conj_float(__pyx_t_float_complex);
-    #if 1
-        static CYTHON_INLINE float __Pyx_c_abs_float(__pyx_t_float_complex);
-        static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_pow_float(__pyx_t_float_complex, __pyx_t_float_complex);
-    #endif
-#endif
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_enum__NPY_TYPES(enum NPY_TYPES value);
@@ -2125,6 +2140,11 @@ static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
 static PyObject *__pyx_fuse_0__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp, float *, float *, PyObject *, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_t_long_double_complex); /*proto*/
+static PyObject *__pyx_fuse_1__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp, double *, double *, PyObject *, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_t_long_double_complex); /*proto*/
+static PyObject *__pyx_fuse_2__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp, long double *, long double *, PyObject *, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_t_long_double_complex); /*proto*/
+static PyObject *__pyx_fuse_3__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp, __pyx_t_float_complex *, __pyx_t_float_complex *, PyObject *, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_t_long_double_complex); /*proto*/
+static PyObject *__pyx_fuse_4__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp, __pyx_t_double_complex *, __pyx_t_double_complex *, PyObject *, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_t_long_double_complex); /*proto*/
+static PyObject *__pyx_fuse_5__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp, __pyx_t_long_double_complex *, __pyx_t_long_double_complex *, PyObject *, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_t_long_double_complex); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -2159,6 +2179,11 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_float = { "float", NULL, sizeof(float), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t = { "NP_INT32_t", NULL, sizeof(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_long__double = { "long double", NULL, sizeof(long double), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo___pyx_t_float_complex = { "float complex", NULL, sizeof(__pyx_t_float_complex), { 0 }, 0, 'C', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo___pyx_t_double_complex = { "double complex", NULL, sizeof(__pyx_t_double_complex), { 0 }, 0, 'C', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo___pyx_t_long_double_complex = { "long double complex", NULL, sizeof(__pyx_t_long_double_complex), { 0 }, 0, 'C', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_unsigned_char = { "unsigned char", NULL, sizeof(unsigned char), { 0 }, 0, IS_UNSIGNED(unsigned char) ? 'U' : 'I', IS_UNSIGNED(unsigned char), 0 };
 #define __Pyx_MODULE_NAME "quspin.basis.basis_1d._constructors.inplace_ops"
 int __pyx_module_is_main_quspin__basis__basis_1d___constructors__inplace_ops = 0;
@@ -2212,6 +2237,7 @@ static const char __pyx_k_split[] = "split";
 static const char __pyx_k_start[] = "start";
 static const char __pyx_k_strip[] = "strip";
 static const char __pyx_k_utf_8[] = "utf-8";
+static const char __pyx_k_double[] = "double";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
@@ -2235,13 +2261,17 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_signatures[] = "signatures";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_MemoryError[] = "MemoryError";
+static const char __pyx_k_long_double[] = "long double";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
+static const char __pyx_k_float_complex[] = "float complex";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_AttributeError[] = "AttributeError";
+static const char __pyx_k_double_complex[] = "double complex";
 static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_spin_op_inplace[] = "spin_op_inplace";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
+static const char __pyx_k_long_double_complex[] = "long double complex";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
@@ -2314,6 +2344,8 @@ static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
 static PyObject *__pyx_n_s_defaults;
+static PyObject *__pyx_n_s_double;
+static PyObject *__pyx_kp_s_double_complex;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_dtype_is_object;
 static PyObject *__pyx_n_s_encode;
@@ -2321,6 +2353,7 @@ static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
 static PyObject *__pyx_n_s_flags;
 static PyObject *__pyx_n_s_float;
+static PyObject *__pyx_kp_s_float_complex;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
 static PyObject *__pyx_n_u_fortran;
@@ -2333,6 +2366,8 @@ static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_kind;
 static PyObject *__pyx_n_s_kwargs;
+static PyObject *__pyx_kp_s_long_double;
+static PyObject *__pyx_kp_s_long_double_complex;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_mode;
@@ -2376,6 +2411,11 @@ static PyObject *__pyx_kp_s_utf_8;
 static PyObject *__pyx_n_s_zip;
 static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
 static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_2spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J); /* proto */
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_4spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J); /* proto */
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_6spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J); /* proto */
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_8spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J); /* proto */
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_10spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J); /* proto */
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_12spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -3156,6 +3196,3367 @@ static PyObject *__pyx_fuse_0__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11
   return __pyx_r;
 }
 
+static PyObject *__pyx_fuse_1__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp __pyx_v_Ns, double *__pyx_v_psi_in, double *__pyx_v_psi_out, PyObject *__pyx_v_opstr, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_error;
+  int __pyx_v_N_indx;
+  bool __pyx_v_a;
+  __pyx_t_long_double_complex __pyx_v_M_E;
+  __Pyx_memviewslice __pyx_v_c_opstr = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_v_one;
+  char __pyx_v_I;
+  char __pyx_v_x;
+  char __pyx_v_y;
+  char __pyx_v_z;
+  char __pyx_v_p;
+  char __pyx_v_m;
+  PyObject *__pyx_v_r = NULL;
+  __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t __pyx_v_b;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_t_5;
+  npy_intp __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  bool __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  __pyx_t_long_double_complex __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  __pyx_t_double_complex __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  __Pyx_RefNannySetupContext("__pyx_fuse_1spin_op_inplace_c", 0);
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":10
+ *     cdef npy_intp i
+ *     cdef int j,error
+ *     cdef int N_indx = len(opstr)             # <<<<<<<<<<<<<<
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ */
+  __pyx_t_1 = PyObject_Length(__pyx_v_opstr); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_v_N_indx = __pyx_t_1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":13
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ *     cdef npy_intp one = 1
+ * 
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_opstr);
+  __Pyx_GIVEREF(__pyx_v_opstr);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_opstr);
+  __Pyx_INCREF(__pyx_kp_s_utf_8);
+  __Pyx_GIVEREF(__pyx_kp_s_utf_8);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_kp_s_utf_8);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_3);
+  if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_c_opstr = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":14
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ *     cdef npy_intp one = 1             # <<<<<<<<<<<<<<
+ * 
+ *     cdef char I = "I"
+ */
+  __pyx_v_one = 1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":16
+ *     cdef npy_intp one = 1
+ * 
+ *     cdef char I = "I"             # <<<<<<<<<<<<<<
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ */
+  __pyx_v_I = 'I';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":17
+ * 
+ *     cdef char I = "I"
+ *     cdef char x = "x"             # <<<<<<<<<<<<<<
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ */
+  __pyx_v_x = 'x';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":18
+ *     cdef char I = "I"
+ *     cdef char x = "x"
+ *     cdef char y = "y"             # <<<<<<<<<<<<<<
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ */
+  __pyx_v_y = 'y';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":19
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ *     cdef char z = "z"             # <<<<<<<<<<<<<<
+ *     cdef char p = "+"
+ *     cdef char m = "-"
+ */
+  __pyx_v_z = 'z';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":20
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ *     cdef char p = "+"             # <<<<<<<<<<<<<<
+ *     cdef char m = "-"
+ * 
+ */
+  __pyx_v_p = '+';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":21
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ *     cdef char m = "-"             # <<<<<<<<<<<<<<
+ * 
+ *     error = 0
+ */
+  __pyx_v_m = '-';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":23
+ *     cdef char m = "-"
+ * 
+ *     error = 0             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(Ns): #loop over basis
+ */
+  __pyx_v_error = 0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":25
+ *     error = 0
+ * 
+ *     for i in range(Ns): #loop over basis             # <<<<<<<<<<<<<<
+ *         M_E = psi_in[i]
+ * 
+ */
+  __pyx_t_5 = __pyx_v_Ns;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_i = __pyx_t_6;
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":26
+ * 
+ *     for i in range(Ns): #loop over basis
+ *         M_E = psi_in[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if M_E != 0.0:
+ */
+    __pyx_v_M_E = __pyx_t_long_double_complex_from_parts((__pyx_v_psi_in[__pyx_v_i]), 0);
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    __pyx_t_7 = ((!__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+    if (__pyx_t_7) {
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":29
+ * 
+ *         if M_E != 0.0:
+ *             r = i             # <<<<<<<<<<<<<<
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ */
+      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":30
+ *         if M_E != 0.0:
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr             # <<<<<<<<<<<<<<
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ */
+      for (__pyx_t_8 = (__pyx_v_N_indx - 1); __pyx_t_8 > -1L; __pyx_t_8-=1) {
+        __pyx_v_j = __pyx_t_8;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":31
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil             # <<<<<<<<<<<<<<
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ */
+        __pyx_v_b = (__pyx_v_one << (__pyx_v_indx[__pyx_v_j]));
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":32
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit             # <<<<<<<<<<<<<<
+ *                 if c_opstr[j] == I:
+ *                     continue
+ */
+        __pyx_t_3 = __Pyx_PyInt_From_npy_int32((__pyx_v_indx[__pyx_v_j])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = PyNumber_Rshift(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_3 = __Pyx_PyInt_AndObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_9 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_v_a = __pyx_t_9;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        __pyx_t_10 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_10 < 0) {
+          __pyx_t_10 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_10 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_10 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 33, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_10 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_I) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":34
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ *                     continue             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ */
+          goto __pyx_L6_continue;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+        __pyx_t_12 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_12 < 0) {
+          __pyx_t_12 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_12 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_12 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 35, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_12 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_z) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":36
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(1.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(-1.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+        __pyx_t_14 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_14 < 0) {
+          __pyx_t_14 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_14 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_14 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 37, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_14 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_x) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":38
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+        __pyx_t_15 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_15 < 0) {
+          __pyx_t_15 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_15 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_15 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 39, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_15 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_y) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":40
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":41
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_16 = __pyx_t_double_complex_from_parts(0, 1.0);
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          } else {
+            __pyx_t_16 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_17 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_17 < 0) {
+          __pyx_t_17 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_17 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_17 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 42, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_17 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_p) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":43
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":44
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_18 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_18 < 0) {
+          __pyx_t_18 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_18 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 45, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_18 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_m) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":46
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 else:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":47
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     error = 1
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":49
+ *                     r = r ^ b
+ *                 else:
+ *                     error = 1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        /*else*/ {
+          __pyx_v_error = 1;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":50
+ *                 else:
+ *                     error = 1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 if M_E == 0.0:
+ */
+          __Pyx_XDECREF(__pyx_r);
+          __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_r = __pyx_t_3;
+          __pyx_t_3 = 0;
+          goto __pyx_L0;
+        }
+        __pyx_L8:;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        __pyx_t_7 = ((__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":53
+ * 
+ *                 if M_E == 0.0:
+ *                     break             # <<<<<<<<<<<<<<
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ */
+          goto __pyx_L7_break;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        }
+        __pyx_L6_continue:;
+      }
+      __pyx_L7_break:;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":54
+ *                 if M_E == 0.0:
+ *                     break
+ *             M_E *= J             # <<<<<<<<<<<<<<
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ */
+      __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_v_J);
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":56
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:             # <<<<<<<<<<<<<<
+ *                     error = -1
+ *                     return error
+ */
+      __pyx_t_7 = ((__Pyx_CIMAG(__pyx_v_M_E) != 0.0) != 0);
+      if (__pyx_t_7) {
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":57
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ *                     error = -1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        __pyx_v_error = -1;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":58
+ *                 if M_E.imag != 0.0:
+ *                     error = -1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 psi_out[r] += M_E.real
+ */
+        __Pyx_XDECREF(__pyx_r);
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_r = __pyx_t_3;
+        __pyx_t_3 = 0;
+        goto __pyx_L0;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":56
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:             # <<<<<<<<<<<<<<
+ *                     error = -1
+ *                     return error
+ */
+      }
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":60
+ *                     return error
+ * 
+ *                 psi_out[r] += M_E.real             # <<<<<<<<<<<<<<
+ *             else:
+ *                 psi_out[r] += M_E
+ */
+      __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_r); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L1_error)
+      (__pyx_v_psi_out[__pyx_t_1]) = ((__pyx_v_psi_out[__pyx_t_1]) + __Pyx_CREAL(__pyx_v_M_E));
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    }
+  }
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":64
+ *                 psi_out[r] += M_E
+ * 
+ *     return error             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":5
+ * 
+ * # cython template[basis_type,matrix_type,N_type], do not call from script
+ * cdef spin_op_inplace_c(npy_intp Ns,matrix_type * psi_in, matrix_type * psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, NP_INT32_t * indx, scalar_type J):
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace_c", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_c_opstr, 1);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_fuse_2__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp __pyx_v_Ns, long double *__pyx_v_psi_in, long double *__pyx_v_psi_out, PyObject *__pyx_v_opstr, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_error;
+  int __pyx_v_N_indx;
+  bool __pyx_v_a;
+  __pyx_t_long_double_complex __pyx_v_M_E;
+  __Pyx_memviewslice __pyx_v_c_opstr = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_v_one;
+  char __pyx_v_I;
+  char __pyx_v_x;
+  char __pyx_v_y;
+  char __pyx_v_z;
+  char __pyx_v_p;
+  char __pyx_v_m;
+  PyObject *__pyx_v_r = NULL;
+  __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t __pyx_v_b;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_t_5;
+  npy_intp __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  bool __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  __pyx_t_long_double_complex __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  __pyx_t_double_complex __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  __Pyx_RefNannySetupContext("__pyx_fuse_2spin_op_inplace_c", 0);
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":10
+ *     cdef npy_intp i
+ *     cdef int j,error
+ *     cdef int N_indx = len(opstr)             # <<<<<<<<<<<<<<
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ */
+  __pyx_t_1 = PyObject_Length(__pyx_v_opstr); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_v_N_indx = __pyx_t_1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":13
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ *     cdef npy_intp one = 1
+ * 
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_opstr);
+  __Pyx_GIVEREF(__pyx_v_opstr);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_opstr);
+  __Pyx_INCREF(__pyx_kp_s_utf_8);
+  __Pyx_GIVEREF(__pyx_kp_s_utf_8);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_kp_s_utf_8);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_3);
+  if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_c_opstr = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":14
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ *     cdef npy_intp one = 1             # <<<<<<<<<<<<<<
+ * 
+ *     cdef char I = "I"
+ */
+  __pyx_v_one = 1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":16
+ *     cdef npy_intp one = 1
+ * 
+ *     cdef char I = "I"             # <<<<<<<<<<<<<<
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ */
+  __pyx_v_I = 'I';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":17
+ * 
+ *     cdef char I = "I"
+ *     cdef char x = "x"             # <<<<<<<<<<<<<<
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ */
+  __pyx_v_x = 'x';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":18
+ *     cdef char I = "I"
+ *     cdef char x = "x"
+ *     cdef char y = "y"             # <<<<<<<<<<<<<<
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ */
+  __pyx_v_y = 'y';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":19
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ *     cdef char z = "z"             # <<<<<<<<<<<<<<
+ *     cdef char p = "+"
+ *     cdef char m = "-"
+ */
+  __pyx_v_z = 'z';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":20
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ *     cdef char p = "+"             # <<<<<<<<<<<<<<
+ *     cdef char m = "-"
+ * 
+ */
+  __pyx_v_p = '+';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":21
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ *     cdef char m = "-"             # <<<<<<<<<<<<<<
+ * 
+ *     error = 0
+ */
+  __pyx_v_m = '-';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":23
+ *     cdef char m = "-"
+ * 
+ *     error = 0             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(Ns): #loop over basis
+ */
+  __pyx_v_error = 0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":25
+ *     error = 0
+ * 
+ *     for i in range(Ns): #loop over basis             # <<<<<<<<<<<<<<
+ *         M_E = psi_in[i]
+ * 
+ */
+  __pyx_t_5 = __pyx_v_Ns;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_i = __pyx_t_6;
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":26
+ * 
+ *     for i in range(Ns): #loop over basis
+ *         M_E = psi_in[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if M_E != 0.0:
+ */
+    __pyx_v_M_E = __pyx_t_long_double_complex_from_parts((__pyx_v_psi_in[__pyx_v_i]), 0);
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    __pyx_t_7 = ((!__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+    if (__pyx_t_7) {
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":29
+ * 
+ *         if M_E != 0.0:
+ *             r = i             # <<<<<<<<<<<<<<
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ */
+      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":30
+ *         if M_E != 0.0:
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr             # <<<<<<<<<<<<<<
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ */
+      for (__pyx_t_8 = (__pyx_v_N_indx - 1); __pyx_t_8 > -1L; __pyx_t_8-=1) {
+        __pyx_v_j = __pyx_t_8;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":31
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil             # <<<<<<<<<<<<<<
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ */
+        __pyx_v_b = (__pyx_v_one << (__pyx_v_indx[__pyx_v_j]));
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":32
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit             # <<<<<<<<<<<<<<
+ *                 if c_opstr[j] == I:
+ *                     continue
+ */
+        __pyx_t_3 = __Pyx_PyInt_From_npy_int32((__pyx_v_indx[__pyx_v_j])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = PyNumber_Rshift(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_3 = __Pyx_PyInt_AndObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_9 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_v_a = __pyx_t_9;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        __pyx_t_10 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_10 < 0) {
+          __pyx_t_10 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_10 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_10 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 33, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_10 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_I) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":34
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ *                     continue             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ */
+          goto __pyx_L6_continue;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+        __pyx_t_12 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_12 < 0) {
+          __pyx_t_12 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_12 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_12 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 35, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_12 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_z) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":36
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(1.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(-1.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+        __pyx_t_14 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_14 < 0) {
+          __pyx_t_14 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_14 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_14 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 37, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_14 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_x) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":38
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+        __pyx_t_15 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_15 < 0) {
+          __pyx_t_15 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_15 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_15 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 39, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_15 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_y) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":40
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":41
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_16 = __pyx_t_double_complex_from_parts(0, 1.0);
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          } else {
+            __pyx_t_16 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_17 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_17 < 0) {
+          __pyx_t_17 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_17 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_17 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 42, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_17 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_p) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":43
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":44
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_18 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_18 < 0) {
+          __pyx_t_18 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_18 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 45, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_18 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_m) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":46
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 else:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":47
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     error = 1
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":49
+ *                     r = r ^ b
+ *                 else:
+ *                     error = 1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        /*else*/ {
+          __pyx_v_error = 1;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":50
+ *                 else:
+ *                     error = 1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 if M_E == 0.0:
+ */
+          __Pyx_XDECREF(__pyx_r);
+          __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_r = __pyx_t_3;
+          __pyx_t_3 = 0;
+          goto __pyx_L0;
+        }
+        __pyx_L8:;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        __pyx_t_7 = ((__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":53
+ * 
+ *                 if M_E == 0.0:
+ *                     break             # <<<<<<<<<<<<<<
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ */
+          goto __pyx_L7_break;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        }
+        __pyx_L6_continue:;
+      }
+      __pyx_L7_break:;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":54
+ *                 if M_E == 0.0:
+ *                     break
+ *             M_E *= J             # <<<<<<<<<<<<<<
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ */
+      __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_v_J);
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":56
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:             # <<<<<<<<<<<<<<
+ *                     error = -1
+ *                     return error
+ */
+      __pyx_t_7 = ((__Pyx_CIMAG(__pyx_v_M_E) != 0.0) != 0);
+      if (__pyx_t_7) {
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":57
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ *                     error = -1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        __pyx_v_error = -1;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":58
+ *                 if M_E.imag != 0.0:
+ *                     error = -1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 psi_out[r] += M_E.real
+ */
+        __Pyx_XDECREF(__pyx_r);
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_r = __pyx_t_3;
+        __pyx_t_3 = 0;
+        goto __pyx_L0;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":56
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:             # <<<<<<<<<<<<<<
+ *                     error = -1
+ *                     return error
+ */
+      }
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":60
+ *                     return error
+ * 
+ *                 psi_out[r] += M_E.real             # <<<<<<<<<<<<<<
+ *             else:
+ *                 psi_out[r] += M_E
+ */
+      __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_r); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L1_error)
+      (__pyx_v_psi_out[__pyx_t_1]) = ((__pyx_v_psi_out[__pyx_t_1]) + __Pyx_CREAL(__pyx_v_M_E));
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    }
+  }
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":64
+ *                 psi_out[r] += M_E
+ * 
+ *     return error             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":5
+ * 
+ * # cython template[basis_type,matrix_type,N_type], do not call from script
+ * cdef spin_op_inplace_c(npy_intp Ns,matrix_type * psi_in, matrix_type * psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, NP_INT32_t * indx, scalar_type J):
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace_c", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_c_opstr, 1);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_fuse_3__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp __pyx_v_Ns, __pyx_t_float_complex *__pyx_v_psi_in, __pyx_t_float_complex *__pyx_v_psi_out, PyObject *__pyx_v_opstr, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_error;
+  int __pyx_v_N_indx;
+  bool __pyx_v_a;
+  __pyx_t_long_double_complex __pyx_v_M_E;
+  __Pyx_memviewslice __pyx_v_c_opstr = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_v_one;
+  char __pyx_v_I;
+  char __pyx_v_x;
+  char __pyx_v_y;
+  char __pyx_v_z;
+  char __pyx_v_p;
+  char __pyx_v_m;
+  PyObject *__pyx_v_r = NULL;
+  __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t __pyx_v_b;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_t_5;
+  npy_intp __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  bool __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  __pyx_t_long_double_complex __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  __pyx_t_double_complex __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  __Pyx_RefNannySetupContext("__pyx_fuse_3spin_op_inplace_c", 0);
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":10
+ *     cdef npy_intp i
+ *     cdef int j,error
+ *     cdef int N_indx = len(opstr)             # <<<<<<<<<<<<<<
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ */
+  __pyx_t_1 = PyObject_Length(__pyx_v_opstr); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_v_N_indx = __pyx_t_1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":13
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ *     cdef npy_intp one = 1
+ * 
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_opstr);
+  __Pyx_GIVEREF(__pyx_v_opstr);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_opstr);
+  __Pyx_INCREF(__pyx_kp_s_utf_8);
+  __Pyx_GIVEREF(__pyx_kp_s_utf_8);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_kp_s_utf_8);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_3);
+  if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_c_opstr = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":14
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ *     cdef npy_intp one = 1             # <<<<<<<<<<<<<<
+ * 
+ *     cdef char I = "I"
+ */
+  __pyx_v_one = 1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":16
+ *     cdef npy_intp one = 1
+ * 
+ *     cdef char I = "I"             # <<<<<<<<<<<<<<
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ */
+  __pyx_v_I = 'I';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":17
+ * 
+ *     cdef char I = "I"
+ *     cdef char x = "x"             # <<<<<<<<<<<<<<
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ */
+  __pyx_v_x = 'x';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":18
+ *     cdef char I = "I"
+ *     cdef char x = "x"
+ *     cdef char y = "y"             # <<<<<<<<<<<<<<
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ */
+  __pyx_v_y = 'y';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":19
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ *     cdef char z = "z"             # <<<<<<<<<<<<<<
+ *     cdef char p = "+"
+ *     cdef char m = "-"
+ */
+  __pyx_v_z = 'z';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":20
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ *     cdef char p = "+"             # <<<<<<<<<<<<<<
+ *     cdef char m = "-"
+ * 
+ */
+  __pyx_v_p = '+';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":21
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ *     cdef char m = "-"             # <<<<<<<<<<<<<<
+ * 
+ *     error = 0
+ */
+  __pyx_v_m = '-';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":23
+ *     cdef char m = "-"
+ * 
+ *     error = 0             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(Ns): #loop over basis
+ */
+  __pyx_v_error = 0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":25
+ *     error = 0
+ * 
+ *     for i in range(Ns): #loop over basis             # <<<<<<<<<<<<<<
+ *         M_E = psi_in[i]
+ * 
+ */
+  __pyx_t_5 = __pyx_v_Ns;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_i = __pyx_t_6;
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":26
+ * 
+ *     for i in range(Ns): #loop over basis
+ *         M_E = psi_in[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if M_E != 0.0:
+ */
+    __pyx_v_M_E = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL((__pyx_v_psi_in[__pyx_v_i])), __Pyx_CIMAG((__pyx_v_psi_in[__pyx_v_i])));
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    __pyx_t_7 = ((!__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+    if (__pyx_t_7) {
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":29
+ * 
+ *         if M_E != 0.0:
+ *             r = i             # <<<<<<<<<<<<<<
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ */
+      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":30
+ *         if M_E != 0.0:
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr             # <<<<<<<<<<<<<<
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ */
+      for (__pyx_t_8 = (__pyx_v_N_indx - 1); __pyx_t_8 > -1L; __pyx_t_8-=1) {
+        __pyx_v_j = __pyx_t_8;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":31
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil             # <<<<<<<<<<<<<<
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ */
+        __pyx_v_b = (__pyx_v_one << (__pyx_v_indx[__pyx_v_j]));
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":32
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit             # <<<<<<<<<<<<<<
+ *                 if c_opstr[j] == I:
+ *                     continue
+ */
+        __pyx_t_3 = __Pyx_PyInt_From_npy_int32((__pyx_v_indx[__pyx_v_j])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = PyNumber_Rshift(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_3 = __Pyx_PyInt_AndObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_9 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_v_a = __pyx_t_9;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        __pyx_t_10 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_10 < 0) {
+          __pyx_t_10 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_10 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_10 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 33, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_10 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_I) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":34
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ *                     continue             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ */
+          goto __pyx_L6_continue;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+        __pyx_t_12 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_12 < 0) {
+          __pyx_t_12 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_12 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_12 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 35, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_12 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_z) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":36
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(1.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(-1.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+        __pyx_t_14 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_14 < 0) {
+          __pyx_t_14 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_14 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_14 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 37, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_14 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_x) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":38
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+        __pyx_t_15 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_15 < 0) {
+          __pyx_t_15 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_15 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_15 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 39, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_15 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_y) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":40
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":41
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_16 = __pyx_t_double_complex_from_parts(0, 1.0);
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          } else {
+            __pyx_t_16 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_17 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_17 < 0) {
+          __pyx_t_17 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_17 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_17 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 42, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_17 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_p) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":43
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":44
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_18 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_18 < 0) {
+          __pyx_t_18 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_18 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 45, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_18 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_m) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":46
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 else:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":47
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     error = 1
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":49
+ *                     r = r ^ b
+ *                 else:
+ *                     error = 1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        /*else*/ {
+          __pyx_v_error = 1;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":50
+ *                 else:
+ *                     error = 1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 if M_E == 0.0:
+ */
+          __Pyx_XDECREF(__pyx_r);
+          __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_r = __pyx_t_3;
+          __pyx_t_3 = 0;
+          goto __pyx_L0;
+        }
+        __pyx_L8:;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        __pyx_t_7 = ((__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":53
+ * 
+ *                 if M_E == 0.0:
+ *                     break             # <<<<<<<<<<<<<<
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ */
+          goto __pyx_L7_break;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        }
+        __pyx_L6_continue:;
+      }
+      __pyx_L7_break:;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":54
+ *                 if M_E == 0.0:
+ *                     break
+ *             M_E *= J             # <<<<<<<<<<<<<<
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ */
+      __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_v_J);
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":62
+ *                 psi_out[r] += M_E.real
+ *             else:
+ *                 psi_out[r] += M_E             # <<<<<<<<<<<<<<
+ * 
+ *     return error
+ */
+      __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_r); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_c_sum_long__double(__pyx_t_long_double_complex_from_parts(__Pyx_CREAL((__pyx_v_psi_out[__pyx_t_1])), __Pyx_CIMAG((__pyx_v_psi_out[__pyx_t_1]))), __pyx_v_M_E);
+      (__pyx_v_psi_out[__pyx_t_1]) = __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_t_13), __Pyx_CIMAG(__pyx_t_13));
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    }
+  }
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":64
+ *                 psi_out[r] += M_E
+ * 
+ *     return error             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":5
+ * 
+ * # cython template[basis_type,matrix_type,N_type], do not call from script
+ * cdef spin_op_inplace_c(npy_intp Ns,matrix_type * psi_in, matrix_type * psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, NP_INT32_t * indx, scalar_type J):
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace_c", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_c_opstr, 1);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_fuse_4__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp __pyx_v_Ns, __pyx_t_double_complex *__pyx_v_psi_in, __pyx_t_double_complex *__pyx_v_psi_out, PyObject *__pyx_v_opstr, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_error;
+  int __pyx_v_N_indx;
+  bool __pyx_v_a;
+  __pyx_t_long_double_complex __pyx_v_M_E;
+  __Pyx_memviewslice __pyx_v_c_opstr = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_v_one;
+  char __pyx_v_I;
+  char __pyx_v_x;
+  char __pyx_v_y;
+  char __pyx_v_z;
+  char __pyx_v_p;
+  char __pyx_v_m;
+  PyObject *__pyx_v_r = NULL;
+  __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t __pyx_v_b;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_t_5;
+  npy_intp __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  bool __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  __pyx_t_long_double_complex __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  __pyx_t_double_complex __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  __Pyx_RefNannySetupContext("__pyx_fuse_4spin_op_inplace_c", 0);
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":10
+ *     cdef npy_intp i
+ *     cdef int j,error
+ *     cdef int N_indx = len(opstr)             # <<<<<<<<<<<<<<
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ */
+  __pyx_t_1 = PyObject_Length(__pyx_v_opstr); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_v_N_indx = __pyx_t_1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":13
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ *     cdef npy_intp one = 1
+ * 
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_opstr);
+  __Pyx_GIVEREF(__pyx_v_opstr);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_opstr);
+  __Pyx_INCREF(__pyx_kp_s_utf_8);
+  __Pyx_GIVEREF(__pyx_kp_s_utf_8);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_kp_s_utf_8);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_3);
+  if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_c_opstr = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":14
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ *     cdef npy_intp one = 1             # <<<<<<<<<<<<<<
+ * 
+ *     cdef char I = "I"
+ */
+  __pyx_v_one = 1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":16
+ *     cdef npy_intp one = 1
+ * 
+ *     cdef char I = "I"             # <<<<<<<<<<<<<<
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ */
+  __pyx_v_I = 'I';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":17
+ * 
+ *     cdef char I = "I"
+ *     cdef char x = "x"             # <<<<<<<<<<<<<<
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ */
+  __pyx_v_x = 'x';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":18
+ *     cdef char I = "I"
+ *     cdef char x = "x"
+ *     cdef char y = "y"             # <<<<<<<<<<<<<<
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ */
+  __pyx_v_y = 'y';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":19
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ *     cdef char z = "z"             # <<<<<<<<<<<<<<
+ *     cdef char p = "+"
+ *     cdef char m = "-"
+ */
+  __pyx_v_z = 'z';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":20
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ *     cdef char p = "+"             # <<<<<<<<<<<<<<
+ *     cdef char m = "-"
+ * 
+ */
+  __pyx_v_p = '+';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":21
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ *     cdef char m = "-"             # <<<<<<<<<<<<<<
+ * 
+ *     error = 0
+ */
+  __pyx_v_m = '-';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":23
+ *     cdef char m = "-"
+ * 
+ *     error = 0             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(Ns): #loop over basis
+ */
+  __pyx_v_error = 0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":25
+ *     error = 0
+ * 
+ *     for i in range(Ns): #loop over basis             # <<<<<<<<<<<<<<
+ *         M_E = psi_in[i]
+ * 
+ */
+  __pyx_t_5 = __pyx_v_Ns;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_i = __pyx_t_6;
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":26
+ * 
+ *     for i in range(Ns): #loop over basis
+ *         M_E = psi_in[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if M_E != 0.0:
+ */
+    __pyx_v_M_E = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL((__pyx_v_psi_in[__pyx_v_i])), __Pyx_CIMAG((__pyx_v_psi_in[__pyx_v_i])));
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    __pyx_t_7 = ((!__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+    if (__pyx_t_7) {
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":29
+ * 
+ *         if M_E != 0.0:
+ *             r = i             # <<<<<<<<<<<<<<
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ */
+      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":30
+ *         if M_E != 0.0:
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr             # <<<<<<<<<<<<<<
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ */
+      for (__pyx_t_8 = (__pyx_v_N_indx - 1); __pyx_t_8 > -1L; __pyx_t_8-=1) {
+        __pyx_v_j = __pyx_t_8;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":31
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil             # <<<<<<<<<<<<<<
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ */
+        __pyx_v_b = (__pyx_v_one << (__pyx_v_indx[__pyx_v_j]));
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":32
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit             # <<<<<<<<<<<<<<
+ *                 if c_opstr[j] == I:
+ *                     continue
+ */
+        __pyx_t_3 = __Pyx_PyInt_From_npy_int32((__pyx_v_indx[__pyx_v_j])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = PyNumber_Rshift(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_3 = __Pyx_PyInt_AndObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_9 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_v_a = __pyx_t_9;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        __pyx_t_10 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_10 < 0) {
+          __pyx_t_10 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_10 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_10 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 33, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_10 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_I) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":34
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ *                     continue             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ */
+          goto __pyx_L6_continue;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+        __pyx_t_12 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_12 < 0) {
+          __pyx_t_12 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_12 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_12 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 35, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_12 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_z) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":36
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(1.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(-1.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+        __pyx_t_14 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_14 < 0) {
+          __pyx_t_14 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_14 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_14 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 37, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_14 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_x) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":38
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+        __pyx_t_15 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_15 < 0) {
+          __pyx_t_15 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_15 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_15 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 39, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_15 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_y) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":40
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":41
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_16 = __pyx_t_double_complex_from_parts(0, 1.0);
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          } else {
+            __pyx_t_16 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_17 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_17 < 0) {
+          __pyx_t_17 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_17 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_17 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 42, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_17 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_p) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":43
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":44
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_18 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_18 < 0) {
+          __pyx_t_18 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_18 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 45, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_18 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_m) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":46
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 else:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":47
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     error = 1
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":49
+ *                     r = r ^ b
+ *                 else:
+ *                     error = 1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        /*else*/ {
+          __pyx_v_error = 1;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":50
+ *                 else:
+ *                     error = 1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 if M_E == 0.0:
+ */
+          __Pyx_XDECREF(__pyx_r);
+          __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_r = __pyx_t_3;
+          __pyx_t_3 = 0;
+          goto __pyx_L0;
+        }
+        __pyx_L8:;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        __pyx_t_7 = ((__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":53
+ * 
+ *                 if M_E == 0.0:
+ *                     break             # <<<<<<<<<<<<<<
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ */
+          goto __pyx_L7_break;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        }
+        __pyx_L6_continue:;
+      }
+      __pyx_L7_break:;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":54
+ *                 if M_E == 0.0:
+ *                     break
+ *             M_E *= J             # <<<<<<<<<<<<<<
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ */
+      __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_v_J);
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":62
+ *                 psi_out[r] += M_E.real
+ *             else:
+ *                 psi_out[r] += M_E             # <<<<<<<<<<<<<<
+ * 
+ *     return error
+ */
+      __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_r); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_c_sum_long__double(__pyx_t_long_double_complex_from_parts(__Pyx_CREAL((__pyx_v_psi_out[__pyx_t_1])), __Pyx_CIMAG((__pyx_v_psi_out[__pyx_t_1]))), __pyx_v_M_E);
+      (__pyx_v_psi_out[__pyx_t_1]) = __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_t_13), __Pyx_CIMAG(__pyx_t_13));
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    }
+  }
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":64
+ *                 psi_out[r] += M_E
+ * 
+ *     return error             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":5
+ * 
+ * # cython template[basis_type,matrix_type,N_type], do not call from script
+ * cdef spin_op_inplace_c(npy_intp Ns,matrix_type * psi_in, matrix_type * psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, NP_INT32_t * indx, scalar_type J):
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace_c", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_c_opstr, 1);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_fuse_5__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(npy_intp __pyx_v_Ns, __pyx_t_long_double_complex *__pyx_v_psi_in, __pyx_t_long_double_complex *__pyx_v_psi_out, PyObject *__pyx_v_opstr, __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_error;
+  int __pyx_v_N_indx;
+  bool __pyx_v_a;
+  __pyx_t_long_double_complex __pyx_v_M_E;
+  __Pyx_memviewslice __pyx_v_c_opstr = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_v_one;
+  char __pyx_v_I;
+  char __pyx_v_x;
+  char __pyx_v_y;
+  char __pyx_v_z;
+  char __pyx_v_p;
+  char __pyx_v_m;
+  PyObject *__pyx_v_r = NULL;
+  __pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t __pyx_v_b;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  npy_intp __pyx_t_5;
+  npy_intp __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  bool __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  __pyx_t_long_double_complex __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  __pyx_t_double_complex __pyx_t_16;
+  Py_ssize_t __pyx_t_17;
+  Py_ssize_t __pyx_t_18;
+  __Pyx_RefNannySetupContext("__pyx_fuse_5spin_op_inplace_c", 0);
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":10
+ *     cdef npy_intp i
+ *     cdef int j,error
+ *     cdef int N_indx = len(opstr)             # <<<<<<<<<<<<<<
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ */
+  __pyx_t_1 = PyObject_Length(__pyx_v_opstr); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_v_N_indx = __pyx_t_1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":13
+ *     cdef bool a
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ *     cdef npy_intp one = 1
+ * 
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_opstr);
+  __Pyx_GIVEREF(__pyx_v_opstr);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_opstr);
+  __Pyx_INCREF(__pyx_kp_s_utf_8);
+  __Pyx_GIVEREF(__pyx_kp_s_utf_8);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_kp_s_utf_8);
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_3);
+  if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_c_opstr = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":14
+ *     cdef scalar_type M_E
+ *     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ *     cdef npy_intp one = 1             # <<<<<<<<<<<<<<
+ * 
+ *     cdef char I = "I"
+ */
+  __pyx_v_one = 1;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":16
+ *     cdef npy_intp one = 1
+ * 
+ *     cdef char I = "I"             # <<<<<<<<<<<<<<
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ */
+  __pyx_v_I = 'I';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":17
+ * 
+ *     cdef char I = "I"
+ *     cdef char x = "x"             # <<<<<<<<<<<<<<
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ */
+  __pyx_v_x = 'x';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":18
+ *     cdef char I = "I"
+ *     cdef char x = "x"
+ *     cdef char y = "y"             # <<<<<<<<<<<<<<
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ */
+  __pyx_v_y = 'y';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":19
+ *     cdef char x = "x"
+ *     cdef char y = "y"
+ *     cdef char z = "z"             # <<<<<<<<<<<<<<
+ *     cdef char p = "+"
+ *     cdef char m = "-"
+ */
+  __pyx_v_z = 'z';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":20
+ *     cdef char y = "y"
+ *     cdef char z = "z"
+ *     cdef char p = "+"             # <<<<<<<<<<<<<<
+ *     cdef char m = "-"
+ * 
+ */
+  __pyx_v_p = '+';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":21
+ *     cdef char z = "z"
+ *     cdef char p = "+"
+ *     cdef char m = "-"             # <<<<<<<<<<<<<<
+ * 
+ *     error = 0
+ */
+  __pyx_v_m = '-';
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":23
+ *     cdef char m = "-"
+ * 
+ *     error = 0             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(Ns): #loop over basis
+ */
+  __pyx_v_error = 0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":25
+ *     error = 0
+ * 
+ *     for i in range(Ns): #loop over basis             # <<<<<<<<<<<<<<
+ *         M_E = psi_in[i]
+ * 
+ */
+  __pyx_t_5 = __pyx_v_Ns;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_i = __pyx_t_6;
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":26
+ * 
+ *     for i in range(Ns): #loop over basis
+ *         M_E = psi_in[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if M_E != 0.0:
+ */
+    __pyx_v_M_E = (__pyx_v_psi_in[__pyx_v_i]);
+
+    /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    __pyx_t_7 = ((!__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+    if (__pyx_t_7) {
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":29
+ * 
+ *         if M_E != 0.0:
+ *             r = i             # <<<<<<<<<<<<<<
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ */
+      __pyx_t_3 = __Pyx_PyInt_From_Py_intptr_t(__pyx_v_i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":30
+ *         if M_E != 0.0:
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr             # <<<<<<<<<<<<<<
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ */
+      for (__pyx_t_8 = (__pyx_v_N_indx - 1); __pyx_t_8 > -1L; __pyx_t_8-=1) {
+        __pyx_v_j = __pyx_t_8;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":31
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil             # <<<<<<<<<<<<<<
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ */
+        __pyx_v_b = (__pyx_v_one << (__pyx_v_indx[__pyx_v_j]));
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":32
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit             # <<<<<<<<<<<<<<
+ *                 if c_opstr[j] == I:
+ *                     continue
+ */
+        __pyx_t_3 = __Pyx_PyInt_From_npy_int32((__pyx_v_indx[__pyx_v_j])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_2 = PyNumber_Rshift(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_3 = __Pyx_PyInt_AndObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_9 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_v_a = __pyx_t_9;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        __pyx_t_10 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_10 < 0) {
+          __pyx_t_10 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_10 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_10 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 33, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_10 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_I) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":34
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:
+ *                     continue             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ */
+          goto __pyx_L6_continue;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":33
+ *                 b = ( one << indx[j] ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbil
+ *                 a = ( r >> indx[j] ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
+ *                 if c_opstr[j] == I:             # <<<<<<<<<<<<<<
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ */
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+        __pyx_t_12 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_12 < 0) {
+          __pyx_t_12 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_12 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_12 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 35, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_12 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_z) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":36
+ *                     continue
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(1.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(-1.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":35
+ *                 if c_opstr[j] == I:
+ *                     continue
+ *                 elif c_opstr[j] == z:             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+        __pyx_t_14 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_14 < 0) {
+          __pyx_t_14 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_14 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_14 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 37, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_14 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_x) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":38
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":37
+ *                 elif c_opstr[j] == z:
+ *                     M_E *= (1.0 if a else -1.0)
+ *                 elif c_opstr[j] == x:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+        __pyx_t_15 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_15 < 0) {
+          __pyx_t_15 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_15 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_15 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 39, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_15 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_y) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":40
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":41
+ *                 elif c_opstr[j] == y:
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_16 = __pyx_t_double_complex_from_parts(0, 1.0);
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          } else {
+            __pyx_t_16 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(__Pyx_CREAL(__pyx_t_16), __Pyx_CIMAG(__pyx_t_16));
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":39
+ *                 elif c_opstr[j] == x:
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == y:             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_17 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_17 < 0) {
+          __pyx_t_17 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_17 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_17 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 42, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_17 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_p) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":43
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":44
+ *                 elif c_opstr[j] == p:
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ */
+          __pyx_t_3 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_2 = PyNumber_Xor(__pyx_v_r, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_2);
+          __pyx_t_2 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":42
+ *                     r = r ^ b
+ *                     M_E *= (1.0j if a else -1.0j)
+ *                 elif c_opstr[j] == p:             # <<<<<<<<<<<<<<
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+        __pyx_t_18 = __pyx_v_j;
+        __pyx_t_11 = -1;
+        if (__pyx_t_18 < 0) {
+          __pyx_t_18 += __pyx_v_c_opstr.shape[0];
+          if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 0;
+        } else if (unlikely(__pyx_t_18 >= __pyx_v_c_opstr.shape[0])) __pyx_t_11 = 0;
+        if (unlikely(__pyx_t_11 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_11);
+          __PYX_ERR(0, 45, __pyx_L1_error)
+        }
+        __pyx_t_7 = (((*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_18 * __pyx_v_c_opstr.strides[0]) ))) == __pyx_v_m) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":46
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)             # <<<<<<<<<<<<<<
+ *                     r = r ^ b
+ *                 else:
+ */
+          if ((__pyx_v_a != 0)) {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(2.0, 0);
+          } else {
+            __pyx_t_13 = __pyx_t_long_double_complex_from_parts(0.0, 0);
+          }
+          __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_t_13);
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":47
+ *                 elif c_opstr[j] == m:
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     error = 1
+ */
+          __pyx_t_2 = __Pyx_PyInt_From_npy_int32(__pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __pyx_t_3 = PyNumber_Xor(__pyx_v_r, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
+          __pyx_t_3 = 0;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":45
+ *                     M_E *= (0.0 if a else 2.0)
+ *                     r = r ^ b
+ *                 elif c_opstr[j] == m:             # <<<<<<<<<<<<<<
+ *                     M_E *= (2.0 if a else 0.0)
+ *                     r = r ^ b
+ */
+          goto __pyx_L8;
+        }
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":49
+ *                     r = r ^ b
+ *                 else:
+ *                     error = 1             # <<<<<<<<<<<<<<
+ *                     return error
+ * 
+ */
+        /*else*/ {
+          __pyx_v_error = 1;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":50
+ *                 else:
+ *                     error = 1
+ *                     return error             # <<<<<<<<<<<<<<
+ * 
+ *                 if M_E == 0.0:
+ */
+          __Pyx_XDECREF(__pyx_r);
+          __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_r = __pyx_t_3;
+          __pyx_t_3 = 0;
+          goto __pyx_L0;
+        }
+        __pyx_L8:;
+
+        /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        __pyx_t_7 = ((__Pyx_c_eq_long__double(__pyx_v_M_E, __pyx_t_long_double_complex_from_parts(0.0, 0))) != 0);
+        if (__pyx_t_7) {
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":53
+ * 
+ *                 if M_E == 0.0:
+ *                     break             # <<<<<<<<<<<<<<
+ *             M_E *= J
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ */
+          goto __pyx_L7_break;
+
+          /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":52
+ *                     return error
+ * 
+ *                 if M_E == 0.0:             # <<<<<<<<<<<<<<
+ *                     break
+ *             M_E *= J
+ */
+        }
+        __pyx_L6_continue:;
+      }
+      __pyx_L7_break:;
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":54
+ *                 if M_E == 0.0:
+ *                     break
+ *             M_E *= J             # <<<<<<<<<<<<<<
+ *             if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+ *                 if M_E.imag != 0.0:
+ */
+      __pyx_v_M_E = __Pyx_c_prod_long__double(__pyx_v_M_E, __pyx_v_J);
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":62
+ *                 psi_out[r] += M_E.real
+ *             else:
+ *                 psi_out[r] += M_E             # <<<<<<<<<<<<<<
+ * 
+ *     return error
+ */
+      __pyx_t_1 = __Pyx_PyIndex_AsSsize_t(__pyx_v_r); if (unlikely((__pyx_t_1 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L1_error)
+      (__pyx_v_psi_out[__pyx_t_1]) = __Pyx_c_sum_long__double((__pyx_v_psi_out[__pyx_t_1]), __pyx_v_M_E);
+
+      /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":28
+ *         M_E = psi_in[i]
+ * 
+ *         if M_E != 0.0:             # <<<<<<<<<<<<<<
+ *             r = i
+ *             for j in range(N_indx-1,-1,-1): #loop over the copstr
+ */
+    }
+  }
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":64
+ *                 psi_out[r] += M_E
+ * 
+ *     return error             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":5
+ * 
+ * # cython template[basis_type,matrix_type,N_type], do not call from script
+ * cdef spin_op_inplace_c(npy_intp Ns,matrix_type * psi_in, matrix_type * psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, NP_INT32_t * indx, scalar_type J):
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace_c", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_c_opstr, 1);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":68
  * 
  * 
@@ -3489,8 +6890,93 @@ static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops
             if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
             goto __pyx_L16_break;
           }
+          __pyx_t_2 = (((sizeof(double)) == __pyx_v_itemsize) != 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L25_bool_binop_done;
+          }
+          __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_8); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_10) == 1) != 0);
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L25_bool_binop_done:;
+          if (__pyx_t_3) {
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+            goto __pyx_L16_break;
+          }
+          __pyx_t_2 = (((sizeof(long double)) == __pyx_v_itemsize) != 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L28_bool_binop_done;
+          }
+          __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_8); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_10) == 1) != 0);
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L28_bool_binop_done:;
+          if (__pyx_t_3) {
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_long_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+            goto __pyx_L16_break;
+          }
           break;
           case 'c':
+          __pyx_t_2 = (((sizeof(__pyx_t_float_complex)) == __pyx_v_itemsize) != 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L31_bool_binop_done;
+          }
+          __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_8); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_10) == 1) != 0);
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L31_bool_binop_done:;
+          if (__pyx_t_3) {
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+            goto __pyx_L16_break;
+          }
+          __pyx_t_2 = (((sizeof(__pyx_t_double_complex)) == __pyx_v_itemsize) != 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L34_bool_binop_done;
+          }
+          __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_8); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_10) == 1) != 0);
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L34_bool_binop_done:;
+          if (__pyx_t_3) {
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+            goto __pyx_L16_break;
+          }
+          __pyx_t_2 = (((sizeof(__pyx_t_long_double_complex)) == __pyx_v_itemsize) != 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L37_bool_binop_done;
+          }
+          __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_8); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_10) == 1) != 0);
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L37_bool_binop_done:;
+          if (__pyx_t_3) {
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_long_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+            goto __pyx_L16_break;
+          }
           break;
           case 'O':
           break;
@@ -3502,11 +6988,11 @@ static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops
     if (!__pyx_t_2) {
     } else {
       __pyx_t_3 = __pyx_t_2;
-      goto __pyx_L25_bool_binop_done;
+      goto __pyx_L40_bool_binop_done;
     }
     __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(float))) != 0);
     __pyx_t_3 = __pyx_t_2;
-    __pyx_L25_bool_binop_done:;
+    __pyx_L40_bool_binop_done:;
     if (__pyx_t_3) {
       __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_arg); 
       __pyx_v_memslice = __pyx_t_12;
@@ -3514,6 +7000,116 @@ static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
         if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+        goto __pyx_L16_break;
+      }
+      /*else*/ {
+        PyErr_Clear(); 
+      }
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
+    if (!__pyx_t_2) {
+    } else {
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L44_bool_binop_done;
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(double))) != 0);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L44_bool_binop_done:;
+    if (__pyx_t_3) {
+      __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_arg); 
+      __pyx_v_memslice = __pyx_t_12;
+      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
+      if (__pyx_t_3) {
+        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+        goto __pyx_L16_break;
+      }
+      /*else*/ {
+        PyErr_Clear(); 
+      }
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
+    if (!__pyx_t_2) {
+    } else {
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L48_bool_binop_done;
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(long double))) != 0);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L48_bool_binop_done:;
+    if (__pyx_t_3) {
+      __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_long__double(__pyx_v_arg); 
+      __pyx_v_memslice = __pyx_t_12;
+      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
+      if (__pyx_t_3) {
+        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_long_double, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+        goto __pyx_L16_break;
+      }
+      /*else*/ {
+        PyErr_Clear(); 
+      }
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
+    if (!__pyx_t_2) {
+    } else {
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L52_bool_binop_done;
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(__pyx_t_float_complex))) != 0);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L52_bool_binop_done:;
+    if (__pyx_t_3) {
+      __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_arg); 
+      __pyx_v_memslice = __pyx_t_12;
+      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
+      if (__pyx_t_3) {
+        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_float_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+        goto __pyx_L16_break;
+      }
+      /*else*/ {
+        PyErr_Clear(); 
+      }
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
+    if (!__pyx_t_2) {
+    } else {
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L56_bool_binop_done;
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(__pyx_t_double_complex))) != 0);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L56_bool_binop_done:;
+    if (__pyx_t_3) {
+      __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_arg); 
+      __pyx_v_memslice = __pyx_t_12;
+      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
+      if (__pyx_t_3) {
+        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+        goto __pyx_L16_break;
+      }
+      /*else*/ {
+        PyErr_Clear(); 
+      }
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
+    if (!__pyx_t_2) {
+    } else {
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L60_bool_binop_done;
+    }
+    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(__pyx_t_long_double_complex))) != 0);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L60_bool_binop_done:;
+    if (__pyx_t_3) {
+      __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_long_double_complex(__pyx_v_arg); 
+      __pyx_v_memslice = __pyx_t_12;
+      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
+      if (__pyx_t_3) {
+        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_kp_s_long_double_complex, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
         goto __pyx_L16_break;
       }
       /*else*/ {
@@ -3643,20 +7239,20 @@ static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops
         __Pyx_GOTREF(__pyx_t_19);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_t_20 = Py_TYPE(__pyx_t_19)->tp_iternext;
-        index = 0; __pyx_t_17 = __pyx_t_20(__pyx_t_19); if (unlikely(!__pyx_t_17)) goto __pyx_L32_unpacking_failed;
+        index = 0; __pyx_t_17 = __pyx_t_20(__pyx_t_19); if (unlikely(!__pyx_t_17)) goto __pyx_L67_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_17);
-        index = 1; __pyx_t_18 = __pyx_t_20(__pyx_t_19); if (unlikely(!__pyx_t_18)) goto __pyx_L32_unpacking_failed;
+        index = 1; __pyx_t_18 = __pyx_t_20(__pyx_t_19); if (unlikely(!__pyx_t_18)) goto __pyx_L67_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_18);
         if (__Pyx_IternextUnpackEndCheck(__pyx_t_20(__pyx_t_19), 2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
         __pyx_t_20 = NULL;
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-        goto __pyx_L33_unpacking_done;
-        __pyx_L32_unpacking_failed:;
+        goto __pyx_L68_unpacking_done;
+        __pyx_L67_unpacking_failed:;
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
         __pyx_t_20 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
         __PYX_ERR(0, 68, __pyx_L1_error)
-        __pyx_L33_unpacking_done:;
+        __pyx_L68_unpacking_done:;
       }
       __Pyx_XDECREF_SET(__pyx_v_src_type, __pyx_t_17);
       __pyx_t_17 = 0;
@@ -3670,16 +7266,16 @@ static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (__pyx_t_2) {
           __pyx_v_match_found = 1;
-          goto __pyx_L35;
+          goto __pyx_L70;
         }
         /*else*/ {
           __pyx_v_match_found = 0;
-          goto __pyx_L31_break;
+          goto __pyx_L66_break;
         }
-        __pyx_L35:;
+        __pyx_L70:;
       }
     }
-    __pyx_L31_break:;
+    __pyx_L66_break:;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __pyx_t_2 = (__pyx_v_match_found != 0);
     if (__pyx_t_2) {
@@ -3937,6 +7533,1141 @@ static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops
     __PYX_ERR(0, 71, __pyx_L1_error)
   }
   __pyx_t_2 = __pyx_fuse_0__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(__pyx_v_Ns, (&(*__Pyx_BufPtrFull1d(float *, __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_psi_in.diminfo[0].strides, __pyx_pybuffernd_psi_in.diminfo[0].suboffsets))), (&(*__Pyx_BufPtrFull1d(float *, __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_psi_out.diminfo[0].strides, __pyx_pybuffernd_psi_out.diminfo[0].suboffsets))), __pyx_v_opstr, (&(*__Pyx_BufPtrFull1d(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_pybuffernd_indx.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_indx.diminfo[0].strides, __pyx_pybuffernd_indx.diminfo[0].suboffsets))), __pyx_v_J); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":68
+ * 
+ * 
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_fuse_1__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_5spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_1__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_5spin_op_inplace = {"__pyx_fuse_1spin_op_inplace", (PyCFunction)__pyx_fuse_1__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_5spin_op_inplace, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_1__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_5spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_psi_in = 0;
+  PyObject *__pyx_v_psi_out = 0;
+  PyObject *__pyx_v_opstr = 0;
+  PyObject *__pyx_v_indx = 0;
+  __pyx_t_long_double_complex __pyx_v_J;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("spin_op_inplace (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_psi_in,&__pyx_n_s_psi_out,&__pyx_n_s_opstr,&__pyx_n_s_indx,&__pyx_n_s_J,0};
+    PyObject* values[5] = {0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_in)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_out)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 1); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opstr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 2); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_indx)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 3); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_J)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 4); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "spin_op_inplace") < 0)) __PYX_ERR(0, 68, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+    }
+    __pyx_v_psi_in = ((PyObject *)values[0]);
+    __pyx_v_psi_out = ((PyObject *)values[1]);
+    __pyx_v_opstr = ((PyObject*)values[2]);
+    __pyx_v_indx = ((PyObject *)values[3]);
+    __pyx_v_J = __Pyx_PyComplex_As___pyx_t_long_double_complex(values[4]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 68, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opstr), (&PyString_Type), 1, "opstr", 1))) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_4spin_op_inplace(__pyx_self, __pyx_v_psi_in, __pyx_v_psi_out, __pyx_v_opstr, __pyx_v_indx, __pyx_v_J);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_4spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_Ns;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_indx;
+  __Pyx_Buffer __pyx_pybuffer_indx;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_in;
+  __Pyx_Buffer __pyx_pybuffer_psi_in;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_out;
+  __Pyx_Buffer __pyx_pybuffer_psi_out;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  __Pyx_RefNannySetupContext("__pyx_fuse_1spin_op_inplace", 0);
+  __pyx_pybuffer_psi_in.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_in.refcount = 0;
+  __pyx_pybuffernd_psi_in.data = NULL;
+  __pyx_pybuffernd_psi_in.rcbuffer = &__pyx_pybuffer_psi_in;
+  __pyx_pybuffer_psi_out.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_out.refcount = 0;
+  __pyx_pybuffernd_psi_out.data = NULL;
+  __pyx_pybuffernd_psi_out.rcbuffer = &__pyx_pybuffer_psi_out;
+  __pyx_pybuffer_indx.pybuffer.buf = NULL;
+  __pyx_pybuffer_indx.refcount = 0;
+  __pyx_pybuffernd_indx.data = NULL;
+  __pyx_pybuffernd_indx.rcbuffer = &__pyx_pybuffer_indx;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_in, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_in.diminfo[0].strides = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_in.diminfo[0].shape = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_in.diminfo[0].suboffsets = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_out, &__Pyx_TypeInfo_double, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_out.diminfo[0].strides = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_out.diminfo[0].shape = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_out.diminfo[0].suboffsets = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indx.rcbuffer->pybuffer, (PyObject*)__pyx_v_indx, &__Pyx_TypeInfo_nn___pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_indx.diminfo[0].strides = __pyx_pybuffernd_indx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indx.diminfo[0].shape = __pyx_pybuffernd_indx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_indx.diminfo[0].suboffsets = __pyx_pybuffernd_indx.rcbuffer->pybuffer.suboffsets[0];
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":70
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]             # <<<<<<<<<<<<<<
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_psi_in), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_3 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_Ns = __pyx_t_3;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":71
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_4 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_4 < 0) {
+    __pyx_t_4 += __pyx_pybuffernd_psi_in.diminfo[0].shape;
+    if (unlikely(__pyx_t_4 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_4 >= __pyx_pybuffernd_psi_in.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_6 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_6 < 0) {
+    __pyx_t_6 += __pyx_pybuffernd_psi_out.diminfo[0].shape;
+    if (unlikely(__pyx_t_6 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_6 >= __pyx_pybuffernd_psi_out.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_7 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_7 < 0) {
+    __pyx_t_7 += __pyx_pybuffernd_indx.diminfo[0].shape;
+    if (unlikely(__pyx_t_7 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_7 >= __pyx_pybuffernd_indx.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_fuse_1__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(__pyx_v_Ns, (&(*__Pyx_BufPtrFull1d(double *, __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_psi_in.diminfo[0].strides, __pyx_pybuffernd_psi_in.diminfo[0].suboffsets))), (&(*__Pyx_BufPtrFull1d(double *, __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_psi_out.diminfo[0].strides, __pyx_pybuffernd_psi_out.diminfo[0].suboffsets))), __pyx_v_opstr, (&(*__Pyx_BufPtrFull1d(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_pybuffernd_indx.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_indx.diminfo[0].strides, __pyx_pybuffernd_indx.diminfo[0].suboffsets))), __pyx_v_J); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":68
+ * 
+ * 
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_fuse_2__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_7spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_2__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_7spin_op_inplace = {"__pyx_fuse_2spin_op_inplace", (PyCFunction)__pyx_fuse_2__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_7spin_op_inplace, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_2__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_7spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_psi_in = 0;
+  PyObject *__pyx_v_psi_out = 0;
+  PyObject *__pyx_v_opstr = 0;
+  PyObject *__pyx_v_indx = 0;
+  __pyx_t_long_double_complex __pyx_v_J;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("spin_op_inplace (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_psi_in,&__pyx_n_s_psi_out,&__pyx_n_s_opstr,&__pyx_n_s_indx,&__pyx_n_s_J,0};
+    PyObject* values[5] = {0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_in)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_out)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 1); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opstr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 2); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_indx)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 3); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_J)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 4); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "spin_op_inplace") < 0)) __PYX_ERR(0, 68, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+    }
+    __pyx_v_psi_in = ((PyObject *)values[0]);
+    __pyx_v_psi_out = ((PyObject *)values[1]);
+    __pyx_v_opstr = ((PyObject*)values[2]);
+    __pyx_v_indx = ((PyObject *)values[3]);
+    __pyx_v_J = __Pyx_PyComplex_As___pyx_t_long_double_complex(values[4]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 68, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opstr), (&PyString_Type), 1, "opstr", 1))) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_6spin_op_inplace(__pyx_self, __pyx_v_psi_in, __pyx_v_psi_out, __pyx_v_opstr, __pyx_v_indx, __pyx_v_J);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_6spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_Ns;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_indx;
+  __Pyx_Buffer __pyx_pybuffer_indx;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_in;
+  __Pyx_Buffer __pyx_pybuffer_psi_in;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_out;
+  __Pyx_Buffer __pyx_pybuffer_psi_out;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  __Pyx_RefNannySetupContext("__pyx_fuse_2spin_op_inplace", 0);
+  __pyx_pybuffer_psi_in.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_in.refcount = 0;
+  __pyx_pybuffernd_psi_in.data = NULL;
+  __pyx_pybuffernd_psi_in.rcbuffer = &__pyx_pybuffer_psi_in;
+  __pyx_pybuffer_psi_out.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_out.refcount = 0;
+  __pyx_pybuffernd_psi_out.data = NULL;
+  __pyx_pybuffernd_psi_out.rcbuffer = &__pyx_pybuffer_psi_out;
+  __pyx_pybuffer_indx.pybuffer.buf = NULL;
+  __pyx_pybuffer_indx.refcount = 0;
+  __pyx_pybuffernd_indx.data = NULL;
+  __pyx_pybuffernd_indx.rcbuffer = &__pyx_pybuffer_indx;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_in, &__Pyx_TypeInfo_long__double, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_in.diminfo[0].strides = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_in.diminfo[0].shape = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_in.diminfo[0].suboffsets = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_out, &__Pyx_TypeInfo_long__double, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_out.diminfo[0].strides = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_out.diminfo[0].shape = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_out.diminfo[0].suboffsets = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indx.rcbuffer->pybuffer, (PyObject*)__pyx_v_indx, &__Pyx_TypeInfo_nn___pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_indx.diminfo[0].strides = __pyx_pybuffernd_indx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indx.diminfo[0].shape = __pyx_pybuffernd_indx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_indx.diminfo[0].suboffsets = __pyx_pybuffernd_indx.rcbuffer->pybuffer.suboffsets[0];
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":70
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]             # <<<<<<<<<<<<<<
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_psi_in), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_3 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_Ns = __pyx_t_3;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":71
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_4 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_4 < 0) {
+    __pyx_t_4 += __pyx_pybuffernd_psi_in.diminfo[0].shape;
+    if (unlikely(__pyx_t_4 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_4 >= __pyx_pybuffernd_psi_in.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_6 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_6 < 0) {
+    __pyx_t_6 += __pyx_pybuffernd_psi_out.diminfo[0].shape;
+    if (unlikely(__pyx_t_6 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_6 >= __pyx_pybuffernd_psi_out.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_7 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_7 < 0) {
+    __pyx_t_7 += __pyx_pybuffernd_indx.diminfo[0].shape;
+    if (unlikely(__pyx_t_7 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_7 >= __pyx_pybuffernd_indx.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_fuse_2__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(__pyx_v_Ns, (&(*__Pyx_BufPtrFull1d(long double *, __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_psi_in.diminfo[0].strides, __pyx_pybuffernd_psi_in.diminfo[0].suboffsets))), (&(*__Pyx_BufPtrFull1d(long double *, __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_psi_out.diminfo[0].strides, __pyx_pybuffernd_psi_out.diminfo[0].suboffsets))), __pyx_v_opstr, (&(*__Pyx_BufPtrFull1d(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_pybuffernd_indx.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_indx.diminfo[0].strides, __pyx_pybuffernd_indx.diminfo[0].suboffsets))), __pyx_v_J); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":68
+ * 
+ * 
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_fuse_3__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_9spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_3__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_9spin_op_inplace = {"__pyx_fuse_3spin_op_inplace", (PyCFunction)__pyx_fuse_3__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_9spin_op_inplace, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_3__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_9spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_psi_in = 0;
+  PyObject *__pyx_v_psi_out = 0;
+  PyObject *__pyx_v_opstr = 0;
+  PyObject *__pyx_v_indx = 0;
+  __pyx_t_long_double_complex __pyx_v_J;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("spin_op_inplace (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_psi_in,&__pyx_n_s_psi_out,&__pyx_n_s_opstr,&__pyx_n_s_indx,&__pyx_n_s_J,0};
+    PyObject* values[5] = {0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_in)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_out)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 1); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opstr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 2); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_indx)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 3); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_J)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 4); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "spin_op_inplace") < 0)) __PYX_ERR(0, 68, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+    }
+    __pyx_v_psi_in = ((PyObject *)values[0]);
+    __pyx_v_psi_out = ((PyObject *)values[1]);
+    __pyx_v_opstr = ((PyObject*)values[2]);
+    __pyx_v_indx = ((PyObject *)values[3]);
+    __pyx_v_J = __Pyx_PyComplex_As___pyx_t_long_double_complex(values[4]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 68, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opstr), (&PyString_Type), 1, "opstr", 1))) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_8spin_op_inplace(__pyx_self, __pyx_v_psi_in, __pyx_v_psi_out, __pyx_v_opstr, __pyx_v_indx, __pyx_v_J);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_8spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_Ns;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_indx;
+  __Pyx_Buffer __pyx_pybuffer_indx;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_in;
+  __Pyx_Buffer __pyx_pybuffer_psi_in;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_out;
+  __Pyx_Buffer __pyx_pybuffer_psi_out;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  __Pyx_RefNannySetupContext("__pyx_fuse_3spin_op_inplace", 0);
+  __pyx_pybuffer_psi_in.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_in.refcount = 0;
+  __pyx_pybuffernd_psi_in.data = NULL;
+  __pyx_pybuffernd_psi_in.rcbuffer = &__pyx_pybuffer_psi_in;
+  __pyx_pybuffer_psi_out.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_out.refcount = 0;
+  __pyx_pybuffernd_psi_out.data = NULL;
+  __pyx_pybuffernd_psi_out.rcbuffer = &__pyx_pybuffer_psi_out;
+  __pyx_pybuffer_indx.pybuffer.buf = NULL;
+  __pyx_pybuffer_indx.refcount = 0;
+  __pyx_pybuffernd_indx.data = NULL;
+  __pyx_pybuffernd_indx.rcbuffer = &__pyx_pybuffer_indx;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_in, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_in.diminfo[0].strides = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_in.diminfo[0].shape = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_in.diminfo[0].suboffsets = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_out, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_out.diminfo[0].strides = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_out.diminfo[0].shape = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_out.diminfo[0].suboffsets = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indx.rcbuffer->pybuffer, (PyObject*)__pyx_v_indx, &__Pyx_TypeInfo_nn___pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_indx.diminfo[0].strides = __pyx_pybuffernd_indx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indx.diminfo[0].shape = __pyx_pybuffernd_indx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_indx.diminfo[0].suboffsets = __pyx_pybuffernd_indx.rcbuffer->pybuffer.suboffsets[0];
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":70
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]             # <<<<<<<<<<<<<<
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_psi_in), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_3 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_Ns = __pyx_t_3;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":71
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_4 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_4 < 0) {
+    __pyx_t_4 += __pyx_pybuffernd_psi_in.diminfo[0].shape;
+    if (unlikely(__pyx_t_4 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_4 >= __pyx_pybuffernd_psi_in.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_6 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_6 < 0) {
+    __pyx_t_6 += __pyx_pybuffernd_psi_out.diminfo[0].shape;
+    if (unlikely(__pyx_t_6 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_6 >= __pyx_pybuffernd_psi_out.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_7 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_7 < 0) {
+    __pyx_t_7 += __pyx_pybuffernd_indx.diminfo[0].shape;
+    if (unlikely(__pyx_t_7 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_7 >= __pyx_pybuffernd_indx.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_fuse_3__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(__pyx_v_Ns, (&(*__Pyx_BufPtrFull1d(__pyx_t_float_complex *, __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_psi_in.diminfo[0].strides, __pyx_pybuffernd_psi_in.diminfo[0].suboffsets))), (&(*__Pyx_BufPtrFull1d(__pyx_t_float_complex *, __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_psi_out.diminfo[0].strides, __pyx_pybuffernd_psi_out.diminfo[0].suboffsets))), __pyx_v_opstr, (&(*__Pyx_BufPtrFull1d(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_pybuffernd_indx.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_indx.diminfo[0].strides, __pyx_pybuffernd_indx.diminfo[0].suboffsets))), __pyx_v_J); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":68
+ * 
+ * 
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_fuse_4__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_11spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_4__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_11spin_op_inplace = {"__pyx_fuse_4spin_op_inplace", (PyCFunction)__pyx_fuse_4__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_11spin_op_inplace, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_4__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_11spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_psi_in = 0;
+  PyObject *__pyx_v_psi_out = 0;
+  PyObject *__pyx_v_opstr = 0;
+  PyObject *__pyx_v_indx = 0;
+  __pyx_t_long_double_complex __pyx_v_J;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("spin_op_inplace (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_psi_in,&__pyx_n_s_psi_out,&__pyx_n_s_opstr,&__pyx_n_s_indx,&__pyx_n_s_J,0};
+    PyObject* values[5] = {0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_in)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_out)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 1); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opstr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 2); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_indx)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 3); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_J)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 4); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "spin_op_inplace") < 0)) __PYX_ERR(0, 68, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+    }
+    __pyx_v_psi_in = ((PyObject *)values[0]);
+    __pyx_v_psi_out = ((PyObject *)values[1]);
+    __pyx_v_opstr = ((PyObject*)values[2]);
+    __pyx_v_indx = ((PyObject *)values[3]);
+    __pyx_v_J = __Pyx_PyComplex_As___pyx_t_long_double_complex(values[4]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 68, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opstr), (&PyString_Type), 1, "opstr", 1))) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_10spin_op_inplace(__pyx_self, __pyx_v_psi_in, __pyx_v_psi_out, __pyx_v_opstr, __pyx_v_indx, __pyx_v_J);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_10spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_Ns;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_indx;
+  __Pyx_Buffer __pyx_pybuffer_indx;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_in;
+  __Pyx_Buffer __pyx_pybuffer_psi_in;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_out;
+  __Pyx_Buffer __pyx_pybuffer_psi_out;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  __Pyx_RefNannySetupContext("__pyx_fuse_4spin_op_inplace", 0);
+  __pyx_pybuffer_psi_in.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_in.refcount = 0;
+  __pyx_pybuffernd_psi_in.data = NULL;
+  __pyx_pybuffernd_psi_in.rcbuffer = &__pyx_pybuffer_psi_in;
+  __pyx_pybuffer_psi_out.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_out.refcount = 0;
+  __pyx_pybuffernd_psi_out.data = NULL;
+  __pyx_pybuffernd_psi_out.rcbuffer = &__pyx_pybuffer_psi_out;
+  __pyx_pybuffer_indx.pybuffer.buf = NULL;
+  __pyx_pybuffer_indx.refcount = 0;
+  __pyx_pybuffernd_indx.data = NULL;
+  __pyx_pybuffernd_indx.rcbuffer = &__pyx_pybuffer_indx;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_in, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_in.diminfo[0].strides = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_in.diminfo[0].shape = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_in.diminfo[0].suboffsets = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_out, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_out.diminfo[0].strides = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_out.diminfo[0].shape = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_out.diminfo[0].suboffsets = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indx.rcbuffer->pybuffer, (PyObject*)__pyx_v_indx, &__Pyx_TypeInfo_nn___pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_indx.diminfo[0].strides = __pyx_pybuffernd_indx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indx.diminfo[0].shape = __pyx_pybuffernd_indx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_indx.diminfo[0].suboffsets = __pyx_pybuffernd_indx.rcbuffer->pybuffer.suboffsets[0];
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":70
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]             # <<<<<<<<<<<<<<
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_psi_in), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_3 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_Ns = __pyx_t_3;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":71
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_4 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_4 < 0) {
+    __pyx_t_4 += __pyx_pybuffernd_psi_in.diminfo[0].shape;
+    if (unlikely(__pyx_t_4 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_4 >= __pyx_pybuffernd_psi_in.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_6 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_6 < 0) {
+    __pyx_t_6 += __pyx_pybuffernd_psi_out.diminfo[0].shape;
+    if (unlikely(__pyx_t_6 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_6 >= __pyx_pybuffernd_psi_out.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_7 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_7 < 0) {
+    __pyx_t_7 += __pyx_pybuffernd_indx.diminfo[0].shape;
+    if (unlikely(__pyx_t_7 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_7 >= __pyx_pybuffernd_indx.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_fuse_4__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(__pyx_v_Ns, (&(*__Pyx_BufPtrFull1d(__pyx_t_double_complex *, __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_psi_in.diminfo[0].strides, __pyx_pybuffernd_psi_in.diminfo[0].suboffsets))), (&(*__Pyx_BufPtrFull1d(__pyx_t_double_complex *, __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_psi_out.diminfo[0].strides, __pyx_pybuffernd_psi_out.diminfo[0].suboffsets))), __pyx_v_opstr, (&(*__Pyx_BufPtrFull1d(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_pybuffernd_indx.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_indx.diminfo[0].strides, __pyx_pybuffernd_indx.diminfo[0].suboffsets))), __pyx_v_J); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":68
+ * 
+ * 
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,             # <<<<<<<<<<<<<<
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  goto __pyx_L2;
+  __pyx_L0:;
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_indx.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer);
+  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer);
+  __pyx_L2:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_fuse_5__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_13spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_5__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_13spin_op_inplace = {"__pyx_fuse_5spin_op_inplace", (PyCFunction)__pyx_fuse_5__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_13spin_op_inplace, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_5__pyx_pw_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_13spin_op_inplace(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_psi_in = 0;
+  PyObject *__pyx_v_psi_out = 0;
+  PyObject *__pyx_v_opstr = 0;
+  PyObject *__pyx_v_indx = 0;
+  __pyx_t_long_double_complex __pyx_v_J;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("spin_op_inplace (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_psi_in,&__pyx_n_s_psi_out,&__pyx_n_s_opstr,&__pyx_n_s_indx,&__pyx_n_s_J,0};
+    PyObject* values[5] = {0,0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_in)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_psi_out)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 1); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opstr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 2); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_indx)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 3); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_J)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, 4); __PYX_ERR(0, 68, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "spin_op_inplace") < 0)) __PYX_ERR(0, 68, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+    }
+    __pyx_v_psi_in = ((PyObject *)values[0]);
+    __pyx_v_psi_out = ((PyObject *)values[1]);
+    __pyx_v_opstr = ((PyObject*)values[2]);
+    __pyx_v_indx = ((PyObject *)values[3]);
+    __pyx_v_J = __Pyx_PyComplex_As___pyx_t_long_double_complex(values[4]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("spin_op_inplace", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 68, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("quspin.basis.basis_1d._constructors.inplace_ops.spin_op_inplace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_opstr), (&PyString_Type), 1, "opstr", 1))) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_r = __pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_12spin_op_inplace(__pyx_self, __pyx_v_psi_in, __pyx_v_psi_out, __pyx_v_opstr, __pyx_v_indx, __pyx_v_J);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_12spin_op_inplace(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_psi_in, PyObject *__pyx_v_psi_out, PyObject *__pyx_v_opstr, PyObject *__pyx_v_indx, __pyx_t_long_double_complex __pyx_v_J) {
+  npy_intp __pyx_v_Ns;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_indx;
+  __Pyx_Buffer __pyx_pybuffer_indx;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_in;
+  __Pyx_Buffer __pyx_pybuffer_psi_in;
+  __Pyx_LocalBuf_ND __pyx_pybuffernd_psi_out;
+  __Pyx_Buffer __pyx_pybuffer_psi_out;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  npy_intp __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  int __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  __Pyx_RefNannySetupContext("__pyx_fuse_5spin_op_inplace", 0);
+  __pyx_pybuffer_psi_in.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_in.refcount = 0;
+  __pyx_pybuffernd_psi_in.data = NULL;
+  __pyx_pybuffernd_psi_in.rcbuffer = &__pyx_pybuffer_psi_in;
+  __pyx_pybuffer_psi_out.pybuffer.buf = NULL;
+  __pyx_pybuffer_psi_out.refcount = 0;
+  __pyx_pybuffernd_psi_out.data = NULL;
+  __pyx_pybuffernd_psi_out.rcbuffer = &__pyx_pybuffer_psi_out;
+  __pyx_pybuffer_indx.pybuffer.buf = NULL;
+  __pyx_pybuffer_indx.refcount = 0;
+  __pyx_pybuffernd_indx.data = NULL;
+  __pyx_pybuffernd_indx.rcbuffer = &__pyx_pybuffer_indx;
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_in, &__Pyx_TypeInfo___pyx_t_long_double_complex, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_in.diminfo[0].strides = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_in.diminfo[0].shape = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_in.diminfo[0].suboffsets = __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_psi_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_psi_out, &__Pyx_TypeInfo___pyx_t_long_double_complex, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_psi_out.diminfo[0].strides = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_psi_out.diminfo[0].shape = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_psi_out.diminfo[0].suboffsets = __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.suboffsets[0];
+  {
+    __Pyx_BufFmt_StackElem __pyx_stack[1];
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indx.rcbuffer->pybuffer, (PyObject*)__pyx_v_indx, &__Pyx_TypeInfo_nn___pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t, PyBUF_FORMAT| PyBUF_INDIRECT, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  }
+  __pyx_pybuffernd_indx.diminfo[0].strides = __pyx_pybuffernd_indx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indx.diminfo[0].shape = __pyx_pybuffernd_indx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_indx.diminfo[0].suboffsets = __pyx_pybuffernd_indx.rcbuffer->pybuffer.suboffsets[0];
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":70
+ * def spin_op_inplace(object[matrix_type,ndim=1] psi_in, object[matrix_type,ndim=1] psi_out,
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]             # <<<<<<<<<<<<<<
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_psi_in), __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_3 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_Ns = __pyx_t_3;
+
+  /* "quspin/basis/basis_1d/_constructors/inplace_ops.pyx":71
+ *                     str opstr, object[NP_INT32_t,ndim=1] indx, scalar_type J):
+ *     cdef npy_intp Ns = psi_in.shape[0]
+ *     return spin_op_inplace_c(Ns,&psi_in[0],&psi_out[0],opstr,&indx[0],J)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_4 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_4 < 0) {
+    __pyx_t_4 += __pyx_pybuffernd_psi_in.diminfo[0].shape;
+    if (unlikely(__pyx_t_4 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_4 >= __pyx_pybuffernd_psi_in.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_6 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_6 < 0) {
+    __pyx_t_6 += __pyx_pybuffernd_psi_out.diminfo[0].shape;
+    if (unlikely(__pyx_t_6 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_6 >= __pyx_pybuffernd_psi_out.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_7 = 0;
+  __pyx_t_5 = -1;
+  if (__pyx_t_7 < 0) {
+    __pyx_t_7 += __pyx_pybuffernd_indx.diminfo[0].shape;
+    if (unlikely(__pyx_t_7 < 0)) __pyx_t_5 = 0;
+  } else if (unlikely(__pyx_t_7 >= __pyx_pybuffernd_indx.diminfo[0].shape)) __pyx_t_5 = 0;
+  if (unlikely(__pyx_t_5 != -1)) {
+    __Pyx_RaiseBufferIndexError(__pyx_t_5);
+    __PYX_ERR(0, 71, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_fuse_5__pyx_f_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_spin_op_inplace_c(__pyx_v_Ns, (&(*__Pyx_BufPtrFull1d(__pyx_t_long_double_complex *, __pyx_pybuffernd_psi_in.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_psi_in.diminfo[0].strides, __pyx_pybuffernd_psi_in.diminfo[0].suboffsets))), (&(*__Pyx_BufPtrFull1d(__pyx_t_long_double_complex *, __pyx_pybuffernd_psi_out.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_psi_out.diminfo[0].strides, __pyx_pybuffernd_psi_out.diminfo[0].suboffsets))), __pyx_v_opstr, (&(*__Pyx_BufPtrFull1d(__pyx_t_6quspin_5basis_8basis_1d_13_constructors_5types_NP_INT32_t *, __pyx_pybuffernd_indx.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_indx.diminfo[0].strides, __pyx_pybuffernd_indx.diminfo[0].suboffsets))), __pyx_v_J); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -18871,6 +23602,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
   {&__pyx_n_s_defaults, __pyx_k_defaults, sizeof(__pyx_k_defaults), 0, 0, 1, 1},
+  {&__pyx_n_s_double, __pyx_k_double, sizeof(__pyx_k_double), 0, 0, 1, 1},
+  {&__pyx_kp_s_double_complex, __pyx_k_double_complex, sizeof(__pyx_k_double_complex), 0, 0, 1, 0},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
@@ -18878,6 +23611,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
   {&__pyx_n_s_float, __pyx_k_float, sizeof(__pyx_k_float), 0, 0, 1, 1},
+  {&__pyx_kp_s_float_complex, __pyx_k_float_complex, sizeof(__pyx_k_float_complex), 0, 0, 1, 0},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
   {&__pyx_n_u_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 0, 1},
@@ -18890,6 +23624,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
   {&__pyx_n_s_kind, __pyx_k_kind, sizeof(__pyx_k_kind), 0, 0, 1, 1},
   {&__pyx_n_s_kwargs, __pyx_k_kwargs, sizeof(__pyx_k_kwargs), 0, 0, 1, 1},
+  {&__pyx_kp_s_long_double, __pyx_k_long_double, sizeof(__pyx_k_long_double), 0, 0, 1, 0},
+  {&__pyx_kp_s_long_double_complex, __pyx_k_long_double_complex, sizeof(__pyx_k_long_double_complex), 0, 0, 1, 0},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
@@ -19456,6 +24192,31 @@ PyMODINIT_FUNC PyInit_inplace_ops(void)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_float, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_5spin_op_inplace, 0, __pyx_n_s_spin_op_inplace, NULL, __pyx_n_s_quspin_basis_basis_1d__construct, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_double, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_7spin_op_inplace, 0, __pyx_n_s_spin_op_inplace, NULL, __pyx_n_s_quspin_basis_basis_1d__construct, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_long_double, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_9spin_op_inplace, 0, __pyx_n_s_spin_op_inplace, NULL, __pyx_n_s_quspin_basis_basis_1d__construct, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_float_complex, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_4__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_11spin_op_inplace, 0, __pyx_n_s_spin_op_inplace, NULL, __pyx_n_s_quspin_basis_basis_1d__construct, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_double_complex, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_5__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_13spin_op_inplace, 0, __pyx_n_s_spin_op_inplace, NULL, __pyx_n_s_quspin_basis_basis_1d__construct, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_long_double_complex, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_mdef_6quspin_5basis_8basis_1d_13_constructors_11inplace_ops_1spin_op_inplace, 0, __pyx_n_s_spin_op_inplace, NULL, __pyx_n_s_quspin_basis_basis_1d__construct, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -23526,474 +28287,119 @@ __pyx_fail:
     return result;
 }
 
-/* FromPy */
-                static __pyx_t_long_double_complex __Pyx_PyComplex_As___pyx_t_long_double_complex(PyObject* o) {
-    Py_complex cval;
-#if !CYTHON_COMPILING_IN_PYPY
-    if (PyComplex_CheckExact(o))
-        cval = ((PyComplexObject *)o)->cval;
-    else
-#endif
-        cval = PyComplex_AsCComplex(o);
-    return __pyx_t_long_double_complex_from_parts(
-               (long double)cval.real,
-               (long double)cval.imag);
+/* ObjectToMemviewSlice */
+                static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyObject *obj) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS, 1,
+                                                 &__Pyx_TypeInfo_double, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
-/* CIntToPy */
-                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value) {
-    const Py_intptr_t neg_one = (Py_intptr_t) -1, const_zero = (Py_intptr_t) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(Py_intptr_t) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(Py_intptr_t) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(Py_intptr_t) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
+/* ObjectToMemviewSlice */
+                static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_long__double(PyObject *obj) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
     }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(Py_intptr_t),
-                                     little, !is_unsigned);
-    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS, 1,
+                                                 &__Pyx_TypeInfo_long__double, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
-/* CIntFromPyVerify */
-                #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
-    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
-#define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
-    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
-#define __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, exc)\
-    {\
-        func_type value = func_value;\
-        if (sizeof(target_type) < sizeof(func_type)) {\
-            if (unlikely(value != (func_type) (target_type) value)) {\
-                func_type zero = 0;\
-                if (exc && unlikely(value == (func_type)-1 && PyErr_Occurred()))\
-                    return (target_type) -1;\
-                if (is_unsigned && unlikely(value < zero))\
-                    goto raise_neg_overflow;\
-                else\
-                    goto raise_overflow;\
-            }\
-        }\
-        return (target_type) value;\
+/* ObjectToMemviewSlice */
+                static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(PyObject *obj) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
     }
-
-/* Declarations */
-                #if CYTHON_CCOMPLEX
-  #ifdef __cplusplus
-    static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double x, long double y) {
-      return ::std::complex< long double >(x, y);
-    }
-  #else
-    static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double x, long double y) {
-      return x + y*(__pyx_t_long_double_complex)_Complex_I;
-    }
-  #endif
-#else
-    static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double x, long double y) {
-      __pyx_t_long_double_complex z;
-      z.real = x;
-      z.imag = y;
-      return z;
-    }
-#endif
-
-/* Arithmetic */
-                #if CYTHON_CCOMPLEX
-#else
-    static CYTHON_INLINE int __Pyx_c_eq_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-       return (a.real == b.real) && (a.imag == b.imag);
-    }
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_sum_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-        __pyx_t_long_double_complex z;
-        z.real = a.real + b.real;
-        z.imag = a.imag + b.imag;
-        return z;
-    }
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_diff_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-        __pyx_t_long_double_complex z;
-        z.real = a.real - b.real;
-        z.imag = a.imag - b.imag;
-        return z;
-    }
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_prod_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-        __pyx_t_long_double_complex z;
-        z.real = a.real * b.real - a.imag * b.imag;
-        z.imag = a.real * b.imag + a.imag * b.real;
-        return z;
-    }
-    #if 1
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_quot_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-        if (b.imag == 0) {
-            return __pyx_t_long_double_complex_from_parts(a.real / b.real, a.imag / b.real);
-        } else if (fabsl(b.real) >= fabsl(b.imag)) {
-            if (b.real == 0 && b.imag == 0) {
-                return __pyx_t_long_double_complex_from_parts(a.real / b.real, a.imag / b.imag);
-            } else {
-                long double r = b.imag / b.real;
-                long double s = 1.0 / (b.real + b.imag * r);
-                return __pyx_t_long_double_complex_from_parts(
-                    (a.real + a.imag * r) * s, (a.imag - a.real * r) * s);
-            }
-        } else {
-            long double r = b.real / b.imag;
-            long double s = 1.0 / (b.imag + b.real * r);
-            return __pyx_t_long_double_complex_from_parts(
-                (a.real * r + a.imag) * s, (a.imag * r - a.real) * s);
-        }
-    }
-    #else
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_quot_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-        if (b.imag == 0) {
-            return __pyx_t_long_double_complex_from_parts(a.real / b.real, a.imag / b.real);
-        } else {
-            long double denom = b.real * b.real + b.imag * b.imag;
-            return __pyx_t_long_double_complex_from_parts(
-                (a.real * b.real + a.imag * b.imag) / denom,
-                (a.imag * b.real - a.real * b.imag) / denom);
-        }
-    }
-    #endif
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_neg_long__double(__pyx_t_long_double_complex a) {
-        __pyx_t_long_double_complex z;
-        z.real = -a.real;
-        z.imag = -a.imag;
-        return z;
-    }
-    static CYTHON_INLINE int __Pyx_c_is_zero_long__double(__pyx_t_long_double_complex a) {
-       return (a.real == 0) && (a.imag == 0);
-    }
-    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_conj_long__double(__pyx_t_long_double_complex a) {
-        __pyx_t_long_double_complex z;
-        z.real =  a.real;
-        z.imag = -a.imag;
-        return z;
-    }
-    #if 1
-        static CYTHON_INLINE long double __Pyx_c_abs_long__double(__pyx_t_long_double_complex z) {
-          #if !defined(HAVE_HYPOT) || defined(_MSC_VER)
-            return sqrtl(z.real*z.real + z.imag*z.imag);
-          #else
-            return hypotl(z.real, z.imag);
-          #endif
-        }
-        static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_pow_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
-            __pyx_t_long_double_complex z;
-            long double r, lnr, theta, z_r, z_theta;
-            if (b.imag == 0 && b.real == (int)b.real) {
-                if (b.real < 0) {
-                    long double denom = a.real * a.real + a.imag * a.imag;
-                    a.real = a.real / denom;
-                    a.imag = -a.imag / denom;
-                    b.real = -b.real;
-                }
-                switch ((int)b.real) {
-                    case 0:
-                        z.real = 1;
-                        z.imag = 0;
-                        return z;
-                    case 1:
-                        return a;
-                    case 2:
-                        z = __Pyx_c_prod_long__double(a, a);
-                        return __Pyx_c_prod_long__double(a, a);
-                    case 3:
-                        z = __Pyx_c_prod_long__double(a, a);
-                        return __Pyx_c_prod_long__double(z, a);
-                    case 4:
-                        z = __Pyx_c_prod_long__double(a, a);
-                        return __Pyx_c_prod_long__double(z, z);
-                }
-            }
-            if (a.imag == 0) {
-                if (a.real == 0) {
-                    return a;
-                } else if (b.imag == 0) {
-                    z.real = powl(a.real, b.real);
-                    z.imag = 0;
-                    return z;
-                } else if (a.real > 0) {
-                    r = a.real;
-                    theta = 0;
-                } else {
-                    r = -a.real;
-                    theta = atan2l(0, -1);
-                }
-            } else {
-                r = __Pyx_c_abs_long__double(a);
-                theta = atan2l(a.imag, a.real);
-            }
-            lnr = logl(r);
-            z_r = expl(lnr * b.real - theta * b.imag);
-            z_theta = theta * b.real + lnr * b.imag;
-            z.real = z_r * cosl(z_theta);
-            z.imag = z_r * sinl(z_theta);
-            return z;
-        }
-    #endif
-#endif
-
-/* CIntToPy */
-                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) -1, const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS, 1,
+                                                 &__Pyx_TypeInfo___pyx_t_float_complex, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
-/* CIntToPy */
-                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_int32(npy_int32 value) {
-    const npy_int32 neg_one = (npy_int32) -1, const_zero = (npy_int32) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(npy_int32) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(npy_int32) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(npy_int32) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(npy_int32) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(npy_int32) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
+/* ObjectToMemviewSlice */
+                static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(PyObject *obj) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
     }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(npy_int32),
-                                     little, !is_unsigned);
-    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS, 1,
+                                                 &__Pyx_TypeInfo___pyx_t_double_complex, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
-/* Declarations */
-                #if CYTHON_CCOMPLEX
-  #ifdef __cplusplus
-    static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
-      return ::std::complex< double >(x, y);
+/* ObjectToMemviewSlice */
+                static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_long_double_complex(PyObject *obj) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
     }
-  #else
-    static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
-      return x + y*(__pyx_t_double_complex)_Complex_I;
-    }
-  #endif
-#else
-    static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
-      __pyx_t_double_complex z;
-      z.real = x;
-      z.imag = y;
-      return z;
-    }
-#endif
-
-/* Arithmetic */
-                #if CYTHON_CCOMPLEX
-#else
-    static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-       return (a.real == b.real) && (a.imag == b.imag);
-    }
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-        __pyx_t_double_complex z;
-        z.real = a.real + b.real;
-        z.imag = a.imag + b.imag;
-        return z;
-    }
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-        __pyx_t_double_complex z;
-        z.real = a.real - b.real;
-        z.imag = a.imag - b.imag;
-        return z;
-    }
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-        __pyx_t_double_complex z;
-        z.real = a.real * b.real - a.imag * b.imag;
-        z.imag = a.real * b.imag + a.imag * b.real;
-        return z;
-    }
-    #if 1
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-        if (b.imag == 0) {
-            return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
-        } else if (fabs(b.real) >= fabs(b.imag)) {
-            if (b.real == 0 && b.imag == 0) {
-                return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.imag);
-            } else {
-                double r = b.imag / b.real;
-                double s = 1.0 / (b.real + b.imag * r);
-                return __pyx_t_double_complex_from_parts(
-                    (a.real + a.imag * r) * s, (a.imag - a.real * r) * s);
-            }
-        } else {
-            double r = b.real / b.imag;
-            double s = 1.0 / (b.imag + b.real * r);
-            return __pyx_t_double_complex_from_parts(
-                (a.real * r + a.imag) * s, (a.imag * r - a.real) * s);
-        }
-    }
-    #else
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-        if (b.imag == 0) {
-            return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
-        } else {
-            double denom = b.real * b.real + b.imag * b.imag;
-            return __pyx_t_double_complex_from_parts(
-                (a.real * b.real + a.imag * b.imag) / denom,
-                (a.imag * b.real - a.real * b.imag) / denom);
-        }
-    }
-    #endif
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex a) {
-        __pyx_t_double_complex z;
-        z.real = -a.real;
-        z.imag = -a.imag;
-        return z;
-    }
-    static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex a) {
-       return (a.real == 0) && (a.imag == 0);
-    }
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex a) {
-        __pyx_t_double_complex z;
-        z.real =  a.real;
-        z.imag = -a.imag;
-        return z;
-    }
-    #if 1
-        static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex z) {
-          #if !defined(HAVE_HYPOT) || defined(_MSC_VER)
-            return sqrt(z.real*z.real + z.imag*z.imag);
-          #else
-            return hypot(z.real, z.imag);
-          #endif
-        }
-        static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-            __pyx_t_double_complex z;
-            double r, lnr, theta, z_r, z_theta;
-            if (b.imag == 0 && b.real == (int)b.real) {
-                if (b.real < 0) {
-                    double denom = a.real * a.real + a.imag * a.imag;
-                    a.real = a.real / denom;
-                    a.imag = -a.imag / denom;
-                    b.real = -b.real;
-                }
-                switch ((int)b.real) {
-                    case 0:
-                        z.real = 1;
-                        z.imag = 0;
-                        return z;
-                    case 1:
-                        return a;
-                    case 2:
-                        z = __Pyx_c_prod_double(a, a);
-                        return __Pyx_c_prod_double(a, a);
-                    case 3:
-                        z = __Pyx_c_prod_double(a, a);
-                        return __Pyx_c_prod_double(z, a);
-                    case 4:
-                        z = __Pyx_c_prod_double(a, a);
-                        return __Pyx_c_prod_double(z, z);
-                }
-            }
-            if (a.imag == 0) {
-                if (a.real == 0) {
-                    return a;
-                } else if (b.imag == 0) {
-                    z.real = pow(a.real, b.real);
-                    z.imag = 0;
-                    return z;
-                } else if (a.real > 0) {
-                    r = a.real;
-                    theta = 0;
-                } else {
-                    r = -a.real;
-                    theta = atan2(0, -1);
-                }
-            } else {
-                r = __Pyx_c_abs_double(a);
-                theta = atan2(a.imag, a.real);
-            }
-            lnr = log(r);
-            z_r = exp(lnr * b.real - theta * b.imag);
-            z_theta = theta * b.real + lnr * b.imag;
-            z.real = z_r * cos(z_theta);
-            z.imag = z_r * sin(z_theta);
-            return z;
-        }
-    #endif
-#endif
-
-/* CIntToPy */
-                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
-    const int neg_one = (int) -1, const_zero = (int) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(int) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(int) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(int) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(int),
-                                     little, !is_unsigned);
-    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
+                                                 PyBUF_RECORDS, 1,
+                                                 &__Pyx_TypeInfo___pyx_t_long_double_complex, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
 }
 
 /* Declarations */
@@ -24150,6 +28556,476 @@ __pyx_fail:
         }
     #endif
 #endif
+
+/* Declarations */
+                #if CYTHON_CCOMPLEX
+  #ifdef __cplusplus
+    static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
+      return ::std::complex< double >(x, y);
+    }
+  #else
+    static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
+      return x + y*(__pyx_t_double_complex)_Complex_I;
+    }
+  #endif
+#else
+    static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
+      __pyx_t_double_complex z;
+      z.real = x;
+      z.imag = y;
+      return z;
+    }
+#endif
+
+/* Arithmetic */
+                #if CYTHON_CCOMPLEX
+#else
+    static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+       return (a.real == b.real) && (a.imag == b.imag);
+    }
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+        __pyx_t_double_complex z;
+        z.real = a.real + b.real;
+        z.imag = a.imag + b.imag;
+        return z;
+    }
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+        __pyx_t_double_complex z;
+        z.real = a.real - b.real;
+        z.imag = a.imag - b.imag;
+        return z;
+    }
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+        __pyx_t_double_complex z;
+        z.real = a.real * b.real - a.imag * b.imag;
+        z.imag = a.real * b.imag + a.imag * b.real;
+        return z;
+    }
+    #if 1
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+        if (b.imag == 0) {
+            return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
+        } else if (fabs(b.real) >= fabs(b.imag)) {
+            if (b.real == 0 && b.imag == 0) {
+                return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.imag);
+            } else {
+                double r = b.imag / b.real;
+                double s = 1.0 / (b.real + b.imag * r);
+                return __pyx_t_double_complex_from_parts(
+                    (a.real + a.imag * r) * s, (a.imag - a.real * r) * s);
+            }
+        } else {
+            double r = b.real / b.imag;
+            double s = 1.0 / (b.imag + b.real * r);
+            return __pyx_t_double_complex_from_parts(
+                (a.real * r + a.imag) * s, (a.imag * r - a.real) * s);
+        }
+    }
+    #else
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+        if (b.imag == 0) {
+            return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
+        } else {
+            double denom = b.real * b.real + b.imag * b.imag;
+            return __pyx_t_double_complex_from_parts(
+                (a.real * b.real + a.imag * b.imag) / denom,
+                (a.imag * b.real - a.real * b.imag) / denom);
+        }
+    }
+    #endif
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex a) {
+        __pyx_t_double_complex z;
+        z.real = -a.real;
+        z.imag = -a.imag;
+        return z;
+    }
+    static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex a) {
+       return (a.real == 0) && (a.imag == 0);
+    }
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex a) {
+        __pyx_t_double_complex z;
+        z.real =  a.real;
+        z.imag = -a.imag;
+        return z;
+    }
+    #if 1
+        static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex z) {
+          #if !defined(HAVE_HYPOT) || defined(_MSC_VER)
+            return sqrt(z.real*z.real + z.imag*z.imag);
+          #else
+            return hypot(z.real, z.imag);
+          #endif
+        }
+        static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+            __pyx_t_double_complex z;
+            double r, lnr, theta, z_r, z_theta;
+            if (b.imag == 0 && b.real == (int)b.real) {
+                if (b.real < 0) {
+                    double denom = a.real * a.real + a.imag * a.imag;
+                    a.real = a.real / denom;
+                    a.imag = -a.imag / denom;
+                    b.real = -b.real;
+                }
+                switch ((int)b.real) {
+                    case 0:
+                        z.real = 1;
+                        z.imag = 0;
+                        return z;
+                    case 1:
+                        return a;
+                    case 2:
+                        z = __Pyx_c_prod_double(a, a);
+                        return __Pyx_c_prod_double(a, a);
+                    case 3:
+                        z = __Pyx_c_prod_double(a, a);
+                        return __Pyx_c_prod_double(z, a);
+                    case 4:
+                        z = __Pyx_c_prod_double(a, a);
+                        return __Pyx_c_prod_double(z, z);
+                }
+            }
+            if (a.imag == 0) {
+                if (a.real == 0) {
+                    return a;
+                } else if (b.imag == 0) {
+                    z.real = pow(a.real, b.real);
+                    z.imag = 0;
+                    return z;
+                } else if (a.real > 0) {
+                    r = a.real;
+                    theta = 0;
+                } else {
+                    r = -a.real;
+                    theta = atan2(0, -1);
+                }
+            } else {
+                r = __Pyx_c_abs_double(a);
+                theta = atan2(a.imag, a.real);
+            }
+            lnr = log(r);
+            z_r = exp(lnr * b.real - theta * b.imag);
+            z_theta = theta * b.real + lnr * b.imag;
+            z.real = z_r * cos(z_theta);
+            z.imag = z_r * sin(z_theta);
+            return z;
+        }
+    #endif
+#endif
+
+/* Declarations */
+                #if CYTHON_CCOMPLEX
+  #ifdef __cplusplus
+    static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double x, long double y) {
+      return ::std::complex< long double >(x, y);
+    }
+  #else
+    static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double x, long double y) {
+      return x + y*(__pyx_t_long_double_complex)_Complex_I;
+    }
+  #endif
+#else
+    static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_from_parts(long double x, long double y) {
+      __pyx_t_long_double_complex z;
+      z.real = x;
+      z.imag = y;
+      return z;
+    }
+#endif
+
+/* Arithmetic */
+                #if CYTHON_CCOMPLEX
+#else
+    static CYTHON_INLINE int __Pyx_c_eq_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+       return (a.real == b.real) && (a.imag == b.imag);
+    }
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_sum_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+        __pyx_t_long_double_complex z;
+        z.real = a.real + b.real;
+        z.imag = a.imag + b.imag;
+        return z;
+    }
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_diff_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+        __pyx_t_long_double_complex z;
+        z.real = a.real - b.real;
+        z.imag = a.imag - b.imag;
+        return z;
+    }
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_prod_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+        __pyx_t_long_double_complex z;
+        z.real = a.real * b.real - a.imag * b.imag;
+        z.imag = a.real * b.imag + a.imag * b.real;
+        return z;
+    }
+    #if 1
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_quot_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+        if (b.imag == 0) {
+            return __pyx_t_long_double_complex_from_parts(a.real / b.real, a.imag / b.real);
+        } else if (fabsl(b.real) >= fabsl(b.imag)) {
+            if (b.real == 0 && b.imag == 0) {
+                return __pyx_t_long_double_complex_from_parts(a.real / b.real, a.imag / b.imag);
+            } else {
+                long double r = b.imag / b.real;
+                long double s = 1.0 / (b.real + b.imag * r);
+                return __pyx_t_long_double_complex_from_parts(
+                    (a.real + a.imag * r) * s, (a.imag - a.real * r) * s);
+            }
+        } else {
+            long double r = b.real / b.imag;
+            long double s = 1.0 / (b.imag + b.real * r);
+            return __pyx_t_long_double_complex_from_parts(
+                (a.real * r + a.imag) * s, (a.imag * r - a.real) * s);
+        }
+    }
+    #else
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_quot_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+        if (b.imag == 0) {
+            return __pyx_t_long_double_complex_from_parts(a.real / b.real, a.imag / b.real);
+        } else {
+            long double denom = b.real * b.real + b.imag * b.imag;
+            return __pyx_t_long_double_complex_from_parts(
+                (a.real * b.real + a.imag * b.imag) / denom,
+                (a.imag * b.real - a.real * b.imag) / denom);
+        }
+    }
+    #endif
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_neg_long__double(__pyx_t_long_double_complex a) {
+        __pyx_t_long_double_complex z;
+        z.real = -a.real;
+        z.imag = -a.imag;
+        return z;
+    }
+    static CYTHON_INLINE int __Pyx_c_is_zero_long__double(__pyx_t_long_double_complex a) {
+       return (a.real == 0) && (a.imag == 0);
+    }
+    static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_conj_long__double(__pyx_t_long_double_complex a) {
+        __pyx_t_long_double_complex z;
+        z.real =  a.real;
+        z.imag = -a.imag;
+        return z;
+    }
+    #if 1
+        static CYTHON_INLINE long double __Pyx_c_abs_long__double(__pyx_t_long_double_complex z) {
+          #if !defined(HAVE_HYPOT) || defined(_MSC_VER)
+            return sqrtl(z.real*z.real + z.imag*z.imag);
+          #else
+            return hypotl(z.real, z.imag);
+          #endif
+        }
+        static CYTHON_INLINE __pyx_t_long_double_complex __Pyx_c_pow_long__double(__pyx_t_long_double_complex a, __pyx_t_long_double_complex b) {
+            __pyx_t_long_double_complex z;
+            long double r, lnr, theta, z_r, z_theta;
+            if (b.imag == 0 && b.real == (int)b.real) {
+                if (b.real < 0) {
+                    long double denom = a.real * a.real + a.imag * a.imag;
+                    a.real = a.real / denom;
+                    a.imag = -a.imag / denom;
+                    b.real = -b.real;
+                }
+                switch ((int)b.real) {
+                    case 0:
+                        z.real = 1;
+                        z.imag = 0;
+                        return z;
+                    case 1:
+                        return a;
+                    case 2:
+                        z = __Pyx_c_prod_long__double(a, a);
+                        return __Pyx_c_prod_long__double(a, a);
+                    case 3:
+                        z = __Pyx_c_prod_long__double(a, a);
+                        return __Pyx_c_prod_long__double(z, a);
+                    case 4:
+                        z = __Pyx_c_prod_long__double(a, a);
+                        return __Pyx_c_prod_long__double(z, z);
+                }
+            }
+            if (a.imag == 0) {
+                if (a.real == 0) {
+                    return a;
+                } else if (b.imag == 0) {
+                    z.real = powl(a.real, b.real);
+                    z.imag = 0;
+                    return z;
+                } else if (a.real > 0) {
+                    r = a.real;
+                    theta = 0;
+                } else {
+                    r = -a.real;
+                    theta = atan2l(0, -1);
+                }
+            } else {
+                r = __Pyx_c_abs_long__double(a);
+                theta = atan2l(a.imag, a.real);
+            }
+            lnr = logl(r);
+            z_r = expl(lnr * b.real - theta * b.imag);
+            z_theta = theta * b.real + lnr * b.imag;
+            z.real = z_r * cosl(z_theta);
+            z.imag = z_r * sinl(z_theta);
+            return z;
+        }
+    #endif
+#endif
+
+/* FromPy */
+                static __pyx_t_long_double_complex __Pyx_PyComplex_As___pyx_t_long_double_complex(PyObject* o) {
+    Py_complex cval;
+#if !CYTHON_COMPILING_IN_PYPY
+    if (PyComplex_CheckExact(o))
+        cval = ((PyComplexObject *)o)->cval;
+    else
+#endif
+        cval = PyComplex_AsCComplex(o);
+    return __pyx_t_long_double_complex_from_parts(
+               (long double)cval.real,
+               (long double)cval.imag);
+}
+
+/* CIntToPy */
+                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_Py_intptr_t(Py_intptr_t value) {
+    const Py_intptr_t neg_one = (Py_intptr_t) -1, const_zero = (Py_intptr_t) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(Py_intptr_t) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(Py_intptr_t) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(Py_intptr_t) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(Py_intptr_t) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(Py_intptr_t),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntFromPyVerify */
+                #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
+    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
+#define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
+    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
+#define __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, exc)\
+    {\
+        func_type value = func_value;\
+        if (sizeof(target_type) < sizeof(func_type)) {\
+            if (unlikely(value != (func_type) (target_type) value)) {\
+                func_type zero = 0;\
+                if (exc && unlikely(value == (func_type)-1 && PyErr_Occurred()))\
+                    return (target_type) -1;\
+                if (is_unsigned && unlikely(value < zero))\
+                    goto raise_neg_overflow;\
+                else\
+                    goto raise_overflow;\
+            }\
+        }\
+        return (target_type) value;\
+    }
+
+/* CIntToPy */
+                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) -1, const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_int32(npy_int32 value) {
+    const npy_int32 neg_one = (npy_int32) -1, const_zero = (npy_int32) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(npy_int32) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(npy_int32) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(npy_int32) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(npy_int32) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(npy_int32) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(npy_int32),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+                static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+    const int neg_one = (int) -1, const_zero = (int) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
+}
 
 /* CIntToPy */
                 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_enum__NPY_TYPES(enum NPY_TYPES value) {
