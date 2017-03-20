@@ -3513,7 +3513,8 @@ class ops_dict(object):
 			return NotImplemented
 
 	def __add__(self,other):
-		new = self.copy()
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
 		new += other
 		return new
 
@@ -3534,8 +3535,8 @@ class ops_dict(object):
 			return NotImplemented
 
 	def __sub__(self,other):
-		result_dtype = 
-		new = self.copy()
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
 		new -= other
 		return new		
 
@@ -3549,7 +3550,8 @@ class ops_dict(object):
 			return self
 
 	def __mul__(self,other):
-		new = self.copy()
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
 		new *= other
 		return new
 
@@ -3562,8 +3564,9 @@ class ops_dict(object):
 
 			return self
 
-	def __div__(self,other)
-		new = self.copy()
+	def __div__(self,other):
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
 		new /= other
 		return new
 
