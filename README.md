@@ -10,34 +10,33 @@ For a more indepth introduction to the package, check out our paper: https://sci
 # **Contents**
 --------
 * [Installation](#installation)
- * [automatic install](#automatic-install)
- * [manual install](#manual-install)
- * [updating the package](#updating-the-package)
+  * [automatic install](#automatic-install)
+  * [manual install](#manual-install)
+  * [updating the package](#updating-the-package)
 * [Basic package usage](#basic-package-usage)
- * [constructing hamiltonians](#constructing-hamiltonians)
- * [using basis objects](#using-basis-objects)
- * [specifying symmetries](#using-symmetries)
+  * [constructing hamiltonians](#constructing-hamiltonians)
+  * [using basis objects](#using-basis-objects)
+  * [specifying symmetries](#using-symmetries)
 * [List of package functions](#list-of-package-functions) 
- * [operator objects](#operator-objects)
-  * [hamiltonian class](#hamiltonian-class)
-  * [useful hamiltonian functions](#useful-hamiltonian-functions)
-  * [matrix exponential](#exp_op-class)
-  * [HamiltonianOperator class](#hamiltonianoperator-class)
-  * [ops_dict class](#ops_dict-class)
-* [basis objects](#basis-objects)
-  * [spin basis in 1d](#spin\_basis\_1d-class)
-  * [hard-core boson basis in 1d](#hcb\_basis_1d-class)
-  * [boson basis in 1d](#boson\_basis\_1d-class)
-  * [fermion basis in 1d](#fermion\_basis\_1d-class)
-  * [harmonic oscillator basis](#ho\_basis-class)
-  * [tensor basis objects](#tensor\_basis-class)
-  * [photon basis in 1d](#photon\_basis-class)
-  * [symmetry and hermiticity checks](#symmetry-and-hermiticity-checks)
-  * [methods for basis objects](#methods-for-basis-objects)
-* [tools](#tools)
- * [measusrements](#measurements)
- * [periodically driven systems](#periodically-driven-systems)
- * [block diagonalisation](#block-diagonalisation)
+  * [operator objects](#operator-objects)
+    * [hamiltonian class](#hamiltonian-class)
+    * [useful hamiltonian functions](#useful-hamiltonian-functions)
+    * [matrix exponential](#exp_op-class)
+    * [HamiltonianOperator class](#hamiltonianoperator-class)
+    * [ops_dict class](#ops_dict-class)
+  * [basis objects](#basis-objects)
+    * [spins basis in 1d](#spins-basis-in-1d)
+    * [boson basis in 1d](#boson-basis-in-1d)
+    * [fermion basis in 1d](#fermion-basis-in-1d)
+    * [harmonic oscillator basis](#harmonic-osccilator-basis)
+    * [tensor basis](#tensor-basis)
+    * [photon basis](#photon-basis)
+    * [symmetry and hermiticity checks](#symmetry-and-hermiticity-checks)
+    * [methods for basis objects](#methods-for-basis-objects)
+  * [tools](#tools)
+    * [measusrements](#measurements)
+    * [periodically driven systems](#periodically-driven-systems)
+    * [block diagonalisation](#block-diagonalisation)
      
 # **Installation**
 
@@ -719,7 +718,7 @@ O_dict. eigvalsh(pars={},**eigvalsh_args)
 
 The `basis` objects provide a way of constructing all the necessary information needed to construct a sparse Hamiltonian from a list of operators. All `basis` objects are derived from the same `base` object class and have mostly the same functionality. There are two subtypes of the `base` object class: the first type consists of `basis` objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, `basis` type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style `basis` type. For instance, `basis` type two can take two spin-chain bases and create the corresponding tensor product basis out of them.   
 
-### **spins in 1 dimension**
+### **spins basis in 1d**
 
 The `spin_basis_1d` class provides everything necessary to create the `hamiltonian` for any spin-$S$ system in 1d with $S=1/2,1,3/2,2,5/2,3,\dots$. The available operators one can use are the standard spin operators: ```I,+,-,z``` which either represent the Pauli operators (matrices) or spin-1/2 operators. Additionally, for spin-$1/2$ one can also define the operators ```x,y``` which are always constructed as ```+/- = x +/- i y```.
 
@@ -770,7 +769,7 @@ basis = spin_basis_1d(L,S="1/2",**symmetry_blocks)
 
 
 
-### **bosons in 1 dimension**
+### **boson basis in 1d**
 
 The `boson_basis_1d` class provides everything necessary to create the `hamiltonian` for a system of bosons in 1d. The available operators one can use are the standard particle operators: ```I,+,-,n``` which define the raising and lowering operators, the number operator, and the higher spin ```z``` operator ```z = n - (sps-1)/2``` with ```sps``` denoting the total number of states per site. Note that for hard-core bosons ```sps=2```.
 
@@ -818,7 +817,7 @@ basis = boson_basis_1d(L,sps=None,**symmetry_blocks)
 * _.sps: returns integer with number of states per site
 
 
-### **fermion_basis_1d class**
+### **fermion basis in 1d**
 
 The `fermion_basis_1d` class provides everything necessary to create the `hamiltonian` for a system of spinless fermions in 1d. The available operators one can use are the standard particle operators: ```I,+,-,n``` which define the raising and lowering operators, the number operator, and the spin-1/2 ```z``` operator ```z=n+1/2```. 
 
@@ -864,7 +863,7 @@ basis = fermion_basis_1d(L,**symmetry_blocks)
 * _.sps: returns integer with number of states per site (sps=2 for spinless fermions)
 
 
-### **ho_basis class**
+### **harmonic osccilator basis**
 This basis implements a single harmonic oscillator mode. The available operators are ```+,-,n,I```, corresponding to the raising operator, lowering operator, the number operator, and the identity, respectively.  
 
 Usage of `ho_basis`:
@@ -885,7 +884,7 @@ basis = ho_basis(Np)
 
 * _.operators: returns string which lists information about the operators of this basis class. 
 
-### **tensor_basis class** 
+### **tensor basis** 
 
 The `tensor_basis` class combines two `basis` objects `basis1` and `basis2` together into a new `basis` object which can be then used, e.g., to create the Hamiltonian over the tensoer product Hilbert space:
 
@@ -904,7 +903,7 @@ indx = [1,5]
 ```
 If there are no operator strings on either side of the '|' then an identity operator is assumed. Thus, '`+|`' stands for the operator $\sigma^+_1 = \sigma^+_1\otimes I$, while '`|+`' stands for the operator $\sigma^+_2 = I\otimes\sigma^+_2$.
 
-### **photon_basis class** 
+### **photon basis** 
 
 This class allows the user to define a basis which couples to a single photon mode. The operators for the photon sector are the same as the harmonic oscillator basis: '+', '-', 'n', and 'I'. 
 
