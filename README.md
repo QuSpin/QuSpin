@@ -727,8 +727,8 @@ It is also possible to create the `hamiltonian` in a given symmetry-reduced bloc
 * magnetization symmetries: 
  * Pick single magnetization sector by number of up spins: ```Nup=0,1,...,L``` 
  * Pick a selection magnetization sectors: ```Nup = [0,1,...]```
- * Pick magnetization sector by magnetization density ( $-S <= M <= S $, rounding to nearest integer): ```M=0.0,0.3,etc...```
- * 
+ * Pick magnetization sector by magnetization density ( $-S <= M <= S $, rounding to nearest integer): ```M=0.0,0.3,etc...``` 
+ 
  * If ```Nup``` and ```M``` are ```None``` this picks all magnetization sectors. 
 * parity (reflection about middle of chain) symmetry: ```pblock = +/- 1```
 * spin inversion symmetry: ```zblock = +/- 1```
