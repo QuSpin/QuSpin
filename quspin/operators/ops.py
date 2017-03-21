@@ -426,6 +426,10 @@ class hamiltonian(object):
 		return self._shape
 
 	@property
+	def shape(self):
+		return self._shape
+
+	@property
 	def is_dense(self):
 		return self._is_dense
 
@@ -1006,9 +1010,8 @@ class hamiltonian(object):
 			return _np.asarray([])
 
 		H_dense = self.todense(time=time)
-		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
-#		eigvalsh_args["overwrite_a"] = True
-#		E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		eigvalsh_args["overwrite_a"] = True
+		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
@@ -1517,7 +1520,7 @@ class hamiltonian(object):
 
 	def __rmul__(self,other): # other * self
 		if isinstance(other,hamiltonian):
-#			self._hamiltonian_checks(other,casting="unsafe")
+#			self._mat_checks(other,casting="unsafe")
 			return self._rmul_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1549,7 +1552,7 @@ class hamiltonian(object):
 
 	def __imul__(self,other): # self *= other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other)
+			self._mat_checks(other)
 			return self._imul_hamiltonian(other)
 
 		
@@ -1628,7 +1631,7 @@ class hamiltonian(object):
 
 	def __add__(self,other): # self + other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other,casting="unsafe")
+			self._mat_checks(other,casting="unsafe")
 			return self._add_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1668,7 +1671,7 @@ class hamiltonian(object):
 
 	def __iadd__(self,other): # self += other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other)
+			self._mat_checks(other)
 			return self._iadd_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1697,7 +1700,7 @@ class hamiltonian(object):
 
 	def __sub__(self,other): # self - other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other,casting="unsafe")
+			self._mat_checks(other,casting="unsafe")
 			return self._sub_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1730,7 +1733,7 @@ class hamiltonian(object):
 
 	def __isub__(self,other): # self -= other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other)
+			self._mat_checks(other)
 			return self._isub_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1765,15 +1768,6 @@ class hamiltonian(object):
 				raise ValueError('shapes do not match')
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 				raise ValueError('cannot cast types')
-
-
-	def _hamiltonian_checks(self,other,casting="same_kind"):
-			if other._shape != self._shape: # only accepts square matricies 
-				raise ValueError('shapes do not match')
-			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
-				raise ValueError('cannot cast types')
-		
-
 
 
 
