@@ -529,11 +529,11 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
 	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj(),optimal=True))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
 	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj(),optimal=True))
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj(),optimal=True)),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj(),optimal=True))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 
 
 
@@ -569,11 +569,11 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	rho_v = rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B)) 
 
 	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v,optimal=True))
+		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
 	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v,optimal=True))
+		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v,optimal=True)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v,optimal=True))
+		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
 
 
 
