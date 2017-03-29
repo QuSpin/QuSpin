@@ -1121,7 +1121,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 		time = times[0]
 
 		for key,Obs in obs_dict.items():
-			psi_l = Obs.dot(psi)
+			psi_l = _np.squeeze(_np.asarray(Obs.dot(psi)))
 			val = _np.vdot(psi,psi_l).real
 			dtype = _np.dtype(val)
 			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
@@ -1155,7 +1155,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in obs_dict.items():
-				psi_l = Obs.dot(psi)
+				psi_l = _np.squeeze(_np.asarray(Obs.dot(psi)))
 				val = _np.vdot(psi,psi_l).real
 				Expt_time[key][m+1] = val 
 
