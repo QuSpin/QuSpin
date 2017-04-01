@@ -203,6 +203,42 @@ class photon_basis(tensor_basis):
 
 
 	def partial_trace(self,state,sub_sys_A="particles",state_type="pure"):
+		"""
+		This function calculates the reduced density matrix (DM), performing a partial trace 
+		of a quantum state.
+
+		RETURNS: reduced DM
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) flag to define the subsystem retained after the partial trace is taken.
+
+				-- 'particles': (default) subsystem is the chain
+
+				-- 'photons': str, subsystem is the photons
+
+				-- 'both': str, DM corresponding to both photons and particles are returned.
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		"""
+
 		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
 
 		if sub_sys_A not in tensor_dict:
@@ -265,6 +301,49 @@ class photon_basis(tensor_basis):
 
 
 	def ent_entropy(self,state,state_type="pure",return_rdm=None,sparse=False,alpha=1.0):
+		"""
+		This function calculates the entanglement entropy of the photon and chain subsystems, and 
+		the corresponding reduced density matrix.
+
+		RETURNS: dictionary with keys:
+
+		'Sent': entanglement entropy.
+		'rdm_particles': (optional) reduced density matrix of subsystem A
+		'rdm_photons': (optional) reduced density matrix of subsystem B
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'particles': str, returns reduced DM of photon 
+
+				-- 'photons': str, returns reduced DM of chain
+
+				-- 'both': str, returns reduced DM of both photon and chain
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+
+		"""
+
+
 		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
 		if return_rdm in tensor_dict:
 			result = tensor_basis.ent_entropy(self,state,state_type=state_type,return_rdm=tensor_dict[return_rdm],alpha=alpha,sparse=sparse)

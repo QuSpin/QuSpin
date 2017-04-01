@@ -23,12 +23,12 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
-	This function calculates the entanglement _entropy of a lattice quantum subsystem based on the Singular
-	Value Decomposition (svd).
+	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
+	reduced subsystem. 
 
 	RETURNS:	dictionary with keys:
 
-	'Sent': entanglement _entropy.
+	'Sent': entanglement entropy.
 
 	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
 
@@ -231,7 +231,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	try:
 		N = basis.N
 	except AttributeError:
-		N = basis.chain_N
+		N = basis.particle_N
 
 
 
@@ -248,6 +248,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 		elif len(set(chain_subsys)) < len(chain_subsys):
 			raise TypeError("'subsys' cannot contain repeating site indices!")
+		elif any(not _np.issubdtype(type(s),_np.integer) for s in chain_subsys):
+			raise ValueError("'subsys' must iterable of integers with values in {0,...,L-1}!")
 		elif subsys_ordering:
 			if len(set(chain_subsys))==len(chain_subsys) and sorted(chain_subsys)!=chain_subsys:
 				# if chain subsys is def with unordered sites, order them
@@ -939,7 +941,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 
-def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None):
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1088,8 +1090,9 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 	
 	# calculate observables and Sent
 	Expt_time = {}
-
-	if len(Sent_args) > 0 or basis is not None:
+	calc_Sent = False
+	
+	if len(Sent_args) > 0:
 		if basis is None:
 			raise ValueError("Sent requires basis for calculation")
 		calc_Sent = True
@@ -1106,7 +1109,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = basis.ent_entropy(psi_t,**Sent_args)
+			Sent_time = basis.ent_entropy(psi_t.T,**Sent_args)
 
 
 	else:
@@ -1118,7 +1121,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 		time = times[0]
 
 		for key,Obs in obs_dict.items():
-			psi_l = Obs.dot(psi)
+			psi_l = _np.squeeze(_np.asarray(Obs.dot(psi)))
 			val = _np.vdot(psi,psi_l).real
 			dtype = _np.dtype(val)
 			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
@@ -1149,8 +1152,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None)
 
 			time = times[m+1]
 
+			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
+
 			for key,Obs in obs_dict.items():
-				psi_l = Obs.dot(psi)
+				psi_l = _np.squeeze(_np.asarray(Obs.dot(psi)))
 				val = _np.vdot(psi,psi_l).real
 				Expt_time[key][m+1] = val 
 

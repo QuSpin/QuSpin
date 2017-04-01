@@ -2,7 +2,6 @@ from ..base import basis,MAXPRINT
 from ..base import _lattice_partial_trace_pure
 from ..base import _lattice_partial_trace_mixed
 from ..base import _lattice_partial_trace_sparse_pure
-from ._constructors import op_array_size
 from . import _check_1d_symm as _check
 import numpy as _np
 from numpy import array,cos,sin,exp,pi
@@ -138,7 +137,8 @@ class basis_1d(basis):
 		if type(L) is not int:
 			raise TypeError('L must be integer')
 
-
+		if self.sps < 2:
+			raise ValueError("invalid value for sps, sps >= 2.")
 
 
 		if type(a) is not int:
@@ -178,7 +178,6 @@ class basis_1d(basis):
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
 			self._k = 2*(_np.pi)*a*kblock/L
-
 
 		self._L = L
 		self._Ns = basis_module.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
@@ -230,7 +229,7 @@ class basis_1d(basis):
 			self._op = ops_module.t_p_z_op
 
 			if self._basis_type == _np.object:
-				# if object is basis type then must likely this is for single particle stuff in which case the 
+				# if object is basis type then most likely this is for single particle stuff in which case the 
 				# normalizations need to be large ~ 1000 or more which won't fit in int8/int16.
 				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
 				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
@@ -403,12 +402,11 @@ class basis_1d(basis):
 			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
 			self._N=_np.empty((self._Ns,),dtype=_np.int8)
 			self._op = ops_module.p_z_op
-
+			
 			if (type(Np) is int):
 				self._Ns = basis_module.n_p_z_basis(L,Np,pblock,zblock,self._pars,self._N,self._basis)
 			else:
 				self._Ns = basis_module.p_z_basis(L,pblock,zblock,self._pars,self._N,self._basis)
-
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -444,7 +442,7 @@ class basis_1d(basis):
 				self._Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,self._N,self._basis)
 			else:
 				self._Ns = basis_module.p_basis(L,pblock,self._pars,self._N,self._basis)
-
+				
 			self._N.resize((self._Ns,))
 			self._basis.resize((self._Ns,))
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -643,7 +641,18 @@ class basis_1d(basis):
 		return self._basis.__getitem__(key)
 
 	def index(self,s):
-		return _np.searchsorted(self._basis,s)
+		if type(s) is int:
+			pass
+		elif type(s) is str:
+			s = long(s[::-1],self.sps)
+		else:
+			raise ValueError("s must be integer or state")
+
+		indx = _np.argwhere(self._basis == s)
+		if indx:
+			return _np.squeeze(indx)
+		else:
+			raise ValueError("s must be representive state in basis. ")
 
 	def __iter__(self):
 		return self._basis.__iter__()
@@ -666,7 +675,11 @@ class basis_1d(basis):
 		if self._Ns <= 0:
 			return [],[],[]
 
-		N_op = op_array_size[self._conserved]*self.Ns
+		if self._unique_me:
+			N_op = self.Ns
+		else:
+			N_op = 2*self.Ns
+
 		col = _np.zeros(N_op,dtype=self._basis_type)
 		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
@@ -692,7 +705,6 @@ class basis_1d(basis):
 		zAblock = self._blocks_1d.get("zAblock")
 		zBblock = self._blocks_1d.get("zBblock")
 		pzblock = self._blocks_1d.get("pzblock")
-
 
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			c = _np.empty(self._M.shape,dtype=_np.int8)
@@ -814,11 +826,14 @@ class basis_1d(basis):
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
 
+		squeeze = False
+		
 		if self._Ns <= 0:
 			return array([])
 		if v0.ndim == 1:
 			shape = (self._sps**self._L,1)
 			v0 = v0.reshape((-1,1))
+			squeeze = True
 		elif v0.ndim == 2:
 			shape = (self._sps**self._L,v0.shape[1])
 		else:
@@ -867,7 +882,10 @@ class basis_1d(basis):
 		if sparse:
 			return _get_vec_sparse(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 		else:
-			return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
+			if squeeze:
+				return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
+			else:
+				return _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 
 
 	def get_proj(self,dtype):
@@ -919,14 +937,53 @@ class basis_1d(basis):
 
 
 	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure"):
+		"""
+		This function calculates the reduced density matrix (DM), performing a partial trace 
+		of a quantum state.
+
+		RETURNS: reduced DM
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
+						[by python convention the first site of the chain is labelled j=0]. 
+						Default is tuple(range(L//2)).
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'A': str, returns reduced DM of subsystem A
+
+				-- 'B': str, returns reduced DM of subsystem B
+
+				-- 'both': str, returns reduced DM of both subsystems A and B
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		"""
+
 
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
 
 		sub_sys_A = tuple(sub_sys_A)
-
-		if any(type(s) is not int for s in sub_sys_A):
-			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
 
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
@@ -940,7 +997,7 @@ class basis_1d(basis):
 		if state.shape[-1] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
-		proj = self.get_proj(state.dtype)
+		proj = self.get_proj(_dtypes[state.dtype.char])
 
 
 		if _sp.issparse(state) or sparse:
@@ -995,7 +1052,7 @@ class basis_1d(basis):
 				state = state.reshape((-1,)+matrix_shape)
 				gen = (proj*s*proj.H for s in state[:])
 
-				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=state.dtype)
+				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
 
 				for i,s in enumerate(gen):
 					proj_state[i,...] += s[...]
@@ -1008,8 +1065,55 @@ class basis_1d(basis):
 
 
 	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0):
+		"""
+		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
+		density matrix.
+
+		RETURNS: dictionary with keys:
+
+		'Sent': entanglement entropy.
+		'rdm_A': (optional) reduced density matrix of subsystem A
+		'rdm_B': (optional) reduced density matrix of subsystem B
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
+						[by python convention the first site of the chain is labelled j=0]. 
+						Default is tuple(range(L//2)).
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'A': str, returns reduced DM of subsystem A
+
+				-- 'B': str, returns reduced DM of subsystem B
+
+				-- 'both': str, returns reduced DM of both subsystems A and B
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+
+		"""
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
+		elif len(sub_sys_A)==self.L:
+			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
 
 		L_A = len(sub_sys_A)
 		L_B = self.L - L_A
@@ -1312,8 +1416,8 @@ def _get_vec_sparse(ops,pars,v0,basis_arr,norms,ind_neg,ind_pos,shape,C,L,**bloc
 			ops.py_fliplr(basis_arr,L,pars)
 
 		if type(pzblock) is int:
-			ops.py_fliplr(basis_arr,L,pars)
 			ops.py_flip_all(basis_arr,L,pars)
+			ops.py_fliplr(basis_arr,L,pars)
 			data_pos *= pzblock
 			data_neg *= pzblock
 			v = v + _sp.csr_matrix((data_pos,(basis_arr[row_pos],col_pos)),shape,dtype=v.dtype)

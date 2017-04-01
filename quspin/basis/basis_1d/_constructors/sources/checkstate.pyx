@@ -69,7 +69,12 @@ cdef int CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_t
 	if rpz < 0:
 		return -1	
 
-	return rp*rpz*rz
+	if rz == 4 and rp == 4: 
+		return 16
+	elif rz == 4 or rp == 4 or rpz == 4: 
+		return 8
+	else:
+		return 4
 
 
 
@@ -122,7 +127,12 @@ cdef int CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop
 	if rAB < 0:
 		return -1	
 
-	return rA*rB*rAB
+	if rA == 4 and rB == 4:
+		return 16
+	elif rA == 4 or rB == 4 or rAB == 4:
+		return 8
+	else:
+		return 4
 
 
 

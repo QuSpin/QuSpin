@@ -39,7 +39,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 		J_pp.append([+J,L-1,0])
 		J_mm.append([-J,L-1,0])
 
-		basis_fermion = fermion_basis_1d(L=L,Nf=xrange(0,L+1,2))
+		basis_fermion = fermion_basis_1d(L=L,Nf=range(0,L+1,2))
 
 
 	static_fermion =[["+-",J_pm],["-+",J_mp],["++",J_pp],["--",J_mm],['z',x_field]]
@@ -69,9 +69,9 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 	x_field=[[-h,i] for i in range(L)]
 
 	if PBC==1:
-		basis_hcb = boson_basis_1d(L=L,cblock=-1,Nmax_ps=1)#,a=1,kblock=0,pblock=1)
+		basis_hcb = boson_basis_1d(L=L,cblock=-1,sps=2)#,a=1,kblock=0,pblock=1)
 	elif PBC==-1:
-		basis_hcb = boson_basis_1d(L=L,cblock=1,Nmax_ps=1)#,a=1,kblock=0,pblock=1)
+		basis_hcb = boson_basis_1d(L=L,cblock=1,sps=2)#,a=1,kblock=0,pblock=1)
 
 	static_hcb =[["zz",J_zz],["+",x_field],["-",x_field]]
 

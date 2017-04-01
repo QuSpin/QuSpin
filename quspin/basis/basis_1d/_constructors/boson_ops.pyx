@@ -1,6 +1,6 @@
 #!python
-##cython: boundscheck=False
-##cython: wraparound=False
+#cython: boundscheck=False
+#cython: wraparound=False
 # distutils: language=c++
 
 
@@ -12,7 +12,6 @@ from types cimport *
 
 
 import numpy as _np
-from .basis_ops import H_dim,get_Ns,get_basis_type
 from scipy.misc import comb
 
 

@@ -10,33 +10,33 @@ import warnings
 # gives the basis for the kronecker/Tensor product of two basis: |basis_left> (x) |basis_right>
 class tensor_basis(basis):
 
-	def __init__(self,b1,b2):
-		if not isinstance(b1,basis):
-			raise ValueError("b1 must be instance of basis class")
-		if not isinstance(b2,basis):
-			raise ValueError("b2 must be instance of basis class")
-		if isinstance(b1,tensor_basis): 
+	def __init__(self,basis_left,basis_right):
+		if not isinstance(basis_left,basis):
+			raise ValueError("basis_left must be instance of basis class")
+		if not isinstance(basis_right,basis):
+			raise ValueError("basis_right must be instance of basis class")
+		if isinstance(basis_left,tensor_basis): 
 			raise TypeError("Can only create tensor basis with non-tensor type basis")
-		if isinstance(b2,tensor_basis): 
+		if isinstance(basis_right,tensor_basis): 
 			raise TypeError("Can only create tensor basis with non-tensor type basis")
-		self._basis_left=b1
-		self._basis_right=b2
+		self._basis_left=basis_left
+		self._basis_right=basis_right
 
-		self._Ns = b1.Ns*b2.Ns
+		self._Ns = basis_left.Ns*basis_right.Ns
 		self._dtype = _np.min_scalar_type(-self._Ns)
 
 		self._blocks = self._basis_left._blocks.copy()
 		self._blocks.update(self._basis_right._blocks)
 
-		self._unique_me = b1.unique_me and b1.unique_me
+		self._unique_me = basis_left.unique_me and basis_left.unique_me
 		self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
-#		self._check_pcon = self._basis_left._check_pcon and self._basis_right._check_pcon
 
 
 	@property
 	def basis_left(self):
 		return self._basis_left
 
+	@property
 	def basis_right(self):
 		return self._basis_right
 
@@ -94,7 +94,7 @@ class tensor_basis(basis):
 
 
 
-	def get_vec(self,v0,sparse=True,full_1=True,full_2=True):
+	def get_vec(self,v0,sparse=True,full_left=True,full_right=True):
 		if self._Ns <= 0:
 			return _np.array([])
 
@@ -104,24 +104,29 @@ class tensor_basis(basis):
 		if v0.ndim == 1:
 			v0 = v0.reshape((-1,1))
 			if sparse:
-				return _combine_get_vecs(self,v0,sparse,full_1,full_2)
+				return _combine_get_vecs(self,v0,sparse,full_left,full_right)
 			else:
-				return _combine_get_vecs(self,v0,sparse,full_1,full_2).reshape((-1,))
+				return _combine_get_vecs(self,v0,sparse,full_left,full_right).reshape((-1,))
 		elif v0.ndim == 2:
-			return _combine_get_vecs(self,v0,sparse,full_1,full_2)
+			return _combine_get_vecs(self,v0,sparse,full_left,full_right)
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
 
 
+	def index(self,s_left,s_right):
+		s_left = self.basis_left.index(s_left)
+		s_right = self.basis_right.index(s_right)
+		return s_right + self.basis_right.Ns*s_left
 
-	def get_proj(self,dtype,full_1=True,full_2=True):
-		if full_1:
+
+	def get_proj(self,dtype,full_left=True,full_right=True):
+		if full_left:
 			proj1 = self._basis_left.get_proj(dtype)
 		else:
 			proj1 = _sp.identity(self._basis_left.Ns,dtype=dtype)
 
-		if full_2:
+		if full_right:
 			proj2 = self._basis_right.get_proj(dtype)
 		else:
 			proj2 = _sp.identity(self._basis_right.Ns,dtype=dtype)
@@ -132,6 +137,42 @@ class tensor_basis(basis):
 
 
 	def partial_trace(self,state,sub_sys_A="left",state_type="pure",sparse=False):
+		"""
+		This function calculates the reduced density matrix (DM), performing a partial trace 
+		of a quantum state.
+
+		RETURNS: reduced DM
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		sub_sys_A: (optional) flag to define the subsystem retained after the partial trace is taken.
+
+				-- 'left': str, subsystem corresponds to the first tensor basis 
+
+				-- 'right': str, subsystem corresponds to second tensor basis
+
+				-- 'both': str, DM corresponding to both subsystems are returned
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		"""
+
 		if sub_sys_A not in set(["left","right","both"]):
 			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
 
@@ -181,6 +222,48 @@ class tensor_basis(basis):
 
 
 	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0,sparse=False):
+		"""
+		This function calculates the entanglement entropy of the two chains used to 
+		construct the tensor basis, and the corresponding reduced density matrix. In the following,
+		the two chains are denoted 'left' and 'right'.
+
+		RETURNS: dictionary with keys:
+
+		'Sent': entanglement entropy.
+		'rdm_left': (optional) reduced density matrix of subsystem A
+		'rdm_right': (optional) reduced density matrix of subsystem B
+
+		--- arguments ---
+
+		state: (required) the state of the quantum system. Can be a:
+
+				-- pure state (default) [numpy array of shape (Ns,)].
+
+				-- density matrix [numpy array of shape (Ns,Ns)].
+
+				-- collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
+
+				-- 'left': str, returns reduced DM of photon 
+
+				-- 'right': str, returns reduced DM of chain
+
+				-- 'both': str, returns reduced DM of both photon and chain
+
+		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+						a density matrix
+
+				-- 'pure': (default) (a collection of) pure state(s)
+
+				-- 'mixed': mixed state (i.e. a density matrix)
+
+		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+
+		"""
 
 		if return_rdm is None:
 			if self._basis_left.Ns <= self._basis_right.Ns:
@@ -295,18 +378,21 @@ class tensor_basis(basis):
 		op1 = list(op)
 		op1[0] = opstr_left
 		op1[1] = indx_left
+		op1[2] = op[2]
 
 		op2 = list(op)
 		op2[0] = opstr_right
 		op2[1] = indx_right
+		op2[2] = complex(1.0)
 		
-		op1 = self._basis_left.hc_opstr(op1)
-		op2 = self._basis_right.hc_opstr(op2)
+		op1 = self._basis_left._hc_opstr(op1)
+		op2 = self._basis_right._hc_opstr(op2)
 
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
 
-		op[2] = op[2].conjugate()
+		op[2] = op1[2]*op2[2]
+
 
 		return tuple(op)
 	
@@ -336,7 +422,7 @@ class tensor_basis(basis):
 		op2[0] = opstr_right
 		op2[1] = indx_right
 
-		return (self._basis_left.non_zero(op1) and self._basis_right.non_zero(op2))
+		return (self._basis_left._non_zero(op1) and self._basis_right._non_zero(op2))
 
 
 
@@ -401,12 +487,12 @@ class tensor_basis(basis):
 		Ns2 = self._basis_right.Ns
 		temp = "\t{0:"+str(n_digits)+"d}.  "
 		str_list=[]
-		for b1 in str_list_1:
-			b1,s1 = b1.split(".  ")
-			i1 = int(b1)
-			for b2 in str_list_2:
-				b2,s2 = b2.split(".  ")
-				i2 = int(b2)
+		for basis_left in str_list_1:
+			basis_left,s1 = basis_left.split(".  ")
+			i1 = int(basis_left)
+			for basis_right in str_list_2:
+				basis_right,s2 = basis_right.split(".  ")
+				i2 = int(basis_right)
 				str_list.append((temp.format(i2+Ns2*i1))+s1+s2)
 
 		if self._Ns > MAXPRINT:
@@ -422,7 +508,7 @@ class tensor_basis(basis):
 
 
 
-def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
+def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 	Ns1=basis._b1.Ns
 	Ns2=basis._b2.Ns
 
@@ -446,10 +532,10 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 		v1 = V1[-1]
 		v2 = V2[-1]
 
-		if full_1:
+		if full_left:
 			v1 = basis._b1.get_vec(v1,sparse=True)
 			
-		if full_2:
+		if full_right:
 			v2 = basis._b2.get_vec(v2,sparse=True)
 
 
@@ -468,10 +554,10 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 			v1 = V1[i]
 			v2 = V2[i]
 
-			if full_1:
+			if full_left:
 				v1 = basis._b1.get_vec(v1,sparse=True)
 			
-			if full_2:
+			if full_right:
 				v2 = basis._b2.get_vec(v2,sparse=True)
 
 
@@ -489,10 +575,10 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 		v1 = V1[-1]
 		v2 = V2[-1]
 
-		if full_1:
+		if full_left:
 			v1 = basis._b1.get_vec(v1,sparse=False)
 			
-		if full_2:
+		if full_right:
 			v2 = basis._b2.get_vec(v2,sparse=False)
 
 
@@ -508,10 +594,10 @@ def _combine_get_vecs(basis,v0,sparse,full_1,full_2):
 			v1 = V1[i]
 			v2 = V2[i]
 
-			if full_1:
+			if full_left:
 				v1 = basis._b1.get_vec(v1,sparse=False)
 			
-			if full_2:
+			if full_right:
 				v2 = basis._b2.get_vec(v2,sparse=False)
 
 			v1 =  _np.kron(v1,temp2)
@@ -588,7 +674,7 @@ def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):
 
 
 """
-def _combine_get_vec(basis,v0,sparse,full_1,full_2):
+def _combine_get_vec(basis,v0,sparse,full_left,full_right):
 	Ns1=basis._b1.Ns
 	Ns2=basis._b2.Ns
 
@@ -623,10 +709,10 @@ def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 
 
 	# Next thing to do is take those vectors and convert them to their full hilbert space
-	if full_1:
+	if full_left:
 		V1=basis._b1.get_vec(V1,sparse)
 
-	if full_2:
+	if full_right:
 		V2=basis._b2.get_vec(V2,sparse)
 
 
@@ -662,11 +748,11 @@ def _combine_get_vec(basis,v0,sparse,full_1,full_2):
 
 
 
-def _combine_get_vecs(basis,V0,sparse,full_1,full_2):
+def _combine_get_vecs(basis,V0,sparse,full_left,full_right):
 	v0_list=[]
 	V0=V0.T
 	for v0 in V0:
-		v0_list.append(_combine_get_vec(basis,v0,sparse,full_1,full_2))
+		v0_list.append(_combine_get_vec(basis,v0,sparse,full_left,full_right))
 
 	if sparse:
 		V0=_sp.hstack(v0_list)

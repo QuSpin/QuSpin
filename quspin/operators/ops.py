@@ -530,6 +530,20 @@ class hamiltonian(object):
 
 		self._is_dense = not is_sparse
 
+	
+	def __LO(self,time,rho):
+		rho = rho.reshape((self.Ns,self.Ns))
+
+		rho_comm = self._static.dot(rho)
+		rho_comm -= (self._static.T.dot(rho.T)).T
+		for Hd,f,f_args in self._dynamic:
+			ft = f(time,*f_args)
+			rho_comm += ft*Hd.dot(rho)	
+			rho_comm -= ft*(Hd.T.dot(rho.T)).T
+
+		rho_comm *= -1j
+		return rho_comm.ravel()
+
 
 	def __SO_real(self,time,V):
 		"""
@@ -547,8 +561,6 @@ class hamiltonian(object):
 		for Hd,f,f_args in self._dynamic:
 			V_dot[self._Ns:] += f(time,*f_args)*Hd.dot(V[:self._Ns])
 			V_dot[:self._Ns] += -f(time,*f_args)*Hd.dot(V[self._Ns:])
-
-
 
 		return V_dot
 
@@ -1023,42 +1035,60 @@ class hamiltonian(object):
 
 
 
-
-	def evolve(self,v0,t0,times,solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
+	def evolve(self,v0,t0,times,eom="SE",solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
 
+		shape0 = v0.shape
 
-		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+		if eom == "SE":
+			n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
-		
-		if v0.ndim <= 2:
-			v0 = v0.reshape((-1,))
-		else:
-			raise ValueError("v0 must have ndim <= 2")
-
-		if v0.shape[0] != self.Ns:
-			raise ValueError("v0 must have {0} elements".format(self.Ns))
-
-		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
-		if imag_time:
-			v0 = v0.astype(self.dtype)
-			if _np.iscomplexobj(v0):
-				solver = complex_ode(self.__ISO)
+			
+			if v0.ndim <= 2:
+				v0 = v0.ravel()
 			else:
-				solver = ode(self.__ISO)
-		else:
+				raise ValueError("v0 must have ndim <= 2")
 
-			if H_real:
-				v1 = v0
-				v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
-				v0[self._Ns:] = v1.real
-				v0[:self._Ns] = v1.imag
-				solver = ode(self.__SO_real)
+			if v0.shape[0] != self.Ns:
+				raise ValueError("v0 must have {0} elements".format(self.Ns))
+
+			if imag_time:
+				v0 = v0.astype(self.dtype)
+				if _np.iscomplexobj(v0):
+					solver = complex_ode(self.__ISO)
+				else:
+					solver = ode(self.__ISO)
 			else:
-				v0 = v0.astype(complex_type)
-				solver = complex_ode(self.__SO)
 
+				if H_real:
+					v1 = v0
+					v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
+					v0[self._Ns:] = v1.real
+					v0[:self._Ns] = v1.imag
+					solver = ode(self.__SO_real)
+				else:
+					v0 = v0.astype(_np.complex128)
+					solver = complex_ode(self.__SO)
+
+		elif eom == "LvNE":
+			n = 1.0
+			if v0.ndim != 2:
+				raise ValueError("v0 must have ndim = 2")
+
+			if v0.shape != self._shape:
+				raise ValueError("v0 must be same shape as Hamiltonian")
+
+			if imag_time:
+				raise NotImplementedError("imaginary time not implemented for Liouville-von Neumann dynamics")
+			else:
+				if H_real:
+					raise NotImplementedError("H_real not implemented for Liouville-von Neumann dynamics")
+				else:
+					v0 = v0.ravel().astype(_np.complex128)
+					solver = complex_ode(self.__LO)
+		else:
+			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(equation))
 
 
 		if _np.iscomplexobj(times):
@@ -1077,12 +1107,12 @@ class hamiltonian(object):
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n)
+			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n,shape0)
 		else:
 			if iterate:
-				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n)
+				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
 			else:
-				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n)
+				return self._evolve_list(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
 
 			
 		
@@ -1092,39 +1122,41 @@ class hamiltonian(object):
 
 
 
-	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n):
+
+	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
+
 
 		if time == t0:
 			if H_real:
 				return v0[:self._Ns] + 1j*v0[self._Ns:]
 			else:
-				return _np.array(v0)
+				return _np.squeeze(v0.reshape(shape0))
 
 		solver.integrate(time)
 		if solver.successful():
 			if imag_time: solver._y /= (norm(solver._y)/n)
 			if H_real:
-				return solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+				return (solver.y[self._Ns:] + 1j*solver.y[:self._Ns]).reshape(shape0)
 			else:
-				return _np.array(solver.y)
+				return _np.squeeze(solver.y.reshape(shape0))
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
 
 
-	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n):
+	def _evolve_list(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 
-		v = _np.empty((len(times),self.Ns),dtype=complex_type)
+		v = _np.empty((len(times),)+shape0,dtype=_np.complex128)
 		
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if H_real:
-					v[i,:] = v0[:self._Ns] + 1j*v0[self._Ns:]
+					v[i,...] = _np.squeeze((v0[:self._Ns] + 1j*v0[self._Ns:]).reshape(shape0))
 				else:
-					v[i,:] = _np.array(v0)
+					v[i,...] = _np.squeeze(v0.reshape(shape0))
 				continue
 
 			solver.integrate(t)
@@ -1132,38 +1164,37 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
-					v[i,:] = solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+					v[i,...] = _np.squeeze((solver.y[self._Ns:] + 1j*solver.y[:self._Ns]).reshape(shape0))
 				else:
-					v[i,:] = solver.y
+					v[i,...] = _np.squeeze(solver.y.reshape(shape0))
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 				
-		return v
+		return _np.squeeze(v)
 
 
 
-	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n):
+	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if H_real:
-					yield v0[:self._Ns] + 1j*v0[self._Ns:]
+					yield _np.squeeze((v0[:self._Ns] + 1j*v0[self._Ns:]).reshape(shape0))
 				else:
-					yield _np.array(v0)
-				continue
+					yield _np.squeeze(v0.reshape(shape0))
 				continue
 				
 
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-				if imag_time: solver._y /= (norm(solver._y)/n)
+				if imag_time: solver._y /= (norm(solver.y)/n)
 				if H_real:
-					yield solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+					yield _np.squeeze((solver.y[self._Ns:] + 1j*solver.y[:self._Ns]).reshape(shape0))
 				else:
-					yield solver.y
+					yield _np.squeeze(solver.y.reshape(shape0))
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
