@@ -1058,8 +1058,10 @@ class hamiltonian(object):
 
 
 
+
 	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n,shape0):
-		#from numpy.linalg import norm
+		from numpy.linalg import norm
+
 
 		if time == t0:
 			if H_real:
@@ -1080,7 +1082,7 @@ class hamiltonian(object):
 
 
 	def _evolve_list(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
-		#from numpy.linalg import norm
+		from numpy.linalg import norm
 
 		v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
 		
@@ -1109,7 +1111,7 @@ class hamiltonian(object):
 
 
 	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
-		#from numpy.linalg import norm
+		from numpy.linalg import norm
 
 		for i,t in enumerate(times):
 			if t == t0:

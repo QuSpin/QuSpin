@@ -1314,17 +1314,37 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
 
-		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
+		if v0.ndim > 2:
+			raise ValueError("state mush have ndim < 3.")
 
-		Ns = _np.squeeze(v0).shape[0]
-		if real:
+		if v0.ndim == 2:
+			if v0.shape[0] != v0.shape[1]:
+				v0 = v0.ravel()
+		 
+
+
+		shape0 = v0.shape
+
+		if _np.iscomplexobj(times):
+			raise ValueError("times must be real number(s).")
+
+		v0 = v0.ravel()
+		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
+
+	
+		if stack_state:
 			v1 = v0
 			v0 = _np.zeros(2*Ns,dtype=v1.real.dtype)
 			v0[Ns:] = v1.real
 			v0[:Ns] = v1.imag
+			solver = ode(ODE) # y_f = ODE(t,y,*args)
+		elif real:
+			solver = complex_ode(ODE) # y_f = ODE(t,y,*args)
+		else:
+			solver = ode(ODE) # y_f = ODE(t,y,*args)
+
 		
-		if _np.iscomplexobj(times):
-			raise ValueError("times must be real number(s).")
 
 		if solver_name in ["dop853","dopri5"]:
 			if solver_args.get("nsteps") is None:
@@ -1334,12 +1354,7 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 			if solver_args.get("atol") is None:
 				solver_args["atol"] = 1E-9
 
-				
-		# y_f = ODE(t,y,*args)
-		if real:
-			solver = ode(ODE)
-		else:
-			solver = complex_ode(ODE)
+
 					
 
 		solver.set_integrator(solver_name,**solver_args)
@@ -1347,56 +1362,58 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return _evolve_scalar(solver,v0,t0,times,real,Ns)
+			return _evolve_scalar(solver,v0,t0,times,real,imag_time,n,Ns)
 		else:
 			if iterate:
-				return _evolve_iter(solver,v0,t0,times,verbose,real,Ns)
+				return _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns)
 			else:
-				return _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns)
+				return _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns)
 
 
-def _evolve_scalar(solver,v0,t0,time,real,Ns):
+def _evolve_scalar(solver,v0,t0,time,real,imag_time,n,Ns,shape0):
 	from numpy.linalg import norm
 
 	if time == t0:
 		if real:
-			return v0[:Ns] + 1j*v0[Ns:]
+			return (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
 		else:
-			return _np.array(v0)
+			return _np.array(v0).reshape(shape0)
 
 	solver.integrate(time)
 	if solver.successful():
+		if imag_time: solver._y /= (norm(solver._y)/n)
 		if real:
-			return solver.y[Ns:] + 1j*solver.y[:Ns]
+			return (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
 		else:
-			return _np.array(solver.y)
+			return _np.array(solver.y).reshape(shape0)
 	else:
 		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
 
 
-def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns):
-	#from numpy.linalg import norm
+def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns,shape0):
+	from numpy.linalg import norm
 
-	v = _np.empty((len(times),Ns),dtype=complex_type)
+	v = _np.empty(shape0+(len(times),),dtype=complex_type)
 	
 	for i,t in enumerate(times):
 
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 			if real:
-				v[i,:] = v0[:Ns] + 1j*v0[Ns:]
+				v[...,i] = (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
 			else:
-				v[i,:] = _np.array(v0)
+				v[...,i] = _np.array(v0).reshape(shape0)
 			continue
 
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
 			if real:
-				v[i,:] = solver.y[Ns:] + 1j*solver.y[:Ns]
+				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
 			else:
-				v[i,:] = solver.y
+				v[...,i] = solver.y.reshape(shape0)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 			
@@ -1405,27 +1422,26 @@ def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns):
 
 
 
-def _evolve_iter(solver,v0,t0,times,verbose,real,Ns):
-	#from numpy.linalg import norm
+def _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns):
+	from numpy.linalg import norm
 
 	for i,t in enumerate(times):
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 			if real:
-				yield v0[:Ns] + 1j*v0[Ns:]
+				yield (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
 			else:
-				yield _np.array(v0)
-			continue
+				yield _np.array(v0).reshape(shape0)
 			continue
 			
-
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
 			if real:
-				yield solver.y[Ns:] + 1j*solver.y[:Ns]
+				yield (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
 			else:
-				yield solver.y
+				yield solver.y.reshape(shape0)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 
