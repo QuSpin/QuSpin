@@ -440,7 +440,12 @@ class block_ops(object):
 			else:
 				p = self._P_dict[key]
 
-			psi = p.H.dot(psi_0)
+			try:
+				psi = p.H.dot(psi_0).toarray()
+			except AttributeError:
+				psi = p.H.dot(psi_0)
+
+			psi = psi.ravel()
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
@@ -582,7 +587,12 @@ class block_ops(object):
 			else:
 				p = self._P_dict[key]
 
-			psi = p.H.dot(psi_0)
+			try:
+				psi = p.H.dot(psi_0).toarray()
+			except AttributeError:
+				psi = p.H.dot(psi_0)
+
+			psi = psi.ravel()
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())

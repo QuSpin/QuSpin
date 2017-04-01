@@ -649,7 +649,8 @@ class basis_1d(basis):
 			raise ValueError("s must be integer or state")
 
 		indx = _np.argwhere(self._basis == s)
-		if indx:
+
+		if len(indx) != 0:
 			return _np.squeeze(indx)
 		else:
 			raise ValueError("s must be representive state in basis. ")

@@ -1128,7 +1128,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 
 		time = times[0]
 
-		for key,Obs in obs_dict.items():
+		for key,Obs in Obs_dict.items():
 			
 			val = Obs.expt_value(psi,time=time,check=False).real
 			dtype = _np.dtype(val)
@@ -1156,7 +1156,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in Obs_dict.items():
-				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False)
+				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
 
 			if calc_Sent:
 				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
@@ -1310,12 +1310,9 @@ def mean_level_spacing(E):
 
 
 
-def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate=False,**evolve_args):
+def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate=False,f_params=(),**solver_args):
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
-
-		solver_args = evolve_args['solver_args']
-		ode_args = evolve_args['ode_args']
 
 		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
 
@@ -1339,13 +1336,14 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 
 				
 		# y_f = ODE(t,y,*args)
-		if _np.iscomplexobj(v0):
-			solver = complex_ode(ODE)
+		if real:
+			solver = ode(ODE)
 		else:
-			solver = ode(ODE)		
+			solver = complex_ode(ODE)
+					
 
 		solver.set_integrator(solver_name,**solver_args)
-		solver.set_f_params(*ode_args)
+		solver.set_f_params(*f_params)
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
