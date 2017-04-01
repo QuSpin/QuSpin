@@ -899,14 +899,23 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 	iterate: (optional) if True this function returns the generator of the time evolved state. 
 	"""
+	psi = _np.squeeze(_np.asarray(psi))
+
 
 	if V.ndim != 2 or V.shape[0] != V.shape[1]:
 		raise ValueError("'V' must be a square matrix")
 
 	if V.shape[0] != len(E):
 		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-	if len(psi) != len(E):
+	if psi.shape[0] != len(E):
 		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+
+	if psi.ndim == 2:
+		if psi.shape[0] != psi.shape[1]:
+			raise ValueError("mixed states must be square!")
+
+	if psi.ndim > 2:
+		raise ValueError("psi must be 1 or 2 dimension array.")
 
 	if _np.isscalar(times):
 		TypeError("Variable 'times' must be a array or iter like object!")
@@ -915,33 +924,59 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 	
 
 	# define generator of time-evolved state in basis V2
-	def psi_t_iter(V,psi,times):
+	def pure_t_iter(V,psi,times):
 		# a_n: probability amplitudes
 		# times: time vector
 		a_n = V.T.conj().dot(psi)
 		for t in times:
 			yield V.dot( _np.exp(E*t)*a_n )
 
-	if iterate:
-		return psi_t_iter(V,psi,times)
+	def mixed_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		rho_d = V.T.conj().dot(psi.dot(V))
+		for t in times:
+			exp_t = _np.exp(t*E)
+			yield _np.einsum("ij,j,jk,k,lk->il",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
+
+	if psi.ndim == 1:
+		if iterate:
+			return pure_t_iter(V,psi,times)
+		else:
+			c_n = V.T.conj().dot(psi)
+
+			Ntime = len(times)
+			Ns = len(E)
+
+			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+
+			psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+
+			# for each vector trasform back to original basis
+			psi_t = V.dot(psi_t.T) 
+
+			return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 	else:
-		c_n = V.T.conj().dot(psi)
+		if iterate:
+			return mixed_t_iter(V,psi,times)
+		else:
+			Ntime = len(times)
+			Ns = len(E)
 
-		Ntime = len(times)
-		Ns = len(E)
+			rho_d = V.T.conj().dot(psi.dot(V))
 
-		psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-		psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-		_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			exp_t = exp_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			_np.exp(exp_t,exp_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			
+			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
 
-		psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+			
 
-		# for each vector trasform back to original basis
-		psi_t = V.dot(psi_t.T) 
-
-		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
-
-def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,disp=False):
+def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},basis=None,disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1002,16 +1037,12 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 
 	num_Obs = len(Obs_dict.keys())
 
-	ham_dict={}
-	obs_dict={}
 	for key, val in Obs_dict.items():
-		if _ishamiltonian(val):
-			ham_dict[key]=val
-		else:
+		if not _ishamiltonian(val):
 			if not(_sp.issparse(val)) and not(val.__class__ in [_np.ndarray,_np.matrix]):
-				obs_dict[key]=_np.asanyarray(val)
-			else:
-				obs_dict[key]=val
+				val =_np.asanyarray(val)
+
+			Obs_dict[key] = _hamiltonian([val],[],dtype=val.dtype)
 
 
 	if type(psi_t) is tuple:
@@ -1024,11 +1055,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 			raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
 		if len(psi) != len(E):
 			raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-		for Obs in obs_dict.values():
-			if V.shape != Obs.shape:
-				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
-		for ham in ham_dict.values():
-			if V.shape != ham.get_shape:
+		for Obs in Obs_dict.values():
+			if V.shape != Obs._shape:
 				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
 			
 
@@ -1049,18 +1077,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
 
 
-		if psi_t.ndim != 2:
-			raise ValueError("states must come in two dimensional array.")
-
-		psi_t = psi_t.T
-
-		for Obs in obs_dict.values():
-			if psi_t.shape[0] != Obs.shape[1]:
+		for Obs in Obs_dict.values():
+			if psi_t.shape[0] != Obs._shape[1]:
 				raise ValueError("states must be in columns of input matrix.")
 
-		for ham in ham_dict.values():
-			if psi_t.shape[0] != ham.get_shape[1]:
-				raise ValueError("states must be in columns of input matrix.")
 
 		if return_state:
 			variables.append("psi_t")
@@ -1074,16 +1094,11 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 			for psi in psi_t:
 				psi_t_list.append(psi)
 
-			psi_t = _np.vstack(psi_t_list).T
+			psi_t = _np.squeeze(_np.dstack(psi_t_list))
 
-			for Obs in obs_dict.values():
-				if psi_t.shape[0] != Obs.shape[1]:
+			for Obs in Obs_dict.values():
+				if psi_t.shape[0] != Obs._shape[1]:
 					raise ValueError("states must be in columns of input matrix.")
-
-			for ham in ham_dict.values():
-				if psi_t.shape[0] != ham.get_shape[1]:
-					raise ValueError("states must be in columns of input matrix.")
-
 
 	else:
 		raise ValueError("input not recognized")
@@ -1099,13 +1114,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 		variables.append("Sent_time")
 	
 	if return_state:
-		for key,Obs in obs_dict.items():
-			psi_l = Obs.dot(psi_t)
-			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
-	
-		for key,ham in ham_dict.items():
-			psi_l = ham.dot(psi_t,time=times,check=False)
-			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
+		for key,Obs in Obs_dict.items():
+			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
@@ -1114,24 +1124,17 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 
 	else:
 		psi = next(psi_t) # get first state from iterator.
-		# do first loop calculations
-		if psi.ndim == 2:
-			psi = psi.ravel()
+		# do first calculations of loop
 
 		time = times[0]
 
 		for key,Obs in obs_dict.items():
-			psi_l = _np.squeeze(_np.asarray(Obs.dot(psi)))
-			val = _np.vdot(psi,psi_l).real
+			
+			val = Obs.expt_value(psi,time=time,check=False).real
 			dtype = _np.dtype(val)
 			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
 			Expt_time[key][0] = val
 
-		for key,ham in ham_dict.items():
-			val = ham.matrix_ele(psi,psi,time=time).real
-			dtype = _np.dtype(val)
-			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
-			Expt_time[key][0] = val
 
 
 		# get initial dictionary from ent_entropy function
@@ -1147,22 +1150,13 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},basis=None,
 
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
-			if psi.ndim == 2:
-				psi = psi.ravel()
 
 			time = times[m+1]
 
 			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
 
-			for key,Obs in obs_dict.items():
-				psi_l = _np.squeeze(_np.asarray(Obs.dot(psi)))
-				val = _np.vdot(psi,psi_l).real
-				Expt_time[key][m+1] = val 
-
-			for key,ham in ham_dict.items():
-				val = ham.matrix_ele(psi,psi,time=time).real
-				Expt_time[key][m+1] = val
-
+			for key,Obs in Obs_dict.items():
+				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False)
 
 			if calc_Sent:
 				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
