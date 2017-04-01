@@ -1311,24 +1311,45 @@ def mean_level_spacing(E):
 
 
 
-def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate=False,**evolve_args):
+def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate=False,imag_time=False,**evolve_args):
+
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
 
 		solver_args = evolve_args['solver_args']
 		ode_args = evolve_args['ode_args']
 
+		if v0.ndim <= 2:
+			v0 = v0.reshape((-1,))
+		else:
+			raise ValueError("v0 must have ndim <= 2")
+
+		if _np.iscomplexobj(times):
+			raise ValueError("times must be real number(s).")
+
+		"""
+		if real and 'complex' in ode_args[0].dtype:
+			raise ValueError("using complex Hamiltonian, set real=False.")
+		"""
+
+		Ns = _np.squeeze(v0).shape[0] # dimension of v0
+		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
 		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
 
-		Ns = _np.squeeze(v0).shape[0]
+		
 		if real:
 			v1 = v0
 			v0 = _np.zeros(2*Ns,dtype=v1.real.dtype)
 			v0[Ns:] = v1.real
 			v0[:Ns] = v1.imag
+			solver = ode(ODE) # y_f = ODE(t,y,*args)
+		elif _np.iscomplexobj(v0):
+			solver = complex_ode(ODE) # y_f = ODE(t,y,*args)
+		else:
+			solver = ode(ODE) # y_f = ODE(t,y,*args)
+
 		
-		if _np.iscomplexobj(times):
-			raise ValueError("times must be real number(s).")
 
 		if solver_name in ["dop853","dopri5"]:
 			if solver_args.get("nsteps") is None:
@@ -1338,27 +1359,21 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 			if solver_args.get("atol") is None:
 				solver_args["atol"] = 1E-9
 
-				
-		# y_f = ODE(t,y,*args)
-		if _np.iscomplexobj(v0):
-			solver = complex_ode(ODE)
-		else:
-			solver = ode(ODE)		
 
 		solver.set_integrator(solver_name,**solver_args)
 		solver.set_f_params(*ode_args)
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return _evolve_scalar(solver,v0,t0,times,real,Ns)
+			return _evolve_scalar(solver,v0,t0,times,real,imag_time,n,Ns)
 		else:
 			if iterate:
-				return _evolve_iter(solver,v0,t0,times,verbose,real,Ns)
+				return _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns)
 			else:
-				return _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns)
+				return _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns)
 
 
-def _evolve_scalar(solver,v0,t0,time,real,Ns):
+def _evolve_scalar(solver,v0,t0,time,real,imag_time,n,Ns):
 	from numpy.linalg import norm
 
 	if time == t0:
@@ -1369,6 +1384,7 @@ def _evolve_scalar(solver,v0,t0,time,real,Ns):
 
 	solver.integrate(time)
 	if solver.successful():
+		if imag_time: solver._y /= (norm(solver._y)/n)
 		if real:
 			return solver.y[Ns:] + 1j*solver.y[:Ns]
 		else:
@@ -1378,8 +1394,8 @@ def _evolve_scalar(solver,v0,t0,time,real,Ns):
 
 
 
-def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns):
-	#from numpy.linalg import norm
+def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns):
+	from numpy.linalg import norm
 
 	v = _np.empty((len(times),Ns),dtype=complex_type)
 	
@@ -1396,6 +1412,7 @@ def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns):
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
 			if real:
 				v[i,:] = solver.y[Ns:] + 1j*solver.y[:Ns]
 			else:
@@ -1408,8 +1425,8 @@ def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,Ns):
 
 
 
-def _evolve_iter(solver,v0,t0,times,verbose,real,Ns):
-	#from numpy.linalg import norm
+def _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns):
+	from numpy.linalg import norm
 
 	for i,t in enumerate(times):
 		if t == t0:
@@ -1419,12 +1436,11 @@ def _evolve_iter(solver,v0,t0,times,verbose,real,Ns):
 			else:
 				yield _np.array(v0)
 			continue
-			continue
 			
-
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
 			if real:
 				yield solver.y[Ns:] + 1j*solver.y[:Ns]
 			else:
