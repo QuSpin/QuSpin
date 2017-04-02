@@ -1073,7 +1073,7 @@ class hamiltonian(object):
 		if solver.successful():
 			if imag_time: solver._y /= (norm(solver._y)/n)
 			if H_real:
-				return (solver.y[self._Ns:] + 1j*solver.y[:self._Ns]).reshape(shape0)
+				return _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
 			else:
 				return _np.squeeze(solver.y.reshape(shape0))
 		else:
@@ -1100,7 +1100,7 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
-					v[...,i] = _np.squeeze((solver.y[self._Ns:] + 1j*solver.y[:self._Ns]).reshape(shape0))
+					v[...,i] = _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
 				else:
 					v[...,i] = _np.squeeze(solver.y.reshape(shape0))
 			else:
@@ -1128,7 +1128,7 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= (norm(solver.y)/n)
 				if H_real:
-					yield _np.squeeze((solver.y[self._Ns:] + 1j*solver.y[:self._Ns]).reshape(shape0))
+					yield _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
 				else:
 					yield _np.squeeze(solver.y.reshape(shape0))
 			else:
