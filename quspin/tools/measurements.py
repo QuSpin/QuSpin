@@ -1310,7 +1310,7 @@ def mean_level_spacing(E):
 
 
 
-def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate=False,f_params=(),**solver_args):
+def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
 
@@ -1324,7 +1324,7 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 
 
 		shape0 = v0.shape
-
+		
 		if _np.iscomplexobj(times):
 			raise ValueError("times must be real number(s).")
 
@@ -1335,14 +1335,14 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 	
 		if stack_state:
 			v1 = v0
-			v0 = _np.zeros(2*Ns,dtype=v1.real.dtype)
-			v0[Ns:] = v1.real
-			v0[:Ns] = v1.imag
+			v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
+			v0[shape0[0]:] = v1.real
+			v0[:shape0[0]] = v1.imag
 			solver = ode(ODE) # y_f = ODE(t,y,*args)
 		elif real:
-			solver = complex_ode(ODE) # y_f = ODE(t,y,*args)
-		else:
 			solver = ode(ODE) # y_f = ODE(t,y,*args)
+		else:
+			solver = complex_ode(ODE) # y_f = ODE(t,y,*args)
 
 		
 
@@ -1362,19 +1362,20 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,verbose=False,iterate
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return _evolve_scalar(solver,v0,t0,times,real,imag_time,n,Ns)
+			return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
 		else:
 			if iterate:
-				return _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns)
+				return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
 			else:
-				return _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns)
+				return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
 
 
-def _evolve_scalar(solver,v0,t0,time,real,imag_time,n,Ns,shape0):
+def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
+	Ns=shape0[0]
 
 	if time == t0:
-		if real:
+		if stack_state:
 			return (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
 		else:
 			return _np.array(v0).reshape(shape0)
@@ -1382,7 +1383,7 @@ def _evolve_scalar(solver,v0,t0,time,real,imag_time,n,Ns,shape0):
 	solver.integrate(time)
 	if solver.successful():
 		if imag_time: solver._y /= (norm(solver._y)/n)
-		if real:
+		if stack_state:
 			return (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
 		else:
 			return _np.array(solver.y).reshape(shape0)
@@ -1391,16 +1392,17 @@ def _evolve_scalar(solver,v0,t0,time,real,imag_time,n,Ns,shape0):
 
 
 
-def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns,shape0):
+def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
 
-	v = _np.empty(shape0+(len(times),),dtype=complex_type)
+	Ns=shape0[0]
+	v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
 	
 	for i,t in enumerate(times):
 
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if real:
+			if stack_state:
 				v[...,i] = (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
 			else:
 				v[...,i] = _np.array(v0).reshape(shape0)
@@ -1410,8 +1412,8 @@ def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns,sha
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 			if imag_time: solver._y /= (norm(solver._y)/n)
-			if real:
-				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+			if stack_state:
+				v[...,i] = (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
 			else:
 				v[...,i] = solver.y.reshape(shape0)
 		else:
@@ -1422,13 +1424,14 @@ def _evolve_list(solver,v0,t0,times,complex_type,verbose,real,imag_time,n,Ns,sha
 
 
 
-def _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns):
+def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
+	Ns=shape0[0]
 
 	for i,t in enumerate(times):
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if real:
+			if stack_state:
 				yield (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
 			else:
 				yield _np.array(v0).reshape(shape0)
@@ -1438,7 +1441,7 @@ def _evolve_iter(solver,v0,t0,times,verbose,real,imag_time,n,Ns):
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 			if imag_time: solver._y /= (norm(solver._y)/n)
-			if real:
+			if stack_state:
 				yield (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
 			else:
 				yield solver.y.reshape(shape0)
