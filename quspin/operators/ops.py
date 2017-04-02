@@ -162,6 +162,7 @@ class hamiltonian(object):
 		* kw_args: extra options to pass to the basis class.
 
 		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
+		* _.basis: the basis associated with this hamiltonian, is None if hamiltonian has no basis. 
 
 		* _.ndim: number of dimensions, always 2.
 		
@@ -430,6 +431,10 @@ class hamiltonian(object):
 
 	@property
 	def get_shape(self):
+		return self._shape
+
+	@property
+	def shape(self):
 		return self._shape
 
 	@property
@@ -1013,9 +1018,8 @@ class hamiltonian(object):
 			return _np.asarray([])
 
 		H_dense = self.todense(time=time)
-		E = _np.linalg.eigvalsh(H_dense,**eigvalsh_args)
-		#eigvalsh_args["overwrite_a"] = True
-		#E = _la.eigvalsh(H_dense,**eigvalsh_args)
+		eigvalsh_args["overwrite_a"] = True
+		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
 
 
@@ -1527,7 +1531,7 @@ class hamiltonian(object):
 
 	def __rmul__(self,other): # other * self
 		if isinstance(other,hamiltonian):
-			#self._hamiltonian_checks(other,casting="unsafe")
+			self._mat_checks(other,casting="unsafe")
 			return self._rmul_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1559,7 +1563,7 @@ class hamiltonian(object):
 
 	def __imul__(self,other): # self *= other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other)
+			self._mat_checks(other)
 			return self._imul_hamiltonian(other)
 
 		
@@ -1638,7 +1642,7 @@ class hamiltonian(object):
 
 	def __add__(self,other): # self + other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other,casting="unsafe")
+			self._mat_checks(other,casting="unsafe")
 			return self._add_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1678,7 +1682,7 @@ class hamiltonian(object):
 
 	def __iadd__(self,other): # self += other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other)
+			self._mat_checks(other)
 			return self._iadd_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1707,7 +1711,7 @@ class hamiltonian(object):
 
 	def __sub__(self,other): # self - other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other,casting="unsafe")
+			self._mat_checks(other,casting="unsafe")
 			return self._sub_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1740,7 +1744,7 @@ class hamiltonian(object):
 
 	def __isub__(self,other): # self -= other
 		if isinstance(other,hamiltonian):
-			self._hamiltonian_checks(other)
+			self._mat_checks(other)
 			return self._isub_hamiltonian(other)
 
 		elif _sp.issparse(other):
@@ -1775,15 +1779,6 @@ class hamiltonian(object):
 				raise ValueError('shapes do not match')
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 				raise ValueError('cannot cast types')
-
-
-	def _hamiltonian_checks(self,other,casting="same_kind"):
-			if other._shape != self._shape: # only accepts square matricies 
-				raise ValueError('shapes do not match')
-			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
-				raise ValueError('cannot cast types')
-		
-
 
 
 
@@ -2468,6 +2463,7 @@ class HamiltonianOperator(object):
 		* kw_args: extra options to pass to the basis class.
 
 		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
+		* _.basis: the basis associated with this HamiltonianOperator
 
 		* _.ndim: number of dimensions, always 2.
 		
@@ -2531,6 +2527,11 @@ class HamiltonianOperator(object):
 		self._ndim = 2
 		self._shape = (self._basis.Ns,self._basis.Ns)
 		self._LinearOperator = _sp.linalg.LinearOperator(self.shape,self.matvec,matmat=self.matvec,rmatvec=self.rmatvec,dtype=self._dtype)
+
+
+	@property
+	def basis(self):
+		return self._basis
 
 	@property
 	def ndim(self):
@@ -2860,6 +2861,49 @@ def ops_dict_dot(op,pars,v):
 class ops_dict(object):
 	def __init__(self,input_dict,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
 		"""
+		this object maps operatators/matricies to keys, which when calling various operations allows to specify the scalar multiples
+		in front of these operators.
+
+		--- arguments ---
+
+		input_dict: dictionary (compulsory) this is a dictionary which should contain values which are operator lists like the
+					static_list input to the hamiltonian class while the key's correspond to the key vales which you use
+					to specify the coupling during other method calls:
+
+					example:
+						input_dict = {
+										"Jzz": [["zz",Jzz_bonds]] # use "Jzz" key to specify the zz interaction coupling
+										"hx" : [["x" ,hx_site  ]] # use "hx" key to specify the field strength
+									 }
+		* N: (optional) number of sites to create the hamiltonian with.
+
+		* shape: (optional) shape to create the hamiltonian with.
+
+		* copy: (optional) weather or not to copy the values from the input arrays. 
+
+		* check_symm: (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+
+		* check_herm: (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+
+		* check_pcon: (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+
+		* dtype: (optional) data type to case the matrices with. 
+
+		* kw_args: extra options to pass to the basis class.		
+
+		--- ops_dict attributes ---: '_. ' below stands for 'object. '		
+
+		* _.basis: the basis associated with this hamiltonian, is None if hamiltonian has no basis. 
+
+		* _.ndim: number of dimensions, always 2.
+		
+		* _.Ns: number of states in the hilbert space.
+
+		* _.get_shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
+
+		* _.is_dense: return 'True' if the hamiltonian contains a dense matrix as a componnent. 
+
+		* _.dtype: returns the data type of the hamiltonian
 
 		"""
 		self._is_dense = False
@@ -2896,8 +2940,11 @@ class ops_dict(object):
 					opstr_dict[key] = opstr_list
 				if other_list:
 					other_dict[key] = other_list
-		else: 
-			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
+		elif isinstance(input_dict,ops_dict):
+			other_dict = {key:[value] for key,value in input_dict._operator_dict.items()} 
+		else:
+			raise ValueError("input_dict must be dictionary or another ops_dict operators")
+			
 
 
 		if opstr_dict:
@@ -3049,6 +3096,9 @@ class ops_dict(object):
 
 				self._shape=shape
 
+		if basis is not None:
+			self._basis = basis
+
 		self._Ns = self._shape[0]
 
 	@property
@@ -3086,18 +3136,22 @@ class ops_dict(object):
 	def H(self):
 		return self.getH()
 
-	def copy(self):
+	def copy(self,dtype=None):
 		return _deepcopy(self)
+
 
 	def transpose(self,copy = False):
 		for key,op in self._ops_dict.items():
 			self._ops_dict[key] = op.transpose()
 		return self
 
-	def conj(self):
+	def conjugate(self):
 		for key,op in self._ops_dict.items():
 			self._ops_dict[key] = op.conj()
 		return self	
+
+	def conj(self):
+		return self.conjugate()
 
 	def getH(self,copy=False):
 		return self.conj().transpose(copy=copy)
@@ -3191,7 +3245,7 @@ class ops_dict(object):
 		else:
 			return self.tocsr(pars)
 
-	def tohamiltonian(self,**pars):
+	def tohamiltonian(self,pars={}):
 		pars = self._check_hamiltonian_pars(pars)
 
 		static=[]
@@ -3215,6 +3269,7 @@ class ops_dict(object):
 		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)		
 
+	"""
 	def SO_LinearOperator(self,pars={}):
 		pars = self._check_scalar_pars(pars)
 
@@ -3228,7 +3283,7 @@ class ops_dict(object):
 		matvec = functools.partial(ops_dict_dot,new,i_pars)
 		rmatvec = functools.partial(ops_dict_dot,new.H,i_pars_c)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=_np.complex128)		
-
+	"""
 
 	def matvec(self,V):
 		return self.dot(V)
@@ -3318,6 +3373,14 @@ class ops_dict(object):
 		return V_dot
 
 
+	def rdot(self,V,pars={},check=False):
+		try:
+			V = V.transpose()
+		except AttributeError:
+			V = _np.asanyarray(V)
+			V = V.transpose()
+		return (self.transpose().dot(V)).transpose()
+
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
 		"""
 		args:
@@ -3406,7 +3469,16 @@ class ops_dict(object):
 				raise ValueError('Expecting Vl to have ndim < 3')
 
 
+	def trace(self,pars={}):
+		pars = self._check_scalar_pars(pars)
+		tr = 0.0
+		for key,value in self._operator_dict.items():
+			try:
+				tr += pars[key] * value.trace()
+			except AttributeError:
+				tr += pars[key] * value.diagonal().sum()
 
+		return tr
 
 
 	def eigsh(self,pars={},**eigsh_args):
@@ -3457,30 +3529,80 @@ class ops_dict(object):
 		return E
 
 
+	def __neg__(self):
+		return self.__imul__(-1)
+
+
+	def __iadd__(self,other):
+		self._is_dense = self._is_dense or other._is_dense
+		if isinstance(other,ops_dict):
+			for key,value in other._operator_dict.items():
+				if key in self._operator_dict:
+					self._operator_dict[key] = self._operator_dict[key] + value
+				else:
+					self._operator_dict[key] = value
+		elif other == 0:
+			return self
+		else:
+			return NotImplemented
+
 	def __add__(self,other):
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
+		new += other
+		return new
+
+
+
+	def __isub__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,ops_dict):
 			for key,values in other._operator_dict.items():
 				if key in self._operator_dict:
-					self._operator_dict[key] = self._operator_dict[key] + values
+					self._operator_dict[key] = self._operator_dict[key] - value
 				else:
-					self._operator_dict[key] = values
+					self._operator_dict[key] = -value
+
+		elif other == 0:
+			return self
 		else:
 			return NotImplemented
-
 
 	def __sub__(self,other):
-		self._is_dense = self._is_dense or other._is_dense
-		if isinstance(other,ops_dict):
-			for key,values in other._operator_dict.items():
-				if key in self._operator_dict:
-					self._operator_dict[key] = self._operator_dict[key] - values
-				else:
-					self._operator_dict[key] = -values
-		else:
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
+		new -= other
+		return new		
+
+	def __imul__(self,other):
+		if not _np.isscalar(other):
 			return NotImplemented
+		else:
+			for op in self._operator_dict.values():
+				op *= other
 
+			return self
 
+	def __mul__(self,other):
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
+		new *= other
+		return new
+
+	def __idiv__(self,other):
+		if not _np.isscalar(other):
+			return NotImplemented
+		else:
+			for op in self._operator_dict.values():
+				op /= other
+
+			return self
+
+	def __div__(self,other):
+		new_type = _np.result_type(self._dtype, other.dtype)
+		new = self.copy().astype(new_type)
+		new /= other
+		return new
 
 
 

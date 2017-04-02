@@ -17,6 +17,7 @@ def _consolidate_bonds(bonds):
 				if bonds[i][1:] == bonds[j][1:]:
 					bonds[i][0] += bonds[j][0]
 					del bonds[j]
+					if j < i: i -= 1
 					if bonds[i][0] == 0:
 						del bonds[i]
 
