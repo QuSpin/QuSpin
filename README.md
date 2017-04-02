@@ -266,7 +266,7 @@ f_val = func(t,*func_args)
 ##### **arithmetic operations**
 The ```hamiltonian``` objects currectly support certain arithmetic operations with other hamiltonians, scipy sparse matrices or numpy dense arrays and scalars, as follows:
 
-* between other hamiltonians we have: ```+,-,*,+=,-=``` . Note that ```*``` only works between a static and static hamiltonians or a static and dynamic hamiltonian, but NOT between two dynamic hamiltonians.
+* between other hamiltonians we have: ```+,-,*,+=,-=``` .
 * between numpy and sparse square arrays we have: ```*,+,-,*=,+=,-=``` (versions >= v0.0.5b)
 * between scalars: ```*,*=``` (versions >= v0.0.5b)
 * negative operator '-H'
