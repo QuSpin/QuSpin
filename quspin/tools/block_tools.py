@@ -4,7 +4,7 @@ from ..operators import hamiltonian as _hamiltonian
 from ..operators import ishamiltonian as _ishamiltonian
 # numpy modules
 import numpy as _np # generic math functions
-from numpy import hstack
+from numpy import hstack,vstack
 # scipy modules
 import scipy
 import scipy.sparse as _sp
@@ -495,8 +495,8 @@ class block_ops(object):
 				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name,solver_args,n_jobs)
 			else:
 				psi_t = Parallel(n_jobs = n_jobs)(delayed(_block_evolve_helper)(H,psi,t0,times,H_real,imag_time,solver_name,solver_args) for psi,H in zip(psi_blocks,H_list))
-				psi_t = hstack(psi_t).T
-				psi_t = P.dot(psi_t).T
+				psi_t = vstack(psi_t)
+				psi_t = P.dot(psi_t)
 				return psi_t
 		else:
 			raise RuntimeError("initial state has no projection on to specified blocks.")
@@ -654,11 +654,11 @@ class block_ops(object):
 				ver = [int(v) for v in scipy.__version__.split(".")]
 				if H_is_complex and (start,stop,num,endpoint) != (None,None,None,None) and ver[1] < 19:
 					mats = _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
-					return _np.array([mat for mat in mats])
+					return _np.array([mat for mat in mats]).T
 				else:
 					psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
 					psi_t = hstack(psi_t).T
-					psi_t = P.dot(psi_t).T
+					psi_t = P.dot(psi_t)
 					return psi_t
 		else:
 			raise RuntimeError("initial state has no projection on to specified blocks.")

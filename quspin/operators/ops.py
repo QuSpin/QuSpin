@@ -3069,9 +3069,9 @@ class exp_op(object):
 
 					if _np.iscomplexobj(_np.float32(1.0).astype(M.dtype)) and ver[1] < 19:
 						mats = _iter_dot(M, other, self._step, self._grid)
-						return _np.array([mat for mat in mats])
+						return _np.array([mat for mat in mats]).T
 					else:
-						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
+						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
 	def rdot(self, other, time=0.0,shift=None):
 
@@ -3178,12 +3178,10 @@ class exp_op(object):
 			else:
 				if is_ham:
 					mat_iter = _hamiltonian_iter_sandwich(M, other, self._step, self._grid)
+					return _np.asarray([mat for mat in mat_iter])
 				else:
 					mat_iter = _iter_sandwich(M, other, self._step, self._grid)
-
-				others = _np.asarray([mat for mat in mat_iter])
-
-				return others
+					return _np.asarray([mat for mat in mat_iter]).transpose((1,2,0))
 
 
 def _iter_dot(M, other, step, grid):
