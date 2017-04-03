@@ -505,7 +505,6 @@ def isbasis(x):
 # in the non-symmetry reduced basis.               #
 ####################################################
 
-
 def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	extra_dims = psi.shape[:-1]
 	n_dims = len(extra_dims)
