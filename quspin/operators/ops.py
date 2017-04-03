@@ -14,7 +14,6 @@ import scipy.sparse.linalg as _sla
 import scipy.linalg as _la
 import scipy.sparse as _sp
 import numpy as _np
-import functools
 
 from numpy import zeros_like
 from operator import mul
@@ -25,8 +24,7 @@ from scipy.sparse.linalg import expm_multiply as _expm_multiply
 from copy import deepcopy as _deepcopy
 import warnings
 
-__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator",
-			"exp_op","isexp_op","HamiltonianOperator","ops_dict"]
+__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator"]
 
 
 
@@ -548,6 +546,20 @@ class hamiltonian(object):
 
 		self._is_dense = not is_sparse
 
+	
+	def __LO(self,time,rho):
+		rho = rho.reshape((self.Ns,self.Ns))
+
+		rho_comm = self._static.dot(rho)
+		rho_comm -= (self._static.T.dot(rho.T)).T
+		for Hd,f,f_args in self._dynamic:
+			ft = f(time,*f_args)
+			rho_comm += ft*Hd.dot(rho)	
+			rho_comm -= ft*(Hd.T.dot(rho.T)).T
+
+		rho_comm *= -1j
+		return rho_comm.ravel()
+
 
 	def __SO_real(self,time,V):
 		"""
@@ -558,15 +570,17 @@ class hamiltonian(object):
 		description:
 			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
+		
+		u_dot + iv_dot = -iH(u + iv)
+		u_dot =  Hv
+		v_dot = -Hu
 		"""
 		V_dot = zeros_like(V)
-		V_dot[self._Ns:] = self._static.dot(V[:self._Ns])
-		V_dot[:self._Ns] = -self._static.dot(V[self._Ns:])
+		V_dot[:self._Ns] =  self._static.dot(V[self._Ns:])
+		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
 		for Hd,f,f_args in self._dynamic:
-			V_dot[self._Ns:] += f(time,*f_args)*Hd.dot(V[:self._Ns])
-			V_dot[:self._Ns] += -f(time,*f_args)*Hd.dot(V[self._Ns:])
-
-
+			V_dot[:self._Ns] +=  f(time,*f_args)*Hd.dot(V[self._Ns:])
+			V_dot[self._Ns:] += -f(time,*f_args)*Hd.dot(V[:self._Ns])
 
 		return V_dot
 
@@ -604,107 +618,6 @@ class hamiltonian(object):
 		return -V_dot
 
 
-	def rdot(self,V,time=0,check=True): # V * H(time)
-		if self.Ns <= 0:
-			return _np.asarray([])
-
-		if ishamiltonian(V):
-			raise ValueError("To multiply hamiltonians use '*' operator.")
-
-		if V.ndim > 2:
-			raise ValueError("Expecting V.ndim < 3.")
-
-
-		if not _np.isscalar(time):
-			time = _np.asarray(time)
-			if V.ndim == 2 and V.shape[0] > 1:
-				if V.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-				if V.shape[0] != len(time):
-					raise ValueError("{0} number of vectors do not match length of time vector {1}.".format(V.shape[0],len(time)))
-				
-				return _np.vstack([self.rdot(v,time=t) for v,t in zip(V[:],time)])
-
-			else:
-				if V.shape[1] != self._shape[0]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-				
-				return _np.vstack([self.dot(V,time=t) for t in time])
-				
-		if not check:
-			V_dot = self._static.__rmul__(V)
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
-			return V_dot
-
-
-		if V.__class__ is _np.ndarray:
-			if V.ndim != 2:
-				reshape = True
-				V = V.reshape((1,-1))
-			else:
-				reshape = False 
-				
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = self._static.__rmul__(V)
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
-
-			if reshape:
-				return V_dot.reshape((-1,))
-
-		elif _sp.issparse(V):
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = self._static.__rmul__(V)
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
-
-
-		elif V.__class__ is _np.matrix:
-			if V.ndim != 2:
-				reshape = True
-				V = V.reshape((1,-1))
-			else:
-				reshape = False 
-
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = self._static.__rmul__(V)
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
-
-			if reshape:
-				return V_dot.reshape((-1,))
-
-
-		elif V.__class__ == exp_op: # matrix op right dot
-
-			return V.dot(self.__call__(time),time=time)
-
-
-		else:
-			V = _np.asanyarray(V)
-
-			if V.ndim != 2:
-				V = V.reshape((1,-1))
-
-			if V.shape[1] != self._shape[0]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = self._static.__rmul__(V)
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.__rmul__(V))
-
-		return V_dot
-
-		
-
 	def dot(self,V,time=0,check=True):
 		"""
 		args:
@@ -724,97 +637,148 @@ class hamiltonian(object):
 		if ishamiltonian(V):
 			raise ValueError("To multiply hamiltonians use '*' operator.")
 
-		if V.ndim > 2:
-			raise ValueError("Expecting V.ndim < 3.")
 
 		if not _np.isscalar(time):
+			if V.ndim > 3:
+				raise ValueError("Expecting V.ndim < 4.")
+
+
 			time = _np.asarray(time)
-
 			if time.ndim > 1:
-				raise ValueError("Expecting time.ndim < 2.")
+				raise ValueError("Expecting time to be one dimensional array-like.")
 
-			if V.ndim == 2 and V.shape[1] > 1:
-				if V.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-				
-				if V.shape[1] != len(time):
-					raise ValueError("{0} number of vectors do not match length of time vector {1}.".format(V.shape[1],len(time)))
-				
-				V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V.T[:],time)]).T
-				return V_dot
+			if _sp.issparse(V):
+				if V.shape[1] == time.shape[0]:
+					V = V.tocsc()
+					return _sp.vstack([self.dot(V.get_col(i),time=t,check=check) for i,t in enumerate(time)])
+				else:
+					raise ValueError("For non-scalar times V.shape[-1] must be equal to len(time).")
 			else:
+				V = _np.asarray(V)
+				if V.ndim == 2 and V.shape[-1] == time.shape[0]:
+					if V.shape[0] != self._shape[1]:
+						raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+					V = V.T
+					V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V[:],time)]).T
+					return V_dot
+
+				elif V.ndim == 3 and V.shape[-1] == time.shape[0]:
+					if V.shape[0] != self._shape[1]:
+						raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+					if V.shape[0] != V.shape[1]:
+						raise ValueError("Density matricies must be square!")
+
+					V = V.transpose((2,0,1))
+					V_dot = _np.dstack([self.dot(v,time=t,check=check) for v,t in zip(V[:],time)])
+
+					return V_dot
+
+				else:
+					raise ValueError("For non-scalar times V.shape[-1] must be equal to len(time).")
+		else:	
+			if not check:
+				V_dot = self._static.dot(V)	
+				for Hd,f,f_args in self._dynamic:
+					V_dot += f(time,*f_args)*(Hd.dot(V))
+				return V_dot
+
+			if V.__class__ is _np.ndarray:
 				if V.shape[0] != self._shape[1]:
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-				
-				V_dot = _np.vstack([self.dot(V,time=t,check=check) for t in time]).T
+		
+				V_dot = self._static.dot(V)	
+				for Hd,f,f_args in self._dynamic:
+					V_dot += f(time,*f_args)*(Hd.dot(V))
+
+
+			elif _sp.issparse(V):
+				if V.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+		
+				V_dot = self._static * V
+				for Hd,f,f_args in self._dynamic:
+					V_dot += f(time,*f_args)*(Hd.dot(V))
 				return V_dot
+
+			elif V.__class__ is _np.matrix:
+				if V.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+				V_dot = self._static.dot(V)	
+				for Hd,f,f_args in self._dynamic:
+					V_dot += f(time,*f_args)*(Hd.dot(V))
+
+			else:
+				V = _np.asanyarray(V)
+				if V.ndim not in [1,2]:
+					raise ValueError("Expecting 1 or 2 dimensional array")
+
+				if V.shape[0] != self._shape[1]:
+					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+				V_dot = self._static.dot(V)	
+				for Hd,f,f_args in self._dynamic:
+					V_dot += f(time,*f_args)*(Hd.dot(V))
+
+			return V_dot
+
+
+
+	def expt_value(self,V,time=0,check=True,enforce_pure=False):
+		"""
+		args:
+			V: state or collection of states (pure or mixed)
+			time: time to evaluate hamiltonian at.
+			check: flag to tel whether or not to do check
+			enforce_pure: flag to enforce pure expectation value of V is square. 
+		"""
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		
+		V_dot = self.dot(V,time=time,check=check)
+		if not _np.isscalar(time): # multiple time point expectation values
+			if _sp.issparse(V): # multiple pure states multiple time points
+				return (V.H.dot(V_dot)).diagonal()
+			else:
+				V = _np.asarray(V)
+				if V.ndim == 2: # multiple pure states multiple time points
+					return _np.einsum("ij,ij->j",V.conj(),V_dot)
+				elif V.ndim == 3: # multiple mixed states multiple time points
+					return _np.einsum("iij->j",V_dot)
+
+		else:
+			if _sp.issparse(V):
+				if V.shape[0] != V.shape[1]: # pure states
+					return _np.asscalar((V.H.dot(V_dot)).toarray())
+				else: # density matrix
+					return V.diagonal().sum()
+			else:
+				V     = _np.squeeze(_np.asarray(V))
+				V_dot = _np.squeeze(_np.asarray(V_dot))
+				if V.ndim == 1: # pure state
+					return _np.vdot(V,V_dot)
+				elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
+					return _np.einsum("ij,ij->j",V.conj(),V)
+				else: # density matrix
+					return V_dot.trace()
+
+
 
 			
-
-		if not check:
-			V_dot = self._static.dot(V)	
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.dot(V))
-			return V_dot
-
-
-
-
-		if V.__class__ is _np.ndarray:
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = self._static.dot(V)	
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.dot(V))
-
-			return V_dot
-
-		elif _sp.issparse(V):
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-	
-			V_dot = self._static.dot(V)	
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.dot(V))
-
-			return V_dot
-
-		elif V.__class__ is _np.matrix:
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = self._static.dot(V)	
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.dot(V))
-
-			return V_dot
-
-		elif V.__class__ == exp_op: # matrix op right dot
-			return V.rdot(self.__call__(time),time=time)
-		else:
-			V = _np.asanyarray(V)
-			if V.ndim not in [1,2]:
-				raise ValueError("Expecting 1 or 2 dimensional array")
-
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			V_dot = self._static.dot(V)	
-			for Hd,f,f_args in self._dynamic:
-				V_dot += f(time,*f_args)*(Hd.dot(V))
-
-			return V_dot
-
-
-
-
-
 	def matrix_ele(self,Vl,Vr,time=0,diagonal=False,check=True):
 		"""
 		args:
-			Vl, the vector to multiple with on left side
-			Vr, the vector to multiple with on the right side
+			Vl, the vector(s) to multiple with on left side
+			Vr, the vector(s) to multiple with on the right side
 			time=0, the time to evalute drive at.
 
 		description:
@@ -822,7 +786,7 @@ class hamiltonian(object):
 			between Vl and Vr.
 		"""
 		if self.Ns <= 0:
-			return _np.array([])
+			return np.array([])
 
 		Vr=self.dot(Vr,time=time,check=check)
 
@@ -832,7 +796,9 @@ class hamiltonian(object):
 			else:
 				return Vl.T.conj().dot(Vr)
  
-		
+ 		if Vr.ndim > 2:
+ 			raise ValueError('Expecting Vr to have ndim < 3')
+
 		if Vl.__class__ is _np.ndarray:
 			if Vl.ndim == 1:
 				if Vl.shape[0] != self._shape[1]:
@@ -848,7 +814,7 @@ class hamiltonian(object):
 				else:
 					return Vl.T.conj().dot(Vr)
 			else:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
+				raise ValueError('Expecting Vl to have ndim < 3')
 
 		elif Vl.__class__ is _np.matrix:
 			if Vl.ndim == 1:
@@ -864,19 +830,14 @@ class hamiltonian(object):
 					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 				else:
 					return Vl.H.dot(Vr)
-			else:
-				raise ValueError('Expecting Vl to have ndim < 3')
 
 		elif _sp.issparse(Vl):
-			if Vl.ndim == 2:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
-				if diagonal:
-					return Vl.H.dot(Vr).diagonal()
-				else:
-					return Vl.H.dot(Vr)
+			if Vl.shape[0] != self._shape[1]:
+				raise ValueError('dimension mismatch')
+			if diagonal:
+				return Vl.H.dot(Vr).diagonal()
 			else:
-				raise ValueError('Expecting Vl to have ndim < 3')
+				return Vl.H.dot(Vr)
 
 		else:
 			Vl = _np.asanyarray(Vl)
@@ -960,17 +921,21 @@ class hamiltonian(object):
 			solves for eigen values and eigen vectors, but can only solve for a few of them accurately.
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
-		if self.Ns == 0:
-			return _np.array([]),_np.array([[]])
+		if not _np.isscalar(time):
+			raise TypeError('expecting scalar argument for time')
+
+		if self.Ns <= 0:
+			return _np.asarray([]), _np.asarray([[]])
 
 		char = _np.dtype(self._dtype).char
-		if char in ("g","G"):
-			raise TypeError("eigsh not supported by long double types")
+		if char == "g":
+			H = self.tocsr(time=time).astype(_np.float64)
+		elif char == "G": 
+			H = self.tocsr(time=time).astype(_np.complex128)
+		else:
+			H = self.tocsr(time=time)
 
-
-		return _sla.eigsh(self.aslinearoperator(time),**eigsh_args)
-
-
+		return _sla.eigsh(H,**eigsh_args)
 
 
 
@@ -1023,9 +988,61 @@ class hamiltonian(object):
 		return E
 
 
-	def evolve(self,v0,t0,times,solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
+	def evolve(self,v0,t0,times,eom="SE",solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
+
+		shape0 = v0.shape
+
+		if eom == "SE":
+			n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
+			
+			if v0.ndim <= 2:
+				v0 = v0.ravel()
+			else:
+				raise ValueError("v0 must have ndim <= 2")
+
+			if v0.shape[0] != self.Ns:
+				raise ValueError("v0 must have {0} elements".format(self.Ns))
+
+			if imag_time:
+				v0 = v0.astype(self.dtype)
+				if _np.iscomplexobj(v0):
+					solver = complex_ode(self.__ISO)
+				else:
+					solver = ode(self.__ISO)
+			else:
+
+				if H_real:
+					v1 = v0
+					v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
+					v0[:self._Ns] = v1.real
+					v0[self._Ns:] = v1.imag
+					solver = ode(self.__SO_real)
+				else:
+					v0 = v0.astype(_np.complex128)
+					solver = complex_ode(self.__SO)
+
+		elif eom == "LvNE":
+			n = 1.0
+			if v0.ndim != 2:
+				raise ValueError("v0 must have ndim = 2")
+
+			if v0.shape != self._shape:
+				raise ValueError("v0 must be same shape as Hamiltonian")
+
+			if imag_time:
+				raise NotImplementedError("imaginary time not implemented for Liouville-von Neumann dynamics")
+			else:
+				if H_real:
+					raise NotImplementedError("H_real not implemented for Liouville-von Neumann dynamics")
+				else:
+					v0 = v0.ravel().astype(_np.complex128)
+					solver = complex_ode(self.__LO)
+		else:
+			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(equation))
+
 
 		if _np.iscomplexobj(times):
 			raise ValueError("times must be real number(s).")
@@ -1038,49 +1055,17 @@ class hamiltonian(object):
 			if solver_args.get("atol") is None:
 				solver_args["atol"] = 1E-9
 
-
-		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
-
-		
-		if v0.ndim <= 2:
-			v0 = v0.reshape((-1,))
-		else:
-			raise ValueError("v0 must have ndim <= 2")
-
-		if v0.shape[0] != self.Ns:
-			raise ValueError("v0 must have {0} elements".format(self.Ns))
-
-		complex_type = _np.dtype(_np.complex64(1j)*v0[0])
-		if imag_time:
-			v0 = v0.astype(self.dtype)
-			if _np.iscomplexobj(v0):
-				solver = complex_ode(self.__ISO)
-			else:
-				solver = ode(self.__ISO)
-		else:
-
-			if H_real:
-				v1 = v0
-				v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
-				v0[self._Ns:] = v1.real
-				v0[:self._Ns] = v1.imag
-				solver = ode(self.__SO_real)
-			else:
-				v0 = v0.astype(complex_type)
-				solver = complex_ode(self.__SO)
-
-		
-
+				
 		solver.set_integrator(solver_name,**solver_args)
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
-			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n)
+			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n,shape0)
 		else:
 			if iterate:
-				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n)
+				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
 			else:
-				return self._evolve_list(solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n)
+				return self._evolve_list(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
 
 			
 		
@@ -1090,39 +1075,41 @@ class hamiltonian(object):
 
 
 
-	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n):
+
+	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
+
 
 		if time == t0:
 			if H_real:
 				return v0[:self._Ns] + 1j*v0[self._Ns:]
 			else:
-				return _np.array(v0)
+				return _np.squeeze(v0.reshape(shape0))
 
 		solver.integrate(time)
 		if solver.successful():
 			if imag_time: solver._y /= (norm(solver._y)/n)
 			if H_real:
-				return solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+				return _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
 			else:
-				return _np.array(solver.y)
+				return _np.squeeze(solver.y.reshape(shape0))
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
 
 
-	def _evolve_list(self,solver,v0,t0,times,complex_type,verbose,imag_time,H_real,n):
+	def _evolve_list(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 
-		v = _np.empty((len(times),self.Ns),dtype=complex_type)
+		v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
 		
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if H_real:
-					v[i,:] = v0[:self._Ns] + 1j*v0[self._Ns:]
+					v[...,i] = _np.squeeze((v0[:self._Ns] + 1j*v0[self._Ns:]).reshape(shape0))
 				else:
-					v[i,:] = _np.array(v0)
+					v[...,i] = _np.squeeze(v0.reshape(shape0))
 				continue
 
 			solver.integrate(t)
@@ -1130,38 +1117,37 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
-					v[i,:] = solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+					v[...,i] = _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
 				else:
-					v[i,:] = solver.y
+					v[...,i] = _np.squeeze(solver.y.reshape(shape0))
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 				
-		return v
+		return _np.squeeze(v)
 
 
 
-	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n):
+	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if H_real:
-					yield v0[:self._Ns] + 1j*v0[self._Ns:]
+					yield _np.squeeze((v0[:self._Ns] + 1j*v0[self._Ns:]).reshape(shape0))
 				else:
-					yield _np.array(v0)
-				continue
+					yield _np.squeeze(v0.reshape(shape0))
 				continue
 				
 
 			solver.integrate(t)
 			if solver.successful():
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-				if imag_time: solver._y /= (norm(solver._y)/n)
+				if imag_time: solver._y /= (norm(solver.y)/n)
 				if H_real:
-					yield solver.y[self._Ns:] + 1j*solver.y[:self._Ns]
+					yield _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
 				else:
-					yield solver.y
+					yield _np.squeeze(solver.y.reshape(shape0))
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
@@ -1385,23 +1371,7 @@ class hamiltonian(object):
 			return self
 		
 
-	def aslinearoperator(self,time=0):
-		if not _np.isscalar(time):
-			raise ValueError("time must be scalar when creating LinearOperator")
 
-		matvec = functools.partial(hamiltonian_dot,self,time)
-		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)				
-
-
-	def matvec(self,V):
-		return self.dot(V)
-
-	def rmatvec(self,V):
-		return self.H.dot(V)
-
-	def matmat(self,V):
-		return self.dot(V)
 
 
 	def copy(self):
@@ -1461,10 +1431,10 @@ class hamiltonian(object):
 						"bsr":"Block Sparse Row"
 						}
 		if self.is_dense:
-			return "<{0}x{1} QuSpin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+			return "<{0}x{1} qspin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 		else:
 			fmt = matrix_format[self._static.getformat()]
-			return "<{0}x{1} QuSpin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
+			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
 
 
 	def __neg__(self): # -self
@@ -2424,7 +2394,7 @@ class hamiltonian(object):
 		functions.
 		"""
 
-		if (func == _np.dot) or (func == _np.multiply):
+		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:
@@ -2591,7 +2561,7 @@ class HamiltonianOperator(object):
 			return self.conj().transpose()
 
 	def __repr__(self):
-		return "<{0}x{1} QuSpin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
+		return "<{0}x{1} qspin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 
 	def get_LinearOperator(self):
 		return self._LinearOperator
@@ -2610,7 +2580,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = _np.asanyarray(other)
+			other = np.asanyarray(other)
 
 		if self.shape != other.shape:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
@@ -2637,7 +2607,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = False
-			other = _np.asanyarray(other)
+			other = np.asanyarray(other)
 
 		if self.shape != other.shape:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
@@ -2670,7 +2640,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = _np.asanyarray(other)
+			other = np.asanyarray(other)
 
 		if self.shape[1] != other.shape[0]:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
@@ -2696,7 +2666,7 @@ class HamiltonianOperator(object):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = _np.asanyarray(other)
+			other = np.asanyarray(other)
 
 		if dense:
 			if other.ndim == 1:
@@ -2845,14 +2815,13 @@ class HamiltonianOperator(object):
 		functions.
 		"""
 
-		if (func == _np.dot) or (func == _np.multiply):
+		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:
 				return self.__rmul__(inputs[0])
 			else:
 				return NotImplemented
-
 
 
 
@@ -3766,6 +3735,7 @@ class ops_dict(object):
 
 		if out is None:
 			out = _np.zeros(self._shape,dtype=self.dtype)
+>>>>>>> dev_0.2.0
 
 		for key,J in pars.items():
 			out += J * self._ops_dict[key]
@@ -3807,7 +3777,6 @@ class ops_dict(object):
 	"""
 	def SO_LinearOperator(self,pars={}):
 		pars = self._check_scalar_pars(pars)
-
 		i_pars = {}
 		i_pars_c = {}
 		for key,J in pars.items():
@@ -3906,7 +3875,6 @@ class ops_dict(object):
 
 
 		return V_dot
-
 
 	def rdot(self,V,pars={},check=False):
 		try:
@@ -4012,7 +3980,6 @@ class ops_dict(object):
 				tr += pars[key] * value.trace()
 			except AttributeError:
 				tr += pars[key] * value.diagonal().sum()
-
 		return tr
 
 
@@ -4044,7 +4011,6 @@ class ops_dict(object):
 		# calculate eigh
 		E,H_dense = _la.eigh(H_dense,**eigh_args)
 		return E,H_dense
-
 
 
 	def eigvalsh(self,pars={},**eigvalsh_args):

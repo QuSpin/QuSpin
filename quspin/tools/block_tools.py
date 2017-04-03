@@ -441,6 +441,7 @@ class block_ops(object):
 			else:
 				p = self._P_dict[key]
 
+
 			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
 			else:
@@ -588,6 +589,7 @@ class block_ops(object):
 					self._P_dict[key] = p
 			else:
 				p = self._P_dict[key]
+
 
 			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
