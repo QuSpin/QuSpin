@@ -554,13 +554,17 @@ class hamiltonian(object):
 		description:
 			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
+		
+		u_dot + iv_dot = -iH(u + iv)
+		u_dot =  Hv
+		v_dot = -Hu
 		"""
 		V_dot = zeros_like(V)
-		V_dot[self._Ns:] = self._static.dot(V[:self._Ns])
-		V_dot[:self._Ns] = -self._static.dot(V[self._Ns:])
+		V_dot[:self._Ns] =  self._static.dot(V[self._Ns:])
+		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
 		for Hd,f,f_args in self._dynamic:
-			V_dot[self._Ns:] += f(time,*f_args)*Hd.dot(V[:self._Ns])
-			V_dot[:self._Ns] += -f(time,*f_args)*Hd.dot(V[self._Ns:])
+			V_dot[:self._Ns] +=  f(time,*f_args)*Hd.dot(V[self._Ns:])
+			V_dot[self._Ns:] += -f(time,*f_args)*Hd.dot(V[:self._Ns])
 
 		return V_dot
 
@@ -1000,8 +1004,8 @@ class hamiltonian(object):
 				if H_real:
 					v1 = v0
 					v0 = _np.zeros(2*self._Ns,dtype=v1.real.dtype)
-					v0[self._Ns:] = v1.real
-					v0[:self._Ns] = v1.imag
+					v0[:self._Ns] = v1.real
+					v0[self._Ns:] = v1.imag
 					solver = ode(self.__SO_real)
 				else:
 					v0 = v0.astype(_np.complex128)

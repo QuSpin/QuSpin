@@ -59,14 +59,14 @@ def SO_real(time,V,H):
 	Ns=H.Ns
 
 	# static single-particle
-	V_dot[Ns:] =  H.static.dot(V[:Ns])
-	V_dot[:Ns] = -H.static.dot(V[Ns:])
+	V_dot[:Ns] =  H.static.dot(V[Ns:])
+	V_dot[Ns:] = -H.static.dot(V[:Ns])
 
 
 	# dynamic single-particle
 	for Hd,f,f_args in H.dynamic:
-		V_dot[Ns:] += f(time,*f_args)*Hd.dot(V[:Ns])
-		V_dot[:Ns] -= f(time,*f_args)*Hd.dot(V[Ns:])
+		V_dot[:Ns] += f(time,*f_args)*Hd.dot(V[Ns:])
+		V_dot[Ns:] -= f(time,*f_args)*Hd.dot(V[:Ns])
 
 	return V_dot
 
@@ -74,23 +74,26 @@ def SO_real(time,V,H):
 ##### time evolutino
 t=Floquet_t_vec(Omega,20,len_T=1)
 
-y_genevolve = evolve(V[:,0],t.i,t.vals,SO_real,real=True,stack_state=True,f_params=(H,))
-y = H.evolve(V[:,0],t.i,t.vals,H_real=True)
 
-np.testing.assert_allclose(y-y_genevolve,0.0,atol=1E-6,err_msg='Failed evolve list comparison!')
+for H_real in [0,1]:
 
-
-
-y_genevolve = evolve(V[:,0],t.i,t.f,SO_real,real=True,stack_state=True,f_params=(H,))
-y = H.evolve(V[:,0],t.i,t.f,H_real=True)
-
-np.testing.assert_allclose(y-y_genevolve,0.0,atol=1E-6,err_msg='Failed evolve scalar comparison!')
+	y_genevolve = evolve(V[:,0],t.i,t.f,SO_real,real=True,stack_state=True,f_params=(H,))
+	y = H.evolve(V[:,0],t.i,t.f,H_real=H_real)
+	
+	np.testing.assert_allclose(y-y_genevolve,0.0,atol=1E-6,err_msg='Failed evolve_scalar comparison!')
 
 
 
-y_genevolve = evolve(V[:,0],t.i,t.vals,SO_real,real=True,stack_state=True,iterate=True,f_params=(H,))
-y = H.evolve(V[:,0],t.i,t.vals,iterate=True,H_real=True)
+	y_genevolve = evolve(V[:,0],t.i,t.vals,SO_real,real=True,stack_state=True,f_params=(H,))
+	y = H.evolve(V[:,0],t.i,t.vals,H_real=H_real)
 
-for y_genevolve_t,y_t in zip(y_genevolve,y):
-	np.testing.assert_allclose(y_t-y_genevolve_t,0.0,atol=1E-6,err_msg='Failed evolve iter comparison!')
+	np.testing.assert_allclose(y-y_genevolve,0.0,atol=1E-6,err_msg='Failed evolve_list comparison!')
+
+
+
+	y_genevolve = evolve(V[:,0],t.i,t.vals,SO_real,real=True,stack_state=True,iterate=True,f_params=(H,))
+	y = H.evolve(V[:,0],t.i,t.vals,iterate=True,H_real=H_real)
+
+	for y_genevolve_t,y_t in zip(y_genevolve,y):
+		np.testing.assert_allclose(y_t-y_genevolve_t,0.0,atol=1E-6,err_msg='Failed evolve_iter comparison!')
 
