@@ -447,7 +447,7 @@ class block_ops(object):
 			else:
 				psi = p.H.dot(psi_0)
 
-			psi = psi.ravel()
+			psi = _np.asarra(psi).ravel()
 			
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)

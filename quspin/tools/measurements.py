@@ -1310,9 +1310,9 @@ def mean_level_spacing(E):
 
 
 
-def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,ODE_params=(),**solver_args):
+def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
 		"""
-		This function implements (imaginary) time evolution for a user-defined first-order ODE function.
+		This function implements (imaginary) time evolution for a user-defined first-order f function.
 
 		RETURNS: 	array containing evolved state in time
 
@@ -1324,23 +1324,23 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,ver
 
 		times: (required) vector of times to evaluate the time-evolved state at
 
-		ODE: (required) user-defined ODE function (all derivatives must be first order)
+		f: (required) user-defined f function (all derivatives must be first order)
 
 		solver_name: (optional) scipy solver integrator. Default is "dop853"
 
-		real: (optional) flag to determine if ODE is real or complex-valued. Default is "False"
+		real: (optional) flag to determine if f is real or complex-valued. Default is "False"
 
-		stack_state: (optional) if 'ODE' is written to take care of real and imaginary parts separately,
+		stack_state: (optional) if 'f' is written to take care of real and imaginary parts separately,
 					  this flag will take this into account. Default is 'False'.
 
 		verbose: (optional) prints normalisation of state at teach time in `times`
 
-		imag_time: (optional) must be set to `True` when `ODE` defines imaginary-time evolution, in order
+		imag_time: (optional) must be set to `True` when `f` defines imaginary-time evolution, in order
 					to normalise the state at each time in `times`. Default is 'False'.
 
 		iterate: (optional) creates a generator object to time-evolve the state. Default is 'False'.
 
-		ODE_params: (optional) a list to pass all parameters of the function `ODE` to solver. Default is
+		f_params: (optional) a list to pass all parameters of the function `f` to solver. Default is
 
 		solver_args: (optional) dictionary with to define additional scipy integrator (solver) arguments.		
 
@@ -1373,11 +1373,11 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,ver
 			v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
 			v0[:shape0[0]] = v1.real
 			v0[shape0[0]:] = v1.imag
-			solver = ode(ODE) # y_f = ODE(t,y,*args)
+			solver = ode(f) # y_f = f(t,y,*args)
 		elif real:
-			solver = ode(ODE) # y_f = ODE(t,y,*args)
+			solver = ode(f) # y_f = f(t,y,*args)
 		else:
-			solver = complex_ode(ODE) # y_f = ODE(t,y,*args)
+			solver = complex_ode(f) # y_f = f(t,y,*args)
 
 		
 
@@ -1393,7 +1393,7 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,ver
 					
 
 		solver.set_integrator(solver_name,**solver_args)
-		solver.set_f_params(*ODE_params)
+		solver.set_f_params(*f_params)
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):

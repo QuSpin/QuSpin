@@ -2938,9 +2938,10 @@ class exp_op(object):
 
 				self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
+
 		if ishamiltonian(O):
 			self._O = O
-		if isops_dict(O):
+		elif isops_dict(O):
 			self._O = O.tohamiltonian()
 		else:
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
@@ -3735,7 +3736,6 @@ class ops_dict(object):
 
 		if out is None:
 			out = _np.zeros(self._shape,dtype=self.dtype)
->>>>>>> dev_0.2.0
 
 		for key,J in pars.items():
 			out += J * self._ops_dict[key]
