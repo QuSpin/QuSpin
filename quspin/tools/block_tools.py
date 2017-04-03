@@ -22,7 +22,7 @@ except ImportError:
 
 __all__=["block_diag_hamiltonian","block_ops"]
 
-def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_proj=True,check_symm=True,check_herm=True,check_pcon=True):
+def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},get_proj=True,check_symm=True,check_herm=True,check_pcon=True):
 	"""
 	This function constructs a hamiltonian object which is block diagonal with the blocks being created by
 	the list 'blocks'
@@ -68,7 +68,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_
 		for block in blocks:
 			b = basis_con(*basis_args,**block)
 			if get_proj:
-				P = b.get_proj(dtype)
+				P = b.get_proj(dtype,**get_proj_kwargs)
 				P_list.append(P)
 
 			H = _hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
@@ -90,7 +90,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_
 		dynamic_dict = {}
 		for H in blocks:
 			if get_proj:
-				P = H.basis.get_proj(dtype)
+				P = H.basis.get_proj(dtype,**get_proj_kwargs)
 				P_list.append(P)
 
 			static_mats.append(H.static.tocoo())
@@ -259,7 +259,7 @@ def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args
 
 
 class block_ops(object):
-	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
+	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
 		"""
 		This class is used to split the dynamics of a state up over various symmetry sectors if the initial state does 
 		not obey the symmetry but the hamiltonian does. Moreover we provide a multiprocessing option which allows the 
@@ -322,6 +322,7 @@ class block_ops(object):
 		self._checks = {"check_symm":check_symm,"check_herm":check_herm,"check_pcon":check_pcon}
 		self._no_checks = {"check_symm":False,"check_herm":False,"check_pcon":False}
 		self._checked = False
+		self._get_proj_kwargs = get_proj_kwargs
 
 
 		blocks = list(blocks)
@@ -380,7 +381,7 @@ class block_ops(object):
 	def compute_all_blocks(self):
 		for key,b in iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
-				p = b.get_proj(self.dtype)
+				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				self._P_dict[key] = p
 
 			if self._H_dict.get(key) is None:
@@ -434,18 +435,20 @@ class block_ops(object):
 		psi_blocks = []
 		for key,b in iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
-				p = b.get_proj(self.dtype)
+				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				if self._save:
 					self._P_dict[key] = p
 			else:
 				p = self._P_dict[key]
 
-			try:
+
+			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
-			except AttributeError:
+			else:
 				psi = p.H.dot(psi_0)
 
 			psi = psi.ravel()
+			
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
@@ -581,15 +584,16 @@ class block_ops(object):
 		psi_blocks = []
 		for key,b in iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
-				p = b.get_proj(self.dtype)
+				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				if self._save:
 					self._P_dict[key] = p
 			else:
 				p = self._P_dict[key]
 
-			try:
+
+			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
-			except AttributeError:
+			else:
 				psi = p.H.dot(psi_0)
 
 			psi = psi.ravel()
