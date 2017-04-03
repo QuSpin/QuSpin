@@ -1310,7 +1310,42 @@ def mean_level_spacing(E):
 
 
 
-def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
+def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,ODE_params=(),**solver_args):
+		"""
+		This function implements (imaginary) time evolution for a user-defined first-order ODE function.
+
+		RETURNS: 	array containing evolved state in time
+
+		--- arguments ---
+
+		v0: (required) initial state
+
+		t0: (required) initial time
+
+		times: (required) vector of times to evaluate the time-evolved state at
+
+		ODE: (required) user-defined ODE function (all derivatives must be first order)
+
+		solver_name: (optional) scipy solver integrator. Default is "dop853"
+
+		real: (optional) flag to determine if ODE is real or complex-valued. Default is "False"
+
+		stack_state: (optional) if 'ODE' is written to take care of real and imaginary parts separately,
+					  this flag will take this into account. Default is 'False'.
+
+		verbose: (optional) prints normalisation of state at teach time in `times`
+
+		imag_time: (optional) must be set to `True` when `ODE` defines imaginary-time evolution, in order
+					to normalise the state at each time in `times`. Default is 'False'.
+
+		iterate: (optional) creates a generator object to time-evolve the state. Default is 'False'.
+
+		ODE_params: (optional) a list to pass all parameters of the function `ODE` to solver. Default is
+
+		solver_args: (optional) dictionary with to define additional scipy integrator (solver) arguments.		
+
+		"""
+
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
 
@@ -1336,8 +1371,8 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,ver
 		if stack_state:
 			v1 = v0
 			v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
-			v0[shape0[0]:] = v1.real
-			v0[:shape0[0]] = v1.imag
+			v0[:shape0[0]] = v1.real
+			v0[shape0[0]:] = v1.imag
 			solver = ode(ODE) # y_f = ODE(t,y,*args)
 		elif real:
 			solver = ode(ODE) # y_f = ODE(t,y,*args)
@@ -1358,7 +1393,7 @@ def evolve(v0,t0,times,ODE,solver_name="dop853",real=False,stack_state=False,ver
 					
 
 		solver.set_integrator(solver_name,**solver_args)
-		solver.set_f_params(*f_params)
+		solver.set_f_params(*ODE_params)
 		solver.set_initial_value(v0, t0)
 
 		if _np.isscalar(times):
@@ -1384,7 +1419,7 @@ def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
 	if solver.successful():
 		if imag_time: solver._y /= (norm(solver._y)/n)
 		if stack_state:
-			return (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
+			return (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
 		else:
 			return _np.array(solver.y).reshape(shape0)
 	else:
@@ -1413,7 +1448,7 @@ def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 			if imag_time: solver._y /= (norm(solver._y)/n)
 			if stack_state:
-				v[...,i] = (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
+				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
 			else:
 				v[...,i] = solver.y.reshape(shape0)
 		else:
@@ -1442,7 +1477,7 @@ def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 			if imag_time: solver._y /= (norm(solver._y)/n)
 			if stack_state:
-				yield (solver.y[Ns:] + 1j*solver.y[:Ns]).reshape(shape0)
+				yield (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
 			else:
 				yield solver.y.reshape(shape0)
 		else:
