@@ -673,3 +673,146 @@ class block_ops(object):
 
 
 
+class block_diag_ensemble(object):
+	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
+		"""
+		This class is used to split the dynamics of a state up over various symmetry sectors if the initial state does 
+		not obey the symmetry but the hamiltonian does. Moreover we provide a multiprocessing option which allows the 
+		user to split the dynamics up over multiple cores.
+
+		---arguments---
+
+		* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
+
+		* static: (required) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
+
+		* dynamic: (required) the dynamic operator list which is used to construct the block hamiltonians. follows hamiltonian format.
+
+		* basis_con: (required) the basis constructor used to construct the basis objects which will create the block diagonal hamiltonians.
+
+		* basis_args: (required) tuple which gets passed as the first argument for basis_con, contains required arguments. 
+
+		* check_symm: (optional) flag to check symmetry 
+
+		* dtype: (required) the data type to construct the hamiltonian with.
+
+		* save_previous_data: (optional) when doing the evolution this class has to construct the hamiltonians. this takes
+		some time and so by setting this to true, the class will keep previously calculated hamiltonians so that next time
+		it needs to do evolution in that block it doesn't have to calculate it again.
+
+		* compute_all_blocks: (optional) flag which tells the class to just compute all hamiltonian blocks at initialization.
+		This option also sets save_previous_data to True by default. 
+
+		* check_symm: (optional) flag which tells the function to check the symmetry of the operators for the first hamiltonian constructed.
+
+		* check_herm: (optional) same for check_symm but for hermiticity.
+
+		* check_pcon: (optional) same for check_symm but for particle conservation. 
+
+		--- block_ops attributes ---: '_. ' below stands for 'object. '
+
+		_.dtype: the numpy data type the block hamiltonians are stored with
+
+		_.save_previous_data: flag which tells the user if data is being saved. 
+
+		_.H_dict: dictionary which contains the block hamiltonians under key str(block) wher block is the block dictionary.
+
+		_.P_dict: dictionary which contains the block projectors under the same keys as H_dict.
+
+		_.basis_dict: dictionary which contains the basis objects under the same keys ad H_dict. 
+
+		_.static: list of the static operators used to construct block hamiltonians
+
+		_.dynamic: list of dynamic operators use to construct block hamiltonians
+
+		"""
+
+		self._basis_dict = {}
+		self._H_dict = {}
+		self._P_dict = {}
+		self._V_dict = {}
+		self._E_dict = {}
+		self._dtype=dtype
+		self._save = save_previous_data
+		self._static = static
+		self._dynamic = dynamic
+		self._checks = {"check_symm":check_symm,"check_herm":check_herm,"check_pcon":check_pcon}
+		self._no_checks = {"check_symm":False,"check_herm":False,"check_pcon":False}
+		self._checked = False
+		self._get_proj_kwargs = get_proj_kwargs
+
+
+		blocks = list(blocks)
+		for block in blocks:
+			b = basis_con(*basis_args,**block)
+			if b.Ns >  0:
+				self._basis_dict[str(block)]=b
+
+		if compute_all_blocks:
+			self._save=True
+			self.compute_all_blocks()
+
+
+	@property
+	def dtype(self):
+		return self._dtype
+
+	@property
+	def save_previous_data(self):
+		return self._save
+
+	@property
+	def H_dict(self):
+		return self._H_dict
+
+	@property
+	def P_dict(self):
+		return self._P_dict
+
+	@property
+	def basis_dict(self):
+		return self._basis_dict
+
+	@property
+	def static(self):
+		return list(self._static)
+
+	@property
+	def dynamic(self):
+		return list(self._dynamic)
+
+
+	def update_blocks(self,blocks,basis_con,basis_args,compute_all_blocks=False):
+		blocks = list(blocks)
+		for block in blocks:
+			if str(block) not in self._basis_dict.keys():
+				b = basis_con(*basis_args,**block)
+
+				if b.Ns >  0:
+					self._basis_dict[str(block)]=b	
+
+		if compute_all_blocks:
+			self.compute_all_blocks()	
+
+
+	def compute_all_blocks(self):
+		for key,b in iteritems(self._basis_dict):
+			if self._P_dict.get(key) is None:
+				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
+				self._P_dict[key] = p
+
+			if self._H_dict.get(key) is None:
+				if not self._checked:
+					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+					self._checked=True
+				else:
+					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+				self._H_dict[key] = H
+
+
+	def diag_ensemble(istate,**diag_ensemble_kwargs):
+		pass
+
+
+
+
