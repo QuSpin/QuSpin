@@ -17,6 +17,7 @@ def _consolidate_bonds(bonds):
 				if bonds[i][1:] == bonds[j][1:]:
 					bonds[i][0] += bonds[j][0]
 					del bonds[j]
+					if j < i: i -= 1
 					if bonds[i][0] == 0:
 						del bonds[i]
 
@@ -148,3 +149,22 @@ def make_dynamic(basis,dynamic_list,dtype):
 				H.eliminate_zeros() # remove all zero matrix elements
 			dynamic.append((H,f,tuple(f_args)))
 	return tuple(dynamic)
+
+
+
+
+
+def make_op(basis,opstr,bonds,dtype):
+	Ns=basis.Ns
+	H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
+	for bond in bonds:
+		J=bond[0]
+		indx=bond[1:]
+		ME,row,col = basis.Op(opstr,indx,J,dtype)
+		Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+		H=H+Ht
+		del Ht
+		H.sum_duplicates() # sum duplicate matrix elements
+		H.eliminate_zeros() # remove all zero matrix elements
+	
+	return H

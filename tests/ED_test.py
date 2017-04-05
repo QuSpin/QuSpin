@@ -99,7 +99,6 @@ def check_z(L,dtype,Nup=None):
 	Ez=np.concatenate((E1,E2))
 	Ez.sort()
 
-
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nup={2} {3}".format(L,np.dtype(dtype),Nup, norm(Ez-E)))
 
@@ -744,6 +743,7 @@ def check_t_p_z(L,dtype,Nup=None):
 
 
 def check_pbc(Lmax):
+
 	for dtype in (np.complex64,np.complex128):
 		for L in range(2,Lmax+1,1):
 			check_t(L,dtype)

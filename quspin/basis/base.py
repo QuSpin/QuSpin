@@ -1,4 +1,5 @@
 import numpy as _np
+import scipy.sparse as _sp
 import warnings
 
 MAXPRINT = 50
@@ -23,18 +24,14 @@ class basis(object):
 		if self._Ns == 0:
 			return string
 		
-		if hasattr(self,"_get__str__"):
-			str_list = list(self._get__str__())
-			if self._Ns > MAXPRINT:
-				L_str = len(str_list[0])
-				t = (" ".join(["" for i in range(L_str//2)]))+":"
-				str_list.insert(MAXPRINT//2,t)
+		str_list = list(self._get__str__())
+		if self._Ns > MAXPRINT:
+			L_str = len(str_list[0])
+			t = (" ".join(["" for i in range(L_str//2)]))+":"
+			str_list.insert(MAXPRINT//2,t)
 		
-			string += "\n".join(str_list)
-			return string
-		else:
-			warnings.warn("basis class {0} missing _get__str__ function, can not print(out basis representatives.".format(type(self)),UserWarning,stacklevel=3)
-			return "reference states: \n\t not availible"
+		string += "\n".join(str_list)
+		return string
 
 
 
@@ -50,96 +47,100 @@ class basis(object):
 	def operators(self):
 		return self._operators
 
-	def __repr__(self):
-		return "< instance of 'qspin.basis.base' with {0} states >".format(self._Ns)
+	def _get__str__(self):
+		temp1 = "\t{0:"+str(len(str(self.Ns)))+"d}.  "
+		n_space = len(str(self.sps))
+		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
 
-	def __name__(self):
-		return "<type 'qspin.basis.base'>"
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
 
+		return tuple(str_list)
+
+
+	# this methods are optional and are not required for main functions:
 	def __iter__(self):
 		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for for iterating over basis!".format(self.__class__))
 
-	def __getitem__(self,key):
+	def __getitem__(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for for '[]' operator!".format(self.__class__))
 
-	def index(self,s):
+	def index(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'index' function!".format(self.__class__))
 
+#	def _get__str__(self,*args,**kwargs):
+#		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print basis!".format(self.__class__))		
 
+
+	# this method is required in order to create manybody hamiltonians/operators
 	def Op(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for for creating hamiltonians!".format(self.__class__))
-		
+
+	# this method is required in order to use entanglement entropy functions		
 	def get_vec(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec'!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec' required for entanglement entropy calculations!".format(self.__class__))
 
+	@property
+	def sps(self):
+		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'm' required for entanglement entropy calculations!".format(self.__class__))
+
+	# this method is required for the block_tools functions
 	def get_proj(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'get_proj'!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of 'get_proj' required for entanglement block_tools calculations!".format(self.__class__))
 
-
-
-
+	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
 	def _hc_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
 
 	def _sort_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks! turn this check off by setting check_herm=False".format(self.__class__))
 
 	def _expand_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
 
 	def _non_zero(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
 
 
-	# These methods are required for every basis class.
-	# for examples see spin.py
-	def hc_opstr(self,op):
-		return self.__class__._hc_opstr(self,op)
-
-	def sort_opstr(self,op):
-		return self.__class__._sort_opstr(self,op)
-
-	def expand_opstr(self,op,num):
-		return self.__class__._expand_opstr(self,op,num)
-
-	def non_zero(self,op):
-		return self.__class__._non_zero(self,op)
-
-
-	# these methods can be overriden in the even the ones implimented below do not work
+	# these methods can be overwritten in the event that the ones implimented below do not work
 	# for whatever reason
-	def sort_list(self,op_list):
-		return self.__class__._sort_list(self,op_list)
+	def sort_local_list(self,op_list):
+		return self.__class__._sort_local_list(self,op_list)
 
-	def get_lists(self,static,dynamic):
-		return self.__class__._get_lists(self,static,dynamic)
+	def get_local_lists(self,static,dynamic):
+		return self.__class__._get_local_lists(self,static,dynamic)
 
-	def get_hc_lists(self,static_list,dynamic_list):
-		return self.__class__._get_hc_lists(self,static_list,dynamic_list)
+	def get_hc_local_lists(self,static_list,dynamic_list):
+		return self.__class__._get_hc_local_lists(self,static_list,dynamic_list)
 
-	def consolidate_lists(self,static_list,dynamic_list):
-		return self.__class__._consolidate_lists(self,static_list,dynamic_list)
+	def consolidate_local_lists(self,static_list,dynamic_list):
+		return self.__class__._consolidate_local_lists(self,static_list,dynamic_list)
 
-	def expand_list(self,op_list):
-		return self.__class__._expand_list(self,op_list)
+	def expand_local_list(self,op_list):
+		return self.__class__._expand_local_list(self,op_list)
+
+	def expanded_form(self,static_list,dynamic_list):
+		return self.__class__._expanded_form(self,static_list,dynamic_list)
 
 
 
-
-
-
-	def _sort_list(self,op_list):
+	def _sort_local_list(self,op_list):
 		sorted_op_list = []
 		for op in op_list:
-			sorted_op_list.append(self.sort_opstr(op))
+			sorted_op_list.append(self._sort_opstr(op))
 		sorted_op_list = tuple(sorted_op_list)
 
 		return sorted_op_list
 
 
-
+	# this function flattens out the static and dynamics lists to: 
+	# [[opstr1,indx11,J11,...],[opstr1,indx12,J12,...],...,[opstrn,indxnm,Jnm,...]]
 	# this function gets overridden in photon_basis because the index must be extended to include the photon index.
-	def _get_lists(self,static,dynamic):
+	def _get_local_lists(self,static,dynamic):
 		static_list = []
 		for opstr,bonds in static:
 			for bond in bonds:
@@ -154,13 +155,13 @@ class basis(object):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,indx,J,f,f_args))
 
-		return self.sort_list(static_list),self.sort_list(dynamic_list)
+		return self.sort_local_list(static_list),self.sort_local_list(dynamic_list)
 
-
-	def _get_hc_lists(self,static_list,dynamic_list):
+	# takes the list from the format given by get_local_lists and takes the hermitian conjugate of operators.
+	def _get_hc_local_lists(self,static_list,dynamic_list):
 		static_list_hc = []
 		for op in static_list:
-			static_list_hc.append(self.hc_opstr(op))
+			static_list_hc.append(self._hc_opstr(op))
 
 		static_list_hc = tuple(static_list_hc)
 
@@ -173,93 +174,98 @@ class basis(object):
 		for opstr,indx,J,f,f_args in dynamic_list:
 			J *= f(t,*f_args)
 			op = (opstr,indx,J)
-			dynamic_list_hc.append(self.hc_opstr(op))
-			dynamic_list_eval.append(self.sort_opstr(op))
+			dynamic_list_hc.append(self._hc_opstr(op))
+			dynamic_list_eval.append(self._sort_opstr(op))
 
 		dynamic_list_hc = tuple(dynamic_list_hc)
 		
 		return static_list,static_list_hc,dynamic_list_eval,dynamic_list_hc
 
 
-
-	def _expand_list(self,op_list):
+	# this function takes the list format giveb by get_local_lists and expands any operators into the most basic components
+	# 'n'(or 'z' for spins),'+','-' If by default one doesn't need to do this then _expand_opstr must do nothing. 
+	def _expand_local_list(self,op_list):
 		op_list_exp = []
 		for i,op in enumerate(op_list):
-			new_ops = self.expand_opstr(op,[i])
+			new_ops = self._expand_opstr(op,[i])
 			for new_op in new_ops:
-				if self.non_zero(new_op):
+				if self._non_zero(new_op):
 					op_list_exp.append(new_op)
 
-		return op_list_exp
+		return self.sort_local_list(op_list_exp)
 
 
+	def _consolidate_local_lists(self,static_list,dynamic_list):
 
-	def _consolidate_lists(self,static_list,dynamic_list):
-		l = len(static_list)
-		i = 0
+		static_dict={}
+		for opstr,indx,J,ii in static_list:
+			if opstr in static_dict:
+				if indx in static_dict[opstr]:
+					static_dict[opstr][indx][0] += J
+					static_dict[opstr][indx][1].extend(ii)
+				else:
+					static_dict[opstr][indx] = [J,ii]
+			else:
+				static_dict[opstr] = {indx:[J,ii]}
 
-		while (i < l):
-			j = 0
-			while (j < l):
-				if i != j:
-					opstr1,indx1,J1,i1 = tuple(static_list[i]) 
-					opstr2,indx2,J2,i2 = tuple(static_list[j])
-					#print(i,j,opstr1,opstr2,indx1,indx2,J1,J2)
-					if opstr1 == opstr2 and indx1 == indx2:
-						del static_list[j]
-						if j < i: i -= 1
-						if J1 == -J2:
-							if i < j: j -= 1				
-							del static_list[i]
-						else:
-							static_list[i] = list(static_list[i])
-							static_list[i][2] += J2
-							static_list[i][3].extend(i2)
-							static_list[i] = tuple(static_list[i])
-						
-						l = len(static_list)
+		static_list = []
+		for opstr,opstr_dict in static_dict.items():
+			for indx,(J,ii) in opstr_dict.items():
+				if J != 0:
+					static_list.append((opstr,indx,J,ii))
 
-				if i >= l: break
-				j += 1
-			i += 1
-			
-		l = len(dynamic_list)
-		i = 0
 
-		while (i < l):
-			j = 0
-			while (j < l):
-				if i != j:
-					opstr1,indx1,J1,f1,f1_args,i1 = tuple(dynamic_list[i]) 
-					opstr2,indx2,J2,f2,f2_args,i2 = tuple(dynamic_list[j])
-					if opstr1 == opstr2 and indx1 == indx2 and f1 == f2 and f1_args == f2_args:
-						del dynamic_list[j]
-						if j < i: i -= 1
-						if J1 == -J2: 
-							if i < j: j -= 1
-							del dynamic_list[i]
-						else:
-							dynamic_list[i] = list(dynamic_list[i])
-							dynamic_list[i][2] += J2
-							dynamic_list[i][3].extend(i2)
-							dynamic_list[i] = tuple(dynamic_list[i])
-						
-						l = len(dynamic_list)
+		dynamic_dict={}
+		for opstr,indx,J,f,f_args,ii in dynamic_list:
+			if opstr in dynamic_dict:
+				if indx in dynamic_dict[opstr]:
+					dynamic_dict[opstr][indx][0] += J
+					dynamic_dict[opstr][indx][3].extend(ii)
+				else:
+					dynamic_dict[opstr][indx] = [J,f,f_args,ii]
+			else:
+				dynamic_dict[opstr] = {indx:[J,f,f_args,ii]}
 
-						if i >= l: break
-				j += 1
-			i += 1
+
+		dynamic_list = []
+		for opstr,opstr_dict in dynamic_dict.items():
+			for indx,(J,f,f_args,ii) in opstr_dict.items():
+				if J != 0:
+					dynamic_list.append((opstr,indx,J,f,f_args,ii))
 
 
 		return static_list,dynamic_list
 
 
+	def _expanded_form(self,static,dynamic):
+		static_list,dynamic_list = self.get_local_lists(static,dynamic)
+		static_list = self.expand_local_list(static_list)
+		dynamic_list = self.expand_local_list(dynamic_list)
+		static_list,dynamic_list = self.consolidate_local_lists(static_list,dynamic_list)
 
+		static_dict={}
+		for opstr,indx,J,ii in static_list:
+			indx = list(indx)
+			indx.insert(0,J)
+			if opstr in static_dict:
+				static_dict[opstr].append(indx)
+			else:
+				static_dict[opstr] = [indx]
 
+		static = [[str(key),list(value)] for key,value in static_dict.items()]
 
+		dynamic_dict={}
+		for opstr,indx,J,f,f_args,ii in dynamic_list:
+			indx = list(indx)
+			indx.insert(0,J)
+			if opstr in dynamic_dict:
+				dynamic_dict[opstr].append(indx)
+			else:
+				dynamic_dict[opstr] = [indx]
 
+		dynamic = [[str(key),list(value)] for key,value in dynamic_dict.items()]
 
-
+		return static,dynamic
 
 
 
@@ -270,8 +276,8 @@ class basis(object):
 
 	def check_hermitian(self,static_list,dynamic_list):
 
-		static_list,dynamic_list = self.get_lists(static_list,dynamic_list)
-		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self.get_hc_lists(static_list,dynamic_list)
+		static_list,dynamic_list = self.get_local_lists(static_list,dynamic_list)
+		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self.get_hc_local_lists(static_list,dynamic_list)
 		# calculate non-hermitian elements
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
 		
@@ -320,10 +326,10 @@ class basis(object):
 			return
 
 		if self._check_pcon:
-			static_list,dynamic_list = self.get_lists(static,dynamic)
-			static_list_exp = self.expand_list(static_list)
-			dynamic_list_exp = self.expand_list(dynamic_list)
-			static_list_exp,dynamic_list_exp = self.consolidate_lists(static_list_exp,dynamic_list_exp)
+			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+			static_list_exp = self.expand_local_list(static_list)
+			dynamic_list_exp = self.expand_local_list(dynamic_list)
+			static_list_exp,dynamic_list_exp = self.consolidate_local_lists(static_list_exp,dynamic_list_exp)
 			con = ""
 
 			odd_ops = []
@@ -490,4 +496,133 @@ class basis(object):
 def isbasis(x):
 	return isinstance(x,basis)
 
+
+
+####################################################
+# set of helper functions to implement the partial # 
+# trace of lattice density matrices. They do not   #
+# have any checks and states are assumed to be     #
+# in the non-symmetry reduced basis.               #
+####################################################
+
+def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	extra_dims = psi.shape[:-1]
+	n_dims = len(extra_dims)
+
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sorted(sub_sys_B))
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	T_tup = tuple(sub_sys_A)+tuple(sub_sys_B) 
+	T_tup = tuple(range(n_dims)) + tuple(n_dims + s for s in T_tup)
+	R_tup = extra_dims + tuple(sps for i in range(L))
+
+	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
+	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
+
+	if return_rdm == "A":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
+	elif return_rdm == "B":
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+	elif return_rdm == "both":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+
+
+
+
+
+
+def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+	extra_dims = rho.shape[:-2]
+	n_dims = len(extra_dims)
+
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sorted(sub_sys_B))
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	# T_tup tells numpy how to reshuffle the indices such that when I reshape the array to the 
+	# 4-_tensor rho_{ik,jl} i,j are for sub_sys_A and k,l are for sub_sys_B
+	# which means I need (sub_sys_A,sub_sys_B,sub_sys_A+L,sub_sys_B+L)
+
+	T_tup = sub_sys_A+sub_sys_B
+	T_tup = tuple(range(n_dims)) + tuple(s+n_dims for s in T_tup) + tuple(L+n_dims+s for s in T_tup)
+
+	R_tup = extra_dims + tuple(sps for i in range(2*L))
+
+	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
+	rho_v = rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B)) 
+
+	if return_rdm == "A":
+		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
+	elif return_rdm == "B":
+		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
+	elif return_rdm == "both":
+		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
+
+
+
+
+
+def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sorted(sub_sys_B))
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	psi = psi.tocoo()
+
+	T_tup = sub_sys_A+sub_sys_B
+
+	
+	# reshuffle indices for the sub-systems.
+	# j = sum( j[i]*(sps**i) for i in range(L))
+	# this reshuffles the j[i] similar to the transpose operation
+	# on the dense arrays psi_v.transpose(T_tup)
+	if T_tup != tuple(range(L)):
+		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
+		for i_new,i_old in enumerate(T_tup):
+			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
+	else:
+		indx = psi.col
+
+
+	# make shift way of reshaping array
+	# j = j_A + Ns_A * j_B
+	# j_A = j % Ns_A
+	# j_B = j / Ns_A
+
+	psi._shape = (Ns_A,Ns_B)
+	psi.row[:] = indx % Ns_A
+	psi.col[:] = indx / Ns_A
+
+	psi = psi.tocsr()
+
+	if return_rdm == "A":
+		return psi.dot(psi.H)
+	elif return_rdm == "B":
+		return psi.H.dot(psi)
+	elif return_rdm == "both":
+		return psi.dot(psi.H),psi.H.dot(psi)
 

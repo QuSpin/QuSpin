@@ -23,12 +23,12 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
-	This function calculates the entanglement _entropy of a lattice quantum subsystem based on the Singular
-	Value Decomposition (svd).
+	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
+	reduced subsystem. 
 
 	RETURNS:	dictionary with keys:
 
-	'Sent': entanglement _entropy.
+	'Sent': entanglement entropy.
 
 	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
 
@@ -98,7 +98,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	# initiate variables
 	variables = ["Sent"]
-	
+
 	if DM=='chain_subsys':
 		variables.append("DM_chain_subsys")
 		if svd_return_vec[0]:
@@ -114,6 +114,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 			variables.append('U')
 		if svd_return_vec[2]:
 			variables.append('V')
+	elif DM and DM not in ['chain_subsys','other_subsys','both']:
+		raise TypeError("Unexpected keyword argument for 'DM'!")
 
 	if svd_return_vec[1]:
 		variables.append('lmbda')
@@ -123,6 +125,13 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	# calculate reshaped system_state
 	v, rho_d, N_A = _reshape_as_subsys(system_state,basis,chain_subsys=chain_subsys,subsys_ordering=subsys_ordering)
 	del system_state
+	
+	"""
+	This function has room for improvement: if only DM is requested, it can be obtained by
+	DM_chain_subsys = v[0].dot(v[0].T)
+	DM_other_subsys = v[0].T.dot(v[0])
+	so there's NO NEED for an SVD!!!
+	"""
 
 	if DM == False:
 		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
@@ -222,7 +231,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	try:
 		N = basis.N
 	except AttributeError:
-		N = basis.chain_N
+		N = basis.particle_N
 
 
 
@@ -239,6 +248,8 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
 		elif len(set(chain_subsys)) < len(chain_subsys):
 			raise TypeError("'subsys' cannot contain repeating site indices!")
+		elif any(not _np.issubdtype(type(s),_np.integer) for s in chain_subsys):
+			raise ValueError("'subsys' must iterable of integers with values in {0,...,L-1}!")
 		elif subsys_ordering:
 			if len(set(chain_subsys))==len(chain_subsys) and sorted(chain_subsys)!=chain_subsys:
 				# if chain subsys is def with unordered sites, order them
@@ -328,24 +339,24 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined
 		if chain_subsys is None: 
-			chain_subsys=[i for i in range( N//2 )]
+			chain_subsys=list(i for i in range( N//2 ))
 			warnings.warn("Subsystem contains sites {}.".format(chain_subsys),stacklevel=4)
 		
 	
 		# re-write the state in the initial basis
-		if basis.Ns<2**N:
+		if basis.Ns<basis.sps**N:
 			psi = basis.get_vec(psi,sparse=False)
 			
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
-		Ns_A = 2**N_A
+		Ns_A = basis.sps**N_A
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
 
-
 		'''
-		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows:
+		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
+		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
 
 		1) the initial state psi has 2^N entries corresponding to the spin-z configs
 		2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
@@ -359,14 +370,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		if chain_subsys==list(range(len(chain_subsys))):
 			# chain_subsys sites come in consecutive order
 			# define reshape tuple
-			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			# reshape states
 			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive or staring site not [0]
 			# performs 2) and 3)
 			# update reshape tuple
-			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)])
+			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)])
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -376,7 +387,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			# performs 4)
 			v=v.transpose(system) 
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**N//Ns_A)
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			v = _np.reshape(v,reshape_tuple2)
 			
 
@@ -384,13 +395,13 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 
 		# set chain subsys if not defined; 
 		if chain_subsys is None: 
-			chain_subsys=[i for i in range( int(N) )]
+			chain_subsys=list(range( int(N) ))
 			warnings.warn("subsystem set to the entire chain.",stacklevel=4)
 
 
 		#calculate H-space dimensions of the subsystem and the system
 		N_A = len(chain_subsys)
-		Ns_A = 2**N_A
+		Ns_A = basis.sps**N_A
 
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
@@ -403,39 +414,38 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				if N_A!=N: # doesn't make use of chain symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
 				else: # makes use of symmetries
-					Ns_spin = basis.chain_Ns
+					Ns_chain = basis.chain_Ns
 			else:
-				Ns_spin = 2**N
+				Ns_chain = basis.sps**N
 
 		elif basis.Ntot is not None: # total particle-conservation
 			Nph = basis.Ntot
 			if basis.Ns < photon_Hspace_dim(N,basis.Ntot,basis.Nph): #chain symmetries present
 				if N_A==N: # make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
-					Ns_spin = basis.chain_Ns
+					Ns_chain = basis.chain_Ns
 				else: # doesn't make use of symmetries
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-					Ns_spin = 2**N
+					Ns_chain = basis.sps**N
 			else: # no chain symmetries present
 				if N_A==N:
 					psi = basis.get_vec(psi,sparse=False,full_part=False)
 				else:
 					psi = basis.get_vec(psi,sparse=False,full_part=True)
-				Ns_spin = basis.chain_Ns
+				Ns_chain = basis.chain_Ns
 
-		#del basis
 		if chain_subsys == list(range(len(chain_subsys))): 
 			# chain_subsys sites come in consecutive order or staring site not [0]
 			# define reshape tuple
 			if N_A==N: # chain_subsys equals entire lattice
-				reshape_tuple2 = (Ns, Ns_spin,Nph+1)
+				reshape_tuple2 = (Ns, Ns_chain,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
-				reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+				reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
 			v = _np.reshape(psi.T,reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
-			reshape_tuple1 = (Ns,) + tuple([2 for i in range(N)]) + (Nph+1,)
+			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)]) + (Nph+1,)
 			# upadte axes dimensions
 			system = [s+1 for s in system]
 			system.insert(0,0)
@@ -446,7 +456,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system.append(len(system))
 			v=v.transpose(system)
 			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, 2**(N-N_A)*(Nph+1) )
+			reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
 			v = _np.reshape(v,reshape_tuple2)
 				
 	else:
@@ -889,14 +899,23 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 	iterate: (optional) if True this function returns the generator of the time evolved state. 
 	"""
+	psi = _np.squeeze(_np.asarray(psi))
+
 
 	if V.ndim != 2 or V.shape[0] != V.shape[1]:
 		raise ValueError("'V' must be a square matrix")
 
 	if V.shape[0] != len(E):
 		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-	if len(psi) != len(E):
+	if psi.shape[0] != len(E):
 		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+
+	if psi.ndim == 2:
+		if psi.shape[0] != psi.shape[1]:
+			raise ValueError("mixed states must be square!")
+
+	if psi.ndim > 2:
+		raise ValueError("psi must be 1 or 2 dimension array.")
 
 	if _np.isscalar(times):
 		TypeError("Variable 'times' must be a array or iter like object!")
@@ -905,33 +924,59 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 	
 
 	# define generator of time-evolved state in basis V2
-	def psi_t_iter(V,psi,times):
+	def pure_t_iter(V,psi,times):
 		# a_n: probability amplitudes
 		# times: time vector
 		a_n = V.T.conj().dot(psi)
 		for t in times:
 			yield V.dot( _np.exp(E*t)*a_n )
 
-	if iterate:
-		return psi_t_iter(V,psi,times)
+	def mixed_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		rho_d = V.T.conj().dot(psi.dot(V))
+		for t in times:
+			exp_t = _np.exp(t*E)
+			yield _np.einsum("ij,j,jk,k,lk->il",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
+
+	if psi.ndim == 1:
+		if iterate:
+			return pure_t_iter(V,psi,times)
+		else:
+			c_n = V.T.conj().dot(psi)
+
+			Ntime = len(times)
+			Ns = len(E)
+
+			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+
+			psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+
+			# for each vector trasform back to original basis
+			psi_t = V.dot(psi_t.T) 
+
+			return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
 	else:
-		c_n = V.T.conj().dot(psi)
+		if iterate:
+			return mixed_t_iter(V,psi,times)
+		else:
+			Ntime = len(times)
+			Ns = len(E)
 
-		Ntime = len(times)
-		Ns = len(E)
+			rho_d = V.T.conj().dot(psi.dot(V))
 
-		psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-		psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-		_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			exp_t = exp_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			_np.exp(exp_t,exp_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			
+			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
 
-		psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+			
 
-		# for each vector trasform back to original basis
-		psi_t = V.dot(psi_t.T) 
-
-		return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
-
-def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
+def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},basis=None,disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -992,16 +1037,12 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 
 	num_Obs = len(Obs_dict.keys())
 
-	ham_dict={}
-	obs_dict={}
 	for key, val in Obs_dict.items():
-		if _ishamiltonian(val):
-			ham_dict[key]=val
-		else:
+		if not _ishamiltonian(val):
 			if not(_sp.issparse(val)) and not(val.__class__ in [_np.ndarray,_np.matrix]):
-				obs_dict[key]=_np.asanyarray(val)
-			else:
-				obs_dict[key]=val
+				val =_np.asanyarray(val)
+
+			Obs_dict[key] = _hamiltonian([val],[],dtype=val.dtype)
 
 
 	if type(psi_t) is tuple:
@@ -1014,11 +1055,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
 		if len(psi) != len(E):
 			raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-		for Obs in obs_dict.values():
-			if V.shape != Obs.shape:
-				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
-		for ham in ham_dict.values():
-			if V.shape != ham.get_shape:
+		for Obs in Obs_dict.values():
+			if V.shape != Obs._shape:
 				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
 			
 
@@ -1039,18 +1077,10 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
 
 
-		if psi_t.ndim != 2:
-			raise ValueError("states must come in two dimensional array.")
-
-		psi_t = psi_t.T
-
-		for Obs in obs_dict.values():
-			if psi_t.shape[0] != Obs.shape[1]:
+		for Obs in Obs_dict.values():
+			if psi_t.shape[0] != Obs._shape[1]:
 				raise ValueError("states must be in columns of input matrix.")
 
-		for ham in ham_dict.values():
-			if psi_t.shape[0] != ham.get_shape[1]:
-				raise ValueError("states must be in columns of input matrix.")
 
 		if return_state:
 			variables.append("psi_t")
@@ -1064,91 +1094,72 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			for psi in psi_t:
 				psi_t_list.append(psi)
 
-			psi_t = _np.vstack(psi_t_list).T
+			psi_t = _np.squeeze(_np.dstack(psi_t_list))
 
-			for Obs in obs_dict.values():
-				if psi_t.shape[0] != Obs.shape[1]:
+			for Obs in Obs_dict.values():
+				if psi_t.shape[0] != Obs._shape[1]:
 					raise ValueError("states must be in columns of input matrix.")
-
-			for ham in ham_dict.values():
-				if psi_t.shape[0] != ham.get_shape[1]:
-					raise ValueError("states must be in columns of input matrix.")
-
 
 	else:
 		raise ValueError("input not recognized")
 	
 	# calculate observables and Sent
 	Expt_time = {}
-
+	calc_Sent = False
+	
 	if len(Sent_args) > 0:
+		if basis is None:
+			raise ValueError("Sent requires basis for calculation")
+		calc_Sent = True
 		variables.append("Sent_time")
 	
 	if return_state:
-		for key,Obs in obs_dict.items():
-			psi_l = Obs.dot(psi_t)
-			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
-	
-		for key,ham in ham_dict.items():
-			psi_l = ham.dot(psi_t,time=times,check=False)
-			Expt_time[key]=_np.einsum("ji,ji->i",psi_t.conj(),psi_l).real
+		for key,Obs in Obs_dict.items():
+			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = ent_entropy({'V_states':psi_t},**Sent_args)
+			Sent_time = basis.ent_entropy(psi_t.T,**Sent_args)
 
 
 	else:
 		psi = next(psi_t) # get first state from iterator.
-		# do first loop calculations
-		if psi.ndim == 2:
-			psi = psi.ravel()
+		# do first calculations of loop
 
 		time = times[0]
 
-		for key,Obs in obs_dict.items():
-			psi_l = Obs.dot(psi)
-			val = _np.vdot(psi,psi_l).real
+		for key,Obs in Obs_dict.items():
+			
+			val = Obs.expt_value(psi,time=time,check=False).real
 			dtype = _np.dtype(val)
 			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
 			Expt_time[key][0] = val
 
-		for key,ham in ham_dict.items():
-			val = ham.matrix_ele(psi,psi,time=time).real
-			dtype = _np.dtype(val)
-			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
-			Expt_time[key][0] = val
 
 
 		# get initial dictionary from ent_entropy function
 		# use this to set up dictionary for the rest of calculation.
-		if len(Sent_args) > 0:
-			Sent_time = ent_entropy(psi,**Sent_args)
+		if calc_Sent:
+			Sent_time = basis.ent_entropy(psi,**Sent_args)
 
 			for key,val in Sent_time.items():
 				dtype = _np.dtype(val)
-				Sent_time[key] = _np.zeros((len(times),),dtype=dtype)
+				shape = (len(times),) + val.shape
+				Sent_time[key] = _np.zeros(shape,dtype=dtype)
 				Sent_time[key][0] = val
 
 		# loop over psi generator
 		for m,psi in enumerate(psi_t):
-			if psi.ndim == 2:
-				psi = psi.ravel()
 
 			time = times[m+1]
 
-			for key,Obs in obs_dict.items():
-				psi_l = Obs.dot(psi)
-				val = _np.vdot(psi,psi_l).real
-				Expt_time[key][m+1] = val 
+			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
 
-			for key,ham in ham_dict.items():
-				val = ham.matrix_ele(psi,psi,time=time).real
-				Expt_time[key][m+1] = val
+			for key,Obs in Obs_dict.items():
+				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
 
-
-			if len(Sent_args) > 0:
-				Sent_time_update = ent_entropy(psi,**Sent_args)
+			if calc_Sent:
+				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
 				for key in Sent_time.keys():
 					Sent_time[key][m+1] = Sent_time_update[key]
 
@@ -1162,7 +1173,6 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={}):
 			return_dict[i] = locals()[i]
 
 	return return_dict
-
 
 def project_op(Obs,proj,dtype=_np.complex128):
 	"""
@@ -1235,8 +1245,6 @@ def project_op(Obs,proj,dtype=_np.complex128):
 
 	return return_dict
 
-
-
 def KL_div(p1,p2):
 	"""
 	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
@@ -1270,9 +1278,6 @@ def KL_div(p1,p2):
 
 	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
 
-
-
-
 def mean_level_spacing(E):
 	"""
 	This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
@@ -1302,5 +1307,177 @@ def mean_level_spacing(E):
 	aux[:,1] = _np.roll(sn,-1)
 
 	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
+
+
+
+def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
+	"""
+	This function implements (imaginary) time evolution for a user-defined first-order f function.
+
+	RETURNS: 	array containing evolved state in time
+
+	--- arguments ---
+
+	* `v0`: (required) initial state
+
+	* `t0`: (required) initial time
+
+	* `times`: (required) vector of times to evaluate the time-evolved state at
+
+	* `f`: (required) user-defined `f` function (all derivatives must be first order)
+
+	* `solver_name`: (optional) scipy solver integrator. Default is `dop853`.
+
+	* `real`: (optional) flag to determine if `f` is real or complex-valued. Default is `False`.
+
+	* `stack_state`: (optional) if `f` is written to take care of real and imaginary parts separately, this flag will take this into account. Default is `False`.
+
+	* `verbose`: (optional) prints normalisation of state at teach time in `times`
+
+	* `imag_time`: (optional) must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state at each time in `times`. Default is `False`.
+
+	* `iterate`: (optional) creates a generator object to time-evolve the state. Default is `False`.
+
+	* `f_params`: (optional) a tuple to pass all parameters of the function `f` to solver. Default is `f_params=()`.
+
+	* `solver_args`: (optional) dictionary with additional [scipy integrator (solver)](https://docs.scipy.org/doc/scipy/reference/tutorial/integrate.html) arguments.	
+		"""
+
+	from scipy.integrate import complex_ode
+	from scipy.integrate import ode
+
+	if v0.ndim > 2:
+		raise ValueError("state mush have ndim < 3.")
+
+	if v0.ndim == 2:
+		if v0.shape[0] != v0.shape[1]:
+			v0 = v0.ravel()
+	 
+
+
+	shape0 = v0.shape
+	
+	if _np.iscomplexobj(times):
+		raise ValueError("times must be real number(s).")
+
+	v0 = v0.ravel()
+	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
+
+
+	if stack_state:
+		v1 = v0
+		v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
+		v0[:shape0[0]] = v1.real
+		v0[shape0[0]:] = v1.imag
+		solver = ode(f) # y_f = f(t,y,*args)
+	elif real:
+		solver = ode(f) # y_f = f(t,y,*args)
+	else:
+		solver = complex_ode(f) # y_f = f(t,y,*args)
+
+	
+
+	if solver_name in ["dop853","dopri5"]:
+		if solver_args.get("nsteps") is None:
+			solver_args["nsteps"] = _np.iinfo(_np.int32).max
+		if solver_args.get("rtol") is None:
+			solver_args["rtol"] = 1E-9
+		if solver_args.get("atol") is None:
+			solver_args["atol"] = 1E-9
+
+
+				
+
+	solver.set_integrator(solver_name,**solver_args)
+	solver.set_f_params(*f_params)
+	solver.set_initial_value(v0, t0)
+
+	if _np.isscalar(times):
+		return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
+	else:
+		if iterate:
+			return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+		else:
+			return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+
+
+def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
+	from numpy.linalg import norm
+	Ns=shape0[0]
+
+	if time == t0:
+		if stack_state:
+			return (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
+		else:
+			return _np.array(v0).reshape(shape0)
+
+	solver.integrate(time)
+	if solver.successful():
+		if imag_time: solver._y /= (norm(solver._y)/n)
+		if stack_state:
+			return (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+		else:
+			return _np.array(solver.y).reshape(shape0)
+	else:
+		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
+
+
+
+def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
+	from numpy.linalg import norm
+
+	Ns=shape0[0]
+	v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
+	
+	for i,t in enumerate(times):
+
+		if t == t0:
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if stack_state:
+				v[...,i] = (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
+			else:
+				v[...,i] = _np.array(v0).reshape(shape0)
+			continue
+
+		solver.integrate(t)
+		if solver.successful():
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
+			if stack_state:
+				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+			else:
+				v[...,i] = solver.y.reshape(shape0)
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
+			
+
+	return v
+
+
+
+def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
+	from numpy.linalg import norm
+	Ns=shape0[0]
+
+	for i,t in enumerate(times):
+		if t == t0:
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if stack_state:
+				yield (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
+			else:
+				yield _np.array(v0).reshape(shape0)
+			continue
+			
+		solver.integrate(t)
+		if solver.successful():
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
+			if stack_state:
+				yield (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+			else:
+				yield solver.y.reshape(shape0)
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 
 
