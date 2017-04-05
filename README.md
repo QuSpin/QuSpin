@@ -326,8 +326,9 @@ which evaluates $\langle u|H(t=0)|v\rangle$ if ```u``` and ```v``` are vectors b
 * Schrödinger dynamics:
 
   The ```hamiltonian``` class has two private functions which can be passed into scipy's ODE solvers in order to numerically solve the Schrödinger equation in both real and imaginary time:
-    1. __SO(t,v) which proforms: -iH(t)|v>
-    2. __ISO(t,v) which proforms: -H(t)|v> 
+    1. __SO(t,v) which performs: -iH(t)|v>
+    2. __ISO(t,v) which performs: -H(t)|v> 
+    3. __LO(t,rho) which performs: i[H,rho] (as super operator on flat state) (added v0.2.0)
   
   The interface with ```complex_ode``` is as easy as:
   
@@ -340,16 +341,19 @@ From here all one has to do is use the solver object as specified in the scipy [
  This functionality is wrapped in a method called evolve (version >= 0.1.0):
 
   ```python
-  vf = H.evolve(v0,t0,times,solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
+  vf = H.evolve(v0,t0,times,eom="SE",solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
   ```
  * v0:  array (required) initial state array.
  * t0: real scalar (required) initial time.
  * times:  real array like (required) a time or generator of times to evolve up to.
+ * eom: string (optional) used to pick between Schrodinger evolution ("SE") or dynamics ("LvNE") (added v0.2.0)
  * solver_name: string (optional) used to pick which scipy ode solver to use.
  * verbose: bool (optional) prints out when the solver has evolved to each time in times
- * iterate: bool (optional) returns 'vf' as an iterator over the evolution vectors without storing the solution for every time in 'times'. 
+ * iterate: bool (optional) returns 'vf' as an iterator over the evolution vectors without storing the solution for every time in 'times', otherwise the solution is stored with the time index being the last index of the output array. 
  * imag_time: bool (optional) toggles whether to evolve with __SO or __ISO.
  * solver_args: (optional) the optional arguments which are passed into the solver. The default setup is: ```nstep = 2**31 - 1```, ```atol = 1E-9```, ```rtol = 1E-9```.
+ 
+ note that for Liouvillian dynamics the output is indeed a square complex array.
   
 The ```hamiltonian``` class also has built-in methods which are useful for doing exact diagonalisation (ED) calculations:
 
