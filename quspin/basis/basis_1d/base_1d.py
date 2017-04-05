@@ -63,6 +63,7 @@ class basis_1d(basis):
 
 		if type(Np) is int:
 			self._check_pcon=True
+			self._get_proj_pcon = True
 			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
 	
 		elif Np is None: # User hasn't specified Np,
@@ -92,6 +93,7 @@ class basis_1d(basis):
 
 			else: # if _Np is None then assume user wants to not specify Magnetization sector
 				self._check_pcon = False
+				self._get_proj_pcon = False
 				self._make_Np_block(basis_module,ops_module,L,pars=pars,**blocks)
 
 
@@ -103,9 +105,8 @@ class basis_1d(basis):
 
 			blocks["check_z_symm"] = False
 			Np = next(Nup_iter)
-
+			self._get_proj_pcon = False
 			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
-
 			for Np in Nup_iter:
 				temp_basis =self.__class__(L,Np,**blocks)
 				self.append(temp_basis)	
@@ -910,10 +911,12 @@ class basis_1d(basis):
 
 		
 
-		if pcon:
+		if pcon and self._get_proj_pcon:
 			basis_pcon = _np.ones(self._Ns_pcon,dtype=self._basis_type)
 			self._make_n_basis(self.L,self._Np,self._Ns_pcon,self._pars,basis_pcon)
 			shape = (self._Ns_pcon,self._Ns)
+		elif pcon and not self._get_proj_pcon:
+			raise TypeError("pcon=True only works for basis of a single particle number sector.")
 		else:
 			shape = (self.sps**self.L,self._Ns)
 			basis_pcon = None
