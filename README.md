@@ -971,9 +971,9 @@ RETURNS:
 state or states in the full basis as columns of the returned array.
 
 ```python
-basis.get_proj(dtype)
+basis.get_proj(dtype,pcon=False)
 ```
-This function returns the transformation from the symmetry-reduced basis to the full basis
+This function returns the transformation from the symmetry-reduced basis to the full basis. If ```pcon=True``` this function returns the projector to the particle conserved basis (useful in bosonic/single particle systems)
 
 ---arguments---
 
@@ -1601,6 +1601,8 @@ This class is used to split up the dynamics of a state over various symmetry sec
 * `basis_args`: (required) tuple passed as the first argument for `basis_con`, contains required arguments. 
 
 * `dtype`: (required) data type of `hamiltonin` to be constructed.
+
+* `get_proj_args`: (optional) dictionary which contains arguments for basis.get_proj(dtype,...). As of v(0.2.0) the only arguement would be for pcon=True of one would like to project to the particle conserving basis (which is useful to same memory for some systems)
 
 * `save_previous_data`: (optional) when doing the evolution this class constructs the Hamiltonians for the corresponding symmetry blocks. This takes some time and thus by setting this flag to `True`, the class will keep previously calculated Hamiltonians. This might be advantageous if at a later time one needs to do evolution in these blocks again so the corresponding Hamiltonians do not have to be calculated again.
 
