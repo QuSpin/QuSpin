@@ -75,7 +75,7 @@ To safely update a manually installed version of QuSpin, one must first manually
 
 # **Basic package usage**
 
-All the calculations done with QuSpin happen through [hamiltonians](#hamiltonian-objects). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it (operators sharing the same time-dependence are a also summen together into a single matrix). Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the argument ```time```. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this, we provide a user-friendly representation for constructing the Hamiltonian matrices for many-body operators. 
+All the calculations done with QuSpin happen through [hamiltonians](hamiltonian-class). The hamiltonian is a type which uses Numpy and Scipy matrices to store the quantum Hamiltonian operator. Time-independent operators are summed together into a single static matrix, while each time-dependent operator is stored separatly along with the time-dependent coupling in front of it (operators sharing the same time-dependence are a also summen together into a single matrix). Whenever the user wants to perform an operation invonving a time-dependent operator, the time dependence is evaluated on the fly by specifying the argument ```time```. The user can initialize the hamiltonian types with Numpy arrays or Scipy matrices. Apart from this, we provide a user-friendly representation for constructing the Hamiltonian matrices for many-body operators. 
 
 Many-body operators in QuSpin are defined by a string of letters representing the operator types, together with a list which holds the indices for the sites that each operator acts at on the lattice. For example, in a spin system we can represent any multi-spin operator as:
 
@@ -83,7 +83,7 @@ Many-body operators in QuSpin are defined by a string of letters representing th
 |:-----------------:|:------------------:|:--------------------------------------:|
 |"$\mu_1,\dots,\mu_n$"  |$[J,i_1,\dots,i_n]$ |$J\sigma_{i_1}^{\mu_1}\cdots\sigma_{i_n}^{\mu_n}$|
 
-where $\mu_i$ can be $x$, $y$, $z$, $+$, or $-$. Then $\sigma_{i_1}^{\mu_1}$ is the Pauli spin operator acting on lattice site $i_n$. This gives the full range of possible spin-1/2 operators that can be constructed. By default, ```hamiltonian``` will use the sigma matrices ${\vec\sigma}$. For different systems, there are different types of operators. To see the available operators for a given type of system check out the [basis](basis-objects) classes. 
+where $\mu_i$ can be $x$, $y$, $z$, $+$, or $-$. Then $\sigma_{i_1}^{\mu_1}$ is the Pauli spin operator acting on lattice site $i_n$. This gives the full range of possible spin-1/2 operators that can be constructed. By default, ```hamiltonian``` will use the sigma matrices ${\vec\sigma}$. For different systems, there are different types of operators. To see the available operators for a given type of system check out the [basis](#basis-objects) classes. 
 
 ### **constructing hamiltonians**
 The Hamiltonian is constructed as:
@@ -151,7 +151,7 @@ op_indx_cc=[[-1.0j,i,(i+1)%L,(i+2)%L] for i in xrange(L)] # periodic BC
 
 static_list=[['-z+',op_indx],['+z-',op_indx_cc]]
 ```
-Notice that one needs to include both ```'-z+'``` and ```'+z-'``` operators to make sure the Hamiltonian is hermitian. If one forgets about this, there is still the automatic hermiticity check which raises an error, see the optional flag ```check_herm``` in the hamiltonian object class organisation [here](#hamiltonian-objects) which is set to ```True``` by default.
+Notice that one needs to include both ```'-z+'``` and ```'+z-'``` operators to make sure the Hamiltonian is hermitian. If one forgets about this, there is still the automatic hermiticity check which raises an error, see the optional flag ```check_herm``` in the hamiltonian object class organisation [here](#hamiltonian-class) which is set to ```True``` by default.
 
 
 ### **using basis objects**
@@ -162,11 +162,11 @@ H = hamiltonian(static_list,dynamic_list,...,basis=basis,...)
 ```
 More information about basis objects can be found in the [basis objects](#basis-objects) section.
 
-We recommend using basis objects when multiple separate Hamiltonians, which share the same symmetries, need to be constructed. This provides the advantage of saving time when creating the corresponding symmetry objects.
+We recommend using basis objects when multiple separate Hamiltonians, which share the same symmetries, need to be constructed. One can either construct a basis by calling the constructors, or each hamiltonian object stores a reference to its basis as the attribute `H.basis`.
 
 
 ### **using symmetries**
-Adding symmetries is easy and versatile: one can either just add extra keyword arguments to the initialization of ```hamiltonian``` or, when one initializes a ```basis``` object one can build in the desired symmetries. By default, ```hamiltonian``` uses spin-1/2 Pauli operators and 1d-symmetries. Currently, the spin-chain symmetries implemented are for spins-1/2 operators in 1 dimension.
+Adding symmetries is easy and versatile: one can either just add extra keyword arguments to the initialization of ```hamiltonian``` or, when one initializes a ```basis``` object one can build in the desired symmetries. By default, ```hamiltonian``` uses spin-1/2 Pauli operators and 1d-symmetries.
 
 The available symmetries for a spin chain in 1d are:
 
