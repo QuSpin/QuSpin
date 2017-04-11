@@ -5,7 +5,7 @@
 
 
 cimport numpy as _np
-from numpy.math cimport sinl,cosl,sqrtl
+from libc.math cimport cos
 
 from types cimport *
 
