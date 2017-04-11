@@ -5,7 +5,6 @@
 
 
 cimport numpy as _np
-from libc.math cimport sin,cos,sqrt
 from numpy.math cimport sinl,cosl,sqrtl
 
 from types cimport *
@@ -13,6 +12,9 @@ from types cimport *
 
 import numpy as _np
 from scipy.misc import comb
+
+cdef extern from "glibc_fix.h":
+    pass
 
 _np.import_array()
 

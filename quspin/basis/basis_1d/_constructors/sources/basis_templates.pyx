@@ -110,7 +110,7 @@ cdef npy_uintp make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_s
 	cdef int sigma,sigma_i,sigma_f,v
 	cdef int R[2]
 	cdef npy_uintp i
-	cdef double k = (2.0*_np.pi*kblock*a)/L
+	cdef long double k = (2.0*_np.pi*kblock*a)/L
 
 	if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
 		sigma_i = 1
@@ -132,9 +132,9 @@ cdef npy_uintp make_t_p_basis_template(shifter shift,bitop fliplr,ns_type next_s
 			if mp != -1:
 				for sigma in range(sigma_i,sigma_f+1,2):
 					r_temp = r
-					if 1 + sigma*pblock*cos(mp*k) == 0:
+					if 1 + sigma*pblock*cosl(mp*k) == 0:
 						r_temp = -1
-					if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
+					if (sigma == -1) and (1 - sigma*pblock*cosl(mp*k) != 0):
 						r_temp = -1
 	
 					if r_temp > 0:
@@ -162,7 +162,7 @@ cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next
 												npy_uintp MAX,basis_type s,
 												int L, int pblock, int zblock, int kblock, int a,
 												N_type *N, M_type *m, object[basis_type,ndim=1,mode="c"] basis):
-	cdef double k = 2.0*_np.pi*kblock*a/L
+	cdef long double k = 2.0*_np.pi*kblock*a/L
 	cdef npy_uintp Ns=0
 	cdef npy_uintp i
 	cdef int r,r_temp,mp,mz,mpz
@@ -199,9 +199,9 @@ cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next
 			if mp != -1 and mz == -1 and mpz == -1:
 				for sigma in range(sigma_i,sigma_f+1,2):
 					r_temp = r
-					if 1 + sigma*pblock*cos(mp*k) == 0:
+					if 1 + sigma*pblock*cosl(mp*k) == 0:
 						r_temp = -1
-					if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
+					if (sigma == -1) and (1 - sigma*pblock*cosl(mp*k) != 0):
 						r_temp = -1
 					if r_temp > 0:
 						m[Ns] = (mp + 2*(L+1)**2)
@@ -211,7 +211,7 @@ cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next
 			if mp == -1 and mz != -1 and mpz == -1:
 				for sigma in range(sigma_i,sigma_f+1,2):
 					r_temp = r
-					if 1 + zblock*cos(k*mz) == 0:
+					if 1 + zblock*cosl(k*mz) == 0:
 						r_temp = -1
 					if r_temp > 0:		
 						m[Ns] = (mz*(L+1) + 3*(L+1)**2)
@@ -221,9 +221,9 @@ cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next
 			if mp == -1 and mz == -1 and mpz != -1:
 				for sigma in range(sigma_i,sigma_f+1,2):
 					r_temp = r
-					if 1 + sigma*pblock*zblock*cos(mpz*k) == 0:
+					if 1 + sigma*pblock*zblock*cosl(mpz*k) == 0:
 						r_temp = -1
-					if (sigma == -1) and (1 - sigma*pblock*zblock*cos(mpz*k) != 0):
+					if (sigma == -1) and (1 - sigma*pblock*zblock*cosl(mpz*k) != 0):
 						r_temp = -1
 					if r_temp>0:
 						m[Ns] = (mpz + 4*(L+1)**2)
@@ -233,9 +233,9 @@ cdef npy_uintp make_t_p_z_basis_template(shifter shift,bitop fliplr,ns_type next
 			if mp != -1 and mz != -1:
 				for sigma in range(sigma_i,sigma_f+1,2):
 					r_temp = r
-					if (1 + sigma*pblock*cos(mp*k) == 0) or (1 + zblock*cos(mz*k) == 0):
+					if (1 + sigma*pblock*cosl(mp*k) == 0) or (1 + zblock*cosl(mz*k) == 0):
 						r_temp = -1
-					if (sigma == -1) and ( (1 - sigma*pblock*cos(mp*k) != 0) or (1 - zblock*cos(mz*k) != 0) ):
+					if (sigma == -1) and ( (1 - sigma*pblock*cosl(mp*k) != 0) or (1 - zblock*cosl(mz*k) != 0) ):
 						r_temp = -1
 					if r_temp>0:
 						m[Ns] = (mp + (L+1)*mz + 5*(L+1)**2)
@@ -255,7 +255,7 @@ cdef npy_uintp make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_al
 											npy_uintp MAX,basis_type s,
 											int L,int pzblock,int kblock,int a,
 											N_type *N,N_type *m,object[basis_type,ndim=1,mode="c"] basis):
-	cdef double k 
+	cdef long double k 
 	
 	cdef npy_uintp Ns
 	cdef npy_uintp i
@@ -284,9 +284,9 @@ cdef npy_uintp make_t_pz_basis_template(shifter shift,bitop fliplr,bitop flip_al
 			if mpz != -1:
 				for sigma in range(sigma_i,sigma_f+1,2):
 					r_temp = r
-					if 1 + sigma*pzblock*cos(mpz*k) == 0:
+					if 1 + sigma*pzblock*cosl(mpz*k) == 0:
 						r_temp = -1
-					if (sigma == -1) and (1 - sigma*pzblock*cos(mpz*k) != 0):
+					if (sigma == -1) and (1 - sigma*pzblock*cosl(mpz*k) != 0):
 						r_temp = -1
 	
 					if r_temp > 0:
@@ -314,7 +314,7 @@ cdef npy_uintp make_t_zA_basis_template(shifter shift,bitop flip_sublat_A,ns_typ
 												npy_uintp MAX,basis_type s,
 												int L,int zAblock,int kblock,int a,
 												N_type *N, N_type *m, object[basis_type,ndim=1,mode="c"] basis): 
-	cdef double k 
+	cdef long double k 
 	cdef npy_uintp i
 	cdef npy_uintp Ns
 	cdef int mzA,r
@@ -333,7 +333,7 @@ cdef npy_uintp make_t_zA_basis_template(shifter shift,bitop flip_sublat_A,ns_typ
 
 		if r > 0:
 			if mzA != -1:
-				if 1 + zAblock*cos(k*mzA) == 0:
+				if 1 + zAblock*cosl(k*mzA) == 0:
 					r = -1				
 
 			if r > 0:
@@ -357,7 +357,7 @@ cdef npy_uintp make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bit
 												npy_uintp MAX,basis_type s,
 												int L,int zAblock,int zBblock,int kblock,int a,
 												N_type *N,M_type *m,object[basis_type,ndim=1,mode="c"] basis): 
-	cdef double k 
+	cdef long double k 
 	cdef npy_uintp Ns
 	cdef int mzA,mzB,mz,r
 	cdef npy_uintp i
@@ -386,21 +386,21 @@ cdef npy_uintp make_t_zA_zB_basis_template(shifter shift,bitop flip_sublat_A,bit
 				Ns += 1	
 
 			if mzA != -1 and mzB == -1 and mz == -1:
-				if 1 + zAblock*cos(k*mzA) != 0:			
+				if 1 + zAblock*cosl(k*mzA) != 0:			
 					m[Ns] = mzA + 2*(L+1)
 					N[Ns] = r			
 					basis[Ns] = s
 					Ns += 1	
 
 			if mzA == -1 and mzB != -1 and mz == -1:
-				if 1 + zBblock*cos(k*mzB) != 0:		
+				if 1 + zBblock*cosl(k*mzB) != 0:		
 					m[Ns] = mzB + 3*(L+1)
 					N[Ns] = r			
 					basis[Ns] = s
 					Ns += 1
 
 			if mzA == -1 and mzB == -1 and mz != -1:
-				if 1 + zAblock*zBblock*cos(k*mz) != 0:					
+				if 1 + zAblock*zBblock*cosl(k*mz) != 0:					
 					m[Ns] = mz + 4*(L+1)
 					N[Ns] = r			
 					basis[Ns] = s
@@ -418,7 +418,7 @@ cdef npy_uintp make_t_z_basis_template(shifter shift,bitop flip_all,ns_type next
 											npy_uintp MAX,basis_type s,
 											int L,int zblock,int kblock,int a,
 											N_type *N,N_type *m,object[basis_type,ndim=1,mode="c"] basis): 
-	cdef double k 
+	cdef long double k 
 	cdef npy_uintp Ns
 	cdef npy_uintp i
 	cdef int mz,r
@@ -440,7 +440,7 @@ cdef npy_uintp make_t_z_basis_template(shifter shift,bitop flip_all,ns_type next
 
 		if r > 0:
 			if mz != -1:
-				if 1 + zblock*cos(k*mz) == 0:
+				if 1 + zblock*cosl(k*mz) == 0:
 					r = -1				
 
 			if r > 0:
@@ -462,7 +462,7 @@ cdef npy_uintp make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_typ
 											npy_uintp MAX,basis_type s,
 											int L,int zBblock,int kblock,int a,
 											N_type *N, N_type *m,object[basis_type,ndim=1,mode="c"] basis): 
-	cdef double k 
+	cdef long double k 
 	cdef npy_uintp Ns
 	cdef npy_uintp i
 	cdef int mzB,r
@@ -482,7 +482,7 @@ cdef npy_uintp make_t_zB_basis_template(shifter shift,bitop flip_sublat_B,ns_typ
 
 		if r > 0:
 			if mzB != -1:
-				if 1 + zBblock*cos(k*mzB) == 0:
+				if 1 + zBblock*cosl(k*mzB) == 0:
 					r = -1				
 
 			if r > 0:

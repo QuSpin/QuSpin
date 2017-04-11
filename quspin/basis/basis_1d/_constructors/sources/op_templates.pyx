@@ -261,7 +261,7 @@ cdef long double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, l
 	nc *= sc
 
 
-	ME=sqrt(nc/nr)*(sr*pblock)**q
+	ME=sqrtl(nc/nr)*(sr*pblock)**q
 
 	if sr == sc :
 		if mc < 0:
@@ -818,30 +818,30 @@ cdef long double complex MatrixElement_T_ZA_ZB(int L,int zAblock,int zBblock, in
 	if cr == 1:
 		nr = 1.0/Nr
 	elif cr == 2:
-		nr = (1.0 + zAblock*cos(k*mmr) )/Nr
+		nr = (1.0 + zAblock*cosl(k*mmr) )/Nr
 	elif cr == 3:
-		nr = (1.0 + zBblock*cos(k*mmr) )/Nr
+		nr = (1.0 + zBblock*cosl(k*mmr) )/Nr
 	elif cr == 4:
-		nr = (1.0 + zAblock*zBblock*cos(k*mmr) )/Nr	
+		nr = (1.0 + zAblock*zBblock*cosl(k*mmr) )/Nr	
 	
 
 	if cc == 1:
 		nc = 1.0/Nc
 	elif cc == 2:
-		nc = (1.0 + zAblock*cos(k*mmc) )/Nc
+		nc = (1.0 + zAblock*cosl(k*mmc) )/Nc
 	elif cc == 3:
-		nc = (1.0 + zBblock*cos(k*mmc) )/Nc
+		nc = (1.0 + zBblock*cosl(k*mmc) )/Nc
 	elif cc == 4:
-		nc = (1.0 + zAblock*zBblock*cos(k*mmc) )/Nc	
+		nc = (1.0 + zAblock*zBblock*cosl(k*mmc) )/Nc	
 	
 
-	ME=sqrt(nc/nr)*(zAblock**gA)*(zBblock**gB)
+	ME=sqrtl(nc/nr)*(zAblock**gA)*(zBblock**gB)
 
 
 	if ((2*a*kblock) % L) == 0:
 		ME *= (-1)**(2*l*a*kblock/L)
 	else:
-		ME *= (cos(k*l) - 1.0j * sin(k*l))
+		ME *= (cosl(k*l) - 1.0j * sinl(k*l))
 
 	return ME
 
