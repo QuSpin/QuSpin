@@ -33,16 +33,12 @@ ctypedef fused M_type:
 ctypedef fused matrix_type:
 	float
 	double
-	long double
 	float complex
 	double complex
-	long double complex
-
 
 
 	
-ctypedef long double complex scalar_type
-ctypedef long double longdouble
+ctypedef double complex scalar_type
 
 
 ctypedef basis_type (*bitop)(basis_type, int, object[basis_type,ndim=1,mode="c"])

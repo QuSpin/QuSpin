@@ -54,12 +54,7 @@ class HamiltonianEfficiencyWarning(Warning):
 
 
 #global names:
-supported_dtypes=[_np.float32, _np.float64, _np.complex64, _np.complex128]
-
-if hasattr(_np,"float128"): supported_dtypes.append(_np.float128)
-if hasattr(_np,"complex256"): supported_dtypes.append(_np.complex256)
-
-supported_dtypes = tuple(supported_dtypes)
+supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
 
 def check_static(sub_list):
 	if (type(sub_list) in [list,tuple]) and (len(sub_list) == 2):

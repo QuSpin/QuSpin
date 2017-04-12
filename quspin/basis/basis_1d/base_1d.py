@@ -17,8 +17,6 @@ import warnings
 # the action of operator string
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
-if hasattr(_np,"float128"): _dtypes["g"]=_np.float128
-if hasattr(_np,"complex256"): _dtypes["G"]=_np.complex256
 
 
 _basis_op_errors={1:"opstr character not recognized.",

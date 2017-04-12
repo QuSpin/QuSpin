@@ -5,8 +5,7 @@
 
 
 cimport numpy as _np
-from libc.math cimport sin,cos,sqrt
-from numpy.math cimport sinl,cosl,sqrtl
+from libc.math cimport cos
 
 from types cimport *
 
@@ -14,6 +13,10 @@ from types cimport *
 import numpy as _np
 from scipy.misc import comb
 
+cdef extern from "glibc_fix.h":
+   pass
+
+_np.import_array()
 
 def H_dim(N,length,m_max):
     """
@@ -75,8 +78,6 @@ def get_Ns(L, Np, sps, **blocks):
 
 
 
-
-_np.import_array()
 
 include "sources/hcp_bitops.pyx"
 include "sources/checkstate.pyx"

@@ -72,7 +72,7 @@ cdef int hcp_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
                 break
 
         M_E *= J
-        if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+        if matrix_type is float or matrix_type is double:
             if M_E.imag != 0.0:
                 error = -1
                 return error
