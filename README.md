@@ -112,7 +112,7 @@ The ```**kwargs``` give extra information about the Hamiltonian. There is a vari
 To construct many-body operators, one must either specify the number of lattice sites with ```N=...``` or pass in a basis object as ```basis=...```, more about basis objects can be found [here](#basis-objects). One can also specify the shape using the ```shape=...``` keyword argument. For input lists which contain matrices only, the shape does not have to be specified. If empty lists are given, then either one of the previous options must be provided to the ```hamiltonian``` constructor.  
 
 **Numpy dtype:**
-The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements in. It supports ```float32```, ```float64```, ```float128```, ```complex64```, ```complex128```, and ```complex256```. The default type is ```complex128```. To specify the ```dtype``` use the dtype keyword argument:
+The user can specify the numpy data type ([dtype](http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.dtype.html)) to store the matrix elements in. It supports ```float32```, ```float64```, ```float128```(depricated as of v0.2.1), ```complex64```, ```complex128```, and ```complex256```(depricated as of v0.2.1). The default type is ```complex128```. To specify the ```dtype``` use the dtype keyword argument:
 ```python
 H=hamiltonian(...,dtype=numpy.float32,...)
 ```
@@ -733,8 +733,8 @@ It is also possible to create the `hamiltonian` in a given symmetry-reduced bloc
 * magnetization symmetries: 
  * pick single magnetization sector by number of up spins: ```Nup=0,1,...,L``` 
  * pick a selection magnetization sectors: ```Nup = [0,1,...]```
- * pick magnetization sector by magnetization density ( $-S \leq M \leq S $, rounding to nearest integer): ```M=0.0,0.3,etc...``` 
- * if ```Nup``` and ```M``` are ```None``` this picks all magnetization sectors. 
+ * pick magnetization sector by magnetization density ( $-S \leq m \leq S $, rounding to nearest integer): ```m=0.0,0.3,etc...``` 
+ * if ```Nup``` and ```m``` are ```None``` this picks all magnetization sectors. 
 * parity (reflection about middle of chain) symmetry: ```pblock = +/- 1```
 * spin inversion symmetry: ```zblock = +/- 1```
 * (spin inversion)*(parity) symmetry: ```pzblock = +/- 1 ```
@@ -820,7 +820,6 @@ basis = boson_basis_1d(L,sps=None,**symmetry_blocks)
 * _.operators: returns string which lists information about the operators of this basis class. 
 
 * _.sps: returns integer with number of states per site
-
 
 ### **fermion basis in 1d**
 
@@ -983,7 +982,23 @@ RETURNS:
 projector to the full basis as a sparse matrix.
 
 ```python
-partial_trace(state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure")
+basis.index(state)
+tensor_basis.index(state_left,state_right) 
+photon_basis.index(part_state,ho_state)
+```
+
+this function calculates the hilbert space index of a given fock state (either integer or string).
+
+--- arguments ---
+
+'state': (required) Integer of string which represnets the fock state which one would like to find the index of in teh basis for example: "0011", "0002", or "0101", and their corresponding integer representation are valid states. For the tensor/photon basis you must give both the left and right hand states you would like to search for and the function will return only one index corresponding to the location in the full tensored basis. 
+
+RETURNS:
+Integer such that `state == basis[basis.index(state)]` or raises Exception if state is not in basis. 
+
+
+```python
+basis.partial_trace(state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure")
 ```
 This function calculates the reduced density matrix (DM), performing a partial trace of a quantum state.
 
@@ -1007,7 +1022,7 @@ This function calculates the reduced density matrix (DM), performing a partial t
 RETURNS: reduced DM
 
 ```python
-ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0)
+basis.ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0)
 ```
 This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 density matrix.
