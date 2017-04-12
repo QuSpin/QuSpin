@@ -4,11 +4,9 @@ from .base_1d import basis_1d
 import numpy as _np
 
 try:
-	S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):(i+1,i/2.0) for i in xrange(1,10001)}
+	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in xrange(1,10001)}
 except NameError:
-	S_dict = {(str(i)+"/2" if i%2==1 else str(i/2)):(i+1,i/2.0) for i in range(1,10001)}
-
-
+	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 class spin_basis_1d(basis_1d):
 	def __init__(self,L,Nup=None,m=None,_Np=None,S="1/2",pauli=True,**blocks):

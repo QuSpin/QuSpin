@@ -62,7 +62,7 @@ psi_t = H.evolve(psi_0,0,times,eom="SE",iterate=True,atol=1e-10,rtol=1e-10)
 O_expt = obs_vs_time(psi_t,times,dict(O=O_0))["O"]
 
 rho_t = H.evolve(rho_0,0,times,eom="LvNE",iterate=False,atol=1e-10,rtol=1e-10)
-O_expt_2 = np.einsum("...ij,ji->...",rho_t,O_0).real
+O_expt_2 = np.einsum("ij...,ji->...",rho_t,O_0).real
 np.testing.assert_allclose(O_expt,O_expt_2)
 
 

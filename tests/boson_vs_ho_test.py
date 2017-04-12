@@ -24,14 +24,14 @@ static=[["+",hopping],["-",hopping],['n',chem_pot]]
 
 basis_boson = boson_basis_1d(L,sps=Np)
 
-H_boson=hamiltonian(static,[],basis=basis_boson,dtype=np.float32,check_herm=False,check_symm=False,check_pcon=False)
+H_boson=hamiltonian(static,[],basis=basis_boson,dtype=np.float64,check_herm=False,check_symm=False,check_pcon=False)
 E_boson=H_boson.eigvalsh()
 
 
 #### define photon model
 basis_ho = ho_basis(Np-1)
 
-H_ho=hamiltonian(static,[],basis=basis_ho,dtype=np.float32,check_herm=False,check_symm=False,check_pcon=False)
+H_ho=hamiltonian(static,[],basis=basis_ho,dtype=np.float64,check_herm=False,check_symm=False,check_pcon=False)
 E_ho=H_ho.eigvalsh()
 
 

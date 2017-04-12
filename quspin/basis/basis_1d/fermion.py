@@ -98,7 +98,7 @@ class fermion_basis_1d(basis_1d):
 			anticommutes = 0
 			while swapped:
 				swapped = False
-				for i in xrange(n-1):
+				for i in range(n-1):
 					if zipstr[i][1] > zipstr[i+1][1]:
 						temp = zipstr[i]
 						zipstr[i] = zipstr[i+1]

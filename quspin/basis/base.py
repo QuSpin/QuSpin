@@ -86,7 +86,7 @@ class basis(object):
 
 	@property
 	def sps(self):
-		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'm' required for entanglement entropy calculations!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
 
 	# this method is required for the block_tools functions
 	def get_proj(self,*args,**kwargs):

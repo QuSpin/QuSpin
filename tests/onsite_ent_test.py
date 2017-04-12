@@ -9,6 +9,7 @@ from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spin_basis_1d # Hilbert space spin basis
 from quspin.tools.measurements import ent_entropy
 import numpy as np # generic math functions
+import functools
 
 
 L=10 # system size
@@ -54,7 +55,10 @@ for PBC in [0,1]:
 	
  	# calculate expectation in full and reduced basis
 	Exct_1 = np.trace(Sx_0.dot(DM))
-	Exct_2 = float( reduce(np.dot,[psi.conjugate(),Sx_full,psi]) )
+	try:
+		Exct_2 = float(reduce(np.dot,[psi.conjugate(),Sx_full,psi]) )
+	except NameError:
+		Exct_2 = float(functools.reduce(np.dot,[psi.conjugate(),Sx_full,psi]) )
 
 
 	np.testing.assert_allclose(Exct_1-Exct_2,0.0,atol=1E-5,err_msg='Failed onsite DM comaprison for PBC={}!'.format(PBC))
