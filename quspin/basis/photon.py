@@ -98,11 +98,22 @@ class photon_basis(tensor_basis):
 	@property
 	def particle_N(self):
 		return self._basis_left.N
-	
+
+	@property
+	def chain_Ns(self):
+		return self._basis_left.Ns
+
+	@property
+	def chain_N(self):
+		return self._basis_left.N
+
 	@property
 	def particle_sps(self):
-		return self._basis_left.sps	
+		return self._basis_left.sps
 
+	@property
+	def sps(self):
+		return self._basis_left.sps
 
 	def Op(self,opstr,indx,J,dtype):
 		if self._Ns <= 0:
@@ -155,7 +166,7 @@ class photon_basis(tensor_basis):
 
 	def get_vec(self,v0,sparse=True,Nph=None,full_part=True):
 		if not self._check_pcon:
-			return tensor_basis.get_vec(self,v0,sparse=sparse,full_1=full_part)
+			return tensor_basis.get_vec(self,v0,sparse=sparse,full_left=full_part)
 		else:
 			if Nph is None:
 				Nph = self.Ntot
@@ -188,7 +199,7 @@ class photon_basis(tensor_basis):
 
 	def get_proj(self,dtype,Nph=None,full_part=True):
 		if not self._check_pcon:
-			return tensor_basis.get_proj(self,dtype,full_1=full_part)	
+			return tensor_basis.get_proj(self,dtype,full_left=full_part)	
 		else:
 			if Nph is None:
 				Nph = self.Ntot
@@ -537,7 +548,7 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 	v0_mask[mask] = v0[mask]
 
 	if full_part:
-		v0_full = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+		v0_full = p_basis._basis_left.get_vec(v0_mask,sparse=sparse)
 	else:
 		v0_full = v0_mask
 
@@ -555,7 +566,7 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 		v0_mask[mask] = v0[mask]
 
 		if full_part:
-			v0_full_1 = p_basis._b1.get_vec(v0_mask,sparse=sparse)
+			v0_full_1 = p_basis._basis_left.get_vec(v0_mask,sparse=sparse)
 		else:
 			v0_full_1 = v0_mask
 
@@ -582,7 +593,7 @@ def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 	v_ph = _np.zeros((Nph+1,1),dtype=_np.int8)
 
 	if full_part:
-		proj_1 = p_basis._b1.get_proj(dtype)
+		proj_1 = p_basis._basis_left.get_proj(dtype)
 	else:
 		proj_1 = _sp.identity(p_basis.Ns,dtype=dtype,format="csr")
 

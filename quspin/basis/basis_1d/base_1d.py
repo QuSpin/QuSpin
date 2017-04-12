@@ -547,7 +547,7 @@ class basis_1d(basis):
 				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
 			self._op_args=[self._basis,self._pars]
 
-		if count_particles: self._Np = _np.full(self._basis.shape,Np,dtype=_np.int8)
+		if count_particles: self._Np_list = _np.full(self._basis.shape,Np,dtype=_np.int8)
 
 
 
@@ -575,10 +575,10 @@ class basis_1d(basis):
 
 		self._op_args.insert(0,self._basis)
 
-		if hasattr(self,"_Np"):
-			self._Np.resize((Ns,),refcheck=False)
-			self._Np[self._Ns:] = other._Np[:]
-			self._Np = self._Np[arg].copy()
+		if hasattr(self,"_Np_list"):
+			self._Np_list.resize((Ns,),refcheck=False)
+			self._Np_list[self._Ns:] = other._Np[:]
+			self._Np_list = self._Np_list[arg].copy()
 
 		if hasattr(self,"_M"):
 			self._M.resize((Ns,),refcheck=False)

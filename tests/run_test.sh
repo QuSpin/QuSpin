@@ -1,1 +1,1 @@
-find . -name "*.py" -exec python {} \;
+find . -name "*test.py" -exec python {} \;
