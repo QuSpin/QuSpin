@@ -1311,98 +1311,95 @@ def mean_level_spacing(E):
 
 
 def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
-		"""
-		This function implements (imaginary) time evolution for a user-defined first-order f function.
+	"""
+	This function implements (imaginary) time evolution for a user-defined first-order f function.
 
-		RETURNS: 	array containing evolved state in time
+	RETURNS: 	array containing evolved state in time
 
-		--- arguments ---
+	--- arguments ---
 
-		v0: (required) initial state
+	* `v0`: (required) initial state
 
-		t0: (required) initial time
+	* `t0`: (required) initial time
 
-		times: (required) vector of times to evaluate the time-evolved state at
+	* `times`: (required) vector of times to evaluate the time-evolved state at
 
-		f: (required) user-defined f function (all derivatives must be first order)
+	* `f`: (required) user-defined `f` function (all derivatives must be first order)
 
-		solver_name: (optional) scipy solver integrator. Default is "dop853"
+	* `solver_name`: (optional) scipy solver integrator. Default is `dop853`.
 
-		real: (optional) flag to determine if f is real or complex-valued. Default is "False"
+	* `real`: (optional) flag to determine if `f` is real or complex-valued. Default is `False`.
 
-		stack_state: (optional) if 'f' is written to take care of real and imaginary parts separately,
-					  this flag will take this into account. Default is 'False'.
+	* `stack_state`: (optional) if `f` is written to take care of real and imaginary parts separately, this flag will take this into account. Default is `False`.
 
-		verbose: (optional) prints normalisation of state at teach time in `times`
+	* `verbose`: (optional) prints normalisation of state at teach time in `times`
 
-		imag_time: (optional) must be set to `True` when `f` defines imaginary-time evolution, in order
-					to normalise the state at each time in `times`. Default is 'False'.
+	* `imag_time`: (optional) must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state at each time in `times`. Default is `False`.
 
-		iterate: (optional) creates a generator object to time-evolve the state. Default is 'False'.
+	* `iterate`: (optional) creates a generator object to time-evolve the state. Default is `False`.
 
-		f_params: (optional) a list to pass all parameters of the function `f` to solver. Default is
+	* `f_params`: (optional) a tuple to pass all parameters of the function `f` to solver. Default is `f_params=()`.
 
-		solver_args: (optional) dictionary with to define additional scipy integrator (solver) arguments.		
-
+	* `solver_args`: (optional) dictionary with additional [scipy integrator (solver)](https://docs.scipy.org/doc/scipy/reference/tutorial/integrate.html) arguments.	
 		"""
 
-		from scipy.integrate import complex_ode
-		from scipy.integrate import ode
+	from scipy.integrate import complex_ode
+	from scipy.integrate import ode
 
-		if v0.ndim > 2:
-			raise ValueError("state mush have ndim < 3.")
+	if v0.ndim > 2:
+		raise ValueError("state mush have ndim < 3.")
 
-		if v0.ndim == 2:
-			if v0.shape[0] != v0.shape[1]:
-				v0 = v0.ravel()
-		 
+	if v0.ndim == 2:
+		if v0.shape[0] != v0.shape[1]:
+			v0 = v0.ravel()
+	 
 
 
-		shape0 = v0.shape
-		
-		if _np.iscomplexobj(times):
-			raise ValueError("times must be real number(s).")
+	shape0 = v0.shape
+	
+	if _np.iscomplexobj(times):
+		raise ValueError("times must be real number(s).")
 
-		v0 = v0.ravel()
-		n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+	v0 = v0.ravel()
+	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
+
+
+	if stack_state:
+		v1 = v0
+		v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
+		v0[:shape0[0]] = v1.real
+		v0[shape0[0]:] = v1.imag
+		solver = ode(f) # y_f = f(t,y,*args)
+	elif real:
+		solver = ode(f) # y_f = f(t,y,*args)
+	else:
+		solver = complex_ode(f) # y_f = f(t,y,*args)
 
 	
-		if stack_state:
-			v1 = v0
-			v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
-			v0[:shape0[0]] = v1.real
-			v0[shape0[0]:] = v1.imag
-			solver = ode(f) # y_f = f(t,y,*args)
-		elif real:
-			solver = ode(f) # y_f = f(t,y,*args)
+
+	if solver_name in ["dop853","dopri5"]:
+		if solver_args.get("nsteps") is None:
+			solver_args["nsteps"] = _np.iinfo(_np.int32).max
+		if solver_args.get("rtol") is None:
+			solver_args["rtol"] = 1E-9
+		if solver_args.get("atol") is None:
+			solver_args["atol"] = 1E-9
+
+
+				
+
+	solver.set_integrator(solver_name,**solver_args)
+	solver.set_f_params(*f_params)
+	solver.set_initial_value(v0, t0)
+
+	if _np.isscalar(times):
+		return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
+	else:
+		if iterate:
+			return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
 		else:
-			solver = complex_ode(f) # y_f = f(t,y,*args)
-
-		
-
-		if solver_name in ["dop853","dopri5"]:
-			if solver_args.get("nsteps") is None:
-				solver_args["nsteps"] = _np.iinfo(_np.int32).max
-			if solver_args.get("rtol") is None:
-				solver_args["rtol"] = 1E-9
-			if solver_args.get("atol") is None:
-				solver_args["atol"] = 1E-9
-
-
-					
-
-		solver.set_integrator(solver_name,**solver_args)
-		solver.set_f_params(*f_params)
-		solver.set_initial_value(v0, t0)
-
-		if _np.isscalar(times):
-			return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
-		else:
-			if iterate:
-				return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
-			else:
-				return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+			return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
 
 
 def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):

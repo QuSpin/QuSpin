@@ -10,13 +10,13 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
     cdef int j,error
     cdef int N_indx = len(opstr)
     cdef scalar_type M_E
-    cdef long double M_E_offdiag, M_E_diag # coefficient coming from bosonic creation operators
+    cdef double M_E_offdiag, M_E_diag # coefficient coming from bosonic creation operators
     cdef basis_type Nmax = op_pars[2]-1 # max number of particles allowed per site (equals m-1)
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
     cdef int L = op_pars[0]
     cdef object[basis_type,ndim=1,mode="c"] M = op_pars[1:]
     cdef bool spin_me = op_pars[L+2]
-    cdef long double S = Nmax/2.0
+    cdef double S = Nmax/2.0
 
     cdef char I = "I"
     cdef char n = "n"
@@ -57,9 +57,9 @@ cdef int boson_op_func(npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
                 r = basis[i]
                 break
 
-        M_E = J*sqrtl(M_E_offdiag)*M_E_diag
+        M_E = J*sqrt(M_E_offdiag)*M_E_diag
 
-        if matrix_type is float or matrix_type is double or matrix_type is longdouble:
+        if matrix_type is float or matrix_type is double:
             if M_E.imag != 0.0:
                 error = -1
                 return error

@@ -49,7 +49,7 @@ cdef int p_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 	cdef npy_intp i
 	cdef int error = 0
 	cdef int q
-	cdef long double n
+	cdef double n
 	cdef bool found
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -71,7 +71,7 @@ cdef int p_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 		row[i] = s
 		n =  N[s]
 		n /= N[i]
-		ME[i] *= (pblock**q)*sqrtl(n)
+		ME[i] *= (pblock**q)*sqrt(n)
 
 	return error
 
@@ -84,7 +84,7 @@ cdef int pz_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pa
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,qg
-	cdef long double n
+	cdef double n
 	cdef bool found
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -107,7 +107,7 @@ cdef int pz_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pa
 		n =  N[s]
 		n /= N[i]
 
-		ME[i] *= (pzblock**qg)*sqrtl(n)
+		ME[i] *= (pzblock**qg)*sqrt(n)
 
 	return error
 
@@ -128,7 +128,7 @@ cdef int p_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 	cdef npy_intp i
 	cdef int error,q,g
 	cdef int R[2]
-	cdef long double n
+	cdef double n
 	cdef bool found
 
 	R[0] = 0
@@ -157,7 +157,7 @@ cdef int p_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 		n =  N[s]
 		n /= N[i]
 
-		ME[i] *= sqrtl(n)*(pblock**q)*(zblock**g)
+		ME[i] *= sqrt(n)*(pblock**q)*(zblock**g)
 
 	return error
 
@@ -188,14 +188,14 @@ cdef int t_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 	cdef basis_type s
 	cdef npy_intp i
 	cdef int error,l
-	cdef long double n,k
+	cdef double n,k
 	cdef bool found
 
 	k = (2.0*_np.pi*kblock*a)/L
 	l = 0
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
-	if (matrix_type is float or matrix_type is double or matrix_type is longdouble) and ((2*a*kblock) % L) != 0:
+	if (matrix_type is float or matrix_type is double) and ((2*a*kblock) % L) != 0:
 		error = -1
 
 	if error != 0:
@@ -215,13 +215,13 @@ cdef int t_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 		row[i] = s
 		n =  N[i]
 		n /= N[s]
-		n = sqrtl(n)
+		n = sqrt(n)
 		ME[i] *= n
 
-		if (matrix_type is float or matrix_type is double or matrix_type is longdouble):
+		if (matrix_type is float or matrix_type is double):
 			ME[i] *= (-1.0)**(l*2*a*kblock/L)
 		else:
-			ME[i] *= (cosl(k*l) - 1.0j * sinl(k*l))
+			ME[i] *= (cos(k*l) - 1.0j * sin(k*l))
 
 			
 
@@ -232,9 +232,9 @@ cdef int t_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 
 
 
-cdef long double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, long double k, int q,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double ME
+cdef double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, double k, int q,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double ME
 	cdef int sr,sc
 
 	if Nr > 0:
@@ -249,13 +249,13 @@ cdef long double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, l
 
 
 	if mr >= 0:
-		nr = (1 + sr*pblock*cosl(k*mr))/Nr
+		nr = (1 + sr*pblock*cos(k*mr))/Nr
 	else:
 		nr = 1.0/Nr
 	nr *= sr
 
 	if mc >= 0:
-		nc = (1 + sc*pblock*cosl(k*mc))/Nc
+		nc = (1 + sc*pblock*cos(k*mc))/Nc
 	else:
 		nc = 1.0/Nc
 	nc *= sc
@@ -265,14 +265,14 @@ cdef long double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, l
 
 	if sr == sc :
 		if mc < 0:
-			ME *= cosl(k*l)
+			ME *= cos(k*l)
 		else:
-			ME *= (cosl(k*l)+sr*pblock*cosl((l-mc)*k))/(1+sr*pblock*cosl(k*mc))
+			ME *= (cos(k*l)+sr*pblock*cos((l-mc)*k))/(1+sr*pblock*cos(k*mc))
 	else:
 		if mc < 0:
-			ME *= -sr*sinl(k*l)
+			ME *= -sr*sin(k*l)
 		else:
-			ME *= (-sr*sinl(k*l)+pblock*sinl((l-mc)*k))/(1-sr*pblock*cosl(k*mc))		
+			ME *= (-sr*sin(k*l)+pblock*sin((l-mc)*k))/(1-sr*pblock*cos(k*mc))		
 
 
 	return ME
@@ -295,7 +295,7 @@ cdef int t_p_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 	R[0] = 0
 	R[1] = 0
 
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
+	cdef double k = (2.0*_np.pi*kblock*a)/L
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -376,9 +376,9 @@ cdef int t_p_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 
 
 
-cdef long double MatrixElement_T_P_Z(int L,int pblock, int zblock, int kblock, int a, int l, long double k, int q, int g,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double ME
+cdef double MatrixElement_T_P_Z(int L,int pblock, int zblock, int kblock, int a, int l, double k, int q, int g,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double ME
 	cdef int sr,sc
 	cdef int nnr,mmr,cr,nnc,mmc,cc
 
@@ -408,47 +408,47 @@ cdef long double MatrixElement_T_P_Z(int L,int pblock, int zblock, int kblock, i
 	if cr == 1:
 		nr = 1.0/Nr
 	elif cr == 2:
-		nr = (1.0 + pblock*sr*cosl(k*mmr))/Nr
+		nr = (1.0 + pblock*sr*cos(k*mmr))/Nr
 	elif cr == 3:
-		nr = (1.0 + zblock*cosl(k*nnr))/Nr
+		nr = (1.0 + zblock*cos(k*nnr))/Nr
 	elif cr == 4:
-		nr = (1.0 + pblock*zblock*sr*cosl(k*mmr))/Nr	
+		nr = (1.0 + pblock*zblock*sr*cos(k*mmr))/Nr	
 	elif cr == 5:
-		nr = (1.0 + pblock*sr*cosl(k*mmr))*(1.0 + zblock*cosl(k*nnr))/Nr
+		nr = (1.0 + pblock*sr*cos(k*mmr))*(1.0 + zblock*cos(k*nnr))/Nr
 
 	nr *= sr
 
 	if cc == 1:
 		nc = 1.0/Nc
 	elif cc == 2:
-		nc = (1.0 + pblock*sc*cosl(k*mmc))/Nc
+		nc = (1.0 + pblock*sc*cos(k*mmc))/Nc
 	elif cc == 3:
-		nc = (1.0 + zblock*cosl(k*nnc))/Nc
+		nc = (1.0 + zblock*cos(k*nnc))/Nc
 	elif cc == 4:
-		nc = (1.0 + pblock*zblock*sc*cosl(k*mmc))/Nc	
+		nc = (1.0 + pblock*zblock*sc*cos(k*mmc))/Nc	
 	elif cc == 5:
-		nc = (1.0 + pblock*sc*cosl(k*mmc))*(1.0 + zblock*cosl(k*nnc))/Nc
+		nc = (1.0 + pblock*sc*cos(k*mmc))*(1.0 + zblock*cos(k*nnc))/Nc
 
 	nc *= sc
 
 
 
-	ME=sqrtl(nc/nr)*((sr*pblock)**q)*(zblock**g)
+	ME=sqrt(nc/nr)*((sr*pblock)**q)*(zblock**g)
 
 	if sr == sc :
 		if (cc == 1) or (cc == 3):
-			ME *= cosl(k*l)
+			ME *= cos(k*l)
 		elif (cc == 2) or (cc == 5):
-			ME *= (cosl(k*l)+sr*pblock*cosl((l-mmc)*k))/(1+sr*pblock*cosl(k*mmc))
+			ME *= (cos(k*l)+sr*pblock*cos((l-mmc)*k))/(1+sr*pblock*cos(k*mmc))
 		elif (cc == 4):
-			ME *= (cosl(k*l)+sr*pblock*zblock*cosl((l-mmc)*k))/(1+sr*pblock*zblock*cosl(k*mmc))
+			ME *= (cos(k*l)+sr*pblock*zblock*cos((l-mmc)*k))/(1+sr*pblock*zblock*cos(k*mmc))
 	else:
 		if (cc == 1) or (cc == 3):
-			ME *= -sr*sinl(k*l)
+			ME *= -sr*sin(k*l)
 		elif (cc == 2) or (cc == 5):
-			ME *= (-sr*sinl(k*l) + pblock*sinl((l-mmc)*k))/(1-sr*pblock*cosl(k*mmc))
+			ME *= (-sr*sin(k*l) + pblock*sin((l-mmc)*k))/(1-sr*pblock*cos(k*mmc))
 		elif (cc == 4):
-			ME *= (-sr*sinl(k*l) + pblock*zblock*sinl((l-mmc)*k))/(1-sr*pblock*zblock*cosl(k*mmc))
+			ME *= (-sr*sin(k*l) + pblock*zblock*sin((l-mmc)*k))/(1-sr*pblock*zblock*cos(k*mmc))
 
 	return ME
 
@@ -467,7 +467,7 @@ cdef int t_p_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op
 	cdef int R[3]
 	cdef bool found
 
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
+	cdef double k = (2.0*_np.pi*kblock*a)/L
 
 	R[0] = 0
 	R[1] = 0
@@ -557,9 +557,9 @@ cdef int t_p_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op
 
 
 
-cdef long double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l, long double k, int qg,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double ME
+cdef double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l, double k, int qg,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double ME
 	cdef int sr,sc
 
 
@@ -578,29 +578,29 @@ cdef long double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l,
 
 
 	if mr >= 0:
-		nr = (1 + sr*pzblock*cosl(k*mr))/Nr
+		nr = (1 + sr*pzblock*cos(k*mr))/Nr
 	else:
 		nr = 1.0/Nr
 	nr *= sr
 
 	if mc >= 0:
-		nc = (1 + sc*pzblock*cosl(k*mc))/Nc
+		nc = (1 + sc*pzblock*cos(k*mc))/Nc
 	else:
 		nc = 1.0/Nc
 	nc *= sc
 
-	ME=sqrtl(nc/nr)*(sr*pzblock)**qg
+	ME=sqrt(nc/nr)*(sr*pzblock)**qg
 
 	if sr == sc :
 		if mc < 0:
-			ME *= cosl(k*l)
+			ME *= cos(k*l)
 		else:
-			ME *= (cosl(k*l)+sr*pzblock*cosl((l-mc)*k))/(1+sr*pzblock*cosl(k*mc))
+			ME *= (cos(k*l)+sr*pzblock*cos((l-mc)*k))/(1+sr*pzblock*cos(k*mc))
 	else:
 		if mc < 0:
-			ME *= -sr*sinl(k*l)
+			ME *= -sr*sin(k*l)
 		else:
-			ME *= (-sr*sinl(k*l)+pzblock*sinl((l-mc)*k))/(1-sr*pzblock*cosl(k*mc))		
+			ME *= (-sr*sin(k*l)+pzblock*sin((l-mc)*k))/(1-sr*pzblock*cos(k*mc))		
 
 
 	return ME
@@ -620,7 +620,7 @@ cdef int t_pz_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 	cdef int R[2]
 	cdef bool found
 
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
+	cdef double k = (2.0*_np.pi*kblock*a)/L
 
 	R[0] = 0
 	R[1] = 0
@@ -709,28 +709,28 @@ cdef int t_pz_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 
 
 
-cdef long double complex MatrixElement_T_ZA(int L,int zAblock, int kblock, int a, int l, long double k, int gA,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double complex ME
+cdef double complex MatrixElement_T_ZA(int L,int zAblock, int kblock, int a, int l, double k, int gA,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double complex ME
 	
 
 	if mr >=0:
-		nr = (1 + zAblock*cosl(k*mr))/Nr
+		nr = (1 + zAblock*cos(k*mr))/Nr
 	else:
 		nr = 1.0/Nr
 
 	if mc >= 0:
-		nc = (1 + zAblock*cosl(k*mc))/Nc
+		nc = (1 + zAblock*cos(k*mc))/Nc
 	else:
 		nc = 1.0/Nc
 
 
-	ME=sqrtl(nc/nr)*(zAblock**gA)
+	ME=sqrt(nc/nr)*(zAblock**gA)
 
 	if ((2*a*kblock) % L) == 0:
 		ME *= (-1)**(2*l*a*kblock/L)
 	else:
-		ME *= (cosl(k*l) - 1.0j * sinl(k*l))
+		ME *= (cos(k*l) - 1.0j * sin(k*l))
 
 	return ME
 
@@ -743,8 +743,8 @@ cdef int t_zA_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 	cdef npy_intp ss,i
 	cdef int error,l,gA
 	cdef int R[2]
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
-	cdef long double complex me
+	cdef double k = (2.0*_np.pi*kblock*a)/L
+	cdef double complex me
 	cdef bool found
 
 	R[0] = 0
@@ -752,7 +752,7 @@ cdef int t_zA_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
-	if (matrix_type is float or matrix_type is double or matrix_type is longdouble) and ((2*a*kblock) % L) != 0:
+	if (matrix_type is float or matrix_type is double) and ((2*a*kblock) % L) != 0:
 		error = -1
 
 	if error != 0:
@@ -777,7 +777,7 @@ cdef int t_zA_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 		row[i] = ss
 
 
-		if (matrix_type is float or matrix_type is double or matrix_type is longdouble):
+		if (matrix_type is float or matrix_type is double):
 			me = MatrixElement_T_ZA(L,zAblock,kblock,a,l,k,gA,N[i],N[ss],m[i],m[ss])
 			ME[i] *= me.real
 		else:
@@ -799,9 +799,9 @@ cdef int t_zA_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 
 
 
-cdef long double complex MatrixElement_T_ZA_ZB(int L,int zAblock,int zBblock, int kblock, int a, int l, long double k, int gA, int gB,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double complex ME
+cdef double complex MatrixElement_T_ZA_ZB(int L,int zAblock,int zBblock, int kblock, int a, int l, double k, int gA, int gB,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double complex ME
 	cdef int mmr,cr,mmc,cc
 
 
@@ -855,8 +855,8 @@ cdef int t_zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] 
 	cdef npy_intp ss,i
 	cdef int error,l,gA,gB
 	cdef int R[3]
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
-	cdef long double complex me
+	cdef double k = (2.0*_np.pi*kblock*a)/L
+	cdef double complex me
 	cdef bool found
 
 	R[0] = 0
@@ -865,7 +865,7 @@ cdef int t_zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] 
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
-	if (matrix_type is float or matrix_type is double or matrix_type is longdouble) and ((2*a*kblock) % L) != 0:
+	if (matrix_type is float or matrix_type is double) and ((2*a*kblock) % L) != 0:
 		error = -1
 
 	if error != 0:
@@ -889,7 +889,7 @@ cdef int t_zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] 
 
 		row[i] = ss
 
-		if (matrix_type is float or matrix_type is double or matrix_type is longdouble):
+		if (matrix_type is float or matrix_type is double):
 			me = MatrixElement_T_ZA_ZB(L,zAblock,zBblock,kblock,a,l,k,gA,gB,N[i],N[ss],m[i],m[ss])
 			ME[i] *= me.real
 		else:
@@ -906,28 +906,28 @@ cdef int t_zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] 
 
 
 
-cdef long double complex MatrixElement_T_ZB(int L,int zBblock, int kblock, int a, int l, long double k, int gB,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double complex ME
+cdef double complex MatrixElement_T_ZB(int L,int zBblock, int kblock, int a, int l, double k, int gB,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double complex ME
 	
 
 	if mr >=0:
-		nr = (1 + zBblock*cosl(k*mr))/Nr
+		nr = (1 + zBblock*cos(k*mr))/Nr
 	else:
 		nr = 1.0/Nr
 
 	if mc >= 0:
-		nc = (1 + zBblock*cosl(k*mc))/Nc
+		nc = (1 + zBblock*cos(k*mc))/Nc
 	else:
 		nc = 1.0/Nc
 
 
-	ME=sqrtl(nc/nr)*(zBblock**gB)
+	ME=sqrt(nc/nr)*(zBblock**gB)
 
 	if (2*kblock*a % L) == 0:
 		ME *= (-1)**(2*l*a*kblock/L)
 	else:
-		ME *= (cosl(k*l) - 1.0j * sinl(k*l))
+		ME *= (cos(k*l) - 1.0j * sin(k*l))
 
 	return ME
 
@@ -940,8 +940,8 @@ cdef int t_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 	cdef npy_intp ss,i 
 	cdef int error,l,gB
 	cdef int R[2]
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
-	cdef long double complex me
+	cdef double k = (2.0*_np.pi*kblock*a)/L
+	cdef double complex me
 	cdef bool found
 
 	R[0] = 0
@@ -949,7 +949,7 @@ cdef int t_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
-	if (matrix_type is float or matrix_type is double or matrix_type is longdouble) and ((2*a*kblock) % L) != 0:
+	if (matrix_type is float or matrix_type is double) and ((2*a*kblock) % L) != 0:
 		error = -1
 
 	if error != 0:
@@ -972,7 +972,7 @@ cdef int t_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 
 		row[i] = ss
 
-		if (matrix_type is float or matrix_type is double or matrix_type is longdouble):
+		if (matrix_type is float or matrix_type is double):
 			me = MatrixElement_T_ZB(L,zBblock,kblock,a,l,k,gB,N[i],N[ss],m[i],m[ss])
 			ME[i] *= me.real
 		else:
@@ -985,28 +985,28 @@ cdef int t_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_
 
 
 
-cdef long double complex MatrixElement_T_Z(int L,int zblock, int kblock, int a, int l, long double k, int g,int Nr,int Nc,int mr,int mc):
-	cdef long double nr,nc
-	cdef long double complex ME
+cdef double complex MatrixElement_T_Z(int L,int zblock, int kblock, int a, int l, double k, int g,int Nr,int Nc,int mr,int mc):
+	cdef double nr,nc
+	cdef double complex ME
 	
 
 	if mr >=0:
-		nr = (1 + zblock*cosl(k*mr))/Nr
+		nr = (1 + zblock*cos(k*mr))/Nr
 	else:
 		nr = 1.0/Nr
 
 	if mc >= 0:
-		nc = (1 + zblock*cosl(k*mc))/Nc
+		nc = (1 + zblock*cos(k*mc))/Nc
 	else:
 		nc = 1.0/Nc
 
 
-	ME=sqrtl(nc/nr)*(zblock**g)
+	ME=sqrt(nc/nr)*(zblock**g)
 
 	if ((2*a*kblock) % L) == 0:
 		ME *= (-1)**(2*l*a*kblock/L)
 	else:
-		ME *= (cosl(k*l) - 1.0j * sinl(k*l))
+		ME *= (cos(k*l) - 1.0j * sin(k*l))
 
 	return ME
 
@@ -1019,8 +1019,8 @@ cdef int t_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 	cdef npy_intp ss,i
 	cdef int error,l,g
 	cdef int R[2]
-	cdef long double k = (2.0*_np.pi*kblock*a)/L
-	cdef long double complex me
+	cdef double k = (2.0*_np.pi*kblock*a)/L
+	cdef double complex me
 	cdef bool found
 
 	R[0] = 0
@@ -1028,7 +1028,7 @@ cdef int t_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
-	if (matrix_type is float or matrix_type is double or matrix_type is longdouble) and ((2*a*kblock) % L) != 0:
+	if (matrix_type is float or matrix_type is double) and ((2*a*kblock) % L) != 0:
 		error = -1
 
 	if error != 0:
@@ -1051,7 +1051,7 @@ cdef int t_z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_p
 
 		row[i] = ss
 
-		if (matrix_type is float or matrix_type is double or matrix_type is longdouble):
+		if (matrix_type is float or matrix_type is double):
 			me = MatrixElement_T_Z(L,zblock,kblock,a,l,k,g,N[i],N[ss],m[i],m[ss])
 			ME[i] *= me.real
 		else:
@@ -1074,7 +1074,7 @@ cdef int zA_op_template(op_type op_func, object[basis_type,ndim=1,mode="c"] op_p
 	cdef npy_intp ss,i
 	cdef int error,gA
 	cdef bool found
-	cdef long double n
+	cdef double n
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -1095,7 +1095,7 @@ cdef int zA_op_template(op_type op_func, object[basis_type,ndim=1,mode="c"] op_p
 		row[i] = s
 		n =  N[s]
 		n /= N[i]
-		ME[i] *= (zAblock)**gA*sqrtl(n)
+		ME[i] *= (zAblock)**gA*sqrt(n)
 
 
 	return error
@@ -1115,7 +1115,7 @@ cdef int zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op
 	cdef int error,gA,gB
 	cdef int R[2]
 	cdef bool found
-	cdef long double n
+	cdef double n
 
 	R[0] = 0
 	R[1] = 0
@@ -1143,7 +1143,7 @@ cdef int zA_zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op
 		row[i] = s
 		n =  N[s]
 		n /= N[i]
-		ME[i] *= (zAblock**gA)*(zBblock**gB)*sqrtl(n)
+		ME[i] *= (zAblock**gA)*(zBblock**gB)*sqrt(n)
 
 	return error
 
@@ -1156,7 +1156,7 @@ cdef int zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pa
 	cdef npy_intp ss,i
 	cdef int error,gB
 	cdef bool found
-	cdef long double n
+	cdef double n
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -1177,7 +1177,7 @@ cdef int zB_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_pa
 		row[i] = s
 		n =  N[s]
 		n /= N[i]
-		ME[i] *= (zBblock)**gB*sqrtl(n)
+		ME[i] *= (zBblock)**gB*sqrt(n)
 
 
 	return error
@@ -1191,7 +1191,7 @@ cdef int z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 	cdef npy_intp i
 	cdef int error,g
 	cdef bool found
-	cdef long double n
+	cdef double n
 
 
 	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -1213,7 +1213,7 @@ cdef int z_op_template(op_type op_func,object[basis_type,ndim=1,mode="c"] op_par
 		row[i] = s
 		n =  N[s]
 		n /= N[i]
-		ME[i] *= (zblock)**g*sqrtl(n)
+		ME[i] *= (zblock)**g*sqrt(n)
 
 
 	return error

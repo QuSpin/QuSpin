@@ -25,7 +25,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 		J_pp=[[-J,i,(i+1)%L] for i in range(L)] # PBC
 		J_mm=[[+J,i,(i+1)%L] for i in range(L)] # PBC
 
-		basis_fermion = fermion_basis_1d(L=L,Nf=xrange(1,L+1,2))
+		basis_fermion = fermion_basis_1d(L=L,Nf=range(1,L+1,2))
 
 	elif PBC==-1:
 
@@ -44,7 +44,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 
 	static_fermion =[["+-",J_pm],["-+",J_mp],["++",J_pp],["--",J_mm],['z',x_field]]
 
-	H_fermion=hamiltonian(static_fermion,[],basis=basis_fermion,dtype=np.float32,check_pcon=False)
+	H_fermion=hamiltonian(static_fermion,[],basis=basis_fermion,dtype=np.float64,check_pcon=False)
 	E_fermion=H_fermion.eigvalsh()
 
 	#### define spin model
@@ -59,7 +59,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 
 	static_spin =[["zz",J_zz],["x",x_field]]
 
-	H_spin=hamiltonian(static_spin,[],basis=basis_spin,dtype=np.float32)
+	H_spin=hamiltonian(static_spin,[],basis=basis_spin,dtype=np.float64)
 	E_spin=H_spin.eigvalsh()
 
 
@@ -75,7 +75,7 @@ for PBC in [-1,1]: # periodic or antiperiodic BC
 
 	static_hcb =[["zz",J_zz],["+",x_field],["-",x_field]]
 
-	H_hcb=hamiltonian(static_hcb,[],basis=basis_hcb,dtype=np.float32)
+	H_hcb=hamiltonian(static_hcb,[],basis=basis_hcb,dtype=np.float64)
 	E_hcb=H_hcb.eigvalsh()
 
 

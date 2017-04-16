@@ -17,6 +17,8 @@ import numpy as _np
 
 from numpy import zeros_like
 from operator import mul
+import functools
+
 
 # needed for exp_op class
 from scipy.sparse.linalg import expm_multiply as _expm_multiply
@@ -24,7 +26,7 @@ from scipy.sparse.linalg import expm_multiply as _expm_multiply
 from copy import deepcopy as _deepcopy
 import warnings
 
-__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator"]
+__all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator","ops_dict"]
 
 
 
@@ -54,12 +56,7 @@ class HamiltonianEfficiencyWarning(Warning):
 
 
 #global names:
-supported_dtypes=[_np.float32, _np.float64, _np.complex64, _np.complex128]
-
-if hasattr(_np,"float128"): supported_dtypes.append(_np.float128)
-if hasattr(_np,"complex256"): supported_dtypes.append(_np.complex256)
-
-supported_dtypes = tuple(supported_dtypes)
+supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
 
 def check_static(sub_list):
 	if (type(sub_list) in [list,tuple]) and (len(sub_list) == 2):
@@ -572,14 +569,14 @@ class hamiltonian(object):
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
 		
 		u_dot + iv_dot = -iH(u + iv)
-		u_dot =  Hv
+		u_dot = Hv
 		v_dot = -Hu
 		"""
 		V_dot = zeros_like(V)
-		V_dot[:self._Ns] =  self._static.dot(V[self._Ns:])
+		V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
 		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
 		for Hd,f,f_args in self._dynamic:
-			V_dot[:self._Ns] +=  f(time,*f_args)*Hd.dot(V[self._Ns:])
+			V_dot[:self._Ns] += f(time,*f_args)*Hd.dot(V[self._Ns:])
 			V_dot[self._Ns:] += -f(time,*f_args)*Hd.dot(V[:self._Ns])
 
 		return V_dot
@@ -762,7 +759,7 @@ class hamiltonian(object):
 				else: # density matrix
 					return V.diagonal().sum()
 			else:
-				V     = _np.squeeze(_np.asarray(V))
+				V = _np.squeeze(_np.asarray(V))
 				V_dot = _np.squeeze(_np.asarray(V_dot))
 				if V.ndim == 1: # pure state
 					return _np.vdot(V,V_dot)
@@ -796,8 +793,8 @@ class hamiltonian(object):
 			else:
 				return Vl.T.conj().dot(Vr)
  
- 		if Vr.ndim > 2:
- 			raise ValueError('Expecting Vr to have ndim < 3')
+		if Vr.ndim > 2:
+			raise ValueError('Expecting Vr to have ndim < 3')
 
 		if Vl.__class__ is _np.ndarray:
 			if Vl.ndim == 1:
@@ -2443,7 +2440,7 @@ class HamiltonianOperator(object):
 
 		* _.dtype: returns the data type of the hamiltonian
 
-		* _.operator_list: return the list of operators given to this  
+		* _.operator_list: return the list of operators given to this
 
 		* _.T: return the transpose of this operator
 
@@ -2841,7 +2838,7 @@ class exp_op(object):
 
 		* a: scalar (optional), prefactor to go in front of the operator in the exponential: exp(a*O)
 
-		* start:  scalar (optional), specify the starting point for a grid of points to evaluate the matrix exponential at.
+		* start: scalar (optional), specify the starting point for a grid of points to evaluate the matrix exponential at.
 
 		* stop: (optional), specify the end point of the grid of points. 
 
@@ -2850,7 +2847,7 @@ class exp_op(object):
 		* endpoint: (optional), if True this will make sure stop is included in the set of grid points (Note this changes the grid step size).
 
 		* iterate: (optional), if True when mathematical methods are called they will return iterators which will iterate over the grid 
-		  points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
+		 points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
 
 		--- exp_op attributes ---: '_. ' below stands for 'object. '
 
@@ -2916,7 +2913,7 @@ class exp_op(object):
 				self._step = None
 			else:
 
-				if not (_np.isscalar(start)  and _np.isscalar(stop)):
+				if not (_np.isscalar(start) and _np.isscalar(stop)):
 					raise ValueError("expecting scalar values for 'start' and 'stop'")
 
 				if not (_np.isreal(start) and _np.isreal(stop)):
@@ -3022,7 +3019,7 @@ class exp_op(object):
 
 	def set_grid(self, start, stop, num = None, endpoint = None):
 
-		if not (_np.isscalar(start)  and _np.isscalar(stop)):
+		if not (_np.isscalar(start) and _np.isscalar(stop)):
 			raise ValueError("expecting scalar values for 'start' and 'stop'")
 
 		if not (_np.isreal(start) and _np.isreal(stop)):
@@ -3302,7 +3299,7 @@ def _hamiltonian_iter_dot(M, other, grid, step):
 
 	M *= step
 	for t in grid[1:]:
-		other =  _hamiltonian_dot(M, other)
+		other = _hamiltonian_dot(M, other)
 		yield other
 
 
@@ -3327,7 +3324,7 @@ def _hamiltonian_iter_rdot(M, other, grid, step):
 
 	M *= step
 	for t in grid[1:]:
-		other =  _hamiltonian_rdot(M, other)
+		other = _hamiltonian_rdot(M, other)
 		yield other.transpose(copy=True)
 
 
@@ -3362,7 +3359,7 @@ def ops_dict_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
 class ops_dict(object):
-	def __init__(self,input_dict,N=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
+	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
 		"""
 		this object maps operatators/matricies to keys, which when calling various operations allows to specify the scalar multiples
 		in front of these operators.
@@ -3376,7 +3373,7 @@ class ops_dict(object):
 					example:
 						input_dict = {
 										"Jzz": [["zz",Jzz_bonds]] # use "Jzz" key to specify the zz interaction coupling
-										"hx" : [["x" ,hx_site  ]] # use "hx" key to specify the field strength
+										"hx" : [["x" ,hx_site ]] # use "hx" key to specify the field strength
 									 }
 		* N: (optional) number of sites to create the hamiltonian with.
 
@@ -4111,11 +4108,11 @@ class ops_dict(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
-		extra =  set(pars.keys()) - set(self._ops_dict.keys())
+		extra = set(pars.keys()) - set(self._ops_dict.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
-		missing =  set(self._ops_dict.keys()) - set(pars.keys())
+		missing = set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
 			pars[key] = 1.0
 
@@ -4132,12 +4129,12 @@ class ops_dict(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
-		extra =  set(pars.keys()) - set(self._ops_dict.keys())
+		extra = set(pars.keys()) - set(self._ops_dict.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
 
-		missing =  set(self._ops_dict.keys()) - set(pars.keys())
+		missing = set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
 			pars[key] = 1.0
 

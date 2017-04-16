@@ -509,8 +509,8 @@ class tensor_basis(basis):
 
 
 def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
-	Ns1=basis._b1.Ns
-	Ns2=basis._b2.Ns
+	Ns1=basis._basis_left.Ns
+	Ns2=basis._basis_right.Ns
 
 	Nvecs = v0.shape[1]
 
@@ -533,10 +533,10 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 		v2 = V2[-1]
 
 		if full_left:
-			v1 = basis._b1.get_vec(v1,sparse=True)
+			v1 = basis._basis_left.get_vec(v1,sparse=True)
 			
 		if full_right:
-			v2 = basis._b2.get_vec(v2,sparse=True)
+			v2 = basis._basis_right.get_vec(v2,sparse=True)
 
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
@@ -555,10 +555,10 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v2 = V2[i]
 
 			if full_left:
-				v1 = basis._b1.get_vec(v1,sparse=True)
+				v1 = basis._basis_left.get_vec(v1,sparse=True)
 			
 			if full_right:
-				v2 = basis._b2.get_vec(v2,sparse=True)
+				v2 = basis._basis_right.get_vec(v2,sparse=True)
 
 
 			v1 = _sp.kron(v1,temp2,format="csr")  
@@ -576,10 +576,10 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 		v2 = V2[-1]
 
 		if full_left:
-			v1 = basis._b1.get_vec(v1,sparse=False)
+			v1 = basis._basis_left.get_vec(v1,sparse=False)
 			
 		if full_right:
-			v2 = basis._b2.get_vec(v2,sparse=False)
+			v2 = basis._basis_right.get_vec(v2,sparse=False)
 
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
@@ -595,10 +595,10 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v2 = V2[i]
 
 			if full_left:
-				v1 = basis._b1.get_vec(v1,sparse=False)
+				v1 = basis._basis_left.get_vec(v1,sparse=False)
 			
 			if full_right:
-				v2 = basis._b2.get_vec(v2,sparse=False)
+				v2 = basis._basis_right.get_vec(v2,sparse=False)
 
 			v1 =  _np.kron(v1,temp2)
 			v2 = _np.kron(temp1,v2)
@@ -675,8 +675,8 @@ def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):
 
 """
 def _combine_get_vec(basis,v0,sparse,full_left,full_right):
-	Ns1=basis._b1.Ns
-	Ns2=basis._b2.Ns
+	Ns1=basis._basis_left.Ns
+	Ns2=basis._basis_right.Ns
 
 	Ns = min(Ns1,Ns2)
 
@@ -710,10 +710,10 @@ def _combine_get_vec(basis,v0,sparse,full_left,full_right):
 
 	# Next thing to do is take those vectors and convert them to their full hilbert space
 	if full_left:
-		V1=basis._b1.get_vec(V1,sparse)
+		V1=basis._basis_left.get_vec(V1,sparse)
 
 	if full_right:
-		V2=basis._b2.get_vec(V2,sparse)
+		V2=basis._basis_right.get_vec(V2,sparse)
 
 
 	# calculate the dimension total hilbert space with no symmetries
