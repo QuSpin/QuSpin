@@ -1087,6 +1087,71 @@ class basis_1d(basis):
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
 
 
+	def _lmbda_pure_dense(state,sub_sys_A,return_A=False,return_B=False):
+		pass
+
+
+	def _lmbda_pure_sparse(state,sub_sys_A,return_A=False,return_B=False,**svd_args):
+		pass
+
+
+	def _lmbda_mixed(state,sub_sys_A,return_A=False,return_B=False):
+		L = self.L
+		sps = self.sps
+
+		L_A = len(sub_sys_A)
+		L_B = L - L_A
+
+		proj = self.get_proj(_dtypes[state.dtype.char])
+
+		Ns_full = proj.shape[0]
+		n_states = state.shape[-1]
+
+		state = state.transpose((2,0,1))
+
+		gen = (proj*s*proj.H for s in state[:])
+
+		proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
+
+		for i,s in enumerate(gen):
+			proj_state[i,...] += s[...]	
+
+		if return_A and return_B:
+			rho_A,rho_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="both")
+
+			if L_A < L_B:
+				E = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
+			else:
+				E = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
+
+			return E,rho_A.transpose((1,2,0)),rho_B.transpose((1,2,0))
+
+		elif return_A and L_A <= L_B:
+			rho_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+			E = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
+			return E,rho_A.transpose((1,2,0))
+		elif return_B and L_B <= L_A:
+			rho_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
+			E = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
+			return E,rho_B.transpose((1,2,0))
+		else:
+			if L_A <= L_B:
+				rho_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+				E = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
+			else:
+				rho_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
+				E = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
+
+			return E
+
+
+
+
+		
+
+
+
+
 	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
