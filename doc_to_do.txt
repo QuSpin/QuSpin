@@ -21,11 +21,11 @@ Future work (open an issue)
 
 New examples
 
-- free particle (large N) with staggered pot and PBC with block tools
-- bosons: BHM repulsively bound pairs with ladder with kblock symmetries, non equal time correlator with block tools
-- spinful fermions: FHM (MBL) show sympy tool
-- spinless fermions/hcb: JW transformation
-- spin-1 (maybe Haldane chain?)
-- GPE with imaginary time
+- (M) free particle (large N) with staggered pot and PBC with block tools and real space (SSH)
+- (P) bosons: BHM repulsively bound pairs with ladder with kblock symmetries, non equal time correlator with block tools
+- (P) spinful fermions: FHM (MBL) show sympy tool
+- (M) spinless fermions/hcb: JW transformation
+- (P) spin-1 TFI vs spin-1/2, show m density sector
+- (M) GPE with imaginary time
 #- Liouville dynamics
 
