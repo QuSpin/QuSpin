@@ -1096,6 +1096,15 @@ class basis_1d(basis):
 
 
 	def _lmbda_mixed(state,sub_sys_A,return_A=False,return_B=False):
+		"""
+		This function calculates the eigenvalues of the reduced density matrix.
+		It will first calculate the partial trace of the full density matrix and
+		then diagonalizes it to get the eigenvalues. It will automatically choose
+		the subsystem with the smaller hilbert space to do the diagonalization in order
+		to reduce the calculation time but will only return the desired retuded density
+		matrix. 
+		"""
+
 		L = self.L
 		sps = self.sps
 
@@ -1120,29 +1129,29 @@ class basis_1d(basis):
 			rho_A,rho_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="both")
 
 			if L_A < L_B:
-				E = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
+				p = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
 			else:
-				E = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
+				p = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
 
-			return E,rho_A.transpose((1,2,0)),rho_B.transpose((1,2,0))
+			return p,rho_A.transpose((1,2,0)),rho_B.transpose((1,2,0))
 
 		elif return_A and L_A <= L_B:
 			rho_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-			E = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
-			return E,rho_A.transpose((1,2,0))
+			p = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
+			return p,rho_A.transpose((1,2,0))
 		elif return_B and L_B <= L_A:
 			rho_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-			E = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
-			return E,rho_B.transpose((1,2,0))
+			p = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
+			return p,rho_B.transpose((1,2,0))
 		else:
 			if L_A <= L_B:
 				rho_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-				E = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
+				p = eigvalsh(rho_A) + np.finfo(rho_A.dtype).eps
 			else:
 				rho_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-				E = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
+				p = eigvalsh(rho_B) + np.finfo(rho_B.dtype).eps
 
-			return E
+			return p
 
 
 

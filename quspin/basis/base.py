@@ -631,7 +631,7 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 
 
-def _reshape_as_subsys(psi,sub_sys_A,L,sps)
+def _reshape_as_subsys(psi,sub_sys_A,L,sps):
 #(system_state,basis,chain_subsys=None,subsys_ordering=True):
 	"""
 	This function reshapes an input state (or matrix with 'Nstates' initial states) into an array of

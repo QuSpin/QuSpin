@@ -3449,10 +3449,8 @@ class ops_dict(object):
 
 		if opstr_dict:
 			# check if user input basis
-			basis=kwargs.get('basis')
 
 			if basis is not None:
-				kwargs.pop('basis')
 				if len(kwargs) > 0:
 					wrong_keys = set(kwargs.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
