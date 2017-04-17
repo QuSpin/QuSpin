@@ -540,14 +540,14 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	This function computes the partial trace of a sparse pure state psi over set of sites sub_sys_A and returns 
 	reduced DM.
 	"""
-
 	psi=_lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps)
-
+	
 	if return_rdm == "A":
 		return psi.dot(psi.H)
 	elif return_rdm == "B":
 		return psi.H.dot(psi)
 	elif return_rdm == "both":
+		#return psi.dot(psi.H),psi.H.dot(psi)
 		return psi.dot(psi.H),psi.H.dot(psi)
 
 
@@ -626,23 +626,22 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 
 	Ns_A = (sps**L_A)
 	Ns_B = (sps**L_B)
-
 	psi = psi.tocoo()
 
 	T_tup = sub_sys_A+sub_sys_B
-
 	
 	# reshuffle indices for the sub-systems.
 	# j = sum( j[i]*(sps**i) for i in range(L))
 	# this reshuffles the j[i] similar to the transpose operation
 	# on the dense arrays psi_v.transpose(T_tup)
+	
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
 		for i_new,i_old in enumerate(T_tup):
 			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
 	else:
 		indx = psi.col
-
+	
 
 	# make shift way of reshaping array
 	# j = j_A + Ns_A * j_B
@@ -650,8 +649,8 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	# j_B = j / Ns_A
 
 	psi._shape = (Ns_A,Ns_B)
-	psi.row[:] = indx % Ns_A
-	psi.col[:] = indx / Ns_A
+	psi.row[:] = indx / Ns_B
+	psi.col[:] = indx % Ns_B
 
 	return psi.tocsr()
 

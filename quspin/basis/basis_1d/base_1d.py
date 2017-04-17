@@ -4,13 +4,14 @@ from ..base import _lattice_partial_trace_mixed,_lattice_reshape_mixed
 from ..base import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
 from . import _check_1d_symm as _check
 import numpy as _np
+import scipy.sparse as _sp
+import scipy.linalg as _sla
 import numpy.linalg as _npla
 import scipy.sparse.linalg as _spla
 from numpy import array,cos,sin,exp,pi
 from numpy.linalg import norm,eigvalsh
 from types import ModuleType
 
-import scipy.sparse as _sp
 
 import warnings
 
@@ -1097,23 +1098,23 @@ class basis_1d(basis):
 		state=state.T
 		# reshape state according to sub_sys_A
 		v=_lattice_reshape_pure(state,sub_sys_A,self._L,self._sps)
-
+		#print(v)
 		# perform SVD	
 		if return_rdm is None:
 			lmbda = _npla.svd(v, compute_uv=False) 
-			return (lmbda**2).T + _np.finfo(lmbda.dtype).eps
+			return (lmbda**2) + _np.finfo(lmbda.dtype).eps
 		else:
 			U, lmbda, V = _npla.svd(v, full_matrices=False)
 			if return_rdm=='A':
-				rdm_A = _np.einsum('...ij,...j,...kj->ik...',U,lmbda**2,U.conj() )
-				return (lmbda**2).T + _np.finfo(lmbda.dtype).eps, rdm_A
+				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
+				return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A
 			elif return_rdm=='B':
-				rdm_B = _np.einsum('...ji,...j,...jk->ik...',V.conj(),lmbda**2,V )
-				return (lmbda**2).T + _np.finfo(lmbda.dtype).eps, rdm_B
+				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
+				return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_B
 			elif return_rdm=='both':
-				rdm_A = _np.einsum('...ij,...j,...kj->ik...',U,lmbda**2,U.conj() )
-				rdm_B = _np.einsum('...ji,...j,...jk->ik...',V.conj(),lmbda**2,V )
-				return (lmbda**2).T + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
+				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
+				return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 
 			
 
@@ -1124,59 +1125,99 @@ class basis_1d(basis):
 		if svds: # patchy sparse svd
 
 			# calculate full H-space representation of state
-			###potential problem with shape of state (Ns must be second axis)
-			state=self.get_vec(state,sparse=True)
-			# put states in rows
-			state=state.T
+			state=self.get_vec(state.T,sparse=True).T
 			# reshape state according to sub_sys_A
-			v=_lattice_reshape_pure(state,sub_sys_A,self._L,self._sps)
-
-			m=max(v.shape)
+			v=_lattice_reshape_sparse_pure(state,sub_sys_A,self._L,self._sps)
+			#print(v.todense())
 			n=min(v.shape)
 
 			# perform SVD	
 			if return_rdm is None:
 				lmbda_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=False)
 				lmbda_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=False)
+				#_, lmbda_dense, _ = _npla.svd(v.todense(),full_matrices=False)
 				# concatenate lower and upper part
-				lmbda=_np.concatenate((lmbda_SM,lmbda_LM),axis=0) + _np.finfo(lmbda.dtype).eps
-				return lmbda**2
+				lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
+				lmbda.sort()
+				return lmbda[::-1]**2 + _np.finfo(lmbda.dtype).eps
 			else:
 				
 				if return_rdm=='A':
-					U_SM, lmbda_SM, _ = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='u')
-					U_LM, lmbda_LM, _ = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='u')
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_SM,lmbda_LM),axis=0)
-					U=_np.concatenate((U_SM,U_LM),axis=1)
-					# calculate reduced DM
-					rdm_A = _np.einsum('...ij,...j,...kj->ik...',U,lmbda**2,U.conj() )
+					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='u')
+					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='u')
+					#ua,lmbdas,va = _npla.svd(v.todense())
 
-					return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A
+					# concatenate lower and upper part
+					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
+					arg = _np.argsort(lmbda)
+					lmbda = lmbda[arg]**2
+
+					U=_np.concatenate((U_LM,U_SM),axis=1)
+					U=U[...,arg]
+					#V=_np.concatenate((V_LM,V_SM[...,::-1,:]),axis=0)
+
+					# check and orthogonalise VF in degenerate subspaces
+					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
+						U,_ = _sla.qr(U, overwrite_a=True)
+						#V,_ = _sla.qr(V.T, overwrite_a=True)
+						#V = V.T
+	
+					# calculate reduced DM
+					rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda,U.conj() )
+
+					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A
 
 				elif return_rdm=='B':
-					_, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='vh')
-					_, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='vh')
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_SM,lmbda_LM),axis=0)
-					V=_np.concatenate((V_SM,V_LM),axis=0)
-					# calculate reduced DM
-					rdm_B = _np.einsum('...ij,...j,...kj->ik...',V,lmbda**2,V.conj() )
+					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='vh')
+					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='vh')
+					#ua,lmbdas,va = _npla.svd(v.todense())
 
-					return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_B
+					# concatenate lower and upper part
+					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
+					#U=_np.concatenate((U_LM,U_SM[...,::-1]),axis=1)
+					V=_np.concatenate((V_LM,V_SM),axis=0)
+
+					arg = _np.argsort(lmbda)
+					lmbda = lmbda[arg]**2
+					V = V[...,arg,:]
+
+					
+
+					# check and orthogonalise VF in degenerate subspaces
+					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
+						#U,_ = _sla.qr(U, overwrite_a=True)
+						V,_ = _sla.qr(V.T, overwrite_a=True)
+						V = V.T
+					
+					# calculate reduced DM
+					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
+
+					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_B
 
 				elif return_rdm=='both':
 					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=True)
 					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=True)
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_SM,lmbda_LM),axis=0)
-					U=_np.concatenate((U_SM,U_LM),axis=1)
-					V=_np.concatenate((V_SM,V_LM),axis=0)
-					# calculate reduced DM
-					rdm_A = _np.einsum('...ij,...j,...kj->ik...',U,lmbda**2,U.conj() )
-					rdm_B = _np.einsum('...ij,...j,...kj->ik...',V,lmbda**2,V.conj() )
 
-					return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+					# concatenate lower and upper part
+					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
+					U=_np.concatenate((U_LM,U_SM),axis=1)
+					V=_np.concatenate((V_LM,V_SM),axis=0)
+					arg = _np.argsort(lmbda)
+					lmbda = lmbda[arg]**2
+					V = V[...,arg,:]
+					U = U[...,arg]
+
+
+					# check and orthogonalise VF in degenerate subspaces
+					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
+						U,_ = _sla.qr(U, overwrite_a=True)
+						V,_ = _sla.qr(V.T, overwrite_a=True)
+						V = V.T
+					# calculate reduced DM
+					rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda,U.conj() )
+					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
+
+					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 
 
 		else: # partial trace + eig on DM
@@ -1214,10 +1255,10 @@ class basis_1d(basis):
 					rdm = rdm_B
 
 			try:
-				p = eigvalsh(rdm.todense()) + _np.finfo(rdm.dtype).eps
+				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
 			except AttributeError:
 				p_gen = (eigvalsh(dm.todense()) + _np.finfo(dm.dtype).eps for dm in rdm[:])
-				p = _np.stack(p_gen)
+				p = _np.stack(p_gen)[::-1]
 
 			if return_rdm is None:
 				return p
