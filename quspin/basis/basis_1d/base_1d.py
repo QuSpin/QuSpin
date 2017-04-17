@@ -4,6 +4,8 @@ from ..base import _lattice_partial_trace_mixed,_lattice_reshape_mixed
 from ..base import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
 from . import _check_1d_symm as _check
 import numpy as _np
+import numpy.linalg as _npla
+import scipy.sparse.linalg as _spla
 from numpy import array,cos,sin,exp,pi
 from numpy.linalg import norm,eigvalsh
 from types import ModuleType
@@ -1087,7 +1089,7 @@ class basis_1d(basis):
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
 
 
-	def _p_pure(state,sub_sys_A,return_rdm=None):
+	def _p_pure(self,state,sub_sys_A,return_rdm=None):
 		
 		# calculate full H-space representation of state
 		state=self.get_vec(state,sparse=False)
@@ -1099,34 +1101,34 @@ class basis_1d(basis):
 		# perform SVD	
 		if return_rdm is None:
 			lmbda = _npla.svd(v, compute_uv=False) 
-			return lmbda**2.T + _np.finfo(lmbda.dtype).eps
+			return (lmbda**2).T + _np.finfo(lmbda.dtype).eps
 		else:
 			U, lmbda, V = _npla.svd(v, full_matrices=False)
 			if return_rdm=='A':
 				rdm_A = _np.einsum('...ij,...j,...kj->ik...',U,lmbda**2,U.conj() )
-				return lmbda**2.T + _np.finfo(lmbda.dtype).eps, rdm_A
+				return (lmbda**2).T + _np.finfo(lmbda.dtype).eps, rdm_A
 			elif return_rdm=='B':
 				rdm_B = _np.einsum('...ji,...j,...jk->ik...',V.conj(),lmbda**2,V )
-				return lmbda**2.T + _np.finfo(lmbda.dtype).eps, rdm_B
-			elif return_rdm='both':
+				return (lmbda**2).T + _np.finfo(lmbda.dtype).eps, rdm_B
+			elif return_rdm=='both':
 				rdm_A = _np.einsum('...ij,...j,...kj->ik...',U,lmbda**2,U.conj() )
 				rdm_B = _np.einsum('...ji,...j,...jk->ik...',V.conj(),lmbda**2,V )
-				return lmbda**2.T + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+				return (lmbda**2).T + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 
 			
 
 
 
-	def _p_pure_sparse(state,sub_sys_A,return_rdm=None,svds=True):
+	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,svds=True):
 
 		if svds: # patchy sparse svd
 
 			# calculate full H-space representation of state
+			###potential problem with shape of state (Ns must be second axis)
 			state=self.get_vec(state,sparse=True)
 			# put states in rows
 			state=state.T
 			# reshape state according to sub_sys_A
-
 			v=_lattice_reshape_pure(state,sub_sys_A,self._L,self._sps)
 
 			m=max(v.shape)
@@ -1163,7 +1165,7 @@ class basis_1d(basis):
 
 					return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_B
 
-				elif return_rdm='both':
+				elif return_rdm=='both':
 					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=True)
 					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=True)
 					# concatenate lower and upper part
@@ -1229,7 +1231,7 @@ class basis_1d(basis):
 
 		
 
-	def _p_mixed(state,sub_sys_A,return_A=False,return_B=False):
+	def _p_mixed(self,state,sub_sys_A,return_A=False,return_B=False):
 		L = self.L
 		sps = self.sps
 
