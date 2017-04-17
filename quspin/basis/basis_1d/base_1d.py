@@ -10,6 +10,7 @@ import numpy.linalg as _npla
 import scipy.sparse.linalg as _spla
 from numpy import array,cos,sin,exp,pi
 from numpy.linalg import norm,eigvalsh
+from scipy.sparse.linalg import eigsh
 from types import ModuleType
 
 
@@ -1120,8 +1121,9 @@ class basis_1d(basis):
 
 
 
-	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,svds=True):
+	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
 
+		"""
 		if svds: # patchy sparse svd
 
 			# calculate full H-space representation of state
@@ -1216,56 +1218,69 @@ class basis_1d(basis):
 					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
 
 					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+		"""
+		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type='pure',sparse=True)
 
+		L_A=len(sub_sys_A)
+		L_B=self.L-L_A
 
-		else: # partial trace + eig on DM
-			
-			partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type='pure',sparse=True)
-
-			L_A=len(sub_sys_A)
-			L_B=self.L-L_A
-
-			if return_rdm is None:
-				if L_A <= L_B:
-					partial_trace_args["return_rdm"] = "A"
-					rdm = self.partial_trace(state,**partial_trace_args)
-				else:
-					partial_trace_args["return_rdm"] = "B"
-					rdm = self.partial_trace(state,**partial_trace_args)
-
-			elif return_rdm=='A' and L_A <= L_B:
+		if return_rdm is None:
+			if L_A <= L_B:
 				partial_trace_args["return_rdm"] = "A"
-				rdm_A = self.partial_trace(state,**partial_trace_args)
-				rdm = rdm_A
-
-			elif return_rdm=='B' and L_B <= L_A:
+				rdm = self.partial_trace(state,**partial_trace_args)
+			else:
 				partial_trace_args["return_rdm"] = "B"
-				rdm_B = self.partial_trace(state,**partial_trace_args)
+				rdm = self.partial_trace(state,**partial_trace_args)
+
+		elif return_rdm=='A' and L_A <= L_B:
+			partial_trace_args["return_rdm"] = "A"
+			rdm_A = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_A
+
+		elif return_rdm=='B' and L_B <= L_A:
+			partial_trace_args["return_rdm"] = "B"
+			rdm_B = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_B
+
+		else:
+			partial_trace_args["return_rdm"] = "both"
+			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
+
+			if L_A < L_B:
+				rdm = rdm_A
+			else:
 				rdm = rdm_B
 
-			else:
-				partial_trace_args["return_rdm"] = "both"
-				rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
+		if sparse_diag:
 
-				if L_A < L_B:
-					rdm = rdm_A
-				else:
-					rdm = rdm_B
-
-			try:
-				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
-			except AttributeError:
-				p_gen = (eigvalsh(dm.todense()) + _np.finfo(dm.dtype).eps for dm in rdm[:])
-				p = _np.stack(p_gen)[::-1]
-
-			if return_rdm is None:
+			def get_p_patchy(rdm):
+				n = rdm.shape[0]
+				p_LM = eigsh(rdm,k=n//2+n%2,which="LM",maxiter=maxiter,return_eigenvectors=False) # get upper half
+				p_SM = eigsh(rdm,k=n//2,which="SM",maxiter=maxiter,return_eigenvectors=False) # get lower half
+				p = _np.concatenate((p_LM[::-1],p_SM)) + _np.finfo(p_LM.dtype).eps
 				return p
-			elif return_rdm=='A':
-				return p,rdm_A
-			elif return_rdm=='B':
-				return p,rdm_B
-			elif return_rdm=='both':
-				return p,rdm_A,rdm_B
+
+			if _sp.issparse(rdm):
+				p = get_p_patchy(rdm)
+			else:
+				p_gen = (get_p_patchy(dm) for dm in rdm[:])
+				p = _np.stack(p_gen)
+
+		else:
+			if _sp.issparse(rdm):
+				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
+			else:
+				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
+				p = _np.stack(p_gen)
+
+		if return_rdm is None:
+			return p
+		elif return_rdm=='A':
+			return p,rdm_A
+		elif return_rdm=='B':
+			return p,rdm_B
+		elif return_rdm=='both':
+			return p,rdm_A,rdm_B
 
 
 		

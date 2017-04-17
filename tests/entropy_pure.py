@@ -7,7 +7,7 @@ from quspin.tools.measurements import ent_entropy, _reshape_as_subsys
 import numpy as np
 import scipy.sparse as sp
 
-L=5
+L=10
 
 Jxz=[[1.0,i,i+1] for i in range(L-1)]
 hx=[[(-1)**i*np.sqrt(2),i] for i in range(L-1)]
@@ -118,23 +118,23 @@ state=sp.csr_matrix( system_state )#.T
 
 sub_sys_A=[i for i in range(basis.L//2)]
 
-for svds in [1,0]:
+for sparse_diag in [1,0]:
 
 
 	#####
-	p=basis._p_pure_sparse(state,sub_sys_A,svds=svds)
+	p=basis._p_pure_sparse(state,sub_sys_A,sparse_diag=sparse_diag)
 	lmbda=ent_entropy(system_state,basis,sub_sys_A,svd_return_vec=[0,1,0])['lmbda']
 
-	# print(p)
-	# print(lmbda**2)
-	# exit()
+	#print(p)
+	#print(lmbda**2)
+	#exit()
 
 	np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')
 	
 	#####
 
 
-	p,p_rdm_A=basis._p_pure_sparse(state,sub_sys_A,return_rdm='A',svds=svds)
+	p,p_rdm_A=basis._p_pure_sparse(state,sub_sys_A,return_rdm='A',sparse_diag=sparse_diag)
 	Sent=ent_entropy(system_state,basis,sub_sys_A,DM='chain_subsys',svd_return_vec=[0,1,0])
 	lmbda=Sent['lmbda']
 	rdm_A=Sent['DM_chain_subsys']
@@ -147,7 +147,7 @@ for svds in [1,0]:
 	#####
 
 	ppure,p_rdm_pure_B=basis._p_pure(system_state,sub_sys_A,return_rdm='B')
-	p,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='B',svds=svds)
+	p,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='B',sparse_diag=sparse_diag)
 	Sent=ent_entropy(system_state,basis,sub_sys_A,DM='other_subsys',svd_return_vec=[0,1,0])
 	lmbda=Sent['lmbda']
 	rdm_B=Sent['DM_other_subsys']
@@ -160,7 +160,7 @@ for svds in [1,0]:
 	
 
 
-	p,p_rdm_A,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='both',svds=svds)
+	p,p_rdm_A,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='both',sparse_diag=sparse_diag)
 	Sent=ent_entropy(system_state,basis,sub_sys_A,DM='both',svd_return_vec=[0,1,0])
 	lmbda=Sent['lmbda']
 	rdm_A=Sent['DM_chain_subsys']
