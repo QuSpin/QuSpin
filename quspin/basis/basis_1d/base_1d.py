@@ -1094,36 +1094,36 @@ class basis_1d(basis):
 	def _p_pure(self,state,sub_sys_A,return_rdm=None):
 		
 		# calculate full H-space representation of state
-		state=self.get_vec(state,sparse=False)
+		state=self.get_vec(state.T,sparse=False).T
 		# put states in rows
-		state=state.T
+		#state=state.T
 		# reshape state according to sub_sys_A
 		v=_lattice_reshape_pure(state,sub_sys_A,self._L,self._sps)
-		#print(v)
+		
+		rdm_A=None
+		rdm_B=None
+
 		# perform SVD	
 		if return_rdm is None:
 			lmbda = _npla.svd(v, compute_uv=False) 
-			return (lmbda**2) + _np.finfo(lmbda.dtype).eps
 		else:
 			U, lmbda, V = _npla.svd(v, full_matrices=False)
 			if return_rdm=='A':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
-				return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A
 			elif return_rdm=='B':
 				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-				return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_B
 			elif return_rdm=='both':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-				return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
-
-			
-
+		
+		return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 
 
 	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
 
 		"""
+		# THE FOLLOWING LINES HAVE BEEN DEPRECATED
+
 		if svds: # patchy sparse svd
 
 			# calculate full H-space representation of state
@@ -1224,6 +1224,9 @@ class basis_1d(basis):
 		L_A=len(sub_sys_A)
 		L_B=self.L-L_A
 
+		rdm_A=None
+		rdm_B=None
+
 		if return_rdm is None:
 			if L_A <= L_B:
 				partial_trace_args["return_rdm"] = "A"
@@ -1273,25 +1276,17 @@ class basis_1d(basis):
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)
 
-		if return_rdm is None:
-			return p
-		elif return_rdm=='A':
-			return p,rdm_A
-		elif return_rdm=='B':
-			return p,rdm_B
-		elif return_rdm=='both':
-			return p,rdm_A,rdm_B
-
-
 		
+		return p,rdm_A,rdm_B
+	
 
-	def _p_mixed(self,state,sub_sys_A,return_A=False,return_B=False):
+	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
 		"""
 		This function calculates the eigenvalues of the reduced density matrix.
 		It will first calculate the partial trace of the full density matrix and
 		then diagonalizes it to get the eigenvalues. It will automatically choose
 		the subsystem with the smaller hilbert space to do the diagonalization in order
-		to reduce the calculation time but will only return the desired retuded density
+		to reduce the calculation time but will only return the desired reduced density
 		matrix. 
 		"""
 		L = self.L
@@ -1299,58 +1294,55 @@ class basis_1d(basis):
 
 		L_A = len(sub_sys_A)
 		L_B = L - L_A
-
+		
 		proj = self.get_proj(_dtypes[state.dtype.char])
-
+		
 		Ns_full = proj.shape[0]
-		n_states = state.shape[-1]
-
-		state = state.transpose((2,0,1))
-
+		n_states = state.shape[0]
+		
 		gen = (proj*s*proj.H for s in state[:])
 
 		proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
-
+		
 		for i,s in enumerate(gen):
 			proj_state[i,...] += s[...]	
 
-		if return_A and return_B:
+
+		rdm_A=None
+		rdm_B=None
+		
+		if return_rdm=='both':
 			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="both")
-
 			if L_A < L_B:
-				E = eigvalsh(rdm_A) + np.finfo(rdm_A.dtype).eps
+				p = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			else:
-				E = eigvalsh(rdm_B) + np.finfo(rdm_B.dtype).eps
+				p = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
-			return E,rdm_A.transpose((1,2,0)),rdm_B.transpose((1,2,0))
 
-		elif return_A and L_A <= L_B:
+		elif return_rdm=='A' and L_A <= L_B:
 			rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-			E = eigvalsh(rdm_A) + np.finfo(rdm_A.dtype).eps
-			return E,rdm_A.transpose((1,2,0))
-		elif return_B and L_B <= L_A:
+			p = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
+
+			
+		elif return_rdm=='B' and L_B <= L_A:
 			rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-			E = eigvalsh(rdm_B) + np.finfo(rdm_B.dtype).eps
-			return E,rdm_B.transpose((1,2,0))
+			p = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+
+			#print(rdm_B)
+			#print(p)
 		else:
-			if L_A <= L_B:
+			if L_A >= L_B:
 				rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-				E = eigvalsh(rdm_A) + np.finfo(rdm_A.dtype).eps
+				p = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			else:
 				rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-				E = eigvalsh(rdm_B) + np.finfo(rdm_B.dtype).eps
-
-			return p
-
-
-
-
-		
+				p = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+			
+			
+		return p, rdm_A, rdm_B
 
 
-
-
-	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0):
+	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,sparse=False,alpha=1.0):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
@@ -1404,60 +1396,97 @@ class basis_1d(basis):
 		L_A = len(sub_sys_A)
 		L_B = self.L - L_A
 
-		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type=state_type,sparse=sparse)
 
-		if return_rdm is None:
-			if L_A <= L_B:
-				partial_trace_args["return_rdm"] = "A"
-				rdm = self.partial_trace(state,**partial_trace_args)
+		if sub_sys_A is None:
+			sub_sys_A = tuple(range(self.L//2))
+
+		sub_sys_A = tuple(sub_sys_A)
+		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
+
+		if any(s < 0 or s > self.L for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+
+		sps = self.sps
+		L = self.L
+
+		if not hasattr(state,"shape"):
+			state = _np.asanyarray(state)
+			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
+
+		if state.shape[-1] != self.Ns:
+			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
+
+		proj = self.get_proj(_dtypes[state.dtype.char])
+
+
+		if _sp.issparse(state) or sparse:
+			if sparse:
+				state = _sp.csr_matrix(state)
+		
+			if state.shape[1] == 1:
+				# single state
+				state = proj.dot(state.T).T
+				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
+			elif (state.shape[0] != state.shape[1]) or (state.shape[0] == state.shape[1] and enforce_pure): 
+				# non-square marix or enforced pure
+				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
+			elif state.ndim==3 or (state.shape[0] == state.shape[1] and not enforce_pure):
+				# mixed DM or collection of DMs
+				p, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 			else:
-				partial_trace_args["return_rdm"] = "B"
-				rdm = self.partial_trace(state,**partial_trace_args)
-
-		elif return_rdm == "A" and L_A <= L_B:
-			partial_trace_args["return_rdm"] = "A"
-			rdm_A = self.partial_trace(state,**partial_trace_args)
-			rdm = rdm_A
-
-		elif return_rdm == "B" and L_B <= L_A:
-			partial_trace_args["return_rdm"] = "B"
-			rdm_B = self.partial_trace(state,**partial_trace_args)
-			rdm = rdm_B
+				raise ValueError("state_type '{}' not recognized.".format(state_type))
+		
 
 		else:
-			partial_trace_args["return_rdm"] = "both"
-			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
+			if state.ndim==1 or (state.ndim==2 and state.shape[0]!=state.shape[1]) or (state.ndim==2 and state.shape[0]==state.shape[1] and enforce_pure): 
+				# 1-d single pure state, 2-d & not square or 2-d & square and pure
+				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+			elif state.ndim==3 or (state.ndim==2 and state.shape[0]==state.shape[1] and not enforce_pure): 
+				# 2-d & square & mixed, 3-d (-> mixed)
+				
+				Ns_full = proj.shape[0]
+				extra_shape = state.shape[:-2]
+				matrix_shape = state.shape[-2:]
+				new_shape = extra_shape+(Ns_full,Ns_full)
+				n_dm = int(_np.product(extra_shape))
 
-			if L_A < L_B:
-				rdm = rdm_A
-			else:
-				rdm = rdm_B
+				state = state.reshape((-1,)+matrix_shape)
 
-		try:
-			E = eigvalsh(rdm.todense()) + _np.finfo(rdm.dtype).eps
-		except AttributeError:
-			if rdm.dtype == _np.object:
-				E_gen = (eigvalsh(dm.todense()) + _np.finfo(dm.dtype).eps for dm in rdm[:])
-				E = _np.stack(E_gen)
+				# check if DM's are positive definite
+				try:
+					_np.linalg.cholesky(state)
+				except:
+					raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
+
+				# check oif trace of DM is unity
+
+				if _np.any( abs(_np.trace(state, axis1=1,axis2=2) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
+					raise ValueError("Expecting eigenvalues of DM to sum to unity!")
+
+				p, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
+
+
 			else:
-				E = eigvalsh(rdm) + _np.finfo(rdm.dtype).eps
+				raise ValueError("state_type '{}' not recognized.".format(state_type))
+
 
 		if alpha == 1.0:
-			Sent = - (E * _np.log(E)).sum(axis=-1)
+			Sent = - (p * _np.log(p)).sum(axis=-1)
 		elif alpha >= 0.0:
-			Sent = (_np.log(_np.power(E,alpha).sum(axis=-1))/(1.0-alpha))
+			Sent = (_np.log(_np.power(p,alpha).sum(axis=-1))/(1.0-alpha))
 		else:
 			raise ValueError("alpha >= 0")
 
 		
 		if return_rdm is None:
-			return dict(Sent=Sent)
+			return dict(Sent=Sent.squeeze())
 		elif return_rdm == "A":
-			return dict(Sent=Sent,rdm_A=rdm_A)
+			return dict(Sent=Sent.squeeze(),rdm_A=_np.squeeze(rdm_A))
 		elif return_rdm == "B":
-			return dict(Sent=Sent,rdm_B=rdm_B)
+			return dict(Sent=Sent.squeeze(),rdm_B=_np.squeeze(rdm_B))
 		elif return_rdm == "both":
-			return dict(Sent=Sent,rdm_A=rdm_A,rdm_B=rdm_B)
+			return dict(Sent=Sent.squeeze(),rdm_A=_np.squeeze(rdm_A),rdm_B=_np.squeeze(rdm_B))
 
 
 

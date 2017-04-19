@@ -522,18 +522,17 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	"""
-	This function computes the partial trace of a dense mixed states psi over set of sites sub_sys_A and returns 
-	reduced DM. Vectorisation available. 
+	This function computes the partial trace of a set of dense mixed states rho over set of sites sub_sys_A 
+	and returns reduced DM. Vectorisation available. 
 	"""
-
-	rho_v=_lattice_reshape_mixed(psi,sub_sys_A,L,sps)
+	rho_v=_lattice_reshape_mixed(rho,sub_sys_A,L,sps)
 
 	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
+		return _np.einsum("...jlkl->...jk",rho_v)
 	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
+		return _np.einsum("...ljlk->...jk",rho_v)
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
+		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...jk",rho_v)
 
 def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	"""
@@ -579,14 +578,13 @@ def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
 	return psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
-def _lattice_reshape_mixed(psi,sub_sys_A,L,sps):
+def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 	"""
 	This function reshapes the dense mixed state psi over the Hilbert space defined by sub_sys_A and its complement.
 	Vectorisation available. 
 	"""
 	extra_dims = rho.shape[:-2]
 	n_dims = len(extra_dims)
-
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)
