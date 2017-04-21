@@ -530,9 +530,9 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	if return_rdm == "A":
 		return _np.einsum("...jlkl->...jk",rho_v)
 	elif return_rdm == "B":
-		return _np.einsum("...ljlk->...jk",rho_v)
+		return _np.einsum("...ljlk->...kj",rho_v)
 	elif return_rdm == "both":
-		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...jk",rho_v)
+		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...kj",rho_v)
 
 def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	"""

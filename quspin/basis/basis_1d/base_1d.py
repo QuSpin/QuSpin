@@ -1094,9 +1094,9 @@ class basis_1d(basis):
 	def _p_pure(self,state,sub_sys_A,return_rdm=None):
 		
 		# calculate full H-space representation of state
-		state=self.get_vec(state.T,sparse=False).T
+		state=self.get_vec(state,sparse=False)
 		# put states in rows
-		#state=state.T
+		state=state.T
 		# reshape state according to sub_sys_A
 		v=_lattice_reshape_pure(state,sub_sys_A,self._L,self._sps)
 		
@@ -1296,7 +1296,9 @@ class basis_1d(basis):
 		L_B = L - L_A
 		
 		proj = self.get_proj(_dtypes[state.dtype.char])
-		
+
+		state = state.transpose((2,0,1))
+
 		Ns_full = proj.shape[0]
 		n_states = state.shape[0]
 		
@@ -1308,38 +1310,31 @@ class basis_1d(basis):
 			proj_state[i,...] += s[...]	
 
 
-		rdm_A=None
-		rdm_B=None
+		rdm_A,p_A=None,None
+		rdm_B,p_B=None,None
 		
 		if return_rdm=='both':
 			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="both")
-			if L_A < L_B:
-				p = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
-			else:
-				p = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+			
+			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
+			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
 
-		elif return_rdm=='A' and L_A <= L_B:
+		elif return_rdm=='A':
 			rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-			p = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
+			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 
 			
-		elif return_rdm=='B' and L_B <= L_A:
+		elif return_rdm=='B':
 			rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-			p = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
-			#print(rdm_B)
-			#print(p)
 		else:
-			if L_A >= L_B:
-				rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-				p = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
-			else:
-				rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-				p = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+			rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 			
-		return p, rdm_A, rdm_B
+		return p_A, p_B, rdm_A, rdm_B
 
 
 	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,sparse=False,alpha=1.0):
@@ -1414,12 +1409,13 @@ class basis_1d(basis):
 			state = _np.asanyarray(state)
 			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
 
-		if state.shape[-1] != self.Ns:
+
+		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
 		proj = self.get_proj(_dtypes[state.dtype.char])
 
-
+		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
 			if sparse:
 				state = _sp.csr_matrix(state)
@@ -1431,28 +1427,39 @@ class basis_1d(basis):
 			elif (state.shape[0] != state.shape[1]) or (state.shape[0] == state.shape[1] and enforce_pure): 
 				# non-square marix or enforced pure
 				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
-			elif state.ndim==3 or (state.shape[0] == state.shape[1] and not enforce_pure):
+			elif  (state.shape[0] == state.shape[1] and not enforce_pure):
 				# mixed DM or collection of DMs
 				p, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 			else:
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
-		
+				"state.ndim==3  ---> error"
 
 		else:
-			if state.ndim==1 or (state.ndim==2 and state.shape[0]!=state.shape[1]) or (state.ndim==2 and state.shape[0]==state.shape[1] and enforce_pure): 
-				# 1-d single pure state, 2-d & not square or 2-d & square and pure
+			if state.ndim==1:
 				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
-			elif state.ndim==3 or (state.ndim==2 and state.shape[0]==state.shape[1] and not enforce_pure): 
-				# 2-d & square & mixed, 3-d (-> mixed)
+			elif state.ndim==2: 
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+				else: # 2D mixed
+					pure=False
+					"""
+					# check if DM's are positive definite
+					try:
+						_np.linalg.cholesky(state)
+					except:
+						raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
+					# check oif trace of DM is unity
+					if _np.any( abs(_np.trace(state) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
+						raise ValueError("Expecting eigenvalues of DM to sum to unity!")
+					"""
+					shape0 = state.shape
+					state = state.reshape(shape0+(1,))
+					p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 				
-				Ns_full = proj.shape[0]
-				extra_shape = state.shape[:-2]
-				matrix_shape = state.shape[-2:]
-				new_shape = extra_shape+(Ns_full,Ns_full)
-				n_dm = int(_np.product(extra_shape))
+			elif state.ndim==3: #3D DM 
+				pure=False
 
-				state = state.reshape((-1,)+matrix_shape)
-
+				"""
 				# check if DM's are positive definite
 				try:
 					_np.linalg.cholesky(state)
@@ -1460,36 +1467,50 @@ class basis_1d(basis):
 					raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
 
 				# check oif trace of DM is unity
-
 				if _np.any( abs(_np.trace(state, axis1=1,axis2=2) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
 					raise ValueError("Expecting eigenvalues of DM to sum to unity!")
-
-				p, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
+				"""
+				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 
 
 			else:
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
 
+		if pure:
+			p_A, p_B = p, p
 
+		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
-			Sent = - (p * _np.log(p)).sum(axis=-1)
+			if p_A is not None:
+				Sent_A = - (p_A * _np.log(p_A)).sum(axis=-1)
+			if p_B is not None:
+				Sent_B = - (p_B * _np.log(p_B)).sum(axis=-1)
 		elif alpha >= 0.0:
-			Sent = (_np.log(_np.power(p,alpha).sum(axis=-1))/(1.0-alpha))
+			if p_A is not None:
+				Sent_A = (_np.log(_np.power(p_A,alpha).sum(axis=-1))/(1.0-alpha))
+			if p_B is not None:
+				Sent_B = (_np.log(_np.power(p_B,alpha).sum(axis=-1))/(1.0-alpha))
 		else:
 			raise ValueError("alpha >= 0")
 
-		
-		if return_rdm is None:
-			return dict(Sent=Sent.squeeze())
-		elif return_rdm == "A":
-			return dict(Sent=Sent.squeeze(),rdm_A=_np.squeeze(rdm_A))
+		# initiate variables
+		variables = ["Sent_A"]
+		if return_rdm == "A":
+			variables.append("rdm_A")
+			
 		elif return_rdm == "B":
-			return dict(Sent=Sent.squeeze(),rdm_B=_np.squeeze(rdm_B))
+			variables.extend(["Sent_B","rdm_B"])
+			
 		elif return_rdm == "both":
-			return dict(Sent=Sent.squeeze(),rdm_A=_np.squeeze(rdm_A),rdm_B=_np.squeeze(rdm_B))
+			variables.extend(["rdm_A","Sent_B","rdm_B"])
+			
 
+		# store variables to dictionar
+		return_dict = {}
+		for i in variables:
+			return_dict[i] = _np.squeeze( locals()[i] )
 
-
+		return return_dict
 
 
 
