@@ -137,6 +137,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
 			U, lmbda, _ = _npla.svd(v, full_matrices=False)
 			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+			DM='chain_subsys'
 		else:
 			lmbda = _npla.svd(v.squeeze(), compute_uv=False)
 	elif DM == 'chain_subsys':
@@ -165,7 +166,11 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	# calculate singular values of reduced DM and the corresponding probabilities
 	if rho_d is not None and rho_d.shape!=(1,):
 		# diagonalise reduced DM
-		p = _npla.eigvalsh(DM_chain_subsys)
+		if DM in ['chain_subsys', 'both']:
+			p = _npla.eigvalsh(DM_chain_subsys)
+		elif DM == 'other_subsys':
+			p = _npla.eigvalsh(DM_other_subsys)
+			
 		if svd_return_vec[1]: # if lmdas requested by user
 			lmbda = _np.sqrt(abs(p))
 	else:# calculate probabilities

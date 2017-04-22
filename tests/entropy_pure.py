@@ -27,14 +27,15 @@ sub_sys_A=[i for i in range(basis.L//2)]
 
 #####
 
-p=basis._p_pure(state,sub_sys_A)
+p,rdm_A,rdm_B=basis._p_pure(state,sub_sys_A)
 lmbda=ent_entropy(state,basis,sub_sys_A,svd_return_vec=[0,1,0])['lmbda']
 
 np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')
 
+
 #####
 
-p,p_rdm_A=basis._p_pure(state,sub_sys_A,return_rdm='A')
+p,p_rdm_A,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='A')
 Sent=ent_entropy(state,basis,sub_sys_A,DM='chain_subsys',svd_return_vec=[0,1,0])
 lmbda=Sent['lmbda']
 rdm_A=Sent['DM_chain_subsys']
@@ -44,7 +45,7 @@ np.testing.assert_allclose(p_rdm_A-rdm_A,0.0,atol=1E-5,err_msg='Failed subsys_A 
 
 #####
 
-p,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='B')
+p,p_rdm_A,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='B')
 Sent=ent_entropy(state,basis,sub_sys_A,DM='other_subsys',svd_return_vec=[0,1,0])
 lmbda=Sent['lmbda']
 rdm_B=Sent['DM_other_subsys']
@@ -54,7 +55,7 @@ np.testing.assert_allclose(p_rdm_B-rdm_B,0.0,atol=1E-5,err_msg='Failed subsys_B 
 
 #####
 
-p,p_rdm_A,rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='both')
+p,p_rdm_A,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='both')
 Sent=ent_entropy(state,basis,sub_sys_A,DM='both',svd_return_vec=[0,1,0])
 lmbda=Sent['lmbda']
 rdm_A=Sent['DM_chain_subsys']
@@ -74,14 +75,14 @@ sub_sys_A=[i for i in range(basis.L//2)]
 
 #####
 
-p=basis._p_pure(state,sub_sys_A)
+p,rdm_A,rdm_B=basis._p_pure(state,sub_sys_A)
 lmbda=ent_entropy({'V_states':state},basis,sub_sys_A,svd_return_vec=[0,1,0])['lmbda']
 
 np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')
 
 #####
 
-p,p_rdm_A=basis._p_pure(state,sub_sys_A,return_rdm='A')
+p,p_rdm_A,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='A')
 Sent=ent_entropy({'V_states':state},basis,sub_sys_A,DM='chain_subsys',svd_return_vec=[0,1,0])
 lmbda=Sent['lmbda']
 rdm_A=Sent['DM_chain_subsys']
@@ -92,7 +93,7 @@ np.testing.assert_allclose(p_rdm_A-rdm_A,0.0,atol=1E-5,err_msg='Failed subsys_A 
 
 #####
 
-p,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='B')
+p,p_rdm_A,p_rdm_B=basis._p_pure(state,sub_sys_A,return_rdm='B')
 Sent=ent_entropy({'V_states':state},basis,sub_sys_A,DM='other_subsys',svd_return_vec=[0,1,0])
 lmbda=Sent['lmbda']
 rdm_B=Sent['DM_other_subsys']
@@ -122,19 +123,15 @@ for sparse_diag in [1,0]:
 
 
 	#####
-	p=basis._p_pure_sparse(state,sub_sys_A,sparse_diag=sparse_diag)
+	p,p_rdm_A,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,sparse_diag=sparse_diag)
 	lmbda=ent_entropy(system_state,basis,sub_sys_A,svd_return_vec=[0,1,0])['lmbda']
-
-	#print(p)
-	#print(lmbda**2)
-	#exit()
 
 	np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')
 	
 	#####
 
 
-	p,p_rdm_A=basis._p_pure_sparse(state,sub_sys_A,return_rdm='A',sparse_diag=sparse_diag)
+	p,p_rdm_A,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='A',sparse_diag=sparse_diag)
 	Sent=ent_entropy(system_state,basis,sub_sys_A,DM='chain_subsys',svd_return_vec=[0,1,0])
 	lmbda=Sent['lmbda']
 	rdm_A=Sent['DM_chain_subsys']
@@ -146,8 +143,7 @@ for sparse_diag in [1,0]:
 
 	#####
 
-	ppure,p_rdm_pure_B=basis._p_pure(system_state,sub_sys_A,return_rdm='B')
-	p,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='B',sparse_diag=sparse_diag)
+	p,p_rdm_A,p_rdm_B=basis._p_pure_sparse(state,sub_sys_A,return_rdm='B',sparse_diag=sparse_diag)
 	Sent=ent_entropy(system_state,basis,sub_sys_A,DM='other_subsys',svd_return_vec=[0,1,0])
 	lmbda=Sent['lmbda']
 	rdm_B=Sent['DM_other_subsys']
