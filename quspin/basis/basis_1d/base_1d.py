@@ -1285,7 +1285,7 @@ class basis_1d(basis):
 
 		
 
-	def _p_mixed(self,state,sub_sys_A,return_A=False,return_B=False):
+	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
 		"""
 		This function calculates the eigenvalues of the reduced density matrix.
 		It will first calculate the partial trace of the full density matrix and
@@ -1314,32 +1314,38 @@ class basis_1d(basis):
 		for i,s in enumerate(gen):
 			proj_state[i,...] += s[...]	
 
-		if return_A and return_B:
+		if return_rdm == "both":
 			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="both")
 
 			if L_A < L_B:
-				E = eigvalsh(rdm_A) + np.finfo(rdm_A.dtype).eps
+				p = eigvalsh(rdm_A) 
 			else:
-				E = eigvalsh(rdm_B) + np.finfo(rdm_B.dtype).eps
+				p = eigvalsh(rdm_B)
 
-			return E,rdm_A.transpose((1,2,0)),rdm_B.transpose((1,2,0))
+			p += np.finfo(p.dtype).eps
+			return p,rdm_A.transpose((1,2,0)),rdm_B.transpose((1,2,0))
 
-		elif return_A and L_A <= L_B:
+		elif return_rdm == "A" and L_A <= L_B:
 			rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-			E = eigvalsh(rdm_A) + np.finfo(rdm_A.dtype).eps
-			return E,rdm_A.transpose((1,2,0))
-		elif return_B and L_B <= L_A:
+			p = eigvalsh(rdm_A)
+			p += np.finfo(p.dtype).eps
+
+			return p,rdm_A.transpose((1,2,0))
+		elif return_rdm == "B" and L_B <= L_A:
 			rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-			E = eigvalsh(rdm_B) + np.finfo(rdm_B.dtype).eps
-			return E,rdm_B.transpose((1,2,0))
+			p = eigvalsh(rdm_B)
+			p += np.finfo(p.dtype).eps
+
+			return p,rdm_B.transpose((1,2,0))
 		else:
 			if L_A <= L_B:
 				rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
-				E = eigvalsh(rdm_A) + np.finfo(rdm_A.dtype).eps
+				p = eigvalsh(rdm_A)
 			else:
 				rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
-				E = eigvalsh(rdm_B) + np.finfo(rdm_B.dtype).eps
+				p = eigvalsh(rdm_B)
 
+			p += np.finfo(p.dtype).eps
 			return p
 
 

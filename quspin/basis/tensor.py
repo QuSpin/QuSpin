@@ -136,7 +136,9 @@ class tensor_basis(basis):
 
 
 
-	def partial_trace(self,state,sub_sys_A="left",state_type="pure",sparse=False):
+
+
+	def partial_trace(self,state,sub_sys_A="left",enforce_pure=False,sparse=False):
 		"""
 		This function calculates the reduced density matrix (DM), performing a partial trace 
 		of a quantum state.
@@ -178,26 +180,24 @@ class tensor_basis(basis):
 
 		Ns = self._basis_left.Ns*self._basis_right.Ns
 
-		if _sp.issparse(state):
-			if state_type == "pure":
-				if state.shape[-1] != Ns:
-					raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
+		if _sp.issparse(state) or sparse:
 
-				if state.shape[0] == 1:
-					return _tensor_partial_trace_sparse_pure(state,self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A)
-				else:
-					state = state.tocsr()
-					try:
-						gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A) for i in xrange(state.shape[0]))
-					except NameError:
-						gen = gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A) for i in range(state.shape[0]))
-					return _np.stack(gen)
-
-			elif state_type == "mixed":
-				raise NotImplementedError("only pure state calculation implemeted for sparse arrays")
-
+			if not _sp.issparse(state):
+				state = _sp.csr_matrix(state.T)
 			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
+				state = state.T.tocsr()
+			
+			if state.shape[1] != Ns:
+				raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
+
+			if state.shape[0] == 1:
+				return _tensor_partial_trace_sparse_pure(state,self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A)
+			else:
+				try:
+					gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A) for i in xrange(state.shape[0]))
+				except NameError:
+					gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),self._basis_left.Ns,self._basis_right.Ns,sub_sys_A=sub_sys_A) for i in range(state.shape[0]))
+				return _np.stack(gen)
 
 		else:
 			state = _np.asanyarray(state)
@@ -219,6 +219,155 @@ class tensor_basis(basis):
 
 			else:
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
+
+
+	def _p_pure(self,state,sub_sys_A="left",return_rdm=None):
+		Ns_l = self._basis_left.Ns
+		Ns_r = self._basis_right.Ns
+		
+		v=_tensor_reshape_pure(state.T,Ns_l,Ns_r)
+		
+		# perform SVD
+		if return_rdm is None:
+			lmbda = _npla.svd(v, compute_uv=False) 
+			return (lmbda**2) + _np.finfo(lmbda.dtype).eps
+		else:
+			U, lmbda, V = _npla.svd(v, full_matrices=False)
+			p = lmbda**2 + _np.finfo(lmbda.dtype).eps
+			if return_rdm=='left':
+				rdm_left = _np.einsum('...ij,...j,...kj->...ik',U,p,U.conj() )
+				return p, rdm_left
+			elif return_rdm=='right':
+				rdm_right = _np.einsum('...ji,...j,...jk->...ik',V.conj(),p,V )
+				return p, rdm_right
+			elif return_rdm=='both':
+				rdm_left = _np.einsum('...ij,...j,...kj->...ik',U,p,U.conj() )
+				rdm_right = _np.einsum('...ji,...j,...jk->...ik',V.conj(),p,V )
+				return p, rdm_left, rdm_right
+
+			
+
+
+
+	def _p_pure_sparse(self,state,sub_sys_A="left",return_rdm=None,sparse_diag=True,maxiter=None):
+		Ns_l = self._basis_left.Ns
+		Ns_r = self._basis_right.Ns
+
+		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type='pure',sparse=True)
+
+		L_A=len(sub_sys_A)
+		L_B=self.L-L_A
+
+		if return_rdm is None:
+			if Ns_l <= Ns_r:
+				partial_trace_args["return_rdm"] = "left"
+				rdm = self.partial_trace(state,**partial_trace_args)
+			else:
+				partial_trace_args["return_rdm"] = "right"
+				rdm = self.partial_trace(state,**partial_trace_args)
+
+		elif return_rdm=='left' and Ns_l <= Ns_r:
+			partial_trace_args["return_rdm"] = "left"
+			rdm_left = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_left
+
+		elif return_rdm=='right' and Ns_r <= Ns_l:
+			partial_trace_args["return_rdm"] = "right"
+			rdm_right = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_right
+
+		else:
+			partial_trace_args["return_rdm"] = "both"
+			rdm_left,rdm_right = self.partial_trace(state,**partial_trace_args)
+
+			if Ns_l < Ns_r:
+				rdm = rdm_left
+			else:
+				rdm = rdm_right
+
+		if sparse_diag:
+
+			def get_p_patchy(rdm):
+				n = rdm.shape[0]
+				p_LM = eigsh(rdm,k=n//2+n%2,which="LM",maxiter=maxiter,return_eigenvectors=False) # get upper half
+				p_SM = eigsh(rdm,k=n//2,which="SM",maxiter=maxiter,return_eigenvectors=False) # get lower half
+				p = _np.concatenate((p_LM[::-1],p_SM)) + _np.finfo(p_LM.dtype).eps
+				return p
+
+			if _sp.issparse(rdm):
+				p = get_p_patchy(rdm)
+			else:
+				p_gen = (get_p_patchy(dm) for dm in rdm[:])
+				p = _np.stack(p_gen)
+
+		else:
+			if _sp.issparse(rdm):
+				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
+			else:
+				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
+				p = _np.stack(p_gen)
+
+		if return_rdm is None:
+			return p
+		elif return_rdm=='left':
+			return p,rdm_left
+		elif return_rdm=='right':
+			return p,rdm_right
+		elif return_rdm=='both':
+			return p,rdm_left,rdm_right
+
+
+		
+
+	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
+		"""
+		This function calculates the eigenvalues of the reduced density matrix.
+		It will first calculate the partial trace of the full density matrix and
+		then diagonalizes it to get the eigenvalues. It will automatically choose
+		the subsystem with the smaller hilbert space to do the diagonalization in order
+		to reduce the calculation time but will only return the desired retuded density
+		matrix. 
+		"""
+		Ns_l = self._basis_left.Ns
+		Ns_r = self._basis_right.Ns
+
+		state = state.transpose((2,0,1))
+
+		if return_rdm == "both":
+			rdm_left,rdm_right = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="both")
+
+			if Ns_l <= Ns_r:
+				p = eigvalsh(rdm_left)
+			else:
+				p = eigvalsh(rdm_right)
+
+			p += np.finfo(p.dtype).eps
+
+			return p,rdm_left.transpose((1,2,0)),rdm_right.transpose((1,2,0))
+
+		elif return_rdm == "left" and Ns_l <= Ns_r:
+			rdm_left = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="left")
+			p = eigvalsh(rdm_left)
+			p += np.finfo(p.dtype).eps
+
+			return p,rdm_left.transpose((1,2,0))
+		elif return_rdm == "right" and Ns_r <= Ns_l:
+			rdm_right = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="right")
+			p = eigvalsh(rdm_right)
+			p += np.finfo(p.dtype).eps
+
+			return p,rdm_right.transpose((1,2,0))
+		else:
+			if Ns_l <= Ns_r:
+				rdm_left = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="left")
+				p = eigvalsh(rdm_left)
+
+			else:
+				rdm_right = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="right")
+				p = eigvalsh(rdm_right)
+
+			p += np.finfo(p.dtype).eps
+			return p
 
 
 	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0,sparse=False):
@@ -610,28 +759,14 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 	return v0
 
 
-
-
-def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
+def _tensor_reshape_pure(psi,Ns_l,Ns_r):
 	extra_dims = psi.shape[:-1]
 	psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
 
-	if sub_sys_A == "left":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
-	elif sub_sys_A == "right":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-	elif sub_sys_A == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+	return psi_v	
 
-	
 
-def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
-	if not _sp.issparse(psi):
-		raise Exception
-
-	if psi.shape[0] > 1:
-		raise Exception
-
+def _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r):
 	psi = psi.tocoo()
 	# make shift way of reshaping array
 	# j = j_l + Ns_r * j_l
@@ -641,7 +776,31 @@ def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
 	psi.row[:] = psi.col / Ns_r
 	psi.col[:] = psi.col % Ns_r
 
-	psi = psi.tocsr()
+	return psi.tocsr()
+
+
+def _tensor_reshape_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):
+	extra_dims = rho.shape[:-2]
+	psi_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
+
+	return psi_v
+
+
+def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
+	psi_v = _tensor_reshape_pure(psi,Ns_l,Ns_r)
+
+	if sub_sys_A == "left":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
+	elif sub_sys_A == "right":
+		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+	elif sub_sys_A == "both":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+
+
+
+
+def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
+	psi = _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r)
 
 	if sub_sys_A == "left":
 		return psi.dot(psi.H)
@@ -652,15 +811,15 @@ def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left"):
 
 
 def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left"):
-	extra_dims = rho.shape[:-2]
-	psi_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
+	
+	rho_v = _tensor_reshape_mixed(rho)
 
 	if sub_sys_A == "left":
-		return _np.squeeze(_np.einsum("...ijkj->...ik",psi_v))
+		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v))
 	elif sub_sys_A == "right":
-		return _np.squeeze(_np.einsum("...jijk->...ik",psi_v))
+		return _np.squeeze(_np.einsum("...jijk->...ik",rho_v))
 	elif sub_sys_A == "both":
-		return _np.squeeze(_np.einsum("...ijkj->...ik",psi_v)),_np.squeeze(_np.einsum("...jijk->...ik",psi_v))
+		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),_np.squeeze(_np.einsum("...jijk->...ik",rho_v))
 
 
 
