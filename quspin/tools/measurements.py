@@ -329,7 +329,6 @@ def _ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_orde
 
 	return return_dict
 
-
 def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True):
 	"""
 	This function reshapes an input state (or matrix with 'Nstates' initial states) into an array of
@@ -1619,6 +1618,7 @@ def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
 	Ns=shape0[0]
+
 
 	for i,t in enumerate(times):
 		if t == t0:
