@@ -11,7 +11,6 @@ except NameError:
 class spin_basis_1d(basis_1d):
 	def __init__(self,L,Nup=None,m=None,_Np=None,S="1/2",pauli=True,**blocks):
 		input_keys = set(blocks.keys())
-
 		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
