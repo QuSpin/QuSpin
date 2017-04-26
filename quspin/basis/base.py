@@ -31,6 +31,7 @@ class basis(object):
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
+		string += "\nsee review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.\n"
 		return string
 
 

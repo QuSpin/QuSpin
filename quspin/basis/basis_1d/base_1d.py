@@ -1032,11 +1032,13 @@ class basis_1d(basis):
 				state = _sp.csr_matrix(state)
 
 			if state_type == "pure":
+
 				state = proj.dot(state.T).T
 
 				if state.shape[0] == 1:
 					return _lattice_partial_trace_sparse_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
 				else:
+
 					state = state.tocsr()
 					try:
 						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,L,sps,return_rdm=return_rdm) for i in xrange(state.shape[0]))
@@ -1057,10 +1059,10 @@ class basis_1d(basis):
 			if state_type == "pure":
 				extra_shape = state.shape[:-1]
 				matrix_shape = state.shape[-1:]
-
+				
 				state = state.reshape((-1,)+matrix_shape)
 				state = proj.dot(state.T).T.reshape(extra_shape+(proj.shape[0],))
-
+				
 				return _lattice_partial_trace_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
 			elif state_type == "mixed":
 
@@ -1219,6 +1221,9 @@ class basis_1d(basis):
 
 					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 		"""
+		proj = self.get_proj(_dtypes[state.dtype.char])
+		state = proj.dot(state).T
+
 		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type='pure',sparse=True)
 
 		L_A=len(sub_sys_A)
@@ -1296,9 +1301,8 @@ class basis_1d(basis):
 		L_B = L - L_A
 		
 		proj = self.get_proj(_dtypes[state.dtype.char])
-
 		state = state.transpose((2,0,1))
-
+		
 		Ns_full = proj.shape[0]
 		n_states = state.shape[0]
 		
@@ -1333,17 +1337,19 @@ class basis_1d(basis):
 			
 		return p_A, p_B, rdm_A, rdm_B
 
-
-	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,sparse=False,alpha=1.0):
+	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
 
 		RETURNS: dictionary with keys:
 
-		'Sent': entanglement entropy.
+		'Sent_A': entanglement entropy of subystem A.
+		'Sent_B': (optional) entanglement entropy of subystem B.
 		'rdm_A': (optional) reduced density matrix of subsystem A
 		'rdm_B': (optional) reduced density matrix of subsystem B
+		'p_A': (optional) eigenvalues of reduced density matrix of subsystem A
+		'p_B': (optional) eigenvalues of reduced density matrix of subsystem B
 
 		--- arguments ---
 
@@ -1353,8 +1359,7 @@ class basis_1d(basis):
 
 				-- density matrix [numpy array of shape (Ns,Ns)].
 
-				-- collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
+				-- collection of states containing the states in the columns of state
 
 		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
 						[by python convention the first site of the chain is labelled j=0]. 
@@ -1368,12 +1373,12 @@ class basis_1d(basis):
 
 				-- 'both': str, returns reduced DM of both subsystems A and B
 
-		state_type: (optional) flag to determine if 'state' is a collection of pure states or
+		return_rdm_EVs: (optional) boolean to return eigenvalues of reduced DM. If `return_rdm` is specified,
+						the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+						the spectrum of `rdm_A` is terurned. Default is `False`.
+
+		enforce_pure: (optional) boolean to determine if 'state' is a collection of pure states or
 						a density matrix
-
-				-- 'pure': (default) (a collection of) pure state(s)
-
-				-- 'mixed': mixed state (i.e. a density matrix)
 
 		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
 
@@ -1410,30 +1415,25 @@ class basis_1d(basis):
 		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
-		proj = self.get_proj(_dtypes[state.dtype.char])
+		
 
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
 			if sparse:
 				state = _sp.csr_matrix(state)
-		
+			sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
-				# single state
-				state = proj.dot(state.T).T
 				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
-			elif (state.shape[0] != state.shape[1]) or (state.shape[0] == state.shape[1] and enforce_pure): 
-				# non-square marix or enforced pure
-				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
-			elif  (state.shape[0] == state.shape[1] and not enforce_pure):
-				# mixed DM or collection of DMs
-				p, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
-				"state.ndim==3  ---> error"
-
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
+				else: 
+					raise ValueError("Expecting a dense array for mixed `state`.")
+					
 		else:
 			if state.ndim==1:
 				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+			
 			elif state.ndim==2: 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
@@ -1469,13 +1469,15 @@ class basis_1d(basis):
 				"""
 				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 
-
 			else:
 				raise ValueError("state_type '{}' not recognized.".format(state_type))
+
+		
 
 		if pure:
 			p_A, p_B = p, p
 
+		
 		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
@@ -1492,21 +1494,30 @@ class basis_1d(basis):
 
 		# initiate variables
 		variables = ["Sent_A"]
+		if return_rdm_EVs:
+			variables.append("p_A")
+
 		if return_rdm == "A":
 			variables.append("rdm_A")
 			
 		elif return_rdm == "B":
 			variables.extend(["Sent_B","rdm_B"])
+			if return_rdm_EVs:
+				variables.append("p_B")
 			
 		elif return_rdm == "both":
 			variables.extend(["rdm_A","Sent_B","rdm_B"])
-			
+			if return_rdm_EVs:
+				variables.extend(["p_A","p_B"])
+	
 
 		# store variables to dictionar
 		return_dict = {}
 		for i in variables:
-			return_dict[i] = _np.squeeze( locals()[i] )
-
+			if sparse and 'rdm' in i:
+				return_dict[i] = locals()[i] # don't squeeze sparse matrix
+			else:
+				return_dict[i] = _np.squeeze( locals()[i] )
 		return return_dict
 
 
