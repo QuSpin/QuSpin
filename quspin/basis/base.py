@@ -515,9 +515,9 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	psi_v=_lattice_reshape_pure(psi,sub_sys_A,L,sps)
 
 	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
 	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 	elif return_rdm == "both":
 		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
 
@@ -529,9 +529,9 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	rho_v=_lattice_reshape_mixed(rho,sub_sys_A,L,sps)
 
 	if return_rdm == "A":
-		return _np.einsum("...jlkl->...jk",rho_v)
+		return _np.einsum("...jlkl->...jk",rho_v),None
 	elif return_rdm == "B":
-		return _np.einsum("...ljlk->...kj",rho_v)
+		return None,_np.einsum("...ljlk->...kj",rho_v)
 	elif return_rdm == "both":
 		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...kj",rho_v)
 
@@ -543,9 +543,9 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	psi=_lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps)
 	
 	if return_rdm == "A":
-		return psi.dot(psi.H)
+		return psi.dot(psi.H),None
 	elif return_rdm == "B":
-		return psi.H.dot(psi)
+		return None,psi.H.dot(psi)
 	elif return_rdm == "both":
 		#return psi.dot(psi.H),psi.H.dot(psi)
 		return psi.dot(psi.H),psi.H.dot(psi)

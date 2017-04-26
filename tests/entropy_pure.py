@@ -114,7 +114,7 @@ np.testing.assert_allclose(p_rdm_B-rdm_B,0.0,atol=1E-5,err_msg='Failed subsys_B 
 
 ########## SPARSE STATE ###########
 system_state=V[:,0]
-state=sp.csr_matrix( system_state )#.T
+state=sp.csr_matrix( system_state ).T
 
 sub_sys_A=[i for i in range(basis.L//2)]
 
@@ -135,7 +135,7 @@ for sparse_diag in [1,0]:
 	lmbda=Sent['lmbda']
 	rdm_A=Sent['DM_chain_subsys']
 
-
+	
 	np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')	
 	np.testing.assert_allclose(p_rdm_A-rdm_A,0.0,atol=1E-5,err_msg='Failed subsys_A comparison!')
 
