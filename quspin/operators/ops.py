@@ -3061,7 +3061,7 @@ class exp_op(object):
 	def get_mat(self,time=0.0,dense=False):
 
 		if self.O.is_dense or dense:
-			return _np.linalg.expm(self._a * self.O.todense(time))
+			return scipy.linalg.expm(self._a * self.O.todense(time))
 		else:
 			return _sp.linalg.expm(self._a * self.O.tocsc(time))
 

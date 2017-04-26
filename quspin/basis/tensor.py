@@ -225,25 +225,26 @@ class tensor_basis(basis):
 		Ns_l = self._basis_left.Ns
 		Ns_r = self._basis_right.Ns
 		
-		v=_tensor_reshape_pure(state.T,Ns_l,Ns_r)
+		v = _tensor_reshape_pure(state.T,Ns_l,Ns_r)
 		
-		# perform SVD
+		rdm_left,rdm_right = None,None
+
 		if return_rdm is None:
 			lmbda = _npla.svd(v, compute_uv=False) 
-			return (lmbda**2) + _np.finfo(lmbda.dtype).eps
+			p = (lmbda**2) + _np.finfo(lmbda.dtype).eps
 		else:
 			U, lmbda, V = _npla.svd(v, full_matrices=False)
-			p = lmbda**2 + _np.finfo(lmbda.dtype).eps
+			p = (lmbda**2) + _np.finfo(lmbda.dtype).eps
 			if return_rdm=='left':
 				rdm_left = _np.einsum('...ij,...j,...kj->...ik',U,p,U.conj() )
-				return p, rdm_left
 			elif return_rdm=='right':
 				rdm_right = _np.einsum('...ji,...j,...jk->...ik',V.conj(),p,V )
-				return p, rdm_right
 			elif return_rdm=='both':
 				rdm_left = _np.einsum('...ij,...j,...kj->...ik',U,p,U.conj() )
 				rdm_right = _np.einsum('...ji,...j,...jk->...ik',V.conj(),p,V )
-				return p, rdm_left, rdm_right
+			
+
+		return p, rdm_left, rdm_right
 
 			
 
@@ -257,6 +258,8 @@ class tensor_basis(basis):
 
 		L_A=len(sub_sys_A)
 		L_B=self.L-L_A
+
+		rdm_left,rdm_right = None,None
 
 		if return_rdm is None:
 			if Ns_l <= Ns_r:
@@ -307,14 +310,7 @@ class tensor_basis(basis):
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)
 
-		if return_rdm is None:
-			return p
-		elif return_rdm=='left':
-			return p,rdm_left
-		elif return_rdm=='right':
-			return p,rdm_right
-		elif return_rdm=='both':
-			return p,rdm_left,rdm_right
+		return p,rdm_left,rdm_right
 
 
 		
@@ -333,41 +329,37 @@ class tensor_basis(basis):
 
 		state = state.transpose((2,0,1))
 
+		p_left  ,rdm_left  = None ,None
+		p_right ,rdm_right = None ,None
+
 		if return_rdm == "both":
 			rdm_left,rdm_right = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="both")
 
-			if Ns_l <= Ns_r:
-				p = eigvalsh(rdm_left)
-			else:
-				p = eigvalsh(rdm_right)
+			p_left = eigvalsh(rdm_left)
+			p_right = eigvalsh(rdm_right)
 
-			p += np.finfo(p.dtype).eps
+			p_left += np.finfo(p_left.dtype).eps
+			p_right += np.finfo(p_right.dtype).eps
 
-			return p,rdm_left.transpose((1,2,0)),rdm_right.transpose((1,2,0))
-
-		elif return_rdm == "left" and Ns_l <= Ns_r:
+		elif return_rdm == "left":
 			rdm_left = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="left")
-			p = eigvalsh(rdm_left)
-			p += np.finfo(p.dtype).eps
+			p_left = eigvalsh(rdm_left)
+			p_left += np.finfo(p_left.dtype).eps
 
-			return p,rdm_left.transpose((1,2,0))
-		elif return_rdm == "right" and Ns_r <= Ns_l:
+		elif return_rdm == "right":
 			rdm_right = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="right")
-			p = eigvalsh(rdm_right)
-			p += np.finfo(p.dtype).eps
+			p_right = eigvalsh(rdm_right)
+			p_right += np.finfo(p_right.dtype).eps
 
-			return p,rdm_right.transpose((1,2,0))
 		else:
-			if Ns_l <= Ns_r:
-				rdm_left = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="left")
-				p = eigvalsh(rdm_left)
+		
+			rdm_left = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="left")
 
-			else:
-				rdm_right = _tensor_partial_trace_mixed(state,Ns_l,Ns_r,return_rdm="right")
-				p = eigvalsh(rdm_right)
+			p_left = eigvalsh(rdm_left)
+			p_left += np.finfo(p_left.dtype).eps
+		
 
-			p += np.finfo(p.dtype).eps
-			return p
+		return p_left,p_right,rdm_left,rdm_right
 
 
 	def ent_entropy(self,state,return_rdm=None,state_type="pure",alpha=1.0,sparse=False):
