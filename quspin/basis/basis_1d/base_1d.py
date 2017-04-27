@@ -11,6 +11,7 @@ import scipy.sparse.linalg as _spla
 from numpy import array,cos,sin,exp,pi
 from numpy.linalg import norm,eigvalsh
 from scipy.sparse.linalg import eigsh
+import warnings
 from types import ModuleType
 
 
@@ -176,8 +177,10 @@ class basis_1d(basis):
 			if type(pzblock) is not int: raise TypeError('pzblock/pcblock must be integer')
 			if abs(pzblock) != 1: raise ValueError("pzblock/pcblock must be +/- 1")
 
-		if kblock is not None and (a < L):
+		if kblock is not None and (a <= L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
+			if a == L:
+				warnings.warn("using momentum with L == a",stacklevel=5)
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
 			self._k = 2*(_np.pi)*a*kblock/L
