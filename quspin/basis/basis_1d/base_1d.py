@@ -6,6 +6,7 @@ from . import _check_1d_symm as _check
 import numpy as _np
 from numpy import array,cos,sin,exp,pi
 from numpy.linalg import norm,eigvalsh
+import warnings
 from types import ModuleType
 
 import scipy.sparse as _sp
@@ -172,8 +173,10 @@ class basis_1d(basis):
 			if type(pzblock) is not int: raise TypeError('pzblock/pcblock must be integer')
 			if abs(pzblock) != 1: raise ValueError("pzblock/pcblock must be +/- 1")
 
-		if kblock is not None and (a < L):
+		if kblock is not None and (a <= L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
+			if a == L:
+				warnings.warn("using momentum with L == a",stacklevel=5)
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
 			self._k = 2*(_np.pi)*a*kblock/L
