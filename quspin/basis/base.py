@@ -1,6 +1,8 @@
+from __future__ import print_function
 import numpy as _np
 import scipy.sparse as _sp
 import warnings
+
 
 MAXPRINT = 50
 # this file stores the base class for all basis classes
@@ -285,7 +287,11 @@ class basis(object):
 		if diff:
 			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+			try:
+				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+			except NameError:
+				user_input = input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+
 			if user_input == 'y':
 				print("   (opstr, indices, coupling)")
 				for i in range(len(diff)):
@@ -300,9 +306,13 @@ class basis(object):
 		# calculate non-hermitian elements
 		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
 		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			unique_opstrs = list(set( next(zip(*tuple(diff)))) )
 			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			try:
+				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			except NameError:
+				user_input = input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+
 			if user_input == 'y':
 				print("   (opstr, indices, coupling(t))")
 				for i in range(len(diff)):
@@ -346,11 +356,15 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( zip(*tuple(odd_ops))[0]) )
+				unique_opstrs = list(set( next(zip(*tuple(odd_ops)))) )
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+
 				if user_input == 'y':
 					print(" these operators do not conserve particle number{0}:".format(con))
 					print("   (opstr, indices, coupling)")
@@ -372,11 +386,14 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( zip(*tuple(odd_ops))[0]) )
+				unique_opstrs = list(set( next(zip(*tuple(odd_ops)))) )
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
 				if user_input == 'y':
 					print(" these operators do not conserve particle number{0}:".format(con))
 					print("   (opstr, indices, coupling)")
@@ -404,14 +421,17 @@ class basis(object):
 				odd_ops,missing_ops = static_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				unique_opstrs = list(set( next(zip(*tuple(ops)))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -427,12 +447,16 @@ class basis(object):
 
 			elif len(static_blocks[symm]) == 1:
 				missing_ops, = static_blocks[symm]
-				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				unique_opstrs = list(set( next(zip(*tuple(missing_ops)))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -448,14 +472,18 @@ class basis(object):
 				odd_ops,missing_ops = dynamic_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				unique_opstrs = list(set( next(zip(*tuple(ops)))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are missing for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -471,12 +499,16 @@ class basis(object):
 
 			elif len(dynamic_blocks[symm]) == 1:
 				missing_ops, = dynamic_blocks[symm]
-				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				unique_opstrs = list(set( next(zip(*tuple(missing_ops)))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
