@@ -1329,8 +1329,6 @@ class basis_1d(basis):
 
 					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 		"""
-		proj = self.get_proj(_dtypes[state.dtype.char])
-		state = proj.dot(state)
 
 		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
 
@@ -1367,7 +1365,7 @@ class basis_1d(basis):
 			else:
 				rdm = rdm_B
 
-		if sparse_diag:
+		if sparse_diag and rdm.shape[0] > self.sps**2:
 
 			def get_p_patchy(rdm):
 				n = rdm.shape[0]
@@ -1389,7 +1387,6 @@ class basis_1d(basis):
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)
 
-		
 		return p,rdm_A,rdm_B
 	
 	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
@@ -1529,9 +1526,10 @@ class basis_1d(basis):
 
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
-			if sparse:
-				state = _sp.csr_matrix(state)
-			sparse=True # set sparse flag to True
+			if not _sp.issparse(state):
+				state = _sp.csr_matrix(state).T
+
+			#sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
 				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
 			else:

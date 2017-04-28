@@ -1,5 +1,5 @@
 """
-This file contains the bit operations used to construct the hcb, spin-1/2, and fermion basis.
+This file contains the bit operations used to construct the hcb, spin-1//2, and fermion basis.
 Each cython function comes with its python counterpart (used by get_vec)
 """
 
@@ -22,7 +22,7 @@ cdef basis_type shift(basis_type s,int shift,int length,object[basis_type,ndim=1
 
 	for i in range(length):
 		j = (i-shift+length)%length
-		v += ( (s/M[i])%sps ) * M[j]
+		v += ( (s//M[i])%sps ) * M[j]
 
 	return v
 
@@ -53,7 +53,7 @@ cdef basis_type fliplr(basis_type s, int length, object[basis_type,ndim=1,mode="
 
 	for i in range(length):
 		j = (length-1) - i
-		v += ( (s/M[j])%sps ) * M[i]
+		v += ( (s//M[j])%sps ) * M[i]
 	return v
 
 def py_fliplr(object[basis_type,ndim=1,mode="c"] x,int length, object[basis_type,ndim=1,mode="c"] pars):
@@ -83,7 +83,7 @@ cdef basis_type flip_all(basis_type s, int length,object[basis_type,ndim=1,mode=
 	cdef int sps = M[1]
 
 	for i in range(length):
-		v += ( sps - (s/M[i])%sps -1 ) * M[i]
+		v += ( sps - (s//M[i])%sps -1 ) * M[i]
 
 	return v
 
@@ -117,9 +117,9 @@ cdef basis_type flip_sublat_A(basis_type s, int length,object[basis_type,ndim=1,
 	for i in range(length):
 
 		if i%2==0: # flip site occupation
-			v += ( sps - (s/M[i])%M[1] -1 ) * M[i]
+			v += ( sps - (s//M[i])%M[1] -1 ) * M[i]
 		else: # shift state by 0 sites
-			v += ( (s/M[i])%M[1] ) * M[i]
+			v += ( (s//M[i])%M[1] ) * M[i]
 
 	return v
 
@@ -153,9 +153,9 @@ cdef basis_type flip_sublat_B(basis_type s, int length,object[basis_type,ndim=1,
 	for i in range(length):
 		
 		if i%2==1: # flip site occupation
-			v += ( sps - (s/M[i])%sps -1 ) * M[i]
+			v += ( sps - (s//M[i])%sps -1 ) * M[i]
 		else: # shift state by 0 sites
-			v += ( (s/M[i])%sps ) * M[i]
+			v += ( (s//M[i])%sps ) * M[i]
 
 	return v
 
@@ -188,10 +188,10 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 	cdef int i,j,l
 
 	for i in range(L-1):
-		b1 = (s/M[i])%sps
+		b1 = (s//M[i])%sps
 		N += b1
 		if b1 > 0:
-			b2 = (s/M[i+1])%sps
+			b2 = (s//M[i+1])%sps
 			if b2 < (sps-1):
 				N -= 1
 				# shift one particle right 
@@ -203,7 +203,7 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 				# count number of particles 
 #				N = 0
 #				for i in range(i+1):
-#					N += (s/M[i])%M[1]
+#					N += (s//M[i])%M[1]
 
 				# find the length of sub system which that number fits into (up to a remainder)
 				l = N/(sps-1)
@@ -212,11 +212,11 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 				# occupation where they are all shifted as left as possible
 				for j in range(i+1):
 					if j < l:
-						s += ((sps-1) - (s/M[j])%sps)*M[j]
+						s += ((sps-1) - (s//M[j])%sps)*M[j]
 					elif j == l:
-						s += (N%(sps-1) - (s/M[j])%sps)*M[j]
+						s += (N%(sps-1) - (s//M[j])%sps)*M[j]
 					else:
-						s -= (s/M[j])%sps*M[j]
+						s -= (s//M[j])%sps*M[j]
 
 
 				return s

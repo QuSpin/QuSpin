@@ -163,7 +163,8 @@ cdef basis_type next_state_pcon_hcp(basis_type s,object[basis_type,ndim=1,mode="
 		return s
 
 	cdef basis_type t = (s | (s - 1)) + 1
-	return t | ((((t & -t) / (s & -s)) >> 1) - 1)
+	return t | ((((t & -t) // (s & -s)) >> 1) - 1)
+
 
 
 
