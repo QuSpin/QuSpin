@@ -22,7 +22,7 @@ except ImportError:
 
 __all__=["block_diag_hamiltonian","block_ops"]
 
-def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},get_proj=True,check_symm=True,check_herm=True,check_pcon=True):
+def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},get_proj=True,check_symm=True,check_herm=True,check_pcon=True):
 	"""
 	This function constructs a hamiltonian object which is block diagonal with the blocks being created by
 	the list 'blocks'
@@ -48,6 +48,10 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_
 
 	* get_proj: (optional) flag which tells the function to calculate and return the projector to the subpace requested.
 
+	* basis_kwargs: (optional) dictionary of keyword arguments to add when calling basis constructor
+
+	* get_proj_kwargs: (optional) dictionary of keyword arguments to add when calling basis.get_vec()
+
 	* check_symm: (optional) flag which tells the function to check the symmetry of the operators for the first hamiltonian constructed.
 
 	* check_herm: (optional) same for check_symm but for hermiticity.
@@ -62,6 +66,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,get_
 	blocks = list(blocks)
 
 	if all([isinstance(block,dict) for block in blocks]):
+		blocks = [block.update(basis_kwargs) for block in iter(blocks)]
 		dynamic_list = [(tup[-2],tuple(tup[-1])) for tup in dynamic]
 		dynamic_list = [([],f,f_args) for f,f_args in set(dynamic_list)]
 		static_mats = []
@@ -259,7 +264,7 @@ def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args
 
 
 class block_ops(object):
-	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
+	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
 		"""
 		This class is used to split the dynamics of a state up over various symmetry sectors if the initial state does 
 		not obey the symmetry but the hamiltonian does. Moreover we provide a multiprocessing option which allows the 
@@ -280,6 +285,10 @@ class block_ops(object):
 		* check_symm: (optional) flag to check symmetry 
 
 		* dtype: (required) the data type to construct the hamiltonian with.
+
+		* basis_kwargs: (optional) dictionary of keyword arguments to add when calling basis constructor
+
+		* get_proj_kwargs: (optional) dictionary of keyword arguments to add when calling basis.get_vec()
 
 		* save_previous_data: (optional) when doing the evolution this class has to construct the hamiltonians. this takes
 		some time and so by setting this to true, the class will keep previously calculated hamiltonians so that next time
@@ -325,8 +334,8 @@ class block_ops(object):
 		self._get_proj_kwargs = get_proj_kwargs
 
 
-		blocks = list(blocks)
 		for block in blocks:
+			block.update(basis_kwargs)
 			b = basis_con(*basis_args,**block)
 			if b.Ns >  0:
 				self._basis_dict[str(block)]=b
