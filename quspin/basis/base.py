@@ -285,7 +285,7 @@ class basis(object):
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
 		
 		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
 			try:
 				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
@@ -306,7 +306,7 @@ class basis(object):
 		# calculate non-hermitian elements
 		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
 		if diff:
-			unique_opstrs = list(set( next(zip(*tuple(diff)))) )
+			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
 			try:
 				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
@@ -356,7 +356,7 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( next(zip(*tuple(odd_ops)))) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
@@ -386,7 +386,7 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( next(zip(*tuple(odd_ops)))) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
@@ -421,7 +421,7 @@ class basis(object):
 				odd_ops,missing_ops = static_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( next(zip(*tuple(ops)))) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
@@ -447,7 +447,7 @@ class basis(object):
 
 			elif len(static_blocks[symm]) == 1:
 				missing_ops, = static_blocks[symm]
-				unique_opstrs = list(set( next(zip(*tuple(missing_ops)))) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(missing_ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
@@ -472,7 +472,7 @@ class basis(object):
 				odd_ops,missing_ops = dynamic_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( next(zip(*tuple(ops)))) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
@@ -499,7 +499,7 @@ class basis(object):
 
 			elif len(dynamic_blocks[symm]) == 1:
 				missing_ops, = dynamic_blocks[symm]
-				unique_opstrs = list(set( next(zip(*tuple(missing_ops)))) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(missing_ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
