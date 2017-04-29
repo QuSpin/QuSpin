@@ -43,9 +43,11 @@ L = 5
 N = 2*L
 Nb = L
 
-t_par = 1.0
-t_perp = 1.0
-U = 1.0
+t_par = 1.0j
+t_perp = -1.0
+U = 0.1
+h=np.pi/2.0
+
 
 basis = boson_basis_1d(N,Nb=Nb)
 
@@ -54,10 +56,12 @@ U_1 = [[-U,i] for i in range(N)]
 t = [[t_par,i,(i+2)%N] for i in range(N)]
 t.extend([[t_perp,i,i+1] for i in range(0,N,2)])
 
+t_hc = [[t_par.conjugate(),i,(i+2)%N] for i in range(N)]
+t_hc.extend([[t_perp.conjugate(),i,i+1] for i in range(0,N,2)])
 
 
 
-static = [["+-",t],["-+",t],["nn",U_2],["n",U_1]]
+static = [["+-",t],["-+",t_hc],["nn",U_2],["n",U_1]]
 dynamic = []
 
 no_checks = dict(check_herm=False,check_symm=False,check_pcon=False)
@@ -76,19 +80,18 @@ psi[i0] = 1.0
 
 blocks=[]
 
-for kblock in range(L//2+1):
-	blocks.append(dict(Nb=Nb,a=2,kblock=kblock,pblock=1))
-	blocks.append(dict(Nb=Nb,a=2,kblock=kblock,pblock=-1))
+for kblock in range(L):
+	blocks.append(dict(Nb=Nb,a=2,kblock=kblock))
+#	blocks.append(dict(Nb=Nb,a=2,kblock=kblock,pblock=1))
+#	blocks.append(dict(Nb=Nb,a=2,kblock=kblock,pblock=-1))
 
 
-U_block = block_ops(blocks,static,dynamic,boson_basis_1d,(N,),np.float64,get_proj_kwargs=dict(pcon=True))
+U_block = block_ops(blocks,static,dynamic,boson_basis_1d,(N,),np.complex128,get_proj_kwargs=dict(pcon=True))
 
-psi_t = U_block.expm(psi,start=0,stop=1000,num=10000,iterate=True)
+psi_t = U_block.expm(psi,start=0,stop=1000,num=100000,iterate=True,block_diag=False)
 times = np.linspace(0,1000,num=10000)
 
 
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
 
 psi = next(psi_t)
