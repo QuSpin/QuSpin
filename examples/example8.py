@@ -39,17 +39,18 @@ parity (i -> N - i):
 
 """
 
-L = 5
+L = 10
 N = 2*L
-Nb = L
+Nb = 2
+sps = None
 
-t_par = 1.0j
+t_par = -1.0
 t_perp = -1.0
-U = 0.1
+U = 2.0
 h=np.pi/2.0
 
 
-basis = boson_basis_1d(N,Nb=Nb)
+basis = boson_basis_1d(N,Nb=Nb,sps=sps)
 
 U_2 = [[U**2,i,i] for i in range(N)]
 U_1 = [[-U,i] for i in range(N)]
@@ -70,8 +71,11 @@ n = [hamiltonian([["n",[[1.0,i]]]],[],basis=basis,dtype=np.float64,**no_checks) 
 
 # setting up initial state
 state = ["0" for i in range(N)]
-state[L] = str(Nb)
+state[L] = "1"
+state[L+1] = "1"
 state_str = "".join(state)
+#state_str = "01100110011001"
+
 
 print("H-space size: {}, initial state: |{}>".format(basis.Ns,state_str))
 i0 = basis.index(state_str)
@@ -81,7 +85,7 @@ psi[i0] = 1.0
 blocks=[]
 
 for kblock in range(L):
-	blocks.append(dict(Nb=Nb,a=2,kblock=kblock))
+	blocks.append(dict(Nb=Nb,sps=sps,a=2,kblock=kblock))
 #	blocks.append(dict(Nb=Nb,a=2,kblock=kblock,pblock=1))
 #	blocks.append(dict(Nb=Nb,a=2,kblock=kblock,pblock=-1))
 
