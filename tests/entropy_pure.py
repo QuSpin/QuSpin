@@ -135,7 +135,7 @@ for sparse_diag in [1,0]:
 	lmbda=Sent['lmbda']
 	rdm_A=Sent['DM_chain_subsys']
 
-
+	
 	np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')	
 	np.testing.assert_allclose(p_rdm_A-rdm_A,0.0,atol=1E-5,err_msg='Failed subsys_A comparison!')
 

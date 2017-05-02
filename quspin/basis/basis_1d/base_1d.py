@@ -9,8 +9,9 @@ import scipy.linalg as _sla
 import numpy.linalg as _npla
 import scipy.sparse.linalg as _spla
 from numpy import array,cos,sin,exp,pi
-from numpy.linalg import norm,eigvalsh
+from numpy.linalg import norm,eigvalsh,svd
 from scipy.sparse.linalg import eigsh
+import warnings
 from types import ModuleType
 
 
@@ -112,11 +113,6 @@ class basis_1d(basis):
 			for Np in Nup_iter:
 				temp_basis =self.__class__(L,Np,**blocks)
 				self.append(temp_basis)	
-		
-
-
-				
-
 
 	def _make_Np_block(self,basis_module,ops_module,L,Np=None,pars=None,**blocks):
 		# getting arguments which are used in basis.
@@ -176,8 +172,10 @@ class basis_1d(basis):
 			if type(pzblock) is not int: raise TypeError('pzblock/pcblock must be integer')
 			if abs(pzblock) != 1: raise ValueError("pzblock/pcblock must be +/- 1")
 
-		if kblock is not None and (a < L):
+		if kblock is not None and (a <= L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
+			if a == L:
+				warnings.warn("using momentum with L == a",stacklevel=5)
 			kblock = kblock % (L//a)
 			blocks["kblock"] = kblock
 			self._k = 2*(_np.pi)*a*kblock/L
@@ -553,8 +551,6 @@ class basis_1d(basis):
 
 		if count_particles: self._Np_list = _np.full(self._basis.shape,Np,dtype=_np.int8)
 
-
-
 	def append(self,other):
 		if not isinstance(other,self.__class__):
 			raise TypeError("can only append basis objects of the same type")
@@ -581,7 +577,7 @@ class basis_1d(basis):
 
 		if hasattr(self,"_Np_list"):
 			self._Np_list.resize((Ns,),refcheck=False)
-			self._Np_list[self._Ns:] = other._Np[:]
+			self._Np_list[self._Ns:] = other._Np_list[:]
 			self._Np_list = self._Np_list[arg].copy()
 
 		if hasattr(self,"_M"):
@@ -618,9 +614,6 @@ class basis_1d(basis):
 	def conserved(self):
 		return self._conserved
 
-
-	
-
 	@property
 	def description(self):
 		blocks = ""
@@ -643,7 +636,6 @@ class basis_1d(basis):
 		string += self.operators
 		return string 
 
-
 	def __getitem__(self,key):
 		return self._basis.__getitem__(key)
 
@@ -664,7 +656,6 @@ class basis_1d(basis):
 
 	def __iter__(self):
 		return self._basis.__iter__()
-
 
 	def Op(self,opstr,indx,J,dtype):
 		indx = _np.asarray(indx,dtype=_np.int32)
@@ -702,8 +693,6 @@ class basis_1d(basis):
 		ME = ME[mask]
 
 		return ME,row,col		
-
-
 
 	def get_norms(self,dtype):
 		a = self._blocks_1d.get("a")
@@ -826,9 +815,6 @@ class basis_1d(basis):
 
 		return norm
 
-
-
-
 	def get_vec(self,v0,sparse=True):
 
 		if not hasattr(v0,"shape"):
@@ -899,7 +885,6 @@ class basis_1d(basis):
 			else:
 				return _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
 
-
 	def get_proj(self,dtype,pcon=False):
 		norms = self.get_norms(dtype)
 
@@ -959,139 +944,113 @@ class basis_1d(basis):
 
 		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
 
+	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False):
+		if sub_sys_A is None:
+			sub_sys_A = tuple(range(self.L//2))
+		elif len(sub_sys_A)==self.L:
+			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
 
 
-
-
-	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure"):
-		"""
-		This function calculates the reduced density matrix (DM), performing a partial trace 
-		of a quantum state.
-
-		RETURNS: reduced DM
-
-		--- arguments ---
-
-		state: (required) the state of the quantum system. Can be a:
-
-				-- pure state (default) [numpy array of shape (Ns,)].
-
-				-- density matrix [numpy array of shape (Ns,Ns)].
-
-				-- collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
-
-		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
-						[by python convention the first site of the chain is labelled j=0]. 
-						Default is tuple(range(L//2)).
-
-		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
-
-				-- 'A': str, returns reduced DM of subsystem A
-
-				-- 'B': str, returns reduced DM of subsystem B
-
-				-- 'both': str, returns reduced DM of both subsystems A and B
-
-		state_type: (optional) flag to determine if 'state' is a collection of pure states or
-						a density matrix
-
-				-- 'pure': (default) (a collection of) pure state(s)
-
-				-- 'mixed': mixed state (i.e. a density matrix)
-
-		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
-
-		"""
-
+		L_A = len(sub_sys_A)
+		L_B = self.L - L_A
 
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
 
 		sub_sys_A = tuple(sub_sys_A)
+
 		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
 
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
 
+		if return_rdm not in set(["A","B","both"]):
+			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
 		sps = self.sps
 		L = self.L
 
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
+			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
 
-		if state.shape[-1] != self.Ns:
+
+		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
-		proj = self.get_proj(_dtypes[state.dtype.char])
-
-
 		if _sp.issparse(state) or sparse:
-			if sparse:
-				state = _sp.csr_matrix(state)
-
-			if state_type == "pure":
-
-				state = proj.dot(state.T).T
-
-				if state.shape[0] == 1:
-					return _lattice_partial_trace_sparse_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
-				else:
-
+			state=self.get_vec(state,sparse=True).T
+			
+			if state.shape[0] == 1:
+				# sparse_pure partial trace
+				rdm_A,rdm_B = _lattice_partial_trace_sparse_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
+			else:
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					# vectorize sparse_pure partial trace 
 					state = state.tocsr()
 					try:
 						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,L,sps,return_rdm=return_rdm) for i in xrange(state.shape[0]))
 					except NameError:
 						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,L,sps,return_rdm=return_rdm) for i in range(state.shape[0]))
 
-					if return_rdm == "both":
-						left,right = zip(*state_gen)
-						return _np.stack(left),_np.stack(right)
-					else:
-						return _np.stack(state_gen)
+					left,right = zip(*state_gen)
 
-			elif state_type == "mixed":
-				raise NotImplementedError("only pure state calculation implemeted for sparse arrays")
-			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
+					rdm_A,rdm_B = _np.stack(left),_np.stack(right)
+
+					if any(rdm is None for rdm in rdm_A):
+						rdm_A = None
+
+					if any(rdm is None for rdm in rdm_B):
+						rdm_B = None
+				else: 
+					raise ValueError("Expecting a dense array for mixed states.")
+
 		else:
-			if state_type == "pure":
-				extra_shape = state.shape[:-1]
-				matrix_shape = state.shape[-1:]
+			if state.ndim==1:
+				# calculate full H-space representation of state
+				state=self.get_vec(state,sparse=False)
+				rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,L,sps,return_rdm=return_rdm)
+
+			elif state.ndim==2: 
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					# calculate full H-space representation of state
+					state=self.get_vec(state,sparse=False)
+					rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,L,sps,return_rdm=return_rdm)
+
+				else: 
+					proj = self.get_proj(_dtypes[state.dtype.char])
+					proj_state = proj*state*proj.H
+
+					shape0 = proj_state.shape
+					proj_state = proj_state.reshape((1,)+shape0)					
+
+					rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm=return_rdm)
+
+			elif state.ndim==3: #3D DM 
+				proj = self.get_proj(_dtypes[state.dtype.char])
+				state = state.transpose((2,0,1))
 				
-				state = state.reshape((-1,)+matrix_shape)
-				state = proj.dot(state.T).T.reshape(extra_shape+(proj.shape[0],))
-				
-				return _lattice_partial_trace_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
-			elif state_type == "mixed":
-
-				if state.ndim < 2:
-					raise ValueError("mixed state input must be a single or a collection of 2-d square array(s).")
-
-				if state.shape[-2] != state.shape[-1]:
-					raise ValueError("mixed state input must be a single or a collection of 2-d square array(s).")
-
 				Ns_full = proj.shape[0]
-				extra_shape = state.shape[:-2]
-				matrix_shape = state.shape[-2:]
-				new_shape = extra_shape+(Ns_full,Ns_full)
-				n_dm = int(_np.product(extra_shape))
-
-				state = state.reshape((-1,)+matrix_shape)
+				n_states = state.shape[0]
+				
 				gen = (proj*s*proj.H for s in state[:])
 
-				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
-
+				proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
+				
 				for i,s in enumerate(gen):
 					proj_state[i,...] += s[...]
 
-				state = proj_state.reshape(new_shape)	
-
-				return _lattice_partial_trace_mixed(state,sub_sys_A,L,sps,return_rdm=return_rdm) 
+				rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm=return_rdm)
 			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
+				raise ValueError("state must have ndim < 4")
 
+		if return_rdm == "A":
+			return rdm_A
+		elif return_rdm == "B":
+			return rdm_B
+		else:
+			return rdm_A,rdm_B
 
 	def _p_pure(self,state,sub_sys_A,return_rdm=None):
 		
@@ -1107,9 +1066,9 @@ class basis_1d(basis):
 
 		# perform SVD	
 		if return_rdm is None:
-			lmbda = _npla.svd(v, compute_uv=False) 
+			lmbda = svd(v, compute_uv=False) 
 		else:
-			U, lmbda, V = _npla.svd(v, full_matrices=False)
+			U, lmbda, V = svd(v, full_matrices=False)
 			if return_rdm=='A':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 			elif return_rdm=='B':
@@ -1119,7 +1078,6 @@ class basis_1d(basis):
 				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
 		
 		return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
-
 
 	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
 
@@ -1221,10 +1179,8 @@ class basis_1d(basis):
 
 					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 		"""
-		proj = self.get_proj(_dtypes[state.dtype.char])
-		state = proj.dot(state).T
 
-		partial_trace_args = dict(sub_sys_A=sub_sys_A,state_type='pure',sparse=True)
+		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
 
 		L_A=len(sub_sys_A)
 		L_B=self.L-L_A
@@ -1259,7 +1215,7 @@ class basis_1d(basis):
 			else:
 				rdm = rdm_B
 
-		if sparse_diag:
+		if sparse_diag and rdm.shape[0] > 16:
 
 			def get_p_patchy(rdm):
 				n = rdm.shape[0]
@@ -1281,10 +1237,8 @@ class basis_1d(basis):
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)
 
-		
 		return p,rdm_A,rdm_B
 	
-
 	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
 		"""
 		This function calculates the eigenvalues of the reduced density matrix.
@@ -1299,10 +1253,10 @@ class basis_1d(basis):
 
 		L_A = len(sub_sys_A)
 		L_B = L - L_A
-		
+
 		proj = self.get_proj(_dtypes[state.dtype.char])
 		state = state.transpose((2,0,1))
-		
+
 		Ns_full = proj.shape[0]
 		n_states = state.shape[0]
 		
@@ -1313,7 +1267,6 @@ class basis_1d(basis):
 		for i,s in enumerate(gen):
 			proj_state[i,...] += s[...]	
 
-
 		rdm_A,p_A=None,None
 		rdm_B,p_B=None,None
 		
@@ -1323,24 +1276,22 @@ class basis_1d(basis):
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
-
 		elif return_rdm=='A':
-			rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
-
 			
 		elif return_rdm=='B':
-			rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
 			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
 		else:
-			rdm_A = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 			
 		return p_A, p_B, rdm_A, rdm_B
 
-	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0):
+	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
@@ -1407,6 +1358,9 @@ class basis_1d(basis):
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
 
+		if return_rdm not in set(["A","B","both",None]):
+			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
 		sps = self.sps
 		L = self.L
 
@@ -1422,19 +1376,21 @@ class basis_1d(basis):
 
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
-			if sparse:
-				state = _sp.csr_matrix(state)
-			sparse=True # set sparse flag to True
+			if not _sp.issparse(state):
+				state = _sp.csr_matrix(state).T
+
+			#sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
-				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
+				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
 			else:
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
 				else: 
-					raise ValueError("Expecting a dense array for mixed `state`.")
+					raise ValueError("Expecting a dense array for mixed states.")
 					
 		else:
 			if state.ndim==1:
+				state = state.reshape((-1,1))
 				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
 			
 			elif state.ndim==2: 
@@ -1473,7 +1429,7 @@ class basis_1d(basis):
 				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
 
 			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
+				raise ValueError("state must have ndim < 4")
 
 		
 
@@ -1497,6 +1453,7 @@ class basis_1d(basis):
 
 		# initiate variables
 		variables = ["Sent_A"]
+
 		if return_rdm_EVs:
 			variables.append("p_A")
 
@@ -1513,17 +1470,15 @@ class basis_1d(basis):
 			if return_rdm_EVs:
 				variables.extend(["p_A","p_B"])
 	
-
 		# store variables to dictionar
 		return_dict = {}
 		for i in variables:
-			if sparse and 'rdm' in i:
-				return_dict[i] = locals()[i] # don't squeeze sparse matrix
-			else:
-				return_dict[i] = _np.squeeze( locals()[i] )
+			if locals()[i] is not None:
+				if sparse and 'rdm' in i:
+					return_dict[i] = locals()[i] # don't squeeze sparse matrix
+				else:
+					return_dict[i] = _np.squeeze( locals()[i] )
 		return return_dict
-
-
 
 	def _check_symm(self,static,dynamic,basis=None):
 		kblock = self._blocks_1d.get("kblock")
@@ -1594,12 +1549,6 @@ class basis_1d(basis):
 		return static_blocks,dynamic_blocks
 
 
-
-
-
-
-
-
 def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
 
@@ -1664,9 +1613,6 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 		ops.py_shift(basis_in,a,L,pars)
 	
 	return v
-
-
-
 
 
 def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
@@ -1779,8 +1725,6 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		ops.py_shift(basis_in,a,L,pars)
 
 	return v
-
-
 
 
 def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,L,**blocks):
@@ -1921,6 +1865,3 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 
 
 	return v
-
-
-
