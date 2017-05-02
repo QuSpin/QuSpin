@@ -50,7 +50,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 
 	* basis_kwargs: (optional) dictionary of keyword arguments to add when calling basis constructor
 
-	* get_proj_kwargs: (optional) dictionary of keyword arguments to add when calling basis.get_vec()
+	* get_proj_kwargs: (optional) dictionary of keyword arguments to add when calling basis.get_proj() & basis.get_get()
 
 	* check_symm: (optional) flag which tells the function to check the symmetry of the operators for the first hamiltonian constructed.
 
@@ -66,7 +66,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 	blocks = list(blocks)
 
 	if all([isinstance(block,dict) for block in blocks]):
-		blocks = [block.update(basis_kwargs) for block in iter(blocks)]
+		[blocks[i].update(basis_kwargs) for i in range(len(blocks))]
 		dynamic_list = [(tup[-2],tuple(tup[-1])) for tup in dynamic]
 		dynamic_list = [([],f,f_args) for f,f_args in set(dynamic_list)]
 		static_mats = []
