@@ -9,7 +9,7 @@ import scipy.sparse as sp
 
 np.random.seed(12)
 
-L=2
+L=4
 
 Jxz=[[1.0,i,i+1] for i in range(L-1)]
 hx=[[(-1)**i*np.sqrt(2),i] for i in range(L)]

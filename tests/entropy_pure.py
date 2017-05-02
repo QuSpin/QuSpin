@@ -114,7 +114,7 @@ np.testing.assert_allclose(p_rdm_B-rdm_B,0.0,atol=1E-5,err_msg='Failed subsys_B 
 
 ########## SPARSE STATE ###########
 system_state=V[:,0]
-state=sp.csr_matrix( system_state )#.T
+state=sp.csr_matrix( system_state ).T #  '.T' to convert to column vector 
 
 sub_sys_A=[i for i in range(basis.L//2)]
 
