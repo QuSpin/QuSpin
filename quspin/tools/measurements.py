@@ -131,7 +131,6 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	translate_dict.update({"DM_chain_subsys":'rdm_A',"DM_other_subsys":'rdm_B',"both":'both','lmbda':"p_A"})
 	
-	
 	Sent = basis.ent_entropy(state,chain_subsys,return_rdm=return_rdm,return_rdm_EVs=return_rdm_EVs,
 												enforce_pure=enforce_pure,alpha=alpha)
 	
