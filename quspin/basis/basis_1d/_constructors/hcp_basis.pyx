@@ -1,6 +1,7 @@
 #!python
 #cython: boundscheck=False
 #cython: wraparound=False
+#cython: cdivision=True
 # distutils: language=c++
 
 
@@ -80,6 +81,7 @@ def get_Ns(L, Np, sps, **blocks):
 
 
 include "sources/hcp_bitops.pyx"
+include "sources/hcp_next_state.pyx"
 include "sources/checkstate.pyx"
 include "sources/basis_templates.pyx"
 include "sources/hcp_basis.pyx"

@@ -82,10 +82,8 @@ class boson_basis_1d(basis_1d):
 			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 		else:
-			pars = [L]
-			pars.extend([self._sps**i for i in range(L+1)])
-			pars.append(0) # flag to turn off higher spin matrix elements for +/- operators
-			pars = _np.asarray(pars)
+			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (0,) # flag to turn off higher spin matrix elements for +/- operators
+			
 			self._operators = ("availible operators for ferion_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+

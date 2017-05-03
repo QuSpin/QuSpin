@@ -63,10 +63,7 @@ class spin_basis_1d(basis_1d):
 			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 		else:
 			self._pauli = False
-			pars = [L]
-			pars.extend([self._sps**i for i in range(L+1)])
-			pars.append(1) # flag to turn on higher spin matrix elements for +/- operators
-			pars = _np.asarray(pars)
+			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (1,) # flag to turn off higher spin matrix elements for +/- operators
 			self._operators = ("availible operators for spin_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
