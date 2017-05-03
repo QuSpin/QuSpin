@@ -23,18 +23,18 @@ ctypedef fused basis_type:
 	object
 
 ctypedef fused N_type:
-#	NP_INT8_t
+	NP_INT8_t
 	NP_INT32_t
 
 ctypedef fused M_type:
-#	NP_INT16_t
+	NP_INT16_t
 	NP_INT32_t
 
 ctypedef fused matrix_type:
 	float
-#	double
-#	float complex
-#	double complex
+	double
+	float complex
+	double complex
 
 
 	

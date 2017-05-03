@@ -544,135 +544,6 @@ class hamiltonian(object):
 		self._is_dense = not is_sparse
 
 	
-	def __LO(self,time,rho):
-		rho = rho.reshape((self.Ns,self.Ns))
-
-		rho_comm = self._static.dot(rho)
-		rho_comm -= (self._static.T.dot(rho.T)).T
-		for Hd,f,f_args in self._dynamic:
-			ft = f(time,*f_args)
-			rho_comm += ft*Hd.dot(rho)	
-			rho_comm -= ft*(Hd.T.dot(rho.T)).T
-
-		rho_comm *= -1j
-		return rho_comm.ravel()
-
-
-	def __multi_SO_real(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
-		
-		u_dot + iv_dot = -iH(u + iv)
-		u_dot = Hv
-		v_dot = -Hu
-		"""
-		V = V.reshape((2*self._Ns,-1))
-		V_dot = zeros_like(V)
-		V_dot[:self._Ns,:] = self._static.dot(V[self._Ns:,:])
-		V_dot[self._Ns:,:] = -self._static.dot(V[:self._Ns,:])
-		for Hd,f,f_args in self._dynamic:
-			V_dot[:self._Ns,:] += f(time,*f_args)*Hd.dot(V[self._Ns:,:])
-			V_dot[self._Ns:,:] += -f(time,*f_args)*Hd.dot(V[:self._Ns,:])
-
-		return V_dot
-
-
-	def __multi_SO(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-		"""
-		V = V.reshape((self.Ns,-1))
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
-
-		return -1j*V_dot.ravel()
-
-
-	def __multi_ISO(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
-		"""
-		V = V.reshape((self._Ns,-1))
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
-
-		return -V_dot.ravel()
-
-
-
-	def __SO_real(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
-		
-		u_dot + iv_dot = -iH(u + iv)
-		u_dot = Hv
-		v_dot = -Hu
-		"""
-		V_dot = zeros_like(V)
-		V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
-		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
-		for Hd,f,f_args in self._dynamic:
-			V_dot[:self._Ns] += f(time,*f_args)*Hd.dot(V[self._Ns:])
-			V_dot[self._Ns:] += -f(time,*f_args)*Hd.dot(V[:self._Ns])
-
-		return V_dot
-
-
-	def __SO(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-		"""
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
-
-		return -1j*V_dot
-
-	def __ISO(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
-		"""
-
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
-
-		return -V_dot
-
 
 	def dot(self,V,time=0,check=True):
 		"""
@@ -1044,6 +915,137 @@ class hamiltonian(object):
 		return E
 
 
+	def __LO(self,time,rho):
+		rho = rho.reshape((self.Ns,self.Ns))
+
+		rho_comm = self._static.dot(rho)
+		rho_comm -= (self._static.T.dot(rho.T)).T
+		for Hd,f,f_args in self._dynamic:
+			ft = f(time,*f_args)
+			rho_comm += ft*Hd.dot(rho)	
+			rho_comm -= ft*(Hd.T.dot(rho.T)).T
+
+		rho_comm *= -1j
+		return rho_comm.ravel()
+
+
+	def __multi_SO_real(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
+		
+		u_dot + iv_dot = -iH(u + iv)
+		u_dot = Hv
+		v_dot = -Hu
+		"""
+		V = V.reshape((2*self._Ns,-1))
+		V_dot = zeros_like(V)
+		V_dot[:self._Ns,:] = self._static.dot(V[self._Ns:,:])
+		V_dot[self._Ns:,:] = -self._static.dot(V[:self._Ns,:])
+		for Hd,f,f_args in self._dynamic:
+			V_dot[:self._Ns,:] += f(time,*f_args)*Hd.dot(V[self._Ns:,:])
+			V_dot[self._Ns:,:] += -f(time,*f_args)*Hd.dot(V[:self._Ns,:])
+
+		return V_dot.ravel()
+
+
+	def __multi_SO(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+		"""
+		V = V.reshape((self.Ns,-1))
+		V_dot = self._static.dot(V)	
+		for Hd,f,f_args in self._dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return -1j*V_dot.ravel()
+
+
+	def __multi_ISO(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
+		"""
+		V = V.reshape((self._Ns,-1))
+		V_dot = self._static.dot(V)	
+		for Hd,f,f_args in self._dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return -V_dot.ravel()
+
+
+
+	def __SO_real(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
+		
+		u_dot + iv_dot = -iH(u + iv)
+		u_dot = Hv
+		v_dot = -Hu
+		"""
+		V_dot = zeros_like(V)
+		V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
+		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
+		for Hd,f,f_args in self._dynamic:
+			V_dot[:self._Ns] += f(time,*f_args)*Hd.dot(V[self._Ns:])
+			V_dot[self._Ns:] += -f(time,*f_args)*Hd.dot(V[:self._Ns])
+
+		return V_dot
+
+
+	def __SO(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+		"""
+		V_dot = self._static.dot(V)	
+		for Hd,f,f_args in self._dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return -1j*V_dot
+
+	def __ISO(self,time,V):
+		"""
+		args:
+			V, the vector to multiple with
+			time, the time to evalute drive at.
+
+		description:
+			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
+		"""
+
+		V_dot = self._static.dot(V)	
+		for Hd,f,f_args in self._dynamic:
+			V_dot += f(time,*f_args)*(Hd.dot(V))
+
+		return -V_dot
+
+
+
 	def evolve(self,v0,t0,times,eom="SE",solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
 		from scipy.integrate import complex_ode
 		from scipy.integrate import ode
@@ -1103,7 +1105,6 @@ class hamiltonian(object):
 				if H_real:
 					raise NotImplementedError("H_real not implemented for Liouville-von Neumann dynamics")
 				else:
-					v0 = v0.ravel().astype(_np.complex128)
 					solver = complex_ode(self.__LO)
 		else:
 			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(equation))
@@ -1122,7 +1123,7 @@ class hamiltonian(object):
 
 				
 		solver.set_integrator(solver_name,**solver_args)
-		solver.set_initial_value(v0, t0)
+		solver.set_initial_value(v0.ravel(), t0)
 
 		if _np.isscalar(times):
 			return self._evolve_scalar(solver,v0,t0,times,imag_time,H_real,n,shape0)

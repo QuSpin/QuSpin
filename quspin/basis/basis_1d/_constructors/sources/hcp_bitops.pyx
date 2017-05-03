@@ -18,7 +18,7 @@ cdef basis_type shift(basis_type I,int shift,int period,object[basis_type,ndim=1
 	if I==0 or I==Imax:
 		return I
 	else:
-		l1 = shift%period
+		l1 = (shift+period)%period
 		l2 = period - l1
 		return ((I << l1) & Imax) | ((I & Imax) >> l2)
 
