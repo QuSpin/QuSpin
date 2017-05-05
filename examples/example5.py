@@ -19,10 +19,10 @@ except ImportError:
 
 
 # define model params
-L=100 # system size
+L=64 # system size
 J=1.0 #uniform hopping
-deltaJ=0.2 # hopping difference
-Delta=0.5 # staggered potential
+deltaJ=0.1 # hopping difference
+Delta=0.0 # staggered potential
 # define site-coupling lists
 hop_pm=[[+J+deltaJ*(-1)**i,i,(i+1)%L] for i in range(L)] # PBC
 hop_mp=[[-J-deltaJ*(-1)**i,i,(i+1)%L] for i in range(L)] # PBC
@@ -39,23 +39,28 @@ H=hamiltonian(static,dynamic,basis=basis,dtype=np.float64)
 E,V=H.eigh()
 # define Fourier transform and momentum-space Hamiltonian
 FT,Hblock = block_diag_hamiltonian(blocks,static,dynamic,fermion_basis_1d,basis_args,np.complex128,get_proj_kwargs=dict(pcon=True))
-Eblock=Hblock.eigvalsh()
+Eblock,Vblock=Hblock.eigh()
 
 plt.scatter(np.arange(L),E)
 plt.show()
 
 # construct Fermi sea
-psi_0=V
+psi_0=Vblock
+
+
+
+
 
 # construct operator n_{j=0} and n_{j=L/2}
 n_i_static=[['n',[[1.0,0]]]]
 n_i=hamiltonian(n_i_static,[],basis=basis,dtype=np.float64,check_herm=False,check_pcon=False)
 n_f_static=[['n',[[1.0,L//2]]]]
 n_f=hamiltonian(n_f_static,[],basis=basis,dtype=np.float64,check_herm=False,check_pcon=False)
-
 # transform n_j to momentum space
 n_i=n_i.rotate_by(FT,generator=False)
 n_f=n_f.rotate_by(FT,generator=False)
+
+
 # evaluate nonequal time correlator <FS|n_f(t) n_i(0)|FS>
 t=np.linspace(0.0,90.0,901)
 psi_n_0=n_i.dot(psi_0)
@@ -79,11 +84,11 @@ for i, (psi,psi_n) in enumerate( zip(psi_t,psi_n_t) ):
 
 
 
-T=0.1 # set temperature for Fermi-Dirac distribution
+
 
 # evaluate thermal expectation value
+T=1.0 # set temperature for Fermi-Dirac distribution
 correlator = (correlators/(np.exp(E/T)+1.0)).sum(axis=-1) 
-
 plt.plot(t,correlator)
 plt.show()
 

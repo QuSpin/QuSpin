@@ -926,7 +926,7 @@ class hamiltonian(object):
 			rho_comm -= ft*(Hd.T.dot(rho.T)).T
 
 		rho_comm *= -1j
-		return rho_comm.ravel()
+		return rho_comm.reshape((-1,))
 
 
 	def __multi_SO_real(self,time,V):
@@ -951,7 +951,7 @@ class hamiltonian(object):
 			V_dot[:self._Ns,:] += f(time,*f_args)*Hd.dot(V[self._Ns:,:])
 			V_dot[self._Ns:,:] += -f(time,*f_args)*Hd.dot(V[:self._Ns,:])
 
-		return V_dot.ravel()
+		return V_dot.reshape((-1,))
 
 
 	def __multi_SO(self,time,V):
@@ -968,7 +968,7 @@ class hamiltonian(object):
 		for Hd,f,f_args in self._dynamic:
 			V_dot += f(time,*f_args)*(Hd.dot(V))
 
-		return -1j*V_dot.ravel()
+		return -1j*V_dot.reshape((-1,))
 
 
 	def __multi_ISO(self,time,V):
@@ -985,7 +985,7 @@ class hamiltonian(object):
 		for Hd,f,f_args in self._dynamic:
 			V_dot += f(time,*f_args)*(Hd.dot(V))
 
-		return -V_dot.ravel()
+		return -V_dot.reshape((-1,))
 
 
 

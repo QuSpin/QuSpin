@@ -336,9 +336,7 @@ class block_ops(object):
 
 		for block in blocks:
 			block.update(basis_kwargs)
-			print(basis_args)
 			b = basis_con(*basis_args,**block)
-			print(b)
 			if b.Ns >  0:
 				self._basis_dict[str(block)]=b
 
@@ -608,7 +606,6 @@ class block_ops(object):
 				psi = p.H.dot(psi_0)
 
 			psi = psi.ravel()
-			print(_np.linalg.norm(psi))
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())

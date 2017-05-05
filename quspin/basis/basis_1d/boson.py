@@ -16,14 +16,17 @@ class boson_basis_1d(basis_1d):
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
-		if Nb is None and sps is None:
-			raise ValueError("Must specify either Nb or sps")
+		if nb is None:
+			if Nb is None and sps is None:
+				raise ValueError("Must specify either Nb,sps, or nb")
 
-		if sps is not None:
-			if type(sps) is not int:
-				raise TypeError("sps must be integer >= 1.")
-			if sps < 1:
-				raise ValueError("sps must be >= 1 or None")
+			if sps is not None:
+				if type(sps) is not int:
+					raise TypeError("sps must be integer >= 1.")
+				if sps < 1:
+					raise ValueError("sps must be >= 1 or None")
+
+
 
 
 		if type(Nb) is int and sps is None:
