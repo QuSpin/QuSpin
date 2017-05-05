@@ -10,17 +10,22 @@ import warnings
 # gives the basis for the kronecker/Tensor product of two basis: |basis_left> (x) |basis_right>
 class tensor_basis(basis):
 
-	def __init__(self,basis_left,basis_right):
-		if not isinstance(basis_left,basis):
-			raise ValueError("basis_left must be instance of basis class")
-		if not isinstance(basis_right,basis):
-			raise ValueError("basis_right must be instance of basis class")
-		if isinstance(basis_left,tensor_basis): 
-			raise TypeError("Can only create tensor basis with non-tensor type basis")
-		if isinstance(basis_right,tensor_basis): 
-			raise TypeError("Can only create tensor basis with non-tensor type basis")
-		self._basis_left=basis_left
-		self._basis_right=basis_right
+	def __init__(self,*basis_list):
+		if len(basis_list) < 2:
+			raise ValueError("basis_list must have more than one basis.")
+		if not isinstance(basis_lust[0],basis):
+			raise ValueError("basis_list must contain instances of basis class")
+
+		# if not isinstance(basis_left,basis):
+		# 	raise ValueError("basis_left must be instance of basis class")
+		# if not isinstance(basis_right,basis):
+		# 	raise ValueError("basis_right must be instance of basis class")
+		# if isinstance(basis_left,tensor_basis): 
+		# 	raise TypeError("Can only create tensor basis with non-tensor type basis")
+		# if isinstance(basis_right,tensor_basis): 
+		# 	raise TypeError("Can only create tensor basis with non-tensor type basis")
+		self._basis_left=basis_list[0]
+		self._basis_right=tensor_basis(*basis_list[1:])
 
 		self._Ns = basis_left.Ns*basis_right.Ns
 		self._dtype = _np.min_scalar_type(-self._Ns)
@@ -41,17 +46,19 @@ class tensor_basis(basis):
 		return self._basis_right
 
 	def Op(self,opstr,indx,J,dtype):
-		if opstr.count("|") > 1: 
-			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+		# if opstr.count("|") > 1: 
+		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
-		if len(opstr)-1 != len(indx):
+		if len(opstr)-opstr.count("|") != len(indx):
 			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstr_left,opstr_right=opstr.split("|")
+		opstrs_list=opstr.split("|")
+		opstr_left = opstrs_list[0]
+		opstr_right = "|".join(opstr_list[1:])
 
 		if self._basis_left._Ns < self._basis_right._Ns:
 			ME_left,row_left,col_left = self._basis_left.Op(opstr_left,indx_left,J,dtype)
@@ -114,9 +121,11 @@ class tensor_basis(basis):
 
 
 
-	def index(self,s_left,s_right):
-		s_left = self.basis_left.index(s_left)
-		s_right = self.basis_right.index(s_right)
+	def index(self,*states):
+		if len(states) < 2:
+			raise ValueError("states must be list of atleast 2 elements long")
+		s_left = self.basis_left.index(*states[0])
+		s_right = self.basis_right.index(*states[1:])
 		return s_right + self.basis_right.Ns*s_left
 
 
@@ -327,17 +336,19 @@ class tensor_basis(basis):
 		if opstr.count("|") == 0: 
 			raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
 	
-		if opstr.count("|") > 1: 
-			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+		# if opstr.count("|") > 1: 
+		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
-		if len(opstr)-1 != len(indx):
+		if len(opstr)-opstr.count("|") != len(indx):
 			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstr_left,opstr_right=opstr.split("|")
+		opstrs_list=opstr.split("|")
+		opstr_left = opstrs_list[0]
+		opstr_right = "|".join(opstr_list[1:])
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -363,17 +374,19 @@ class tensor_basis(basis):
 		opstr = op[0]
 		indx  = op[1]
 	
-		if opstr.count("|") > 1: 
-			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+		# if opstr.count("|") > 1: 
+		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
-		if len(opstr)-1 != len(indx):
+		if len(opstr)-opstr.count("|") != len(indx):
 			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstr_left,opstr_right=opstr.split("|")
+		opstrs_list=opstr.split("|")
+		opstr_left = opstrs_list[0]
+		opstr_right = "|".join(opstr_list[1:])
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -402,17 +415,19 @@ class tensor_basis(basis):
 		opstr = op[0]
 		indx  = op[1]
 	
-		if opstr.count("|") > 1: 
-			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+		# if opstr.count("|") > 1: 
+		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
-		if len(opstr)-1 != len(indx):
+		if len(opstr)-opstr.count("|") != len(indx):
 			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstr_left,opstr_right=opstr.split("|")
+		opstrs_list=opstr.split("|")
+		opstr_left = opstrs_list[0]
+		opstr_right = "|".join(opstr_list[1:])
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -431,17 +446,20 @@ class tensor_basis(basis):
 		opstr = op[0]
 		indx  = op[1]
 	
-		if opstr.count("|") > 1: 
-			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+		# if opstr.count("|") > 1: 
+		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
-		if len(opstr)-1 != len(indx):
-			raise ValueError("not enough indices for opstr in: {0}, {1}".format(opstr,indx))
+		if len(opstr)-opstr.count("|") != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
 
 		i = opstr.index("|")
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstr_left,opstr_right=opstr.split("|")
+		opstrs_list=opstr.split("|")
+		opstr_left = opstrs_list[0]
+		opstr_right = "|".join(opstr_list[1:])
+
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -536,8 +554,10 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v1 = basis._basis_left.get_vec(v1,sparse=True)
 			
 		if full_right:
-			v2 = basis._basis_right.get_vec(v2,sparse=True)
-
+			try:
+				v2 = basis._basis_right.get_vec(v2,sparse=True,full_left=True,full_right=True)
+			except TypeError:
+				v2 = basis._basis_right.get_vec(v2,sparse=True)
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
 		temp2 = _np.ones((v2.shape[0],1),dtype=_np.int8)
@@ -556,9 +576,12 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 
 			if full_left:
 				v1 = basis._basis_left.get_vec(v1,sparse=True)
-			
+				
 			if full_right:
-				v2 = basis._basis_right.get_vec(v2,sparse=True)
+				try:
+					v2 = basis._basis_right.get_vec(v2,sparse=True,full_left=True,full_right=True)
+				except TypeError:
+					v2 = basis._basis_right.get_vec(v2,sparse=True)
 
 
 			v1 = _sp.kron(v1,temp2,format="csr")  
@@ -579,7 +602,10 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v1 = basis._basis_left.get_vec(v1,sparse=False)
 			
 		if full_right:
-			v2 = basis._basis_right.get_vec(v2,sparse=False)
+			try:
+				v2 = basis._basis_right.get_vec(v2,sparse=False,full_left=True,full_right=True)
+			except TypeError:
+				v2 = basis._basis_right.get_vec(v2,sparse=False)
 
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
@@ -596,9 +622,12 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 
 			if full_left:
 				v1 = basis._basis_left.get_vec(v1,sparse=False)
-			
+				
 			if full_right:
-				v2 = basis._basis_right.get_vec(v2,sparse=False)
+				try:
+					v2 = basis._basis_right.get_vec(v2,sparse=False,full_left=True,full_right=True)
+				except TypeError:
+					v2 = basis._basis_right.get_vec(v2,sparse=False)
 
 			v1 =  _np.kron(v1,temp2)
 			v2 = _np.kron(temp1,v2)
