@@ -34,6 +34,139 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
 
+	'lmbda': (optional) svd singular values
+
+	--- arguments ---
+
+	system_state: (required) the state of the quantum system. Can be a:
+
+				-- pure state [numpy array of shape (Ns,)].
+
+				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
+
+				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
+					rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
+					[numpy arary of shape (Ns,Ns)]. The keys CANNOT be chosen arbitrarily.].
+
+				-- a collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+
+	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+
+				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
+				-- [0,1,...,N-1,N] for 'photon_basis'.
+
+	DM: (optional) String to enable the calculation of the reduced density matrix. Available options are
+
+				-- 'chain_subsys': calculates the reduced DM of the subsystem 'chain_subsys' and
+					returns it under the key 'DM_chain_subsys'.
+
+				-- 'other_subsys': calculates the reduced DM of the complement of 'chain_subsys' and
+					returns it under the key 'DM_other_subsys'.
+
+				-- 'both': calculates and returns both density matrices as defined above.
+
+				Default is 'False'. 	
+
+	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
+				the _entropy keys have attached '_Renyi' to their label.
+
+	densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
+
+	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
+
+	* `svd_return_vec`: (optional) list of three booleans to return the Singular Value Decomposition (svd) 
+		  parameters:
+
+		  * `[ . ,True, . ]` svd singular values.
+
+		  * `[ . , . ,True]` and `[True, . , . ]` are depricated.
+
+		  Default is ```[False,False,False]```.
+
+	"""
+
+	# initiate variables
+	variables = ["Sent"]
+	translate_dict={"Sent":"Sent_A"}
+
+	return_rdm = None
+	return_rdm_EVs=False
+
+	if DM in ['chain_subsys','A']:
+		variables.append("DM_chain_subsys")
+		return_rdm = 'A'
+		
+
+	elif DM in ['other_subsys','B']:
+		variables.append("DM_other_subsys")
+		return_rdm = 'B'
+		translate_dict={"Sent":"Sent_B"}
+
+	elif DM=='both':
+		variables.append("DM_chain_subsys")
+		variables.append("DM_other_subsys")
+		return_rdm = 'both'
+
+	elif DM and DM not in ['chain_subsys','other_subsys','both','A','B']:
+		raise TypeError("Unexpected keyword argument for 'DM'!")
+
+	if svd_return_vec[1]:
+		variables.append('lmbda')
+		return_rdm_EVs=True
+
+
+	### translate arguments
+	enforce_pure=False
+	if isinstance(system_state,dict):
+		state=system_state['V_states']
+		enforce_pure=True
+	else:
+		state=system_state
+
+	translate_dict.update({"DM_chain_subsys":'rdm_A',"DM_other_subsys":'rdm_B',"both":'both','lmbda':"p_A"})
+	
+	Sent = basis.ent_entropy(state,chain_subsys,return_rdm=return_rdm,return_rdm_EVs=return_rdm_EVs,
+												enforce_pure=enforce_pure,alpha=alpha)
+	
+	N_A = len(set(chain_subsys))
+	if densities:
+		if 'Sent_A' in Sent.keys():
+			Sent['Sent_A']/=N_A
+		if 'Sent_B' in Sent.keys():
+			Sent['Sent_B']/=(basis.L - N_A)
+		
+
+
+	# store variables to dictionary
+	return_dict = {}
+	for i in variables:
+		j=translate_dict[i]
+		if i == 'lmbda':
+			return_dict[i] = _np.sqrt( Sent[j] )
+		else:
+			return_dict[i] = Sent[j]
+
+	return return_dict
+
+def _ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+	"""
+	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
+	reduced subsystem. 
+
+	RETURNS:	dictionary with keys:
+
+	'Sent': entanglement entropy.
+
+	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
+
+	'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
+
 	'U': (optional) svd U matrix
 
 	'V': (optional) svd V matrix
@@ -137,6 +270,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
 			U, lmbda, _ = _npla.svd(v, full_matrices=False)
 			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+			DM='chain_subsys'
 		else:
 			lmbda = _npla.svd(v.squeeze(), compute_uv=False)
 	elif DM == 'chain_subsys':
@@ -165,7 +299,11 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	# calculate singular values of reduced DM and the corresponding probabilities
 	if rho_d is not None and rho_d.shape!=(1,):
 		# diagonalise reduced DM
-		p = _npla.eigvalsh(DM_chain_subsys)
+		if DM in ['chain_subsys', 'both']:
+			p = _npla.eigvalsh(DM_chain_subsys)
+		elif DM == 'other_subsys':
+			p = _npla.eigvalsh(DM_other_subsys)
+			
 		if svd_return_vec[1]: # if lmdas requested by user
 			lmbda = _np.sqrt(abs(p))
 	else:# calculate probabilities
@@ -832,6 +970,26 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 		del v, U, DM_chain_subsys
 		#"""
 		#Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
+
+		"""
+		#print(Srdm_Renyi)
+
+		basis=Srdm_args['basis']
+		del Srdm_args['basis']
+		if 'sub_sys_A' in Srdm_args.keys():
+			sub_sys_A = Srdm_args['sub_sys_A']
+			del Srdm_args['sub_sys_A']
+		else:
+			sub_sys_A=tuple(range(basis.L//2))
+
+		V2=reduce(_np.dot,[V2,_np.diag(rho),V2.conj().T])
+		shape0 = V2.shape
+		V2 = V2.reshape(shape0+(1,))
+		Srdm_Renyi_A, Srdm_Renyi_B, _, _ = basis._p_mixed(V2,sub_sys_A,**Srdm_args)
+
+		print(Srdm_Renyi_A)
+		exit()
+		"""
 		
 	# clear up memory
 	del V2
@@ -1459,6 +1617,7 @@ def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
 	Ns=shape0[0]
+
 
 	for i,t in enumerate(times):
 		if t == t0:

@@ -1,6 +1,8 @@
+from __future__ import print_function
 import numpy as _np
 import scipy.sparse as _sp
 import warnings
+
 
 MAXPRINT = 50
 # this file stores the base class for all basis classes
@@ -31,6 +33,7 @@ class basis(object):
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
+		string += "\nsee review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.\n"
 		return string
 
 
@@ -54,10 +57,10 @@ class basis(object):
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
@@ -282,9 +285,13 @@ class basis(object):
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
 		
 		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+			try:
+				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+			except NameError:
+				user_input = input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+
 			if user_input == 'y':
 				print("   (opstr, indices, coupling)")
 				for i in range(len(diff)):
@@ -299,9 +306,13 @@ class basis(object):
 		# calculate non-hermitian elements
 		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
 		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			try:
+				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			except NameError:
+				user_input = input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+
 			if user_input == 'y':
 				print("   (opstr, indices, coupling(t))")
 				for i in range(len(diff)):
@@ -345,11 +356,15 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( zip(*tuple(odd_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+
 				if user_input == 'y':
 					print(" these operators do not conserve particle number{0}:".format(con))
 					print("   (opstr, indices, coupling)")
@@ -371,11 +386,14 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( zip(*tuple(odd_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
 				if user_input == 'y':
 					print(" these operators do not conserve particle number{0}:".format(con))
 					print("   (opstr, indices, coupling)")
@@ -403,14 +421,17 @@ class basis(object):
 				odd_ops,missing_ops = static_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -426,12 +447,16 @@ class basis(object):
 
 			elif len(static_blocks[symm]) == 1:
 				missing_ops, = static_blocks[symm]
-				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(missing_ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -447,14 +472,18 @@ class basis(object):
 				odd_ops,missing_ops = dynamic_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are missing for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -470,12 +499,16 @@ class basis(object):
 
 			elif len(dynamic_blocks[symm]) == 1:
 				missing_ops, = dynamic_blocks[symm]
-				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(missing_ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -506,6 +539,56 @@ def isbasis(x):
 ####################################################
 
 def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	"""
+	This function computes the partial trace of a dense pure state psi over set of sites sub_sys_A and returns 
+	reduced DM. Vectorisation available. 
+	"""
+	
+	psi_v=_lattice_reshape_pure(psi,sub_sys_A,L,sps)
+
+	if return_rdm == "A":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
+	elif return_rdm == "B":
+		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+	elif return_rdm == "both":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+
+def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+	"""
+	This function computes the partial trace of a set of dense mixed states rho over set of sites sub_sys_A 
+	and returns reduced DM. Vectorisation available. 
+	"""
+	rho_v=_lattice_reshape_mixed(rho,sub_sys_A,L,sps)
+
+	if return_rdm == "A":
+		return _np.einsum("...jlkl->...jk",rho_v),None
+	elif return_rdm == "B":
+		return None,_np.einsum("...ljlk->...kj",rho_v)
+	elif return_rdm == "both":
+		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...kj",rho_v)
+
+def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	"""
+	This function computes the partial trace of a sparse pure state psi over set of sites sub_sys_A and returns 
+	reduced DM.
+	"""
+	psi=_lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps)
+	
+	if return_rdm == "A":
+		return psi.dot(psi.H),None
+	elif return_rdm == "B":
+		return None,psi.H.dot(psi)
+	elif return_rdm == "both":
+		#return psi.dot(psi.H),psi.H.dot(psi)
+		return psi.dot(psi.H),psi.H.dot(psi)
+
+
+
+def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
+	"""
+	This function reshapes the dense pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
+	Vectorisation available. 
+	"""
 	extra_dims = psi.shape[:-1]
 	n_dims = len(extra_dims)
 
@@ -526,24 +609,15 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
-	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
+	return psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
-	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-
-
-
-
-
-
-def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
+	"""
+	This function reshapes the dense mixed state psi over the Hilbert space defined by sub_sys_A and its complement.
+	Vectorisation available. 
+	"""
 	extra_dims = rho.shape[:-2]
 	n_dims = len(extra_dims)
-
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)
@@ -566,20 +640,13 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 
 	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
-	rho_v = rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B)) 
+	
+	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
 
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
-	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
-
-
-
-
-
-def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
+	"""
+	This function reshapes the sparse pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
+	"""
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)
@@ -590,23 +657,22 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 	Ns_A = (sps**L_A)
 	Ns_B = (sps**L_B)
-
 	psi = psi.tocoo()
 
 	T_tup = sub_sys_A+sub_sys_B
-
 	
 	# reshuffle indices for the sub-systems.
 	# j = sum( j[i]*(sps**i) for i in range(L))
 	# this reshuffles the j[i] similar to the transpose operation
 	# on the dense arrays psi_v.transpose(T_tup)
+	
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
 		for i_new,i_old in enumerate(T_tup):
 			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
 	else:
 		indx = psi.col
-
+	
 
 	# make shift way of reshaping array
 	# j = j_A + Ns_A * j_B
@@ -614,223 +680,11 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	# j_B = j / Ns_A
 
 	psi._shape = (Ns_A,Ns_B)
-	psi.row[:] = indx % Ns_A
-	psi.col[:] = indx / Ns_A
-
-	psi = psi.tocsr()
-
-	if return_rdm == "A":
-		return psi.dot(psi.H)
-	elif return_rdm == "B":
-		return psi.H.dot(psi)
-	elif return_rdm == "both":
-		return psi.dot(psi.H),psi.H.dot(psi)
+	psi.row[:] = indx / Ns_B
+	psi.col[:] = indx % Ns_B
 
 
-
-
-
-
-def _reshape_as_subsys(psi,sub_sys_A,L,sps)
-#(system_state,basis,chain_subsys=None,subsys_ordering=True):
-	"""
-	This function reshapes an input state (or matrix with 'Nstates' initial states) into an array of
-	the shape (Nstates,Ns_subsys,Ns_other) with 'Ns_subsys' and 'Ns_other' the Hilbert space dimensions
-	of the subsystem and its complement, respectively.
-
-	RETURNS:	reshaped state, 
-				vector with eigenvalues of the DM associated with the initial state, 
-				subsystem size
-
-	--- arguments ---
-
-	system_state: (required) the state of the quantum system. Can be a:
-
-				-- pure state [numpy array of shape (1,) or (,1)].
-
-				-- density matrix (DM) [numpy array of shape (1,1)].
-
-				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
-					rho_d [numpy array of shape (1,) or (,1)] and its eigenbasis in the columns of V_rho
-					[numpy arary of shape (1,1)]. The keys are CANNOT be chosen arbitrarily. 'rho_d'
-					can be 'None', but needs to always be passed.
-
-				-- a collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
-
-	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
-
-	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
-
-				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
-
-				-- [0,1,...,N-1,N] for 'photon_basis'. 
-
-	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'. 
-	"""
-
-	try:
-		N = basis.N
-	except AttributeError:
-		N = basis.particle_N
-
-
-
-	if chain_subsys is not None:
-		try:
-			chain_subsys = [i for i in iter(chain_subsys)]
-		except TypeError:
-			raise TypeError("Expecting iterable for for 'chain_subsys'!")
-		if len(chain_subsys) == 0:
-			raise TypeError("Expecting a nonempty iterable for 'chain_subsys'!")
-		elif min(chain_subsys) < 0:
-			raise TypeError("'subsys' must be contain nonnegative numbers!")
-		elif max(chain_subsys) > N-1:
-			raise TypeError("'subsys' contains sites exceeding the total lattice site number!")
-		elif len(set(chain_subsys)) < len(chain_subsys):
-			raise TypeError("'subsys' cannot contain repeating site indices!")
-		elif any(not _np.issubdtype(type(s),_np.integer) for s in chain_subsys):
-			raise ValueError("'subsys' must iterable of integers with values in {0,...,L-1}!")
-		elif subsys_ordering:
-			if len(set(chain_subsys))==len(chain_subsys) and sorted(chain_subsys)!=chain_subsys:
-				# if chain subsys is def with unordered sites, order them
-				warnings.warn("'subsys' {} contains non-ordered sites. 'subsys' re-ordered! To change default set 'subsys_ordering = False'.".format(chain_subsys),stacklevel=4)
-				chain_subsys = sorted(chain_subsys)
-
-	
-	if isinstance(system_state,dict):
-		keys = set(system_state.keys())
-		if keys == set(['V_rho','rho_d']):
-			istate = 'DM'
-			# define initial state
-			rho_d = system_state['rho_d']
-			if rho_d.shape != (basis.Ns,):
-				raise ValueError("expecting a 1d array 'rho_d' of size {}!".format(basis.Ns))
-			elif _np.any(rho_d < 0):
-				raise ValueError("expecting positive eigenvalues for 'rho_d'!")
-			psi = system_state['V_rho']
-			if psi.shape != (basis.Ns,basis.Ns):
-				raise ValueError("expecting a 2d array 'V_rho' of size ({},{})!".format(basis.Ns,basis.Ns))
-		elif keys == set(['V_states']):
-			istate = 'pure'
-			rho_d = None
-			psi = system_state['V_states']
-		else:
-			raise ValueError("expecting dictionary with keys ['V_rho','rho_d'] or ['V_states']")
-
-
-		if _sp.issparse(system_state):
-			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
-			system_state = system_state.todense()
-			if system_state.shape[1] == 1:
-				system_state = system_state.ravel()
-
-		elif system_state.__class__ not in  [_np.ndarray,_np.matrix]:
-			system_state = _np.asanyarray(system_state)
-
-
-		if psi.ndim != 2:
-			raise ValueError("Expecting ndim == 2 for V_states.")
-
-		if psi.shape[0] != basis.Ns:
-			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))
-	else:
-		if _sp.issparse(system_state):
-			warnings.warn("ent_entropy function only handles numpy.ndarrays, sparse matrix will be comverted to dense matrix.",UserWarning,stacklevel=4)
-			system_state = system_state.todense()
-			if system_state.shape[1] == 1:
-				system_state = system_state.ravel()
-		elif system_state.__class__ not in  [_np.ndarray,_np.matrix]:
-			system_state = _np.asanyarray(system_state)
-
-			
-
-
-		if system_state.ndim == 1: # pure state
-			istate = 'pure'
-			# define initial state
-			psi = system_state
-			rho_d = _np.reshape(1.0,(1,))
-		elif system_state.ndim == 2: # DM
-			if system_state.shape[0] != system_state.shape[1]:
-				raise ValueError("Expecting square array for Density Matrix.")
-			istate = 'DM'
-			# diagonalise DM
-			rho_d, psi = _la.eigh(system_state)
-			if _np.min(rho_d) < 0 and abs(_np.min(rho_d)) > 1E3*_np.finfo(rho_d.dtype).eps:
-				raise ValueError("Expecting DM to have positive spectrum")
-			elif abs(1.0 - _np.sum(rho_d) ) > 1E3*_np.finfo(rho_d.dtype).eps:
-				raise ValueError("Expecting eigenvalues of DM to sum to unity!")
-			rho_d = abs(rho_d)
-
-		if psi.shape[0] != basis.Ns:
-			raise ValueError("V_states shape {0} not compatible with basis size: {1}.".format(psi.shape,basis.Ns))			
-			
-
-
-	# clear up memory
-	del system_state
-
-
-	# define number of participating states in 'system_state'
-	Ns = psi[0,].size
-
-	
-	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
-
-		# set chain subsys if not defined
-		if chain_subsys is None: 
-			chain_subsys=list(i for i in range( N//2 ))
-			warnings.warn("Subsystem contains sites {}.".format(chain_subsys),stacklevel=4)
-		
-	
-		# re-write the state in the initial basis
-		if basis.Ns<basis.sps**N:
-			psi = basis.get_vec(psi,sparse=False)
-			
-		#calculate H-space dimensions of the subsystem and the system
-		N_A = len(chain_subsys)
-		Ns_A = basis.sps**N_A
-		# define lattice indices putting the subsystem to the left
-		system = chain_subsys[:]
-		[system.append(i) for i in range(N) if not i in chain_subsys]
-
-		'''
-		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
-		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
-
-		1) the initial state psi has 2^N entries corresponding to the spin-z configs
-		2) reshape psi into a 2x2x2x2x...x2 dimensional array (N products in total). Call this array v.
-		3) v should satisfy the property that v[0,1,0,0,0,1,...,1,0], total of N entries, should give the entry of psi 
-		   along the the spin-z basis vector direction (0,1,0,0,0,1,...,1,0). This ensures a correspondence of the v-indices
-		   (and thus the psi-entries) to the N lattice sites.
-		4) fix the lattice sites that define the subsystem N_A, and reshuffle the array v according to this: e.g. if the 
-	 	   subsystem consistes of sites (k,l) then v should be reshuffled such that v[(k,l), (all other sites)]
-	 	5) reshape v[(k,l), (all other sites)] into a 2D array of dimension ( N_A x N/N_A ) and proceed with the SVD as below  
-		'''
-		if chain_subsys==list(range(len(chain_subsys))):
-			# chain_subsys sites come in consecutive order
-			# define reshape tuple
-			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
-			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple2)
-			del psi
-		else: # if chain_subsys not consecutive or staring site not [0]
-			# performs 2) and 3)
-			# update reshape tuple
-			reshape_tuple1 = (Ns,) + tuple([basis.sps for i in range(N)])
-			# upadte axes dimensions
-			system = [s+1 for s in system]
-			system.insert(0,0)
-			# reshape states
-			v = _np.reshape(psi.T,reshape_tuple1)
-			del psi
-			# performs 4)
-			v=v.transpose(system) 
-			# performs 5)
-			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
-			v = _np.reshape(v,reshape_tuple2)
+	return psi.tocsr()
 
 
 
