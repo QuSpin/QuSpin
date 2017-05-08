@@ -6,7 +6,7 @@ sys.path.insert(0,quspin_path)
 
 from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from quspin.operators import hamiltonian # Hamiltonian and observables
-from quspin.tools.measurements import ent_entropy
+from quspin.tools.measurements import _ent_entropy
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 
@@ -43,10 +43,10 @@ def spin_entropy(dtype,symm,Sent_args):
 	Ed,Vd = np.linalg.eigh(rho_d)
 
 
-	S_pure = ent_entropy(psi0,basis,**Sent_args)
-	S_DM = ent_entropy(rho0,basis,**Sent_args)
-	#S_DMd = ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
-	S_all = ent_entropy({'V_states':V},basis,**Sent_args)
+	S_pure = _ent_entropy(psi0,basis,**Sent_args)
+	S_DM = _ent_entropy(rho0,basis,**Sent_args)
+	S_DMd = _ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
+	S_all = _ent_entropy({'V_states':V},basis,**Sent_args)
 
 	return (S_pure, S_DM, S_DMd, S_all)
 
@@ -83,10 +83,10 @@ def spin_photon_entropy(dtype,symm,Sent_args):
 	Ed,Vd = np.linalg.eigh(rho_d)
 
 
-	S_pure = ent_entropy(psi0,basis,**Sent_args)
-	S_DM = ent_entropy(rho0,basis,**Sent_args)
-	S_DMd = ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
-	S_all = ent_entropy({'V_states':V},basis,**Sent_args)
+	S_pure = _ent_entropy(psi0,basis,**Sent_args)
+	S_DM = _ent_entropy(rho0,basis,**Sent_args)
+	S_DMd = _ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
+	S_all = _ent_entropy({'V_states':V},basis,**Sent_args)
 
 	return (S_pure, S_DM, S_DMd, S_all)
 
@@ -123,10 +123,10 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 	Ed,Vd = np.linalg.eigh(rho_d)
 
 
-	S_pure = ent_entropy(psi0,basis,**Sent_args)
-	S_DM = ent_entropy(rho0,basis,**Sent_args)
-	S_DMd = ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
-	S_all = ent_entropy({'V_states':V},basis,**Sent_args)
+	S_pure = _ent_entropy(psi0,basis,**Sent_args)
+	S_DM = _ent_entropy(rho0,basis,**Sent_args)
+	S_DMd = _ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
+	S_all = _ent_entropy({'V_states':V},basis,**Sent_args)
 
 	return (S_pure, S_DM, S_DMd, S_all)
 
