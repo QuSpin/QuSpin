@@ -1512,7 +1512,6 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 			v0 = v0.ravel()
 	 
 
-
 	shape0 = v0.shape
 	
 	if _np.iscomplexobj(times):

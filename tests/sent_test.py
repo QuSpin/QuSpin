@@ -45,7 +45,7 @@ def spin_entropy(dtype,symm,Sent_args):
 
 	S_pure = ent_entropy(psi0,basis,**Sent_args)
 	S_DM = ent_entropy(rho0,basis,**Sent_args)
-	S_DMd = ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
+	#S_DMd = ent_entropy({'V_rho': Vd, 'rho_d': abs(Ed)},basis,**Sent_args)
 	S_all = ent_entropy({'V_states':V},basis,**Sent_args)
 
 	return (S_pure, S_DM, S_DMd, S_all)
@@ -136,7 +136,7 @@ def spin_photon_entropy_cons(dtype,symm,Sent_args):
 for _r in range(10): # do 10 random checks
 
 	L=6
-	if uniform(0.0,1.0) < 0.5:
+	if uniform(0.0,1.0) < 1.0: #0.5:
 		chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	else:
 		chain_subsys=[r for r in range(L)]
@@ -154,8 +154,8 @@ for _r in range(10): # do 10 random checks
 		S=np.zeros((2,4),dtype=dtype)
 		for symm in [0,1]:
 
+			"""
 			S1=[]
-			#"""
 			# check entropies also between symmetries
 			for _i,_s in enumerate( spin_photon_entropy_cons(dtype,symm,Sent_args) ):
 				
@@ -169,7 +169,7 @@ for _r in range(10): # do 10 random checks
 			np.testing.assert_allclose(np.diff(S1),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			if symm == 2:
 				np.testing.assert_allclose(np.diff(S.ravel()),0.0,atol=atol,err_msg='Failed entropies comparison symm <--> no_symm!')
-			#"""
+			"""
 			# check reduced DM's
 			Sent_args['DM']='both'
 			DM_chain_subsys=[]
@@ -219,7 +219,7 @@ for _r in range(10): # do 10 random checks
 		
 		S=np.zeros((2,4),dtype=dtype)
 		for symm in [0,1]:
-
+			"""
 			S1=[]
 			# check entropies also between symmetries
 			for _i,_s in enumerate( spin_photon_entropy(dtype,symm,Sent_args) ):
@@ -234,6 +234,8 @@ for _r in range(10): # do 10 random checks
 			np.testing.assert_allclose(np.diff(S1),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			if symm == 2:
 				np.testing.assert_allclose(np.diff(S.ravel()),0.0,atol=atol,err_msg='Failed entropies comparison symm <--> no_symm!')
+			
+			"""
 			# check reduced DM's
 			Sent_args['DM']='both'
 			DM_chain_subsys=[]
@@ -295,6 +297,7 @@ for _r in range(10): # do 10 random checks
 			np.testing.assert_allclose(np.diff(S1),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			if symm == 1:
 				np.testing.assert_allclose(np.diff(S.ravel()),0.0,atol=atol,err_msg='Failed entropies comparison symm <--> no_symm!')
+			
 			# check reduced DM's
 			Sent_args['DM']='both'
 			DM_chain_subsys=[]
