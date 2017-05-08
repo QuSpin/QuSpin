@@ -17,27 +17,27 @@ class tensor_basis(basis):
 	def __init__(self,*basis_list):
 		if len(basis_list) < 2:
 			raise ValueError("basis_list must have more than one basis.")
-		if not isinstance(basis_lust[0],basis):
+
+		if any((not isinstance(b,basis)) for b in basis_list):
 			raise ValueError("basis_list must contain instances of basis class")
 
-		# if not isinstance(basis_left,basis):
-		# 	raise ValueError("basis_left must be instance of basis class")
-		# if not isinstance(basis_right,basis):
-		# 	raise ValueError("basis_right must be instance of basis class")
-		# if isinstance(basis_left,tensor_basis): 
-		# 	raise TypeError("Can only create tensor basis with non-tensor type basis")
-		# if isinstance(basis_right,tensor_basis): 
-		# 	raise TypeError("Can only create tensor basis with non-tensor type basis")
-		self._basis_left=basis_list[0]
-		self._basis_right=tensor_basis(*basis_list[1:])
+		if any(isinstance(b,tensor_basis) for b in basis_list):
+			raise ValueError("basis_list can't contain instances of tensor_basis class")
 
-		self._Ns = basis_left.Ns*basis_right.Ns
+		self._basis_left=basis_list[0]
+
+		if len(basis_list) == 2:
+			self._basis_right = basis_list[1]
+		else:
+			self._basis_right = tensor_basis(*basis_list[1:])
+
+		self._Ns = self._basis_left.Ns*self._basis_right.Ns
 		self._dtype = _np.min_scalar_type(-self._Ns)
 
 		self._blocks = self._basis_left._blocks.copy()
 		self._blocks.update(self._basis_right._blocks)
 
-		self._unique_me = basis_left.unique_me and basis_left.unique_me
+		self._unique_me = self._basis_left.unique_me and self._basis_right.unique_me
 		self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
 
 	@property
@@ -59,9 +59,8 @@ class tensor_basis(basis):
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstrs_list=opstr.split("|")
-		opstr_left = opstrs_list[0]
-		opstr_right = "|".join(opstr_list[1:])
+		opstrs_left,opstr_right = opstr.split("|",1)
+	
 
 		if self._basis_left._Ns < self._basis_right._Ns:
 			ME_left,row_left,col_left = self._basis_left.Op(opstr_left,indx_left,J,dtype)
@@ -645,9 +644,7 @@ class tensor_basis(basis):
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstrs_list=opstr.split("|")
-		opstr_left = opstrs_list[0]
-		opstr_right = "|".join(opstr_list[1:])
+		opstr_left,opstr_right = opstr.split("|",1)
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -680,9 +677,7 @@ class tensor_basis(basis):
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstrs_list=opstr.split("|")
-		opstr_left = opstrs_list[0]
-		opstr_right = "|".join(opstr_list[1:])
+		opstr_left,opstr_right = opstr.split("|",1)
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -720,9 +715,7 @@ class tensor_basis(basis):
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstrs_list=opstr.split("|")
-		opstr_left = opstrs_list[0]
-		opstr_right = "|".join(opstr_list[1:])
+		opstr_left,opstr_right = opstr.split("|",1)
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -749,10 +742,7 @@ class tensor_basis(basis):
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstrs_list=opstr.split("|")
-		opstr_left = opstrs_list[0]
-		opstr_right = "|".join(opstr_list[1:])
-
+		opstr_left,opstr_right = opstr.split("|",1)
 
 		op1 = list(op)
 		op1[0] = opstr_left

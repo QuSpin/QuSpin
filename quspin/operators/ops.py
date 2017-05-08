@@ -1077,7 +1077,7 @@ class hamiltonian(object):
 			else:
 				if H_real:
 					v1 = v0
-					v0 = _np.zeros((2*self._Ns,)+v0.shape[0:],dtype=v1.real.dtype)
+					v0 = _np.zeros((2*self._Ns,)+v0.shape[1:],dtype=v1.real.dtype)
 					v0[:self._Ns] = v1.real
 					v0[self._Ns:] = v1.imag
 					if v0.ndim == 1:
@@ -1144,11 +1144,11 @@ class hamiltonian(object):
 
 	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
-
+		N_ele = v0.size//2
 
 		if time == t0:
 			if H_real:
-				return v0[:self._Ns] + 1j*v0[self._Ns:]
+				_np.squeeze((v0[:N_ele] + 1j*v0[N_ele:]).reshape(shape0))
 			else:
 				return _np.squeeze(v0.reshape(shape0))
 
@@ -1156,7 +1156,7 @@ class hamiltonian(object):
 		if solver.successful():
 			if imag_time: solver._y /= (norm(solver._y)/n)
 			if H_real:
-				return _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
+				return _np.squeeze((solver.y[:N_ele] + 1j*solver.y[N_ele:]).reshape(shape0))
 			else:
 				return _np.squeeze(solver.y.reshape(shape0))
 		else:
@@ -1167,13 +1167,14 @@ class hamiltonian(object):
 	def _evolve_list(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 
+		N_ele = v0.size//2
 		v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
 		
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if H_real:
-					v[...,i] = _np.squeeze((v0[:self._Ns] + 1j*v0[self._Ns:]).reshape(shape0))
+					v[...,i] = _np.squeeze((v0[:N_ele] + 1j*v0[N_ele:]).reshape(shape0))
 				else:
 					v[...,i] = _np.squeeze(v0.reshape(shape0))
 				continue
@@ -1183,7 +1184,7 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= (norm(solver._y)/n)
 				if H_real:
-					v[...,i] = _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
+					v[...,i] = _np.squeeze((solver.y[:N_ele] + 1j*solver.y[N_ele:]).reshape(shape0))
 				else:
 					v[...,i] = _np.squeeze(solver.y.reshape(shape0))
 			else:
@@ -1195,12 +1196,13 @@ class hamiltonian(object):
 
 	def _evolve_iter(self,solver,v0,t0,times,verbose,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
+		N_ele = v0.size//2
 
 		for i,t in enumerate(times):
 			if t == t0:
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if H_real:
-					yield _np.squeeze((v0[:self._Ns] + 1j*v0[self._Ns:]).reshape(shape0))
+					yield _np.squeeze((v0[:N_ele] + 1j*v0[N_ele:]).reshape(shape0))
 				else:
 					yield _np.squeeze(v0.reshape(shape0))
 				continue
@@ -1211,7 +1213,7 @@ class hamiltonian(object):
 				if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
 				if imag_time: solver._y /= (norm(solver.y)/n)
 				if H_real:
-					yield _np.squeeze((solver.y[:self._Ns] + 1j*solver.y[self._Ns:]).reshape(shape0))
+					yield _np.squeeze((solver.y[:N_ele] + 1j*solver.y[N_ele:]).reshape(shape0))
 				else:
 					yield _np.squeeze(solver.y.reshape(shape0))
 			else:

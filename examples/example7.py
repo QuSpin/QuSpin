@@ -61,7 +61,7 @@ def drive(L,S,blocks,omega,nT):
 blocks = dict(kblock=0,pblock=1,zblock=1)
 
 
-systems = [("1/2",20),("1",12),("3/2",10),("2",8)]
+systems = [("1/2",20),("1",12)]
 
 for S,L in systems:
 	drive(L,S,blocks,np.pi,100)

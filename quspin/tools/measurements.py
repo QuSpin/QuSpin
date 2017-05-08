@@ -134,8 +134,11 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	Sent = basis.ent_entropy(state,chain_subsys,return_rdm=return_rdm,return_rdm_EVs=return_rdm_EVs,
 												enforce_pure=enforce_pure,alpha=alpha)
 	
-	N_A = len(set(chain_subsys))
+	
 	if densities:
+		if chain_subsys is None:
+			raise ValueError("Must specify chain_subsys if densities is True")
+		N_A = len(set(chain_subsys))
 		if 'Sent_A' in Sent.keys():
 			Sent['Sent_A']/=N_A
 		if 'Sent_B' in Sent.keys():
@@ -1277,7 +1280,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 			
 		# calculate entanglement _entropy if requested	
 		if len(Sent_args) > 0:
-			Sent_time = basis.ent_entropy(psi_t.T,**Sent_args)
+			Sent_time = basis.ent_entropy(psi_t,**Sent_args)
 
 
 	else:

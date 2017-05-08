@@ -833,9 +833,9 @@ class basis_1d(basis):
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=shape)
+				return _sp.csr_matrix(([],([],[])),shape=(0,0))
 			else:
-				return _np.zeros(shape,dtype=v0.dtype)
+				return _np.zeros((0,0),dtype=v0.dtype)
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
@@ -1379,7 +1379,7 @@ class basis_1d(basis):
 			if not _sp.issparse(state):
 				state = _sp.csr_matrix(state).T
 
-			#sparse=True # set sparse flag to True
+			sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
 				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
 			else:
