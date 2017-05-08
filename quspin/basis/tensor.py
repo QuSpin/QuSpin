@@ -59,7 +59,7 @@ class tensor_basis(basis):
 		indx_left = indx[:i]
 		indx_right = indx[i:]
 
-		opstrs_left,opstr_right = opstr.split("|",1)
+		opstr_left,opstr_right = opstr.split("|",1)
 	
 
 		if self._basis_left._Ns < self._basis_right._Ns:
@@ -75,15 +75,15 @@ class tensor_basis(basis):
 
 
 		if n1 > 0 and n2 > 0:
-			row_left = row_left.astype(self._dtype)
-			row_left *= self._basis_right.Ns
+			row_right = row_right.astype(self._dtype)
+			row_right *= self._basis_left.Ns
 			row = _np.kron(row_left,_np.ones_like(row_right,dtype=_np.int8))
 			row += _np.kron(_np.ones_like(row_left,dtype=_np.int8),row_right)
 
 			del row_left,row_right
 
-			col_left = col_left.astype(self._dtype)
-			col_left *= self._basis_right.Ns
+			col_right = col_right.astype(self._dtype)
+			col_right *= self._basis_left.Ns
 			col = _np.kron(col_left,_np.ones_like(col_right,dtype=_np.int8))
 			col += _np.kron(_np.ones_like(col_left,dtype=_np.int8),col_right)
 
@@ -129,9 +129,9 @@ class tensor_basis(basis):
 	def index(self,*states):
 		if len(states) < 2:
 			raise ValueError("states must be list of atleast 2 elements long")
-		s_left = self.basis_left.index(*states[0])
+		s_left = self.basis_left.index(states[0])
 		s_right = self.basis_right.index(*states[1:])
-		return s_right + self.basis_right.Ns*s_left
+		return s_left + self.basis_left.Ns*s_right
 
 	def get_proj(self,dtype,full_left=True,full_right=True):
 		if full_left:
@@ -779,18 +779,18 @@ class tensor_basis(basis):
 
 		n_digits = int(_np.ceil(_np.log10(self._Ns)))
 
-		str_list_1 = self._basis_left._get__str__()
-		str_list_2 = self._basis_right._get__str__()
-		Ns2 = self._basis_right.Ns
+		str_list_left = self._basis_left._get__str__()
+		str_list_right = self._basis_right._get__str__()
+		Ns_left = self._basis_left.Ns
 		temp = "\t{0:"+str(n_digits)+"d}.  "
 		str_list=[]
-		for basis_left in str_list_1:
-			basis_left,s1 = basis_left.split(".  ")
-			i1 = int(basis_left)
-			for basis_right in str_list_2:
-				basis_right,s2 = basis_right.split(".  ")
-				i2 = int(basis_right)
-				str_list.append((temp.format(i2+Ns2*i1))+s1+s2)
+		for basis_right in str_list_right:
+			basis_right,s_right = basis_right.split(".  ")
+			i_right = int(basis_right)
+			for basis_left in str_list_left:
+				basis_left,s_left = basis_left.split(".  ")
+				i_left = int(basis_left)
+				str_list.append((temp.format(i_left+Ns_left*i_right))+s_left+s_right)
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT//2
@@ -801,6 +801,42 @@ class tensor_basis(basis):
 			str_list.extend(str_list_2)	
 
 		return str_list		
+
+
+
+	# def _get__str__(self):
+	# 	if not hasattr(self._basis_left,"_get__str__"):
+	# 		warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_left)),UserWarning,stacklevel=3)
+	# 		return "reference states: \n\t not availible"
+
+	# 	if not hasattr(self._basis_right,"_get__str__"):
+	# 		warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_right)),UserWarning,stacklevel=3)
+	# 		return "reference states: \n\t not availible"
+
+	# 	n_digits = int(_np.ceil(_np.log10(self._Ns)))
+
+	# 	str_list_left = self._basis_left._get__str__()
+	# 	str_list_right = self._basis_right._get__str__()
+	# 	Ns_right = self._basis_right.Ns
+	# 	temp = "\t{0:"+str(n_digits)+"d}.  "
+	# 	str_list=[]
+	# 	for basis_left in str_list_left:
+	# 		basis_left,s_left = basis_left.split(".  ")
+	# 		i_left = int(basis_left)
+	# 		for basis_right in str_list_right:
+	# 			basis_right,s_right = basis_right.split(".  ")
+	# 			i_right = int(basis_right)
+	# 			str_list.append((temp.format(i_right+Ns_right*i_left))+s_left+s_right)
+
+	# 	if self._Ns > MAXPRINT:
+	# 		half = MAXPRINT//2
+	# 		str_list_1 = str_list[:half]
+	# 		str_list_2 = str_list[-half:]
+
+	# 		str_list = str_list_1
+	# 		str_list.extend(str_list_2)	
+
+	# 	return str_list		
 
 
 def _combine_get_vecs(basis,v0,sparse,full_left,full_right):

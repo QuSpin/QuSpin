@@ -18,7 +18,7 @@ from time import time
 
 
 # setting parameters for simulation
-L = 12 # system size
+L = 10 # system size
 N = L//2 # number of particles
 w = 3.0 # disorder strength
 J = 1.0 # hopping strength
