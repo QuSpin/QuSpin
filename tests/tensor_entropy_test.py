@@ -1,9 +1,14 @@
+from __future__ import print_function, division
+
 import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 from quspin.basis import spin_basis_1d,tensor_basis
 import numpy as np
+
+from functools import reduce
+
 
 
 
