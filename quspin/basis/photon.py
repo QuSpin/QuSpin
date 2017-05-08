@@ -639,6 +639,7 @@ class ho_basis(basis):
 							"\n\tn: number operator")
 
 		self._blocks = {}
+		self._unique_me = True
 
 	@property
 	def Np(self):

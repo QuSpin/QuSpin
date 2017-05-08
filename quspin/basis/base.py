@@ -57,10 +57,10 @@ class basis(object):
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
