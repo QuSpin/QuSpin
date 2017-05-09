@@ -16,21 +16,32 @@ class boson_basis_1d(basis_1d):
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
-		if nb is None:
-			if Nb is None and sps is None:
-				raise ValueError("Must specify either Nb,sps, or nb")
+		if sps is None:
 
-			if sps is not None:
-				if type(sps) is not int:
-					raise TypeError("sps must be integer >= 1.")
-				if sps < 1:
-					raise ValueError("sps must be >= 1 or None")
+			if Nb is not None:
+				if nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
 
+			elif nb is not None:
+				if Nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
 
+				Nb = int(nb*L)
+			else:
 
+				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
 
-		if type(Nb) is int and sps is None:
-			sps = Nb+1
+			self._sps = Nb
+		else:
+			if Nb is not None:
+				if nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
+
+			elif nb is not None:
+				Nb = int(nb*L)
+
+			self._sps = sps
+
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
@@ -61,17 +72,6 @@ class boson_basis_1d(basis_1d):
 		if (type(zAblock) is int) and (type(zBblock) is int):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["cblock"] = zAblock*zBblock
-
-		self._sps = sps
-
-		if Nb is None and nb is not None:
-			if nb < 0 or nb > 1:
-				raise ValueError("nb must be between 0 and 1")			
-			Nb = int(nb*L)
-
-		if Nb is not None and nb is not None:
-			raise ValueError("Cannot Nb and nb simultaineously.")
-
 
 		if self._sps <= 2:
 			pars = _np.array([0]) # set sign to not be calculated

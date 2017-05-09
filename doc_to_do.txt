@@ -6,6 +6,8 @@ This is a to-do list to update the online package documentation with:
 Urgent:
 
 - block with diag_ensemble
+- update documentation
+  * obs_vs_time
 
 Future work (open an issue)
 
