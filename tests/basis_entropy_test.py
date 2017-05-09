@@ -9,6 +9,8 @@ from quspin.tools.measurements import _ent_entropy, _reshape_as_subsys
 import numpy as np
 import scipy.sparse as sp
 
+from functools import reduce
+
 np.random.seed(12)
 
 L=4

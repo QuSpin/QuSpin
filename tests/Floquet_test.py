@@ -30,7 +30,7 @@ atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
 for _r in range(10): # 10 random realisations
 
 	##### define model parameters #####
-	L=8 # system size
+	L=4 # system size
 	J=1.0 # spin interaction
 	g=uniform(0.2,1.5) # transverse field
 	h=uniform(0.2,1.5) # parallel field
