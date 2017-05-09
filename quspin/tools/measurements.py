@@ -668,29 +668,18 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 
 	#################################################################
-
-	# def einsum string
-	def _es_str(s):
-		'''
-		This function uses the np.einsum string to calculate the diagonal of a matrix product (d=1) in d=0.
-		'''
-		if istate in ['pure','DM']:
-			return s.replace(s[-1],'')
-		else:
-			return s
-
-
 	# calculate diag ens value of Obs
 	if Obs is not False:
 		Obs_d = Obs.dot(rho)
 
+
 	# calculate diag ens value of Obs fluctuations
 	if delta_t_Obs is not False:
-		delta_t_Obs_d = _np.einsum(_es_str('ji,jk,ki->i'),rho,delta_t_Obs,rho).real
+		delta_t_Obs_d = _np.einsum('j...,jk,k...->...',rho,delta_t_Obs,rho).real
 
 		# calculate diag ens value of Obs fluctuations
 		if delta_q_Obs is not False:
-			delta_q_Obs_d = _np.sqrt( _np.einsum(_es_str('ji,j->i'),rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
+			delta_q_Obs_d = _np.sqrt( _np.einsum('j...,j->...',rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
 
 		delta_t_Obs_d = _np.sqrt( delta_t_Obs_d )
 
@@ -960,9 +949,10 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 		
 	if Srdm_Renyi:
+		"""
 		# calculate singular values of columns of V2
 		v, _, N_A = _reshape_as_subsys({"V_states":V2},**Srdm_args)
-		#"""
+
 		U, lmbda, _ = _npla.svd(v, full_matrices=False)
 		if istate in ['mixed','thermal']:
 			DM_chain_subsys = _np.einsum('nm,nij,nj,nkj->mik',rho,U,lmbda**2,U.conj() )
@@ -971,28 +961,21 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			
 		Srdm_Renyi = _npla.eigvalsh(DM_chain_subsys).T # components (i,psi)
 		del v, U, DM_chain_subsys
-		#"""
-		#Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
-
 		"""
-		#print(Srdm_Renyi)
-
 		basis=Srdm_args['basis']
-		del Srdm_args['basis']
+		partial_tr_args=Srdm_args.copy()
+		del partial_tr_args['basis']
 		if 'sub_sys_A' in Srdm_args.keys():
 			sub_sys_A = Srdm_args['sub_sys_A']
-			del Srdm_args['sub_sys_A']
+			del partial_tr_args['sub_sys_A']
 		else:
 			sub_sys_A=tuple(range(basis.L//2))
+		N_A=len(sub_sys_A)
 
-		V2=reduce(_np.dot,[V2,_np.diag(rho),V2.conj().T])
-		shape0 = V2.shape
-		V2 = V2.reshape(shape0+(1,))
-		Srdm_Renyi_A, Srdm_Renyi_B, _, _ = basis._p_mixed(V2,sub_sys_A,**Srdm_args)
-
-		print(Srdm_Renyi_A)
-		exit()
-		"""
+		rdm_A = basis.partial_trace(V2,sub_sys_A=sub_sys_A,enforce_pure=True,**partial_tr_args)
+		rdm = _np.einsum('n...,nij->...ij',rho,rdm_A)
+	
+		Srdm_Renyi = _npla.eigvalsh(rdm).T # components (i,psi) 
 		
 	# clear up memory
 	del V2
