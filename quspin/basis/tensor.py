@@ -154,8 +154,7 @@ class tensor_basis(basis):
 		# reshape state according to sub_sys_A
 		Ns_left = self._basis_left.Ns
 		Ns_right = self._basis_right.Ns
-		v=_tensor_reshape_pure(state,Ns_left,Ns_right)
-
+		v=_tensor_reshape_pure(state,Ns_left,Ns_right,sub_sys_A)
 
 		rdm_A=None
 		rdm_B=None
@@ -177,109 +176,14 @@ class tensor_basis(basis):
 
 	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
 
-		"""
-		# THE FOLLOWING LINES HAVE BEEN DEPRECATED
-
-		if svds: # patchy sparse svd
-
-			# calculate full H-space representation of state
-			state=self.get_vec(state.T,sparse=True).T
-			# reshape state according to sub_sys_A
-			v=_lattice_reshape_sparse_pure(state,sub_sys_A,self._L,self._sps)
-			#print(v.todense())
-			n=min(v.shape)
-
-			# perform SVD	
-			if return_rdm is None:
-				lmbda_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=False)
-				lmbda_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=False)
-				#_, lmbda_dense, _ = _npla.svd(v.todense(),full_matrices=False)
-				# concatenate lower and upper part
-				lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-				lmbda.sort()
-				return lmbda[::-1]**2 + _np.finfo(lmbda.dtype).eps
-			else:
-				
-				if return_rdm=='A':
-					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='u')
-					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='u')
-					#ua,lmbdas,va = _npla.svd(v.todense())
-
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-					arg = _np.argsort(lmbda)
-					lmbda = lmbda[arg]**2
-
-					U=_np.concatenate((U_LM,U_SM),axis=1)
-					U=U[...,arg]
-					#V=_np.concatenate((V_LM,V_SM[...,::-1,:]),axis=0)
-
-					# check and orthogonalise VF in degenerate subspaces
-					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
-						U,_ = _sla.qr(U, overwrite_a=True)
-						#V,_ = _sla.qr(V.T, overwrite_a=True)
-						#V = V.T
-	
-					# calculate reduced DM
-					rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda,U.conj() )
-
-					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A
-
-				elif return_rdm=='B':
-					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='vh')
-					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='vh')
-					#ua,lmbdas,va = _npla.svd(v.todense())
-
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-					#U=_np.concatenate((U_LM,U_SM[...,::-1]),axis=1)
-					V=_np.concatenate((V_LM,V_SM),axis=0)
-
-					arg = _np.argsort(lmbda)
-					lmbda = lmbda[arg]**2
-					V = V[...,arg,:]
-
-					
-
-					# check and orthogonalise VF in degenerate subspaces
-					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
-						#U,_ = _sla.qr(U, overwrite_a=True)
-						V,_ = _sla.qr(V.T, overwrite_a=True)
-						V = V.T
-					
-					# calculate reduced DM
-					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
-
-					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_B
-
-				elif return_rdm=='both':
-					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=True)
-					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=True)
-
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-					U=_np.concatenate((U_LM,U_SM),axis=1)
-					V=_np.concatenate((V_LM,V_SM),axis=0)
-					arg = _np.argsort(lmbda)
-					lmbda = lmbda[arg]**2
-					V = V[...,arg,:]
-					U = U[...,arg]
-					# check and orthogonalise VF in degenerate subspaces
-					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
-						U,_ = _sla.qr(U, overwrite_a=True)
-						V,_ = _sla.qr(V.T, overwrite_a=True)
-						V = V.T
-					# calculate reduced DM
-					rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda,U.conj() )
-					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
-
-					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
-		"""
-
 		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
 
-		Ns_A=self._basis_left.Ns
-		Ns_B=self._basis_right.Ns
+		if sub_sys_A in ["left","both"]:
+			Ns_A=self._basis_left.Ns
+			Ns_B=self._basis_right.Ns
+		else:
+			Ns_A=self._basis_right.Ns
+			Ns_B=self._basis_left.Ns
 
 		rdm_A=None
 		rdm_B=None
@@ -380,6 +284,9 @@ class tensor_basis(basis):
 		if return_rdm not in set(["A","B","both",None]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
 
+		if type(sub_sys_A) is not str:
+			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
+
 		if sub_sys_A not in set(["left","right","both",None]):
 			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
 
@@ -396,7 +303,10 @@ class tensor_basis(basis):
 
 		if _sp.issparse(state) or sparse:
 			if not _sp.issparse(state):
-				state = _sp.csr_matrix(state)
+				if state.ndim == 1:
+					state = _sp.csr_matrix(state).T
+				else:
+					state = _sp.csr_matrix(state)
 
 			state = state.T
 			if state.shape[0] == 1:
@@ -523,6 +433,7 @@ class tensor_basis(basis):
 				else:
 					state = _sp.csr_matrix(state)
 
+			sparse=True
 			if state.shape[1] == 1:
 				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
 			else:
@@ -803,42 +714,6 @@ class tensor_basis(basis):
 		return str_list		
 
 
-
-	# def _get__str__(self):
-	# 	if not hasattr(self._basis_left,"_get__str__"):
-	# 		warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_left)),UserWarning,stacklevel=3)
-	# 		return "reference states: \n\t not availible"
-
-	# 	if not hasattr(self._basis_right,"_get__str__"):
-	# 		warnings.warn("basis class {0} missing _get__str__ function, can not print out basis representatives.".format(type(self._basis_right)),UserWarning,stacklevel=3)
-	# 		return "reference states: \n\t not availible"
-
-	# 	n_digits = int(_np.ceil(_np.log10(self._Ns)))
-
-	# 	str_list_left = self._basis_left._get__str__()
-	# 	str_list_right = self._basis_right._get__str__()
-	# 	Ns_right = self._basis_right.Ns
-	# 	temp = "\t{0:"+str(n_digits)+"d}.  "
-	# 	str_list=[]
-	# 	for basis_left in str_list_left:
-	# 		basis_left,s_left = basis_left.split(".  ")
-	# 		i_left = int(basis_left)
-	# 		for basis_right in str_list_right:
-	# 			basis_right,s_right = basis_right.split(".  ")
-	# 			i_right = int(basis_right)
-	# 			str_list.append((temp.format(i_right+Ns_right*i_left))+s_left+s_right)
-
-	# 	if self._Ns > MAXPRINT:
-	# 		half = MAXPRINT//2
-	# 		str_list_1 = str_list[:half]
-	# 		str_list_2 = str_list[-half:]
-
-	# 		str_list = str_list_1
-	# 		str_list.extend(str_list_2)	
-
-	# 	return str_list		
-
-
 def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 	Ns1=basis._basis_left.Ns
 	Ns2=basis._basis_right.Ns
@@ -952,35 +827,50 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 	return v0
 
 
-def _tensor_reshape_pure(psi,Ns_l,Ns_r):
-	extra_dims = psi.shape[:-1]
-	psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
+def _tensor_reshape_pure(psi,Ns_l,Ns_r,sub_sys_A):
+	extra_shape = psi.shape[:-1]
 
-	return psi_v	
+	psi_v = psi.reshape(extra_shape+(Ns_l,Ns_r))
+
+	if sub_sys_A in ["left","both"]:
+		return psi_v
+	else:
+		n = len(extra_shape)
+		extra_dims = tuple(i for i in range(n))
+		return psi_v.transpose(extra_dims+(n+1,n))
 
 
-def _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r):
+def _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A):
 	psi = psi.tocoo()
 	# make shift way of reshaping array
-	# j = j_l + Ns_r * j_l
-	# j_l = j / Ns_r
-	# j_r = j % Ns_r 
+	# j = j_l + Ns_l * j_r
+	# j_l = j % Ns_l
+	# j_r = j / Ns_l 
 	psi._shape = (Ns_l,Ns_r)
 	psi.row[:] = psi.col / Ns_r
 	psi.col[:] = psi.col % Ns_r
 
-	return psi.tocsr()
+	if sub_sys_A in ["left","both"]:
+		return psi.tocsr()
+	else:
+		return psi.T.tocsr()
 
 
-def _tensor_reshape_mixed(rho,Ns_l,Ns_r):
-	extra_dims = rho.shape[:-2]
-	psi_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
+def _tensor_reshape_mixed(rho,Ns_l,Ns_r,sub_sys_A):
+	extra_shape = rho.shape[:-2]
+	psi_v = rho.reshape(extra_shape+(Ns_l,Ns_r,Ns_l,Ns_r))
 
-	return psi_v
+	if sub_sys_A in ["left","both"]:
+		return psi_v
+	else:
+		n = len(extra_shape)
+		extra_dims = tuple(i for i in range(n))
+		return psi_v.transpose(extra_dims+(n+1,n,n+3,n+2))
+
 
 
 def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	psi_v = _tensor_reshape_pure(psi,Ns_l,Ns_r)
+	psi_v = _tensor_reshape_pure(psi,Ns_l,Ns_r,sub_sys_A)
 
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
@@ -991,18 +881,18 @@ def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
 
 
 def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	psi = _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r)
+	psi_v = _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A)
 
 	if return_rdm == "A":
-		return psi.dot(psi.H),None
+		return psi_v.dot(psi_v.H),None
 	elif return_rdm == "B":
-		return None,psi.H.dot(psi)
+		return None,psi_v.H.dot(psi_v)
 	elif return_rdm == "both":
-		return psi.dot(psi.H),psi.H.dot(psi)
+		return psi_v.dot(psi_v.H),psi_v.H.dot(psi_v)
 
 
 def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	rho_v = _tensor_reshape_mixed(rho,Ns_l,Ns_r)
+	rho_v = _tensor_reshape_mixed(rho,Ns_l,Ns_r,sub_sys_A)
 
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),None
@@ -1011,89 +901,3 @@ def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
 	elif return_rdm == "both":
 		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),_np.squeeze(_np.einsum("...jijk->...ki",rho_v))
 
-"""
-def _combine_get_vec(basis,v0,sparse,full_left,full_right):
-	Ns1=basis._basis_left.Ns
-	Ns2=basis._basis_right.Ns
-
-	Ns = min(Ns1,Ns2)
-
-	# reshape vector to matrix to rewrite vector as an outer product.
-	v0=_np.reshape(v0,(Ns1,Ns2))
-	# take singular value decomposition to get which decomposes the matrix into separate parts.
-	# the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector 
-
-	if sparse:
-		V1,S,V2=_sla.svds(v0,k=Ns-1,which='SM',maxiter=1E10)
-		V12,[S2],V22=_sla.svds(v0,k=1,which='LM',maxiter=1E10)
-
-		S.resize((Ns,))
-		S[-1] = S2
-		V1.resize((Ns1,Ns))
-		V1[:,-1] = V12[:,0]
-		V2.resize((Ns,Ns2))
-		V2[-1,:] = V22[0,:]
-	else:
-		V1,S,V2=_la.svd(v0)
-		
-	# svd returns V2.H so take the hc to reverse that
-	V2=V2.T.conj()
-	eps = _np.finfo(S.dtype).eps
-	# for any values of s which are 0, remove those vectors because they do not contribute.
-	mask=(S >= 10*eps)
-	V1=V1[:,mask]
-	V2=V2[:,mask]
-	S=S[mask]
-
-
-	# Next thing to do is take those vectors and convert them to their full hilbert space
-	if full_left:
-		V1=basis._basis_left.get_vec(V1,sparse)
-
-	if full_right:
-		V2=basis._basis_right.get_vec(V2,sparse)
-
-
-	# calculate the dimension total hilbert space with no symmetries
-	Ns=V2.shape[0]*V1.shape[0]		
-
-
-	if sparse:
-		v0=_sp.csr_matrix((Ns,1),dtype=V2.dtype)
-		# combining all the vectors together with the tensor product as opposed to the outer product
-		for i,s in enumerate(S):
-			v1=V1.getcol(i)
-			v2=V2.getcol(i)
-			v=_sp.kron(v1,v2)
-			v0 = v0 + s*v
-		n=_np.sqrt(v0.multiply(v0.conj()).sum())
-	#	v0=v0/n
-		v0=v0.astype(V1.dtype)
-		
-		
-	else:
-		v0=_np.zeros((Ns,),dtype=V2.dtype)
-		for i,s in enumerate(S):
-			v1=V1[:,i]
-			v2=V2[:,i]
-			v=_np.kron(v1,v2)
-			v0 += s*v
-		v0 /= _la.norm(v0)
-
-
-	return v0
-
-
-def _combine_get_vecs(basis,V0,sparse,full_left,full_right):
-	v0_list=[]
-	V0=V0.T
-	for v0 in V0:
-		v0_list.append(_combine_get_vec(basis,v0,sparse,full_left,full_right))
-
-	if sparse:
-		V0=_sp.hstack(v0_list)
-	else:
-		V0=_np.hstack(v0_list)
-
-	return V0
-"""

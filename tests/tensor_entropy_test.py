@@ -6,18 +6,18 @@ sys.path.insert(0,qspin_path)
 
 from quspin.basis import spin_basis_1d,tensor_basis
 import numpy as np
+import scipy.sparse as sp
 
 from functools import reduce
 
 
 
 
-
-L1 = 5
+L1 = 3
 L2 = 5
 L = L1+L2
 
-np.random.seed()
+np.random.seed(2)
 
 
 spin_basis = spin_basis_1d(L)
@@ -25,12 +25,18 @@ spin_basis = spin_basis_1d(L)
 spin_basis_left = spin_basis_1d(L1)
 spin_basis_right = spin_basis_1d(L2)
 
+Ns_l = spin_basis_left.Ns
+Ns_r = spin_basis_right.Ns
+
 test_basis = tensor_basis(spin_basis_left,spin_basis_right)
+# print(test_basis)
+# print(spin_basis)
 
 
-
-psi = np.random.uniform(-1,1,size=spin_basis.Ns)
+psi = np.random.uniform(-1,1,size=(spin_basis.Ns,)) + 1j*np.random.uniform(-1,1,size=(spin_basis.Ns,))
 psi /= np.linalg.norm(psi)
+
+sp_psi = sp.csr_matrix(psi).T
 
 psis = np.random.uniform(-1,1,size=(spin_basis.Ns,spin_basis.Ns)) + 1j*np.random.uniform(-1,1,size=(spin_basis.Ns,spin_basis.Ns))
 psis /= np.linalg.norm(psis,axis=0)
@@ -51,18 +57,20 @@ kwargs_list = [
 				(dict(sub_sys_A="left",return_rdm="A",return_rdm_EVs=True),		dict(sub_sys_A=range(L1),return_rdm="A",return_rdm_EVs=True)),
 				(dict(sub_sys_A="left",return_rdm="B",return_rdm_EVs=True),		dict(sub_sys_A=range(L1),return_rdm="B",return_rdm_EVs=True)),
 				(dict(sub_sys_A="left",return_rdm="both",return_rdm_EVs=True),	dict(sub_sys_A=range(L1),return_rdm="both",return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=False),	dict(sub_sys_A=range(L2),return_rdm=None,return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=False),	dict(sub_sys_A=range(L2),return_rdm="A",return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=False),	dict(sub_sys_A=range(L2),return_rdm="B",return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=False),dict(sub_sys_A=range(L2),return_rdm="both",return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=True),	dict(sub_sys_A=range(L2),return_rdm=None,return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=True),	dict(sub_sys_A=range(L2),return_rdm="A",return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=True),	dict(sub_sys_A=range(L2),return_rdm="B",return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=True),	dict(sub_sys_A=range(L2),return_rdm="both",return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=False),	dict(sub_sys_A=range(L1,L,1),return_rdm=None,return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=False),	dict(sub_sys_A=range(L1,L,1),return_rdm="A",return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=False),	dict(sub_sys_A=range(L1,L,1),return_rdm="B",return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=False),dict(sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm=None,return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm="A",return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm="B",return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=True)),
 				]
 
 
+
 for kwargs2,kwargs1 in kwargs_list:
+	print("checking kwargs: {}".format(kwargs2))
 	out_spin = spin_basis.ent_entropy(psi,**kwargs1)
 	out_tensor = test_basis.ent_entropy(psi,**kwargs2)
 
@@ -90,7 +98,6 @@ for kwargs2,kwargs1 in kwargs_list:
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
-	
 	out_spin = spin_basis.ent_entropy(DM,**kwargs1)
 	out_tensor = test_basis.ent_entropy(DM,**kwargs2)
 
@@ -109,3 +116,4 @@ for kwargs2,kwargs1 in kwargs_list:
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
+print("tensor_basis ent_entropy passed!")

@@ -668,16 +668,19 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
-		for i_new,i_old in enumerate(T_tup):
+		for i_old,i_new in enumerate(T_tup):
 			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
 	else:
 		indx = psi.col
 	
 
-	# make shift way of reshaping array
-	# j = j_A + Ns_A * j_B
-	# j_A = j % Ns_A
-	# j_B = j / Ns_A
+	
+	# A = _np.array([0,1,2,3,4,5,6,7,8,9,10,11])
+	# print("make shift way of reshaping array")
+	# print("A = {}".format(A))
+	# print("A.reshape((3,4)): \n {}".format(A.reshape((3,4))))
+	# print("rows: A.reshape((3,4))/4: \n {}".format(A.reshape((3,4))/4))
+	# print("cols: A.reshape((3,4))%4: \n {}".format(A.reshape((3,4))%4))
 
 	psi._shape = (Ns_A,Ns_B)
 	psi.row[:] = indx / Ns_B

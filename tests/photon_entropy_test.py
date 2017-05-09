@@ -65,6 +65,7 @@ kwargs_list = [
 
 
 for kwargs in kwargs_list:
+	print("checking kwargs: {}".format(kwargs))
 	out = basis.ent_entropy(psi,**kwargs)
 	out_full = basis_full.ent_entropy(psi_full,**kwargs)
 
