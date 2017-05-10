@@ -1,16 +1,13 @@
 This is a to-do list to update the online package documentation with:
 
-# 1. general evolve
-# 3. fix typos in bases (fermions/bosons)
-# 5. added feature to * t-dep H’s
-# 6. add link to arXiv example.py
-4. Liouville dynamics
+- add feature of multiple states to ops.evolve
+- Liouville dynamics
 
 Urgent:
 
-# - clear up multiply_hamiltonian branch.
-# - block_ops add option to pick which is the full H-space
 - block with diag_ensemble
+- update documentation
+  * obs_vs_time
 
 Future work (open an issue)
 
@@ -21,11 +18,11 @@ Future work (open an issue)
 
 New examples
 
-- free particle (large N) with staggered pot and PBC with block tools
-- bosons: BHM repulsively bound pairs with ladder with kblock symmetries, non equal time correlator with block tools
-- spinful fermions: FHM (MBL) show sympy tool
-- spinless fermions/hcb: JW transformation
-- spin-1 (maybe Haldane chain?)
-- GPE with imaginary time
+- (M) free particle (large N) with staggered pot and PBC with block tools and real space (SSH), non equal time correlator with block tools
+- (P) bosons: BHM repulsively bound pairs with ladder with kblock symmetries, show m density sector 
+- (P) spinful fermions: FHM (MBL) show sympy tool
+- (M) spinless fermions/hcb: JW transformation
+- (P) spin-1 TFI vs spin-1/2
+- (M) GPE with imaginary time and real time
 #- Liouville dynamics
 

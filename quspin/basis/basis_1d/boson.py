@@ -16,18 +16,32 @@ class boson_basis_1d(basis_1d):
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
-		if Nb is None and sps is None:
-			raise ValueError("Must specify either Nb or sps")
+		if sps is None:
 
-		if sps is not None:
-			if type(sps) is not int:
-				raise TypeError("sps must be integer >= 1.")
-			if sps < 1:
-				raise ValueError("sps must be >= 1 or None")
+			if Nb is not None:
+				if nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
 
+			elif nb is not None:
+				if Nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
 
-		if type(Nb) is int and sps is None:
-			sps = Nb+1
+				Nb = int(nb*L)
+			else:
+
+				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
+
+			self._sps = Nb+1
+		else:
+			if Nb is not None:
+				if nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
+
+			elif nb is not None:
+				Nb = int(nb*L)
+
+			self._sps = sps
+
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
@@ -59,17 +73,6 @@ class boson_basis_1d(basis_1d):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["cblock"] = zAblock*zBblock
 
-		self._sps = sps
-
-		if Nb is None and nb is not None:
-			if nb < 0 or nb > 1:
-				raise ValueError("nb must be between 0 and 1")			
-			Nb = int(nb*L)
-
-		if Nb is not None and nb is not None:
-			raise ValueError("Cannot Nb and nb simultaineously.")
-
-
 		if self._sps <= 2:
 			pars = _np.array([0]) # set sign to not be calculated
 			self._operators = ("availible operators for boson_basis_1d:"+
@@ -82,10 +85,8 @@ class boson_basis_1d(basis_1d):
 			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
 		else:
-			pars = [L]
-			pars.extend([self._sps**i for i in range(L+1)])
-			pars.append(0) # flag to turn off higher spin matrix elements for +/- operators
-			pars = _np.asarray(pars)
+			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (0,) # flag to turn off higher spin matrix elements for +/- operators
+			
 			self._operators = ("availible operators for ferion_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
