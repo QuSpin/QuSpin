@@ -31,7 +31,7 @@ class boson_basis_1d(basis_1d):
 
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
 
-			self._sps = Nb
+			self._sps = Nb+1
 		else:
 			if Nb is not None:
 				if nb is not None:

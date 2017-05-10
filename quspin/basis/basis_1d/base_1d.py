@@ -1376,8 +1376,6 @@ class basis_1d(basis):
 
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
-			if not _sp.issparse(state):
-				state = _sp.csr_matrix(state).T
 
 			sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
