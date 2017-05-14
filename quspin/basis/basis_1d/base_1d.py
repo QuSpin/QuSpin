@@ -1341,7 +1341,10 @@ class basis_1d(basis):
 		"""
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
-		elif len(sub_sys_A)==self.L:
+
+		sub_sys_A = list(sub_sys_A)
+		
+		if len(sub_sys_A)==self.L:
 			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
 
 		L_A = len(sub_sys_A)
@@ -1376,6 +1379,8 @@ class basis_1d(basis):
 
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
+			if state.ndim == 1:
+				state = state.reshape((-1,1))
 
 			sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
