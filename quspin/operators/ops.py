@@ -689,12 +689,10 @@ class hamiltonian(object):
 				else: # density matrix
 					return V.diagonal().sum()
 			else:
-				V = _np.squeeze(_np.asarray(V))
-				V_dot = _np.squeeze(_np.asarray(V_dot))
 				if V.ndim == 1: # pure state
-					return _np.vdot(V,V_dot)
+					return _np.vdot(V,V_dot).squeeze()
 				elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
-					return _np.einsum("ij,ij->j",V.conj(),V)
+					return _np.einsum("ij,ij->j",V.conj(),V_dot)
 				else: # density matrix
 					return V_dot.trace()
 

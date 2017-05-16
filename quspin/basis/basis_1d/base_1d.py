@@ -1076,8 +1076,9 @@ class basis_1d(basis):
 			elif return_rdm=='both':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-		
-		return (lmbda**2) + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+
+
+		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 
 	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
 
@@ -1443,14 +1444,14 @@ class basis_1d(basis):
 		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
-				Sent_A = - (p_A * _np.log(p_A)).sum(axis=-1)
+				Sent_A = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
 			if p_B is not None:
-				Sent_B = - (p_B * _np.log(p_B)).sum(axis=-1)
+				Sent_B = - _np.nansum((p_B * _np.log(p_B)),axis=-1)
 		elif alpha >= 0.0:
 			if p_A is not None:
-				Sent_A = (_np.log(_np.power(p_A,alpha).sum(axis=-1))/(1.0-alpha))
+				Sent_A = _np.nansum(_np.log(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
 			if p_B is not None:
-				Sent_B = (_np.log(_np.power(p_B,alpha).sum(axis=-1))/(1.0-alpha))
+				Sent_B = _np.nansum(_np.log(_np.power(p_B,alpha),axis=-1))/(1.0-alpha)
 		else:
 			raise ValueError("alpha >= 0")
 
