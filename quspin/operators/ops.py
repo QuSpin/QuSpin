@@ -683,14 +683,16 @@ class hamiltonian(object):
 					return _np.einsum("iij->j",V_dot)
 
 		else:
+
 			if _sp.issparse(V):
 				if V.shape[0] != V.shape[1]: # pure states
 					return _np.asscalar((V.H.dot(V_dot)).toarray())
 				else: # density matrix
 					return V.diagonal().sum()
 			else:
+				V_dot = _np.asarray(V_dot).squeeze()
 				if V.ndim == 1: # pure state
-					return _np.vdot(V,V_dot).squeeze()
+					return _np.vdot(V,V_dot)
 				elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
 					return _np.einsum("ij,ij->j",V.conj(),V_dot)
 				else: # density matrix
