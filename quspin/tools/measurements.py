@@ -134,7 +134,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	Sent = basis.ent_entropy(state,chain_subsys,return_rdm=return_rdm,return_rdm_EVs=return_rdm_EVs,
 												enforce_pure=enforce_pure,alpha=alpha)
 	
-	
+
 	if densities:
 		if chain_subsys is None:
 			raise ValueError("Must specify chain_subsys if densities is True")
@@ -143,8 +143,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 			Sent['Sent_A']/=N_A
 		if 'Sent_B' in Sent.keys():
 			Sent['Sent_B']/=(basis.L - N_A)
-		
 
+	
 
 	# store variables to dictionary
 	return_dict = {}

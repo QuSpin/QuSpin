@@ -6,15 +6,16 @@ sys.path.insert(0,quspin_path)
 
 from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from quspin.operators import hamiltonian # Hamiltonian and observables
-from quspin.tools.measurements import ent_entropy
+from quspin.tools.measurements import ent_entropy as ent_entropy
+#from quspin.tools.measurements import _ent_entropy as _ent_entropy
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 
-seed()
+seed(0)
 
 
-dtypes={"float32":np.float32,"float64":np.float64,
-		"complex64":np.complex64,"complex128":np.complex128}
+dtypes={"complex128":np.complex128,"float64":np.float64,
+		"float32":np.float32,"complex64":np.complex64}
 
 atols={"float32":1E-4,"float64":1E-12,
 		"complex64":1E-4,"complex128":1E-12}
@@ -46,6 +47,7 @@ def spin_entropy(dtype,symm,Sent_args):
 	S_pure = ent_entropy(psi0,basis,**Sent_args)
 	S_DM = ent_entropy(rho0,basis,**Sent_args)
 	S_all = ent_entropy({'V_states':V},basis,**Sent_args)
+
 
 	return (S_pure, S_DM, S_all)
 
@@ -104,6 +106,7 @@ for _r in range(10): # do 10 random checks
 					DM_chain_subsys.append(_s['DM_chain_subsys'])
 					DM_other_subsys.append(_s['DM_other_subsys'])
 					S2.append(_s['Sent'])
+
 
 			np.testing.assert_allclose(np.diff(S2),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			np.testing.assert_allclose(np.diff(DM_chain_subsys,axis=0),0.0,atol=atol,err_msg='Failed DM_chain_subsys comparison!')
@@ -171,7 +174,6 @@ for _r in range(10): # do 10 random checks
 					DM_other_subsys.append(_s['DM_other_subsys'])
 					S2.append(_s['Sent'])
 
-			
 			np.testing.assert_allclose(np.diff(S2),0.0,atol=atol,err_msg='Failed entropies comparison!')
 			np.testing.assert_allclose(np.diff(DM_chain_subsys,axis=0),0.0,atol=atol,err_msg='Failed DM_chain_subsys comparison!')
 			np.testing.assert_allclose(np.diff(DM_other_subsys,axis=0),0.0,atol=atol,err_msg='Failed DM_other_subsys comparison!')
@@ -232,7 +234,6 @@ for _r in range(10): # do 10 random checks
 					DM_chain_subsys.append(_s['DM_chain_subsys'])
 					DM_other_subsys.append(_s['DM_other_subsys'])
 					S2.append(_s['Sent'])
-
 
 			
 			np.testing.assert_allclose(np.diff(S2),0.0,atol=atol,err_msg='Failed entropies comparison!')
