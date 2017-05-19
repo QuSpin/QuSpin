@@ -93,7 +93,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	# initiate variables
 	variables = ["Sent"]
-	translate_dict={"Sent":"Sent"}
+	translate_dict={"Sent":"Sent_A"}
 
 	if DM == 'chain_subsys':
 		variables.append("DM_chain_subsys")

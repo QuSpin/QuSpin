@@ -1299,7 +1299,7 @@ class basis_1d(basis):
 
 		RETURNS: dictionary with keys:
 
-		'Sent': entanglement entropy of subystem A.
+		'Sent_A': entanglement entropy of subystem A.
 		'Sent_B': (optional) entanglement entropy of subystem B.
 		'rdm_A': (optional) reduced density matrix of subsystem A
 		'rdm_B': (optional) reduced density matrix of subsystem B
@@ -1446,18 +1446,18 @@ class basis_1d(basis):
 			p_A, p_B = p, p
 
 
-		Sent, Sent_B = None, None
+		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
-				Sent = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
-				if densities: Sent /= L_A
+				Sent_A = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
+				if densities: Sent_A /= L_A
 			if p_B is not None:
 				Sent_B = - _np.nansum((p_B * _np.log(p_B)),axis=-1)
 				if densities: Sent_B /= L_B
 		elif alpha >= 0.0:
 			if p_A is not None:
-				Sent = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
-				if densities: Sent /= L_A
+				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
+				if densities: Sent_A /= L_A
 			if p_B is not None:
 				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1))/(1.0-alpha)
 				if densities: Sent_B /= L_B
@@ -1467,7 +1467,7 @@ class basis_1d(basis):
 
 
 		# initiate variables
-		variables = ["Sent"]
+		variables = ["Sent_A"]
 		if return_rdm_EVs:
 			variables.append("p_A")
 
