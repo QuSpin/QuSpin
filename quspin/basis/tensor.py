@@ -366,7 +366,7 @@ class tensor_basis(basis):
 
 		RETURNS: dictionary with keys:
 
-		'Sent_A': entanglement entropy of subystem A.
+		'Sent': entanglement entropy of subystem A.
 		'Sent_B': (optional) entanglement entropy of subystem B.
 		'rdm_A': (optional) reduced density matrix of subsystem A
 		'rdm_B': (optional) reduced density matrix of subsystem B
@@ -489,22 +489,22 @@ class tensor_basis(basis):
 		if pure:
 			p_A, p_B = p, p
 
-		Sent_A, Sent_B = None, None
+		Sent, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
-				Sent_A = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
+				Sent = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
 			if p_B is not None:
 				Sent_B = - _np.nansum((p_B * _np.log(p_B)),axis=-1)
 		elif alpha >= 0.0:
 			if p_A is not None:
-				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
+				Sent = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
 			if p_B is not None:
 				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1))/(1.0-alpha)
 		else:
 			raise ValueError("alpha >= 0")
 
 		# initiate variables
-		variables = ["Sent_A"]
+		variables = ["Sent"]
 		
 		if return_rdm_EVs:
 			variables.append("p_A")

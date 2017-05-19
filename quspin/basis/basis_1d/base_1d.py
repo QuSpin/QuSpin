@@ -1292,14 +1292,14 @@ class basis_1d(basis):
 			
 		return p_A, p_B, rdm_A, rdm_B
 
-	def ent_entropy(self,state,sub_sys_A=None,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,densities=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
 
 		RETURNS: dictionary with keys:
 
-		'Sent_A': entanglement entropy of subystem A.
+		'Sent': entanglement entropy of subystem A.
 		'Sent_B': (optional) entanglement entropy of subystem B.
 		'rdm_A': (optional) reduced density matrix of subsystem A
 		'rdm_B': (optional) reduced density matrix of subsystem B
@@ -1319,6 +1319,13 @@ class basis_1d(basis):
 		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
 						[by python convention the first site of the chain is labelled j=0]. 
 						Default is tuple(range(L//2)).
+
+		densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
+
+
+		subsys_ordering: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
+
 
 		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
 
@@ -1341,21 +1348,16 @@ class basis_1d(basis):
 
 		"""
 		if sub_sys_A is None:
-			sub_sys_A = tuple(range(self.L//2))
-
-		sub_sys_A = list(sub_sys_A)
-		
-		if len(sub_sys_A)==self.L:
+			sub_sys_A = list(range(self.L//2))
+		else:
+			sub_sys_A = list(sub_sys_A)
+	
+		if len(sub_sys_A)>=self.L:
 			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
 
 		L_A = len(sub_sys_A)
 		L_B = self.L - L_A
 
-
-		if sub_sys_A is None:
-			sub_sys_A = tuple(range(self.L//2))
-
-		sub_sys_A = tuple(sub_sys_A)
 		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
 
@@ -1364,6 +1366,9 @@ class basis_1d(basis):
 
 		if return_rdm not in set(["A","B","both",None]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
+		if subsys_ordering:
+			sub_sys_A = sorted(sub_sys_A)
 
 		sps = self.sps
 		L = self.L
@@ -1441,24 +1446,28 @@ class basis_1d(basis):
 			p_A, p_B = p, p
 
 
-		Sent_A, Sent_B = None, None
+		Sent, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
-				Sent_A = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
+				Sent = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
+				if densities: Sent /= L_A
 			if p_B is not None:
 				Sent_B = - _np.nansum((p_B * _np.log(p_B)),axis=-1)
+				if densities: Sent_B /= L_B
 		elif alpha >= 0.0:
 			if p_A is not None:
-				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
+				Sent = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
+				if densities: Sent /= L_A
 			if p_B is not None:
 				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1))/(1.0-alpha)
+				if densities: Sent_B /= L_B
 		else:
 			raise ValueError("alpha >= 0")
 			
 
 
 		# initiate variables
-		variables = ["Sent_A"]
+		variables = ["Sent"]
 		if return_rdm_EVs:
 			variables.append("p_A")
 

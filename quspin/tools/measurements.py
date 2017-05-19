@@ -21,7 +21,7 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 
 
-def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**basis_kwargs):
 	"""
 	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
 	reduced subsystem. 
@@ -93,58 +93,44 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 
 	# initiate variables
 	variables = ["Sent"]
-	translate_dict={"Sent":"Sent_A"}
+	translate_dict={"Sent":"Sent"}
 
-	return_rdm = None
-	return_rdm_EVs=False
-
-	if DM in ['chain_subsys','A']:
+	if DM == 'chain_subsys':
 		variables.append("DM_chain_subsys")
-		return_rdm = 'A'
+		basis_kwargs["return_rdm"]="A"
 		
 
-	elif DM in ['other_subsys','B']:
+	elif DM =='other_subsys':
 		variables.append("DM_other_subsys")
-		return_rdm = 'B'
+		basis_kwargs["return_rdm"]="B"
 		translate_dict={"Sent":"Sent_B"}
 
-	elif DM=='both':
+	elif DM == 'both':
 		variables.append("DM_chain_subsys")
 		variables.append("DM_other_subsys")
-		return_rdm = 'both'
+		basis_kwargs["return_rdm"]="both"
 
-	elif DM and DM not in ['chain_subsys','other_subsys','both','A','B']:
+	elif DM and DM not in ['chain_subsys','other_subsys','both']:
 		raise TypeError("Unexpected keyword argument for 'DM'!")
 
 	if svd_return_vec[1]:
 		variables.append('lmbda')
-		return_rdm_EVs=True
+		basis_kwargs["return_rdm_EVs"]=True
 
 
 	### translate arguments
-	enforce_pure=False
 	if isinstance(system_state,dict):
 		state=system_state['V_states']
-		enforce_pure=True
+		basis_kwargs["enforce_pure"]=True
 	else:
 		state=system_state
 
 	translate_dict.update({"DM_chain_subsys":'rdm_A',"DM_other_subsys":'rdm_B',"both":'both','lmbda':"p_A"})
 	
-	Sent = basis.ent_entropy(state,chain_subsys,return_rdm=return_rdm,return_rdm_EVs=return_rdm_EVs,
-												enforce_pure=enforce_pure,alpha=alpha)
+	Sent = basis.ent_entropy(state,sub_sys_A=chain_subsys,**basis_kwargs)
 	
 
-	if densities:
-		if chain_subsys is None:
-			raise ValueError("Must specify chain_subsys if densities is True")
-		N_A = len(set(chain_subsys))
-		if 'Sent_A' in Sent.keys():
-			Sent['Sent_A']/=N_A
-		if 'Sent_B' in Sent.keys():
-			Sent['Sent_B']/=(basis.L - N_A)
 
-	
 
 	# store variables to dictionary
 	return_dict = {}
@@ -154,6 +140,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 			return_dict[i] = _np.sqrt( Sent[j] )
 		else:
 			return_dict[i] = Sent[j]
+
+	return_dict.update(Sent)
 
 	return return_dict
 
@@ -691,9 +679,9 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 		"""
 		if alpha == 1.0:
 			#warnings.warn("Renyi _entropy equals von Neumann _entropy.", UserWarning,stacklevel=4)
-			S = - _np.einsum(_es_str('ji,ji->i'),p,_np.log(p))
+			S = - _np.nansum(p*_np.log(p),axis=0)
 		else:
-			S = 1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha,axis=0) )
+			S = 1.0/(1.0-alpha)*_np.log(_np.nansum(p**alpha,axis=0) )
 			
 		return S
 
@@ -965,13 +953,16 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 		basis=Srdm_args['basis']
 		partial_tr_args=Srdm_args.copy()
 		del partial_tr_args['basis']
-		if 'sub_sys_A' in Srdm_args.keys():
+		if 'sub_sys_A' in Srdm_args:
 			sub_sys_A = Srdm_args['sub_sys_A']
 			del partial_tr_args['sub_sys_A']
+
+		elif 'chain_subsys' in Srdm_args:
+			sub_sys_A = Srdm_args['chain_subsys']
+			del partial_tr_args['chain_subsys']
 		else:
 			sub_sys_A=tuple(range(basis.L//2))
 		N_A=len(sub_sys_A)
-
 		rdm_A = basis.partial_trace(V2,sub_sys_A=sub_sys_A,enforce_pure=True,**partial_tr_args)
 		rdm = _np.einsum('n...,nij->...ij',rho,rdm_A)
 	
@@ -1120,7 +1111,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 			
 
-def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},basis=None,disp=False):
+def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1252,8 +1243,18 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 	calc_Sent = False
 	
 	if len(Sent_args) > 0:
+		basis = Sent_args.get("basis")
 		if basis is None:
-			raise ValueError("Sent requires basis for calculation")
+			raise ValueError("Sent_args requires 'basis' for calculation")
+		if not isbasis(basis):
+			raise ValueError("'basis' object must be a proper basis object")
+
+		if "chain_subsys" in Sent_args or"DM" in Sent_args or "svd_return_vec" in Sent_args:
+			calc_ent_entropy = ent_entropy
+		else:
+			calc_ent_entropy = basis.ent_entropy
+			del Sent_args["basis"]
+
 		calc_Sent = True
 		variables.append("Sent_time")
 	
@@ -1262,8 +1263,8 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
 			
 		# calculate entanglement _entropy if requested	
-		if len(Sent_args) > 0:
-			Sent_time = basis.ent_entropy(psi_t,**Sent_args)
+		if calc_Sent:
+			Sent_time = calc_ent_entropy(psi_t,**Sent_args)
 
 
 	else:
@@ -1284,10 +1285,11 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 		# get initial dictionary from ent_entropy function
 		# use this to set up dictionary for the rest of calculation.
 		if calc_Sent:
-			Sent_time = basis.ent_entropy(psi,**Sent_args)
+			Sent_time = calc_ent_entropy(psi,**Sent_args)
 
 			for key,val in Sent_time.items():
-				dtype = _np.dtype(val)
+				val = _np.asarray(val)
+				dtype = val.dtype
 				shape = (len(times),) + val.shape
 				Sent_time[key] = _np.zeros(shape,dtype=dtype)
 				Sent_time[key][0] = val
@@ -1303,7 +1305,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
 
 			if calc_Sent:
-				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
+				Sent_time_update = calc_ent_entropy(psi,**Sent_args)
 				for key in Sent_time.keys():
 					Sent_time[key][m+1] = Sent_time_update[key]
 
