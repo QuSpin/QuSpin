@@ -74,7 +74,7 @@ for _i in dtypes.keys():
 	rho0 = np.outer(psi0.conj(),psi0)
 
 	Obs_list = {"Ozz_t":Ozz,"Ozz":Ozz(time=np.sqrt(np.exp(0.0)) )} 
-	Sent_args={'sub_sys_A':range( L//2 )}
+	Sent_args = dict(sub_sys_A=range(L//2),basis=basis)
 
 
 	# check schrodinger evolution
@@ -82,8 +82,8 @@ for _i in dtypes.keys():
 	psi_t=H.evolve(psi0,0.0,t,iterate=True,eom="SE",rtol=solver_rtol,atol=solver_atol)
 	psi_t2=H.evolve(psi0,0.0,t,eom="SE",rtol=solver_rtol,atol=solver_atol)
 
-	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
-	Obs2 = obs_vs_time(psi_t2,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
+	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
+	Obs2 = obs_vs_time(psi_t2,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
 	Expn = np.array([Obs['Ozz_t'],Obs['Ozz']])
 	psi_t = Obs['psi_t']
@@ -102,8 +102,8 @@ for _i in dtypes.keys():
 	rho_t=H.evolve(rho0,0.0,t,iterate=True,eom="LvNE",rtol=solver_rtol,atol=solver_atol)
 	rho_t2=H.evolve(rho0,0.0,t,eom="LvNE",rtol=solver_rtol,atol=solver_atol)
 
-	Obs = obs_vs_time(rho_t,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
-	Obs2 = obs_vs_time(rho_t2,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
+	Obs = obs_vs_time(rho_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
+	Obs2 = obs_vs_time(rho_t2,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
 	Expn = np.array([Obs['Ozz_t'],Obs['Ozz']])
 	psi_t = Obs['psi_t']
@@ -125,9 +125,9 @@ for _i in dtypes.keys():
 	psi_t=H2.evolve(psi0,0.0,t,iterate=False,rtol=solver_rtol,atol=solver_atol)
 	psi_t4=exp_op(H2,a=-1j,start=0.0,stop=2.0,num=20,endpoint=True,iterate=True).dot(psi0)
 
-	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
-	Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
-	Obs4 = obs_vs_time(psi_t4,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
+	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
+	Obs2 = obs_vs_time((psi0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
+	Obs4 = obs_vs_time(psi_t4,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
 	psi_t3 = ED_state_vs_time(psi0,E,V,t,iterate=False)
 	psi_t33 = np.asarray([psi for psi in ED_state_vs_time(psi0,E,V,t,iterate=True)]).T
@@ -158,9 +158,9 @@ for _i in dtypes.keys():
 	psi_t=H2.evolve(rho0,0.0,t,eom="LvNE",iterate=False,rtol=solver_rtol,atol=solver_atol)
 	psi_t4=exp_op(H2,a=1j,start=0.0,stop=2.0,num=20,endpoint=True,iterate=True).sandwich(rho0)
 
-	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
-	Obs2 = obs_vs_time((rho0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
-	Obs4 = obs_vs_time(psi_t4,t,Obs_list,return_state=True,Sent_args=Sent_args,basis=basis)
+	Obs = obs_vs_time(psi_t,t,Obs_list,return_state=True,Sent_args=Sent_args)
+	Obs2 = obs_vs_time((rho0,E,V),t,Obs_list,return_state=True,Sent_args=Sent_args)
+	Obs4 = obs_vs_time(psi_t4,t,Obs_list,return_state=True,Sent_args=Sent_args)
 
 	psi_t3 = ED_state_vs_time(rho0,E,V,t,iterate=False)
 	psi_t33 = np.asarray([psi for psi in ED_state_vs_time(rho0,E,V,t,iterate=True)]).transpose((1,2,0))

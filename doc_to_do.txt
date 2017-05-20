@@ -1,19 +1,12 @@
-This is a to-do list to update the online package documentation with:
-
-- add feature of multiple states to ops.evolve
-- Liouville dynamics
-
 Urgent:
 
-- block with diag_ensemble
 - update documentation
-  * obs_vs_time
+  * block_tools
+  * measurements
+  	- obs_vs_time
 
-Future work (open an issue)
 
-0. spinful fermions with all symmetries
-1. block Liouville dynamics
-2. generalize exp_op for ops_dict
+
 
 
 New examples

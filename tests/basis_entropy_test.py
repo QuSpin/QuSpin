@@ -11,7 +11,7 @@ import scipy.sparse as sp
 
 from functools import reduce
 
-np.random.seed(12)
+np.random.seed(0)
 
 L=4
 
@@ -33,14 +33,13 @@ sub_sys_A=[i for i in range(basis.L//2)]
 
 #####
 
-sent_b=basis.ent_entropy(state,sub_sys_A)
+sent_b=basis.ent_entropy(state,sub_sys_A,densities=False)
 sent=_ent_entropy(state,basis,chain_subsys=sub_sys_A,densities=False)
-
 np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
 
 #####
 
-sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='A')
+sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='A',densities=False)
 sent=_ent_entropy(state,basis,chain_subsys=sub_sys_A,DM='chain_subsys',densities=False)
 
 np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -48,7 +47,7 @@ np.testing.assert_allclose(sent['DM_chain_subsys']-sent_b['rdm_A'],0.0,atol=1E-5
 
 #####
 
-sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='B')
+sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='B',densities=False)
 sent=_ent_entropy(state,basis,chain_subsys=sub_sys_A,DM='other_subsys',densities=False)
 
 np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -58,7 +57,7 @@ np.testing.assert_allclose(sent['DM_other_subsys']-sent_b['rdm_B'],0.0,atol=1E-5
 
 #####
 
-sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='both')
+sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='both',densities=False)
 sent=_ent_entropy(state,basis,chain_subsys=sub_sys_A,DM='both',densities=False)
 
 np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -73,7 +72,7 @@ sub_sys_A=[i for i in range(basis.L//2)]
 for state,enforce_pure in zip([V, V[:,1:6]],[True,False]):
 
 	#####
-	sent_b=basis.ent_entropy(state,sub_sys_A,enforce_pure=enforce_pure)
+	sent_b=basis.ent_entropy(state,sub_sys_A,enforce_pure=enforce_pure,densities=False)
  
 	sent=_ent_entropy({'V_states':state},basis,chain_subsys=sub_sys_A,densities=False)
 
@@ -81,7 +80,7 @@ for state,enforce_pure in zip([V, V[:,1:6]],[True,False]):
 
 	#####
 
-	sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='A',enforce_pure=enforce_pure)
+	sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='A',enforce_pure=enforce_pure,densities=False)
 	sent=_ent_entropy({'V_states':state},basis,sub_sys_A,DM='chain_subsys',densities=False)
 
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -89,7 +88,7 @@ for state,enforce_pure in zip([V, V[:,1:6]],[True,False]):
 
 	#####
 
-	sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='B',enforce_pure=enforce_pure)
+	sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='B',enforce_pure=enforce_pure,densities=False)
 	sent=_ent_entropy({'V_states':state},basis,chain_subsys=sub_sys_A,DM='other_subsys',densities=False)
 
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -97,7 +96,7 @@ for state,enforce_pure in zip([V, V[:,1:6]],[True,False]):
 
 	#####
 
-	sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='both',enforce_pure=enforce_pure)
+	sent_b=basis.ent_entropy(state,sub_sys_A,return_rdm='both',enforce_pure=enforce_pure,densities=False)
 	sent=_ent_entropy({'V_states':state},basis,chain_subsys=sub_sys_A,DM='both',densities=False)
 
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -125,14 +124,14 @@ DM3=np.outer(V[:,0],V[:,0].conj())
 
 for DM in [DM1,DM2,DM3]:
 
-	sent_b=basis.ent_entropy(DM,sub_sys_A)
+	sent_b=basis.ent_entropy(DM,sub_sys_A,densities=False)
 	sent=_ent_entropy(DM.squeeze(),basis,sub_sys_A,densities=False)
 
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
 
 	#####
 
-	sent_b=basis.ent_entropy(DM,sub_sys_A,return_rdm='both')
+	sent_b=basis.ent_entropy(DM,sub_sys_A,return_rdm='both',densities=False)
 	sent=_ent_entropy(DM.squeeze(),basis,chain_subsys=sub_sys_A,DM='both',densities=False)
 
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -141,7 +140,7 @@ for DM in [DM1,DM2,DM3]:
 
 	#####
 
-	sent_b=basis.ent_entropy(DM,sub_sys_A,return_rdm='A')
+	sent_b=basis.ent_entropy(DM,sub_sys_A,return_rdm='A',densities=False)
 	sent=_ent_entropy(DM.squeeze(),basis,chain_subsys=sub_sys_A,DM='chain_subsys',densities=False)
 
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_A'],0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -149,7 +148,7 @@ for DM in [DM1,DM2,DM3]:
 
 	#####
 
-	sent_b=basis.ent_entropy(DM,sub_sys_A,return_rdm='B')
+	sent_b=basis.ent_entropy(DM,sub_sys_A,return_rdm='B',densities=False)
 	sent=_ent_entropy(DM.squeeze(),basis,chain_subsys=sub_sys_A,DM='other_subsys',densities=False)
 	
 	np.testing.assert_allclose(sent['Sent']-sent_b['Sent_B'],0.0,atol=1E-5,err_msg='Failed Sent comparison!') 
@@ -167,7 +166,7 @@ sent_b=basis.ent_entropy(DMs,sub_sys_A)
 np.testing.assert_allclose(np.diff(sent_b['Sent_A']),0.0,atol=1E-5,err_msg='Failed Sent comparison!')
 #####
 
-sent_b=basis.ent_entropy(DMs,sub_sys_A,return_rdm='both')
+sent_b=basis.ent_entropy(DMs,sub_sys_A,return_rdm='both',densities=False)
 
 
 np.testing.assert_allclose( np.diff( sent_b['Sent_A'] ),0.0,atol=1E-5,err_msg='Failed Sent comparison!')
@@ -176,14 +175,14 @@ np.testing.assert_allclose( np.diff( sent_b['rdm_B'], axis=0 ),0.0,atol=1E-5,err
 
 #####
 
-sent_b=basis.ent_entropy(DMs,sub_sys_A,return_rdm='A')
+sent_b=basis.ent_entropy(DMs,sub_sys_A,return_rdm='A',densities=False)
 
 np.testing.assert_allclose( np.diff( sent_b['Sent_A'] ),0.0,atol=1E-5,err_msg='Failed Sent comparison!')
 np.testing.assert_allclose( np.diff( sent_b['rdm_A'], axis=0 ),0.0,atol=1E-5,err_msg='Failed rdm_B comparison!')
 
 #####
 
-sent_b=basis.ent_entropy(DMs,sub_sys_A,return_rdm='B')
+sent_b=basis.ent_entropy(DMs,sub_sys_A,return_rdm='B',densities=False)
 
 np.testing.assert_allclose( np.diff( sent_b['Sent_B'] ),0.0,atol=1E-5,err_msg='Failed Sent comparison!')
 np.testing.assert_allclose( np.diff( sent_b['rdm_B'], axis=0 ),0.0,atol=1E-5,err_msg='Failed rdm_B comparison!')

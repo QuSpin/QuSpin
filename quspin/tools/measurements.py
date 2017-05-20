@@ -120,8 +120,15 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	### translate arguments
 	if isinstance(system_state,dict):
-		state=system_state['V_states']
-		basis_kwargs["enforce_pure"]=True
+		if "rho_d" in system_state and "V_rho" in system_state:
+			V_rho = system_state["V_rho"]
+			rho_d = system_state["rho_d"] 
+			state = _np.einsum("ji,j,jk->ik",V_rho,rho_d,V_rho.conj())
+		elif "V_state" in system_state:
+			state=system_state['V_states']
+			basis_kwargs["enforce_pure"]=True
+		else:
+			raise ValueError("expecting dictionary with keys ['V_rho','rho_d'] or ['V_states']")
 	else:
 		state=system_state
 
@@ -1243,6 +1250,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 	calc_Sent = False
 	
 	if len(Sent_args) > 0:
+		Sent_args = dict(Sent_args)
 		basis = Sent_args.get("basis")
 		if basis is None:
 			raise ValueError("Sent_args requires 'basis' for calculation")

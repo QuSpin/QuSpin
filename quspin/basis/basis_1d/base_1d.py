@@ -1463,8 +1463,6 @@ class basis_1d(basis):
 				if densities: Sent_B /= L_B
 		else:
 			raise ValueError("alpha >= 0")
-			
-
 
 		# initiate variables
 		variables = ["Sent_A"]
