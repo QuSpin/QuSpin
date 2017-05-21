@@ -1022,7 +1022,7 @@ This function calculates the reduced density matrix (DM), performing a partial t
 RETURNS: reduced DM
 
 ```python
-basis.ent_entropy(state,sub_sys_A=None,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0)
+basis.ent_entropy(state,sub_sys_A=None,densities=True,sorted_indices=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0)
 ```
 This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 density matrix.
@@ -1034,6 +1034,12 @@ density matrix.
   2.density matrix [numpy array of shape (Ns,Ns)].
   3.collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
 * `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
+
+* `densities`: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
+
+* `subsys_ordering`: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
+
 * `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
   1. 'A': str, returns reduced DM of subsystem A
   2. 'B': str, returns reduced DM of subsystem B
@@ -1330,7 +1336,7 @@ RETURNS:  dictionary with keys:
   1. `basis`: (required) the basis used to build `system_state`. Must be an instance of `photon_basis`,
     `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`. 
 
-  2. `chain_subsys`: (optional) a list of lattice sites to specify the chain subsystem. Default is
+  2. `chain_subsys/sub_sys_A`: (optional) a list of lattice sites to specify the chain subsystem. Default is
 
    * ```[0,1,...,N/2-1,N/2]``` for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.
 
@@ -1709,7 +1715,7 @@ RETURNS:
 #### **`block_ops` class**
 
 ``` python
-block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
+block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},save_previous_data=True,
                     compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True)
 ```
 This class is used to split up the dynamics of a state over various symmetry sectors if the initial state does not obey the symmetry but the Hamiltonian does. Moreover we provide a multiprocessing option which allows the user to distribute the caculation of the dynamics over multiple cores.
@@ -1728,7 +1734,9 @@ This class is used to split up the dynamics of a state over various symmetry sec
 
 * `dtype`: (required) data type of `hamiltonin` to be constructed.
 
-* `get_proj_args`: (optional) dictionary which contains arguments for basis.get_proj(dtype,...). As of v(0.2.0) the only arguement would be for pcon=True of one would like to project to the particle conserving basis (which is useful to same memory for some systems)
+* `basis_kwargs`: (optional) dictionary of keyword arguments to add when calling basis constructor
+
+* `get_proj_kwargs`: (optional) dictionary of keyword arguments to add when calling basis.get_vec()
 
 * `save_previous_data`: (optional) when doing the evolution this class constructs the Hamiltonians for the corresponding symmetry blocks. This takes some time and thus by setting this flag to `True`, the class will keep previously calculated Hamiltonians. This might be advantageous if at a later time one needs to do evolution in these blocks again so the corresponding Hamiltonians do not have to be calculated again.
 
@@ -1817,6 +1825,7 @@ ii) `iterate = False`
 * `n_jobs`: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results. For optimal performance, all blocks should be approximately the same size and `n_jobs-1` must be a common devisor of the number of blocks, such that there is roughly the same workload for each process. Otherwise the computation will be as slow as the slowest process.
 
 * ...: the rest are just arguments which are used by the `exp_op` class, cf documentiation for more details.
+
 
 
 

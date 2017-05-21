@@ -1323,9 +1323,7 @@ class basis_1d(basis):
 		densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
 					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
 
-
 		subsys_ordering: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
-
 
 		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
 
