@@ -49,22 +49,22 @@ DM = reduce(np.dot,[psis,np.diag(p_DM/sum(p_DM)),psis.T.conj()])
 DMs = np.dstack((DM for i in range(10)))
 
 kwargs_list = [
-				(dict(sub_sys_A="left",return_rdm=None,return_rdm_EVs=False),	dict(sub_sys_A=range(L1),return_rdm=None,return_rdm_EVs=False)),
-				(dict(sub_sys_A="left",return_rdm="A",return_rdm_EVs=False),	dict(sub_sys_A=range(L1),return_rdm="A",return_rdm_EVs=False)),
-				(dict(sub_sys_A="left",return_rdm="B",return_rdm_EVs=False),	dict(sub_sys_A=range(L1),return_rdm="B",return_rdm_EVs=False)),
-				(dict(sub_sys_A="left",return_rdm="both",return_rdm_EVs=False),	dict(sub_sys_A=range(L1),return_rdm="both",return_rdm_EVs=False)),
-				(dict(sub_sys_A="left",return_rdm=None,return_rdm_EVs=True),	dict(sub_sys_A=range(L1),return_rdm=None,return_rdm_EVs=True)),
-				(dict(sub_sys_A="left",return_rdm="A",return_rdm_EVs=True),		dict(sub_sys_A=range(L1),return_rdm="A",return_rdm_EVs=True)),
-				(dict(sub_sys_A="left",return_rdm="B",return_rdm_EVs=True),		dict(sub_sys_A=range(L1),return_rdm="B",return_rdm_EVs=True)),
-				(dict(sub_sys_A="left",return_rdm="both",return_rdm_EVs=True),	dict(sub_sys_A=range(L1),return_rdm="both",return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=False),	dict(sub_sys_A=range(L1,L,1),return_rdm=None,return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=False),	dict(sub_sys_A=range(L1,L,1),return_rdm="A",return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=False),	dict(sub_sys_A=range(L1,L,1),return_rdm="B",return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=False),dict(sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=False)),
-				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm=None,return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm="A",return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm="B",return_rdm_EVs=True)),
-				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=True),	dict(sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=True)),
+				(dict(sub_sys_A="left",return_rdm=None,return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1),return_rdm=None,return_rdm_EVs=False)),
+				(dict(sub_sys_A="left",return_rdm="A",return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1),return_rdm="A",return_rdm_EVs=False)),
+				(dict(sub_sys_A="left",return_rdm="B",return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1),return_rdm="B",return_rdm_EVs=False)),
+				(dict(sub_sys_A="left",return_rdm="both",return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1),return_rdm="both",return_rdm_EVs=False)),
+				(dict(sub_sys_A="left",return_rdm=None,return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1),return_rdm=None,return_rdm_EVs=True)),
+				(dict(sub_sys_A="left",return_rdm="A",return_rdm_EVs=True),		dict(density=False,sub_sys_A=range(L1),return_rdm="A",return_rdm_EVs=True)),
+				(dict(sub_sys_A="left",return_rdm="B",return_rdm_EVs=True),		dict(density=False,sub_sys_A=range(L1),return_rdm="B",return_rdm_EVs=True)),
+				(dict(sub_sys_A="left",return_rdm="both",return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1),return_rdm="both",return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm=None,return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="A",return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="B",return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=False),dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=False)),
+				(dict(sub_sys_A="right",return_rdm=None,return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm=None,return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm="A",return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="A",return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm="B",return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="B",return_rdm_EVs=True)),
+				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=True)),
 				]
 
 
@@ -100,7 +100,7 @@ for kwargs2,kwargs1 in kwargs_list:
 
 	out_spin = spin_basis.ent_entropy(DM,**kwargs1)
 	out_tensor = test_basis.ent_entropy(DM,**kwargs2)
-
+	
 	for key,val in out_spin.items():
 		try:
 			np.testing.assert_allclose((val - out_tensor[key]).todense(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))

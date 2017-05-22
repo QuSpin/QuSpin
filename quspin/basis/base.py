@@ -559,7 +559,6 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	and returns reduced DM. Vectorisation available. 
 	"""
 	rho_v=_lattice_reshape_mixed(rho,sub_sys_A,L,sps)
-
 	if return_rdm == "A":
 		return _np.einsum("...jlkl->...jk",rho_v),None
 	elif return_rdm == "B":

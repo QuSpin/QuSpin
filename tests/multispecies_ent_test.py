@@ -33,5 +33,5 @@ E,V=H.eigh()
 
 
 Sent=ent_entropy({'V_states':V},basis,chain_subsys=range(L//2))['Sent']
-print(Sent)
+#print(Sent)
 

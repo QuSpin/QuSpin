@@ -1,12 +1,12 @@
 # **QuSpin**
 
-This documentation is also available as a [jupyter notebook](./documentation.ipynb) which displays the LaTeX below code properly. 
+This documentation is also available as a [jupyter notebook](./documentation.ipynb) which displays the LaTeX code below properly. 
 
-QuSpin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional interacting spin, fermion and boson chains/ladders. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from single-particle operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+QuSpin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional interacting spin, fermion and boson chains/ladders. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from single-particle operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specify the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
 For an ***indepth introduction*** to the package, check out our paper: https://scipost.org/10.21468/SciPostPhys.2.1.003.
 
-***Examples*** with python script which show how to run QuSpin can be downloaded from the [arXiv ancillary repository](https://arxiv.org/src/1610.03042v4/anc) and from the [examples directory on github](./examples/).
+***Examples*** with python script which show how to run QuSpin can be downloaded from the [examples directory on github](./examples/). There is also a number of jupyter notebooks that accompany them.
 
 
 # **Contents**
@@ -15,7 +15,7 @@ For an ***indepth introduction*** to the package, check out our paper: https://s
   * [automatic install](#automatic-install)
   * [manual install](#manual-install)
   * [updating the package](#updating-the-package)
-* [Basic package usage](#basic-package-usage)
+* [Basic package usage](#Basic-package-usage)
   * [constructing hamiltonians](#constructing-hamiltonians)
   * [using basis objects](#using-basis-objects)
   * [specifying symmetries](#using-symmetries)
@@ -722,7 +722,13 @@ O_dict. eigvalsh(pars={},**eigvalsh_args)
 
 ## **basis objects**
 
-The `basis` objects provide a way of constructing all the necessary information needed to construct a sparse Hamiltonian from a list of operators. All `basis` objects are derived from the same `base` object class and have mostly the same functionality. There are two subtypes of the `base` object class: the first type consists of `basis` objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, `basis` type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style `basis` type. For instance, `basis` type two can take two spin-chain bases and create the corresponding tensor product basis out of them.   
+The `basis` objects provide a way of constructing all the necessary information needed to construct a sparse Hamiltonian from a list of operators. All `basis` objects are derived from the same `base` object class and have mostly the same functionality. There are two subtypes of the `base` object class: the first type consists of `basis` objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, `basis` type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style `basis` type. For instance, `basis` type two can take two spin-chain bases and create the corresponding tensor product basis out of them.
+
+|      operator strings | special strings |      basis type          |               operators                 |
+|:-------------------:|:------------------:|:------------------:|:--------------------------------------:|
+|`"+","-","z"`|`"x","y"` (spin-1/2 only)|`spin_basis_1d` |$\sigma^+$, $\sigma^-$, $\sigma^z$|
+|`"+","-","n"`|`"z"` (`"n"-1/2`)|`fermion_basis_1d` |$c^\dagger$, $c$, $n=c^\dagger c$|
+|`"+","-","n"`|`"z"` (`"n"-(sps-1)/2`)|`boson_basis_1d` |$b^\dagger$, $b$, $n=b^\dagger b$|
 
 ### **spins basis in 1d**
 
@@ -998,7 +1004,7 @@ Integer such that `state == basis[basis.index(state)]` or raises Exception if st
 
 
 ```python
-basis.partial_trace(state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure")
+basis.partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False)
 ```
 This function calculates the reduced density matrix (DM), performing a partial trace of a quantum state.
 
@@ -1008,21 +1014,19 @@ This function calculates the reduced density matrix (DM), performing a partial t
   1. pure state (default) [numpy array of shape (Ns,)].
   2. density matrix [numpy array of shape (Ns,Ns)].
   3. collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
-* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
+* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is `tuple(range(L//2))`.
 * `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
   These arguments differ when used with `photon` or `tensor` basis.
   1. 'A': str, returns reduced DM of subsystem A 
   2. 'B': str, returns reduced DM of subsystem B
   3. 'both': str, returns reduced DM of both subsystems A and B
-* `state_type`: (optional) flag to determine if 'state' is a collection of pure states or a density matrix
-  1. 'pure': (default) (a collection of) pure state(s)
-  2. 'mixed': mixed state (i.e. a density matrix)
+* 'enforce_pure': (optional) when `state` is a square matrix this option enfores the columns to be treated as independent states, so the partial trace is calculated for each state separately. Defauls is `False`.
 * `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
 
 RETURNS: reduced DM
 
 ```python
-basis.ent_entropy(state,sub_sys_A=None,densities=True,sorted_indices=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0)
+basis.ent_entropy(state,sub_sys_A=None,density=False,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None)
 ```
 This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 density matrix.
@@ -1035,8 +1039,8 @@ density matrix.
   3.collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
 * `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
 
-* `densities`: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
+* `density`: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+          subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
 
 * `subsys_ordering`: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
 
@@ -1049,6 +1053,8 @@ the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT spe
 * `enforce_pure`: (optional) boolean to determine if `state` is a collection of pure states or a density matrix
 * `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
 * `alpha`: (optional) Renyi alpha parameter. Default is 'alpha=1.0'.
+* `sparse_diag`: (optional) when `sparse=True`, this flat enforces the use of `scipy.sparse.linalg.eigsh()` to calculate the eigenvaues of the reduced DM.
+* `maxiter`: (optional) specify number of iterations for Lanczos diagonalisation. Look up documentation for `scipy.sparse.linalg.eigsh()`.
 
 RETURNS: dictionary with keys:
 
@@ -1068,7 +1074,7 @@ The `tools` package is a collection of useful functionalities to facilitate spec
 #### **entanglement entropy**
 
 ```python
-ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,return_sv=False)
+ent_entropy(system_state,basis,chain_subsys=None,density=False,subsys_ordering=True,alpha=1.0,DM=False,return_sv=False)
 ```
 This function calculates the entanglement entropy in a lattice quantum subsystem based on the Singular
 Value Decomposition (svd).
@@ -1134,8 +1140,8 @@ RETURNS:  dictionary with keys:
 * `alpha`: (optional) Renyi alpha parameter. Default is `alpha=1.0`. When alpha is different from unity,
      the entropy keys have attached `_Renyi` to their standard label.
 
-* `densities`: (optional) if set to `True`, the entanglement entropy is normalised by the size of the
-     subsystem [i.e., by the length of `chain_subsys`]. Default is `True`.
+* `density`: (optional) if set to `True`, the entanglement entropy is normalised by the size of the
+     subsystem [i.e., by the length of `chain_subsys`]. Default is `False`.
 
 * `subsys_ordering`: (optional) if set to `True`, the sites in `chain_subsys` are automatically ordered. Default is      `True`.
 
@@ -1153,7 +1159,7 @@ RETURNS:  dictionary with keys:
 
 #### **diagonal ensemble observables**
 ```python
-diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
+diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
 
 This function calculates the expectation values of physical quantities in the Diagonal ensemble 
@@ -1266,7 +1272,7 @@ keys are:
 
    * `subsys_orderin`: (optional) if set to `True`, the sites in`chain_subsys` are automatically ordered. Default is `True`.
 
-* `densities`: (optional) if set to `True`, all observables are normalised by the system size $N$, except
+* `density`: (optional) if set to `True`, all observables are normalised by the system size $N$, except
   for the entanglement entropy which is normalised by the subsystem size [i.e., by the length of `chain_subsys`].   Detault is `True`.
 
 * `alpha`: (optional) Renyi alpha parameter. Default is `alpha=1.0`.
