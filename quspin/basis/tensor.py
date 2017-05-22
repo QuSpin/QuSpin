@@ -349,6 +349,7 @@ class tensor_basis(basis):
 
 		state = state.transpose((2,0,1))
 
+
 		Ns_left = self._basis_left.Ns
 		Ns_right = self._basis_right.Ns
 
@@ -538,7 +539,8 @@ class tensor_basis(basis):
 				state = state.reshape((-1,1))
 				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
 			
-			elif state.ndim==2: 
+			elif state.ndim==2:
+
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
 				else: # 2D mixed
@@ -580,7 +582,6 @@ class tensor_basis(basis):
 		if pure:
 			p_A, p_B = p, p
 
-		print(p_A)
 		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
@@ -971,7 +972,6 @@ def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm=
 
 def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
 	rho_v = _tensor_reshape_mixed(rho,Ns_l,Ns_r)
-
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),None
 	elif return_rdm == "B":

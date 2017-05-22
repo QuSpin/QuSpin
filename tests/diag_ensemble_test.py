@@ -47,7 +47,7 @@ for _i in dtypes.keys():
 
 	alpha=uniform(5)
 
-	DE_args={"densities":randint(2),"alpha":uniform(5),"rho_d":True,"Srdm_args":{"basis":basis}}
+	DE_args={"density":randint(2),"alpha":uniform(5),"rho_d":True,"Srdm_args":{"basis":basis}}
 
 	### pure state
 	DE = diag_ensemble(L,psi0,E2,V2,Obs=O_zxz,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,**DE_args)

@@ -945,6 +945,26 @@ class basis_1d(basis):
 		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
 
 	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False):
+		"""
+		--- arguments ---
+		
+		* `state`: (required) the state of the quantum system. Can be a
+		  1. pure state (default) [numpy array of shape (Ns,)].
+		  2. density matrix [numpy array of shape (Ns,Ns)].
+		  3. collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
+		* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is `tuple(range(L//2))`.
+		* `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
+		  These arguments differ when used with `photon` or `tensor` basis.
+		  1. 'A': str, returns reduced DM of subsystem A 
+		  2. 'B': str, returns reduced DM of subsystem B
+		  3. 'both': str, returns reduced DM of both subsystems A and B
+		* 'enforce_pure': (optional) when `state` is a square matrix this option enfores the columns to be treated as independent states, so the partial trace is calculated for each state separately. Defauls is `False`.
+		* `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
+
+		RETURNS: reduced DM
+		"""
+
+
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.L//2))
 		elif len(sub_sys_A)==self.L:
@@ -1292,7 +1312,7 @@ class basis_1d(basis):
 			
 		return p_A, p_B, rdm_A, rdm_B
 
-	def ent_entropy(self,state,sub_sys_A=None,densities=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,density=False,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
@@ -1320,8 +1340,8 @@ class basis_1d(basis):
 						[by python convention the first site of the chain is labelled j=0]. 
 						Default is tuple(range(L//2)).
 
-		densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
+		density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'False'.
 
 		subsys_ordering: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
 
@@ -1343,6 +1363,12 @@ class basis_1d(basis):
 		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
 
 		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
+
+		sparse_diag: (optional) when `sparse=True`, this flat enforces the use of `scipy.sparse.linalg.eigsh()`
+		to calculate the eigenvaues of the reduced DM.
+
+		maxiter: (optional) specify number of iterations for Lanczos diagonalisation. Look up documentation
+		for scipy.sparse.linalg.eigsh(). 
 
 		"""
 		if sub_sys_A is None:
@@ -1401,6 +1427,7 @@ class basis_1d(basis):
 				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
 			
 			elif state.ndim==2: 
+
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
 				else: # 2D mixed
@@ -1443,22 +1470,21 @@ class basis_1d(basis):
 		if pure:
 			p_A, p_B = p, p
 
-
 		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:
 				Sent_A = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
-				if densities: Sent_A /= L_A
+				if density: Sent_A /= L_A
 			if p_B is not None:
 				Sent_B = - _np.nansum((p_B * _np.log(p_B)),axis=-1)
-				if densities: Sent_B /= L_B
+				if density: Sent_B /= L_B
 		elif alpha >= 0.0:
 			if p_A is not None:
 				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
-				if densities: Sent_A /= L_A
+				if density: Sent_A /= L_A
 			if p_B is not None:
 				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1))/(1.0-alpha)
-				if densities: Sent_B /= L_B
+				if density: Sent_B /= L_B
 		else:
 			raise ValueError("alpha >= 0")
 
