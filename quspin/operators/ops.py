@@ -23,7 +23,8 @@ import functools
 # needed for exp_op class
 from scipy.sparse.linalg import expm_multiply as _expm_multiply
 
-from copy import deepcopy as _deepcopy
+from copy import deepcopy as _deepcopy # recursively copies all data into new object
+from copy import copy as _shallowcopy # copies only at top level references the data of old objects
 import warnings
 
 __all__ = ["hamiltonian","ishamiltonian","commutator","anti_commutator","exp_op","isexp_op","HamiltonianOperator","ops_dict"]
@@ -609,6 +610,7 @@ class hamiltonian(object):
 				V_dot = self._static.dot(V)	
 				for Hd,f,f_args in self._dynamic:
 					V_dot += f(time,*f_args)*(Hd.dot(V))
+
 				return V_dot
 
 			if V.__class__ is _np.ndarray:
@@ -1324,27 +1326,30 @@ class hamiltonian(object):
 
 	def as_dense_format(self,copy=False):
 		if copy:
-			return self.copy().asdense()
+			new = _deepcopy(self)
 		else:
-			if _sp.issparse(self._static):
-				self._static = self._static.todense()
+			new = _shallowcopy(self)
+
+
+		if _sp.issparse(new._static):
+			new._static = new._static.todense()
+		else:
+			new._static = _np.asmatrix(new._static)
+
+		new._dynamic = list(new._dynamic)
+		n = len(new._dynamic)
+		for i in range(n):
+			new._dynamic[i] = list(new._dynamic[i])
+			if _sp.issparse(new._dynamic[i][0]):
+				new._dynamic[i][0] = new._dynamic[i][0].todense()
 			else:
-				self._static = _np.asmatrix(self._static)
+				new._dynamic[i][0] = _np.asmatrix(new._dynamic[i][0])
 
-			self._dynamic = list(self._dynamic)
-			n = len(self._dynamic)
-			for i in range(n):
-				self._dynamic[i] = list(self._dynamic[i])
-				if _sp.issparse(self._dynamic[i][0]):
-					self._dynamic[i][0] = self._dynamic[i][0].todense()
-				else:
-					self._dynamic[i][0] = _np.asmatrix(self._dynamic[i][0])
+			new._dynamic[i][0] = new._dynamic[i][0].todense()
+			new._dynamic[i] = tuple(new._dynamic[i])
 
-				self._dynamic[i][0] = self._dynamic[i][0].todense()
-				self._dynamic[i] = tuple(self._dynamic[i])
-
-			self._dynamic = tuple(self._dynamic)
-			return self
+		new._dynamic = tuple(new._dynamic)
+		return new
 
 
 	def as_sparse_format(self,fmt,copy=False):
@@ -1355,33 +1360,39 @@ class hamiltonian(object):
 			raise ValueError("'{0}' is not a valid sparse format or does not support arithmetic.".format(fmt))
 
 		if copy:
-			return self.copy().asformat_csr(fmt)
+			new = _deepcopy(self)
 		else:
-			sparse_constuctor = getattr(_sp,fmt+"_matrix")
+			new = _shallowcopy(self)
 
-			self._static = sparse_constuctor(self._static)
-			self._dynamic = list(self._dynamic)
-			n = len(self._dynamic)
-			for i in range(n):
-				self._dynamic[i] = list(self._dynamic[i])
-				self._dynamic[i][0] = sparse_constuctor(self._dynamic[i][0])
-				self._dynamic[i] = tuple(self._dynamic[i])
+		sparse_constuctor = getattr(_sp,fmt+"_matrix")
 
-			self._dynamic = tuple(self._dynamic)
-			return self
+		new._static = sparse_constuctor(new._static)
+		new._dynamic = list(new._dynamic)
+		n = len(new._dynamic)
+		for i in range(n):
+			new._dynamic[i] = list(new._dynamic[i])
+			new._dynamic[i][0] = sparse_constuctor(new._dynamic[i][0])
+			new._dynamic[i] = tuple(new._dynamic[i])
+
+		new._dynamic = tuple(new._dynamic)
+		return new
 
 
 	def conj(self):
-		self._static = self._static.conj()
-		self._dynamic = list(self._dynamic)
+		new = _shallowcopy(self)
+
+		new._static = new._static.conj()
+		new._dynamic = list(new._dynamic)
 		n = len(self._dynamic)
 		for i in range(n):
-			self._dynamic[i] = list(self._dynamic[i])
-			self._dynamic[i][0] = self._dynamic[i][0].conj()
-			self._dynamic[i] = tuple(self._dynamic[i])
+			new._dynamic[i] = list(new._dynamic[i])
+			new._dynamic[i][0] = new._dynamic[i][0].conj()
+			new._dynamic[i] = tuple(new._dynamic[i])
 
-		self._dynamic = tuple(self._dynamic)
-		return self
+		new._dynamic = tuple(new._dynamic)
+
+		return new
+
 
 
 	def trace(self,time=0):
@@ -1403,40 +1414,41 @@ class hamiltonian(object):
 
 	def transpose(self,copy=False):
 		if copy:
-			return self.copy().transpose()
+			new = _deepcopy(self)
 		else:
-			self._static = self._static.T
-			self._dynamic = list(self._dynamic)
-			n = len(self._dynamic)
-			for i in range(n):
-				self._dynamic[i] = list(self._dynamic[i])
-				self._dynamic[i][0] = self._dynamic[i][0].T
-				self._dynamic[i] = tuple(self._dynamic[i])
+			new = _shallowcopy(self)
 
-			self._dynamic = tuple(self._dynamic)
-			return self
+		new._static = new._static.T
+		new._dynamic = list(new._dynamic)
+		n = len(self._dynamic)
+		for i in range(n):
+			new._dynamic[i] = list(new._dynamic[i])
+			new._dynamic[i][0] = new._dynamic[i][0].T
+			new._dynamic[i] = tuple(new._dynamic[i])
+
+		new._dynamic = tuple(new._dynamic)
+
+		return new
 
 
 
-	def astype(self,dtype,copy=False):
-		if copy:
-			return self.copy().astype(dtype)
-		else:
+	def astype(self,dtype):
+		if dtype not in supported_dtypes:
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
-			if dtype not in supported_dtypes:
-				raise TypeError('hamiltonian does not support type: '+str(dtype))
+		new = _shallowcopy(self)
 
-			self._dtype = dtype
-			self._static = self._static.astype(dtype)
-			self._dynamic = list(self._dynamic)
-			n = len(self._dynamic)
-			for i in range(n):
-				self._dynamic[i] = list(self._dynamic[i])
-				self._dynamic[i][0] = self._dynamic[i][0].astype(dtype)
-				self._dynamic[i] = tuple(self._dynamic[i])
+		new._dtype = dtype
+		new._static = new._static.astype(dtype)
+		new._dynamic = list(new._dynamic)
+		n = len(new._dynamic)
+		for i in range(n):
+			new._dynamic[i] = list(new._dynamic[i])
+			new._dynamic[i][0] = new._dynamic[i][0].astype(dtype)
+			new._dynamic[i] = tuple(new._dynamic[i])
 
-			self._dynamic = tuple(self._dynamic)
-			return self
+		new._dynamic = tuple(new._dynamic)
+		return new
 		
 
 
@@ -1506,15 +1518,17 @@ class hamiltonian(object):
 
 
 	def __neg__(self): # -self
-		self._static = -self._static
-		self._dynamic = list(self._dynamic)
-		n = len(self._dynamic)
-		for i in range(n):
-			self._dynamic[i][-1] = -self._dynamic[i][-1]
+		new = _shallowcopy(self)
 
-		self._dynamic = tuple(self._dynamic)
+		new._static = -new._static
+		new._dynamic = list(new._dynamic)
+		n = len(new._dynamic)
+		for i in range(n):
+			new._dynamic[i][-1] = -new._dynamic[i][-1]
+
+		new._dynamic = tuple(new._dynamic)
 		
-		return self
+		return new
 
 
 	def __call__(self,time):
@@ -1822,7 +1836,7 @@ class hamiltonian(object):
 
 	def _add_hamiltonian(self,other): 
 		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		new._is_dense = new._is_dense or other._is_dense
 
@@ -1871,7 +1885,7 @@ class hamiltonian(object):
 
 	def _sub_hamiltonian(self,other): 
 		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		new._is_dense = new._is_dense or other._is_dense
 
@@ -2002,7 +2016,7 @@ class hamiltonian(object):
 	def _add_sparse(self,other):
 
 		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		try:
 			new._static += other
@@ -2043,7 +2057,7 @@ class hamiltonian(object):
 	def _sub_sparse(self,other):
 
 		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		try:
 			new._static -= other
@@ -2084,7 +2098,7 @@ class hamiltonian(object):
 	def _mul_sparse(self,other):
 
 		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		new._static = new._static * other
 
@@ -2125,7 +2139,7 @@ class hamiltonian(object):
 		# find resultant type from product
 		dtype = _np.result_type(self._dtype, other.dtype)
 		# create a copy of the hamiltonian object with the previous dtype
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		# proform multiplication on all matricies of the new hamiltonian object.
 
@@ -2202,7 +2216,7 @@ class hamiltonian(object):
 
 	def _mul_scalar(self,other):
 		dtype = _np.result_type(self._dtype, other)
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 
 		new=self.copy()
@@ -2281,7 +2295,7 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2324,7 +2338,7 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 
 		if not self._is_dense:
@@ -2369,7 +2383,7 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2402,7 +2416,7 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype,copy=True)
+		new=self.astype(dtype)
 
 		if not self._is_dense:
 			self._is_dense = True
