@@ -726,9 +726,10 @@ The `basis` objects provide a way of constructing all the necessary information 
 
 |      operator strings | special strings |      basis type          |               operators                 |
 |:-------------------:|:------------------:|:------------------:|:--------------------------------------:|
-|`"+","-","z"`|`"x","y"` (spin-1/2 only)|`spin_basis_1d` |$\sigma^+$, $\sigma^-$, $\sigma^z$|
-|`"+","-","n"`|`"z"` (`"n"-1/2`)|`fermion_basis_1d` |$c^\dagger$, $c$, $n=c^\dagger c$|
-|`"+","-","n"`|`"z"` (`"n"-(sps-1)/2`)|`boson_basis_1d` |$b^\dagger$, $b$, $n=b^\dagger b$|
+|`"+","-","z","I"`|`"x","y"` (spin-1/2 only)|`spin_basis_1d` |$\sigma^+$, $\sigma^-$, $\sigma^z$, $\mathbb{1}$|
+|`"+","-","n","I"`|`"z"` (`"n"-1/2`)|`fermion_basis_1d` |$c^\dagger$, $c$, $n=c^\dagger c$, $\mathbb{1}$|
+|`"+","-","n","I"`|`"z"` (`"n"-(sps-1)/2`)|`boson_basis_1d` |$b^\dagger$, $b$, $n=b^\dagger b$, $\mathbb{1}$|
+|`"+","-","n","I"`| |`ho_basis` |$b^\dagger$, $b$, $n=b^\dagger b$, $\mathbb{1}$|
 
 ### **spins basis in 1d**
 
