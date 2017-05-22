@@ -1,2 +1,8 @@
 tensor_entropy_test.py
 
+multispecies_ent_test.py
+
+sent_wrapper_test.py
+
+tensor_entropy_test.py
+

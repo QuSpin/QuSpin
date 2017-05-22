@@ -333,7 +333,7 @@ class basis(object):
 
 	def check_pcon(self,static,dynamic):
 		if not hasattr(self,"_check_pcon"):
-			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=Flase in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 
 		if self._check_pcon:
@@ -408,7 +408,7 @@ class basis(object):
 
 	def check_symm(self,static,dynamic):
 		if not hasattr(self,"_check_symm"):
-			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_pcon=Flase in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_symm=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 
 		static_blocks,dynamic_blocks = self._check_symm(static,dynamic)
