@@ -6,7 +6,7 @@ sys.path.insert(0,quspin_path)
 
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d,tensor_basis,photon_basis,ho_basis
-from quspin.tools.measurements import ent_entropy
+from quspin.tools.measurements import _ent_entropy
 import numpy as np
 import scipy.sparse as sp
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
@@ -52,7 +52,7 @@ for S in ["1/2","1","3/2","2"]:
 	_,V=H.eigh()
 	psi=V[:,0]
 
-	rho_tools = ent_entropy(psi,basis,DM='chain_subsys')['DM_chain_subsys']
+	rho_tools = _ent_entropy(psi,basis,DM='chain_subsys')['DM_chain_subsys']
 	rho_basis = basis.partial_trace(psi)
 
 	#print(rho_tools)

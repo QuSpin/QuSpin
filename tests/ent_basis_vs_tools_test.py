@@ -47,7 +47,7 @@ for L in range(2,8,1):
 		basis_ent=basis.ent_entropy(psi,sub_sys_A=chain_subsys,return_rdm='both')
 
 		Sent_tools=tools_ent['Sent']
-		Sent_basis=basis_ent['Sent']/len(chain_subsys)
+		Sent_basis=basis_ent['Sent_A']
 
 		rho_tools_A = tools_ent['DM_chain_subsys']
 		rho_basis_A = basis_ent['rdm_A']

@@ -1,12 +1,12 @@
 # **QuSpin**
 
-This documentation is also available as a [jupyter notebook](./documentation.ipynb) which displays the LaTeX below code properly. 
+This documentation is also available as a [jupyter notebook](./documentation.ipynb) which displays the LaTeX code below properly. 
 
-QuSpin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional interacting spin, fermion and boson chains/ladders. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from single-particle operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specifying the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
+QuSpin is a python library which wraps Scipy, Numpy, and custom Cython libraries together to do state-of-the art exact diagonalization calculations on one-dimensional interacting spin, fermion and boson chains/ladders. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from single-particle operators. It also gives the user the flexibility of accessing many symmetries in 1d. Moreover, there is a convenient built-in way to specify the time dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
 For an ***indepth introduction*** to the package, check out our paper: https://scipost.org/10.21468/SciPostPhys.2.1.003.
 
-***Examples*** with python script which show how to run QuSpin can be downloaded from the [arXiv ancillary repository](https://arxiv.org/src/1610.03042v4/anc) and from the [examples directory on github](./examples/).
+***Examples*** with python script which show how to run QuSpin can be downloaded from the [examples directory on github](./examples/). There is also a number of jupyter notebooks that accompany them.
 
 
 # **Contents**
@@ -15,7 +15,7 @@ For an ***indepth introduction*** to the package, check out our paper: https://s
   * [automatic install](#automatic-install)
   * [manual install](#manual-install)
   * [updating the package](#updating-the-package)
-* [Basic package usage](#basic-package-usage)
+* [Basic package usage](#Basic-package-usage)
   * [constructing hamiltonians](#constructing-hamiltonians)
   * [using basis objects](#using-basis-objects)
   * [specifying symmetries](#using-symmetries)
@@ -722,7 +722,14 @@ O_dict. eigvalsh(pars={},**eigvalsh_args)
 
 ## **basis objects**
 
-The `basis` objects provide a way of constructing all the necessary information needed to construct a sparse Hamiltonian from a list of operators. All `basis` objects are derived from the same `base` object class and have mostly the same functionality. There are two subtypes of the `base` object class: the first type consists of `basis` objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, `basis` type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style `basis` type. For instance, `basis` type two can take two spin-chain bases and create the corresponding tensor product basis out of them.   
+The `basis` objects provide a way of constructing all the necessary information needed to construct a sparse Hamiltonian from a list of operators. All `basis` objects are derived from the same `base` object class and have mostly the same functionality. There are two subtypes of the `base` object class: the first type consists of `basis` objects which provide the bulk operations required to create a sparse matrix out of an operator string. For example, `basis` type one creates a single spin-chain basis. The second basis type wraps multiple objects of the first type together in a tensor-style `basis` type. For instance, `basis` type two can take two spin-chain bases and create the corresponding tensor product basis out of them.
+
+|      operator strings | special strings |      basis type          |               operators                 |
+|:-------------------:|:------------------:|:------------------:|:--------------------------------------:|
+|`"+","-","z","I"`|`"x","y"` (spin-1/2 only)|`spin_basis_1d` |$\sigma^+$, $\sigma^-$, $\sigma^z$, $\mathbb{1}$|
+|`"+","-","n","I"`|`"z"` (`"n"-1/2`)|`fermion_basis_1d` |$c^\dagger$, $c$, $n=c^\dagger c$, $\mathbb{1}$|
+|`"+","-","n","I"`|`"z"` (`"n"-(sps-1)/2`)|`boson_basis_1d` |$b^\dagger$, $b$, $n=b^\dagger b$, $\mathbb{1}$|
+|`"+","-","n","I"`| |`ho_basis` |$b^\dagger$, $b$, $n=b^\dagger b$, $\mathbb{1}$|
 
 ### **spins basis in 1d**
 
@@ -998,7 +1005,7 @@ Integer such that `state == basis[basis.index(state)]` or raises Exception if st
 
 
 ```python
-basis.partial_trace(state,sub_sys_A=None,return_rdm="A",sparse=False,state_type="pure")
+basis.partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False)
 ```
 This function calculates the reduced density matrix (DM), performing a partial trace of a quantum state.
 
@@ -1008,21 +1015,19 @@ This function calculates the reduced density matrix (DM), performing a partial t
   1. pure state (default) [numpy array of shape (Ns,)].
   2. density matrix [numpy array of shape (Ns,Ns)].
   3. collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
-* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
+* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is `tuple(range(L//2))`.
 * `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
   These arguments differ when used with `photon` or `tensor` basis.
   1. 'A': str, returns reduced DM of subsystem A 
   2. 'B': str, returns reduced DM of subsystem B
   3. 'both': str, returns reduced DM of both subsystems A and B
-* `state_type`: (optional) flag to determine if 'state' is a collection of pure states or a density matrix
-  1. 'pure': (default) (a collection of) pure state(s)
-  2. 'mixed': mixed state (i.e. a density matrix)
+* 'enforce_pure': (optional) when `state` is a square matrix this option enfores the columns to be treated as independent states, so the partial trace is calculated for each state separately. Defauls is `False`.
 * `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
 
 RETURNS: reduced DM
 
 ```python
-basis.ent_entropy(self,state,sub_sys_A=None,return_rdm=None,state_type="pure",sparse=False,alpha=1.0)
+basis.ent_entropy(state,sub_sys_A=None,density=False,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None)
 ```
 This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 density matrix.
@@ -1034,21 +1039,32 @@ density matrix.
   2.density matrix [numpy array of shape (Ns,Ns)].
   3.collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
 * `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is tuple(range(L//2)).
+
+* `density`: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+          subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'True'.
+
+* `subsys_ordering`: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
+
 * `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
   1. 'A': str, returns reduced DM of subsystem A
   2. 'B': str, returns reduced DM of subsystem B
   3. 'both': str, returns reduced DM of both subsystems A and B
-* `state_type`: (optional) flag to determine if 'state' is a collection of pure states or a density matrix
-  1. 'pure': (default) (a collection of) pure state(s)
-  2. 'mixed': mixed state (i.e. a density matrix)
+* `return_rdm_EVs`: (optional) boolean to return eigenvalues of reduced DM. If `return_rdm` is specified,
+the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, the spectrum of `rdm_A` is terurned. Default is `False`.
+* `enforce_pure`: (optional) boolean to determine if `state` is a collection of pure states or a density matrix
 * `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
 * `alpha`: (optional) Renyi alpha parameter. Default is 'alpha=1.0'.
+* `sparse_diag`: (optional) when `sparse=True`, this flat enforces the use of `scipy.sparse.linalg.eigsh()` to calculate the eigenvaues of the reduced DM.
+* `maxiter`: (optional) specify number of iterations for Lanczos diagonalisation. Look up documentation for `scipy.sparse.linalg.eigsh()`.
 
 RETURNS: dictionary with keys:
 
-'Sent': entanglement entropy.
+'Sent_A': entanglement entropy of subsystem A.
+'Sent_B (optional)': entanglement entropy of subsystem B (requires `return_rdm='B'`).
 'rdm_A': (optional) reduced density matrix of subsystem A
 'rdm_B': (optional) reduced density matrix of subsystem B
+'p_A': (optional) eigenvalues of reduced density matrix of subsystem A
+'p_B': (optional) eigenvalues of reduced density matrix of subsystem B
 
 ## **tools**
 
@@ -1059,31 +1075,30 @@ The `tools` package is a collection of useful functionalities to facilitate spec
 #### **entanglement entropy**
 
 ```python
-ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False])
+ent_entropy(system_state,basis,chain_subsys=None,density=False,subsys_ordering=True,alpha=1.0,DM=False,return_sv=False)
 ```
 This function calculates the entanglement entropy in a lattice quantum subsystem based on the Singular
 Value Decomposition (svd).
 
-Consider a quantum chain of $N$ sites, and define a subsystem $A$ of $N_A$ sites and its complement $A^c$: $N=N_A + N_{A^c}$. Given the reduced density matrices 
+Consider a quantum chain of $N$ sites in the state defined by the density matrix $\rho$. Define a subsystem $A$ of $N_A$ sites and its complement $A^c$: $N=N_A + N_{A^c}$. Given the reduced density matrices 
 
 $$ \rho_A = \mathrm{tr}_B \rho, \qquad \rho_{A^c} = \mathrm{tr}_{A^c} \rho $$
 
-the entanglement entropy density (normalised w.r.t. subsystem $A$) between the two subsystems is given by
+the entanglement entropy density of subsystems $A$ and $B$ (normalised w.r.t. their size, respectively) read 
 
-$$ S_\mathrm{ent} = -\frac{1}{N_A}\mathrm{tr}_A \rho_A\log\rho_A = -\frac{1}{N_A}\mathrm{tr}_{A^c} \rho_{A^c}\log\rho_{A^c} $$
+$$ S_\mathrm{ent}^A = -\frac{1}{N_A}\mathrm{tr}_A \rho_A\log\rho_A,\qquad S_\mathrm{ent}^B = -\frac{1}{N_A}\mathrm{tr}_{A^c} \rho_{A^c}\log\rho_{A^c} $$
 
+For $\rho$ pure, we have $S_\mathrm{ent}^A = S_\mathrm{ent}^B$.
 
 RETURNS:  dictionary with keys:
 
-* `Sent`: entanglement entropy.
+* `Sent`: entanglement entropy of subsystem $A$.
+
+* `Sent_other_subsys`: entanglement entropy of subsystem $A^c$.
 
 * `DM_chain_subsys`: (optional) reduced density matrix of the chain subsystem retained after the partial trace. The basis in which the reduced DM is returned is the full $z$-basis of the subsystem. For instance, if the subsystem contains $N_A$ sites the reduced DM will be a $(2^{N_A}, 2^{N_A})$ array. This is required because some symmetries of the system might not be inherited by the subsystem. The only exception to this appears when `basis` is an instance of `photon_basis` AND the subbsystem is the entire chain (i.e. one traces out the photon dregree of freedom only and entirely): then the reduced DM is returned in the basis specified by the `..._basis_1d` argument passed into the definition of `photon_basis`, and thus inherits all symmetries of `..._basis_1d` by construction.
 
 * `DM_other_subsys`: (optional) reduced density matrix of the complement subsystem, i.e. the subsystem which is being traced out. The basis the redcuded DM is returned in, is the same as `DM_chain_subsys` above.
-
-* `U`: (optional) svd U matrix
-
-* `V`: (optional) svd V matrix
 
 * `lmbda`: (optional) svd singular values
 
@@ -1126,28 +1141,26 @@ RETURNS:  dictionary with keys:
 * `alpha`: (optional) Renyi alpha parameter. Default is `alpha=1.0`. When alpha is different from unity,
      the entropy keys have attached `_Renyi` to their standard label.
 
-* `densities`: (optional) if set to `True`, the entanglement entropy is normalised by the size of the
-     subsystem [i.e., by the length of `chain_subsys`]. Default is `True`.
+* `density`: (optional) if set to `True`, the entanglement entropy is normalised by the size of the
+     subsystem [i.e., by the length of `chain_subsys`]. Default is `False`.
 
 * `subsys_ordering`: (optional) if set to `True`, the sites in `chain_subsys` are automatically ordered. Default is      `True`.
 
 * `svd_return_vec`: (optional) list of three booleans to return the Singular Value Decomposition (svd) 
   parameters:
 
-  * `[True, . , . ]` returns the svd matrix `U`.
+  * `[ . ,True, . ]` returns the svd singular values.
 
-  * `[ . ,True, . ]` returns the singular values `lmbda`.
+  * `[ . , . ,True]` and `[True, . , . ]` are depricated.
 
-  * `[ . , . ,True]` returns the svd matrix `V`.
-
-  Any combination of the above is possible. Default is ```[False,False,False]```.
+  Default is ```[False,False,False]```.
 
 
 
 
 #### **diagonal ensemble observables**
 ```python
-diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
+diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args=())
 ```
 
 This function calculates the expectation values of physical quantities in the Diagonal ensemble 
@@ -1260,7 +1273,7 @@ keys are:
 
    * `subsys_orderin`: (optional) if set to `True`, the sites in`chain_subsys` are automatically ordered. Default is `True`.
 
-* `densities`: (optional) if set to `True`, all observables are normalised by the system size $N$, except
+* `density`: (optional) if set to `True`, all observables are normalised by the system size $N$, except
   for the entanglement entropy which is normalised by the subsystem size [i.e., by the length of `chain_subsys`].   Detault is `True`.
 
 * `alpha`: (optional) Renyi alpha parameter. Default is `alpha=1.0`.
@@ -1330,7 +1343,7 @@ RETURNS:  dictionary with keys:
   1. `basis`: (required) the basis used to build `system_state`. Must be an instance of `photon_basis`,
     `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`. 
 
-  2. `chain_subsys`: (optional) a list of lattice sites to specify the chain subsystem. Default is
+  2. `chain_subsys/sub_sys_A`: (optional) a list of lattice sites to specify the chain subsystem. Default is
 
    * ```[0,1,...,N/2-1,N/2]``` for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.
 
@@ -1375,8 +1388,119 @@ RETURNS:  array containing evolved state in time
 
 * `solver_args`: (optional) dictionary with additional [scipy integrator (solver)](https://docs.scipy.org/doc/scipy/reference/tutorial/integrate.html) arguments.   
 
+Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven Gross-Pitaevskii equation on a one-imensional lattice:
 
+$$ i\dot\varphi_j(t) = -J\left( e^{-iA\sin\Omega t}\varphi_{j-1}(t) + e^{+iA\sin\Omega t}\varphi_{j+1}(t) \right) + \mu_{trap}\varphi_j(t) + U|\varphi_j(t)|^2\varphi_j(t) $$
 
+where $j$ labels the lattice sites. Let us start by defining the single-particle Hamiltonian $H(t)$
+
+```python
+from quspin.operators import hamiltonian # Hamiltonians and operators
+from quspin.basis import boson_basis_1d # Hilbert space spin basis
+from quspin.tools.measurements import evolve # ODE evolve tool
+from quspin.tools.Floquet import Floquet_t_vec 
+import numpy as np # generic math functions
+
+L=50 # number of lattice sites
+i_CM = L//2-0.5 # centre of chain
+
+### static model parameters
+J=1.0 # hopping
+mu_trap=0.002 # harmonic trap strength
+U=1.0 # mean-field (GPE) interaction
+### periodic driving
+A=1.0 # drive amplitude
+Omega=10.0 # drive frequency
+def drive(t,Omega):
+  return np.exp(-1j*A*np.sin(Omega*t) )
+def drive_conj(t,Omega):
+  return np.exp(+1j*A*np.sin(Omega*t) )
+drive_args=[Omega] # drive arguments
+t=Floquet_t_vec(Omega,30,len_T=1) # time vector, 30 stroboscopic periods
+### site-couping lists
+hopping=[[-J,i,(i+1)%L] for i in range(L)]
+trap=[[mu_trap*(i-i_CM)**2,i] for i in range(L)]
+### operator strings for single-particle Hamiltonian
+static=[['n',trap]]
+dynamic=[["+-",hopping,drive,drive_args],["-+",hopping,drive_conj,drive_args]]
+# define single-particle basis
+basis = boson_basis_1d(L,Nb=1,sps=2) # Nb=1 boson and sps=2 states per site [empty and filled]
+### build Hamiltonian
+H=hamiltonian(static,dynamic,basis=basis,dtype=np.complex128)
+# calculate eigenvalues and eigenvectors of free particle
+E,V=H.eigh()
+```
+Next, we define the GPE and solve it using `evolve`:
+```python
+def GPE(time,phi):
+  """
+  This function solves the complex-valued time-dependent Gross-Pitaevskii equation:
+
+  -i\dot\phi(t) = H(t)\phi(t) + U |\phi(t)|^2 \phi(t)
+  
+  """
+  # solve static part of GPE
+  phi_dot = -1j*( H.static.dot(phi) + U*np.abs(phi)**2*phi )
+  # solve dynamic part of GPE
+  for Hd,f,f_args in H.dynamic:
+    phi_dot += -1j*f(time,*f_args)*Hd.dot(phi)
+  return phi_dot
+# initial state
+phi0=V[:,0]*np.sqrt(L)
+# solve cpx-valued GPE
+phi_t = evolve(phi0,t.i,t.vals,GPE)
+```
+The above code requires the use of a complex-valued ODE solver [which is done by `evolve` under the hood, so long as no solver is explicitly specified]. An alternative way to solve the GPE using a real-valued solver would be
+```python
+def GPE_real(time,psi,H,U):
+  """
+  This function defines the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a 
+    real-valued ODE solver.
+
+  The goal is to solve: 
+
+  -i\dot\phi(t) = H(t)\phi(t) + U |\phi(t)|^2 \phi(t)
+
+  for the complex-valued $\phi(t)$ by casting it as a real-valued vector $\psi=[u,v]$ where 
+    $\phi(t) = u(t) + iv(t)$. The realand imaginary parts, $u(t)$ and $v(t)$, have the same dimension as 
+    $\phi(t)$.
+
+  In the most general form, the single-particle Hamiltonian can be decomposed as 
+    $H(t)= H_{stat} + f(t)H_{dyn}$, with a complex-valued driving function $f(t)$. Then, the GPE can be cast in 
+    the following real-valued form:
+
+  \dot u(t) = +\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)
+  \dot v(t) = -\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)
+
+  """
+  # preallocate psi_dot
+  psi_dot = np.zeros_like(psi)
+  # read off number of lattice sites (number of complex elements in psi)
+  Ns=H.Ns
+  # static single-particle
+  psi_dot[:Ns] =  H.static.dot(psi[Ns:]).real
+  psi_dot[Ns:] = -H.static.dot(psi[:Ns]).real
+  # static GPE interaction
+  psi_dot_2 = np.abs(psi[:Ns])**2 + np.abs(psi[Ns:])**2
+  psi_dot[:Ns] += U*psi_dot_2*V[Ns:]
+  psi_dot[Ns:] -= U*psi_dot_2*V[:Ns]
+  # dynamic single-particle term
+  for Hdyn,f,f_args in H.dynamic:
+    psi_dot[:Ns] +=  ( +(f(time,*f_args).real)*Hdyn.dot(psi[Ns:]) \
+                           + (f(time,*f_args).imag)*Hdyn.dot(psi[:Ns])    ).real
+    psy_dot[Ns:] +=  ( -(f(time,*f_args).real)*Hdyn.dot(psi[:Ns]) \
+                           + (f(time,*f_args).imag)*Hdyn.dot(psi[Ns:])    ).real
+
+  return psi_dot
+
+# define initial condition
+phi0=V[:,0]*np.sqrt(L)
+# define ODE solver parameters
+GPE_params = (H,U)
+# sole real-valued GPE
+phi_t = evolve(phi0,t.i,t.vals,GPE_real,stack_state=True,f_params=GPE_params)
+```
+The flag `stack_state=True` is required for `evolve` to handle the complex-valued initial condition properly, as well as to put together the output solution as a complex-valued vector. Since the real-valued ODE solver allows to parse ODE parameters, we can include them in the user-defined ODE function and use the flag `f_params`. Notice the elegant way python allows one to circumvent this variable in the complex-valued example above.
 
 #### **mean level spacing**
 ```python
@@ -1598,7 +1722,7 @@ RETURNS:
 #### **`block_ops` class**
 
 ``` python
-block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,save_previous_data=True,
+block_H=block_ops(blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},save_previous_data=True,
                     compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True)
 ```
 This class is used to split up the dynamics of a state over various symmetry sectors if the initial state does not obey the symmetry but the Hamiltonian does. Moreover we provide a multiprocessing option which allows the user to distribute the caculation of the dynamics over multiple cores.
@@ -1617,7 +1741,9 @@ This class is used to split up the dynamics of a state over various symmetry sec
 
 * `dtype`: (required) data type of `hamiltonin` to be constructed.
 
-* `get_proj_args`: (optional) dictionary which contains arguments for basis.get_proj(dtype,...). As of v(0.2.0) the only arguement would be for pcon=True of one would like to project to the particle conserving basis (which is useful to same memory for some systems)
+* `basis_kwargs`: (optional) dictionary of keyword arguments to add when calling basis constructor
+
+* `get_proj_kwargs`: (optional) dictionary of keyword arguments to add when calling basis.get_vec()
 
 * `save_previous_data`: (optional) when doing the evolution this class constructs the Hamiltonians for the corresponding symmetry blocks. This takes some time and thus by setting this flag to `True`, the class will keep previously calculated Hamiltonians. This might be advantageous if at a later time one needs to do evolution in these blocks again so the corresponding Hamiltonians do not have to be calculated again.
 
@@ -1706,6 +1832,7 @@ ii) `iterate = False`
 * `n_jobs`: (optional) number of processes to do dynamics with. NOTE: one of those processes is used to gather results. For optimal performance, all blocks should be approximately the same size and `n_jobs-1` must be a common devisor of the number of blocks, such that there is roughly the same workload for each process. Otherwise the computation will be as slow as the slowest process.
 
 * ...: the rest are just arguments which are used by the `exp_op` class, cf documentiation for more details.
+
 
 
 

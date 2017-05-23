@@ -1,6 +1,8 @@
+from __future__ import print_function
 import numpy as _np
 import scipy.sparse as _sp
 import warnings
+
 
 MAXPRINT = 50
 # this file stores the base class for all basis classes
@@ -31,6 +33,7 @@ class basis(object):
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
+		string += "\nsee review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.\n"
 		return string
 
 
@@ -48,16 +51,16 @@ class basis(object):
 		return self._operators
 
 	def _get__str__(self):
-		temp1 = "\t{0:"+str(len(str(self.Ns)))+"d}.  "
+		temp1 = "         {0:"+str(len(str(self.Ns)))+"d}.  "
 		n_space = len(str(self.sps))
 		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
 
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b//self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
@@ -282,9 +285,13 @@ class basis(object):
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
 		
 		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+			try:
+				user_input = raw_input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+			except NameError:
+				user_input = input("Display all {} non-hermitian couplings? (y or n) ".format(len(diff)) )
+
 			if user_input == 'y':
 				print("   (opstr, indices, coupling)")
 				for i in range(len(diff)):
@@ -299,9 +306,13 @@ class basis(object):
 		# calculate non-hermitian elements
 		diff = set( tuple(dynamic_expand) ) - set( tuple(dynamic_expand_hc) )
 		if diff:
-			unique_opstrs = list(set( zip(*tuple(diff))[0]) )
+			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following dynamic operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
-			user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			try:
+				user_input = raw_input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+			except NameError:
+				user_input = input("Display all {} non-hermitian couplings at time t = {}? (y or n) ".format( len(diff), _np.round(t,5)))
+
 			if user_input == 'y':
 				print("   (opstr, indices, coupling(t))")
 				for i in range(len(diff)):
@@ -322,7 +333,7 @@ class basis(object):
 
 	def check_pcon(self,static,dynamic):
 		if not hasattr(self,"_check_pcon"):
-			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=Flase in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 
 		if self._check_pcon:
@@ -345,11 +356,15 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( zip(*tuple(odd_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+
 				if user_input == 'y':
 					print(" these operators do not conserve particle number{0}:".format(con))
 					print("   (opstr, indices, coupling)")
@@ -371,11 +386,14 @@ class basis(object):
 
 	
 			if odd_ops:
-				unique_opstrs = list(set( zip(*tuple(odd_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []
 				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
 				if user_input == 'y':
 					print(" these operators do not conserve particle number{0}:".format(con))
 					print("   (opstr, indices, coupling)")
@@ -390,7 +408,7 @@ class basis(object):
 
 	def check_symm(self,static,dynamic):
 		if not hasattr(self,"_check_symm"):
-			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_pcon=Flase in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_symm=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 
 		static_blocks,dynamic_blocks = self._check_symm(static,dynamic)
@@ -403,14 +421,17 @@ class basis(object):
 				odd_ops,missing_ops = static_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -426,12 +447,16 @@ class basis(object):
 
 			elif len(static_blocks[symm]) == 1:
 				missing_ops, = static_blocks[symm]
-				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(missing_ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					warnings.warn("The following static operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -447,14 +472,18 @@ class basis(object):
 				odd_ops,missing_ops = dynamic_blocks[symm]
 				ops = list(missing_ops)
 				ops.extend(odd_ops)
-				unique_opstrs = list(set( zip(*tuple(ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					unique_odd_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops) + len(unique_odd_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are missing for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -470,12 +499,16 @@ class basis(object):
 
 			elif len(dynamic_blocks[symm]) == 1:
 				missing_ops, = dynamic_blocks[symm]
-				unique_opstrs = list(set( zip(*tuple(missing_ops))[0]) )
+				unique_opstrs = list(set( next(iter(zip(*tuple(missing_ops))))) )
 				if unique_opstrs:
 					unique_missing_ops = []
 					[ unique_missing_ops.append(ele) for ele in missing_ops if ele not in unique_missing_ops]
 					warnings.warn("The following dynamic operator strings do not obey {0}: {1}".format(symm,unique_opstrs),UserWarning,stacklevel=4)
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					try:
+						user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+					except NameError:
+						user_input = input("Display all {0} couplings? (y or n) ".format(len(unique_missing_ops)) )
+
 					if user_input == 'y':
 						print(" these operators are needed for {}:".format(symm))
 						print("   (opstr, indices, coupling)")
@@ -506,6 +539,55 @@ def isbasis(x):
 ####################################################
 
 def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	"""
+	This function computes the partial trace of a dense pure state psi over set of sites sub_sys_A and returns 
+	reduced DM. Vectorisation available. 
+	"""
+	
+	psi_v=_lattice_reshape_pure(psi,sub_sys_A,L,sps)
+
+	if return_rdm == "A":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
+	elif return_rdm == "B":
+		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+	elif return_rdm == "both":
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+
+def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+	"""
+	This function computes the partial trace of a set of dense mixed states rho over set of sites sub_sys_A 
+	and returns reduced DM. Vectorisation available. 
+	"""
+	rho_v=_lattice_reshape_mixed(rho,sub_sys_A,L,sps)
+	if return_rdm == "A":
+		return _np.einsum("...jlkl->...jk",rho_v),None
+	elif return_rdm == "B":
+		return None,_np.einsum("...ljlk->...kj",rho_v)
+	elif return_rdm == "both":
+		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...kj",rho_v)
+
+def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+	"""
+	This function computes the partial trace of a sparse pure state psi over set of sites sub_sys_A and returns 
+	reduced DM.
+	"""
+	psi=_lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps)
+	
+	if return_rdm == "A":
+		return psi.dot(psi.H),None
+	elif return_rdm == "B":
+		return None,psi.H.dot(psi)
+	elif return_rdm == "both":
+		#return psi.dot(psi.H),psi.H.dot(psi)
+		return psi.dot(psi.H),psi.H.dot(psi)
+
+
+
+def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
+	"""
+	This function reshapes the dense pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
+	Vectorisation available. 
+	"""
 	extra_dims = psi.shape[:-1]
 	n_dims = len(extra_dims)
 
@@ -526,24 +608,15 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
-	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
+	return psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj()))
-	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-
-
-
-
-
-
-def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
+def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
+	"""
+	This function reshapes the dense mixed state psi over the Hilbert space defined by sub_sys_A and its complement.
+	Vectorisation available. 
+	"""
 	extra_dims = rho.shape[:-2]
 	n_dims = len(extra_dims)
-
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)
@@ -566,20 +639,13 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 
 	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
-	rho_v = rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B)) 
+	
+	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
 
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v))
-	elif return_rdm == "B":
-		return _np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...jlkl->...jk",rho_v)),_np.squeeze(_np.einsum("...ljlk->...jk",rho_v))
-
-
-
-
-
-def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
+def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
+	"""
+	This function reshapes the sparse pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
+	"""
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)
@@ -590,39 +656,37 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 
 	Ns_A = (sps**L_A)
 	Ns_B = (sps**L_B)
-
 	psi = psi.tocoo()
 
 	T_tup = sub_sys_A+sub_sys_B
-
 	
 	# reshuffle indices for the sub-systems.
 	# j = sum( j[i]*(sps**i) for i in range(L))
 	# this reshuffles the j[i] similar to the transpose operation
 	# on the dense arrays psi_v.transpose(T_tup)
+	
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
-		for i_new,i_old in enumerate(T_tup):
+		for i_old,i_new in enumerate(T_tup):
 			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
 	else:
 		indx = psi.col
+	
 
-
-	# make shift way of reshaping array
-	# j = j_A + Ns_A * j_B
-	# j_A = j % Ns_A
-	# j_B = j / Ns_A
+	
+	# A = _np.array([0,1,2,3,4,5,6,7,8,9,10,11])
+	# print("make shift way of reshaping array")
+	# print("A = {}".format(A))
+	# print("A.reshape((3,4)): \n {}".format(A.reshape((3,4))))
+	# print("rows: A.reshape((3,4))/4: \n {}".format(A.reshape((3,4))/4))
+	# print("cols: A.reshape((3,4))%4: \n {}".format(A.reshape((3,4))%4))
 
 	psi._shape = (Ns_A,Ns_B)
-	psi.row[:] = indx % Ns_A
-	psi.col[:] = indx / Ns_A
+	psi.row[:] = indx / Ns_B
+	psi.col[:] = indx % Ns_B
 
-	psi = psi.tocsr()
 
-	if return_rdm == "A":
-		return psi.dot(psi.H)
-	elif return_rdm == "B":
-		return psi.H.dot(psi)
-	elif return_rdm == "both":
-		return psi.dot(psi.H),psi.H.dot(psi)
+	return psi.tocsr()
+
+
 

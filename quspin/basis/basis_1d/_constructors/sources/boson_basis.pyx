@@ -2,14 +2,15 @@
 
 cdef basis_type initial_state(int Nb, object[basis_type,ndim=1,mode='c'] pars):
     cdef basis_type s=0
-    cdef int sps=pars[2]
-    cdef int l=Nb/(sps-1)
+    cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
+    cdef int sps = M[1]
+    cdef int l = Nb/(sps-1)
     cdef int j
 
     for j in range(l):
-        s+=(sps-1)*pars[j+1]
+        s += (M[1]-1)*M[j]
 
-    s+=(Nb%(sps-1))*sps**l
+    s += (Nb%(M[1]-1))*M[l]
 
     return s
 

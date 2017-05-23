@@ -32,6 +32,6 @@ H=hamiltonian(static,[],basis=basis,dtype=np.float32)
 E,V=H.eigh()
 
 
-Sent=ent_entropy({'V_states':V},basis)['Sent']
-print(Sent)
+Sent=ent_entropy({'V_states':V},basis,chain_subsys=range(L//2))['Sent']
+#print(Sent)
 

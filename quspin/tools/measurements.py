@@ -21,7 +21,138 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 
 
-def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**_basis_kwargs):
+	"""
+	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
+	reduced subsystem. 
+
+	RETURNS:	dictionary with keys:
+
+	'Sent': entanglement entropy.
+
+	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
+
+	'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
+
+	'lmbda': (optional) svd singular values
+
+	--- arguments ---
+
+	system_state: (required) the state of the quantum system. Can be a:
+
+				-- pure state [numpy array of shape (Ns,)].
+
+				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
+
+				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
+					rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
+					[numpy arary of shape (Ns,Ns)]. The keys CANNOT be chosen arbitrarily.].
+
+				-- a collection of states [dictionary {'V_states':V_states}] containing the states
+					in the columns of V_states [shape (Ns,Nvecs)]
+
+	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
+				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+
+	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+
+				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
+				-- [0,1,...,N-1,N] for 'photon_basis'.
+
+	DM: (optional) String to enable the calculation of the reduced density matrix. Available options are
+
+				-- 'chain_subsys': calculates the reduced DM of the subsystem 'chain_subsys' and
+					returns it under the key 'DM_chain_subsys'.
+
+				-- 'other_subsys': calculates the reduced DM of the complement of 'chain_subsys' and
+					returns it under the key 'DM_other_subsys'.
+
+				-- 'both': calculates and returns both density matrices as defined above.
+
+				Default is 'False'. 	
+
+	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
+				the _entropy keys have attached '_Renyi' to their label.
+
+	density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'False'.
+
+	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
+
+	* `svd_return_vec`: (optional) list of three booleans to return the Singular Value Decomposition (svd) 
+		  parameters:
+
+		  * `[ . ,True, . ]` svd singular values.
+
+		  * `[ . , . ,True]` and `[True, . , . ]` are depricated.
+
+		  Default is ```[False,False,False]```.
+
+	"""
+
+	# initiate variables
+	variables = ["Sent"]
+	translate_dict={"Sent":"Sent_A"}
+
+	if DM == 'chain_subsys':
+		variables.append("DM_chain_subsys")
+		_basis_kwargs["return_rdm"]="A"
+		
+
+	elif DM =='other_subsys':
+		variables.append("DM_other_subsys")
+		_basis_kwargs["return_rdm"]="B"
+		translate_dict={"Sent":"Sent_B"}
+
+	elif DM == 'both':
+		variables.append("DM_chain_subsys")
+		variables.append("DM_other_subsys")
+		_basis_kwargs["return_rdm"]="both"
+
+	elif DM and DM not in ['chain_subsys','other_subsys','both']:
+		raise TypeError("Unexpected keyword argument for 'DM'!")
+
+	if svd_return_vec[1]:
+		variables.append('lmbda')
+		_basis_kwargs["return_rdm_EVs"]=True
+
+
+	### translate arguments
+	if isinstance(system_state,dict):
+		if "rho_d" in system_state and "V_rho" in system_state:
+			V_rho = system_state["V_rho"]
+			rho_d = system_state["rho_d"] 
+			state = _np.einsum("ji,j,jk->ik",V_rho,rho_d,V_rho.conj())
+		elif "V_states" in system_state:
+			state=system_state['V_states']
+			_basis_kwargs["enforce_pure"]=True
+		else:
+			raise ValueError("expecting dictionary with keys ['V_rho','rho_d'] or ['V_states']")
+	else:
+		state=system_state
+
+	translate_dict.update({"DM_chain_subsys":'rdm_A',"DM_other_subsys":'rdm_B',"both":'both','lmbda':"p_A"})
+	
+	Sent = basis.ent_entropy(state,sub_sys_A=chain_subsys,**_basis_kwargs)
+	
+
+
+
+	# store variables to dictionary
+	return_dict = {}
+	for i in variables:
+		j=translate_dict[i]
+		if i == 'lmbda':
+			return_dict[i] = _np.sqrt( Sent[j] )
+		else:
+			return_dict[i] = Sent[j]
+
+	return_dict.update(Sent)
+
+	return return_dict
+
+def _ent_entropy(system_state,basis,chain_subsys=None,density=False,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
 	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
 	reduced subsystem. 
@@ -79,8 +210,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
 				the _entropy keys have attached '_Renyi' to their label.
 
-	densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
+	density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'False'.
 
 	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
@@ -137,6 +268,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 		if rho_d is not None and rho_d.shape!=(1,): # need DM for Sent of a mixed system_state
 			U, lmbda, _ = _npla.svd(v, full_matrices=False)
 			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho_d,U,lmbda**2,U.conj() )
+			DM='chain_subsys'
 		else:
 			lmbda = _npla.svd(v.squeeze(), compute_uv=False)
 	elif DM == 'chain_subsys':
@@ -165,7 +297,11 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	# calculate singular values of reduced DM and the corresponding probabilities
 	if rho_d is not None and rho_d.shape!=(1,):
 		# diagonalise reduced DM
-		p = _npla.eigvalsh(DM_chain_subsys)
+		if DM in ['chain_subsys', 'both']:
+			p = _npla.eigvalsh(DM_chain_subsys)
+		elif DM == 'other_subsys':
+			p = _npla.eigvalsh(DM_other_subsys)
+			
 		if svd_return_vec[1]: # if lmdas requested by user
 			lmbda = _np.sqrt(abs(p))
 	else:# calculate probabilities
@@ -180,7 +316,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_order
 	else:
 		Sent =  1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha, axis=0)).squeeze()
 	
-	if densities:
+	if density:
 		Sent /= N_A
 
 	# store variables to dictionar
@@ -527,29 +663,18 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 
 	#################################################################
-
-	# def einsum string
-	def _es_str(s):
-		'''
-		This function uses the np.einsum string to calculate the diagonal of a matrix product (d=1) in d=0.
-		'''
-		if istate in ['pure','DM']:
-			return s.replace(s[-1],'')
-		else:
-			return s
-
-
 	# calculate diag ens value of Obs
 	if Obs is not False:
 		Obs_d = Obs.dot(rho)
 
+
 	# calculate diag ens value of Obs fluctuations
 	if delta_t_Obs is not False:
-		delta_t_Obs_d = _np.einsum(_es_str('ji,jk,ki->i'),rho,delta_t_Obs,rho).real
+		delta_t_Obs_d = _np.einsum('j...,jk,k...->...',rho,delta_t_Obs,rho).real
 
 		# calculate diag ens value of Obs fluctuations
 		if delta_q_Obs is not False:
-			delta_q_Obs_d = _np.sqrt( _np.einsum(_es_str('ji,j->i'),rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
+			delta_q_Obs_d = _np.sqrt( _np.einsum('j...,j->...',rho,delta_q_Obs).real - delta_t_Obs_d - Obs_d**2 )
 
 		delta_t_Obs_d = _np.sqrt( delta_t_Obs_d )
 
@@ -561,9 +686,9 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 		"""
 		if alpha == 1.0:
 			#warnings.warn("Renyi _entropy equals von Neumann _entropy.", UserWarning,stacklevel=4)
-			S = - _np.einsum(_es_str('ji,ji->i'),p,_np.log(p))
+			S = - _np.nansum(p*_np.log(p),axis=0)
 		else:
-			S = 1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha,axis=0) )
+			S = 1.0/(1.0-alpha)*_np.log(_np.nansum(p**alpha,axis=0) )
 			
 		return S
 
@@ -593,7 +718,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 	return return_dict
 		
-def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
+def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -692,7 +817,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
-	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
+	density: (optional) if set to 'True', all observables are normalised by the system size N, except
 				for the entanglement _entropy which is normalised by the subsystem size 
 				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
@@ -819,9 +944,10 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 		
 	if Srdm_Renyi:
+		"""
 		# calculate singular values of columns of V2
 		v, _, N_A = _reshape_as_subsys({"V_states":V2},**Srdm_args)
-		#"""
+
 		U, lmbda, _ = _npla.svd(v, full_matrices=False)
 		if istate in ['mixed','thermal']:
 			DM_chain_subsys = _np.einsum('nm,nij,nj,nkj->mik',rho,U,lmbda**2,U.conj() )
@@ -830,8 +956,24 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 			
 		Srdm_Renyi = _npla.eigvalsh(DM_chain_subsys).T # components (i,psi)
 		del v, U, DM_chain_subsys
-		#"""
-		#Srdm_Renyi = _npla.svd(v,compute_uv=False).T # components (i,n)
+		"""
+		basis=Srdm_args['basis']
+		partial_tr_args=Srdm_args.copy()
+		del partial_tr_args['basis']
+		if 'sub_sys_A' in Srdm_args:
+			sub_sys_A = Srdm_args['sub_sys_A']
+			del partial_tr_args['sub_sys_A']
+
+		elif 'chain_subsys' in Srdm_args:
+			sub_sys_A = Srdm_args['chain_subsys']
+			del partial_tr_args['chain_subsys']
+		else:
+			sub_sys_A=tuple(range(basis.L//2))
+		N_A=len(sub_sys_A)
+		rdm_A = basis.partial_trace(V2,sub_sys_A=sub_sys_A,enforce_pure=True,**partial_tr_args)
+		rdm = _np.einsum('n...,nij->...ij',rho,rdm_A)
+	
+		Srdm_Renyi = _npla.eigvalsh(rdm).T # components (i,psi) 
 		
 	# clear up memory
 	del V2
@@ -841,9 +983,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	
 
 	Expt_Diag_Vstate={}
-	# compute densities
+	# compute density
 	for key,value in Expt_Diag.items():
-		if densities:
+		if density:
 			if 'rdm' in key:
 				value /= N_A
 			else:
@@ -976,7 +1118,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 			
 
-def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},basis=None,disp=False):
+def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},disp=False):
 	
 	"""
 	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
@@ -1108,8 +1250,19 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 	calc_Sent = False
 	
 	if len(Sent_args) > 0:
+		Sent_args = dict(Sent_args)
+		basis = Sent_args.get("basis")
 		if basis is None:
-			raise ValueError("Sent requires basis for calculation")
+			raise ValueError("Sent_args requires 'basis' for calculation")
+		if not isbasis(basis):
+			raise ValueError("'basis' object must be a proper basis object")
+
+		if "chain_subsys" in Sent_args or"DM" in Sent_args or "svd_return_vec" in Sent_args:
+			calc_ent_entropy = ent_entropy
+		else:
+			calc_ent_entropy = basis.ent_entropy
+			del Sent_args["basis"]
+
 		calc_Sent = True
 		variables.append("Sent_time")
 	
@@ -1118,8 +1271,8 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
 			
 		# calculate entanglement _entropy if requested	
-		if len(Sent_args) > 0:
-			Sent_time = basis.ent_entropy(psi_t.T,**Sent_args)
+		if calc_Sent:
+			Sent_time = calc_ent_entropy(psi_t,**Sent_args)
 
 
 	else:
@@ -1140,10 +1293,11 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 		# get initial dictionary from ent_entropy function
 		# use this to set up dictionary for the rest of calculation.
 		if calc_Sent:
-			Sent_time = basis.ent_entropy(psi,**Sent_args)
+			Sent_time = calc_ent_entropy(psi,**Sent_args)
 
 			for key,val in Sent_time.items():
-				dtype = _np.dtype(val)
+				val = _np.asarray(val)
+				dtype = val.dtype
 				shape = (len(times),) + val.shape
 				Sent_time[key] = _np.zeros(shape,dtype=dtype)
 				Sent_time[key][0] = val
@@ -1159,7 +1313,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
 
 			if calc_Sent:
-				Sent_time_update = basis.ent_entropy(psi,**Sent_args)
+				Sent_time_update = calc_ent_entropy(psi,**Sent_args)
 				for key in Sent_time.keys():
 					Sent_time[key][m+1] = Sent_time_update[key]
 
@@ -1354,7 +1508,6 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 			v0 = v0.ravel()
 	 
 
-
 	shape0 = v0.shape
 	
 	if _np.iscomplexobj(times):
@@ -1459,6 +1612,7 @@ def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
 	Ns=shape0[0]
+
 
 	for i,t in enumerate(times):
 		if t == t0:

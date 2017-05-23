@@ -8,6 +8,7 @@ from scipy.special import hyp2f1, binom
 
 import warnings
 
+_dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
 def coherent_state(a,n,dtype=_np.float64):
 	"""
@@ -44,7 +45,6 @@ def photon_Hspace_dim(N,Ntot,Nph):
 	else:
 		raise TypeError("Either 'Ntot' or 'Nph' must be defined!")
 
-	
 
 class photon_basis(tensor_basis):
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
@@ -73,12 +73,11 @@ class photon_basis(tensor_basis):
 			if isinstance(self._basis_left,tensor_basis): raise TypeError("Can only create photon basis with non-tensor type basis")
 			if not isinstance(self._basis_left,basis): raise TypeError("Can only create photon basis with basis type")
 			self._basis_right = ho_basis(Ntot)
-			self._n = Ntot - self._basis_left._Np 
+			self._n = Ntot - self._basis_left._Np_list 
 			self._blocks = self._basis_left._blocks
 			self._Ns = self._basis_left._Ns
 			self._unique_me = self._basis_left.unique_me
 			self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
-			
 
 	@property
 	def Ns(self):
@@ -114,6 +113,9 @@ class photon_basis(tensor_basis):
 	@property
 	def sps(self):
 		return self._basis_left.sps
+
+	def __name__(self):
+		return "<type 'qspin.basis.photon_basis'>"
 
 	def Op(self,opstr,indx,J,dtype):
 		if self._Ns <= 0:
@@ -163,11 +165,13 @@ class photon_basis(tensor_basis):
 
 			return ME, row, col	
 
-
 	def get_vec(self,v0,sparse=True,Nph=None,full_part=True):
 		if not self._check_pcon:
 			return tensor_basis.get_vec(self,v0,sparse=sparse,full_left=full_part)
 		else:
+			if not hasattr(v0,"shape"):
+				v0 = _np.asanyarray(v0)
+
 			if Nph is None:
 				Nph = self.Ntot
 
@@ -190,12 +194,12 @@ class photon_basis(tensor_basis):
 				if v0.shape[0] != self._Ns:
 					raise ValueError("v0 has incompatible dimensions with basis")
 
+				if _sp.issparse(v0):
+					return self.get_proj(v0.dtype,Nph=Nph,full_part=full_part).dot(v0)
+
 				return _conserved_get_vec(self,v0,sparse,Nph,full_part)
 			else:
 				raise ValueError("excpecting v0 to have ndim at most 2")
-
-
-
 
 	def get_proj(self,dtype,Nph=None,full_part=True):
 		if not self._check_pcon:
@@ -212,8 +216,7 @@ class photon_basis(tensor_basis):
 
 			return _conserved_get_proj(self,dtype,Nph,full_part)
 
-
-	def partial_trace(self,state,sub_sys_A="particles",state_type="pure"):
+	def partial_trace(self,state,sub_sys_A="particles",return_rdm=None,enforce_pure=False,sparse=False):
 		"""
 		This function calculates the reduced density matrix (DM), performing a partial trace 
 		of a quantum state.
@@ -249,6 +252,8 @@ class photon_basis(tensor_basis):
 		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
 
 		"""
+		if sub_sys_A is None:
+			sub_sys_A = "particles"
 
 		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
 
@@ -258,60 +263,51 @@ class photon_basis(tensor_basis):
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
 
-		if state.shape[-1] != self.Ns:
+		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
-		proj = self.get_proj(state.dtype,full_part=False)
-
-		# this gets the projection onto the basis where the photon
-		if _sp.issparse(state) or sparse:
-			if sparse:
-				state = _sp.csr_matrix(state)
-
-			if state_type == "pure":
-				state = proj.dot(state.T).T
-			elif state_type == "mixed":
-				raise ValueError("mixed state calculations not implemented for sparse arrays.")
+		if self._check_pcon: # project to full photon basis
+			if _sp.issparse(state) or sparse:
+				proj_state=self.get_vec(state,sparse=True,full_part=False)
 			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
+				if state.ndim==1:
+					# calculate full H-space representation of state
+					proj_state=self.get_vec(state,sparse=False,full_part=False)
+
+				elif state.ndim==2: 
+					if state.shape[0]!=state.shape[1] or enforce_pure:
+						# calculate full H-space representation of state
+						proj_state=self.get_vec(state,sparse=False,full_part=False)
+
+					else: 
+						proj = self.get_proj(_dtypes[state.dtype.char],full_part=False)
+						proj_state = proj*state*proj.H
+
+						shape0 = proj_state.shape
+						proj_state = proj_state.reshape(shape0+(1,))					
+
+				elif state.ndim==3: #3D DM 
+					proj = self.get_proj(_dtypes[state.dtype.char])
+					state = state.transpose((2,0,1))
+					
+					Ns_full = proj.shape[0]
+					n_states = state.shape[0]
+					
+					gen = (proj*s*proj.H for s in state[:])
+
+					proj_state = _np.zeros((Ns_full,Ns_full,n_states),dtype=_dtypes[state.dtype.char])
+					
+					for i,s in enumerate(gen):
+						proj_state[...,i] += s[...]
+				else:
+					raise ValueError("state must have ndim < 4")
 		else:
-
-			if state_type == "pure":
-				extra_shape = state.shape[:-1]
-				matrix_shape = state.shape[-1:]
-
-				state = state.reshape((-1,)+matrix_shape)
-				state = proj.dot(state.T).T.reshape(extra_shape+(proj.shape[0],))
-
-			elif state_type == "mixed":
-				if state.ndim < 2:
-					raise ValueError("mixed state input must be a single or a collection of 2-d square array(s).")
-
-				if state.shape[-2] != state.shape[-1]:
-					raise ValueError("mixed state input must be a single or a collection of 2-d square array(s).")
-
-				Ns_full = proj.shape[0]
-				extra_shape = state.shape[:-2]
-				matrix_shape = state.shape[-2:]
-				new_shape = extra_shape+(Ns_full,Ns_full)
-				n_dm = int(_np.product(extra_shape))
-
-				state = state.reshape((-1,)+matrix_shape)
-				gen = ((proj*s)*proj.H for s in state[:])
-
-				proj_state = _np.zeros((max(n_dm,1),Ns_full,Ns_full),dtype=state.dtype)
-				for i,s in enumerate(gen):
-					proj_state[i,...] = s[...]
-
-				state = proj_state.reshape(new_shape)				
-
-			else:
-				raise ValueError("state_type '{}' not recognized.".format(state_type))
-
-		return tensor_basis.partial_trace(self,state,sub_sys_A=tensor_dict[sub_sys_A],state_type=state_type)
+			proj_state = state
 
 
-	def ent_entropy(self,state,state_type="pure",return_rdm=None,sparse=False,alpha=1.0):
+		return tensor_basis.partial_trace(self,proj_state,sub_sys_A=tensor_dict[sub_sys_A],return_rdm=return_rdm,enforce_pure=enforce_pure,sparse=sparse)
+
+	def ent_entropy(self,state,sub_sys_A="particles",return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
 		This function calculates the entanglement entropy of the photon and chain subsystems, and 
 		the corresponding reduced density matrix.
@@ -353,26 +349,42 @@ class photon_basis(tensor_basis):
 		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 
 		"""
+		if self._check_pcon: # project to full photon basis
+			if _sp.issparse(state) or sparse:
+				proj_state=self.get_vec(state,sparse=True,full_part=False)
+			else:
+				if state.ndim==1:
+					# calculate full H-space representation of state
+					proj_state=self.get_vec(state,sparse=False,full_part=False)
+				elif state.ndim==2: 
+					if state.shape[0]!=state.shape[1] or enforce_pure:
+						# calculate full H-space representation of state
+						proj_state=self.get_vec(state,sparse=False,full_part=False)
+					else: 
+						proj = self.get_proj(_dtypes[state.dtype.char],full_part=False)
+						proj_state = proj*state*proj.H			
 
+				elif state.ndim==3: #3D DM 
+					proj = self.get_proj(_dtypes[state.dtype.char],full_part=False)
+					
+					Ns_full = proj.shape[0]
+					n_states = state.shape[-1]
+					
+					gen = (proj*state[:,:,i]*proj.H for i in range(n_states))
+					proj_state = _np.zeros((Ns_full,Ns_full,n_states),dtype=_dtypes[state.dtype.char])
+					
+					for i,s in enumerate(gen):
+						proj_state[...,i] += s[...]
+				else:
+					raise ValueError("state must have ndim < 4")
+		else:
+			proj_state = state
 
 		tensor_dict = {"particles":"left","photons":"right","both":"both","left":"left","right":"right",None:None}
-		if return_rdm in tensor_dict:
-			result = tensor_basis.ent_entropy(self,state,state_type=state_type,return_rdm=tensor_dict[return_rdm],alpha=alpha,sparse=sparse)
+		if sub_sys_A in tensor_dict:
+			return tensor_basis.ent_entropy(self,proj_state,sub_sys_A=tensor_dict[sub_sys_A],return_rdm=return_rdm,alpha=alpha,sparse=sparse,sparse_diag=sparse_diag,maxiter=maxiter)
 		else:
 			raise ValueError("sub_sys_A '{}' not recognized".format(return_rdm))
-
-		if return_rdm is None:
-			return dict(Sent=result["Sent"])
-		elif return_rdm == "particles":
-			return dict(Sent=result["Sent"],rdm_particles=result["rdm_left"])
-		elif return_rdm == "photons":
-			return dict(Sent=result["Sent"],rdm_photons=result["rdm_right"])
-		elif return_rdm == "both":
-			return dict(Sent=results["Sent"],rdm_particles=result["rdm_left"],rdm_photons=result["rdm_right"])
-
-
-	def __name__(self):
-		return "<type 'qspin.basis.photon_basis'>"
 
 	def _get__str__(self):
 		if not self._check_pcon:
@@ -402,7 +414,6 @@ class photon_basis(tensor_basis):
 				str_list.extend(str_list_2)	
 
 			return str_list	
-
 
 	def _sort_opstr(self,op):
 		op = list(op)
@@ -470,8 +481,6 @@ class photon_basis(tensor_basis):
 		
 		return self._basis_left._check_symm(new_static,new_dynamic,basis=self)
 
-
-
 	def _get_local_lists(self,static,dynamic): #overwrite the default get_local_lists from base.
 		static_list = []
 		for opstr,bonds in static:
@@ -526,23 +535,12 @@ class photon_basis(tensor_basis):
 		return tensor_basis.sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
 
 
-
-
-				
-
-
-
-
-
-
-
-
 def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 	v0_mask = _np.zeros_like(v0)
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
 	v_ph = _np.zeros((Nph+1,1),dtype=_np.int8)
-	
+
 	v_ph[np_min] = 1
 	mask = p_basis._n == np_min
 	v0_mask[mask] = v0[mask]
@@ -585,8 +583,6 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 	return v0_full
 
 
-
-
 def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
@@ -625,8 +621,6 @@ def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 
 	return proj_1_full
 
-
-
 # helper class which calcualates ho matrix elements
 class ho_basis(basis):
 	def __init__(self,Np):
@@ -645,6 +639,7 @@ class ho_basis(basis):
 							"\n\tn: number operator")
 
 		self._blocks = {}
+		self._unique_me = True
 
 	@property
 	def Np(self):
@@ -655,7 +650,7 @@ class ho_basis(basis):
 		return 1
 
 	@property
-	def m(self):
+	def sps(self):
 		return self._Np+1
 
 	def get_vec(self,v0,sparse=True):
@@ -685,20 +680,6 @@ class ho_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
-	#def _get__str__(self):
-		n_digits = int(_np.ceil(_np.log10(self._Ns)))
-		temp = "\t{0:"+str(n_digits)+"d}.  "+"|{1}>"
-
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [temp.format(i,b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([temp.format(i,b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [temp.format(i,b) for i,b in enumerate(self._basis)]
-
-		return str_list
-
-		
 	def _sort_opstr(self,op):
 		return tuple(op)
 

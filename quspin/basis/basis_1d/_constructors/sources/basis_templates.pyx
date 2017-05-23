@@ -3,7 +3,8 @@ cdef void make_n_basis_template(ns_type next_state,object[basis_type,ndim=1,mode
 	cdef npy_uintp i
 	for i in range(MAX):
 		basis[i] = s
-		s = next_state(s,ns_pars)	
+		s = next_state(s,ns_pars)
+
 
 
 

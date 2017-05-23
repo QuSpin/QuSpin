@@ -30,11 +30,11 @@ atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
 for _r in range(10): # 10 random realisations
 
 	##### define model parameters #####
-	L=8 # system size
+	L=4 # system size
 	J=1.0 # spin interaction
 	g=uniform(0.2,1.5) # transverse field
 	h=uniform(0.2,1.5) # parallel field
-	Omega=uniform(5.0,10.0) # drive frequency
+	Omega=uniform(8.0,10.0) # drive frequency
 	#
 	##### set up alternating Hamiltonians #####
 	# define time-reversal symmetric periodic step drive
@@ -68,7 +68,7 @@ for _r in range(10): # 10 random realisations
 		H2=hamiltonian(static2,[],dtype=dtype,basis=basis)
 		#
 		##### define time vector of stroboscopic times with 100 cycles #####
-		t=Floquet_t_vec(Omega,100,len_T=1) # t.vals=times, t.i=init. time, t.T=drive period
+		t=Floquet_t_vec(Omega,20,len_T=1) # t.vals=times, t.i=init. time, t.T=drive period
 		#
 		##### calculate exact Floquet eigensystem #####
 		t_list=np.array([0.0,t.T/4.0,3.0*t.T/4.0])+np.finfo(float).eps # times to evaluate H
