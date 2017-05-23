@@ -83,7 +83,7 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 		v = v.todense()
 
 
-	if H2.shape[0] != 0:
+	if H2.get_shape[0] != 0:
 		H1 = H1.todense()
 		H2 = H2.todense()
 		H2 = v0.T.conj() * (H2 * v0)

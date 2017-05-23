@@ -430,7 +430,7 @@ class hamiltonian(object):
 		return self._shape
 
 	@property
-	def shape(self):
+	def get_shape(self):
 		return self._shape
 
 	@property
@@ -1827,10 +1827,16 @@ class hamiltonian(object):
 
 	# checks
 	def _mat_checks(self,other,casting="same_kind"):
+		try:
 			if other.shape != self._shape: # only accepts square matricies 
 				raise ValueError('shapes do not match')
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 				raise ValueError('cannot cast types')
+		except AttributeError:
+			if other._shape != self._shape: # only accepts square matricies 
+				raise ValueError('shapes do not match')
+			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
+				raise ValueError('cannot cast types')			
 
 
 
@@ -2578,7 +2584,7 @@ class HamiltonianOperator(object):
 		self._dtype = dtype
 		self._ndim = 2
 		self._shape = (self._basis.Ns,self._basis.Ns)
-		self._LinearOperator = _sp.linalg.LinearOperator(self.shape,self.matvec,matmat=self.matvec,rmatvec=self.rmatvec,dtype=self._dtype)
+		self._LinearOperator = _sp.linalg.LinearOperator(self._shape,self.matvec,matmat=self.matvec,rmatvec=self.rmatvec,dtype=self._dtype)
 
 
 	@property
@@ -2594,12 +2600,12 @@ class HamiltonianOperator(object):
 		return self._operator_list
 
 	@property
-	def shape(self):
+	def get_shape(self):
 		return self._shape
 
 	@property
 	def Ns(self):
-		return self.shape[0]
+		return self._shape[0]
 
 	@property
 	def dtype(self):
@@ -2664,8 +2670,8 @@ class HamiltonianOperator(object):
 			dense = True
 			other = np.asanyarray(other)
 
-		if self.shape != other.shape:
-			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+		if self._shape != other.shape:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 
 		if dense:
 			return self._add_dense(other)
@@ -2691,8 +2697,8 @@ class HamiltonianOperator(object):
 			dense = False
 			other = np.asanyarray(other)
 
-		if self.shape != other.shape:
-			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+		if self._shape != other.shape:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 
 		if dense:
 			return self._sub_dense(other)
@@ -2724,8 +2730,8 @@ class HamiltonianOperator(object):
 			dense = True
 			other = np.asanyarray(other)
 
-		if self.shape[1] != other.shape[0]:
-			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+		if self._shape[1] != other.shape[0]:
+			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 
 		if dense:
 			if other.ndim == 1:
@@ -2754,14 +2760,14 @@ class HamiltonianOperator(object):
 			if other.ndim == 1:
 				return self.T.matvec(other)
 			elif other.ndim == 2:
-				if self.shape[0] != other.shape[1]:
-					raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+				if self._shape[0] != other.shape[1]:
+					raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 				return (self.T.matmat(other.T)).T
 			else:
 				raise ValueError
 		else:
-			if self.shape[0] != other.shape[1]:
-				raise ValueError("dimension mismatch with shapes {0} and {1}".format(self.shape,other.shape))
+			if self._shape[0] != other.shape[1]:
+				raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 			return (self.T._mul_sparse(other.T)).T
 
 	def dot(self,other):
@@ -2873,7 +2879,7 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				new_other += _sp.csr_matrix((ME,(row,col)),shape=self.shape).dot(other)
+				new_other += _sp.csr_matrix((ME,(row,col)),shape=self._shape).dot(other)
 
 		return new_other
 
@@ -3724,14 +3730,16 @@ class ops_dict(object):
 
 
 	def transpose(self,copy = False):
+		new = _shallowcopy(self)
 		for key,op in self._ops_dict.items():
-			self._ops_dict[key] = op.transpose()
-		return self
+			new._ops_dict[key] = op.transpose()
+		return new
 
 	def conjugate(self):
+		new = _shallowcopy(self)
 		for key,op in self._ops_dict.items():
-			self._ops_dict[key] = op.conj()
-		return self	
+			new._ops_dict[key] = op.conj()
+		return new
 
 	def conj(self):
 		return self.conjugate()
@@ -3742,12 +3750,12 @@ class ops_dict(object):
 	def astype(self,dtype):
 		if dtype not in supported_dtypes:
 			raise ValueError("operator can only be cast to floating point types")
-
-		self._dtype = dtype
+		new = _shallowcopy(self)
+		new._dtype = dtype
 		for key in self._ops_dict.keys():
-			self._ops_dict[key] = self._ops_dict[key].astype(dtype)
+			new._ops_dict[key] = self._ops_dict[key].astype(dtype)
 
-		return self	
+		return new
 
 
 	def tocsr(self,pars={}):
@@ -4121,13 +4129,13 @@ class ops_dict(object):
 				else:
 					self._operator_dict[key] = value
 		elif other == 0:
-			return self
+			return _shallowcopy(self)
 		else:
 			return NotImplemented
 
 	def __add__(self,other):
 		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.copy().astype(new_type)
+		new = self.astype(new_type)
 		new += other
 		return new
 
@@ -4149,7 +4157,7 @@ class ops_dict(object):
 
 	def __sub__(self,other):
 		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.copy().astype(new_type)
+		new = self.astype(new_type)
 		new -= other
 		return new		
 
@@ -4164,7 +4172,7 @@ class ops_dict(object):
 
 	def __mul__(self,other):
 		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.copy().astype(new_type)
+		new = self.astype(new_type)
 		new *= other
 		return new
 
@@ -4179,7 +4187,7 @@ class ops_dict(object):
 
 	def __div__(self,other):
 		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.copy().astype(new_type)
+		new = self.astype(new_type)
 		new /= other
 		return new
 
@@ -4230,10 +4238,16 @@ class ops_dict(object):
 
 	# checks
 	def _mat_checks(self,other,casting="same_kind"):
-		if other.shape != self._shape: # only accepts square matricies 
-			raise ValueError('shapes do not match')
-		if not _np.can_cast(other.dtype,self._dtype,casting=casting):
-			raise ValueError('cannot cast types')
+		try:
+			if other.shape != self._shape: # only accepts square matricies 
+				raise ValueError('shapes do not match')
+			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
+				raise ValueError('cannot cast types')
+		except AttributeError:
+			if other._shape != self._shape: # only accepts square matricies 
+				raise ValueError('shapes do not match')
+			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
+				raise ValueError('cannot cast types')	
 
 
 
