@@ -51,7 +51,7 @@ class basis(object):
 		return self._operators
 
 	def _get__str__(self):
-		temp1 = "\t{0:"+str(len(str(self.Ns)))+"d}.  "
+		temp1 = "         {0:"+str(len(str(self.Ns)))+"d}.  "
 		n_space = len(str(self.sps))
 		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
 
