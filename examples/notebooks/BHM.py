@@ -1,17 +1,17 @@
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import boson_basis_1d # Hilbert space spin basis
+from quspin.basis import boson_basis_1d # Hilbert space boson basis
 import numpy as np # generic math functions
 #
 ##### define model parameters #####
 L=6 # system size
 J=1.0 # hopping
-U=np.sqrt(2) # interaction
+U=np.sqrt(2.0) # interaction
 mu=0.0 # chemical potential
 #
-##### construct single-particle Hamiltonian #####
+##### construct Bose-Hubbard Hamiltonian #####
 # define boson basis with 3 states per site L bosons in the lattice
 #basis = boson_basis_1d(L,Nb=L) # full boson basis
-#basis = boson_basis_1d(L,Nb=L,sps=3) # reduced basis, 3 states per site
+#basis = boson_basis_1d(L,Nb=L,sps=3) # particle-conserving basis, 3 states per site
 #basis = boson_basis_1d(L,Nb=L,sps=3,kblock=0) # ... and zero momentum sector
 #basis = boson_basis_1d(L,Nb=L,sps=3,kblock=1) # ... and first non-zero momentum
 basis = boson_basis_1d(L,Nb=L,sps=3,kblock=0,pblock=1) # ... + zero momentum and positive parity
