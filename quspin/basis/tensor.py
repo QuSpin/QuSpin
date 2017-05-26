@@ -131,7 +131,7 @@ class tensor_basis(basis):
 	def index(self,*states):
 		if len(states) < 2:
 			raise ValueError("states must be list of atleast 2 elements long")
-		s_left = self.basis_left.index(*states[0])
+		s_left = self.basis_left.index(states[0])
 		s_right = self.basis_right.index(*states[1:])
 		return s_right + self.basis_right.Ns*s_left
 
