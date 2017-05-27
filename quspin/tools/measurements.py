@@ -1503,17 +1503,17 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	if v0.ndim > 2:
 		raise ValueError("state mush have ndim < 3.")
 
+	shape0 = v0.shape
+
 	if v0.ndim == 2:
 		if v0.shape[0] != v0.shape[1]:
 			v0 = v0.ravel()
 	 
-
-	shape0 = v0.shape
 	
 	if _np.iscomplexobj(times):
 		raise ValueError("times must be real number(s).")
 
-	v0 = v0.ravel()
+	#v0 = v0.ravel()
 	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
 
@@ -1623,6 +1623,7 @@ def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 				yield _np.array(v0).reshape(shape0)
 			continue
 			
+
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))

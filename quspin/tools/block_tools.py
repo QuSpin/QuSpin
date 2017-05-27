@@ -517,7 +517,7 @@ class block_ops(object):
 
 	def expm(self,psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,block_diag=False,a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
 		"""
-		this function is the creates blocks and then uses them to evolve state with expm_multiply in parallel.
+		this function creates blocks and then uses them to evolve state with expm_multiply in parallel.
 		
 		RETURNS:
 			1) iterate = True 
