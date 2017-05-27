@@ -106,8 +106,12 @@ class basis_1d(basis):
 			except TypeError:
 				raise TypeError("Np must be integer or iteratable object.")
 
+
+			warnings.warn("Test for particle conservation not implemented for particle conserving lists",UserWarning,stacklevel=3)
+
 			blocks["check_z_symm"] = False
 			Np = next(Nup_iter)
+			self._check_pcon = False
 			self._get_proj_pcon = False
 			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
 			for Np in Nup_iter:
@@ -1517,7 +1521,7 @@ class basis_1d(basis):
 
 		return return_dict
 
-	def _check_symm(self,static,dynamic,basis=None):
+	def _check_symm(self,static,dynamic,photon_basis=None):
 		kblock = self._blocks_1d.get("kblock")
 		pblock = self._blocks_1d.get("pblock")
 		zblock = self._blocks_1d.get("zblock")
@@ -1527,11 +1531,13 @@ class basis_1d(basis):
 		a = self._blocks_1d.get("a")
 		L = self.L
 
-		if basis is None:
-			basis = self
-		
-		basis_sort_opstr = basis._sort_opstr
-		static_list,dynamic_list = basis.get_local_lists(static,dynamic)
+		if photon_basis is None:
+			basis_sort_opstr = self._sort_opstr
+			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+		else:
+			basis_sort_opstr = photon_basis._sort_opstr
+			static_list,dynamic_list = photon_basis.get_local_lists(static,dynamic)
+
 
 		static_blocks = {}
 		dynamic_blocks = {}

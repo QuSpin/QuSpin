@@ -1,5 +1,6 @@
 from ._constructors import hcp_basis,hcp_ops
 from .base_1d import basis_1d
+from ..base import basis
 import numpy as _np
 
 
@@ -65,7 +66,7 @@ class fermion_basis_1d(basis_1d):
 
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
-
+		self._check_symm=None
 
 
 	@property
@@ -146,4 +147,3 @@ class fermion_basis_1d(basis_1d):
 		op = list(op)
 		op.append(num)
 		return [tuple(op)]	
-
