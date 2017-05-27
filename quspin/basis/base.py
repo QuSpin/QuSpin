@@ -15,6 +15,8 @@ class basis(object):
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
 		self._unique_me = True
+		self._check_symm = None
+		self._check_pcon = None
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -332,7 +334,7 @@ class basis(object):
 
 
 	def check_pcon(self,static,dynamic):
-		if not hasattr(self,"_check_pcon"):
+		if self._check_pcon is None:
 			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 
@@ -407,7 +409,7 @@ class basis(object):
 
 
 	def check_symm(self,static,dynamic):
-		if not hasattr(self,"_check_symm"):
+		if self._check_symm is None:
 			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_symm=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 

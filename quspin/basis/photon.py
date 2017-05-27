@@ -479,7 +479,7 @@ class photon_basis(tensor_basis):
 			if opstr1:
 				new_dynamic.append([opstr,bonds,f,f_args])
 		
-		return self._basis_left._check_symm(new_static,new_dynamic,basis=self)
+		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
 
 	def _get_local_lists(self,static,dynamic): #overwrite the default get_local_lists from base.
 		static_list = []
