@@ -350,14 +350,14 @@ class hamiltonian(object):
 					self._mat_checks(O)
 					self._is_dense=True
 
-					dynamic_other_list[i][0] = _np.asmatrix(dynamic_other_list[i][0],dtype=self._dtype,copy=copy)
+					dynamic_other_list[i][0] = _np.array(dynamic_other_list[i][0],dtype=self._dtype,copy=copy)
 
 
 				elif O.__class__ is _np.matrix:
 					self._mat_checks(O)
 					self._is_dense=True
 
-					dynamic_other_list[i][0] = dynamic_other_list[i][0].astype(self._dtype,copy=copy)
+					dynamic_other_list[i][0] = _np.array(dynamic_other_list[i][0],dtype=self._dtype,copy=copy)
 
 				else:
 					O_a = _np.asanyarray(O)
