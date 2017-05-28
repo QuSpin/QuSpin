@@ -5,7 +5,12 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 import numpy as np
 import scipy.sparse as sp
+from scipy.integrate import complex_ode
 from quspin.operators import hamiltonian
+try:
+    from itertools import izip as zip
+except ImportError:
+    pass
 
 
 
@@ -61,7 +66,49 @@ def test_shape():
     H = hamiltonian([M1],[])
     assert(H.get_shape==M1.shape)
 
+
+def test_evolve():
+    def ifunc(t,y):
+        return -1j*np.cos(t)*M.dot(y)
+
+    def func(t,y):
+        return -np.cos(t)*M.dot(y)
+
+    M = np.random.uniform(-1,1,size=(4,4))+1j*np.random.uniform(-1,1,size=(4,4))
+    M = (M.T.conj() + M)/2.0
+    M = np.asarray(M)
+
+    H = hamiltonian([],[[M,np.cos,()]])
+
+    psi0 = np.random.uniform(-1,1,size=(4,))+1j*np.random.uniform(-1,1,size=(4,))
+    psi0 /= np.linalg.norm(psi0)
+
+    isolver = complex_ode(ifunc)
+    isolver.set_integrator("dop853",atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max)
+    isolver.set_initial_value(psi0, 0)
+
+    solver = complex_ode(func)
+    solver.set_integrator("dop853",atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max)
+    solver.set_initial_value(psi0, 0)
+
+    times = np.arange(0,100.1,10)
+
+    ipsi_t = H.evolve(psi0,0,times,iterate=True)
+    psi_t = H.evolve(psi0,0,times,iterate=True,imag_time=True)
+
+    for i,(ipsi,psi) in enumerate(zip(ipsi_t,psi_t)):
+        solver.integrate(times[i])
+        solver._y/=np.linalg.norm(solver.y)
+        np.testing.assert_allclose(psi-solver.y,0,atol=1e-12)
+
+        isolver.integrate(times[i])
+        np.testing.assert_allclose(ipsi-isolver.y,0,atol=1e-12)
+
  
+
+
+
+
 test_shape()
 test_trace()
 test_hermitian_conj()
@@ -69,3 +116,4 @@ test_transpose()
 test_conj()
 test_mul_sparse()
 test_mul_dense()
+test_evolve()
