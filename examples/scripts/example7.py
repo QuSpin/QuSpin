@@ -1,5 +1,4 @@
 from __future__ import print_function, division
-
 import numpy as np
 from quspin.operators import ops_dict,hamiltonian,exp_op
 from quspin.basis import spin_basis_1d

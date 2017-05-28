@@ -2,12 +2,15 @@ from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spin_basis_1d, fermion_basis_1d # Hilbert space spin basis
 import numpy as np # generic math functions
 import matplotlib.pyplot as plt # figure/plot library
+#
 ##### define model parameters #####
 L=8 # system size
 J=1.0 # spin zz interaction
 h=np.sqrt(2) # z magnetic field strength
+#
 # loop over spin inversion symmetry block variable and boundary conditions
 for zblock,PBC in zip([-1,1],[1,-1]):
+	#
 	##### define spin model
 	# site-coupling lists (PBC for both spin inversion sectors)
 	h_field=[[-h,i] for i in range(L)]
@@ -21,6 +24,7 @@ for zblock,PBC in zip([-1,1],[1,-1]):
 	H_spin=hamiltonian(static_spin,dynamic_spin,basis=basis_spin,dtype=np.float64)
 	# calculate spin energy levels
 	E_spin=H_spin.eigvalsh()
+	#
 	##### define fermion model
 	# define site-coupling lists for external field
 	h_pot=[[2.0*h,i] for i in range(L)]
@@ -53,6 +57,7 @@ for zblock,PBC in zip([-1,1],[1,-1]):
 							dtype=np.float64,check_pcon=False,check_symm=False)
 	# calculate fermionic energy levels
 	E_fermion=H_fermion.eigvalsh()
+	#
 	##### plot spectra
 	plt.plot(np.arange(H_fermion.Ns),E_fermion/L,marker='o'
 									,color='b',label='fermion')
