@@ -69,8 +69,9 @@ def _consolidate_dynamic(dynamic_list):
 def test_function(func,func_args):
 	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 	func_val=func(t,*func_args)
-	if not _np.isscalar(func_val):
-		raise TypeError("function must return scalar values")
+	func_val=_np.array(func_val)
+	if func_val.ndim > 0:
+		raise ValueError("function must return 0-dim numpy array or scalar value.")
 
 
 
