@@ -1258,6 +1258,7 @@ class basis_1d(basis):
 		else:
 			if _sp.issparse(rdm):
 				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
+				p = p.reshape((1,-1))
 			else:
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)

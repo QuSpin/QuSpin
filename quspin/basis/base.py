@@ -608,7 +608,7 @@ def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	T_tup = tuple(range(n_dims)) + tuple(n_dims + s for s in T_tup)
 	R_tup = extra_dims + tuple(sps for i in range(L))
 
-	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	psi_v = psi.reshape(R_tup,order="F") # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
 	return psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
@@ -639,10 +639,10 @@ def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 
 	R_tup = extra_dims + tuple(sps for i in range(2*L))
 
-	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	rho_v = rho.reshape(R_tup,order="F") # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
 	
-	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
+	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B),order="F")
 
 def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	"""
@@ -670,7 +670,7 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
 		for i_old,i_new in enumerate(T_tup):
-			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
+			indx += ((psi.col//(sps**(i_new))) % sps)*(sps**(i_old))
 	else:
 		indx = psi.col
 	
@@ -684,8 +684,8 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	# print("cols: A.reshape((3,4))%4: \n {}".format(A.reshape((3,4))%4))
 
 	psi._shape = (Ns_A,Ns_B)
-	psi.row[:] = indx / Ns_B
-	psi.col[:] = indx % Ns_B
+	psi.row[:] = indx % Ns_A
+	psi.col[:] = indx / Ns_A
 
 
 	return psi.tocsr()
