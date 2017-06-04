@@ -1,7 +1,7 @@
 from ..base import basis,MAXPRINT
-from ..base import _lattice_partial_trace_pure,_lattice_reshape_pure
-from ..base import _lattice_partial_trace_mixed,_lattice_reshape_mixed
-from ..base import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
+from .._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
+from .._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
+from .._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
 from . import _check_1d_symm as _check
 import numpy as _np
 import scipy.sparse as _sp

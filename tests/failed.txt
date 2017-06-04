@@ -1,2 +1,4 @@
+entropy_pure_test.py
+
 tensor_entropy_test.py
 

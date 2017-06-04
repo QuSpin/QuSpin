@@ -7,6 +7,8 @@ from scipy.sparse import linalg as _sla
 from scipy import linalg as _la
 from scipy.sparse.linalg import eigsh
 from numpy.linalg import eigvalsh,svd
+from ._reshape_subsys import _tensor_reshape_pure,_tensor_partial_trace_pure
+from ._reshape_subsys import _tensor_partial_trace_mixed,_tensor_partial_trace_sparse_pure
 import warnings
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
@@ -920,64 +922,6 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 
 	return v0
 
-
-def _tensor_reshape_pure(psi,Ns_l,Ns_r):
-	extra_dims = psi.shape[:-1]
-	psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
-
-	return psi_v	
-
-
-def _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r):
-	psi = psi.tocoo()
-	# make shift way of reshaping array
-	# j = j_l + Ns_r * j_l
-	# j_l = j / Ns_r
-	# j_r = j % Ns_r 
-	psi._shape = (Ns_l,Ns_r)
-	psi.row[:] = psi.col / Ns_r
-	psi.col[:] = psi.col % Ns_r
-
-	return psi.tocsr()
-
-
-def _tensor_reshape_mixed(rho,Ns_l,Ns_r):
-	extra_dims = rho.shape[:-2]
-	psi_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
-
-	return psi_v
-
-
-def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	psi_v = _tensor_reshape_pure(psi,Ns_l,Ns_r)
-
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
-	elif return_rdm == "B":
-		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-
-
-def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	psi = _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r)
-
-	if return_rdm == "A":
-		return psi.dot(psi.H),None
-	elif return_rdm == "B":
-		return None,psi.H.dot(psi)
-	elif return_rdm == "both":
-		return psi.dot(psi.H),psi.H.dot(psi)
-
-
-def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	rho_v = _tensor_reshape_mixed(rho,Ns_l,Ns_r)
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),None
-	elif return_rdm == "B":
-		return None,_np.squeeze(_np.einsum("...jijk->...ki",rho_v))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),_np.squeeze(_np.einsum("...jijk->...ki",rho_v))
 
 """
 def _combine_get_vec(basis,v0,sparse,full_left,full_right):

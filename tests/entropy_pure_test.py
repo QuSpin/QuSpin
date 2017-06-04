@@ -23,8 +23,8 @@ E,V = H.eigh()
 ########## DENSE STATE ###########
 
 state=V[:,0]
-sub_sys_A=[i for i in range(basis.L//2)]
-
+sub_sys_A=np.random.choice(L,size=L//2,replace=False)
+print(sub_sys_A)
 #####
 
 p,rdm_A,rdm_B=basis._p_pure(state,sub_sys_A)
