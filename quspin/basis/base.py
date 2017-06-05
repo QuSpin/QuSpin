@@ -28,8 +28,14 @@ class basis(object):
 		
 		str_list = list(self._get__str__())
 		if self._Ns > MAXPRINT:
-			L_str = len(str_list[0])
-			t = (" ".join(["" for i in range(L_str//2)]))+":"
+			try:
+				i1 = list(str_list[-1]).index("|")
+				i2 = list(str_list[-1]).index(">",-1)
+				l = (i1+i2)//2 + (1-(i1+i2)%2)
+			except:
+				l = len(str_list[-1])//2
+
+			t = (" ".join(["" for i in range(l)]))+":"
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
@@ -51,26 +57,14 @@ class basis(object):
 		return self._operators
 
 	def _get__str__(self):
-		temp1 = "\t{0:"+str(len(str(self.Ns)))+"d}.  "
-		n_space = len(str(self.sps))
-		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
-
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
-
-		return tuple(str_list)
-
+		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print out the basis!".format(self.__class__))
 
 	# this methods are optional and are not required for main functions:
 	def __iter__(self):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for for iterating over basis!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for iterating over basis!".format(self.__class__))
 
 	def __getitem__(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for for '[]' operator!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
 
 	def index(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'index' function!".format(self.__class__))
@@ -81,7 +75,7 @@ class basis(object):
 
 	# this method is required in order to create manybody hamiltonians/operators
 	def Op(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for for creating hamiltonians!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for creating hamiltonians!".format(self.__class__))
 
 	# this method is required in order to use entanglement entropy functions		
 	def get_vec(self,*args,**kwargs):

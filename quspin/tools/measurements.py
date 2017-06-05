@@ -117,14 +117,13 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 		variables.append('lmbda')
 		basis_kwargs["return_rdm_EVs"]=True
 
-
 	### translate arguments
 	if isinstance(system_state,dict):
 		if "rho_d" in system_state and "V_rho" in system_state:
 			V_rho = system_state["V_rho"]
 			rho_d = system_state["rho_d"] 
 			state = _np.einsum("ji,j,jk->ik",V_rho,rho_d,V_rho.conj())
-		elif "V_state" in system_state:
+		elif "V_states" in system_state:
 			state=system_state['V_states']
 			basis_kwargs["enforce_pure"]=True
 		else:
