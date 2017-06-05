@@ -1,2 +1,10 @@
+basis_entropy_test.py
+
+entropy_pure_test.py
+
+photon_entropy_test.py
+
+sent_deprecated_test.py
+
 tensor_entropy_test.py
 
