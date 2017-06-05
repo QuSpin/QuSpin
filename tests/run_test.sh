@@ -1,4 +1,7 @@
 
+
+rm failed.txt
+
 for filename in *test.py
 do
 	python $filename

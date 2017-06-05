@@ -142,7 +142,7 @@ for _r in range(10): # do 10 random checks
 		chain_subsys=[r for r in range(L)]
 	alpha=uniform(5)
 
-	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
+	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'density':randint(2)}
 
 	
 
@@ -209,7 +209,7 @@ for _r in range(10): # do 10 random checks
 		chain_subsys=[r for r in range(L)]
 	alpha=uniform(5)
 
-	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
+	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'density':randint(2)}
 
 
 	for dtype_str in dtypes.keys():
@@ -272,7 +272,7 @@ for _r in range(10): # do 10 random checks
 	chain_subsys=list(np.unique([randint(0,L) for r in range(L//2)]))
 	alpha=uniform(5)
 
-	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'densities':randint(2)}
+	Sent_args={'chain_subsys':chain_subsys,'alpha':alpha,'density':randint(2)}
 
 
 	for dtype_str in dtypes.keys():

@@ -1,11 +1,5 @@
 Urgent:
 
-- update documentation
-  * block_tools
-  * measurements
-  	- obs_vs_time
-
-
 
 
 

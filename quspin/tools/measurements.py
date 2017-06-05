@@ -21,7 +21,7 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 
 
-def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**basis_kwargs):
+def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**_basis_kwargs):
 	"""
 	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
 	reduced subsystem. 
@@ -75,8 +75,8 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
 				the _entropy keys have attached '_Renyi' to their label.
 
-	densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
+	density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'False'.
 
 	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
@@ -97,25 +97,25 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	if DM == 'chain_subsys':
 		variables.append("DM_chain_subsys")
-		basis_kwargs["return_rdm"]="A"
+		_basis_kwargs["return_rdm"]="A"
 		
 
 	elif DM =='other_subsys':
 		variables.append("DM_other_subsys")
-		basis_kwargs["return_rdm"]="B"
+		_basis_kwargs["return_rdm"]="B"
 		translate_dict={"Sent":"Sent_B"}
 
 	elif DM == 'both':
 		variables.append("DM_chain_subsys")
 		variables.append("DM_other_subsys")
-		basis_kwargs["return_rdm"]="both"
+		_basis_kwargs["return_rdm"]="both"
 
 	elif DM and DM not in ['chain_subsys','other_subsys','both']:
 		raise TypeError("Unexpected keyword argument for 'DM'!")
 
 	if svd_return_vec[1]:
 		variables.append('lmbda')
-		basis_kwargs["return_rdm_EVs"]=True
+		_basis_kwargs["return_rdm_EVs"]=True
 
 	### translate arguments
 	if isinstance(system_state,dict):
@@ -125,7 +125,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 			state = _np.einsum("ji,j,jk->ik",V_rho,rho_d,V_rho.conj())
 		elif "V_states" in system_state:
 			state=system_state['V_states']
-			basis_kwargs["enforce_pure"]=True
+			_basis_kwargs["enforce_pure"]=True
 		else:
 			raise ValueError("expecting dictionary with keys ['V_rho','rho_d'] or ['V_states']")
 	else:
@@ -133,7 +133,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	translate_dict.update({"DM_chain_subsys":'rdm_A',"DM_other_subsys":'rdm_B',"both":'both','lmbda':"p_A"})
 	
-	Sent = basis.ent_entropy(state,sub_sys_A=chain_subsys,**basis_kwargs)
+	Sent = basis.ent_entropy(state,sub_sys_A=chain_subsys,**_basis_kwargs)
 	
 
 
@@ -151,7 +151,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	return return_dict
 
-def _ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
+def _ent_entropy(system_state,basis,chain_subsys=None,density=False,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
 	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
 	reduced subsystem. 
@@ -209,8 +209,8 @@ def _ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_orde
 	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
 				the _entropy keys have attached '_Renyi' to their label.
 
-	densities: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'True'.
+	density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
+				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'False'.
 
 	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
@@ -315,7 +315,7 @@ def _ent_entropy(system_state,basis,chain_subsys=None,densities=True,subsys_orde
 	else:
 		Sent =  1.0/(1.0-alpha)*_np.log(_np.sum(p**alpha, axis=0)).squeeze()
 	
-	if densities:
+	if density:
 		Sent /= N_A
 
 	# store variables to dictionar
@@ -488,7 +488,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
-
+		print(system)
 		'''
 		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
 		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
@@ -507,7 +507,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			# define reshape tuple
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple2)
+			v = _np.reshape(psi.T, reshape_tuple2,order="F")
 			del psi
 		else: # if chain_subsys not consecutive or staring site not [0]
 			# performs 2) and 3)
@@ -517,13 +517,13 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system = [s+1 for s in system]
 			system.insert(0,0)
 			# reshape states
-			v = _np.reshape(psi.T,reshape_tuple1)
+			v = _np.reshape(psi.T,reshape_tuple1,order="F")
 			del psi
 			# performs 4)
 			v=v.transpose(system) 
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
-			v = _np.reshape(v,reshape_tuple2)
+			v = _np.reshape(v,reshape_tuple2,order="F")
 			
 
 	elif basis.__class__.__name__[:-6] == 'photon':
@@ -576,7 +576,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				reshape_tuple2 = (Ns, Ns_chain,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
 				reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
-			v = _np.reshape(psi.T,reshape_tuple2)
+			v = _np.reshape(psi.T,reshape_tuple2,order="F")
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
@@ -585,14 +585,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system = [s+1 for s in system]
 			system.insert(0,0)
 			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple1)
+			v = _np.reshape(psi.T, reshape_tuple1,order="F")
 			del psi
 			# performs 4)
 			system.append(len(system))
 			v=v.transpose(system)
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
-			v = _np.reshape(v,reshape_tuple2)
+			v = _np.reshape(v,reshape_tuple2,order="F")
 				
 	else:
 		raise ValueError("'basis' class {} not supported!".format(basis.__class__.__name__))
@@ -717,7 +717,7 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 
 	return return_dict
 		
-def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
+def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
 	"""
 	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
 	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
@@ -816,7 +816,7 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 
 			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
-	densities: (optional) if set to 'True', all observables are normalised by the system size N, except
+	density: (optional) if set to 'True', all observables are normalised by the system size N, except
 				for the entanglement _entropy which is normalised by the subsystem size 
 				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
 
@@ -982,9 +982,9 @@ def diag_ensemble(N,system_state,E2,V2,densities=True,alpha=1.0,rho_d=False,Obs=
 	
 
 	Expt_Diag_Vstate={}
-	# compute densities
+	# compute density
 	for key,value in Expt_Diag.items():
-		if densities:
+		if density:
 			if 'rdm' in key:
 				value /= N_A
 			else:
@@ -1502,17 +1502,17 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	if v0.ndim > 2:
 		raise ValueError("state mush have ndim < 3.")
 
+	shape0 = v0.shape
+
 	if v0.ndim == 2:
 		if v0.shape[0] != v0.shape[1]:
 			v0 = v0.ravel()
 	 
-
-	shape0 = v0.shape
 	
 	if _np.iscomplexobj(times):
 		raise ValueError("times must be real number(s).")
 
-	v0 = v0.ravel()
+	#v0 = v0.ravel()
 	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
 
@@ -1622,6 +1622,7 @@ def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 				yield _np.array(v0).reshape(shape0)
 			continue
 			
+
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
