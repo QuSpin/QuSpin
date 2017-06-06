@@ -856,15 +856,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
-		char = _np.dtype(self._dtype).char
-		if char == "g":
-			H = self.tocsr(time=time).astype(_np.float64)
-		elif char == "G": 
-			H = self.tocsr(time=time).astype(_np.complex128)
-		else:
-			H = self.tocsr(time=time)
-
-		return _sla.eigsh(H,**eigsh_args)
+		return _sla.eigsh(self.aslinearoperator(time=time),**eigsh_args)
 
 
 
@@ -1221,6 +1213,15 @@ class hamiltonian(object):
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
+
+	def aslinearoperator(self,time=0):
+		time = np.array(time)
+		if time.ndim > 0:
+			raise ValueError("time must be scalar!")
+		matvec = functools.partial(ops_dict_dot,self,pars)
+		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
+
 
 	def tocsr(self,time=0):
 		"""
@@ -3856,8 +3857,8 @@ class ops_dict(object):
 
 	def aslinearoperator(self,pars={}):
 		pars = self._check_scalar_pars(pars)
-		matvec = functools.partial(ops_dict_dot,self,pars)
-		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
+		matvec = functools.partial(hamiltonian_dot,self,time)
+		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
 	"""
@@ -4073,10 +4074,6 @@ class ops_dict(object):
 
 		if self.Ns == 0:
 			return _np.array([]),_np.array([[]])
-
-		char = _np.dtype(self._dtype).char
-		if char in ("g","G"):
-			raise TypeError("eigsh not supported by long double types")
 
 		return _sla.eigsh(self.aslinearoperator(pars),**eigsh_args)
 
