@@ -3858,7 +3858,7 @@ class ops_dict(object):
 		pars = self._check_scalar_pars(pars)
 		matvec = functools.partial(ops_dict_dot,self,pars)
 		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)		
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
 	"""
 	def SO_LinearOperator(self,pars={}):
@@ -4205,7 +4205,7 @@ class ops_dict(object):
 
 		missing = set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
-			pars[key] = 1.0
+			pars[key] = _np.array(1,dtype=_np.int32)
 
 
 		for key,J in pars.items():
@@ -4232,7 +4232,7 @@ class ops_dict(object):
 
 		missing = set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
-			pars[key] = 1.0
+			pars[key] = _np.array(1,dtype=_np.int32)
 
 		for J in pars.values():
 			J = _np.array(J)				
