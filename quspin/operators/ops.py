@@ -4209,7 +4209,12 @@ class ops_dict(object):
 
 
 		for key,J in pars.items():
-			if not( (type(J) is tuple and len(J) == 2) or _np.isscalar(J) ):
+			if type(J) is tuple:
+				if len(J) != 2:
+					raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
+					
+			J = _np.array(J)				
+			if J.ndim > 0:
 				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
 
@@ -4230,9 +4235,9 @@ class ops_dict(object):
 			pars[key] = 1.0
 
 		for J in pars.values():
-			if not _np.isscalar(J):
-				raise ValueError("Expecting scalar values for elements of pars")
-
+			J = _np.array(J)				
+			if J.ndim > 0:
+				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
 		return pars
 
