@@ -1218,8 +1218,8 @@ class hamiltonian(object):
 		time = np.array(time)
 		if time.ndim > 0:
 			raise ValueError("time must be scalar!")
-		matvec = functools.partial(ops_dict_dot,self,pars)
-		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
+		matvec = functools.partial(hamiltonian_dot,self,time)
+		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
 
@@ -3857,8 +3857,8 @@ class ops_dict(object):
 
 	def aslinearoperator(self,pars={}):
 		pars = self._check_scalar_pars(pars)
-		matvec = functools.partial(hamiltonian_dot,self,time)
-		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
+		matvec = functools.partial(ops_dict_dot,self,pars)
+		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
 	"""
