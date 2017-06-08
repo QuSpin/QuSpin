@@ -934,7 +934,7 @@ class basis_1d(basis):
 			v0 = _np.asanyarray(v0)
 
 		squeeze = False
-		
+
 		if v0.ndim == 1:
 			shape = (self._sps**self._L,1)
 			v0 = v0.reshape((-1,1))
@@ -952,7 +952,6 @@ class basis_1d(basis):
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
-
 
 		if _sp.issparse(v0): # current work around for sparse states.
 			return self.get_proj(v0.dtype).dot(v0)
@@ -1057,7 +1056,7 @@ class basis_1d(basis):
 
 		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
 
-	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False):
+	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""
 		--- arguments ---
 		
@@ -1071,6 +1070,7 @@ class basis_1d(basis):
 		  1. 'A': str, returns reduced DM of subsystem A 
 		  2. 'B': str, returns reduced DM of subsystem B
 		  3. 'both': str, returns reduced DM of both subsystems A and B
+		* 'subsys_ordering': (optional) reorder the sites in sub_sys_A list so that they are in ascending order. 
 		* 'enforce_pure': (optional) when `state` is a square matrix this option enfores the columns to be treated as independent states, so the partial trace is calculated for each state separately. Defauls is `False`.
 		* `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
 
@@ -1098,8 +1098,15 @@ class basis_1d(basis):
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
 
+		doubles = tuple(s for s in sub_sys_A if sub_sys_A.count(s) > 1)
+		if len(doubles) > 0:
+			raise ValueError("sub_sys_A contains repeated values: {}".format(doubles))
+
 		if return_rdm not in set(["A","B","both"]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
+		if subsys_ordering:
+			sub_sys_A = sorted(sub_sys_A)
 
 		sps = self.sps
 		L = self.L
@@ -1360,6 +1367,7 @@ class basis_1d(basis):
 
 			if _sp.issparse(rdm):
 				p = get_p_patchy(rdm)
+				p = p.reshape((1,-1))
 			else:
 				p_gen = (get_p_patchy(dm) for dm in rdm[:])
 				p = _np.stack(p_gen)
@@ -1501,6 +1509,10 @@ class basis_1d(basis):
 
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+
+		doubles = tuple(s for s in set(sub_sys_A) if sub_sys_A.count(s) > 1)
+		if len(doubles) > 0:
+			raise ValueError("sub_sys_A contains repeated values: {}".format(doubles))
 
 		if return_rdm not in set(["A","B","both",None]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
@@ -1748,13 +1760,14 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
 	v = _np.zeros(shape,dtype=v0.dtype)
 
-	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in range(len(basis_in))])
-
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
 	else:
 		k = 0.0
 		a = L
+	
+	Ns_full = shape[0]
+	basis_in = Ns_full - basis_in - 1
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
@@ -1832,6 +1845,8 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		col_pos = _np.kron(_np.ones_like(ind_pos),col_pos)
 
 
+	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
+	v = _sp.csr_matrix(shape,dtype=v0.dtype)
 
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
@@ -1839,9 +1854,10 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		k = 0.0
 		a = L
 
-	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
-	v = _sp.csr_matrix(shape,dtype=v0.dtype)
 
+
+	Ns_full = shape[0]
+	basis_in = Ns_full - basis_in - 1
 
 
 	for r in range(0,L//a):
@@ -1931,37 +1947,29 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 
 	c = _np.zeros(basis_in.shape,dtype=dtype)	
 	v = _sp.csr_matrix(shape,dtype=dtype)
+	if basis_pcon is None:
+		def get_index(ind):
+			return shape[0] - basis_in[ind] - 1
+	else:
+		def get_index(ind):
+			return shape[0] - basis_pcon.searchsorted(basis_in[ind]) - 1
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 		data_pos = c[ind_pos]
 		data_neg = c[ind_neg]
-		if basis_pcon is not None:
-			index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-		else:
-			index = basis_in[ind_pos]
+		index = get_index(ind_pos)
 		v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-		if basis_pcon is not None:
-			index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-		else:
-			index = basis_in[ind_neg]
+		index = get_index(ind_neg)
 		v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis_in,L,pars)
 			data_pos *= zAblock
 			data_neg *= zAblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_neg *= zAblock
@@ -1971,16 +1979,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_flip_sublat_B(basis_in,L,pars)
 			data_pos *= zBblock
 			data_neg *= zBblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_neg *= zBblock
@@ -1990,16 +1991,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_flip_all(basis_in,L,pars)
 			data_pos *= zblock
 			data_neg *= zblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
@@ -2009,17 +2003,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_fliplr(basis_in,L,pars)
 			data_pos *= pblock
 			data_neg *= pblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
-
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
@@ -2030,16 +2016,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_flip_all(basis_in,L,pars)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock

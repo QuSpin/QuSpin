@@ -469,7 +469,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	# define number of participating states in 'system_state'
 	Ns = psi[0,].size
 
-	
 	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
 
 		# set chain subsys if not defined
@@ -488,7 +487,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
-		print(system)
 		'''
 		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
 		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
@@ -507,7 +505,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			# define reshape tuple
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple2,order="F")
+			v = _np.reshape(psi.T, reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive or staring site not [0]
 			# performs 2) and 3)
@@ -517,13 +515,13 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system = [s+1 for s in system]
 			system.insert(0,0)
 			# reshape states
-			v = _np.reshape(psi.T,reshape_tuple1,order="F")
+			v = _np.reshape(psi.T,reshape_tuple1)
 			del psi
 			# performs 4)
-			v=v.transpose(system) 
+			v=v.transpose(system)
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
-			v = _np.reshape(v,reshape_tuple2,order="F")
+			v = _np.reshape(v,reshape_tuple2)
 			
 
 	elif basis.__class__.__name__[:-6] == 'photon':
@@ -576,7 +574,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 				reshape_tuple2 = (Ns, Ns_chain,Nph+1)
 			else: #chain_subsys is smaller than entire lattice
 				reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
-			v = _np.reshape(psi.T,reshape_tuple2,order="F")
+			v = _np.reshape(psi.T,reshape_tuple2)
 			del psi
 		else: # if chain_subsys not consecutive
 			# performs 2) and 3)	
@@ -585,14 +583,14 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			system = [s+1 for s in system]
 			system.insert(0,0)
 			# reshape states
-			v = _np.reshape(psi.T, reshape_tuple1,order="F")
+			v = _np.reshape(psi.T, reshape_tuple1)
 			del psi
 			# performs 4)
 			system.append(len(system))
 			v=v.transpose(system)
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**(N-N_A)*(Nph+1) )
-			v = _np.reshape(v,reshape_tuple2,order="F")
+			v = _np.reshape(v,reshape_tuple2)
 				
 	else:
 		raise ValueError("'basis' class {} not supported!".format(basis.__class__.__name__))

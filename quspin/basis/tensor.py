@@ -158,7 +158,7 @@ class tensor_basis(basis):
 		# reshape state according to sub_sys_A
 		Ns_left = self._basis_left.Ns
 		Ns_right = self._basis_right.Ns
-		v=_tensor_reshape_pure(state,Ns_left,Ns_right)
+		v=_tensor_reshape_pure(state,sub_sys_A,Ns_left,Ns_right)
 
 
 		rdm_A=None
@@ -181,109 +181,15 @@ class tensor_basis(basis):
 
 	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
 
-		"""
-		# THE FOLLOWING LINES HAVE BEEN DEPRECATED
-
-		if svds: # patchy sparse svd
-
-			# calculate full H-space representation of state
-			state=self.get_vec(state.T,sparse=True).T
-			# reshape state according to sub_sys_A
-			v=_lattice_reshape_sparse_pure(state,sub_sys_A,self._L,self._sps)
-			#print(v.todense())
-			n=min(v.shape)
-
-			# perform SVD	
-			if return_rdm is None:
-				lmbda_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=False)
-				lmbda_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=False)
-				#_, lmbda_dense, _ = _npla.svd(v.todense(),full_matrices=False)
-				# concatenate lower and upper part
-				lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-				lmbda.sort()
-				return lmbda[::-1]**2 + _np.finfo(lmbda.dtype).eps
-			else:
-				
-				if return_rdm=='A':
-					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='u')
-					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='u')
-					#ua,lmbdas,va = _npla.svd(v.todense())
-
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-					arg = _np.argsort(lmbda)
-					lmbda = lmbda[arg]**2
-
-					U=_np.concatenate((U_LM,U_SM),axis=1)
-					U=U[...,arg]
-					#V=_np.concatenate((V_LM,V_SM[...,::-1,:]),axis=0)
-
-					# check and orthogonalise VF in degenerate subspaces
-					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
-						U,_ = _sla.qr(U, overwrite_a=True)
-						#V,_ = _sla.qr(V.T, overwrite_a=True)
-						#V = V.T
-	
-					# calculate reduced DM
-					rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda,U.conj() )
-
-					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A
-
-				elif return_rdm=='B':
-					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors='vh')
-					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors='vh')
-					#ua,lmbdas,va = _npla.svd(v.todense())
-
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-					#U=_np.concatenate((U_LM,U_SM[...,::-1]),axis=1)
-					V=_np.concatenate((V_LM,V_SM),axis=0)
-
-					arg = _np.argsort(lmbda)
-					lmbda = lmbda[arg]**2
-					V = V[...,arg,:]
-
-					
-
-					# check and orthogonalise VF in degenerate subspaces
-					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
-						#U,_ = _sla.qr(U, overwrite_a=True)
-						V,_ = _sla.qr(V.T, overwrite_a=True)
-						V = V.T
-					
-					# calculate reduced DM
-					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
-
-					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_B
-
-				elif return_rdm=='both':
-					U_SM, lmbda_SM, V_SM = _spla.svds(v, k=n//2, which='SM',return_singular_vectors=True)
-					U_LM, lmbda_LM, V_LM = _spla.svds(v, k=n//2+n%2, which='LM',return_singular_vectors=True)
-
-					# concatenate lower and upper part
-					lmbda=_np.concatenate((lmbda_LM,lmbda_SM),axis=0)
-					U=_np.concatenate((U_LM,U_SM),axis=1)
-					V=_np.concatenate((V_LM,V_SM),axis=0)
-					arg = _np.argsort(lmbda)
-					lmbda = lmbda[arg]**2
-					V = V[...,arg,:]
-					U = U[...,arg]
-					# check and orthogonalise VF in degenerate subspaces
-					if _np.any( _np.diff(lmbda) < 1E3*_np.finfo(lmbda.dtype).eps):
-						U,_ = _sla.qr(U, overwrite_a=True)
-						V,_ = _sla.qr(V.T, overwrite_a=True)
-						V = V.T
-					# calculate reduced DM
-					rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda,U.conj() )
-					rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda,V )
-
-					return lmbda[::-1] + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
-		"""
-
 		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
 
-		Ns_A=self._basis_left.Ns
-		Ns_B=self._basis_right.Ns
+		if sub_sys_A == "left":
+			Ns_A=self._basis_left.Ns
+			Ns_B=self._basis_right.Ns
+		else:
+			Ns_A=self._basis_right.Ns
+			Ns_B=self._basis_left.Ns
+						
 
 		rdm_A=None
 		rdm_B=None
@@ -326,6 +232,7 @@ class tensor_basis(basis):
 
 			if _sp.issparse(rdm):
 				p = get_p_patchy(rdm)
+				p = p.reshape((1,-1))
 			else:
 				p_gen = (get_p_patchy(dm) for dm in rdm[:])
 				p = _np.stack(p_gen)
@@ -333,6 +240,7 @@ class tensor_basis(basis):
 		else:
 			if _sp.issparse(rdm):
 				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
+				p = p.reshape((1,-1))
 			else:
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)
@@ -359,21 +267,21 @@ class tensor_basis(basis):
 		rdm_B,p_B=None,None
 		
 		if return_rdm=='both':
-			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,Ns_left,Ns_right,sub_sys_A,return_rdm="both")
+			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm="both")
 			
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
 		elif return_rdm=='A':
-			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,Ns_left,Ns_right,sub_sys_A,return_rdm="A")
+			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm="A")
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 		elif return_rdm=='B':
-			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,Ns_left,Ns_right,sub_sys_A,return_rdm="B")
+			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm="B")
 			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
 		else:
-			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,Ns_left,Ns_right,sub_sys_A,return_rdm="A")
+			rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm="A")
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 		return p_A, p_B, rdm_A, rdm_B
@@ -406,15 +314,15 @@ class tensor_basis(basis):
 			state = state.T
 			if state.shape[0] == 1:
 				# sparse_pure partial trace
-				rdm_A,rdm_B = _tensor_partial_trace_sparse_pure(state,Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm)
+				rdm_A,rdm_B = _tensor_partial_trace_sparse_pure(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
 			else:
 				if state.shape[0] != state.shape[1] or enforce_pure:
 					# vectorize sparse_pure partial trace 
 					state = state.tocsr()
 					try:
-						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm) for i in xrange(state.shape[0]))
+						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm) for i in xrange(state.shape[0]))
 					except NameError:
-						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm) for i in range(state.shape[0]))
+						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm) for i in range(state.shape[0]))
 
 					left,right = zip(*state_gen)
 
@@ -430,20 +338,20 @@ class tensor_basis(basis):
 
 		else:
 			if state.ndim==1:
-				rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm)
+				rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
 
 			elif state.ndim==2: 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
-					rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm)
+					rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
 
 				else: 
 					shape0 = state.shape
 					state = state.reshape((1,)+shape0)					
 
-					rdm_A,rdm_B = _tensor_partial_trace_mixed(state,Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm)
+					rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
 
 			elif state.ndim==3: #3D DM 
-				rdm_A,rdm_B = _tensor_partial_trace_mixed(state,Ns_left,Ns_right,sub_sys_A,return_rdm=return_rdm)
+				rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
 			else:
 				raise ValueError("state must have ndim < 4")
 

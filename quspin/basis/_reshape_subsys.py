@@ -21,9 +21,9 @@ def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
 	elif return_rdm == "B":
-		return None,_np.squeeze(_np.einsum("...ji,...jk->...ki",psi_v,psi_v.conj()))
+		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v.conj(),psi_v))
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ki",psi_v,psi_v.conj()))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v.conj(),psi_v))
 
 def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	"""
@@ -34,9 +34,9 @@ def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
 	if return_rdm == "A":
 		return _np.einsum("...jlkl->...jk",rho_v),None
 	elif return_rdm == "B":
-		return None,_np.einsum("...ljlk->...kj",rho_v)
+		return None,_np.einsum("...ljlk->...jk",rho_v.conj())
 	elif return_rdm == "both":
-		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...kj",rho_v)
+		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...jk",rho_v.conj())
 
 def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	"""
@@ -50,7 +50,6 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 	elif return_rdm == "B":
 		return None,psi.H.dot(psi)
 	elif return_rdm == "both":
-		#return psi.dot(psi.H),psi.H.dot(psi)
 		return psi.dot(psi.H),psi.H.dot(psi)
 
 
@@ -77,10 +76,11 @@ def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	T_tup = sub_sys_A+sub_sys_B
 	T_tup = tuple(range(n_dims)) + tuple(n_dims + s for s in T_tup)
 	R_tup = extra_dims + tuple(sps for i in range(L))
-
-	psi_v = psi.reshape(R_tup,order="F") # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
-	return psi_v.reshape(extra_dims+(Ns_A,Ns_B),order="F")
+	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
+
+	return psi_v
 
 def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 	"""
@@ -109,10 +109,10 @@ def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 
 	R_tup = extra_dims + tuple(sps for i in range(2*L))
 
-	rho_v = rho.reshape(R_tup,order="F") # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
+	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
 	
-	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B),order="F")
+	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
 
 def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	"""
@@ -131,19 +131,17 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	psi = psi.tocoo()
 
 	T_tup = sub_sys_A+sub_sys_B
-	
 	# reshuffle indices for the sub-systems.
 	# j = sum( j[i]*(sps**i) for i in range(L))
 	# this reshuffles the j[i] similar to the transpose operation
 	# on the dense arrays psi_v.transpose(T_tup)
-	
+
 	if T_tup != tuple(range(L)):
 		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
 		for i_old,i_new in enumerate(T_tup):
-			indx += ((psi.col//(sps**(i_new))) % sps)*(sps**(i_old))
+			indx += ((psi.col//(sps**(L-i_new-1))) % sps)*(sps**(L-i_old-1))
 	else:
 		indx = psi.col
-	
 
 	
 	# A = _np.array([0,1,2,3,4,5,6,7,8,9,10,11])
@@ -154,59 +152,66 @@ def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	# print("cols: A.reshape((3,4))%4: \n {}".format(A.reshape((3,4))%4))
 
 	psi._shape = (Ns_A,Ns_B)
-	psi.row[:] = indx % Ns_A
-	psi.col[:] = indx / Ns_A
+	psi.row[:] = indx / Ns_B
+	psi.col[:] = indx % Ns_B
 
 
 	return psi.tocsr()
 
 
-
-
-
-
-
-
-def _tensor_reshape_pure(psi,Ns_l,Ns_r):
+def _tensor_reshape_pure(psi,sub_sys_A,Ns_l,Ns_r):
 	extra_dims = psi.shape[:-1]
-	psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
+	if sub_sys_A == "left":
+		return psi.reshape(extra_dims+(Ns_l,Ns_r))
+	else:
+		n_dims = len(extra_dims)
+		T_tup = tuple(range(n_dims))+(n_dims+1,n_dims)
+		psi_v = psi.reshape(extra_dims+(Ns_l,Ns_r))
+		return psi_v.transpose(T_tup)
 
-	return psi_v	
 
-
-def _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r):
+def _tensor_reshape_sparse_pure(psi,sub_sys_A,Ns_l,Ns_r):
 	psi = psi.tocoo()
 	# make shift way of reshaping array
 	# j = j_l + Ns_r * j_l
 	# j_l = j / Ns_r
 	# j_r = j % Ns_r 
-	psi._shape = (Ns_l,Ns_r)
-	psi.row[:] = psi.col / Ns_r
-	psi.col[:] = psi.col % Ns_r
+	if sub_sys_A == "left":
+		psi._shape = (Ns_l,Ns_r)
+		psi.row[:] = psi.col / Ns_r
+		psi.col[:] = psi.col % Ns_r
+		return psi.tocsr()
+	else:
+		psi._shape = (Ns_l,Ns_r)
+		psi.row[:] = psi.col / Ns_r
+		psi.col[:] = psi.col % Ns_r
+		return psi.T.tocsr()
 
-	return psi.tocsr()
 
-
-def _tensor_reshape_mixed(rho,Ns_l,Ns_r):
+def _tensor_reshape_mixed(rho,sub_sys_A,Ns_l,Ns_r):
 	extra_dims = rho.shape[:-2]
-	psi_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
+	if sub_sys_A == "left":
+		return rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
+	else:
+		n_dims = len(extra_dims)
+		T_tup = tuple(range(n_dims))+(n_dims+1,n_dims)+(n_dims+3,n_dims+2)
+		rho_v = rho.reshape(extra_dims+(Ns_l,Ns_r,Ns_l,Ns_r))
+		return rho_v.transpose(T_tup)
+		
 
-	return psi_v
-
-
-def _tensor_partial_trace_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	psi_v = _tensor_reshape_pure(psi,Ns_l,Ns_r)
+def _tensor_partial_trace_pure(psi,sub_sys_A,Ns_l,Ns_r,return_rdm="A"):
+	psi_v = _tensor_reshape_pure(psi,sub_sys_A,Ns_l,Ns_r)
 
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
 	elif return_rdm == "B":
-		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v.conj(),psi_v))
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
+		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v.conj(),psi_v))
 
 
-def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	psi = _tensor_reshape_sparse_pure(psi,Ns_l,Ns_r)
+def _tensor_partial_trace_sparse_pure(psi,sub_sys_A,Ns_l,Ns_r,return_rdm="A"):
+	psi = _tensor_reshape_sparse_pure(psi,sub_sys_A,Ns_l,Ns_r)
 
 	if return_rdm == "A":
 		return psi.dot(psi.H),None
@@ -216,11 +221,11 @@ def _tensor_partial_trace_sparse_pure(psi,Ns_l,Ns_r,sub_sys_A="left",return_rdm=
 		return psi.dot(psi.H),psi.H.dot(psi)
 
 
-def _tensor_partial_trace_mixed(rho,Ns_l,Ns_r,sub_sys_A="left",return_rdm="A"):
-	rho_v = _tensor_reshape_mixed(rho,Ns_l,Ns_r)
+def _tensor_partial_trace_mixed(rho,sub_sys_A,Ns_l,Ns_r,return_rdm="A"):
+	rho_v = _tensor_reshape_mixed(rho,sub_sys_A,Ns_l,Ns_r)
 	if return_rdm == "A":
 		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),None
 	elif return_rdm == "B":
-		return None,_np.squeeze(_np.einsum("...jijk->...ki",rho_v))
+		return None,_np.squeeze(_np.einsum("...jijk->...ik",rho_v.conj()))
 	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),_np.squeeze(_np.einsum("...jijk->...ki",rho_v))
+		return _np.squeeze(_np.einsum("...ijkj->...ik",rho_v)),_np.squeeze(_np.einsum("...jijk->...ik",rho_v.conj()))

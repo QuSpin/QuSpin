@@ -14,7 +14,7 @@ from functools import reduce
 
 
 L1 = 3
-L2 = 5
+L2 = 4
 L = L1+L2
 
 np.random.seed(2)
@@ -67,7 +67,7 @@ kwargs_list = [
 				(dict(sub_sys_A="right",return_rdm="both",return_rdm_EVs=True),	dict(density=False,sub_sys_A=range(L1,L,1),return_rdm="both",return_rdm_EVs=True)),
 				]
 
-
+np.set_printoptions(linewidth=10000000,precision=2)
 
 for kwargs2,kwargs1 in kwargs_list:
 	print("checking kwargs: {}".format(kwargs2))
@@ -76,16 +76,15 @@ for kwargs2,kwargs1 in kwargs_list:
 
 	for key,val in out_spin.items():
 		try:
-			np.testing.assert_allclose((val - out_tensor[key]).todense(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
+			np.testing.assert_allclose((val - out_tensor[key]).toarray(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
 	out_spin = spin_basis.ent_entropy(psi,sparse=True,**kwargs1)
 	out_tensor = test_basis.ent_entropy(psi,sparse=True,**kwargs2)
-
 	for key,val in out_spin.items():
 		try:
-			np.testing.assert_allclose((val - out_tensor[key]).todense(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
+			np.testing.assert_allclose((val - out_tensor[key]).toarray(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
@@ -94,7 +93,7 @@ for kwargs2,kwargs1 in kwargs_list:
 
 	for key,val in out_spin.items():
 		try:
-			np.testing.assert_allclose((val - out_tensor[key]).todense(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
+			np.testing.assert_allclose((val - out_tensor[key]).toarray(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
@@ -103,7 +102,7 @@ for kwargs2,kwargs1 in kwargs_list:
 	
 	for key,val in out_spin.items():
 		try:
-			np.testing.assert_allclose((val - out_tensor[key]).todense(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
+			np.testing.assert_allclose((val - out_tensor[key]).toarray(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
@@ -112,7 +111,7 @@ for kwargs2,kwargs1 in kwargs_list:
 
 	for key,val in out_spin.items():
 		try:
-			np.testing.assert_allclose((val - out_tensor[key]).todense(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
+			np.testing.assert_allclose((val - out_tensor[key]).toarray(),0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 		except AttributeError:
 			np.testing.assert_allclose(val - out_tensor[key],0.0,atol=1E-5,err_msg='Failed {} comparison!'.format(key))
 
