@@ -566,7 +566,7 @@ class hamiltonian(object):
 			raise ValueError("To multiply hamiltonians use '*' operator.")
 
 
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			if V.ndim > 3:
 				raise ValueError("Expecting V.ndim < 4.")
 
@@ -674,7 +674,7 @@ class hamiltonian(object):
 
 		
 		V_dot = self.dot(V,time=time,check=check)
-		if not _np.isscalar(time): # multiple time point expectation values
+		if _np.array(time).ndim > 0: # multiple time point expectation values
 			if _sp.issparse(V): # multiple pure states multiple time points
 				return (V.H.dot(V_dot)).diagonal()
 			else:
@@ -850,7 +850,7 @@ class hamiltonian(object):
 			solves for eigen values and eigen vectors, but can only solve for a few of them accurately.
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		if self.Ns <= 0:
@@ -872,7 +872,7 @@ class hamiltonian(object):
 		"""
 		eigh_args["overwrite_a"] = True
 		
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 
@@ -897,7 +897,7 @@ class hamiltonian(object):
 		"""
 
 		
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		if self.Ns <= 0:
@@ -1215,7 +1215,7 @@ class hamiltonian(object):
 		
 
 	def aslinearoperator(self,time=0):
-		time = np.array(time)
+		time = _np.array(time)
 		if time.ndim > 0:
 			raise ValueError("time must be scalar!")
 		matvec = functools.partial(hamiltonian_dot,self,time)
@@ -1233,7 +1233,7 @@ class hamiltonian(object):
 		"""
 		if self.Ns <= 0:
 			return _sp.csr_matrix(_np.asarray([[]]))
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 
@@ -1259,7 +1259,7 @@ class hamiltonian(object):
 		"""
 		if self.Ns <= 0:
 			return _sp.csc_matrix(_np.asarray([[]]))
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		H = _sp.csc_matrix(self._static)
@@ -1399,7 +1399,7 @@ class hamiltonian(object):
 	def trace(self,time=0):
 		if self.Ns <= 0:
 			return 0
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		trace = self._static.diagonal().sum()
