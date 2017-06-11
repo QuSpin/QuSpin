@@ -856,7 +856,7 @@ class hamiltonian(object):
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
-		return _sla.eigsh(self.aslinearoperator(time=time),**eigsh_args)
+		return _sla.eigsh(self.tocsr(time=time),**eigsh_args)
 
 
 
@@ -4075,7 +4075,7 @@ class ops_dict(object):
 		if self.Ns == 0:
 			return _np.array([]),_np.array([[]])
 
-		return _sla.eigsh(self.aslinearoperator(pars),**eigsh_args)
+		return _sla.eigsh(self.tocsr(pars),**eigsh_args)
 
 
 	def eigh(self,pars={},**eigh_args):

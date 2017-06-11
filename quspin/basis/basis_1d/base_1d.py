@@ -1,7 +1,7 @@
 from ..base import basis,MAXPRINT
-from ..base import _lattice_partial_trace_pure,_lattice_reshape_pure
-from ..base import _lattice_partial_trace_mixed,_lattice_reshape_mixed
-from ..base import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
+from .._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
+from .._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
+from .._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
 from . import _check_1d_symm as _check
 import numpy as _np
 import scipy.sparse as _sp
@@ -185,7 +185,7 @@ class basis_1d(basis):
 			self._k = 2*(_np.pi)*a*kblock/L
 
 		self._L = L
-		self._Ns = basis_module.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
+		Ns = basis_module.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
 		self._basis_type = basis_module.get_basis_type(L,Np,self.sps,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
 		self._bitops = bitops(basis_module,**blocks)
@@ -234,28 +234,35 @@ class basis_1d(basis):
 			self._blocks_1d["pzblock"] = pblock*zblock
 			self._unique_me = False
 
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_p_z_op
 
 			if self._basis_type == _np.object:
 				# if object is basis type then most likely this is for single particle stuff in which case the 
 				# normalizations need to be large ~ 1000 or more which won't fit in int8/int16.
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8) # normalisation*sigma
-				self._M=_np.empty(self._basis.shape,dtype=_np.int16) # m = mp + (L+1)mz + (L+1)^2c; Anders' paper
+				N=_np.empty(basis.shape,dtype=_np.int8) # normalisation*sigma
+				M=_np.empty(basis.shape,dtype=_np.int16) # m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 
 			if (type(Np) is int):
 				# arguments get overwritten by ops.-_basis 
-				self._Ns = basis_module.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_p_z_basis(L,pblock,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_p_z_basis(L,pblock,zblock,kblock,a,self._pars,N,M,basis)
 
-			# cut off extra memory for overestimated state number
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			# cut off extra memory for overestimated state number and reverse order
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
@@ -264,24 +271,31 @@ class basis_1d(basis):
 			self._blocks_1d["zblock"] = zAblock*zBblock
 
 
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_zA_zB_op
 
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._M=_np.empty(self._basis.shape,dtype=_np.int16)
+				N=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.int16)
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._pars,N,M,basis)
 
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(pzblock) is int):
@@ -289,24 +303,31 @@ class basis_1d(basis):
 			else: self._conserved = "T & PZ"
 			self._unique_me = False
 
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_pz_op
 
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:			
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._M=_np.empty(self._basis.shape,dtype=_np.int8) #mpz
+				N=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.int8) #mpz
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_pz_basis(L,pzblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_pz_basis(L,pzblock,kblock,a,self._pars,N,M,basis)
 
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(pblock) is int):
@@ -314,110 +335,144 @@ class basis_1d(basis):
 			else: self._conserved = "T & P"
 			self._unique_me = False
 
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_p_op
 
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:			
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
+				N=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_p_basis(L,pblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_p_basis(L,pblock,kblock,a,self._pars,N,M,basis)
 
-
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & T & Z"
 			else: self._conserved = "T & Z"
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_z_op
 
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
+				N=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_z_basis(L,zblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_z_basis(L,zblock,kblock,a,self._pars,N,M,basis)
 
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 
 		elif (type(kblock) is int) and (type(zAblock) is int):
 			if self._conserved: self._conserved += " & T & ZA"
 			else: self._conserved = "T & ZA"
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_zA_op
 
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:			
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
+				N=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_zA_basis(L,zAblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_zA_basis(L,zAblock,kblock,a,self._pars,N,M,basis)
 
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & T & ZB"
 			else: self._conserved = "T & ZB"
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_zB_op
 
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
-				self._M=_np.empty(self._basis.shape,dtype=_np.int32)
+				N=_np.empty(basis.shape,dtype=_np.int32) 
+				M=_np.empty(basis.shape,dtype=_np.int32)
 			else:			
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
-				self._M=_np.empty(self._basis.shape,dtype=_np.int8)
+				N=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,N,M,basis)
 			else:
-				self._Ns = basis_module.t_zB_basis(L,zBblock,kblock,a,self._pars,self._N,self._M,self._basis)
+				Ns = basis_module.t_zB_basis(L,zBblock,kblock,a,self._pars,N,M,basis)
 
-			self._N.resize((self._Ns,))
-			self._M.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._M = M[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._M = _np.resize(M,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(pblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & P & Z"
 			else: self._conserved += "P & Z"
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.p_z_op
 			
 			if (type(Np) is int):
-				self._Ns = basis_module.n_p_z_basis(L,Np,pblock,zblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_p_z_basis(L,Np,pblock,zblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.p_z_basis(L,pblock,zblock,self._pars,self._N,self._basis)
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+				Ns = basis_module.p_z_basis(L,pblock,zblock,self._pars,N,basis)
+
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 
@@ -427,15 +482,21 @@ class basis_1d(basis):
 
 			self._op = ops_module.zA_zB_op
 
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			if (type(Np) is int):
-				self._Ns = basis_module.n_zA_zB_basis(L,Np,zAblock,zBblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_zA_zB_basis(L,Np,zAblock,zBblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.zA_zB_basis(L,zAblock,zBblock,self._pars,self._N,self._basis)
+				Ns = basis_module.zA_zB_basis(L,zAblock,zBblock,self._pars,N,basis)
 
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 
@@ -443,117 +504,167 @@ class basis_1d(basis):
 		elif type(pblock) is int:
 			if self._conserved: self._conserved += " & P"
 			else: self._conserved = "P"
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.p_op
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.p_basis(L,pblock,self._pars,self._N,self._basis)
+				Ns = basis_module.p_basis(L,pblock,self._pars,N,basis)
 				
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		elif type(zblock) is int:
 			if self._conserved: self._conserved += " & Z"
 			else: self._conserved += "Z"
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.z_op
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_z_basis(L,Np,zblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_z_basis(L,Np,zblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.z_basis(L,zblock,self._pars,self._N,self._basis)
+				Ns = basis_module.z_basis(L,zblock,self._pars,N,basis)
 
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
+
 
 			
 
 		elif type(zAblock) is int:
 			if self._conserved: self._conserved += " & ZA"
 			else: self._conserved += "ZA"
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.zA_op
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_zA_basis(L,Np,zAblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_zA_basis(L,Np,zAblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.zA_basis(L,zAblock,self._pars,self._N,self._basis)
+				Ns = basis_module.zA_basis(L,zAblock,self._pars,N,basis)
 
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
+
 
 
 		elif type(zBblock) is int:
 			if self._conserved: self._conserved += " & ZB"
 			else: self._conserved += "ZB"
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.zB_op
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_zB_basis(L,Np,zBblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_zB_basis(L,Np,zBblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.zB_basis(L,zBblock,self._pars,self._N,self._basis)
+				Ns = basis_module.zB_basis(L,zBblock,self._pars,N,basis)
 
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
+
 				
 		elif type(pzblock) is int:
 			if self._conserved: self._conserved += " & PZ"
 			else: self._conserved += "PZ"
-			self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-			self._N=_np.empty((self._Ns,),dtype=_np.int8)
+			basis = _np.empty((Ns,),dtype=self._basis_type)
+			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.pz_op
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_pz_basis(L,Np,pzblock,self._pars,self._N,self._basis)
+				Ns = basis_module.n_pz_basis(L,Np,pzblock,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.pz_basis(L,pzblock,self._pars,self._N,self._basis)
+				Ns = basis_module.pz_basis(L,pzblock,self._pars,N,basis)
 
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+				
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
 	
 		elif type(kblock) is int:
 			if self._conserved: self._conserved += " & T"
 			else: self._conserved = "T"
-			self._basis=_np.empty((self._Ns,),dtype=self._basis_type)
+			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_op
 			
 			if self._basis_type == _np.object:
-				self._N=_np.empty(self._basis.shape,dtype=_np.int32) 
+				N=_np.empty(basis.shape,dtype=_np.int32) 
 			else:			
-				self._N=_np.empty(self._basis.shape,dtype=_np.int8)
+				N=_np.empty(basis.shape,dtype=_np.int8)
 
 			if (type(Np) is int):
-				self._Ns = basis_module.n_t_basis(L,Np,kblock,a,self._pars,self._N,self._basis)
+				Ns = basis_module.n_t_basis(L,Np,kblock,a,self._pars,N,basis)
 			else:
-				self._Ns = basis_module.t_basis(L,kblock,a,self._pars,self._N,self._basis)
+				Ns = basis_module.t_basis(L,kblock,a,self._pars,N,basis)
 
-			self._N.resize((self._Ns,))
-			self._basis.resize((self._Ns,))
+			if Ns > 0:
+				self._N = N[Ns-1::-1].copy()
+				self._basis = basis[Ns-1::-1].copy()
+			else:
+				self._N = _np.resize(N,(0,))
+				self._basis = _np.resize(basis,(0,))
+
+			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		else: 
 			if type(Np) is int:
 				self._op = ops_module.n_op
-				self._basis = _np.empty((self._Ns,),dtype=self._basis_type)
-				basis_module.n_basis(L,Np,self._Ns,self._pars,self._basis)
+				basis = _np.empty((Ns,),dtype=self._basis_type)
+				basis_module.n_basis(L,Np,Ns,self._pars,basis)
+				self._Ns = Ns
+				self._basis = basis[::-1].copy()
 			else:
 				self._op = ops_module.op
-				self._basis = _np.arange(0,self._Ns,1,dtype=self._basis_type)
+				self._basis = _np.arange(Ns-1,-1,-1,dtype=self._basis_type)
+				self._Ns = Ns
 			self._op_args=[self._basis,self._pars]
 
-		if count_particles: self._Np_list = _np.full(self._basis.shape,Np,dtype=_np.int8)
+
+		if count_particles: self._Np_list = _np.full(basis.shape,Np,dtype=_np.int8)
+
+
+
+
+
+
 
 	def append(self,other):
 		if not isinstance(other,self.__class__):
@@ -574,9 +685,8 @@ class basis_1d(basis):
 
 		self._basis.resize((Ns,),refcheck=False)
 		self._basis[self._Ns:] = other._basis[:]
-		arg = _np.argsort(self._basis)
+		arg = self._basis.argsort()[::-1]
 		self._basis = self._basis[arg].copy()
-
 		self._op_args.insert(0,self._basis)
 
 		if hasattr(self,"_Np_list"):
@@ -647,7 +757,7 @@ class basis_1d(basis):
 		if type(s) is int:
 			pass
 		elif type(s) is str:
-			s = long(s[::-1],self.sps)
+			s = long(s,self.sps)
 		else:
 			raise ValueError("s must be integer or state")
 
@@ -686,7 +796,6 @@ class basis_1d(basis):
 		col = _np.zeros(N_op,dtype=self._basis_type)
 		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
-
 		error = self._op(row,col,ME,opstr,indx,J,*self._op_args,**self._blocks_1d)
 
 		if error != 0: raise OpstrError(_basis_op_errors[error])
@@ -825,7 +934,7 @@ class basis_1d(basis):
 			v0 = _np.asanyarray(v0)
 
 		squeeze = False
-		
+
 		if v0.ndim == 1:
 			shape = (self._sps**self._L,1)
 			v0 = v0.reshape((-1,1))
@@ -843,7 +952,6 @@ class basis_1d(basis):
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
-
 
 		if _sp.issparse(v0): # current work around for sparse states.
 			return self.get_proj(v0.dtype).dot(v0)
@@ -948,7 +1056,7 @@ class basis_1d(basis):
 
 		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
 
-	def partial_trace(self,state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False):
+	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""
 		--- arguments ---
 		
@@ -962,6 +1070,7 @@ class basis_1d(basis):
 		  1. 'A': str, returns reduced DM of subsystem A 
 		  2. 'B': str, returns reduced DM of subsystem B
 		  3. 'both': str, returns reduced DM of both subsystems A and B
+		* 'subsys_ordering': (optional) reorder the sites in sub_sys_A list so that they are in ascending order. 
 		* 'enforce_pure': (optional) when `state` is a square matrix this option enfores the columns to be treated as independent states, so the partial trace is calculated for each state separately. Defauls is `False`.
 		* `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
 
@@ -989,8 +1098,15 @@ class basis_1d(basis):
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
 
+		doubles = tuple(s for s in sub_sys_A if sub_sys_A.count(s) > 1)
+		if len(doubles) > 0:
+			raise ValueError("sub_sys_A contains repeated values: {}".format(doubles))
+
 		if return_rdm not in set(["A","B","both"]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
+		if subsys_ordering:
+			sub_sys_A = sorted(sub_sys_A)
 
 		sps = self.sps
 		L = self.L
@@ -1251,6 +1367,7 @@ class basis_1d(basis):
 
 			if _sp.issparse(rdm):
 				p = get_p_patchy(rdm)
+				p = p.reshape((1,-1))
 			else:
 				p_gen = (get_p_patchy(dm) for dm in rdm[:])
 				p = _np.stack(p_gen)
@@ -1258,6 +1375,7 @@ class basis_1d(basis):
 		else:
 			if _sp.issparse(rdm):
 				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
+				p = p.reshape((1,-1))
 			else:
 				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
 				p = _np.stack(p_gen)
@@ -1316,7 +1434,7 @@ class basis_1d(basis):
 			
 		return p_A, p_B, rdm_A, rdm_B
 
-	def ent_entropy(self,state,sub_sys_A=None,density=False,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
@@ -1391,6 +1509,10 @@ class basis_1d(basis):
 
 		if any(s < 0 or s > self.L for s in sub_sys_A):
 			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+
+		doubles = tuple(s for s in set(sub_sys_A) if sub_sys_A.count(s) > 1)
+		if len(doubles) > 0:
+			raise ValueError("sub_sys_A contains repeated values: {}".format(doubles))
 
 		if return_rdm not in set(["A","B","both",None]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
@@ -1591,6 +1713,37 @@ class basis_1d(basis):
 
 		return static_blocks,dynamic_blocks
 
+	def _get__str__(self):
+		def get_state(b):
+			n_space = len(str(self.sps))
+			if self.N <= 64:
+				bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
+				state = "|"+(" ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits))+">"
+			else:
+				left_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
+				right_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
+
+				str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
+				str_list.append("...")
+				str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
+				state = "|"+(" ".join(str_list))+">"
+
+			return state
+
+
+		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+
+		return tuple(str_list)
+
+
+
+
 
 def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
@@ -1607,13 +1760,14 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
 	v = _np.zeros(shape,dtype=v0.dtype)
 
-	bits=" ".join(["{"+str(i)+":0"+str(L)+"b}" for i in range(len(basis_in))])
-
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
 	else:
 		k = 0.0
 		a = L
+	
+	Ns_full = shape[0]
+	basis_in = Ns_full - basis_in - 1
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
@@ -1658,6 +1812,7 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 	return v
 
 
+
 def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
 
@@ -1690,6 +1845,8 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		col_pos = _np.kron(_np.ones_like(ind_pos),col_pos)
 
 
+	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
+	v = _sp.csr_matrix(shape,dtype=v0.dtype)
 
 	if type(kblock) is int:
 		k = 2*_np.pi*kblock*a/L
@@ -1697,9 +1854,10 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		k = 0.0
 		a = L
 
-	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
-	v = _sp.csr_matrix(shape,dtype=v0.dtype)
 
+
+	Ns_full = shape[0]
+	basis_in = Ns_full - basis_in - 1
 
 
 	for r in range(0,L//a):
@@ -1789,37 +1947,29 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 
 	c = _np.zeros(basis_in.shape,dtype=dtype)	
 	v = _sp.csr_matrix(shape,dtype=dtype)
+	if basis_pcon is None:
+		def get_index(ind):
+			return shape[0] - basis_in[ind] - 1
+	else:
+		def get_index(ind):
+			return shape[0] - basis_pcon.searchsorted(basis_in[ind]) - 1
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 		data_pos = c[ind_pos]
 		data_neg = c[ind_neg]
-		if basis_pcon is not None:
-			index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-		else:
-			index = basis_in[ind_pos]
+		index = get_index(ind_pos)
 		v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-		if basis_pcon is not None:
-			index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-		else:
-			index = basis_in[ind_neg]
+		index = get_index(ind_neg)
 		v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis_in,L,pars)
 			data_pos *= zAblock
 			data_neg *= zAblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_neg *= zAblock
@@ -1829,16 +1979,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_flip_sublat_B(basis_in,L,pars)
 			data_pos *= zBblock
 			data_neg *= zBblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_neg *= zBblock
@@ -1848,16 +1991,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_flip_all(basis_in,L,pars)
 			data_pos *= zblock
 			data_neg *= zblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_neg *= zblock
@@ -1867,17 +2003,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_fliplr(basis_in,L,pars)
 			data_pos *= pblock
 			data_neg *= pblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
-
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_neg *= pblock
@@ -1888,16 +2016,9 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 			ops.py_flip_all(basis_in,L,pars)
 			data_pos *= pzblock
 			data_neg *= pzblock
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_pos])
-			else:
-				index = basis_in[ind_pos]
+			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
-
-			if basis_pcon is not None:
-				index = _np.searchsorted(basis_pcon,basis_in[ind_neg])
-			else:
-				index = basis_in[ind_neg]
+			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_neg *= pzblock

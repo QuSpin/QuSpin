@@ -3,11 +3,17 @@
 cdef int op_template(op_type op_func, object[basis_type,ndim=1,mode="c"] op_pars, npy_intp Ns, object[basis_type,ndim=1,mode="c"] basis,
 					 str opstr, NP_INT32_t *indx, scalar_type J, object[basis_type,ndim=1,mode="c"] row, object[basis_type,ndim=1,mode="c"] col, matrix_type *ME):
 	cdef npy_intp i
+	cdef int error
 
 	for i in range(Ns):
 		col[i] = i
 
-	return op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
+	error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
+
+	for i in range(Ns):
+		row[i] = Ns - row[i] - 1
+
+	return error
 
 
 

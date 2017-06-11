@@ -56,7 +56,7 @@ class fermion_basis_1d(basis_1d):
 
 		self._sps = 2
 
-		pars = _np.array([1]) # set sign to be calculated
+		pars = _np.array([1,L]) # set sign to be calculated
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
