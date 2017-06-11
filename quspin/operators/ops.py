@@ -566,7 +566,7 @@ class hamiltonian(object):
 			raise ValueError("To multiply hamiltonians use '*' operator.")
 
 
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			if V.ndim > 3:
 				raise ValueError("Expecting V.ndim < 4.")
 
@@ -674,7 +674,7 @@ class hamiltonian(object):
 
 		
 		V_dot = self.dot(V,time=time,check=check)
-		if not _np.isscalar(time): # multiple time point expectation values
+		if _np.array(time).ndim > 0: # multiple time point expectation values
 			if _sp.issparse(V): # multiple pure states multiple time points
 				return (V.H.dot(V_dot)).diagonal()
 			else:
@@ -850,21 +850,13 @@ class hamiltonian(object):
 			solves for eigen values and eigen vectors, but can only solve for a few of them accurately.
 			uses the scipy.sparse.linalg.eigsh function which is a wrapper for ARPACK
 		"""
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		if self.Ns <= 0:
 			return _np.asarray([]), _np.asarray([[]])
 
-		char = _np.dtype(self._dtype).char
-		if char == "g":
-			H = self.tocsr(time=time).astype(_np.float64)
-		elif char == "G": 
-			H = self.tocsr(time=time).astype(_np.complex128)
-		else:
-			H = self.tocsr(time=time)
-
-		return _sla.eigsh(H,**eigsh_args)
+		return _sla.eigsh(self.aslinearoperator(time=time),**eigsh_args)
 
 
 
@@ -880,7 +872,7 @@ class hamiltonian(object):
 		"""
 		eigh_args["overwrite_a"] = True
 		
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 
@@ -905,7 +897,7 @@ class hamiltonian(object):
 		"""
 
 		
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		if self.Ns <= 0:
@@ -1222,6 +1214,15 @@ class hamiltonian(object):
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 		
 
+	def aslinearoperator(self,time=0):
+		time = _np.array(time)
+		if time.ndim > 0:
+			raise ValueError("time must be scalar!")
+		matvec = functools.partial(hamiltonian_dot,self,time)
+		rmatvec = functools.partial(hamiltonian_dot,self.H,time)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
+
+
 	def tocsr(self,time=0):
 		"""
 		args:
@@ -1232,7 +1233,7 @@ class hamiltonian(object):
 		"""
 		if self.Ns <= 0:
 			return _sp.csr_matrix(_np.asarray([[]]))
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 
@@ -1258,7 +1259,7 @@ class hamiltonian(object):
 		"""
 		if self.Ns <= 0:
 			return _sp.csc_matrix(_np.asarray([[]]))
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		H = _sp.csc_matrix(self._static)
@@ -1398,7 +1399,7 @@ class hamiltonian(object):
 	def trace(self,time=0):
 		if self.Ns <= 0:
 			return 0
-		if not _np.isscalar(time):
+		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
 		trace = self._static.diagonal().sum()
@@ -3858,7 +3859,7 @@ class ops_dict(object):
 		pars = self._check_scalar_pars(pars)
 		matvec = functools.partial(ops_dict_dot,self,pars)
 		rmatvec = functools.partial(ops_dict_dot,self.H,pars)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec)		
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
 	"""
 	def SO_LinearOperator(self,pars={}):
@@ -4074,10 +4075,6 @@ class ops_dict(object):
 		if self.Ns == 0:
 			return _np.array([]),_np.array([[]])
 
-		char = _np.dtype(self._dtype).char
-		if char in ("g","G"):
-			raise TypeError("eigsh not supported by long double types")
-
 		return _sla.eigsh(self.aslinearoperator(pars),**eigsh_args)
 
 
@@ -4205,11 +4202,16 @@ class ops_dict(object):
 
 		missing = set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
-			pars[key] = 1.0
+			pars[key] = _np.array(1,dtype=_np.int32)
 
 
 		for key,J in pars.items():
-			if not( (type(J) is tuple and len(J) == 2) or _np.isscalar(J) ):
+			if type(J) is tuple:
+				if len(J) != 2:
+					raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
+					
+			J = _np.array(J)				
+			if J.ndim > 0:
 				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
 
@@ -4227,12 +4229,12 @@ class ops_dict(object):
 
 		missing = set(self._ops_dict.keys()) - set(pars.keys())
 		for key in missing:
-			pars[key] = 1.0
+			pars[key] = _np.array(1,dtype=_np.int32)
 
 		for J in pars.values():
-			if not _np.isscalar(J):
-				raise ValueError("Expecting scalar values for elements of pars")
-
+			J = _np.array(J)				
+			if J.ndim > 0:
+				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
 		return pars
 

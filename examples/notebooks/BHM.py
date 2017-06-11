@@ -32,5 +32,5 @@ print("eigenenergies:", E)
 print("GS energy is %0.3f" %(E_GS[0]))
 # calculate entanglement entropy per site of GS
 subsystem=[i for i in range(L//2)] # sites contained in subsystem
-Sent=basis.ent_entropy(V[:,0],sub_sys_A=subsystem)['Sent']/L
+Sent=basis.ent_entropy(V[:,0],sub_sys_A=subsystem)['Sent_A']/L
 print("GS entanglement per site is %0.3f" %(Sent))
