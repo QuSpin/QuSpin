@@ -6,6 +6,10 @@ from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d
 import numpy as np
 from itertools import product
+try:
+	from functools import reduce
+except ImportError:
+	pass
 
 
 
