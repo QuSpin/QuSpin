@@ -757,7 +757,7 @@ class basis_1d(basis):
 		if type(s) is int:
 			pass
 		elif type(s) is str:
-			s = long(s[::-1],self.sps)
+			s = long(s,self.sps)
 		else:
 			raise ValueError("s must be integer or state")
 
@@ -1434,7 +1434,7 @@ class basis_1d(basis):
 			
 		return p_A, p_B, rdm_A, rdm_B
 
-	def ent_entropy(self,state,sub_sys_A=None,density=False,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
 		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
 		density matrix.
