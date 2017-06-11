@@ -50,7 +50,7 @@ class spin_basis_1d(basis_1d):
 
 		if self._sps <= 2:
 			self._pauli = pauli
-			pars = _np.array([0])
+			pars = _np.array([0,L])
 			self._operators = ("availible operators for spin_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+

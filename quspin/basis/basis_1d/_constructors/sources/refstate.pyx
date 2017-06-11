@@ -12,14 +12,13 @@ cdef npy_intp findzstate(object[basis_type,ndim=1,mode="c"] A,npy_intp N, basis_
 	while (bmin <= bmax):
 		b = (bmin + bmax)/2
 		A_1 = A[b]
-		if ( A_1 < s ):
-			bmin = b + 1
-		elif ( A_1 > s ):
-			bmax = b - 1
-		else:
+		if ( A_1 == s ):
 			found[0] = True
 			return b
-
+		elif ( s < A_1 ):
+			bmin = b + 1
+		else:
+			bmax = b - 1
 	return 0
 
 

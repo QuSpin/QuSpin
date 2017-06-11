@@ -11,6 +11,7 @@ import scipy.sparse as sp
 
 from functools import reduce
 
+
 np.random.seed(0)
 
 L=4
@@ -23,6 +24,7 @@ H = hamiltonian(static,[],N=L,dtype=np.complex128)
 basis =  H.basis
 
 E,V = H.eigh()
+
 
 
 

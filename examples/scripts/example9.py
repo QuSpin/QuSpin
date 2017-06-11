@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt # plotting
 #
 ##### setting parameters for simulation
 # simulation parameters
-n_real = 100 # number of realizations
+n_real = 20 # number of realizations
 n_boot = 100 # number of bootstrap samples to calculate error
 # physical parameters
 L = 8 # system size

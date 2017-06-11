@@ -8,7 +8,7 @@ import numpy as np
 import scipy.sparse as sp
 
 np.random.seed(12)
-
+np.set_printoptions(linewidth=1000000,precision=3)
 L=4
 
 Jxz=[[1.0,i,i+1] for i in range(L-1)]

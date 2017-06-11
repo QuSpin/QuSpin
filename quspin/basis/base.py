@@ -30,8 +30,14 @@ class basis(object):
 		
 		str_list = list(self._get__str__())
 		if self._Ns > MAXPRINT:
-			L_str = len(str_list[0])
-			t = (" ".join(["" for i in range(L_str//2)]))+":"
+			try:
+				i1 = list(str_list[-1]).index("|")
+				i2 = list(str_list[-1]).index(">",-1)
+				l = (i1+i2)//2 + (1-(i1+i2)%2)
+			except:
+				l = len(str_list[-1])//2
+
+			t = (" ".join(["" for i in range(l)]))+":"
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
@@ -53,26 +59,14 @@ class basis(object):
 		return self._operators
 
 	def _get__str__(self):
-		temp1 = "         {0:"+str(len(str(self.Ns)))+"d}.  "
-		n_space = len(str(self.sps))
-		temp2 = "|"+(" ".join(["{:"+str(n_space)+"d}" for i in range(self.N)]))+">"
-
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [(temp1.format(i))+(temp2.format(*[int(b)//int(self.sps**i)%self.sps for i in range(self.N)])) for i,b in enumerate(self._basis)]
-
-		return tuple(str_list)
-
+		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print out the basis!".format(self.__class__))
 
 	# this methods are optional and are not required for main functions:
 	def __iter__(self):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for for iterating over basis!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for iterating over basis!".format(self.__class__))
 
 	def __getitem__(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for for '[]' operator!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
 
 	def index(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of 'index' function!".format(self.__class__))
@@ -83,7 +77,7 @@ class basis(object):
 
 	# this method is required in order to create manybody hamiltonians/operators
 	def Op(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for for creating hamiltonians!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for creating hamiltonians!".format(self.__class__))
 
 	# this method is required in order to use entanglement entropy functions		
 	def get_vec(self,*args,**kwargs):
@@ -531,164 +525,6 @@ class basis(object):
 def isbasis(x):
 	return isinstance(x,basis)
 
-
-
-####################################################
-# set of helper functions to implement the partial # 
-# trace of lattice density matrices. They do not   #
-# have any checks and states are assumed to be     #
-# in the non-symmetry reduced basis.               #
-####################################################
-
-def _lattice_partial_trace_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
-	"""
-	This function computes the partial trace of a dense pure state psi over set of sites sub_sys_A and returns 
-	reduced DM. Vectorisation available. 
-	"""
-	
-	psi_v=_lattice_reshape_pure(psi,sub_sys_A,L,sps)
-
-	if return_rdm == "A":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),None
-	elif return_rdm == "B":
-		return None,_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-	elif return_rdm == "both":
-		return _np.squeeze(_np.einsum("...ij,...kj->...ik",psi_v,psi_v.conj())),_np.squeeze(_np.einsum("...ji,...jk->...ik",psi_v,psi_v.conj()))
-
-def _lattice_partial_trace_mixed(rho,sub_sys_A,L,sps,return_rdm="A"):
-	"""
-	This function computes the partial trace of a set of dense mixed states rho over set of sites sub_sys_A 
-	and returns reduced DM. Vectorisation available. 
-	"""
-	rho_v=_lattice_reshape_mixed(rho,sub_sys_A,L,sps)
-	if return_rdm == "A":
-		return _np.einsum("...jlkl->...jk",rho_v),None
-	elif return_rdm == "B":
-		return None,_np.einsum("...ljlk->...kj",rho_v)
-	elif return_rdm == "both":
-		return _np.einsum("...jlkl->...jk",rho_v),_np.einsum("...ljlk->...kj",rho_v)
-
-def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
-	"""
-	This function computes the partial trace of a sparse pure state psi over set of sites sub_sys_A and returns 
-	reduced DM.
-	"""
-	psi=_lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps)
-	
-	if return_rdm == "A":
-		return psi.dot(psi.H),None
-	elif return_rdm == "B":
-		return None,psi.H.dot(psi)
-	elif return_rdm == "both":
-		#return psi.dot(psi.H),psi.H.dot(psi)
-		return psi.dot(psi.H),psi.H.dot(psi)
-
-
-
-def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
-	"""
-	This function reshapes the dense pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
-	Vectorisation available. 
-	"""
-	extra_dims = psi.shape[:-1]
-	n_dims = len(extra_dims)
-
-	sub_sys_B = set(range(L))-set(sub_sys_A)
-
-	sub_sys_A = tuple(sub_sys_A)
-	sub_sys_B = tuple(sorted(sub_sys_B))
-
-	L_A = len(sub_sys_A)
-	L_B = len(sub_sys_B)
-
-	Ns_A = (sps**L_A)
-	Ns_B = (sps**L_B)
-
-	T_tup = tuple(sub_sys_A)+tuple(sub_sys_B) 
-	T_tup = tuple(range(n_dims)) + tuple(n_dims + s for s in T_tup)
-	R_tup = extra_dims + tuple(sps for i in range(L))
-
-	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
-	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
-	return psi_v.reshape(extra_dims+(Ns_A,Ns_B))
-
-def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
-	"""
-	This function reshapes the dense mixed state psi over the Hilbert space defined by sub_sys_A and its complement.
-	Vectorisation available. 
-	"""
-	extra_dims = rho.shape[:-2]
-	n_dims = len(extra_dims)
-	sub_sys_B = set(range(L))-set(sub_sys_A)
-
-	sub_sys_A = tuple(sub_sys_A)
-	sub_sys_B = tuple(sorted(sub_sys_B))
-
-	L_A = len(sub_sys_A)
-	L_B = len(sub_sys_B)
-
-	Ns_A = (sps**L_A)
-	Ns_B = (sps**L_B)
-
-	# T_tup tells numpy how to reshuffle the indices such that when I reshape the array to the 
-	# 4-_tensor rho_{ik,jl} i,j are for sub_sys_A and k,l are for sub_sys_B
-	# which means I need (sub_sys_A,sub_sys_B,sub_sys_A+L,sub_sys_B+L)
-
-	T_tup = sub_sys_A+sub_sys_B
-	T_tup = tuple(range(n_dims)) + tuple(s+n_dims for s in T_tup) + tuple(L+n_dims+s for s in T_tup)
-
-	R_tup = extra_dims + tuple(sps for i in range(2*L))
-
-	rho_v = rho.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
-	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
-	
-	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
-
-def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
-	"""
-	This function reshapes the sparse pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
-	"""
-	sub_sys_B = set(range(L))-set(sub_sys_A)
-
-	sub_sys_A = tuple(sub_sys_A)
-	sub_sys_B = tuple(sorted(sub_sys_B))
-
-	L_A = len(sub_sys_A)
-	L_B = len(sub_sys_B)
-
-	Ns_A = (sps**L_A)
-	Ns_B = (sps**L_B)
-	psi = psi.tocoo()
-
-	T_tup = sub_sys_A+sub_sys_B
-	
-	# reshuffle indices for the sub-systems.
-	# j = sum( j[i]*(sps**i) for i in range(L))
-	# this reshuffles the j[i] similar to the transpose operation
-	# on the dense arrays psi_v.transpose(T_tup)
-	
-	if T_tup != tuple(range(L)):
-		indx = _np.zeros(psi.col.shape,dtype=psi.col.dtype)
-		for i_old,i_new in enumerate(T_tup):
-			indx += ((psi.col//(sps**i_old)) % sps)*(sps**i_new)
-	else:
-		indx = psi.col
-	
-
-	
-	# A = _np.array([0,1,2,3,4,5,6,7,8,9,10,11])
-	# print("make shift way of reshaping array")
-	# print("A = {}".format(A))
-	# print("A.reshape((3,4)): \n {}".format(A.reshape((3,4))))
-	# print("rows: A.reshape((3,4))/4: \n {}".format(A.reshape((3,4))/4))
-	# print("cols: A.reshape((3,4))%4: \n {}".format(A.reshape((3,4))%4))
-
-	psi._shape = (Ns_A,Ns_B)
-	psi.row[:] = indx / Ns_B
-	psi.col[:] = indx % Ns_B
-
-
-	return psi.tocsr()
 
 
 

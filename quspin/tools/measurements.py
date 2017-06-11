@@ -117,7 +117,6 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 		variables.append('lmbda')
 		_basis_kwargs["return_rdm_EVs"]=True
 
-
 	### translate arguments
 	if isinstance(system_state,dict):
 		if "rho_d" in system_state and "V_rho" in system_state:
@@ -470,7 +469,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 	# define number of participating states in 'system_state'
 	Ns = psi[0,].size
 
-	
 	if basis.__class__.__name__[:-9] in ['spin','boson','fermion']:
 
 		# set chain subsys if not defined
@@ -489,7 +487,6 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 		# define lattice indices putting the subsystem to the left
 		system = chain_subsys[:]
 		[system.append(i) for i in range(N) if not i in chain_subsys]
-
 		'''
 		the algorithm for the entanglement _entropy of an arbitrary subsystem goes as follows 
 		for spin-1/2 and fermions [replace the onsite DOF (=2 below) with # states per site (basis.sps)]:
@@ -521,7 +518,7 @@ def _reshape_as_subsys(system_state,basis,chain_subsys=None,subsys_ordering=True
 			v = _np.reshape(psi.T,reshape_tuple1)
 			del psi
 			# performs 4)
-			v=v.transpose(system) 
+			v=v.transpose(system)
 			# performs 5)
 			reshape_tuple2 = (Ns, Ns_A, basis.sps**N//Ns_A)
 			v = _np.reshape(v,reshape_tuple2)

@@ -16,10 +16,10 @@ def evolve_gen(psi0,nT,*U_list):
 # frequency and period for driving.
 omega = 2
 T = 2*np.pi/omega 
-nT = 200 # number of periods to evolve to.
+nT = 100 # number of periods to evolve to.
 times = np.arange(0,nT+1,1)*T
-L_1 = 18 # length of chain for spin 1/2
-L_2 = 11 # length of chain for spin 1
+L_1 = 16 # length of chain for spin 1/2
+L_2 = 10 # length of chain for spin 1
 ###### setting up basis ######
 basis_1 = spin_basis_1d(L_1,S="1/2",kblock=0,pblock=1,zblock=1) # spin 1/2 basis
 basis_2 = spin_basis_1d(L_2,S="1"  ,kblock=0,pblock=1,zblock=1) # spin 1 basis
