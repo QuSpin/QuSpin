@@ -4209,10 +4209,10 @@ class ops_dict(object):
 			if type(J) is tuple:
 				if len(J) != 2:
 					raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
-					
-			J = _np.array(J)				
-			if J.ndim > 0:
-				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
+			else:
+				J = _np.array(J)				
+				if J.ndim > 0:
+					raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
 
 		return pars
