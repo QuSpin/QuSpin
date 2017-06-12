@@ -15,9 +15,9 @@ import numpy as _np
 from scipy.misc import comb
 
 cdef extern from "glibc_fix.h":
-   pass
+    pass
 
-_np.import_array()
+
 
 def H_dim(N,length,m_max):
     """

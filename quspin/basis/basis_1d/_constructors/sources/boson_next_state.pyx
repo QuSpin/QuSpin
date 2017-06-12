@@ -1,7 +1,7 @@
 
 
 
-cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode="c"] pars):
+cdef basis_type next_state_pcon_boson(basis_type s,basis_type[:] pars):
 	"""
 	Returns integer representation of the next bosonic state.
 
@@ -13,7 +13,7 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 	M = [sps**i for i in range(L)]
 	"""
 	cdef int L = pars[0]
-	cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
+	cdef basis_type[:] M = pars[1:]
 	cdef basis_type N = 0
 	cdef basis_type n = 0
 	cdef basis_type sps = M[1]
@@ -48,5 +48,5 @@ cdef basis_type next_state_pcon_boson(basis_type s,object[basis_type,ndim=1,mode
 				return s
 
 
-cdef basis_type next_state_inc_1(basis_type s,object[basis_type,ndim=1,mode="c"] pars):
+cdef basis_type next_state_inc_1(basis_type s,basis_type[:] pars):
 	return s + 1

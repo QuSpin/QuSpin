@@ -1,8 +1,8 @@
 
 
-cdef basis_type initial_state(int Nb, object[basis_type,ndim=1,mode='c'] pars):
+cdef basis_type initial_state(int Nb, basis_type[:] pars):
     cdef basis_type s=0
-    cdef object[basis_type,ndim=1,mode="c"] M = pars[1:]
+    cdef basis_type[:] M = pars[1:]
     cdef int sps = M[1]
     cdef int l = Nb/(sps-1)
     cdef int j
@@ -15,7 +15,7 @@ cdef basis_type initial_state(int Nb, object[basis_type,ndim=1,mode='c'] pars):
     return s
 
 # magnetization 
-def n_basis(int L, int Nb, npy_uintp Ns, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_basis(int L, int Nb, npy_uintp Ns, basis_type[:] pars, basis_type[:] basis):
     cdef basis_type s   
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
 
@@ -23,7 +23,7 @@ def n_basis(int L, int Nb, npy_uintp Ns, _np.ndarray[basis_type,ndim=1,mode="c"]
     make_n_basis_template[basis_type](next_state_pcon_boson,pars,MAX,s,basis)
 
 # parity 
-def n_p_basis(int L, int Nb, int pblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_p_basis(int L, int Nb, int pblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -31,7 +31,7 @@ def n_p_basis(int L, int Nb, int pblock, _np.ndarray[basis_type,ndim=1,mode="c"]
     return make_p_basis_template[basis_type,N_type](fliplr,next_state_pcon_boson,pars,MAX,s,L,pblock,&N[0],basis)
 
 
-def p_basis(int L, int pblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def p_basis(int L, int pblock, basis_type[:] pars,N_type[:] N, basis_type[:] basis):
     cdef basis_type s= 0
     cdef npy_uintp MAX=pars[2]**L
 
@@ -39,7 +39,7 @@ def p_basis(int L, int pblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.
 
 
 # parity-spin inversion
-def n_p_z_basis(int L,  int Nb, int pblock, int zblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_p_z_basis(int L,  int Nb, int pblock, int zblock, basis_type[:] pars, N_type[:] N, basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -47,7 +47,7 @@ def n_p_z_basis(int L,  int Nb, int pblock, int zblock, _np.ndarray[basis_type,n
     return make_p_z_basis_template[basis_type,N_type](fliplr,flip_all,next_state_pcon_boson,pars,MAX,s,L,pblock,zblock,&N[0],basis)
     
 
-def p_z_basis(int L,  int pblock, int zblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def p_z_basis(int L,  int pblock, int zblock, basis_type[:] pars, N_type[:] N, basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
 
@@ -55,7 +55,7 @@ def p_z_basis(int L,  int pblock, int zblock, _np.ndarray[basis_type,ndim=1,mode
 
 
 # (parity)*(spin inversion)
-def n_pz_basis(int L,  int Nb, int pzblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_pz_basis(int L,  int Nb, int pzblock, basis_type[:] pars, N_type[:] N, basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -63,14 +63,14 @@ def n_pz_basis(int L,  int Nb, int pzblock, _np.ndarray[basis_type,ndim=1,mode="
     return make_pz_basis_template[basis_type,N_type](fliplr,flip_all,next_state_pcon_boson,pars,MAX,s,L,pzblock,&N[0],basis)
     
 
-def pz_basis(int L,  int pzblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def pz_basis(int L,  int pzblock, basis_type[:] pars, N_type[:] N, basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_pz_basis_template[basis_type,N_type](fliplr,flip_all,next_state_inc_1,pars,MAX,s,L,pzblock,&N[0],basis)
 
 
 # translation
-def n_t_basis(int L,  int Nb, int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_basis(int L,  int Nb, int kblock,int a, basis_type[:] pars, N_type[:] N, basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -78,14 +78,14 @@ def n_t_basis(int L,  int Nb, int kblock,int a, _np.ndarray[basis_type,ndim=1,mo
     return make_t_basis_template[basis_type,N_type](shift,next_state_pcon_boson,pars,MAX,s,L,kblock,a,&N[0],basis)
 
 
-def t_basis(int L,  int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars, _np.ndarray[N_type,ndim=1,mode="c"] N, _np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_basis(int L,  int kblock,int a, basis_type[:] pars, N_type[:] N, basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_basis_template[basis_type,N_type](shift,next_state_inc_1,pars,MAX,s,L,kblock,a,&N[0],basis)
 
 
 # translation-parity
-def n_t_p_basis(int L,  int Nb,int pblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_p_basis(int L,  int Nb,int pblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -93,7 +93,7 @@ def n_t_p_basis(int L,  int Nb,int pblock,int kblock,int a, _np.ndarray[basis_ty
     return make_t_p_basis_template[basis_type,N_type](shift,fliplr,next_state_pcon_boson,pars,MAX,s,L,pblock,kblock,a,&N[0],&M[0],basis)
 
 
-def t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_p_basis(int L, int pblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_p_basis_template[basis_type,N_type](shift,fliplr,next_state_inc_1,pars,MAX,s,L,pblock,kblock,a,&N[0],&M[0],basis)
@@ -102,7 +102,7 @@ def t_p_basis(int L, int pblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,
 
 
 # translation-parity-spin inversion
-def n_t_p_z_basis(int L,  int Nb,int pblock,int zblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[M_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_p_z_basis(int L,  int Nb,int pblock,int zblock,int kblock,int a, basis_type[:] pars,N_type[:] N,M_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -110,7 +110,7 @@ def n_t_p_z_basis(int L,  int Nb,int pblock,int zblock,int kblock,int a, _np.nda
     return make_t_p_z_basis_template[basis_type,N_type,M_type](shift,fliplr,next_state_pcon_boson,pars,MAX,s,L,pblock,zblock,kblock,a,&N[0],&M[0],basis)
     
 
-def t_p_z_basis(int L, int pblock,int zblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[M_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_p_z_basis(int L, int pblock,int zblock,int kblock,int a, basis_type[:] pars,N_type[:] N,M_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_p_z_basis_template[basis_type,N_type,M_type](shift,fliplr,next_state_inc_1,pars,MAX,s,L,pblock,zblock,kblock,a,&N[0],&M[0],basis)
@@ -119,7 +119,7 @@ def t_p_z_basis(int L, int pblock,int zblock,int kblock,int a, _np.ndarray[basis
 
 
 # translation-(parity)*(spin inversion)
-def n_t_pz_basis(int L,  int Nb,int pzblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_pz_basis(int L,  int Nb,int pzblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -127,14 +127,14 @@ def n_t_pz_basis(int L,  int Nb,int pzblock,int kblock,int a, _np.ndarray[basis_
     return make_t_pz_basis_template[basis_type,N_type](shift,fliplr,flip_all,next_state_pcon_boson,pars,MAX,s,L,pzblock,kblock,a,&N[0],&M[0],basis)
     
 
-def t_pz_basis(int L, int pzblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_pz_basis(int L, int pzblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_pz_basis_template[basis_type,N_type](shift,fliplr,flip_all,next_state_inc_1,pars,MAX,s,L,pzblock,kblock,a,&N[0],&M[0],basis)
 
 
 # translation-spin inversion
-def n_t_z_basis(int L, int Nb,int zblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_z_basis(int L, int Nb,int zblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -142,7 +142,7 @@ def n_t_z_basis(int L, int Nb,int zblock,int kblock,int a, _np.ndarray[basis_typ
     return make_t_z_basis_template[basis_type,N_type](shift,flip_all,next_state_pcon_boson,pars,MAX,s,L,zblock,kblock,a,&N[0],&M[0],basis)
 
 
-def t_z_basis(int L, int zblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_z_basis(int L, int zblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_z_basis_template[basis_type,N_type](shift,flip_all,next_state_inc_1,pars,MAX,s,L,zblock,kblock,a,&N[0],&M[0],basis)
@@ -151,7 +151,7 @@ def t_z_basis(int L, int zblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,
 
 
 # translation-spin inversion A
-def n_t_zA_basis(int L,  int Nb,int zAblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_zA_basis(int L,  int Nb,int zAblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -159,7 +159,7 @@ def n_t_zA_basis(int L,  int Nb,int zAblock,int kblock,int a, _np.ndarray[basis_
     return make_t_zA_basis_template[basis_type,N_type](shift,flip_sublat_A,next_state_pcon_boson,pars,MAX,s,L,zAblock,kblock,a,&N[0],&M[0],basis)
 
 
-def t_zA_basis(int L, int zAblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_zA_basis(int L, int zAblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_zA_basis_template[basis_type,N_type](shift,flip_sublat_A,next_state_inc_1,pars,MAX,s,L,zAblock,kblock,a,&N[0],&M[0],basis)
@@ -167,7 +167,7 @@ def t_zA_basis(int L, int zAblock,int kblock,int a, _np.ndarray[basis_type,ndim=
 
 
 # translation-spin inversion B
-def n_t_zB_basis(int L,  int Nb,int zBblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_zB_basis(int L,  int Nb,int zBblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -175,7 +175,7 @@ def n_t_zB_basis(int L,  int Nb,int zBblock,int kblock,int a, _np.ndarray[basis_
     return make_t_zB_basis_template[basis_type,N_type](shift,flip_sublat_B,next_state_pcon_boson,pars,MAX,s,L,zBblock,kblock,a,&N[0],&M[0],basis)
     
 
-def t_zB_basis(int L, int zBblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[N_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_zB_basis(int L, int zBblock,int kblock,int a, basis_type[:] pars,N_type[:] N,N_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_zB_basis_template[basis_type,N_type](shift,flip_sublat_B,next_state_inc_1,pars,MAX,s,L,zBblock,kblock,a,&N[0],&M[0],basis)
@@ -184,14 +184,14 @@ def t_zB_basis(int L, int zBblock,int kblock,int a, _np.ndarray[basis_type,ndim=
 
 
 # translation-spin inversion A-spin inversion B
-def n_t_zA_zB_basis(int L, int Nb,int zAblock,int zBblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[M_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_t_zA_zB_basis(int L, int Nb,int zAblock,int zBblock,int kblock,int a, basis_type[:] pars,N_type[:] N,M_type[:] M,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
 
     return make_t_zA_zB_basis_template[basis_type,N_type,M_type](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon_boson,pars,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&M[0],basis)
 
-def t_zA_zB_basis(int L, int zAblock,int zBblock,int kblock,int a, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[M_type,ndim=1,mode="c"] M,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def t_zA_zB_basis(int L, int zAblock,int zBblock,int kblock,int a, basis_type[:] pars,N_type[:] N,M_type[:] M,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_t_zA_zB_basis_template[basis_type,N_type,M_type](shift,flip_sublat_A,flip_sublat_B,flip_all,next_state_inc_1,pars,MAX,s,L,zAblock,zBblock,kblock,a,&N[0],&M[0],basis)
@@ -201,7 +201,7 @@ def t_zA_zB_basis(int L, int zAblock,int zBblock,int kblock,int a, _np.ndarray[b
 
 
 # spin inversion
-def n_z_basis(int L,int Nb, int zblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_z_basis(int L,int Nb, int zblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -209,7 +209,7 @@ def n_z_basis(int L,int Nb, int zblock, _np.ndarray[basis_type,ndim=1,mode="c"] 
     return make_z_basis_template[basis_type,N_type](flip_all,next_state_pcon_boson,pars,MAX,s,L,zblock,&N[0],basis)
 
 
-def z_basis(int L, int zblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def z_basis(int L, int zblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_z_basis_template[basis_type,N_type](flip_all,next_state_inc_1,pars,MAX,s,L,zblock,&N[0],basis)
@@ -218,7 +218,7 @@ def z_basis(int L, int zblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.
 
 
 # spin inversion A
-def n_zA_basis(int L, int Nb, int zAblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_zA_basis(int L, int Nb, int zAblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -226,7 +226,7 @@ def n_zA_basis(int L, int Nb, int zAblock, _np.ndarray[basis_type,ndim=1,mode="c
     return make_zA_basis_template[basis_type,N_type](flip_sublat_A,next_state_pcon_boson,pars,MAX,s,L,zAblock,&N[0],basis)
 
 
-def zA_basis(int L, int zAblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def zA_basis(int L, int zAblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_zA_basis_template[basis_type,N_type](flip_sublat_A,next_state_inc_1,pars,MAX,s,L,zAblock,&N[0],basis)
@@ -235,7 +235,7 @@ def zA_basis(int L, int zAblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_n
 
 
 # spin inversion B
-def n_zB_basis(int L, int Nb, int zBblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_zB_basis(int L, int Nb, int zBblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -244,7 +244,7 @@ def n_zB_basis(int L, int Nb, int zBblock, _np.ndarray[basis_type,ndim=1,mode="c
 
     
 
-def zB_basis(int L, int zBblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def zB_basis(int L, int zBblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_zB_basis_template[basis_type,N_type](flip_sublat_B,next_state_inc_1,pars,MAX,s,L,zBblock,&N[0],basis)
@@ -252,7 +252,7 @@ def zB_basis(int L, int zBblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_n
 
 
 # spin inversion A-spin inversion B
-def n_zA_zB_basis(int L, int Nb, int zAblock, int zBblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def n_zA_zB_basis(int L, int Nb, int zAblock, int zBblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s
     cdef npy_uintp MAX=H_dim(Nb,L,pars[2]-1)
     s = initial_state[basis_type](Nb,pars)
@@ -260,7 +260,7 @@ def n_zA_zB_basis(int L, int Nb, int zAblock, int zBblock, _np.ndarray[basis_typ
     return make_zA_zB_basis_template[basis_type,N_type](flip_sublat_A,flip_sublat_B,flip_all,next_state_pcon_boson,pars,MAX,s,L,zAblock,zBblock,&N[0],basis)
     
 
-def zA_zB_basis(int L, int zAblock, int zBblock, _np.ndarray[basis_type,ndim=1,mode="c"] pars,_np.ndarray[N_type,ndim=1,mode="c"] N,_np.ndarray[basis_type,ndim=1,mode="c"] basis):
+def zA_zB_basis(int L, int zAblock, int zBblock, basis_type[:] pars,N_type[:] N,basis_type[:] basis):
     cdef basis_type s=0
     cdef npy_uintp MAX=pars[2]**L
     return make_zA_zB_basis_template[basis_type,N_type](flip_sublat_A,flip_sublat_B,flip_all,next_state_inc_1,pars,MAX,s,L,zAblock,zBblock,&N[0],basis)

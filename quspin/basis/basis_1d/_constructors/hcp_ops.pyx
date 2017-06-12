@@ -17,7 +17,7 @@ from scipy.misc import comb
 cdef extern from "glibc_fix.h":
     pass
 
-_np.import_array()
+
 
 include "sources/hcp_bitops.pyx"
 include "sources/refstate.pyx"

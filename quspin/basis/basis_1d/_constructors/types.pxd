@@ -18,34 +18,34 @@ ctypedef _np.uint16_t NP_UINT16_t
 ctypedef _np.uint8_t NP_UINT8_t
 
 ctypedef fused basis_type:
-	NP_UINT32_t
-	NP_UINT64_t
-	object
+    NP_UINT32_t
+    NP_UINT64_t
+    object
 
 ctypedef fused N_type:
-	NP_INT8_t
-	NP_INT32_t
+    NP_INT8_t
+    NP_INT32_t
 
 ctypedef fused M_type:
-	NP_INT16_t
-	NP_INT32_t
+    NP_INT16_t
+    NP_INT32_t
 
 ctypedef fused matrix_type:
-	float
-	double
-	float complex
-	double complex
+    float
+    double
+    float complex
+    double complex
 
 
-	
+    
 ctypedef double complex scalar_type
 
 
-ctypedef basis_type (*bitop)(basis_type, int, object[basis_type,ndim=1,mode="c"])
-ctypedef basis_type (*shifter)(basis_type, int, int, object[basis_type,ndim=1,mode="c"])
-ctypedef basis_type (*ns_type)(basis_type, object[basis_type,ndim=1,mode="c"])
-ctypedef int (*op_type)(npy_intp, object[basis_type,ndim=1,mode="c"], str, NP_INT32_t*,scalar_type,
-						object[basis_type,ndim=1,mode="c"], matrix_type*,object[basis_type,ndim=1,mode="c"])
+ctypedef basis_type (*bitop)(basis_type, int, basis_type[:])
+ctypedef basis_type (*shifter)(basis_type, int, int, basis_type[:])
+ctypedef basis_type (*ns_type)(basis_type, basis_type[:])
+ctypedef int (*op_type)(npy_intp, basis_type[:], str, NP_INT32_t*,scalar_type,
+                        basis_type[:], matrix_type*,basis_type[:])
 
 
 

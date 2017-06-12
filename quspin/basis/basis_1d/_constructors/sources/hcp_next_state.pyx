@@ -3,7 +3,7 @@
 
 
 
-cdef basis_type next_state_pcon_hcp(basis_type s,object[basis_type,ndim=1,mode="c"] pars):
+cdef basis_type next_state_pcon_hcp(basis_type s,basis_type[:] pars):
 	if s == 0 :
 		return s
 
@@ -13,5 +13,5 @@ cdef basis_type next_state_pcon_hcp(basis_type s,object[basis_type,ndim=1,mode="
 
 
 
-cdef basis_type next_state_inc_1(basis_type s,object[basis_type,ndim=1,mode="c"] pars):
+cdef basis_type next_state_inc_1(basis_type s,basis_type[:] pars):
 	return s + 1
