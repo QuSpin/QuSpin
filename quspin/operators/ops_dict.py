@@ -421,7 +421,7 @@ class ops_dict(object):
 		for key,J in pars.items():
 			if type(J) is tuple and len(J) == 2:
 				dynamic.append([self._ops_dict[key],J[0],J[1]])
-			elif _np.isscalar(J):
+			else:
 				if J == 1.0:
 					static.append(self._ops_dict[key])
 				else:
