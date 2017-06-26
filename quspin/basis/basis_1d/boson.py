@@ -74,7 +74,10 @@ class boson_basis_1d(basis_1d):
 			self._blocks["cblock"] = zAblock*zBblock
 
 		if self._sps <= 2:
-			pars = _np.array([0,L]) # set sign to not be calculated
+			Imax = (1<<L)-1
+			stag_A = sum(1<<i for i in range(0,L,2))
+			stag_B = sum(1<<i for i in range(1,L,2))
+			pars = _np.array([0,L,Imax,stag_A,stag_B]) # set sign to not be calculated
 			self._operators = ("availible operators for boson_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
