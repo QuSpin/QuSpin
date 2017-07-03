@@ -8,6 +8,7 @@ import exp_op
 from .make_hamiltonian import make_static as _make_static
 from .make_hamiltonian import make_dynamic as _make_dynamic
 from .make_hamiltonian import test_function as _test_function
+from ._functions import function
 
 # need linear algebra packages
 import scipy
@@ -18,6 +19,8 @@ import numpy as _np
 
 from operator import mul
 import functools
+from six import iteritems,itervalues
+
 
 from copy import deepcopy as _deepcopy # recursively copies all data into new object
 from copy import copy as _shallowcopy # copies only at top level references the data of old objects
@@ -84,6 +87,14 @@ def _check_dynamic(sub_list):
 		raise TypeError('expecting list with object, driving function, and function arguments')
 
 
+
+def _check_almost_zero(matrix):
+	atol = 100*_np.finfo(matrix.dtype).eps
+
+	if _sp.issparse(matrix):
+		return _np.allclose(matrix.data,0,atol=atol)
+	else:
+		return _np.allclose(matrix,0,atol=atol)
 
 
 
@@ -266,7 +277,7 @@ class hamiltonian(object):
 
 				self._shape=shape
 				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
-				self._dynamic = ()
+				self._dynamic = {}
 
 			for O in static_other_list:
 				if _sp.issparse(O):
@@ -310,43 +321,44 @@ class hamiltonian(object):
 				self._static.eliminate_zeros()
 			except: pass
 
-			n = len(dynamic_other_list)
 
-			for i in range(n):
-				O,f,f_args = dynamic_other_list[i]
+
+			for	O,f,f_args in dynamic_other_list:
 				_test_function(f,f_args)
+				func = function(f,tuple(f_args))
+
 				if _sp.issparse(O):
 					self._mat_checks(O)
 
-					if copy:
-						dynamic_other_list[i][0] = dynamic_other_list[i][0].copy().astype(self._dtype)
-					else:
-						dynamic_other_list[i][0] = dynamic_other_list[i][0].astype(self._dtype)
+					O = O.astype(self._dtype)
 					
 				elif O.__class__ is _np.ndarray:
 					self._mat_checks(O)
 					self._is_dense=True
 
-					dynamic_other_list[i][0] = _np.array(dynamic_other_list[i][0],dtype=self._dtype,copy=copy)
+					O = _np.array(O,dtype=self._dtype,copy=copy)
 
 
 				elif O.__class__ is _np.matrix:
 					self._mat_checks(O)
 					self._is_dense=True
 
-					dynamic_other_list[i][0] = _np.array(dynamic_other_list[i][0],dtype=self._dtype,copy=copy)
+					O = _np.array(O,dtype=self._dtype,copy=copy)
 
 				else:
-					O_a = _np.asanyarray(O)
-					self._mat_checks(O_a)
+					O = _np.asanyarray(O)
+					self._mat_checks(O)
 					self._is_dense=True
 
-					O_a = O_a.astype(self._dtype,copy=copy)
 
-					dynamic_other_list.pop(i)
-					dynamic_other_list.insert(i,(O_a,f,f_args))
+				if func in self._dynamic:
+					try:
+						self._dynamic[func] += O
+					except:
+						self._dynamic[func] = self._dynamic[func] + O
+				else:
+					self._dynamic[func] = O
 
-			self._dynamic += tuple(dynamic_other_list)
 
 		else:
 			if not hasattr(self,"_shape"):
@@ -382,10 +394,9 @@ class hamiltonian(object):
 
 				self._shape=shape
 				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
-				self._dynamic = ()
+				self._dynamic = {}
 
 		self._Ns = self._shape[0]
-		self.sum_duplicates()
 
 	@property
 	def basis(self):
@@ -435,88 +446,9 @@ class hamiltonian(object):
 		return self.getH()
 
 
-
-	def sum_duplicates(self):
-		"""
-		description:
-			This function consolidates the list of dynamic, combining matrices which have the same driving function and function arguments.
-		"""
-		self._dynamic=list(self._dynamic)
-		l=len(self._dynamic)
-		i=j=0;
-		while i < l:
-			while j < l:
-				if i != j:
-					ele1=self._dynamic[i]; ele2=self._dynamic[j]
-					if (ele1[1] == ele2[1]) and (ele1[2] == ele2[2]):
-						self._dynamic.pop(j)
-
-						if i > j: i -= 1
-						self._dynamic.pop(i)
-						ele1=list(ele1)
-
-						try:
-							ele1[0]+=ele2[0]
-						except:
-							ele1[0] = ele1[0] + ele2[0]
-
-						try:
-							
-							ele1[0].sum_duplicates()
-							ele1[0].eliminate_zeros()
-						except: pass
-				
-						self._dynamic.insert(i,tuple(ele1))
-				l=len(self._dynamic); j+=1
-			i+=1;j=0
-
-		l = len(self._dynamic)
-		for i in range(l):
-			try:
-				self._dynamic[i][0].tocsr()
-				self._dynamic[i][0].sum_duplicates()
-				self._dynamic[i][0].eliminate_zeros()
-			except: pass
-
-		
-
-
-		replace=[]
-		atol = 100*_np.finfo(self._dtype).eps
-		is_dense = False
-
-
-		if _sp.issparse(self._static):
-			if _np.allclose(self._static.data,0,atol=atol):
-				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
-		else:
-			if _np.allclose(self._static,0,atol=atol):
-				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
-
-
-
-		for i,(Hd,f,f_args) in enumerate(self._dynamic):
-			if _sp.issparse(Hd):
-				if _np.allclose(Hd.data,0,atol=atol):
-					self._dynamic[i] = list(self._dynamic[i])
-					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
-					self._dynamic[i] = tuple(self._dynamic[i])
-			else:
-				if _np.allclose(Hd,0,atol=atol):
-					self._dynamic[i] = list(self._dynamic[i])
-					self._dynamic[i][0] = _sp.csr_matrix(self.get_shape,dtype=self.dtype)
-					self._dynamic[i] = tuple(self._dynamic[i])
-
-
-		self._dynamic=tuple(self._dynamic)
-
-		self.check_is_dense()
-
-
-
 	def check_is_dense(self):
 		is_sparse = _sp.issparse(self._static)
-		for Hd,f,f_args in self._dynamic:
+		for Hd in itervalues(self._dynamic):
 			is_sparse *= _sp.issparse(Hd)
 
 		self._is_dense = not is_sparse
@@ -585,8 +517,8 @@ class hamiltonian(object):
 		else:	
 			if not check:
 				V_dot = self._static.dot(V)	
-				for Hd,f,f_args in self._dynamic:
-					V_dot += f(time,*f_args)*(Hd.dot(V))
+				for func,Hd in iteritems(self._dynamic):
+					V_dot += func(time)*(Hd.dot(V))
 
 				return V_dot
 
@@ -595,8 +527,8 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 		
 				V_dot = self._static.dot(V)	
-				for Hd,f,f_args in self._dynamic:
-					V_dot += f(time,*f_args)*(Hd.dot(V))
+				for func,Hd in iteritems(self._dynamic):
+					V_dot += func(time)*(Hd.dot(V))
 
 
 			elif _sp.issparse(V):
@@ -604,8 +536,8 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 		
 				V_dot = self._static * V
-				for Hd,f,f_args in self._dynamic:
-					V_dot += f(time,*f_args)*(Hd.dot(V))
+				for func,Hd in iteritems(self._dynamic):
+					V_dot += func(time)*(Hd.dot(V))
 				return V_dot
 
 			elif V.__class__ is _np.matrix:
@@ -613,8 +545,8 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 				V_dot = self._static.dot(V)	
-				for Hd,f,f_args in self._dynamic:
-					V_dot += f(time,*f_args)*(Hd.dot(V))
+				for func,Hd in iteritems(self._dynamic):
+					V_dot += func(time)*(Hd.dot(V))
 
 			else:
 				V = _np.asanyarray(V)
@@ -625,8 +557,8 @@ class hamiltonian(object):
 					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
 				V_dot = self._static.dot(V)	
-				for Hd,f,f_args in self._dynamic:
-					V_dot += f(time,*f_args)*(Hd.dot(V))
+				for func,Hd in iteritems(self._dynamic):
+					V_dot += func(time)*(Hd.dot(V))
 
 			return V_dot
 
@@ -836,8 +768,6 @@ class hamiltonian(object):
 		return _sla.eigsh(self.tocsr(time=time),**eigsh_args)
 
 
-
-	
 	def eigh(self,time=0,**eigh_args):
 		"""
 		args:
@@ -891,8 +821,8 @@ class hamiltonian(object):
 
 		rho_comm = self._static.dot(rho)
 		rho_comm -= (self._static.T.dot(rho.T)).T
-		for Hd,f,f_args in self._dynamic:
-			ft = f(time,*f_args)
+		for func,Hd in iteritems(self._dynamic):
+			ft = func(time)
 			rho_comm += ft*Hd.dot(rho)	
 			rho_comm -= ft*(Hd.T.dot(rho.T)).T
 
@@ -918,9 +848,9 @@ class hamiltonian(object):
 		V_dot = _np.zeros_like(V)
 		V_dot[:self._Ns,:] = self._static.dot(V[self._Ns:,:])
 		V_dot[self._Ns:,:] = -self._static.dot(V[:self._Ns,:])
-		for Hd,f,f_args in self._dynamic:
-			V_dot[:self._Ns,:] += f(time,*f_args)*Hd.dot(V[self._Ns:,:])
-			V_dot[self._Ns:,:] += -f(time,*f_args)*Hd.dot(V[:self._Ns,:])
+		for func,Hd in iteritems(self._dynamic):
+			V_dot[:self._Ns,:] += func(time)*Hd.dot(V[self._Ns:,:])
+			V_dot[self._Ns:,:] += -func(time)*Hd.dot(V[:self._Ns,:])
 
 		return V_dot.reshape((-1,))
 
@@ -936,8 +866,8 @@ class hamiltonian(object):
 		"""
 		V = V.reshape((self.Ns,-1))
 		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
+		for func,Hd in iteritems(self._dynamic):
+			V_dot += func(time)*(Hd.dot(V))
 
 		return -1j*V_dot.reshape((-1,))
 
@@ -952,11 +882,11 @@ class hamiltonian(object):
 			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
 		"""
 		V = V.reshape((self._Ns,-1))
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
+		V_dot = -self._static.dot(V)	
+		for func,Hd in iteritems(self._dynamic):
+			V_dot -= func(time)*(Hd.dot(V))
 
-		return -V_dot.reshape((-1,))
+		return V_dot.reshape((-1,))
 
 
 
@@ -977,9 +907,9 @@ class hamiltonian(object):
 		V_dot = _np.zeros_like(V)
 		V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
 		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
-		for Hd,f,f_args in self._dynamic:
-			V_dot[:self._Ns] += f(time,*f_args)*Hd.dot(V[self._Ns:])
-			V_dot[self._Ns:] += -f(time,*f_args)*Hd.dot(V[:self._Ns])
+		for func,Hd in iteritems(self._dynamic):
+			V_dot[:self._Ns] += func(time)*Hd.dot(V[self._Ns:])
+			V_dot[self._Ns:] += -func(time)*Hd.dot(V[:self._Ns])
 
 		return V_dot
 
@@ -994,8 +924,8 @@ class hamiltonian(object):
 			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 		"""
 		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
+		for func,Hd in iteritems(self._dynamic):
+			V_dot += func(time)*(Hd.dot(V))
 
 		return -1j*V_dot
 
@@ -1009,11 +939,11 @@ class hamiltonian(object):
 			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
 		"""
 
-		V_dot = self._static.dot(V)	
-		for Hd,f,f_args in self._dynamic:
-			V_dot += f(time,*f_args)*(Hd.dot(V))
+		V_dot = -self._static.dot(V)	
+		for func,Hd in iteritems(self._dynamic):
+			V_dot -= func(time)*(Hd.dot(V))
 
-		return -V_dot
+		return V_dot
 
 
 
@@ -1105,14 +1035,6 @@ class hamiltonian(object):
 				return self._evolve_list(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
 
 			
-		
-
-
-
-
-
-
-
 	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 		N_ele = v0.size//2
@@ -1216,12 +1138,12 @@ class hamiltonian(object):
 
 		H = _sp.csr_matrix(self._static)
 
-		for Hd,f,f_args in self._dynamic:
+		for func,Hd in iteritems(self._dynamic):
 			Hd = _sp.csr_matrix(Hd)
 			try:
-				H += Hd * f(time,*f_args)
+				H += Hd * func(time)
 			except:
-				H = H + Hd * f(time,*f_args)
+				H = H + Hd * func(time)
 
 
 		return H
@@ -1240,12 +1162,12 @@ class hamiltonian(object):
 			raise TypeError('expecting scalar argument for time')
 
 		H = _sp.csc_matrix(self._static)
-		for Hd,f,f_args in self._dynamic:
+		for func,Hd in iteritems(self._dynamic):
 			Hd = _sp.csc_matrix(Hd)
 			try:
-				H += Hd * f(time,*f_args)
+				H += Hd * func(time)
 			except:
-				H = H + Hd * f(time,*f_args)
+				H = H + Hd * func(time)
 
 
 		return H
@@ -1271,8 +1193,8 @@ class hamiltonian(object):
 		else:
 			out[:] = self._static[:]
 
-		for Hd,f,f_args in self._dynamic:
-			out += Hd * f(time,*f_args)
+		for func,Hd in iteritems(self._dynamic):
+			out += Hd * func(time)
 		
 		return out
 
@@ -1295,8 +1217,8 @@ class hamiltonian(object):
 		else:
 			out[:] = self._static[:]
 
-		for Hd,f,f_args in self._dynamic:
-			out += Hd * f(time,*f_args)
+		for func,Hd in iteritems(self._dynamic):
+			out += Hd * func(time)
 		
 		return out
 
@@ -1314,18 +1236,13 @@ class hamiltonian(object):
 		else:
 			new._static = _np.asarray(new._static)
 
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			if _sp.issparse(new._dynamic[i][0]):
-				new._dynamic[i][0] = new._dynamic[i][0].todense()
+
+		for func in new._dynamic:
+			if _sp.issparse(new._dynamic[func]):
+				new._dynamic[func] = new._dynamic[func].toarray()
 			else:
-				new._dynamic[i][0] = _np.asarray(new._dynamic[i][0])
+				new._dynamic[func] = _np.asarray(new._dynamic[func],copy=copy)
 
-			new._dynamic[i] = tuple(new._dynamic[i])
-
-		new._dynamic = tuple(new._dynamic)
 		return new
 
 
@@ -1345,13 +1262,8 @@ class hamiltonian(object):
 
 		new._static = sparse_constuctor(new._static)
 		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = sparse_constuctor(new._dynamic[i][0])
-			new._dynamic[i] = tuple(new._dynamic[i])
+		new._dynamic = {func:sparse_constructor(Hd) for func,Hd in iteritems(new._dynamic)}
 
-		new._dynamic = tuple(new._dynamic)
 		return new
 
 
@@ -1359,14 +1271,16 @@ class hamiltonian(object):
 		new = _shallowcopy(self)
 
 		new._static = new._static.conj()
-		new._dynamic = list(new._dynamic)
-		n = len(self._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = new._dynamic[i][0].conj()
-			new._dynamic[i] = tuple(new._dynamic[i])
+		new._dynamic = {func.conj():Hd.conj() for func,Hd in iteritems(new._dynamic)}
 
-		new._dynamic = tuple(new._dynamic)
+		# new._dynamic = list(new._dynamic)
+		# n = len(self._dynamic)
+		# for i in range(n):
+		# 	new._dynamic[i] = list(new._dynamic[i])
+		# 	new._dynamic[i][0] = new._dynamic[i][0].conj()
+		# 	new._dynamic[i] = tuple(new._dynamic[i])
+
+		# new._dynamic = tuple(new._dynamic)
 
 		return new
 
@@ -1377,8 +1291,8 @@ class hamiltonian(object):
 			raise TypeError('expecting scalar argument for time')
 
 		diagonal = self._static.diagonal()
-		for Hd,f,f_args in self._dynamic:
-			diagonal += Hd.diagonal() * f(time,*f_args)
+		for func,Hd in iteritems(self._dynamic):
+			diagonal += Hd.diagonal() * func(time)
 
 		return diagonal
 
@@ -1389,8 +1303,8 @@ class hamiltonian(object):
 			raise TypeError('expecting scalar argument for time')
 
 		trace = self._static.diagonal().sum()
-		for Hd,f,f_args in self._dynamic:
-			trace += Hd.diagonal().sum() * f(time,*f_args)
+		for func,Hd in iteritems(self._dynamic):
+			trace += Hd.diagonal().sum() * func(time)
 
 		return trace
  		
@@ -1406,14 +1320,7 @@ class hamiltonian(object):
 			new = _shallowcopy(self)
 
 		new._static = new._static.T
-		new._dynamic = list(new._dynamic)
-		n = len(self._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = new._dynamic[i][0].T
-			new._dynamic[i] = tuple(new._dynamic[i])
-
-		new._dynamic = tuple(new._dynamic)
+		new._dynamic = {func:Hd.T for func,Hd in iteritems(new._dynamic)}
 
 		return new
 
@@ -1427,14 +1334,8 @@ class hamiltonian(object):
 
 		new._dtype = dtype
 		new._static = new._static.astype(dtype)
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = new._dynamic[i][0].astype(dtype)
-			new._dynamic[i] = tuple(new._dynamic[i])
+		new._dynamic = {func:Hd.astype(dtype) for func,Hd in iteritems(new._dynamic)}
 
-		new._dynamic = tuple(new._dynamic)
 		return new
 		
 
@@ -1481,12 +1382,11 @@ class hamiltonian(object):
 
 	def __str__(self):
 		string = "static mat: \n{0}\n\n\ndynamic:\n".format(self._static.__str__())
-		for i,(Hd,f,f_args) in enumerate(self._dynamic):
+		for i,(func,Hd) in enumerate(iteritems(self._dynamic)):
 			h_str = Hd.__str__()
-			f_args_str = f_args.__str__()
-			f_str = f.__name__
+			func_str = func.__str__()
 			
-			string += ("{0}) func: {2}, func_args: {3}, mat: \n{1} \n".format(i,h_str, f_str,f_args_str))
+			string += ("{0}) func: {2}, mat: \n{1} \n".format(i,h_str,func_str))
 
 		return string
 		
@@ -1508,12 +1408,14 @@ class hamiltonian(object):
 		new = _shallowcopy(self)
 
 		new._static = -new._static
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			new._dynamic[i][-1] = -new._dynamic[i][-1]
 
-		new._dynamic = tuple(new._dynamic)
+		new._dynamic = {func:-Hd for func,Hd in iteritems(new._dynamic)}
+		# new._dynamic = list(new._dynamic)
+		# n = len(new._dynamic)
+		# for i in range(n):
+		# 	new._dynamic[i][-1] = -new._dynamic[i][-1]
+
+		# new._dynamic = tuple(new._dynamic)
 		
 		return new
 
@@ -1839,15 +1741,31 @@ class hamiltonian(object):
 			new._static = new._static + other._static 
 
 		try:
-			new._static = new._static.tocsr(copy=False)
 			new._static.sum_duplicates()
 			new._static.eliminate_zeros()
 		except: pass
 
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		new._dynamic += other._dynamic
-		new.sum_duplicates()
+		for func,Hd in iteritems(other._dynamic):
+			if func in new._dynamic:
+				try:
+					new._dynamic[func] += Hd
+				except NotImplementedError:
+					new._dynamic[func] = new._dynamic[func] + Hd
 
+				try:
+					new._dynamic[func].sum_duplicates()
+					new._dynamic[func].eliminate_zeros()
+				except: pass
+
+				if _check_almost_zero(new._dynamic[func]):
+					new._dynamic.pop(func)
+			else:
+				new._dynamic[func] = Hd
+
+		new.check_is_dense()
 		return new
 
 
@@ -1862,16 +1780,33 @@ class hamiltonian(object):
 			self._static = self._static + other._static 
 
 		try:
-			self._static = new._static.tocsr(copy=False)
 			self._static.sum_duplicates()
 			self._static.eliminate_zeros()
 		except: pass
 
-		self._dynamic += other._dynamic
-		self.sum_duplicates()
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
+		for func,Hd in iteritems(other._dynamic):
+			if func in self._dynamic:
+				try:
+					self._dynamic[func] += Hd
+				except NotImplementedError:
+					self._dynamic[func] = self._dynamic[func] + Hd
 
-		return self
+				try:
+					self._dynamic[func].sum_duplicates()
+					self._dynamic[func].eliminate_zeros()
+				except: pass
+
+				if _check_almost_zero(self._dynamic[func]):
+					self._dynamic.pop(func)
+
+			else:
+				self._dynamic[func] = Hd
+
+		self.check_is_dense()
+		return _shallowcopy(self)
 
 
 
@@ -1888,16 +1823,35 @@ class hamiltonian(object):
 			new._static = new._static - other._static 
 
 		try:
-			new._static = new._static.tocsr(copy=False)
 			new._static.sum_duplicates()
 			new._static.eliminate_zeros()
 		except: pass
 
-		
-		a=tuple((-Hd,f,f_args) for Hd,f,f_args in other._dynamic)
-		new._dynamic += a
-		new.sum_duplicates()
 
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
+
+
+		for func,Hd in iteritems(other._dynamic):
+			if func in new._dynamic:
+				try:
+					new._dynamic[func] -= Hd
+				except NotImplementedError:
+					new._dynamic[func] = new._dynamic[func] - Hd
+
+				try:
+					new._dynamic[func].sum_duplicates()
+					new._dynamic[func].eliminate_zeros()
+				except: pass
+
+
+				if _check_almost_zero(new._dynamic[func]):
+					new._dynamic.pop(func)
+
+			else:
+				new._dynamic[func] = -Hd		
+
+		new.check_is_dense()
 		return new
 
 
@@ -1917,11 +1871,32 @@ class hamiltonian(object):
 			self._static.eliminate_zeros()
 		except: pass
 
-		a=tuple((-Hd,f,f_args) for Hd,f,f_args in other._dynamic)
-		self._dynamic += a
-		self.sum_duplicates()
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+
+
+
+		for func,Hd in iteritems(other._dynamic):
+			if func in self._dynamic:
+				try:
+					self._dynamic[func] -= Hd
+				except NotImplementedError:
+					self._dynamic[func] = new._dynamic[func] - Hd
+
+				try:
+					self._dynamic[func].sum_duplicates()
+					self._dynamic[func].eliminate_zeros()
+				except: pass
+
+				if _check_almost_zero(new._dynamic[func]):
+					self._dynamic.pop(func)
+
+			else:
+				self._dynamic[func] = -Hd
+
 	
-		return self
+		self.check_is_dense()
+		return _shallowcopy(self)
 
 
 	def _mul_hamiltonian(self,other): # self * other
@@ -1951,11 +1926,10 @@ class hamiltonian(object):
 		if self.dynamic and other.dynamic:
 			self._is_dense = self._is_dense or other._is_dense
 
-			new_dynamic_ops = []
-
+			new_dynamic_ops = {}
 			# create new dynamic operators coming from
 			# self.static * other
-			for Hd,f,f_args in other.dynamic:
+			for func,Hd in iteritems(other._dynamic):
 				if _sp.issparse(self.static):
 					Hmul = self.static.dot(Hd)
 				elif _sp.issparse(Hd):
@@ -1963,14 +1937,11 @@ class hamiltonian(object):
 				else:
 					Hmul = _np.matmul(self.static,Hd)
 
-				new_dynamic_ops.append((Hmul,f,f_args))
+				new_dynamic_ops[func] = Hmul
 
-			# create new dynamic operators coming from:
-			# other.dynamic * self.dynamic
-			for H1,f1,f1_args in self.dynamic:
-				for H2,f2,f2_args in other.dynamic:
-					f12 = lambda t,f1,f1_args,f2,f2_args:f1(t,*f1_args)*f2(t,*f2_args)
-					f12_args = (f1,f1_args,f2,f2_args)
+
+			for func1,H1 in iteritems(self._dynamic):
+				for func2,H2 in iteritems(other._dynamic):
 
 					if _sp.issparse(H1):
 						H12 = H1.dot(H2)
@@ -1979,16 +1950,26 @@ class hamiltonian(object):
 					else:
 						H12 = _np.matmul(H1,H2)
 
-					new_dynamic_ops.append((H12,f12,f12_args))
+					func12 = func1 * func2
 
-			# (self.dynamic + self.static) * other.static do inplace
-			# this happens last so not to effect the previous calculations.
-			self.__imul__(other.static)
-			# add new dynamic operators to the dynamic list
-			self._dynamic += tuple(new_dynamic_ops)
+					if func12 in new_dynamic_ops:
+						try:
+							new_dynamic_ops[func12] += H12
+						except NotImplementedError:
+							new_dynamic_ops[func12] = new_dynamic_ops[func12] + H12
 
-			self.sum_duplicates()
+						try:
+							new_dynamic_ops[func12].sum_duplicates()
+							new_dynamic_ops[func12].eliminate_zeros()
+						except: pass
 
+						if _check_almost_zero(new_dynamic_ops[func12]):
+							new_dynamic_ops.pop(func12)
+					else:
+						new_dynamic_ops[func12] = H12
+
+
+			self._dynamic = new_dynamic_ops
 			return self
 		elif self.dynamic:
 			return self.__imul__(other.static)
@@ -2017,13 +1998,14 @@ class hamiltonian(object):
 			new._static = new._static + other
 
 		try:
-			new._static.tocsr()
 			new._static.sum_duplicates()
 			new._static.eliminate_zeros()
 		except: pass
 
-		new.sum_duplicates()
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
+		new.check_is_dense()
 		return new	
 
 
@@ -2035,13 +2017,14 @@ class hamiltonian(object):
 			self._static = self._static + other
 
 		try:
-			self._static.tocsr()
 			self._static.sum_duplicates()
 			self._static.eliminate_zeros()
 		except: pass
 
-		self.sum_duplicates()
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
+		self.check_is_dense()
 		return self	
 	
 
@@ -2058,13 +2041,14 @@ class hamiltonian(object):
 			new._static = new._static - other
 
 		try:
-			new._static.tocsr()
 			new._static.sum_duplicates()
 			new._static.eliminate_zeros()
 		except: pass
 
-		new.sum_duplicates()
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
+		new.check_is_dense()
 		return new	
 
 
@@ -2076,13 +2060,14 @@ class hamiltonian(object):
 			self._static = self._static - other
 
 		try:
-			self._static.tocsr()
 			self._static.sum_duplicates()
 			self._static.eliminate_zeros()
 		except: pass
 
-		self.sum_duplicates()
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
+		self.check_is_dense()
 		return self
 
 
@@ -2100,26 +2085,23 @@ class hamiltonian(object):
 			new._static.eliminate_zeros()
 		except: pass
 
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = new._dynamic[i][0] * other
+
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
+
+
+		for func in new._dynamic:
+			new._dynamic[func] = new._dynamic[func] * other
 
 			try:
-				new._dynamic[i][0].tocsr()
-				new._dynamic[i][0].sum_duplicates()
-				new._dynamic[i][0].eliminate_zeros()
+				new._dynamic[func].sum_duplicates()
+				new._dynamic[func].eliminate_zeros()
 			except: pass
 
-			new._dynamic[i] = tuple(new._dynamic[i])
+			if _check_almost_zero(new._dynamic[func]):
+				new._dynamic.pop(func)
 
-
-		new._dynamic = tuple(new._dynamic)
-
-		new.sum_duplicates()
-
+		new.check_is_dense()
 		return new
 
 
@@ -2137,31 +2119,28 @@ class hamiltonian(object):
 		# proform multiplication on all matricies of the new hamiltonian object.
 
 		new._static = other * new._static
+
 		try:
-			new._static.tocsr()
 			new._static.sum_duplicates()
 			new._static.eliminate_zeros()
 		except: pass
-			
 
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			# convert tuple to list to do modifications inplace then convert back to tuple
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = other.dot(new._dynamic[i][0])
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
+
+		for func in new._dynamic:
+			new._dynamic[func] = other.dot(new._dynamic[func])
+
 			try:
-				new._dynamic[i][0].tocsr()
-				new._dynamic[i][0].sum_duplicates()
-				new._dynamic[i][0].eliminate_zeros()
+				new._dynamic[func].sum_duplicates()
+				new._dynamic[func].eliminate_zeros()
 			except: pass
-			new._dynamic[i] = tuple(new._dynamic[i])
 
-		new._dynamic = tuple(new._dynamic)
+			if _check_almost_zero(new._dynamic[func]):
+				new._dynamic.pop(func)
 
-		# simplify any extra terms which might have been canceled
-		new.sum_duplicates()
 
+		new.check_is_dense()		
 		return new
 
 
@@ -2171,32 +2150,29 @@ class hamiltonian(object):
 
 
 		self._static =self._static * other
+
 		try:	
-			self._static.tocsr()
 			self._static.sum_duplicates()
 			self._static.eliminate_zeros()
 		except: pass
 
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
-		self._dynamic = list(self._dynamic)
-		n = len(self._dynamic)
-		for i in range(n):
-			self._dynamic[i] = list(self._dynamic[i])
 
-			self._dynamic[i][0] = self._dynamic[i][0] * other
+		for func in self._dynamic:
+			self._dynamic[func] = other.dot(self._dynamic[func])
+
 			try:
-				self._dynamic[i][0].tocsr()
-				self._dynamic[i][0].sum_duplicates()
-				self._dynamic[i][0].eliminate_zeros()
+				self._dynamic[func].sum_duplicates()
+				self._dynamic[func].eliminate_zeros()
 			except: pass
 
-			self._dynamic[i] = tuple(self._dynamic[i])
+			if _check_almost_zero(self._dynamic[func]):
+				self._dynamic.pop(func)
 
-		self._dynamic = tuple(self._dynamic)
-
-		self.sum_duplicates()
-
-		return self
+		self.check_is_dense()
+		return _shallowcopy(self)
 
 
 
@@ -2218,24 +2194,24 @@ class hamiltonian(object):
 		except NotImplementedError:
 			new._static = new._static * other
 
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		
-		try:
-			for i in range(n):
-				new._dynamic[i] = list(new._dynamic[i])
-				new._dynamic[i][0] *= other
-				new._dynamic[i] = tuple(new._dynamic[i])
-		except NotImplementedError:
-			for i in range(n):
-				new._dynamic[i] = list(new._dynamic[i])
-				new._dynamic[i][0] = new._dynamic[i][0] * other
-				new._dynamic[i] = tuple(new._dynamic[i])
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		new._dynamic = tuple(new._dynamic)
+		for func in new._dynamic:
+			try:
+				new._dynamic[func] *= other
+			except NotImplementedError:
+				new._dynamic[func] = new._dynamic[func] * other
 
-		new.sum_duplicates()
+			try:
+				new._dynamic[func].sum_duplicates()
+				new._dynamic[func].eliminate_zeros()
+			except: pass
 
+			if _check_almost_zero(new._dynamic[func]):
+				new._dynamic.pop(func)
+
+		new.check_is_dense()
 		return new
 
 
@@ -2253,26 +2229,25 @@ class hamiltonian(object):
 		except NotImplementedError:
 			self._static = self._static * other
 
-		self._dynamic = list(self._dynamic)
-		n = len(self._dynamic)
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
-		try:
-			for i in range(n):
-				self._dynamic[i] = list(self._dynamic[i])
-				self._dynamic[i][0] *= other
-				self._dynamic[i] = tuple(self._dynamic[i])
+		for func in self._dynamic:
+			try:
+				self._dynamic[func] *= other
+			except NotImplementedError:
+				self._dynamic[func] = self._dynamic[func] * other
 
-		except NotImplementedError:
-			for i in range(n):
-				self._dynamic[i] = list(self._dynamic[i])
-				self._dynamic[i][0] = other * self._dynamic[0]
-				self._dynamic[i] = tuple(self._dynamic[i])
+			try:
+				self._dynamic[func].sum_duplicates()
+				self._dynamic[func].eliminate_zeros()
+			except: pass
 
-		self._dynamic = tuple(self._dynamic)
+			if _check_almost_zero(self._dynamic[func]):
+				self._dynamic.pop(func)
 
-		self.sum_duplicates()
-
-		return self
+		self.check_is_dense()
+		return _shallowcopy(self)
 
 
 
@@ -2299,8 +2274,10 @@ class hamiltonian(object):
 		except:
 			new._static = new._static + other
 
-		new.sum_duplicates()
-		
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
+
+		new.check_is_dense()
 		return new
 
 
@@ -2317,9 +2294,12 @@ class hamiltonian(object):
 		except:
 			self._static = new._static + other
 
-		self.sum_duplicates()
-		
-		return self
+		if _check_almost_zero(self._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+
+		self.check_is_dense()
+
+		return _shallowcopy(self)
 
 
 
@@ -2343,8 +2323,11 @@ class hamiltonian(object):
 		except:
 			new._static = new._static - other
 
-		new.sum_duplicates()
-		
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
+
+		new.check_is_dense()
+
 		return new
 
 
@@ -2361,12 +2344,11 @@ class hamiltonian(object):
 		except:
 			self._static = self._static - other
 
-		self.sum_duplicates()
-		
-		return self
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-
-
+		self.check_is_dense()
+		return _shallowcopy(self)
 
 
 	def _mul_dense(self,other):
@@ -2382,19 +2364,18 @@ class hamiltonian(object):
 			self._is_dense = True
 			warnings.warn("Mixing dense objects will cast internal matrices to dense.",HamiltonianEfficiencyWarning,stacklevel=3)
 
+		new._static = _np.asarray(new._static.dot(other))
 
-		new._static = new._static * other
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = new._dynamic[i][0] * other
-			new._dynamic[i] = tuple(new._dynamic[i])
+		for func in new._dynamic:
+			new._dynamic[func] = _np.asarray(new._dynamic[func].dot(other))
 
-		new._dynamic = tuple(new._dynamic)
+			if _check_almost_zero(new._dynamic[func]):
+				new._dynamic.pop(func)
 
-		new.sum_duplicates()
+		new.check_is_dense()
 
 		return new
 
@@ -2417,20 +2398,24 @@ class hamiltonian(object):
 
 
 		if _sp.issparse(new._static):
-			new._static = other * new._static
+			new._static = _np.asarray(other * new._static)
 		else:
-			new._static = other.dot(new._static)
+			new._static = _np.asarray(other.dot(new._static))
 
-		new._dynamic = list(new._dynamic)
-		n = len(new._dynamic)
-		for i in range(n):
-			new._dynamic[i] = list(new._dynamic[i])
-			new._dynamic[i][0] = other * new._dynamic[i][0]
-			new._dynamic[i] = tuple(new._dynamic[i])
+		if _check_almost_zero(new._static):
+			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		new._dynamic = tuple(new._dynamic)
+		for func in new._dynamic:
+			if _sp.issparse(new._dynamic[func]):
+				new._dynamic[func] = _np.asarray(other * new._dynamic[func])
+			else:
+				new._dynamic[func] = _np.asarray(other.dot(new._dynamic[func]))
+			
 
-		new.sum_duplicates()
+			if _check_almost_zero(new._dynamic[func]):
+				new._dynamic.pop(func)
+
+		new.check_is_dense()
 
 		return new
 
@@ -2440,27 +2425,25 @@ class hamiltonian(object):
 
 	def _imul_dense(self,other):
 
-
 		if not self._is_dense:
 			self._is_dense = True
 			warnings.warn("Mixing dense objects will cast internal matrices to dense.",HamiltonianEfficiencyWarning,stacklevel=3)
 
 
-		self._static = self._static.dot(other)
+		self._static = _np.asarray(self._static.dot(other))
 
-		self._dynamic = list(self._dynamic)
-		n = len(self._dynamic)
-		for i in range(n):
-			self._dynamic[i] = list(self._dynamic[i])
-			self._dynamic[i][0] = self._dynamic[i][0].dot(other)
-			self._dynamic[i] = tuple(self._dynamic[i])
+		if _check_almost_zero(new._static):
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
+		for func in new._dynamic:
+			self._dynamic[func] = _np.asarray(self._dynamic[func].dot(other))
 
-		self._dynamic = tuple(self._dynamic)
+			if _check_almost_zero(self._dynamic[func]):
+				self._dynamic.pop(func)
 
-		self.sum_duplicates()
+		self.check_is_dense()
 
-		return self
+		return _shallowcopy(self)
 
 
 	

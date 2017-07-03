@@ -11,6 +11,9 @@ class function(object):
 	def conjugate(self):
 		return conjugate_function(function(self._f,*self._args))
 
+	def __str__(self):
+		return self._f.__name__
+
 	def conj(self):
 		return self.conjugate()
 
@@ -18,7 +21,7 @@ class function(object):
 		return neg_function(function(self._f,*self._args))
 
 	def __eq__(self,other):
-		if not isinstance(other,self.__class__):
+		if self.__class__ != other.__class__:
 			return False
 		else:
 			return ((self._f == other._f) and (self._args == other._args))
@@ -51,7 +54,7 @@ class noncomm_binary_function(function):
 		self._function2 = function2
 
 	def __eq__(self,other):
-		if not isinstance(other,self.__class__):
+		if self.__class__ != other.__class__:
 			return False
 		else:
 			return ((self._function1==other._function1) and (self._function2==other._function2))
@@ -70,7 +73,7 @@ class comm_binary_function(function):
 
 
 	def __eq__(self,other):
-		if not isinstance(other,self.__class__):
+		if self.__class__ != other.__class__:
 			return False
 		else:
 			ord1 = ((self._function1==other._function1) and (self._function2==other._function2))
@@ -85,6 +88,9 @@ class mul_function(comm_binary_function):
 	def __call__(self,*args):
 		return self._function1(*args)*self._function2(*args)
 
+	def __str__(self):
+		return "({0} * {1})".format(self._function1.__str__(),self._function2.__str__())
+
 
 class add_function(comm_binary_function):
 	def __init__(self,*args,**kwargs):
@@ -92,6 +98,9 @@ class add_function(comm_binary_function):
 
 	def __call__(self,*args):
 		return self._function1(*args)+self._function2(*args)			
+
+	def __str__(self):
+		return "({0} + {1})".format(self._function1.__str__(),self._function2.__str__())
 
 
 class div_function(noncomm_binary_function):
@@ -101,6 +110,9 @@ class div_function(noncomm_binary_function):
 	def __call__(self,*args):
 		return self._function1(*args)/self._function2(*args)
 
+	def __str__(self):
+		return "({0} / {1})".format(self._function1.__str__(),self._function2.__str__())
+
 
 class sub_function(noncomm_binary_function):
 	def __init__(self,*args,**kwargs):
@@ -108,6 +120,9 @@ class sub_function(noncomm_binary_function):
 
 	def __call__(self,*args):
 		return self._function1(*args)-self._function2(*args)
+
+	def __str__(self):
+		return "({0} - {1})".format(self._function1.__str__(),self._function2.__str__())
 
 
 
@@ -125,6 +140,16 @@ class neg_function(function):
 	def __neg__(self):
 		return self._function1
 
+	def __str__(self):
+		return "-{0}".format(self._function1.__str__())
+
+	def __eq__(self,other):
+		if self.__class__ != other.__class__:
+			return False
+		else:
+			return (self._function1 == other._function1) 
+
+
 
 class conjugate_function(function):
 	def __init__(self,function1):
@@ -139,22 +164,32 @@ class conjugate_function(function):
 	def conjugate(self):
 		return self._function1
 
+	def __str__(self):
+		return "conj({0})".format(self._function1.__str__())
+
+	def __eq__(self,other):
+		if self.__class__ != other.__class__:
+			return False
+		else:
+			return (self._function1 == other._function1) 
+
 
 
 if __name__ =="__main__":
 	import numpy as np
 
-	f1 = function()
-	f2 = function(lambda x:x)
-	
-	A = {f1:np.array([[0,-1j],[1j,0]])}
+	def f1(t):
+		return t
 
-	print A
-	A = {f1.conj():matrix.conj() for f1,matrix in A.items()}
-	print A
-	A = {f1.conj():matrix.conj() for f1,matrix in A.items()}
-	print A
+	def f2(t):
+		return t
 
+	func1 = function(np.sin)
+	func2 = function(f2)
+
+	print ((func1*func2)/(func1*func2.conj())) == ((func2*func1)/(func1*func2.conj()))
+
+	print func1 - func1.conj()
 
 		
 

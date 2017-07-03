@@ -13,6 +13,9 @@ import numpy as _np
 from scipy.sparse.linalg import expm_multiply as _expm_multiply
 
 from copy import deepcopy as _deepcopy # recursively copies all data into new object
+from copy import copy as _shallowcopy
+
+from six import iteritems
 
 __all__ = ["exp_op","isexp_op"]
 
@@ -473,14 +476,11 @@ def _iter_sandwich(M, other, step, grid):
 
 
 def _hamiltonian_dot(M, other):
-	exp_static = [_expm_multiply(M, other.static)]
-	
-	exp_dynamic = []
-	for Hd,f,f_args in other.dynamic:
-		Hd = _expm_multiply(M, Hd)
-		exp_dynamic.append([Hd,f,f_args])
+	new = _shallowcopy(other)
+	new._static = _expm_multiply(M, other.static)
+	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
-	return hamiltonian.hamiltonian(exp_static,exp_dynamic)
+	return new
 
 
 def _hamiltonian_iter_dot(M, other, grid, step):
@@ -498,14 +498,11 @@ def _hamiltonian_iter_dot(M, other, grid, step):
 
 
 def _hamiltonian_rdot(M, other):
-	exp_static = [_expm_multiply(M, other.static)]
-	
-	exp_dynamic = []
-	for Hd,f,f_args in other.dynamic:
-		Hd = _expm_multiply(M, Hd)
-		exp_dynamic.append([Hd,f,f_args])
+	new = _shallowcopy(other)
+	new._static = _expm_multiply(M, other.static)
+	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
-	return hamiltonian.hamiltonian(exp_static,exp_dynamic)
+	return new
 
 
 def _hamiltonian_iter_rdot(M, other, grid, step):

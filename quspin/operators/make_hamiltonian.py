@@ -4,6 +4,7 @@ from __future__ import print_function, division
 import scipy.sparse as _sp
 import warnings
 import numpy as _np
+from ._functions import function
 
 
 
@@ -131,7 +132,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 		Hamiltonian simply by looping over the tuple returned by this function. 
 	"""
 	Ns=basis.Ns
-	dynamic=[]
+	dynamic={}
 	_consolidate_dynamic(dynamic_list)
 	if dynamic_list:
 		for opstr,bonds,f,f_args in dynamic_list:
@@ -148,8 +149,17 @@ def make_dynamic(basis,dynamic_list,dtype):
 				del Ht
 				H.sum_duplicates() # sum duplicate matrix elements
 				H.eliminate_zeros() # remove all zero matrix elements
-			dynamic.append((H,f,tuple(f_args)))
-	return tuple(dynamic)
+
+			func = function(f,tuple(f_args))
+			if func in dynamic:
+				try:
+					dynamic[func] += H
+				except:
+					dynamic[func] = dynamic[func] + H
+			else:
+				dynamic[func] = H
+
+	return dynamic
 
 
 

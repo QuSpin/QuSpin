@@ -64,9 +64,9 @@ def SO_real(time,V,H):
 
 
 	# dynamic single-particle
-	for Hd,f,f_args in H.dynamic:
-		V_dot[:Ns] += f(time,*f_args)*Hd.dot(V[Ns:])
-		V_dot[Ns:] -= f(time,*f_args)*Hd.dot(V[:Ns])
+	for func,Hd in H.dynamic.items():
+		V_dot[:Ns] += func(time)*Hd.dot(V[Ns:])
+		V_dot[Ns:] -= func(time)*Hd.dot(V[:Ns])
 
 	return V_dot
 
