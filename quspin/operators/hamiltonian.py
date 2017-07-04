@@ -19,7 +19,7 @@ import numpy as _np
 
 from operator import mul
 import functools
-from six import iteritems,itervalues
+from six import iteritems,itervalues,viewkeys
 
 
 from copy import deepcopy as _deepcopy # recursively copies all data into new object
@@ -1937,7 +1937,9 @@ class hamiltonian(object):
 				else:
 					Hmul = _np.matmul(self.static,Hd)
 
-				new_dynamic_ops[func] = Hmul
+				if not _check_almost_zero(Hmul):
+					new_dynamic_ops[func] = Hmul
+
 
 
 			for func1,H1 in iteritems(self._dynamic):
@@ -1966,11 +1968,12 @@ class hamiltonian(object):
 						if _check_almost_zero(new_dynamic_ops[func12]):
 							new_dynamic_ops.pop(func12)
 					else:
-						new_dynamic_ops[func12] = H12
+						if not _check_almost_zero(H12):
+							new_dynamic_ops[func12] = H12
 
 
 			self._dynamic = new_dynamic_ops
-			return self
+			return _shallowcopy(self)
 		elif self.dynamic:
 			return self.__imul__(other.static)
 		elif other.dynamic:
@@ -2090,7 +2093,7 @@ class hamiltonian(object):
 			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
 
-		for func in new._dynamic:
+		for func in list(new._dynamic):
 			new._dynamic[func] = new._dynamic[func] * other
 
 			try:
@@ -2128,7 +2131,7 @@ class hamiltonian(object):
 		if _check_almost_zero(new._static):
 			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		for func in new._dynamic:
+		for func in list(new._dynamic):
 			new._dynamic[func] = other.dot(new._dynamic[func])
 
 			try:
@@ -2160,7 +2163,7 @@ class hamiltonian(object):
 			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
 
-		for func in self._dynamic:
+		for func in list(self._dynamic):
 			self._dynamic[func] = other.dot(self._dynamic[func])
 
 			try:
@@ -2197,7 +2200,7 @@ class hamiltonian(object):
 		if _check_almost_zero(new._static):
 			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		for func in new._dynamic:
+		for func in list(new._dynamic):
 			try:
 				new._dynamic[func] *= other
 			except NotImplementedError:
@@ -2232,7 +2235,7 @@ class hamiltonian(object):
 		if _check_almost_zero(self._static):
 			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
-		for func in self._dynamic:
+		for func in list(self._dynamic):
 			try:
 				self._dynamic[func] *= other
 			except NotImplementedError:
@@ -2369,7 +2372,7 @@ class hamiltonian(object):
 		if _check_almost_zero(new._static):
 			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		for func in new._dynamic:
+		for func in list(new._dynamic):
 			new._dynamic[func] = _np.asarray(new._dynamic[func].dot(other))
 
 			if _check_almost_zero(new._dynamic[func]):
@@ -2405,7 +2408,9 @@ class hamiltonian(object):
 		if _check_almost_zero(new._static):
 			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
-		for func in new._dynamic:
+
+
+		for func in list(new._dynamic):
 			if _sp.issparse(new._dynamic[func]):
 				new._dynamic[func] = _np.asarray(other * new._dynamic[func])
 			else:
@@ -2432,10 +2437,10 @@ class hamiltonian(object):
 
 		self._static = _np.asarray(self._static.dot(other))
 
-		if _check_almost_zero(new._static):
+		if _check_almost_zero(self._static):
 			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
-		for func in new._dynamic:
+		for func in list(self._dynamic):
 			self._dynamic[func] = _np.asarray(self._dynamic[func].dot(other))
 
 			if _check_almost_zero(self._dynamic[func]):
