@@ -72,6 +72,7 @@ class noncomm_binary_function(function):
 	def __contains__(self,other):
 		return (self._function1.__contains__(other)) or (self._function2.__contains__(other))
 
+
 class comm_binary_function(function):
 	def __init__(self,function1,function2):
 		if not isinstance(function1,function):
@@ -99,6 +100,7 @@ class comm_binary_function(function):
 
 	def __contains__(self,other):
 		return (self._function1.__contains__(other)) or (self._function2.__contains__(other))
+
 
 class mul_function(comm_binary_function):
 	def __init__(self,*args,**kwargs):
@@ -140,7 +142,6 @@ class sub_function(noncomm_binary_function):
 
 	def __str__(self):
 		return "({0} - {1})".format(self._function1.__str__(),self._function2.__str__())
-
 
 
 class conjugate_function(function):
@@ -205,30 +206,4 @@ class pow_function(function):
 
 	def __contains__(self,other):
 		return self._function1.__contains__(other)
-
-
-
-
-if __name__ =="__main__":
-	import numpy as np
-
-	def f1(t,a):
-		return t
-
-	def f2(t,a):
-		return t
-
-	def f3(t,a):
-		return t
-
-	func1 = function(f1,(1.0,))
-	func2 = function(f2,(3.0,))
-	func3 = function(f3,(2.0,))
-
-	print (func3*((((func1*func1.conj())*func2)*func1)*func3))*func2
-	
-
-	
-
-		
 
