@@ -48,5 +48,5 @@ cdef basis_type next_state_pcon_boson(basis_type s,basis_type[:] pars):
 				return s
 
 
-cdef basis_type next_state_inc_1(basis_type s,basis_type[:] pars):
+cdef inline basis_type next_state_inc_1(basis_type s,basis_type[:] pars):
 	return s + 1

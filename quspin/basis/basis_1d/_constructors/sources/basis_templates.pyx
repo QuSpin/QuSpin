@@ -6,8 +6,6 @@ cdef void make_n_basis_template(ns_type next_state,basis_type[:] ns_pars,npy_uin
         s = next_state(s,ns_pars)
 
 
-
-
 cdef npy_uintp make_p_basis_template(bitop fliplr,ns_type next_state, basis_type[:] ns_pars,
                                             npy_uintp MAX, basis_type s,
                                             int L,int pblock, N_type  * N, basis_type[:]  basis):
