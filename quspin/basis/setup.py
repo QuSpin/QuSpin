@@ -3,6 +3,7 @@ def configuration(parent_package='',top_path=None):
 	import os
 	config = Configuration('basis', parent_package, top_path)
 	config.add_subpackage('basis_1d')
+	config.add_subpackage('general_basis')
 	return config
 
 if __name__ == '__main__':
