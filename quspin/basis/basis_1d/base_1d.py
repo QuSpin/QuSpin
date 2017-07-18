@@ -60,7 +60,7 @@ class basis_1d(lattice_basis):
 			if _Np is not None: # check to see if photon_basis can create the particle sectors.
 
 				if type(_Np) is not int:
-					raise ValueError("Np must be integer")
+					raise ValueError("_Np must be integer")
 
 				if _Np == -1: 
 					self._make_Np_block(basis_module,ops_module,L,pars=pars,**blocks)
@@ -906,9 +906,9 @@ class basis_1d(lattice_basis):
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(0,0))
+				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._L,0),dtype=v0.dtype)
 			else:
-				return _np.zeros((0,0),dtype=v0.dtype)
+				return _np.zeros((self._sps**self._L,0),dtype=v0.dtype)
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
