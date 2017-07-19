@@ -35,7 +35,7 @@ def check_ME(b1,b2,opstr,indx,dtype):
 		np.testing.assert_allclose(ME1-ME2,0,atol=1e-6)
 
 def test_gen_basis_hcb(l_max):
-	L=6
+	L=10
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]
