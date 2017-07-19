@@ -4,6 +4,7 @@
 #include <complex>
 #include <iostream>
 #include <iomanip>
+#include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
@@ -65,9 +66,9 @@ int general_op(general_basis_core<I> *B,
 {
 	const int nt = B->get_nt();
 	int err = 0;
-	int g[nt];
+	int g[128],gg[128];
 
-	#pragma omp parallel for schedule(static,1) private(g)
+	#pragma omp parallel for schedule(static,1) private(g,gg)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
@@ -78,7 +79,8 @@ int general_op(general_basis_core<I> *B,
 		int local_err = B->op(r,m,n_op,opstr,indx);
 
 		if(local_err == 0){
-			I rr = B->ref_state(r,g);
+			I rr = B->ref_state(r,g,gg);
+			std::cout << std::endl;
 			K j = binary_search(Ns,basis,rr);
 			if(j >= 0){
 				for(int k=0;k<nt;k++){
@@ -93,7 +95,7 @@ int general_op(general_basis_core<I> *B,
 			else{
 				col[i] = i;
 				row[i] = i;
-				M[i] = NAN;
+				M[i] = std::numeric_limits<T>::quiet_NaN();
 			}
 		}
 

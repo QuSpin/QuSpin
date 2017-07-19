@@ -22,17 +22,21 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('_general_basis_core',parent_package, top_path)
 
     if sys.platform == "win32":
-    	openmp_flag="/openmp"
+      # extra_compile_args=["/openmp"]
+      # extra_link_args=["/openmp"]
+      extra_compile_args = []
+      extra_link_args = []
     else:
-    	openmp_flag="-fopenmp"
-
+      extra_compile_args = ["-fopenmp","-fno-strict-aliasing","-std=c++11"]
+      extra_link_args = ["-fopenmp","-fno-strict-aliasing","-std=c++11"]
+ 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     include_dirs = os.path.join(package_dir,"source")
 
     hcp_basis_src = os.path.join(package_dir,"hcb_core.cpp") 
     config.add_extension('hcb_core',sources=hcp_basis_src,include_dirs=[numpy.get_include(),include_dirs],
-                extra_compile_args=["-fno-strict-aliasing","-std=c++11",openmp_flag],
-                extra_link_args=[openmp_flag],
+                extra_compile_args=extra_compile_args,
+                extra_link_args=extra_link_args,
                 language="c++")
 
 

@@ -28,34 +28,33 @@ class hcb_basis_core : public general_basis_core<I>
 
 		~hcb_basis_core() {}
 
-		const map_func_type<I> map_func = &hcb_map_bits<I>;
+		
 
 		void map_state(I s[],npy_intp M,int n_map){
 			const int n = general_basis_core<I>::N;
 			for(npy_intp i=0;i<M;i++){
-				s[i] = map_func(s[i],&general_basis_core<I>::maps[n_map*n],n);
+				s[i] = hcb_map_bits(s[i],&general_basis_core<I>::maps[n_map*n],n);
 			}
 		}
 
 		bool check_state(I s){
-			return check_state_core<I>(map_func,s,s,general_basis_core<I>::maps, \
+			return check_state_core<I>(hcb_map_bits,s,s,general_basis_core<I>::maps, \
 				general_basis_core<I>::pers,general_basis_core<I>::qs, \
 				general_basis_core<I>::nt,general_basis_core<I>::N);
 		}
 
-		I ref_state(I s,int g[]){
-			int gg[general_basis_core<I>::nt];
+		I ref_state(I s,int g[],int gg[]){
 			for(int i=0;i<general_basis_core<I>::nt;i++){
 				g[i] = 0;
 				gg[i] = 0;
 			}
-			return ref_state_core<I>(map_func,s,general_basis_core<I>::maps,\
+			return ref_state_core<I>(hcb_map_bits,s,general_basis_core<I>::maps,\
 				general_basis_core<I>::pers,general_basis_core<I>::nt,general_basis_core<I>::nt,\
 				general_basis_core<I>::N,s,g,gg);
 		}
 
 		double get_norm(I s){
-			return get_norm_core<I>(map_func,s,s,general_basis_core<I>::maps,general_basis_core<I>::rev_maps,\
+			return get_norm_core<I>(hcb_map_bits,s,s,general_basis_core<I>::maps,general_basis_core<I>::rev_maps,\
 				general_basis_core<I>::pers,general_basis_core<I>::qs,general_basis_core<I>::nt,general_basis_core<I>::N);
 		}
 
@@ -67,10 +66,11 @@ class hcb_basis_core : public general_basis_core<I>
 
 		int op(I &r,std::complex<double> &m,const int n_op,const unsigned char opstr[],const int indx[]){
 			I s = r;
+			I one = 1;
 			for(int j=n_op-1;j>-1;j--){
 				int ind = general_basis_core<I>::N-indx[j]-1;
-				I b = (1ull << ind);
-				bool a = (r >> ind)&1;
+				I b = (one << ind);
+				bool a = bool((r >> ind)&one);
 				char op = opstr[j];
 				switch(op){
 					case 'z':

@@ -10,10 +10,7 @@
 
 
 template<class I>
-using map_func_type = I (*)(I,const int[],const int);
-
-template<class I>
-bool check_state_core(const map_func_type<I> map_func,I t,const I s,const int maps[],const int pers[],const int qs[],const int nt,const int N){
+bool check_state_core(I (* map_func)(I,const int[],const int),I t,const I s,const int maps[],const int pers[],const int qs[],const int nt,const int N){
 	bool keep = true;
 	int per = pers[0];
 	int q = qs[0];
@@ -50,7 +47,7 @@ bool check_state_core(const map_func_type<I> map_func,I t,const I s,const int ma
 }
 
 template<class I>
-double get_norm_core(const map_func_type<I> map_func,I s1,I s2,const int maps[], const int rev_maps[],const int pers[],const int qs[],const int nt,const int N){
+double get_norm_core(I (* map_func)(I,const int[],const int),I s1,I s2,const int maps[], const int rev_maps[],const int pers[],const int qs[],const int nt,const int N){
 	double norm = 0;
 	const int per = pers[0];
 	const double q = (2.0*M_PI*qs[0])/per;
@@ -84,7 +81,7 @@ double get_norm_core(const map_func_type<I> map_func,I s1,I s2,const int maps[],
 }
 
 template<class I>
-I ref_state_core(const map_func_type<I> map_func,const I s,const int maps[],const int pers[],const int nt,const int nnt,const int N,I r,int g[], int gg[]){
+I ref_state_core(I (* map_func)(I,const int[],const int), const I s,const int maps[],const int pers[],const int nt,const int nnt,const int N,I r,int g[], int gg[]){
 	if(nnt > 1){
 		I t = s;
 		const int per = pers[0];
@@ -101,9 +98,9 @@ I ref_state_core(const map_func_type<I> map_func,const I s,const int maps[],cons
 		for(int i=0;i<per;i++){
 			gg[nt-nnt] = i;
 
-			// std::cout << std::setw(5);
-			// for(int ee=0;ee<nt;ee++){std::cout << gg[ee] << std::setw(5);}
-			// std::cout << std::endl;
+			std::cout << std::setw(5);
+			for(int ee=0;ee<nt;ee++){std::cout << gg[ee] << std::setw(5);}
+			std::cout << std::endl;
 
 			if(t<r){
 				r = t;
@@ -123,7 +120,8 @@ I ref_state_core(const map_func_type<I> map_func,const I s,const int maps[],cons
 template<class I>
 class general_basis_core{
 	public:
-		const int N,nt;
+		const int N;
+		const int nt;
 		const int * maps;
 		const int * rev_maps;
 		const int * pers;
@@ -136,7 +134,7 @@ class general_basis_core{
 		~general_basis_core() {}
 
 		virtual bool check_state(I) = 0;
-		virtual I ref_state(I,int[]) = 0;
+		virtual I ref_state(I,int[],int[]) = 0;
 		virtual double get_norm(I) = 0;
 		virtual I next_state_pcon(I) = 0;
 		virtual int op(I&,std::complex<double>&,const int,const unsigned char[],const int[]) = 0;
