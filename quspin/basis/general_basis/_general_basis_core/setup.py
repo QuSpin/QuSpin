@@ -17,18 +17,22 @@ def cython_files():
 
 
 def configuration(parent_package='', top_path=None):
-    import numpy,os
+    import numpy,os,sys
     from numpy.distutils.misc_util import Configuration
     config = Configuration('_general_basis_core',parent_package, top_path)
 
-    package_dir = os.path.dirname(os.path.realpath(__file__))
+    if sys.platform == "win32":
+    	openmp_flag="/openmp"
+    else:
+    	openmp_flag="-fopenmp"
 
+    package_dir = os.path.dirname(os.path.realpath(__file__))
     include_dirs = os.path.join(package_dir,"source")
 
     hcp_basis_src = os.path.join(package_dir,"hcb_core.cpp") 
     config.add_extension('hcb_core',sources=hcp_basis_src,include_dirs=[numpy.get_include(),include_dirs],
-                extra_compile_args=["-fno-strict-aliasing","-std=c++11","-fopenmp"],
-                extra_link_args=["-lgomp"],
+                extra_compile_args=["-fno-strict-aliasing","-std=c++11",openmp_flag],
+                extra_link_args=[openmp_flag],
                 language="c++")
 
 
