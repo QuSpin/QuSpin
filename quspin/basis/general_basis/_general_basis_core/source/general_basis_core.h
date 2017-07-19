@@ -97,11 +97,6 @@ I ref_state_core(I (* map_func)(I,const int[],const int), const I s,const int ma
 		const int per = pers[0];
 		for(int i=0;i<per;i++){
 			gg[nt-nnt] = i;
-
-			std::cout << std::setw(5);
-			for(int ee=0;ee<nt;ee++){std::cout << gg[ee] << std::setw(5);}
-			std::cout << std::endl;
-
 			if(t<r){
 				r = t;
 				for(int j=0;j<nt;j++){

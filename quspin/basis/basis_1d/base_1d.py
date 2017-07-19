@@ -760,7 +760,7 @@ class basis_1d(lattice_basis):
 
 		if error != 0: raise OpstrError(_basis_op_errors[error])
 
-		mask = _np.logical_not(_np.isnan(ME))
+		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
 		col = col[mask]
 		row = row[mask]
 		ME = ME[mask]

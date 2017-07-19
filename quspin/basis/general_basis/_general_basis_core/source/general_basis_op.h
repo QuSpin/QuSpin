@@ -65,6 +65,7 @@ int general_op(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
+	// const int N = B->get_N();
 	int err = 0;
 	int g[128],gg[128];
 
@@ -79,8 +80,15 @@ int general_op(general_basis_core<I> *B,
 		int local_err = B->op(r,m,n_op,opstr,indx);
 
 		if(local_err == 0){
+			
 			I rr = B->ref_state(r,g,gg);
-			std::cout << std::endl;
+			// for(int ee=0;ee<N;ee++){std::cout << ((r>>ee)&1);}
+			// std::cout << std::setw(5);
+			// for(int ee=0;ee<N;ee++){std::cout << ((rr>>ee)&1);}
+			// std::cout << std::setw(5);
+			// for(int ee=0;ee<nt;ee++){std::cout << g[ee] << std::setw(5);}
+			// std::cout << std::endl;
+		
 			K j = binary_search(Ns,basis,rr);
 			if(j >= 0){
 				for(int k=0;k<nt;k++){

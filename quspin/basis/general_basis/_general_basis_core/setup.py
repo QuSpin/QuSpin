@@ -27,8 +27,8 @@ def configuration(parent_package='', top_path=None):
       extra_compile_args = []
       extra_link_args = []
     else:
-      extra_compile_args = ["-fopenmp","-fno-strict-aliasing","-std=c++11"]
-      extra_link_args = ["-fopenmp","-fno-strict-aliasing","-std=c++11"]
+      extra_compile_args = ["-fopenmp"]
+      extra_link_args = ["-fopenmp"]
  
     package_dir = os.path.dirname(os.path.realpath(__file__))
     include_dirs = os.path.join(package_dir,"source")
