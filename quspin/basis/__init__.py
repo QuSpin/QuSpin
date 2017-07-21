@@ -1,5 +1,5 @@
 from .basis_1d import *
-from .general_basis import *
+from .basis_general import *
 from .base import *
 from .photon import *
 from .tensor import *

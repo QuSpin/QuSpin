@@ -935,7 +935,7 @@ class basis_1d(lattice_basis):
 			del mask
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = -sin(dtype(k*r))
+				c[ind_neg] = sin(dtype(k*r))
 				_np.true_divide(c,norms,c)
 		else:
 			ind_pos = _np.fromiter(range(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
@@ -946,7 +946,7 @@ class basis_1d(lattice_basis):
 				elif k == pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(dtype(1.0j*k*r))
+					c[:] = exp(dtype(-1.0j*k*r))
 				_np.true_divide(c,norms,c)
 
 		if sparse:
@@ -992,7 +992,7 @@ class basis_1d(lattice_basis):
 			del mask
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = -sin(dtype(k*r))
+				c[ind_neg] = sin(dtype(k*r))
 				_np.true_divide(c,norms,c)
 		else:
 			if (type(kblock) is int):
@@ -1007,7 +1007,7 @@ class basis_1d(lattice_basis):
 				elif k == pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(dtype(1.0j*k*r))
+					c[:] = exp(dtype(-1.0j*k*r))
 				_np.true_divide(c,norms,c)
 
 
@@ -1203,7 +1203,6 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 
 	Ns_full = shape[0]
 	basis_in = Ns_full - basis_in - 1
-
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
