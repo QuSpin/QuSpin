@@ -24,8 +24,10 @@ __all__ = ['Floquet_t_vec','Floquet']
 
 def _range_iter(start,stop,step):
 	"""
+
 	'xrange' is replaced with 'range' in python 3. If python 2 is being used, range will cause memory overflow.
 	This function is a work around to get the functionality of 'xrange' for both python 2 and 3 simultaineously. 
+	
 	"""
 	from itertools import count
 	counter = count(start,step)
@@ -39,8 +41,10 @@ def _range_iter(start,stop,step):
 
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 	"""
+	
 	This function evolves the i-th local basis state under the Hamiltonian H up to period T. 
 	It is used to construct the stroboscpoic evolution operator.
+	
 	"""
 	
 	nsteps=_np.iinfo(_np.int32).max # huge number to make sure solver is successful.
@@ -69,8 +73,8 @@ def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 
 
 def _evolve_step_1(i,H_list,dt_list):
-	"""
-	This function calculates the evolved state for Periodic Step (point 2. in def of 'evo_dict'. 
+	"""This function calculates the evolved state for Periodic Step (point 2. in def of 'evo_dict'). 
+	
 	"""
 	
 	psi0=_np.zeros((H_list[0].Ns,),dtype=_np.complex128) 
@@ -84,8 +88,8 @@ def _evolve_step_1(i,H_list,dt_list):
 
 
 def _evolve_step_2(i,H,t_list,dt_list):
-	"""
-	This function calculates the evolved state for Periodic Step (point 3. in def of 'evo_dict'. 
+	"""This function calculates the evolved state for Periodic Step (point 3. in def of 'evo_dict'. 
+	
 	"""
 	
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
@@ -123,9 +127,11 @@ class Floquet(object):
 	"""Calculates Floquet spectrum and (optionally) Floquet Hamiltonian, Floquet states.
 
 	Loops over the basis states to compute the Floquet unitary (evolution operator over one period).
+    
     """
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
 		"""
+
 		Parameters
         ----------
         evodict : dict
@@ -336,6 +342,7 @@ class Floquet(object):
 		"""numpy.ndarray(float): Floquet Hamiltonian.
 		
 		Requires __init__ argument HF=True.	
+		
 		"""
 		if hasattr(self,"_HF"):
 			return self._HF
@@ -347,6 +354,7 @@ class Floquet(object):
 		"""numpy.ndarray(float): Floquet unitary.
 		
 		Requires __init__ argument UF=True.	
+		
 		"""
 		if hasattr(self,"_UF"):
 			return self._UF
@@ -358,6 +366,7 @@ class Floquet(object):
 		"""numpy.ndarray(float): Floquet eigenphases.
 		
 		Requires __init__ argument thetaF=True.	
+		
 		"""
 		if hasattr(self,"_thetaF"):
 			return self._thetaF
@@ -370,6 +379,7 @@ class Floquet(object):
 		"""numpy.ndarray(float): Floquet eigenbasis (in columns).
 		
 		Requires __init__ argument VF=True.	
+		
 		"""
 		if hasattr(self,"_VF"):
 			return self._VF
@@ -385,9 +395,11 @@ class Floquet_t_vec(object):
 	This time vector hits all stroboscopic times, and has many useful attributes. The time vector 
 	can be divided in three parts correspondng to three regimes of periodic evolution: 
 	ramp-up, constant and ramp-down.
+	
 	"""
 	def __init__(self,Omega,N_const,len_T=100,N_up=0,N_down=0):
 		"""
+
 		Parameters
         ----------
 		Omega : float
@@ -405,6 +417,7 @@ class Floquet_t_vec(object):
 
 		N_down : int, optional
 			Number of time periods in the down-part (period) of time vector.
+		
 		"""
 
 		# total number of periods
@@ -525,10 +538,11 @@ class Floquet_t_vec(object):
 		attributes:
 
 		_.strobo.inds : numpy.ndarray(int)
-			indices of stroboscopic times (full periods)
+			indices of stroboscopic times (full periods).
 
 		_.strobo.vals : numpy.ndarray(float)
-			values of stroboscopic times (full periods)
+			values of stroboscopic times (full periods).
+
 		"""
 		return self._strobo
 
@@ -540,6 +554,7 @@ class Floquet_t_vec(object):
 		Inherits all attributes (e.g. _.up.strobo.inds) except _.T, _.dt, and ._lenT.
 
 		Requires optional __init___ parameter N_up to be specified.
+		
 		"""
 		if hasattr(self,"_up"):
 			return self._up
@@ -551,6 +566,7 @@ class Floquet_t_vec(object):
 		"""obj: refers to time vector of const-part (regime).
 
 		Inherits all attributes (e.g. _.const.strobo.inds) except _.T, _.dt, and ._lenT.
+		
 		"""
 		if hasattr(self,"_const"):
 			return self._up
@@ -582,6 +598,7 @@ class _strobo_times():
 		"""
 		Calculates stroboscopic times in time vector t with period length len_T and assigns them as
 		attributes.
+		
 		"""
 		# indices of strobo times
 		self._inds = _np.arange(0,t.size,len_T).astype(int)
@@ -603,8 +620,8 @@ class _strobo_times():
 
 class _periodic_ramp():
 	def __init__(self,N,t,T,len_T,ind0):
-		"""
-		Defines time vector attributes of each regime.
+		"""Defines time vector attributes of each regime.
+		
 		"""
 		self._N=N # total # periods
 		self._vals = t # time values
@@ -650,4 +667,3 @@ class _periodic_ramp():
 	@property
 	def strobo(self):
 		return self._strobo
-	
