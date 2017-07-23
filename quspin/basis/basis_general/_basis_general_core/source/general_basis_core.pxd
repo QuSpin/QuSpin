@@ -14,7 +14,7 @@ cdef extern from "make_general_basis.h":
 	npy_intp make_basis_pcon[I,J](general_basis_core[I]*,npy_intp,I,I[], J[]) nogil
 
 cdef extern from "general_basis_op.h":
-	int general_op[I,J,K,T](general_basis_core[I] *B,const int,const unsigned char[], const int[],
+	int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
 						  const double complex, const npy_intp, const I[], const J[], K[], K[], T[]) nogil
 
 cdef extern from "general_basis_get_vec.h":

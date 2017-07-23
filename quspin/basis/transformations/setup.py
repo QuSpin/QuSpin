@@ -1,10 +1,7 @@
 def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
 	import os
-	config = Configuration('basis', parent_package, top_path)
-	config.add_subpackage('basis_1d')
-	config.add_subpackage('basis_general')
-	config.add_subpackage('transformations')
+	config = Configuration('transformations', parent_package, top_path)
 	return config
 
 if __name__ == '__main__':

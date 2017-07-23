@@ -1114,7 +1114,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_co
 /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":87
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)
  */
@@ -1145,7 +1145,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_co
 /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":149
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)
  */
@@ -1260,8 +1260,8 @@ struct __pyx_memoryviewslice_obj {
  */
 
 struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 {
-  int (*make_basis_full)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, __Pyx_memviewslice, __Pyx_memviewslice);
-  int (*make_basis_pcon)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, int, __Pyx_memviewslice, __Pyx_memviewslice);
+  npy_intp (*make_basis_full)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, __Pyx_memviewslice, __Pyx_memviewslice);
+  npy_intp (*make_basis_pcon)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, int, __Pyx_memviewslice, __Pyx_memviewslice);
 };
 static struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32;
 
@@ -1275,8 +1275,8 @@ static struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_c
  */
 
 struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 {
-  int (*make_basis_full)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, __Pyx_memviewslice, __Pyx_memviewslice);
-  int (*make_basis_pcon)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, int, __Pyx_memviewslice, __Pyx_memviewslice);
+  npy_intp (*make_basis_full)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, __Pyx_memviewslice, __Pyx_memviewslice);
+  npy_intp (*make_basis_pcon)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, int, __Pyx_memviewslice, __Pyx_memviewslice);
 };
 static struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64;
 
@@ -2237,7 +2237,7 @@ static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
 /* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(PyObject *);
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_char(PyObject *);
 
 /* PyObjectCallMethod1.proto */
 static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
@@ -2306,10 +2306,10 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -2457,7 +2457,7 @@ static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint32_t = { "uint32_t", 
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint16_t = { "uint16_t", NULL, sizeof(__pyx_t_5numpy_uint16_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint16_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint16_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t = { "uint64_t", NULL, sizeof(__pyx_t_5numpy_uint64_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint64_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint64_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint8_t = { "uint8_t", NULL, sizeof(__pyx_t_5numpy_uint8_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint8_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint8_t), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_unsigned_char = { "unsigned char", NULL, sizeof(unsigned char), { 0 }, 0, IS_UNSIGNED(unsigned char) ? 'U' : 'I', IS_UNSIGNED(unsigned char), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_char = { "char", NULL, sizeof(char), { 0 }, 0, 'H', IS_UNSIGNED(char), 0 };
 #define __Pyx_MODULE_NAME "quspin.basis.basis_general._basis_general_core.boson_core"
 int __pyx_module_is_main_quspin__basis__basis_general___basis_general_core__boson_core = 0;
 
@@ -21107,7 +21107,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_10boson
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -21187,8 +21187,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_v_itemsize;
   int __pyx_v_dtype_signed;
   char __pyx_v_kind;
-  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int64_t_is_signed;
+  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int8_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
@@ -21299,8 +21299,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_L11_try_end:;
   }
   __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
+  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
@@ -22261,7 +22261,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -22276,7 +22276,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -22285,7 +22285,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -22293,7 +22293,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -22355,7 +22355,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -22445,7 +22445,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -22608,7 +22608,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -22623,7 +22623,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -22632,7 +22632,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -22640,7 +22640,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -22702,7 +22702,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -22792,7 +22792,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -22955,7 +22955,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -22970,7 +22970,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -22979,7 +22979,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -22987,7 +22987,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -23049,7 +23049,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -23139,7 +23139,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -23302,7 +23302,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -23317,7 +23317,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -23326,7 +23326,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -23334,7 +23334,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -23396,7 +23396,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -23486,7 +23486,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -23649,7 +23649,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -23664,7 +23664,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -23673,7 +23673,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -23681,7 +23681,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -23743,7 +23743,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -23833,7 +23833,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -23996,7 +23996,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -24011,7 +24011,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -24020,7 +24020,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -24028,7 +24028,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -24090,7 +24090,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -24180,7 +24180,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -24343,7 +24343,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -24358,7 +24358,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -24367,7 +24367,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -24375,7 +24375,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -24437,7 +24437,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -24527,7 +24527,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -24690,7 +24690,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -24705,7 +24705,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -24714,7 +24714,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -24722,7 +24722,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -24784,7 +24784,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -24874,7 +24874,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -25037,7 +25037,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -25052,7 +25052,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -25061,7 +25061,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -25069,7 +25069,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -25131,7 +25131,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -25221,7 +25221,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -25384,7 +25384,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -25399,7 +25399,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -25408,7 +25408,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -25416,7 +25416,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -25478,7 +25478,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -25568,7 +25568,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -25731,7 +25731,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -25746,7 +25746,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -25755,7 +25755,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -25763,7 +25763,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -25825,7 +25825,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -25915,7 +25915,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -26078,7 +26078,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -26093,7 +26093,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -26102,7 +26102,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -26110,7 +26110,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -26172,7 +26172,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -26262,7 +26262,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -26425,7 +26425,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -26440,7 +26440,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -26449,7 +26449,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -26457,7 +26457,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -26519,7 +26519,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -26609,7 +26609,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -26772,7 +26772,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -26787,7 +26787,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -26796,7 +26796,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -26804,7 +26804,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -26866,7 +26866,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -26956,7 +26956,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -27119,7 +27119,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -27134,7 +27134,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -27143,7 +27143,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -27151,7 +27151,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -27213,7 +27213,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -27303,7 +27303,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -27466,7 +27466,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":156
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -27481,7 +27481,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -27490,7 +27490,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":157
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -27498,7 +27498,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":158
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -27560,7 +27560,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":161
@@ -27650,7 +27650,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -29385,10 +29385,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_v_itemsize;
   int __pyx_v_dtype_signed;
   char __pyx_v_kind;
-  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int64_t_is_signed;
-  int __pyx_v____pyx_int8_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
+  int __pyx_v____pyx_int8_t_is_signed;
+  int __pyx_v____pyx_int32_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
   PyObject *__pyx_v_dtype = NULL;
   PyObject *__pyx_v_arg_base = NULL;
@@ -29497,10 +29497,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_L11_try_end:;
   }
   __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
-  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
+  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
+  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(0, 183, __pyx_L1_error)
@@ -34025,7 +34025,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_10boson
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -34105,8 +34105,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_v_itemsize;
   int __pyx_v_dtype_signed;
   char __pyx_v_kind;
-  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int64_t_is_signed;
+  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int8_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
@@ -34217,8 +34217,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_L11_try_end:;
   }
   __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
+  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
@@ -35179,7 +35179,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -35194,7 +35194,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -35203,7 +35203,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -35211,7 +35211,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -35273,7 +35273,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -35363,7 +35363,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -35526,7 +35526,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -35541,7 +35541,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -35550,7 +35550,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -35558,7 +35558,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -35620,7 +35620,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -35710,7 +35710,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -35873,7 +35873,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -35888,7 +35888,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -35897,7 +35897,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -35905,7 +35905,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -35967,7 +35967,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -36057,7 +36057,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -36220,7 +36220,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -36235,7 +36235,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -36244,7 +36244,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -36252,7 +36252,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -36314,7 +36314,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int8_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int8_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -36404,7 +36404,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -36567,7 +36567,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -36582,7 +36582,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -36591,7 +36591,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -36599,7 +36599,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -36661,7 +36661,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -36751,7 +36751,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -36914,7 +36914,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -36929,7 +36929,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -36938,7 +36938,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -36946,7 +36946,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -37008,7 +37008,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -37098,7 +37098,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -37261,7 +37261,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -37276,7 +37276,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -37285,7 +37285,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -37293,7 +37293,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -37355,7 +37355,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -37445,7 +37445,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -37608,7 +37608,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -37623,7 +37623,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -37632,7 +37632,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -37640,7 +37640,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -37702,7 +37702,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int16_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int16_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -37792,7 +37792,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -37955,7 +37955,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -37970,7 +37970,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -37979,7 +37979,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -37987,7 +37987,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -38049,7 +38049,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -38139,7 +38139,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -38302,7 +38302,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -38317,7 +38317,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -38326,7 +38326,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -38334,7 +38334,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -38396,7 +38396,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -38486,7 +38486,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -38649,7 +38649,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -38664,7 +38664,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -38673,7 +38673,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -38681,7 +38681,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -38743,7 +38743,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -38833,7 +38833,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -38996,7 +38996,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -39011,7 +39011,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -39020,7 +39020,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -39028,7 +39028,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -39090,7 +39090,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int32_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -39180,7 +39180,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -39343,7 +39343,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -39358,7 +39358,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -39367,7 +39367,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -39375,7 +39375,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -39437,7 +39437,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,float>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((float *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -39527,7 +39527,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -39690,7 +39690,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -39705,7 +39705,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -39714,7 +39714,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -39722,7 +39722,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -39784,7 +39784,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,double>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -39874,7 +39874,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -40037,7 +40037,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -40052,7 +40052,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -40061,7 +40061,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -40069,7 +40069,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -40131,7 +40131,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_float_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -40221,7 +40221,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -40384,7 +40384,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   /* "source/general_basis_core.pyx":205
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")             # <<<<<<<<<<<<<<
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]
  */
@@ -40399,7 +40399,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyByteArray_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_2);
   if (unlikely(!__pyx_t_3.memview)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_c_opstr = __pyx_t_3;
@@ -40408,7 +40408,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
 
   /* "source/general_basis_core.pyx":206
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = basis.shape[0]
  * 		cdef int err = 0;
@@ -40416,7 +40416,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_n_op = (__pyx_v_indx.shape[0]);
 
   /* "source/general_basis_core.pyx":207
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  * 		cdef npy_intp Ns = basis.shape[0]             # <<<<<<<<<<<<<<
  * 		cdef int err = 0;
@@ -40478,7 +40478,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         if (__pyx_t_10 < 0) __pyx_t_10 += __pyx_v_col.shape[0];
         __pyx_t_11 = 0;
         if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_M.shape[0];
-        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((unsigned char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
+        __pyx_v_err = general_op<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t,__pyx_t_5numpy_int64_t,__pyx_t_double_complex>(__pyx_v_self->_basis_core, __pyx_v_n_op, (&(*((char *) ( /* dim=0 */ (__pyx_v_c_opstr.data + __pyx_t_5 * __pyx_v_c_opstr.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_indx.data + __pyx_t_6 * __pyx_v_indx.strides[0]) )))), __pyx_v_JJ, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_row.data + __pyx_t_9 * __pyx_v_row.strides[0]) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_col.data + __pyx_t_10 * __pyx_v_col.strides[0]) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ (__pyx_v_M.data + __pyx_t_11 * __pyx_v_M.strides[0]) )))));
       }
 
       /* "source/general_basis_core.pyx":210
@@ -40568,7 +40568,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
 
@@ -42303,10 +42303,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_v_itemsize;
   int __pyx_v_dtype_signed;
   char __pyx_v_kind;
-  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int64_t_is_signed;
-  int __pyx_v____pyx_int8_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
+  int __pyx_v____pyx_int8_t_is_signed;
+  int __pyx_v____pyx_int32_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
   PyObject *__pyx_v_dtype = NULL;
   PyObject *__pyx_v_arg_base = NULL;
@@ -42415,10 +42415,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_L11_try_end:;
   }
   __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
-  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
+  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
+  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(0, 232, __pyx_L1_error)
@@ -48080,14 +48080,14 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
 /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":79
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:
  */
 
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   npy_intp __pyx_v_Ns;
-  int __pyx_r;
+  npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
   Py_ssize_t __pyx_t_2;
@@ -48095,7 +48095,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":80
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)             # <<<<<<<<<<<<<<
  * 		with nogil:
  * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -48103,7 +48103,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   __pyx_v_Ns = __Pyx_pow_int(__pyx_v_self->__pyx_base._sps, __pyx_v_self->__pyx_base._N);
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":81
- * 	cdef int make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:             # <<<<<<<<<<<<<<
  * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -48131,7 +48131,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
       }
 
       /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":81
- * 	cdef int make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:             # <<<<<<<<<<<<<<
  * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -48161,7 +48161,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":79
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:
  */
@@ -48344,16 +48344,16 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
 /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":87
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)
  */
 
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core___pyx_scope_struct__make_basis_pcon *__pyx_cur_scope;
   npy_intp __pyx_v_Ns;
   __pyx_t_5numpy_uint32_t __pyx_v_s;
-  int __pyx_r;
+  npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -48383,7 +48383,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":88
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)             # <<<<<<<<<<<<<<
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
@@ -48455,7 +48455,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   __pyx_v_Ns = __pyx_t_9;
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":89
- * 	cdef int make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)             # <<<<<<<<<<<<<<
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
@@ -48566,7 +48566,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":87
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)
  */
@@ -49379,14 +49379,14 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
 /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":141
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:
  */
 
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   npy_intp __pyx_v_Ns;
-  int __pyx_r;
+  npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
   Py_ssize_t __pyx_t_2;
@@ -49394,7 +49394,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":142
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)             # <<<<<<<<<<<<<<
  * 		with nogil:
  * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -49402,7 +49402,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   __pyx_v_Ns = __Pyx_pow_int(__pyx_v_self->__pyx_base._sps, __pyx_v_self->__pyx_base._N);
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":143
- * 	cdef int make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:             # <<<<<<<<<<<<<<
  * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -49430,7 +49430,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
       }
 
       /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":143
- * 	cdef int make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:             # <<<<<<<<<<<<<<
  * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -49460,7 +49460,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":141
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
  * 		with nogil:
  */
@@ -49643,16 +49643,16 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
 /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":149
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)
  */
 
-static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
+static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core___pyx_scope_struct_2_make_basis_pcon *__pyx_cur_scope;
   npy_intp __pyx_v_Ns;
   __pyx_t_5numpy_uint64_t __pyx_v_s;
-  int __pyx_r;
+  npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -49682,7 +49682,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":150
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)             # <<<<<<<<<<<<<<
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
@@ -49754,7 +49754,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   __pyx_v_Ns = __pyx_t_9;
 
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":151
- * 	cdef int make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)             # <<<<<<<<<<<<<<
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
@@ -49865,7 +49865,7 @@ static int __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_
   /* "quspin/basis/basis_general/_basis_general_core/boson_core.pyx":149
  * 
  * 	@cython.boundscheck(False)
- * 	cdef int make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
+ * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
  * 		cdef int l = Np/(self._sps-1)
  */
@@ -66157,7 +66157,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
   __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s__33); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 155, __pyx_L1_error)
@@ -66589,7 +66589,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
   __pyx_tuple__83 = PyTuple_Pack(1, __pyx_kp_s__33); if (unlikely(!__pyx_tuple__83)) __PYX_ERR(0, 204, __pyx_L1_error)
@@ -67264,7 +67264,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
   __pyx_tuple__156 = PyTuple_Pack(14, __pyx_n_s_self, __pyx_n_s_row, __pyx_n_s_col, __pyx_n_s_M, __pyx_n_s_opstr, __pyx_n_s_indx, __pyx_n_s_J, __pyx_n_s_basis, __pyx_n_s_n, __pyx_n_s_c_opstr, __pyx_n_s_n_op, __pyx_n_s_Ns, __pyx_n_s_err, __pyx_n_s_JJ); if (unlikely(!__pyx_tuple__156)) __PYX_ERR(0, 155, __pyx_L1_error)
@@ -67300,7 +67300,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
   __pyx_tuple__162 = PyTuple_Pack(14, __pyx_n_s_self, __pyx_n_s_row, __pyx_n_s_col, __pyx_n_s_M, __pyx_n_s_opstr, __pyx_n_s_indx, __pyx_n_s_J, __pyx_n_s_basis, __pyx_n_s_n, __pyx_n_s_c_opstr, __pyx_n_s_n_op, __pyx_n_s_Ns, __pyx_n_s_err, __pyx_n_s_JJ); if (unlikely(!__pyx_tuple__162)) __PYX_ERR(0, 204, __pyx_L1_error)
@@ -67528,8 +67528,8 @@ PyMODINIT_FUNC PyInit_boson_core(void)
   if (PyObject_SetAttrString(__pyx_m, "general_basis_core_wrap_64", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_general_basis_core_wrap_64) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_general_basis_core_wrap_64 = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_general_basis_core_wrap_64;
   __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 = &__pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32;
-  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32.make_basis_full = (int (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_full;
-  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32.make_basis_pcon = (int (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_pcon;
+  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32.make_basis_full = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_full;
+  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32.make_basis_pcon = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_32_make_basis_pcon;
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32.tp_base = __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_general_basis_core_wrap_32;
   if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32) < 0) __PYX_ERR(1, 37, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32.tp_print = 0;
@@ -67537,8 +67537,8 @@ PyMODINIT_FUNC PyInit_boson_core(void)
   if (PyObject_SetAttrString(__pyx_m, "boson_basis_core_wrap_32", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32) < 0) __PYX_ERR(1, 37, __pyx_L1_error)
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32 = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_32;
   __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 = &__pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64;
-  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64.make_basis_full = (int (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_full;
-  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64.make_basis_pcon = (int (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_pcon;
+  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64.make_basis_full = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_full;
+  __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64.make_basis_pcon = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_24boson_basis_core_wrap_64_make_basis_pcon;
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64.tp_base = __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_general_basis_core_wrap_64;
   if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_10boson_core_boson_basis_core_wrap_64.tp_print = 0;
@@ -67687,7 +67687,7 @@ PyMODINIT_FUNC PyInit_boson_core(void)
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
@@ -67921,7 +67921,7 @@ PyMODINIT_FUNC PyInit_boson_core(void)
  * 
  * 	@cython.boundscheck(False)
  * 	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
- * 		cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
+ * 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
  * 		cdef int n_op = indx.shape[0]
  */
   __pyx_t_7 = PyDict_New(); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 204, __pyx_L1_error)
@@ -75817,7 +75817,7 @@ raise_neg_overflow:
 }
 
 /* ObjectToMemviewSlice */
-                  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_unsigned_char(PyObject *obj) {
+                  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_char(PyObject *obj) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
     int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
@@ -75828,7 +75828,7 @@ raise_neg_overflow:
     }
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
                                                  PyBUF_RECORDS, 1,
-                                                 &__Pyx_TypeInfo_unsigned_char, stack,
+                                                 &__Pyx_TypeInfo_char, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;

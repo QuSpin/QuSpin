@@ -1,5 +1,5 @@
-#ifndef _HCB_BASIS_OP_H
-#define _HCB_BASIS_OP_H
+#ifndef _HCB_BASIS_CORE_H
+#define _HCB_BASIS_CORE_H
 
 #include <complex>
 #include "general_basis_core.h"
@@ -81,7 +81,7 @@ class hcb_basis_core : public general_basis_core<I>
 			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
 		}
 
-		int op(I &r,std::complex<double> &m,const int n_op,const unsigned char opstr[],const int indx[]){
+		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
 			I s = r;
 			I one = 1;
 			for(int j=n_op-1;j>-1;j--){

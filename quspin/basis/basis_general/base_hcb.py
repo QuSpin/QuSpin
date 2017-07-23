@@ -35,7 +35,7 @@ class hcb_basis_general(basis_general):
 				raise TypeError("Nb must be integer or iteratable object.")
 			Ns = 0
 			for Nb in Np_iter:
-				if Nb > N:
+				if Nb > N or Nb < 0:
 					raise ValueError("particle number Nb must satisfy: 0 <= Nb <= N")
 				Ns += comb(N,Nb,exact=True)
 

@@ -76,7 +76,7 @@ cdef class boson_basis_core_wrap_32(general_basis_core_wrap_32):
 
 
 	@cython.boundscheck(False)
-	cdef int make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = (self._sps**self._N)
 		with nogil:
 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -84,7 +84,7 @@ cdef class boson_basis_core_wrap_32(general_basis_core_wrap_32):
 		return Ns
 
 	@cython.boundscheck(False)
-	cdef int make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
 		cdef int l = Np/(self._sps-1)
 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
@@ -138,7 +138,7 @@ cdef class boson_basis_core_wrap_64(general_basis_core_wrap_64):
 
 
 	@cython.boundscheck(False)
-	cdef int make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = (self._sps**self._N)
 		with nogil:
 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
@@ -146,7 +146,7 @@ cdef class boson_basis_core_wrap_64(general_basis_core_wrap_64):
 		return Ns
 
 	@cython.boundscheck(False)
-	cdef int make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
 		cdef int l = Np/(self._sps-1)
 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))

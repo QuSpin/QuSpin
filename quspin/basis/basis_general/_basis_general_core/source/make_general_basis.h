@@ -38,6 +38,7 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,I s,I basis[],J n
 		for(int j=0;j<id;j++){
 			s = B->next_state_pcon(s);
 		}
+		
 		for(npy_intp i=id;i<MAX;i+=n_threads){
 			if(B->check_state(s)){
 				J nn = B->get_norm(s);

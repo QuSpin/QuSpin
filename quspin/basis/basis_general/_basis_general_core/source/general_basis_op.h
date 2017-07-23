@@ -53,7 +53,7 @@ int inline check_imag(std::complex<double> m,T *M){
 template<class I, class J, class K, class T>
 int general_op(general_basis_core<I> *B,
 						  const int n_op,
-						  const unsigned char opstr[],
+						  const char opstr[],
 						  const int indx[],
 						  const std::complex<double> A,
 						  const npy_intp Ns,

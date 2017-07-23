@@ -1,5 +1,5 @@
-#ifndef _HIGHER_SPIN_BASIS_OP_H
-#define _HIGHER_SPIN_BASIS_OP_H
+#ifndef _HIGHER_SPIN_BASIS_CORE_H
+#define _HIGHER_SPIN_BASIS_CORE_H
 
 #include <complex>
 #include <cmath>
@@ -18,10 +18,7 @@ class higher_spin_basis_core : public boson_basis_core<I>
 
 		~higher_spin_basis_core() {}
 
-
-
-
-		int op(I &r,std::complex<double> &me,const int n_op,const unsigned char opstr[],const int indx[]){
+		int op(I &r,std::complex<double> &me,const int n_op,const char opstr[],const int indx[]){
 			I s = r;
 			double me_offdiag = 1;
 			double me_diag = 1;

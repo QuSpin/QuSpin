@@ -6,13 +6,13 @@ import scipy.sparse as _sp
 include "source/general_basis_core.pyx"
 
 # specialized code 
-cdef extern from "hcb_basis_core.h":
-	cdef cppclass hcb_basis_core[I](general_basis_core[I]):
-		hcb_basis_core(const int,const int,const int[],const int[],const int[])
-		hcb_basis_core(const int) 
+cdef extern from "spinless_fermion_basis_core.h":
+	cdef cppclass spinless_fermion_basis_core[I](general_basis_core[I]):
+		spinless_fermion_basis_core(const int,const int,const int[],const int[],const int[])
+		spinless_fermion_basis_core(const int) 
 
 
-cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
+cdef class spinless_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
 
 		if N > 32:
@@ -22,9 +22,9 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 		self._sps = 2
 
 		if self._nt>0:
-			self._basis_core = new hcb_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+			self._basis_core = new spinless_fermion_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
 		else:
-			self._basis_core = new hcb_basis_core[uint32_t](N)
+			self._basis_core = new spinless_fermion_basis_core[uint32_t](N)
 
 	@cython.boundscheck(False)
 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
@@ -73,14 +73,18 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 		return Ns
 
 
-cdef class hcb_basis_core_wrap_64(general_basis_core_wrap_64):
+cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
 		if N > 64:
 			raise ValueError("for 64-bit code N must be <= 64.")
 		self._N = N
 		self._nt = pers.shape[0]
 		self._sps = 2
-		self._basis_core = new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+		if self._nt>0:
+			self._basis_core = new spinless_fermion_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+		else:
+			self._basis_core = new spinless_fermion_basis_core[uint64_t](N)
+
 
 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,object count=None):
 		cdef int Ns_1 = 0

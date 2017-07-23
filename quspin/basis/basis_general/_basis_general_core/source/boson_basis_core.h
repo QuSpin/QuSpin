@@ -1,5 +1,5 @@
-#ifndef _BOSON_BASIS_OP_H
-#define _BOSON_BASIS_OP_H
+#ifndef _BOSON_BASIS_CORE_H
+#define _BOSON_BASIS_CORE_H
 
 #include <complex>
 #include <cmath>
@@ -122,7 +122,7 @@ class boson_basis_core : public general_basis_core<I>
 			return s;
 		}
 
-		int op(I &r,std::complex<double> &me,const int n_op,const unsigned char opstr[],const int indx[]){
+		int op(I &r,std::complex<double> &me,const int n_op,const char opstr[],const int indx[]){
 			I s = r;
 			double me_offdiag=1;
 			double me_diag=1;
