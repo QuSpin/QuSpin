@@ -1215,7 +1215,7 @@ replace "..." below by `pure`, `thermal` or `mixed` depending on input params.
     * `f_norm`: (optional) if set to `False` the mixed DM built from `f` is NOT normalised
       and the norm is returned under the key `f_norm`.
      
-    The keys are CANNOT be chosen arbitrarily.
+    The keys CANNOT be chosen arbitrarily.
     
     If this option is specified, then all Diagonal ensemble quantities are averaged over the energy distribution $f(E_1,f\_args)$:
     

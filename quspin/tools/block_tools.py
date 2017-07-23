@@ -30,42 +30,30 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
     ----------
 	blocks : list/tuple/iterator
 		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries or `hamiltonian` objects.
-
 	static : list
 		Static operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.
-
 	dynamic : list
 		Dynamic operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.
-
 	basis_con : :obj:`basis` 
 		Basis constructor used to build the basis objects to create the block diagonal Hamiltonians.
-
 	basis_args : tuple 
 		This argument is passed as the first argument for `basis_con`.
 		Contains all required arguments for the basis. 
-
 	dtype : 'type'
 		The data type (e.g. numpy.float64) to construct the Hamiltonian with.
-
 	get_proj : bool, optional
 		Flag which tells the function to calculate and return the projector to the 
 		symmetry-block subpace requested. Default is 'True'.
-
 	basis_kwargs : dict, optional
 		Dictionary of keyword arguments to add when calling `basis` constructor.
-
 	get_proj_kwargs : dict, optional 
 		Dictionary of keyword arguments for `basis.get_proj()` and `basis.get_vec()`.
-
 	check_symm : bool, optional 
 		Enable/Disable symmetry check of the operators for the first Hamiltonian constructed.
-
 	check_herm : bool, optional
 		Enable/Disable hermiticity check of the operators for the first Hamiltonian constructed.
-
 	check_pcon : bool, optional
 		Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.
-
 	
 	Returns
 	-------
@@ -81,7 +69,6 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
     ValueError
     	If `blocks` is not a list of `hamiltonian` objects or a list of dictionaries containing 
     	the symmetry sectors.
-
 
 	"""
 
@@ -308,48 +295,35 @@ class block_ops(object):
 		blocks : list/tuple/iterator
 			Contains the symmetry blocks to construct the Hamiltonian with, 
 			as dictionaries or `hamiltonian` objects.
-
 		static : list
 			Static operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.
-
 		dynamic : list
 			Dynamic operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.
-
 		basis_con : :obj:`basis` 
 			Basis constructor used to build the basis objects to create the block diagonal Hamiltonians.
-
 		basis_args : tuple 
 			This argument is passed as the first argument for `basis_con`.
 			Contains all required arguments for the basis. 
-
 		dtype : 'type'
 			The data type (e.g. numpy.float64) to construct the Hamiltonian with.
-
 		basis_kwargs : dict, optional
 			Dictionary of keyword arguments to add when calling `basis` constructor.
-
 		get_proj_kwargs : dict, optional 
 			Dictionary of keyword arguments for `basis.get_proj()` and `basis.get_vec()`.
-		
-		
 		save_previous_data : bool, optional
 			To do time evolution the `block_ops` class constructs Hamiltonians, which can take time. 
 			Set this flag to `True`, and the class will save previously calculated Hamiltonians, so
 			next time one needs to do evolution in that block, the code does NOT have to calculate it again.
 			Default is `True`.
-
 		compute_all_blocks : bool, optional 
 			Flag which tells the `block_ops` class to compute all symmetry blocks at initialization.
 			Default is `False`.
 
 			This option sets `save_previous_data = True` automatically. 
-
 		check_symm : bool, optional 
 			Enable/Disable symmetry check of the operators for the first Hamiltonian constructed.
-
 		check_herm : bool, optional
 			Enable/Disable hermiticity check of the operators for the first Hamiltonian constructed.
-
 		check_pcon : bool, optional
 			Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.
 
@@ -465,17 +439,13 @@ class block_ops(object):
 		psi_0 : numpy.ndarray, list, tuple
 			Quantum state which defined on the full Hilbert space of the problem. 
 			Does not need to obey and sort of symmetry.
-
 		t0 : float
 			Inistial time to start the evolution at.
-
 		times : numpy.ndarray, list
 			Contains the times to compute the solution at. Must be some an iterable object.
-
 		iterate : bool, optional
 			Flag to return generator when set to `True`. Otherwise the output is an array of states. 
 			Default is 'False'.
-
 		n_jobs : int, optional 
 			Number of processes requested for the computation time evolution dynamics. 
 
@@ -483,7 +453,6 @@ class block_ops(object):
 			should be approximately the same size and `n_jobs-1` must be a common devisor of the number of
 			blocks, such that there is roughly an equal workload for each process. Otherwise the computation 
 			will be as slow as the slowest process.
-
 		block_diag : bool, optional 
 			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtri blocks
 			into a list and then loops over it to do time evolution. When set to `False`, it puts all
@@ -600,17 +569,13 @@ class block_ops(object):
 		psi_0 : numpy.ndarray, list, tuple
 			Quantum state which defined on the full Hilbert space of the problem. 
 			Does not need to obey and sort of symmetry.
-
 		t0 : float
 			Inistial time to start the evolution at.
-
 		H_time_eval : numpy.ndarray, list
 			Times to evaluate the Hamiltonians at when doing the matrix exponentiation. 
-
 		iterate : bool, optional
 			Flag to return generator when set to `True`. Otherwise the output is an array of states. 
 			Default is 'False'.
-
 		n_jobs : int, optional 
 			Number of processes requested for the computation time evolution dynamics. 
 
@@ -618,7 +583,6 @@ class block_ops(object):
 			should be approximately the same size and `n_jobs-1` must be a common devisor of the number of
 			blocks, such that there is roughly an equal workload for each process. Otherwise the computation 
 			will be as slow as the slowest process.
-
 		block_diag : bool, optional 
 			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtri blocks
 			into a list and then loops over it to do time evolution. When set to `False`, it puts all

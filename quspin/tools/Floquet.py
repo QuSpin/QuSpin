@@ -38,7 +38,6 @@ def _range_iter(start,stop,step):
 		else:
 			break
 
-
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 	"""
 	
@@ -85,8 +84,6 @@ def _evolve_step_1(i,H_list,dt_list):
 
 	return psi0
 
-
-
 def _evolve_step_2(i,H,t_list,dt_list):
 	"""This function calculates the evolved state for Periodic Step (point 3. in def of 'evo_dict'. 
 	
@@ -108,7 +105,6 @@ def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9):
 	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in _range_iter(0,H.Ns,1))
 
 	return vstack(sols)
-
 
 def _get_U_step_1(H_list,dt_list,n_jobs): 
 	
@@ -162,27 +158,22 @@ class Floquet(object):
 				* 'H_list' : list of matrices to evolve with.
 
 				* 'dt_list' : list of time step durations. Must be the same size as 'H_list'. 
-
 		HF : bool
 			Set to 'True' to calculate and return Floquet Hamiltonian under attribute _.HF.
 			
 			Default is 'False'.
-
 		UF : bool
 			Set to 'True' to save evolution operator under attribute _.UF. 
 			
 			Default is 'False'.
-
 		thetaF : bool
 			Set to 'True' to save eigenvalues of the evolution operator (Floquet phases) under attribute _.thetaF.
 			
 			Default is 'False'.
-
 		VF : bool
 			Set to 'True' to save Floquet states under attribute _.VF.
 			
 			Default is 'False'. 
-
 		n_jobs : :obj:`int`, optional
 			Set the number of processors which are used when looping over the basis states to compute 
 			the Floquet unitary.
@@ -404,17 +395,13 @@ class Floquet_t_vec(object):
         ----------
 		Omega : float
 			Drive frequency.
-
 		N_const : int
 			Number of time periods in the constant part (period) of the time vector.
-
 		len_T : int
 			Number of time points within a single period. N.B. the last period interval is assumed 
 			open on the right, i.e. [0,T) and the point T is NOT counted towards 'len_T'.
-
 		N_up : int, optional
 			Number of time periods in the up-part (period) of time vector.
-
 		N_down : int, optional
 			Number of time periods in the down-part (period) of time vector.
 		

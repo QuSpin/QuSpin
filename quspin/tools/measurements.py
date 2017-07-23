@@ -22,72 +22,75 @@ __all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs
 
 
 def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**_basis_kwargs):
-	"""
-	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
-	reduced subsystem. 
+	"""Calculates entanglement entropy of subsystem based on the Singular Value Decomposition (svd). 
 
-	RETURNS:	dictionary with keys:
+	The entanglement entropy is NORMALISED by the size of the reduced subsystem. 
 
-	'Sent': entanglement entropy.
+	Consider a quantum chain of $N$ sites in the state defined by the density matrix $\rho$. Define a subsystem $A$ of $N_A$ sites and its complement $A^c$: $N=N_A + N_{A^c}$. Given the reduced density matrices 
 
-	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
+	$$ \rho_A = \mathrm{tr}_B \rho, \qquad \rho_{A^c} = \mathrm{tr}_{A^c} \rho $$
 
-	'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
+	the entanglement entropy density of subsystems $A$ and $B$ (normalised w.r.t. their size, respectively) read 
 
-	'lmbda': (optional) svd singular values
+	$$ S_\mathrm{ent}^A = -\frac{1}{N_A}\mathrm{tr}_A \rho_A\log\rho_A,\qquad S_\mathrm{ent}^B = -\frac{1}{N_A}\mathrm{tr}_{A^c} \rho_{A^c}\log\rho_{A^c} $$
 
-	--- arguments ---
+	For $\rho$ pure, we have $S_\mathrm{ent}^A = S_\mathrm{ent}^B$.
 
-	system_state: (required) the state of the quantum system. Can be a:
+	Parameters
+	----------
+	system_state : :obj:
+		State of the quantum system; can be either of:
+			* numpy.ndarray: pure state, shape = (Ns,).
+			* numpy.ndarray: density matrix (DM), shape=(Ns,Ns).
+			* dict: diagonal DM as dictionary of the form {'V_rho': V_rho, 'rho_d': rho_d}, where 
+				-- numpy.ndarray: `rho_d` is a diagonal DM, shape = (Ns,) ,
+				-- numpy.ndarray: `V_rho` contains eigenbasis of the DM in the columns, shape = (Ns,Ns).
 
-				-- pure state [numpy array of shape (Ns,)].
+				The dict keys CANNOT be chosen arbitrarily.
+			* dict: collection of pure states as dict of the form {'V_states': V_states}, contained
+				in the columns of V_states, shape = (Ns,Nvecs). 
 
-				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
+				Use this input to PARALLELISE the calculation of the entanglement entropy.
+	basis : :obj:`basis`
+		Basis used to generate `system_state` in. Must be instance of either one of QuSpin's `basis` classes. 
+	chain_subsys : list, optional 
+		Lattice sites to specify the chain subsystem of interest. Default is:
+		* [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+		* [0,1,...,N-1,N] for 'photon_basis'.
+	DM : str, optional 
+		Flag to enable the calculation of the reduced density matrix. Available expressions are
+		* "chain_subsys": calculates the reduced DM of the subsystem 'chain_subsys' and
+			returns it under the key "DM_chain_subsys".
+		* "other_subsys": calculates the reduced DM of the complement of 'chain_subsys' and
+			returns it under the key "DM_other_subsys".
+		* "both": calculates and returns both density matrices as defined above.
 
-				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
-					rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
-					[numpy arary of shape (Ns,Ns)]. The keys CANNOT be chosen arbitrarily.].
+		Default is "False". 	
+	alpha : float, optional 
+		Renyi $\alpha$ parameter. Default is '1.0'. 
 
-				-- a collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
+		When alpha is different from unity, the _entropy keys have attached "_Renyi" to their usual label.
+	svd_return_vec : list(bool), optional
+		Three booleans to determine which Singular Value Decomposition (svd) quantities are returned:
+		* `[ . ,True, . ]` svd singular values.
+		* `[ . , . ,True]` and `[True, . , . ]` are depricated.
 
-	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
+		Default is `[False,False,False]`.
 
-	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
-
-				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
-
-				-- [0,1,...,N-1,N] for 'photon_basis'.
-
-	DM: (optional) String to enable the calculation of the reduced density matrix. Available options are
-
-				-- 'chain_subsys': calculates the reduced DM of the subsystem 'chain_subsys' and
-					returns it under the key 'DM_chain_subsys'.
-
-				-- 'other_subsys': calculates the reduced DM of the complement of 'chain_subsys' and
-					returns it under the key 'DM_other_subsys'.
-
-				-- 'both': calculates and returns both density matrices as defined above.
-
-				Default is 'False'. 	
-
-	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
-				the _entropy keys have attached '_Renyi' to their label.
-
-	density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'False'.
-
-	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
-
-	* `svd_return_vec`: (optional) list of three booleans to return the Singular Value Decomposition (svd) 
-		  parameters:
-
-		  * `[ . ,True, . ]` svd singular values.
-
-		  * `[ . , . ,True]` and `[True, . , . ]` are depricated.
-
-		  Default is ```[False,False,False]```.
+	Returns
+	-------
+	dict
+		The following keys of the output are possible, depending on the choice of flags. 	
+		* "Sent": entanglement entropy.
+		* "DM_chain_subsys": (optional) reduced density matrix of chain subsystem.
+		* "DM_other_subsys": (optional) reduced density matrix of the complement subsystem.
+		* "lmbda": (optional) svd singular values.
+	
+	Raises
+	------
+	ValueError
+		Only a set of pre-defined strings is allowed as keys for `system_state`, 
+		when parsed as a dictionary.
 
 	"""
 
@@ -716,109 +719,161 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	return return_dict
 		
 def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
-	"""
-	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
-	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
-	expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
+	"""Calculates the expectation values of physical quantities in the Diagonal ensemble of the initial state. 
+
+	Equivalently, these are also the infinite-time expectation values after a sudden quench from a 
+	Hamiltonian $H_1$ to a Hamiltonian $H_2$. Let us label the two eigenbases as
+
+	$$V_1=\{|n_1\rangle: H_1|n_1\rangle=E_1|n_1\rangle\}$$
+
+	and 
+
+	$$V_2=\{|n_2\rangle: H_2|n_2\rangle=E_2|n_2\rangle\}$$.
+
+	See eg. arXiv:1509.06411 for definition of Diagonal Ensemble.
+	
+	Note
+	----
+		All expectation values depend statistically on the symmetry block used via the available number of 
+		states, due to the generic system-size dependence!
+
+	Parameters
+	----------
+	N : int
+		System size/dimension (e.g. number of sites).
+	system_state : :obj:
+		State of the quantum system; can be either of:
+			* numpy.ndarray: pure state, shape = (Ns,) or (,Ns).
+			* numpy.ndarray: density matrix (DM), shape = (Ns,Ns).
+			* dict: mixed DM as dictionary {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} 
+				to define a diagonal DM in the basis $V_1$ of the Hamiltonian $H_1$. The meaning of the keys is
+				as flollows:
+				* numpy.ndarray: `V1` (required) contains eigenbasis of $H_1$ in the columns.
+				* numpy.ndarray: `E1` (required) eigenenergies of $H_1$.
+				* obj: 'f' (optional) is a function which represents the distribution of the spectrum 
+					used to define the mixed DM of the initial state (see example). 
+
+					Default is a thermal distribution with inverse temperature `beta`: 
+					'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
+				* list(float): `f_args` (required) list of arguments for function `f`. 
+
+					If `f` is not defined, by default we have `f=numpy.exp(-beta*(E - E[0]))`, 
+					and `f_args` specifies the inverse temeprature `[beta]`.
+				* list(int): `V1_state` (optional) is a list of integers to specify arbitrary states of `V1` 
+					whose pure expectations are also returned.
+				* bool: `f_norm` (optional). If set to `False` the mixed DM built from `f` is NOT normalised
+					and the norm is returned under the key `f_norm`. 
+
+					Use this option if you need to average your results over multiple symmetry blocks, which
+					require a separate normalisation, to be determined by the user. 
+
+				The keys CANNOT be chosen arbitrarily.
+
+				If this option is specified, then all Diagonal Ensemble quantities are averaged over 
+				the energy distribution $f(E_1,f\_args)$:
+    
+    			$$ \overline{\mathcal{M}_d} = \frac{1}{Z_f}\sum_{n_1} \mathcal{M}^{n_1}_d \times f(E_{n_1},f\_args), \qquad \mathcal{M}^{\psi}_d = \langle\mathcal{O}\rangle_d^\psi,\ \delta_q\mathcal{O}^\psi_d,\ \delta_t\mathcal{O}^\psi_d,\ S_d^\psi,\ S_\mathrm{rdm}^\psi $$
+	V2 : numpy.ndarray
+		Contains the basis of the Hamiltonian $H_2$ in the columns.
+	E2 : numpy.ndarray
+		Contains the eigenenergies corresponding to the eigenstates in `V2`. 
+
+		This variable is only used to check for degeneracies, in which case the function is NOT expected to
+		produce correct results (see raised errors).
+	rho_d : bool, optional 
+		When set to `True`, returns the Diagonal ensemble DM under the key `rho_d`. Default is `False`.
+
+		For example, if `system_state` is the pure state $|\psi\rangle$:
+
+		$$\rho_d^\psi = \sum_{n_2} \left|\langle\psi|n_2\rangle\right|^2\left|n_2\rangle\langle n_2\right| = \sum_{n_2} \left(\rho_d^\psi\right)_{n_2n_2}\left|n_2\rangle\langle n_2\right| $$ 
+	Obs : :obj:, optional
+		Hermitian matrix of the same shape as `V2`, to calculate the Diagonal ensemble expectation value of. 
+		
+		Adds the key "Obs" to output. Can be of type `numpy.ndarray` or an instance of the `hamiltonian` class.
+
+		For example, if `system_state` is the pure state $|\psi\rangle$:
+  
+  		$$ \langle\mathcal{O}\rangle_d^\psi = \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \frac{1}{N}\langle\psi\left|\mathcal{O}(t)\right|\psi\rangle = \frac{1}{N}\sum_{n_2}\left(\rho_d^\psi\right)_{n_2n_2} \langle n_2\left|\mathcal{O}\right|n_2\rangle$$
+	delta_t_Obs : bool, optional
+		TEMPORAL fluctuations around infinite-time expectation of `Obs`. Requires `Obs`. 
+		
+		Adds the key "delta_t_Obs" to output.
+
+		For example, if `system_state` is the pure state $|\psi\rangle$:
+  
+  		$$ \delta_t\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{ \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|[\mathcal{O}(t)]^2\right|\psi\rangle - \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2} =  \frac{1}{N}\sqrt{\langle\mathcal{O}^2\rangle_d - \langle\mathcal{O}\rangle_d^2 - \delta_q\mathcal{O}^2 }$$
+	delta_q_Obs : bool, optional
+		QUANTUM fluctuations of the expectation of `Obs` at infinite-times. Requires `Obs`. Calculates
+		temporal fluctuations `delta_t_Obs` for along the way (see above).
+		
+		Adds keys "delta_q_Obs" and "delta_t_Obs" to output.
+
+		For example, if `system_state` is the pure state $|\psi\rangle$:
+  
+  		$$ \delta_q\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{\lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2 - \langle\mathcal{O}\rangle_d^2}= \frac{1}{N}\sqrt{ \sum_{n_2\neq m_2} \left(\rho_d^\psi\right)_{n_2n_2} [\mathcal{O}]^2_{n_2m_2} \left(\rho_d^\psi\right)_{m_2m_2} } $$
+	alpha : float, optional
+		Renyi $alpha$ parameter. Default is `alpha = 1.0`.
+	Sd_Renyi : bool, optional
+		Computes the DIAGONAL Renyi entropy in the basis of $H_2$. 
+
+		The default Renyi parameter is `alpha=1.0` (see below). 
+
+		Adds the key `Sd_Renyi` to output.
+
+		For example, if `system_state` is the pure state $|\psi\rangle$:
+  
+  		$$ S_d^\psi = \frac{1}{1-\alpha}\log\mathrm{tr}\left(\rho_d^\psi\right)^\alpha $$
+	Srdm_Renyi : bool, optional
+		Computes ENTANGLEMENT Renyi entropy of a subsystem (see `Srdm_args` for subsystem definition). 
+
+		Requires passing the (otherwise optional) argument `Srdm_args` (see below).
+		
+		The default Renyi parameter is `alpha=1.0` (see below). 
+
+		Adds the key `Srdm_Renyi` to output.
+
+		For example, if `system_state` is the pure state $|\psi\rangle$ 
+		(see also notation in documentation of `ent_entropy`):
+  
+  		$$ S_\mathrm{rdm}^\psi = \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha $$ 
+	Srdm_args : dict, semi-optional
+		Dictionary which contains all arguments required for the computation of the entanglement Renyi 
+		entropy. Required when `Srdm_Renyi = True`. The following keys are allowed/supported:
+			* "basis": obj(basis), required
+				Basis used to build `system_state` in. Must be an instance of the `basis` class. 
+			* "chain_subsys" : list, optional 
+				Lattice sites to specify the chain subsystem of interest. Default is:
+				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+				-- [0,1,...,N-1,N] for 'photon_basis'.
+	density : bool, optional 
+		If set to `True`, all observables are normalised by the system size `N`, except
+		for the `Srdm_Renyi` which is normalised by the subsystem size, i.e. by the length of `chain_subsys`.
+		Detault is 'True'.
+
+	Returns
+	------- 
+	dict
+		Dictionary with keys depending on the passed optional arguments:
+
+		"rho_d": density matrix of Diagonal Ensemble
+
+		"Obs_...": infinite-time expectation of observable `Obs`.
+
+		"delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
+
+		"delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
+
+		"Sd_..."" ("Sd_Renyi_..."" for `alpha!=1.0`): Renyi diagonal entropy of density matrix of 
+			`rho_d` with parameter `alpha`.
+
+		"Srdm_..." ("Srdm_Renyi_..."" for `alpha!=1.0`): Renyi entanglement entropy of reduced DM of 
+			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
+
+		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
+
+	
 
 
-	RETURNS: 	dictionary with keys depending on the passed optional arguments:
-
-
-	replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
-
-	'Obs_...': infinite time expectation of observable 'Obs'.
-
-	'delta_t_Obs_...': infinite time temporal fluctuations of 'Obs'.
-
-	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
-
-	'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi _entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
-
-	'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement _entropy of reduced density matrix of Diagonal Ensemble 
-			with parameter 'alpha'.
-
-	'rho_d': density matrix of diagonal ensemble
-
-
-	--- arguments ---
-
-
-	N: (required) system size N.
-
-	system_state: (required) the state of the quantum system. Can be a:
-
-				-- pure state [numpy array of shape (Ns,) or (,Ns)].
-
-				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
-
-				-- mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
-					define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
-
-					All expectation values depend statistically on the symmetry block via the available number of 
-					states as part of the system-size dependence!
-
-					== 'V1': (required) array with the eigenbasis of H1 in the columns.
-
-					== 'E1': (required) eigenenergies of H1.
-
-					== 'f': (optional) the distribution used to define the mixed DM. Default is
-						'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
-
-					== 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, by 
-						default we have 'f=numpy.exp(-beta*(E - E[0]))', and 'f_args' specifies the inverse temeprature list [beta].
-
-					== 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
-						expectations are also returned.
-
-					== 'f_norm': (optional) if set to 'False' the mixed DM built from 'f' is NOT normalised
-						and the norm is returned under the key 'f_norm'. 
-
-					The keys are CANNOT be chosen arbitrarily.
-
-	V2: (required) numpy array containing the basis of the Hamiltonian H2 in the columns.
-
-	E2: (required) numpy array containing the eigenenergies corresponding to the eigenstates in 'V2'.
-		This variable is only used to check for degeneracies.
-
-	rho_d: (optional) When set to 'True', returns the Diagonal ensemble DM under the key 'rho_d'. 
-
-	Obs: (optional) hermitian matrix of the same size as V2, to calculate the Diagonal ensemble 
-			expectation value of. Appears under the key 'Obs'.
-
-	delta_t_Obs: (optional) TIME fluctuations around infinite-time expectation of 'Obs'. Requires 'Obs'. 
-			Appears under the key 'delta_t_Obs'.
-
-	delta_q_Obs: (optional) QUANTUM fluctuations of the expectation of 'Obs' at infinite-times. 
-			Requires 'Obs'. Appears under the key 'delta_q_Obs'. Returns temporal fluctuations 
-			'delta_t_Obs' for free.
-
-	Sd_Renyi: (optional) diagonal Renyi _entropy in the basis of H2. The default Renyi parameter is 
-			'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
-
-	Srdm_Renyi: (optional) entanglement Renyi _entropy of a subsystem of a choice. The default Renyi 
-			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
-			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
-
-	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
-			following keys are allowed:
-
-			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-			  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
-
-			* chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
-
-			 * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
-
-			 * [0,1,...,N-1,N] for 'photon_basis'. 
-
-			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
-
-	density: (optional) if set to 'True', all observables are normalised by the system size N, except
-				for the entanglement _entropy which is normalised by the subsystem size 
-				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
-
-	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
 	"""
 
 	# check if E2 are all unique
@@ -1088,11 +1143,15 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 			Ntime = len(times)
 			Ns = len(E)
 
-			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-			psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-			_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T 
+			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			psi_t = psi_t*E
+			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			_np.exp(psi_t,psi_t)
 
-			psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+			# [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+			psi_t *= c_n 
 
 			# for each vector trasform back to original basis
 			psi_t = V.dot(psi_t.T) 
@@ -1107,9 +1166,12 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 
 			rho_d = V.T.conj().dot(psi.dot(V))
 
-			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-			exp_t = exp_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-			_np.exp(exp_t,exp_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T
+			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			exp_t = exp_t*E
+			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			_np.exp(exp_t,exp_t)
 			
 			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
 
@@ -1460,6 +1522,7 @@ def mean_level_spacing(E):
 	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
 
 
+##### below are the routines for arbitary user-defimed time evolution.
 
 def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
 	"""
@@ -1572,8 +1635,6 @@ def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
 	else:
 		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
-
-
 def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
 
@@ -1603,8 +1664,6 @@ def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 			
 
 	return v
-
-
 
 def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
