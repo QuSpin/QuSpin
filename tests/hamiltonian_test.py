@@ -27,6 +27,17 @@ def test_hermitian_conj():
     H = hamiltonian([M],[])
     np.testing.assert_allclose((H-H.H).todense()-(M-M.T.conj()),0,atol=1e-12)
 
+    def f(t):
+        return np.exp(-1j*t)
+
+    def f_cc(t):
+        return np.exp(1j*t)
+
+    M = (M+M.T.conj())/2.0
+    H = hamiltonian([M],[[M,f,()],[M,f_cc,()]])
+    np.testing.assert_allclose((H-H.H).todense(1342.1293),0,atol=1e-12)
+
+
 def test_transpose():
     M = np.arange(9).reshape((3,3))
     H = hamiltonian([M],[])
@@ -35,8 +46,10 @@ def test_transpose():
 
 def test_conj():
     M = 1j*np.arange(9).reshape((3,3))
+
     H = hamiltonian([M],[])
     np.testing.assert_allclose((H-H.conj()).todense()-(M-M.conj()),0,atol=1e-12)
+
 
 
 def test_mul_dense():
@@ -99,14 +112,12 @@ def test_evolve():
     for i,(ipsi,psi) in enumerate(zip(ipsi_t,psi_t)):
         solver.integrate(times[i])
         solver._y/=np.linalg.norm(solver.y)
-        np.testing.assert_allclose(psi-solver.y,0,atol=1e-12)
+        np.testing.assert_allclose(psi-solver.y,0,atol=1e-10)
 
         isolver.integrate(times[i])
-        np.testing.assert_allclose(ipsi-isolver.y,0,atol=1e-12)
+        np.testing.assert_allclose(ipsi-isolver.y,0,atol=1e-10)
 
  
-
-
 
 
 test_shape()

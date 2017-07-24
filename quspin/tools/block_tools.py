@@ -13,7 +13,7 @@ from scipy.sparse.linalg import expm_multiply
 from multiprocessing import Process,Queue,Event
 from joblib import Parallel,delayed
 # six for python 2.* and 3.* dictionary compatibility
-from six import iteritems
+from six import iteritems,itervalues
 
 try:
 	from itertools import izip
@@ -34,7 +34,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 	* H: hamiltonian object in block diagonal form. 
 
 	--- arguments ---
-	* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries or hamiltonian objects.
+	* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.
 
 	* static: (required) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.
 
@@ -81,7 +81,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 			check_herm = False
 			check_pcon = False
 			static_mats.append(H.static.tocoo())
-			for i,(Hd,_,_) in enumerate(H.dynamic):
+			for i,Hd in enumerate(itervalues(H.dynamic)):
 				dynamic_list[i][0].append(Hd.tocoo())
 
 		static = [_sp.block_diag(static_mats,format="csr")]
@@ -90,29 +90,8 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 			mats = _sp.block_diag(mats,format="csr")
 			dynamic.append([mats,f,f_args])
 
-	elif all([_ishamiltonian(block) for block in blocks]):
-		static_mats = []	
-		dynamic_dict = {}
-		for H in blocks:
-			if get_proj:
-				P = H.basis.get_proj(dtype,**get_proj_kwargs)
-				P_list.append(P)
-
-			static_mats.append(H.static.tocoo())
-			for i,(Hd,f,f_args) in enumerate(H.dynamic):
-				if (f,f_args) not in dynamic_dict:
-					dynamic_dict[(f,f_args)] = [Hd.tocoo()]
-				else:
-					dynamic_dict[(f,f_args)].append(Hd.tocoo())
-
-		static = [_sp.block_diag(static_mats,format="csr")]
-		dynamic = []
-		for (f,f_args),mats in dynamic_list.items():
-			mats = _sp.block_diag(mats,format="csr")
-			dynamic.append([mats,f,f_args])
-
 	else:
-		raise ValueError("blocks must be list of hamiltonians or list of dictionaries containing symmetry sectors.")
+		raise ValueError("blocks must be list of dictionaries containing symmetry sectors.")
 
 
 
@@ -402,7 +381,6 @@ class block_ops(object):
 				self._H_dict[key] = H
 
 
-
 	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,block_diag=False,H_real=False,imag_time=False,solver_name="dop853",**solver_args):
 		"""
 		this function is the creates blocks and then uses them to run H.evole in parallel.
@@ -512,7 +490,6 @@ class block_ops(object):
 				return psi_t
 		else:
 			raise RuntimeError("initial state has no projection on to specified blocks.")
-
 
 
 	def expm(self,psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,block_diag=False,a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
@@ -681,7 +658,7 @@ class block_ops(object):
 
 
 
-
+'''
 class block_diag_ensemble(object):
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
 		"""
@@ -822,6 +799,4 @@ class block_diag_ensemble(object):
 	def diag_ensemble(istate,**diag_ensemble_kwargs):
 		pass
 
-
-
-
+'''
