@@ -853,27 +853,19 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	Returns
 	------- 
 	dict
-		Dictionary with keys depending on the passed optional arguments:
-
-		"rho_d": density matrix of Diagonal Ensemble
-
-		"Obs_...": infinite-time expectation of observable `Obs`.
-
-		"delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
-
-		"delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
-
-		"Sd_..."" ("Sd_Renyi_..."" for `alpha!=1.0`): Renyi diagonal entropy of density matrix of 
+		The following keys of the output are possible, depending on the choice of flags:
+		* "rho_d": density matrix of Diagonal Ensemble
+		* "Obs_...": infinite-time expectation of observable `Obs`.
+		* "delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
+		* "delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
+		* "Sd_..."" ("Sd_Renyi_..."" for `alpha!=1.0`): Renyi diagonal entropy of density matrix of 
 			`rho_d` with parameter `alpha`.
-
-		"Srdm_..." ("Srdm_Renyi_..."" for `alpha!=1.0`): Renyi entanglement entropy of reduced DM of 
+		* "Srdm_..." ("Srdm_Renyi_..."" for `alpha!=1.0`): Renyi entanglement entropy of reduced DM of 
 			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
 
 		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
 
 	
-
-
 	"""
 
 	# check if E2 are all unique
@@ -1072,26 +1064,30 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	return Expt_Diag
 
 def ED_state_vs_time(psi,E,V,times,iterate=False):
-	"""
-	This routine calculates the time evolved initial state as a function of time. The initial 
-	state is 'psi' and the time evolution is carried out under the Hamiltonian H with eigenenergies 
-	'E' and eigensystem 'V'. 
+	"""Calculates the time evolved initial state as a function of time. 
 
-	RETURNS:	either a matrix with the time evolved states as rows, 
-				or an iterator which generates the states one by one.
+	The time evolution is carried out under the Hamiltonian $H$ with eigenenergies `E` and eigenstates `V`. 
 
-	--- arguments --- 
+	Parameters
+	----------
+	psi : numpy.ndarray
+		Tnitial state.
+	V : numpy.ndarray
+		Unitary matrix containing in all eigenstates of the Hamiltonian $H$ in its columns. 
+	E : numpy.ndarray
+		Eigenvalues of the Hamiltonian $H$, in order which corresponds to the columns of `V`. 
+	times : numpy.ndarray
+		Vector of times to evaluate the time evolved state at. 
+	iterate : bool, optional
+		If set to `True`, the function returns the generator of the time evolved state. 
 
-	psi: (required) initial state.
+	Returns
+	-------
+	obj
+		Either of the following:
+		* numpy.ndarray with the time evolved states as rows. 
+		* generator which generates time-dependent states one by one.
 
-	V: (required) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
-
-	E: (required) array containing the eigenvalues of the Hamiltonian H2. 
-			The order of the eigenvalues must correspond to the order of the columns of V2. 
-
-	times: (required) a vector of times to evaluate the time evolved state at. 
-
-	iterate: (optional) if True this function returns the generator of the time evolved state. 
 	"""
 	psi = _np.squeeze(_np.asarray(psi))
 
@@ -1175,58 +1171,61 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 			
 			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
 
-			
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pure=False,verbose=False):
+	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
 
-def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},disp=False):
-	
-	"""
-	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
-	in the time-dependent state 'psi_t'.
+	Parameters
+	----------
+	psi_t : :obj:
+		Time-dependent state data; can be either one of:
+		* tuple: `psi_t = (psi, E, V)` where 
+			-- np.ndarray: initial state `psi`.
+			-- np.ndarray: unitary matrix `V`, contains all eigenstates of the Hamiltonian $H$. 
+			-- np.ndarray: real-valued array `E`, contains all eigenvalues of the Hamiltonian $H$. 
+			   The order of the eigenvalues must correspond to the order of the columns of `V`.
 
-	RETURNS:	dictionary with keys:
+			Use this option when the initial state is evolved witht a time-INdependent Hamiltonian $H$.
+		* numpy.ndarray: array with the states evaluated at `times` stored in the last dimension. 
+			Can be 2D (single time-dependent state) or 3D (many time-dependent states or 
+			time-dep mixed density matrix, see `enforce_pure` argument.)
 
-	'custom_name': for each key of 'Obs_dict', the time-dependent expectation of the 
-				observable 'Obs_dict[key]' is calculated and returned.
+			Use this option for PARALLELISATION over many states.
+		* obj: generator which generates the states.
+	Obs_dict : dict
+		Dictionary with observables (e.g. `hamiltonian objects`) stored in the values, to calculate 
+		their time-dependent expectation value of. Dictionary keys are chosen by user.
+	times : numpy.ndarray
+		Vector of times to evaluate the expectation values at. This is important for time-dependent observables. 
+	return_state : bool, optional
+		If set to `True`, adds key `psi_time` to output. The columns of the array
+		containt the state vector at the `times` which specifies the column index. Default is `False`, unless
+		`Sent_args` is nonempty.
+	Srdm_args : dict, optional 
+		If nonempty, this dictionary contains the arguments necessary for the calculation of the entanglement
+		entropy. The following key is required:
+		* "basis": the basis used to build `system_state` in. Must be an instance of the `basis` class.
 
-	'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
+		The user can choose optional arguments according to those provided in the function method 
+		`basis.ent_entropy()` of the `basis` class [preferred], or the function `ent_entropy()`. 
 
-	'Sent_time': (optional) returns the entanglement _entropy of the state at time 'times'.
+		If only the `basis` is passed, the default parameters of `basis.ent_entropy()` are assumed.
+	enforce_pure : bool, optional
+		Flag to enforce pure state expectation values in the case that `psi_t` is an array of pure states
+		in the columns. (`psi_t` will otherwise be interpreted as a mixed density matrix).
+	verbose : bool, optional
+		If set to `True`, displays a message at every `times` step after the calculation is complete.
+		Default is `False`.
 
-	--- arguments ---
+	Returns
+	-------
+	dict
+		The following keys of the output are possible, depending on the choice of flags:
+		* "custom_name": for each key of `Obs_dict`, the time-dependent expectation of the 
+			corresponding observable `Obs_dict[key]` is calculated and returned under the user-defined name
+			for the observable.
+		* "psi_t": (optional) returns time-dependent state, if `return_state=True` or `Srdm_args` is nonempty.
+		* "Sent_time": (optional) returns entanglement entropy of the state for each time in `times`.
 
-	psi_t: (required) three different inputs:
-		i) psi_t tuple(psi,E,V) 
-			psi: initial state
-	
-			V: unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
-
-			E: real vector containing the eigenvalues of the Hamiltonian H2. 
-			   The order of the eigenvalues must correspond to the order of the columns of V2.
-
-		ii) numpy array or matrix with states in the columns.
-
-		iii) generator which generates the states
-
-	Obs_dict: (required) dictionary of hermitian matrices to calculate its time-dependent expectation value. 
-
-	times: (required) a vector of times to evaluate the expectation value at. 
-
-	return_state: (optional) when set to 'True' or Sent_args is nonempty, returns a matrix whose columns give the state vector 
-			at the times specified by the column index. The return dictonary key is 'psi_time'.
-
-	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
-			following keys are allowed:
-
-			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-			  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
-
-			* chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
-
-			 * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
-
-			 * [0,1,...,N-1,N] for 'photon_basis'. 
-
-			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
 
 	"""
 
@@ -1316,7 +1315,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 		if not isbasis(basis):
 			raise ValueError("'basis' object must be a proper basis object")
 
-		if "chain_subsys" in Sent_args or"DM" in Sent_args or "svd_return_vec" in Sent_args:
+		if ("chain_subsys" in Sent_args) or ("DM" in Sent_args) or ("svd_return_vec" in Sent_args):
 			calc_ent_entropy = ent_entropy
 		else:
 			calc_ent_entropy = basis.ent_entropy
@@ -1329,7 +1328,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 		for key,Obs in Obs_dict.items():
 			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
 			
-		# calculate entanglement _entropy if requested	
+		# calculate entanglement entropy if requested	
 		if calc_Sent:
 			Sent_time = calc_ent_entropy(psi_t,**Sent_args)
 
@@ -1366,7 +1365,7 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 
 			time = times[m+1]
 
-			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
+			if verbose: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in Obs_dict.items():
 				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
@@ -1388,21 +1387,29 @@ def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_
 	return return_dict
 
 def project_op(Obs,proj,dtype=_np.complex128):
-	"""
-	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
+	"""Projects observable onto symmetry-reduced subspace.
+
+	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`
 	onto that reduced basis.
 
-	RETURNS: 	dictionary with keys 
+	Parameters
+	----------
+	Obs : :obj:
+		Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.
+	proj : :obj:
+		Either one of the following:
+		* `basis` object with the basis of the Hilbert space after the projection.
+		* numpy.ndarray: a matrix which contains the projector.
 
-	'Proj_Obs': projected observable 'Obs'
+		Projectors can ve calculated conveniently using the function method `basis.get_vec()`.
+	dtype : type, optional
+		Data type of output. Default is `numpy.complex128`.
 
-	--- arguments ---
-
-	Obs: (required) operator to be projected.
-
-	proj: (required) basis of the final space after the projection or a matrix which contains the projector.
-
-	dtype: (optional) data type. Default is np.complex128.
+	Returns
+	------- 
+	dict
+		Dictionary with keys
+		* "Proj_Obs": projected observable `Obs`.
 
 	"""
 
@@ -1459,9 +1466,22 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	return return_dict
 
 def KL_div(p1,p2):
-	"""
-	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
-	p1 and p2.
+	"""Calculates Kullback-Leibler divergence of two discrete probability distributions.
+
+	$$ \mathrm{KL}(p_1||p_2) = \sum_n p_1(n)\log\frac{p_1(n)}{p_2(n)} $$
+
+	Parameters
+	---------- 
+	p1 : numpy.ndarray
+		Dscrete probability distribution.
+	p2 : numpy.ndarray
+		Discrete probability distribution.
+
+	Returns
+	-------
+	numpy.ndarray
+		Kullback-Leibler divergence of `p1` and `p2`.
+
 	"""
 	p1 = _np.asarray(p1)
 	p2 = _np.asarray(p2)
@@ -1492,14 +1512,20 @@ def KL_div(p1,p2):
 	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
 
 def mean_level_spacing(E):
-	"""
-	This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
+	"""Calculates the mean-level spacing of an energy spectrum.
 
-	RETURNS: float with mean-level spacing 'r_ave'.
+	See mean lebel spacing, $r_\mathrm{ave}$, in arXiv:1212.5611 for more details.
 
-	--- arguments ---
+	Parameters
+	----------
+	E : numpy.ndarray
+		Ordered list of ascending, NONdegenerate energies.
 
-	E: (required) ordered list of ascending, nondegenerate eigenenergies.
+	Returns
+	------- 
+	float
+		mean-level spacing.
+
 	"""
 
 	if not isinstance(E,_np.ndarray):

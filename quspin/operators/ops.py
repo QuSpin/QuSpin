@@ -661,7 +661,7 @@ class hamiltonian(object):
 			V: state or collection of states (pure or mixed)
 			time: time to evaluate hamiltonian at.
 			check: flag to tel whether or not to do check
-			enforce_pure: flag to enforce pure expectation value of V is square. 
+			enforce_pure: flag to enforce pure expectation value if V is square. 
 		"""
 		if self.Ns <= 0:
 			return _np.asarray([])
