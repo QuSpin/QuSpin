@@ -16,7 +16,7 @@ from numpy import vstack
 
 import warnings
 
-__all__ = ['Floquet_t_vec','Floquet']
+__all__ = ['Floquet_t_vec','Floquet_t_vec']
 
 #warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
 
@@ -225,8 +225,8 @@ class Floquet(object):
 
 				t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 
-				for _, f, f_args in H.dynamic:
-					if abs(f(t,*f_args) - f(t+T,*f_args) ) > 1E3*_np.finfo(_np.complex128).eps:
+				for func in H.dynamic:
+					if abs(func(t) - func(t+T) ) > 1E3*_np.finfo(_np.complex128).eps:
 						raise TypeError("Hamiltonian 'H' must be periodic with period 'T'!")
 
 				if not (type(n_jobs) is int):

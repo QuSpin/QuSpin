@@ -4,24 +4,28 @@ from ..operators import hamiltonian as _hamiltonian
 from ..operators import ishamiltonian as _ishamiltonian
 # numpy modules
 import numpy as _np # generic math functions
-from numpy import hstack,vstack
-# scipy modules
-import scipy
+# _scipy modules
+import scipy as _scipy
 import scipy.sparse as _sp
-from scipy.sparse.linalg import expm_multiply
+from scipy.sparse.linalg import expm_multiply as _expm_multiply
 # multi-processing modules
-from multiprocessing import Process,Queue,Event
-from joblib import Parallel,delayed
+from multiprocessing import Process as _Process
+from multiprocessing import Queue as _Queue
+from multiprocessing import Event as _Event
+
+from joblib import Parallel as _Parallel
+from joblib import delayed as _delayed
 # six for python 2.* and 3.* dictionary compatibility
-from six import iteritems
+from six import iteritems as _iteritems
+from six import itervalues as _itervalues
 
 try:
-	from itertools import izip
+	from itertools import izip as _izip
 except ImportError:
-	izip = zip
+	_izip = zip
+
 
 __all__=["block_diag_hamiltonian","block_ops"]
-
 
 def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},get_proj=True,check_symm=True,check_herm=True,check_pcon=True):
 	"""Constructs a block-diagonal hamiltonian object with the blocks being created via the argument 'blocks'.
@@ -29,7 +33,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 	Parameters
     ----------
 	blocks : list/tuple/iterator
-		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries or `hamiltonian` objects.
+		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries.
 	static : list
 		Static operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.
 	dynamic : list
@@ -54,11 +58,11 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 		Enable/Disable hermiticity check of the operators for the first Hamiltonian constructed.
 	check_pcon : bool, optional
 		Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.
-	
+
 	Returns
 	-------
 	tuple
-		P : scipy.sparse.csr 
+		P : _scipy.sparse.csr 
 			Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).
 
 		H : `obj`
@@ -71,7 +75,6 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
     	the symmetry sectors.
 
 	"""
-
 	H_list = []
 	P_list = []
 
@@ -93,7 +96,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 			check_herm = False
 			check_pcon = False
 			static_mats.append(H.static.tocoo())
-			for i,(Hd,_,_) in enumerate(H.dynamic):
+			for i,Hd in enumerate(_itervalues(H.dynamic)):
 				dynamic_list[i][0].append(Hd.tocoo())
 
 		static = [_sp.block_diag(static_mats,format="csr")]
@@ -102,29 +105,8 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 			mats = _sp.block_diag(mats,format="csr")
 			dynamic.append([mats,f,f_args])
 
-	elif all([_ishamiltonian(block) for block in blocks]):
-		static_mats = []	
-		dynamic_dict = {}
-		for H in blocks:
-			if get_proj:
-				P = H.basis.get_proj(dtype,**get_proj_kwargs)
-				P_list.append(P)
-
-			static_mats.append(H.static.tocoo())
-			for i,(Hd,f,f_args) in enumerate(H.dynamic):
-				if (f,f_args) not in dynamic_dict:
-					dynamic_dict[(f,f_args)] = [Hd.tocoo()]
-				else:
-					dynamic_dict[(f,f_args)].append(Hd.tocoo())
-
-		static = [_sp.block_diag(static_mats,format="csr")]
-		dynamic = []
-		for (f,f_args),mats in dynamic_list.items():
-			mats = _sp.block_diag(mats,format="csr")
-			dynamic.append([mats,f,f_args])
-
 	else:
-		raise ValueError("blocks must be list of hamiltonians or list of dictionaries containing symmetry sectors.")
+		raise ValueError("blocks must be list of dictionaries containing symmetry sectors.")
 
 
 
@@ -144,16 +126,12 @@ def _worker(gen_func,args_list,q,e):
 	Waits for signal from `e` before continuing. 
 
 	"""
-	try:
-		from itertools import izip
-	except ImportError:
-		izip = zip
 
 	gens = []
 	for arg in args_list:
 		gens.append(gen_func(*arg))
 
-	generator = izip(*gens)
+	generator = _izip(*gens)
 	for s in generator:
 		e.clear()
 		q.put(s)
@@ -181,16 +159,11 @@ def _generate_parallel(n_process,n_iter,gen_func,args_list):
 
 	# if one process specified just do the generator without sub processes.
 	if n_process <= 1:
-		try:
-			from itertools import izip
-		except ImportError:
-			izip = zip
-
 		gens = []
 		for arg in args_list:
 			gens.append(gen_func(*arg))
 
-		generator = izip(*gens)
+		generator = _izip(*gens)
 
 		for s in generator:
 			yield s
@@ -205,9 +178,9 @@ def _generate_parallel(n_process,n_iter,gen_func,args_list):
 	qs = []
 	ps = []
 	for i in range(n_process):
-		e = Event()
-		q = Queue(1)
-		p = Process(target=_worker, args=(gen_func,sub_lists[i],q,e))
+		e = _Event()
+		q = _Queue(1)
+		p = _Process(target=_worker, args=(gen_func,sub_lists[i],q,e))
 		p.daemon = True
 		es.append(e)
 		qs.append(q)
@@ -222,7 +195,7 @@ def _generate_parallel(n_process,n_iter,gen_func,args_list):
 	for i in range(n_iter):
 		s = []
 		# retrieve results for each sub-process and let the process know to continue calculation.
-		for q,e in zip(qs,es):
+		for q,e in _izip(qs,es):
 			s.extend(q.get())
 			e.set() # free process to do next calculation
 
@@ -241,17 +214,17 @@ def _evolve_gen(psi,H,t0,times,H_real,imag_time,solver_name,solver_args):
 		yield psi
 
 def _expm_gen(psi,H,times,dt):
-	"""Generating function for evolution via `expm_multiply`."""
+	"""Generating function for evolution via `_expm_multiply`."""
 	if times[0] != 0:
 		H *= times[0]
-		psi = expm_multiply(H,psi)
+		psi = _expm_multiply(H,psi)
 		H /= times[0]
 
 	yield psi
 
 	H *= dt
 	for t in times[1:]:
-		psi = expm_multiply(H,psi)
+		psi = _expm_multiply(H,psi)
 		yield psi
 	H /= dt
 
@@ -262,7 +235,7 @@ def _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name
 	args_list = [(psi_blocks[i],H_list[i],t0,times,H_real,imag_time,solver_name,solver_args) for i in range(len(H_list))]
 
 	for psi_blocks in _generate_parallel(n_jobs,len(times),_evolve_gen,args_list):
-		psi_t = hstack(psi_blocks)
+		psi_t = _np.hstack(psi_blocks)
 		yield P.dot(psi_t)
 
 def _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs):
@@ -270,7 +243,7 @@ def _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs):
 	times,dt = _np.linspace(start,stop,num=num,endpoint=endpoint,retstep=True)
 	args_list = [(psi_blocks[i],H_list[i],times,dt) for i in range(len(H_list))]
 	for psi_blocks in _generate_parallel(n_jobs,len(times),_expm_gen,args_list):
-		psi_t = hstack(psi_blocks)
+		psi_t = _np.hstack(psi_blocks)
 		yield P.dot(psi_t)	
 
 def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args):
@@ -412,7 +385,7 @@ class block_ops(object):
 
 
 	def compute_all_blocks(self):
-		for key,b in iteritems(self._basis_dict):
+		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				self._P_dict[key] = p
@@ -424,7 +397,6 @@ class block_ops(object):
 				else:
 					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 				self._H_dict[key] = H
-
 
 
 	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,block_diag=False,H_real=False,imag_time=False,solver_name="dop853",**solver_args):
@@ -484,7 +456,7 @@ class block_ops(object):
 		P = []
 		H_list = []
 		psi_blocks = []
-		for key,b in iteritems(self._basis_dict):
+		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				if self._save:
@@ -528,13 +500,13 @@ class block_ops(object):
 			psi_blocks_prime = []
 			if n_left != 0:
 				H_list_prime.append(block_diag_hamiltonian(H_list[:n_left],None,None,None,None,self._dtype,get_proj=False,**self._no_checks))
-				psi_list_prime.append(hstack(psi_blocks[:n_left]))
+				psi_list_prime.append(_np.hstack(psi_blocks[:n_left]))
 
 			for i in range(n_jobs-1):
 				i1 = n_left + i*n_pp
 				i2 = n_left + (i+1)*n_pp
 				H_list_prime.append(block_diag_hamiltonian(H_list[i1:i2],None,None,None,None,self._dtype,get_proj=False,**self._no_checks))
-				psi_list_prime.append(hstack(psi_blocks[i1:i2]))
+				psi_list_prime.append(_np.hstack(psi_blocks[i1:i2]))
 
 			H_list = H_list_prime
 			psi_blocks = psi_blocks_prime				
@@ -548,17 +520,16 @@ class block_ops(object):
 					raise ValueError("If iterate=True times must be a list/array.")
 				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name,solver_args,n_jobs)
 			else:
-				psi_t = Parallel(n_jobs = n_jobs)(delayed(_block_evolve_helper)(H,psi,t0,times,H_real,imag_time,solver_name,solver_args) for psi,H in zip(psi_blocks,H_list))
-				psi_t = vstack(psi_t)
+				psi_t = _Parallel(n_jobs = n_jobs)(_delayed(_block_evolve_helper)(H,psi,t0,times,H_real,imag_time,solver_name,solver_args) for psi,H in _izip(psi_blocks,H_list))
+				psi_t = _np.vstack(psi_t)
 				psi_t = P.dot(psi_t)
 				return psi_t
 		else:
 			raise RuntimeError("initial state has no projection on to specified blocks.")
 
 
-
 	def expm(self,psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,block_diag=False,a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
-		"""Creates symmetry blocks of the Hamiltonian and then uses them to run `expm_multiply()` in parallel.
+		"""Creates symmetry blocks of the Hamiltonian and then uses them to run `_expm_multiply()` in parallel.
 		
 		Notes
 		-----
@@ -652,7 +623,7 @@ class block_ops(object):
 		P = []
 		H_list = []
 		psi_blocks = []
-		for key,b in iteritems(self._basis_dict):
+		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				if self._save:
@@ -698,7 +669,7 @@ class block_ops(object):
 			H_list_prime = []
 			psi_blocks_prime = []
 
-			psi_block = hstack(psi_blocks[:n_left])
+			psi_block = _np.hstack(psi_blocks[:n_left])
 			H_block = _sp.block_diag(H_list[:n_left],format="csr")
 
 			H_list_prime.append(H_block)
@@ -708,7 +679,7 @@ class block_ops(object):
 			for i in range(n_jobs-1):
 				i1 = n_left + i*n_pp
 				i2 = n_left + (i+1)*n_pp
-				psi_block = hstack(psi_blocks[i1:i2])
+				psi_block = _np.hstack(psi_blocks[i1:i2])
 				H_block = _sp.block_diag(H_list[i1:i2],format="csr")
 
 				H_list_prime.append(H_block)
@@ -725,13 +696,13 @@ class block_ops(object):
 			if iterate:
 				return _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 			else:
-				ver = [int(v) for v in scipy.__version__.split(".")]
+				ver = [int(v) for v in _scipy.__version__.split(".")]
 				if H_is_complex and (start,stop,num,endpoint) != (None,None,None,None) and ver[1] < 19:
 					mats = _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs)
 					return _np.array([mat for mat in mats]).T
 				else:
-					psi_t = Parallel(n_jobs = n_jobs)(delayed(expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in zip(psi_blocks,H_list))
-					psi_t = hstack(psi_t).T
+					psi_t = _Parallel(n_jobs = n_jobs)(_delayed(_expm_multiply)(H,psi,start=start,stop=stop,num=num,endpoint=endpoint) for psi,H in _izip(psi_blocks,H_list))
+					psi_t = _np.hstack(psi_t).T
 					psi_t = P.dot(psi_t)
 					return psi_t
 		else:
@@ -740,8 +711,11 @@ class block_ops(object):
 
 
 
+
 '''
 # TO DO
+
+=======
 
 class block_diag_ensemble(object):
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
@@ -866,7 +840,7 @@ class block_diag_ensemble(object):
 
 
 	def compute_all_blocks(self):
-		for key,b in iteritems(self._basis_dict):
+		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
 				self._P_dict[key] = p
@@ -883,6 +857,6 @@ class block_diag_ensemble(object):
 	def diag_ensemble(istate,**diag_ensemble_kwargs):
 		pass
 
-
+=======
 '''
 

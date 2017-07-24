@@ -8,7 +8,7 @@ Welcome to QuSpin's documentation!
 
 blah blah general descriptions and usage/references
 
-quspin API reference
+QuSpin API reference
 ====================
 
 .. toctree::
