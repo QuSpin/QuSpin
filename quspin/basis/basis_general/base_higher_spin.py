@@ -54,31 +54,37 @@ class higher_spin_basis_general(basis_general):
 			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
 
 		if basis_type==_np.uint32:
-			self._basis = _np.zeros(Ns,dtype=_np.uint32)
-			self._n     = _np.zeros(Ns,dtype=_np.uint16)
+			basis = _np.zeros(Ns,dtype=_np.uint32)
+			n     = _np.zeros(Ns,dtype=_np.uint16)
 			self._core = higher_spin_basis_core_wrap_32(N,sps,self._maps,self._pers,self._qs)
 		elif basis_type==_np.uint64:
-			self._basis = _np.zeros(Ns,dtype=_np.uint64)
-			self._n     = _np.zeros(Ns,dtype=_np.uint16)
+			basis = _np.zeros(Ns,dtype=_np.uint64)
+			n     = _np.zeros(Ns,dtype=_np.uint16)
 			self._core = higher_spin_basis_core_wrap_64(N,sps,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("states can't be represented as 64-bit unsigned integer")
 
 		self._sps=sps
 		if count_particles and (Nup is not None):
-			self._Np_list = _np.zeros_like(self._basis,dtype=_np.uint8)
-			self._Ns = self._core.make_basis(self._basis,self._n,Np=Nup,count=self._Np_list)
-			self._basis = self._basis[:self._Ns]
-			arg = self._basis.argsort()[::-1]
-			self._basis = self._basis[arg].copy()
-			self._n = self._n[arg].copy()
-			self._Np_list = self._Np_list[arg].copy()
+			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
+			self._Ns = self._core.make_basis(basis,n,Np=Nup,count=Np_list)
+			basis,ind = _np.unique(basis,return_index=True)
+			if self.Ns != basis.shape[0]:
+				basis = basis[1:]
+				ind = ind[1:]
+
+			self._basis = basis[::-1].copy()
+			self._n = n[ind[::-1]].copy()
+			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
-			self._Ns = self._core.make_basis(self._basis,self._n,Np=Nup)
-			self._basis = self._basis[:self._Ns]
-			arg = self._basis.argsort()[::-1]
-			self._basis = self._basis[arg].copy()
-			self._n = self._n[arg].copy()
+			self._Ns = self._core.make_basis(basis,n,Np=Nup)
+			basis,ind = _np.unique(basis,return_index=True)
+			if self.Ns != basis.shape[0]:
+				basis = basis[1:]
+				ind = ind[1:]
+				
+			self._basis = basis[::-1].copy()
+			self._n = n[ind[::-1]].copy()
 
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)

@@ -50,7 +50,7 @@ def check_ME(b1,b2,opstr,indx,dtype):
 			raise Exception
 
 def test_gen_basis_hcb(l_max,S="1/2"):
-	L=4
+	L=6
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]

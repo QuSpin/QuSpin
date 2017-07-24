@@ -126,7 +126,6 @@ class basis_general(lattice_basis):
 
 		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n)
 
-		# print ME
 		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
 		col = col[mask]
 		row = row[mask]

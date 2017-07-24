@@ -83,37 +83,74 @@ class spinful_fermion_basis_general(basis_general):
 			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
 
 		if N<=16:
-			self._basis = _np.zeros(Ns,dtype=_np.uint32)
-			self._n     = _np.zeros(Ns,dtype=_np.uint16)
+			basis = _np.zeros(Ns,dtype=_np.uint32)
+			n     = _np.zeros(Ns,dtype=_np.uint16)
 			self._core = spinful_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=32:
-			self._basis = _np.zeros(Ns,dtype=_np.uint64)
-			self._n     = _np.zeros(Ns,dtype=_np.uint16)
+			basis = _np.zeros(Ns,dtype=_np.uint64)
+			n     = _np.zeros(Ns,dtype=_np.uint16)
 			self._core = spinful_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=32.")
 
 		self._sps=4
 		if count_particles and (Nf is not None):
-			self._Np_list = _np.zeros_like(self._basis,dtype=_np.uint8)
-			self._Ns = self._core.make_basis(self._basis,self._n,Np=Nf,count=self._Np_list)
-			self._basis = self._basis[:self._Ns]
-			arg = self._basis.argsort()[::-1]
-			self._basis = self._basis[arg].copy()
-			self._n = self._n[arg].copy()
-			self._Np_list = self._Np_list[arg].copy()
+			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
+			self._Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
+			if self.Ns != basis.shape[0]:
+				basis = basis[1:]
+				ind = ind[1:]
+			self._basis = basis[::-1].copy()
+			self._n = n[ind[::-1]].copy()
+			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
-			self._Ns = self._core.make_basis(self._basis,self._n,Np=Nf)
-			self._basis = self._basis[:self._Ns]
-			arg = self._basis.argsort()[::-1]
-			self._basis = self._basis[arg].copy()
-			self._n = self._n[arg].copy()
+			self._Ns = self._core.make_basis(basis,n,Np=Nf)
+			basis,ind = _np.unique(basis,return_index=True)
+			if self.Ns != basis.shape[0]:
+				basis = basis[1:]
+				ind = ind[1:]
+			self._basis = basis[::-1].copy()
+			self._n = n[ind[::-1]].copy()
 
-		self._N = N
+		n = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","n","+","-"])
 
 		self._check_symm = None
+
+
+	def Op(self,opstr,indx,J,dtype):
+		indx = _np.asarray(indx,dtype=_np.int32)
+
+		if opstr.count("|") != 1:
+			raise ValueError("opstr does not have '|' to split up and down operators")
+
+		if len(opstr.replace("|","")) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
+		if _np.any(indx >= n) or _np.any(indx < 0):
+			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr.replace("|","")) - self._allowed_ops
+
+		if extra_ops:
+			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+		if self._Ns <= 0:
+			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)
+	
+		col = _np.zeros(self._Ns,dtype=self._index_type)
+		row = _np.zeros(self._Ns,dtype=self._index_type)
+		ME = _np.zeros(self._Ns,dtype=dtype)
+
+		self._core.op(row,col,ME,opstr,indx,J,basis,n)
+
+		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+		col = col[mask]
+		row = row[mask]
+		ME = ME[mask]
+
+		return ME,row,col
 
 	def _get__str__(self):
 		def get_state(b):
@@ -127,10 +164,10 @@ class spinful_fermion_basis_general(basis_general):
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(basis)]
 
 		return tuple(str_list)
 
@@ -177,31 +214,37 @@ class spinless_fermion_basis_general(basis_general):
 
 
 		if N<=32:
-			self._basis = _np.zeros(Ns,dtype=_np.uint32)
-			self._n     = _np.zeros(Ns,dtype=_np.uint16)
+			basis = _np.zeros(Ns,dtype=_np.uint32)
+			n     = _np.zeros(Ns,dtype=_np.uint16)
 			self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
-			self._basis = _np.zeros(Ns,dtype=_np.uint64)
-			self._n     = _np.zeros(Ns,dtype=_np.uint16)
+			basis = _np.zeros(Ns,dtype=_np.uint64)
+			n     = _np.zeros(Ns,dtype=_np.uint16)
 			self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=64.")
 
 		self._sps=2
 		if count_particles and (Nf is not None):
-			self._Np_list = _np.zeros_like(self._basis,dtype=_np.uint8)
-			self._Ns = self._core.make_basis(self._basis,self._n,Np=Nf,count=self._Np_list)
-			self._basis = self._basis[:self._Ns]
-			arg = self._basis.argsort()[::-1]
-			self._basis = self._basis[arg].copy()
-			self._n = self._n[arg].copy()
-			self._Np_list = self._Np_list[arg].copy()
+			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
+			self._Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
+			basis,ind = _np.unique(basis,return_index=True)
+			if self.Ns != basis.shape[0]:
+				basis = basis[1:]
+				ind = ind[1:]
+
+			self._basis = basis[::-1].copy()
+			self._n = n[ind[::-1]].copy()
+			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
-			self._Ns = self._core.make_basis(self._basis,self._n,Np=Nf)
-			self._basis = self._basis[:self._Ns]
-			arg = self._basis.argsort()[::-1]
-			self._basis = self._basis[arg].copy()
-			self._n = self._n[arg].copy()
+			self._Ns = self._core.make_basis(basis,n,Np=Nf)
+			basis,ind = _np.unique(basis,return_index=True)
+			if self.Ns != basis.shape[0]:
+				basis = basis[1:]
+				ind = ind[1:]
+				
+			self._basis = basis[::-1].copy()
+			self._n = n[ind[::-1]].copy()
 
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
