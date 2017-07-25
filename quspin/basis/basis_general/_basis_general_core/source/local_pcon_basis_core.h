@@ -29,7 +29,7 @@ class local_pcon_basis_core : public general_basis_core<I>
 
 		~local_pcon_basis_core() {}
 
-		I map_state(I s,int n_map){
+		I inline map_state(I s,int n_map){
 			if(general_basis_core<I>::nt<=0){
 				return s;
 			}

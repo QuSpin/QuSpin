@@ -9,6 +9,10 @@ from scipy.misc import comb
 # general basis for hardcore bosons/spin-1/2
 class spinful_fermion_basis_general(basis_general):
 	def __init__(self,N,Nf=None,_Np=None,**kwargs):
+		# Nf = [(Nup,Ndown),...]
+		# Nup is left side of basis sites 0 - N-1
+		# Ndown is right side of basis sites N - 2*N-1
+
 		basis_general.__init__(self,2*N,**kwargs)
 		self._check_pcon = False
 		count_particles = False
@@ -93,7 +97,7 @@ class spinful_fermion_basis_general(basis_general):
 		else:
 			raise ValueError("system size N must be <=32.")
 
-		self._sps=4
+		self._sps=2
 		if count_particles and (Nf is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 			self._Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
@@ -112,45 +116,11 @@ class spinful_fermion_basis_general(basis_general):
 			self._basis = basis[::-1].copy()
 			self._n = n[ind[::-1]].copy()
 
-		n = N
+		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","n","+","-"])
 
 		self._check_symm = None
-
-
-	def Op(self,opstr,indx,J,dtype):
-		indx = _np.asarray(indx,dtype=_np.int32)
-
-		if opstr.count("|") != 1:
-			raise ValueError("opstr does not have '|' to split up and down operators")
-
-		if len(opstr.replace("|","")) != len(indx):
-			raise ValueError('length of opstr does not match length of indx')
-
-		if _np.any(indx >= n) or _np.any(indx < 0):
-			raise ValueError('values in indx falls outside of system')
-
-		extra_ops = set(opstr.replace("|","")) - self._allowed_ops
-
-		if extra_ops:
-			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
-
-		if self._Ns <= 0:
-			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)
-	
-		col = _np.zeros(self._Ns,dtype=self._index_type)
-		row = _np.zeros(self._Ns,dtype=self._index_type)
-		ME = _np.zeros(self._Ns,dtype=dtype)
-
-		self._core.op(row,col,ME,opstr,indx,J,basis,n)
-
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
-		col = col[mask]
-		row = row[mask]
-		ME = ME[mask]
-
-		return ME,row,col
 
 	def _get__str__(self):
 		def get_state(b):
@@ -164,10 +134,10 @@ class spinful_fermion_basis_general(basis_general):
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),basis[:half])]
-			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),basis[-half:])])
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(basis)]
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
