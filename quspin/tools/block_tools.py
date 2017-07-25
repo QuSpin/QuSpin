@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import print_function, division
 # QuSpin modules
 from ..operators import hamiltonian as _hamiltonian
