@@ -121,66 +121,49 @@ def _get_U_step_2(H,t_list,dt_list,n_jobs):
 	return vstack(sols)
 
 
+
 class Floquet(object):
-	"""Calculates Floquet spectrum and (optionally) Floquet Hamiltonian, Floquet states.
+	"""This class is used to calculate the Floquet spectrum and (optionally) the Floquet Hamiltonian and Floquet states.
 
 	Loops over the basis states to compute the Floquet unitary (evolution operator over one period).
-    
-    """
+	
+	"""
+
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
-		"""
-
+		"""Instantiates object.
+		
 		Parameters
-        ----------
-        evodict : dict
-            Dictionary which passes the different types of protocols to calculate the Floquet unitary.
-            Contains the following keys:
+		----------
+		evo_dict : dict
+			Dictionary which passes the different types of protocols to calculate the Floquet unitary. 
+			Depending on the protocol type, it contains the following keys:
 
-			1. Periodic continuous protocol from a hamiltonian object.
-
+			i) Periodic continuous protocol from a `hamiltonian` object.
 				* 'H' : hamiltonian object to generate the time evolution. 
-
 				* 'T' : period of the protocol. 
-
 				* 'rtol' : (optional) relative tolerance for the ODE solver. (default = 1E-9)
-
 				* 'atol' : (optional) absolute tolerance for the ODE solver. (default = 1E-9)
 
-			2. Periodic step protocol from a hamiltonian object. 
-
-				* 'H' : single hamiltonian object to generate the hamiltonians at each step.
-				Periodic step drives can be encoded using a single function, e.g. sign(cos(Omega*t)).
-				
+			ii) Periodic step protocol from a `hamiltonian` object. 
+				* 'H' : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. sign(cos(Omega*t)).
 				* 't_list' : list of times to evaluate the hamiltonian at for each step.
-
 				* 'dt_list' : list of time step durations for each step of the evolution. 
 
-			3. Periodic step protocol from a list of hamiltonians. 
-
+			iii) Periodic step protocol from a list of hamiltonians. 
 				* 'H_list' : list of matrices to evolve with.
-
-				* 'dt_list' : list of time step durations. Must be the same size as 'H_list'. 
+				* 'dt_list' : list of time step durations. Must be the same size as 'H_list'.
+		
 		HF : bool
-			Set to 'True' to calculate and return Floquet Hamiltonian under attribute _.HF.
-			
-			Default is 'False'.
+			Set to 'True' to calculate and return Floquet Hamiltonian under attribute _.HF. Default is 'False'.
 		UF : bool
-			Set to 'True' to save evolution operator under attribute _.UF. 
-			
-			Default is 'False'.
+			Set to 'True' to save evolution operator under attribute _.UF. Default is 'False'.
 		thetaF : bool
-			Set to 'True' to save eigenvalues of the evolution operator (Floquet phases) under attribute _.thetaF.
-			
-			Default is 'False'.
+			Set to 'True' to save eigenvalues of the evolution operator (Floquet phases) under attribute _.thetaF. Default is 'False'.
 		VF : bool
-			Set to 'True' to save Floquet states under attribute _.VF.
-			
-			Default is 'False'. 
-		n_jobs : :obj:`int`, optional
+			Set to 'True' to save Floquet states under attribute _.VF. Default is 'False'. 
+		n_jobs : int, optional
 			Set the number of processors which are used when looping over the basis states to compute 
-			the Floquet unitary.
-
-			Default is 'False'. 
+			the Floquet unitary. Default is 'False'. 
 
 		"""
 
@@ -386,15 +369,16 @@ class Floquet_t_vec(object):
 	"""Creates a Floquet time vector.
 
 	This time vector hits all stroboscopic times, and has many useful attributes. The time vector 
-	can be divided in three parts correspondng to three regimes of periodic evolution: 
+	can be divided in three parts corresponding to three regimes of periodic evolution: 
 	ramp-up, constant and ramp-down.
 	
 	"""
-	def __init__(self,Omega,N_const,len_T=100,N_up=0,N_down=0):
-		"""
+
+	def __init__(self, Omega, N_const, len_T=100, N_up=0, N_down=0):
+		"""Instantiates object.
 
 		Parameters
-        ----------
+		----------
 		Omega : float
 			Drive frequency.
 		N_const : int
@@ -481,7 +465,7 @@ class Floquet_t_vec(object):
 
 	@property
 	def len_T(self):
-		"""int: number of time points within one period, assumed half-open: [0,T)."""
+		"""int: number of time points within one period, assumed half-open; [0,T)."""
 		return self._len_T
 
 	@property
@@ -517,7 +501,7 @@ class Floquet_t_vec(object):
 
 	@property
 	def tot(self):
-		"""float: total time duration: _.f - _.i ."""
+		"""float: total time duration; `_.f - _.i` ."""
 		return self._tot
 
 

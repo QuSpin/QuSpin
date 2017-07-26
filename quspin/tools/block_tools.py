@@ -33,7 +33,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 	"""Constructs a block-diagonal hamiltonian object with the blocks being created via the argument 'blocks'.
 
 	Parameters
-    ----------
+	----------
 	blocks : list/tuple/iterator
 		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries.
 	static : list
@@ -64,17 +64,17 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 	Returns
 	-------
 	tuple
-		P : _scipy.sparse.csr 
+		P : scipy.sparse.csr 
 			Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).
 
 		H : `obj`
 			`hamiltonian` object in block diagonal form.
 
 	Raises
-    ------
-    ValueError
-    	If `blocks` is not a list of `hamiltonian` objects or a list of dictionaries containing 
-    	the symmetry sectors.
+	------
+	ValueError
+		If `blocks` is not a list of `hamiltonian` objects or a list of dictionaries containing 
+		the symmetry sectors.
 
 	"""
 	H_list = []
@@ -263,13 +263,13 @@ class block_ops(object):
 	"""
 
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
-		"""
+		"""Instantiates object.
 		
 		Parameters
 		----------
 		blocks : list/tuple/iterator
 			Contains the symmetry blocks to construct the Hamiltonian with, 
-			as dictionaries or `hamiltonian` objects.
+			as dictionaries or `hamiltonian` objects.	
 		static : list
 			Static operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.
 		dynamic : list
@@ -374,8 +374,22 @@ class block_ops(object):
 
 
 	def update_blocks(self,blocks,basis_con,basis_args,compute_all_blocks=False):
-		"""
-		add subtract blocks
+		"""Allows to update the `blocks` variable of the class.
+
+		Parameters
+		----------
+		blocks : list/tuple/iterator
+			Contains the new symmetry blocks to be added to the `basis_dict` attribute of the class, 
+			as dictionaries or `hamiltonian` objects.
+		basis_con : :obj:`basis` 
+			Basis constructor used to build the basis objects to create the new block diagonal Hamiltonians.	
+		basis_args : tuple 
+			This argument is passed as the first argument for `basis_con`.
+			Contains all required arguments for the basis.
+		compute_all_blocks : bool, optional 
+			Flag which tells the `block_ops` class to compute all symmetry blocks at initialization.
+			Default is `False`.
+
 		"""
 		blocks = list(blocks)
 		for block in blocks:
@@ -390,8 +404,8 @@ class block_ops(object):
 
 
 	def compute_all_blocks(self):
-		"""
-		construct basis for all blocks, not just ones found 
+		"""Sets `compute_all_blocks = True`.
+
 		"""
 		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:

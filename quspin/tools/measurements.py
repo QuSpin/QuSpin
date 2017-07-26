@@ -28,24 +28,31 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	The entanglement entropy is NORMALISED by the size of the reduced subsystem. 
 
-	Consider a quantum chain of $N$ sites in the state defined by the density matrix $\rho$. Define a subsystem $A$ of $N_A$ sites and its complement $A^c$: $N=N_A + N_{A^c}$. Given the reduced density matrices 
+	Consider a quantum chain of :math:`N` sites in the state defined by the density matrix :math:`\\rho`.
+	Define a subsystem :math:`A` of :math:`N_A` sites and its complement :math:`A^c`: containing :math:`N=N_A + N_{A^c}`
+	sites. Given the reduced density matrices 
+	
+	.. math::
+		\\rho_A = \\mathrm{tr}_B \\rho, \\qquad \\rho_{A^c} = \\mathrm{tr}_{A^c} \\rho 
 
-	$$ \rho_A = \mathrm{tr}_B \rho, \qquad \rho_{A^c} = \mathrm{tr}_{A^c} \rho $$
+	the entanglement entropy density of subsystems :math:`A` and :math:`B` (normalised w.r.t. their size, respectively) read 
 
-	the entanglement entropy density of subsystems $A$ and $B$ (normalised w.r.t. their size, respectively) read 
+	.. math::
+		S_\\mathrm{ent}^A = -\\frac{1}{N_A}\\mathrm{tr}_A \\rho_A\\log\\rho_A,\\qquad S_\\mathrm{ent}^B = -\\frac{1}{N_A}\\mathrm{tr}_{A^c} \\rho_{A^c}\\log\\rho_{A^c}
 
-	$$ S_\mathrm{ent}^A = -\frac{1}{N_A}\mathrm{tr}_A \rho_A\log\rho_A,\qquad S_\mathrm{ent}^B = -\frac{1}{N_A}\mathrm{tr}_{A^c} \rho_{A^c}\log\rho_{A^c} $$
-
-	For $\rho$ pure, we have $S_\mathrm{ent}^A = S_\mathrm{ent}^B$.
+	For :math:`\\rho` pure, we have :math:`S_\\mathrm{ent}^A = S_\\mathrm{ent}^B`.
 
 	Parameters
 	----------
 	system_state : :obj:
 		State of the quantum system; can be either of:
+
 			* numpy.ndarray: pure state, shape = (Ns,).
 			* numpy.ndarray: density matrix (DM), shape=(Ns,Ns).
 			* dict: diagonal DM as dictionary of the form {'V_rho': V_rho, 'rho_d': rho_d}, where 
-				-- numpy.ndarray: `rho_d` is a diagonal DM, shape = (Ns,) ,
+
+				-- numpy.ndarray: `rho_d` is a diagonal DM, shape = (Ns,).
+
 				-- numpy.ndarray: `V_rho` contains eigenbasis of the DM in the columns, shape = (Ns,Ns).
 
 				The dict keys CANNOT be chosen arbitrarily.
@@ -57,10 +64,12 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 		Basis used to generate `system_state` in. Must be instance of either one of QuSpin's `basis` classes. 
 	chain_subsys : list, optional 
 		Lattice sites to specify the chain subsystem of interest. Default is:
+
 		* [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
 		* [0,1,...,N-1,N] for 'photon_basis'.
 	DM : str, optional 
-		Flag to enable the calculation of the reduced density matrix. Available expressions are
+		Flag to enable the calculation of the reduced density matrix. Available expressions are:
+
 		* "chain_subsys": calculates the reduced DM of the subsystem 'chain_subsys' and
 			returns it under the key "DM_chain_subsys".
 		* "other_subsys": calculates the reduced DM of the complement of 'chain_subsys' and
@@ -69,11 +78,12 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 		Default is "False". 	
 	alpha : float, optional 
-		Renyi $\alpha$ parameter. Default is '1.0'. 
+		Renyi :math:`\\alpha` parameter. Default is '1.0'. 
 
-		When alpha is different from unity, the _entropy keys have attached "_Renyi" to their usual label.
+		When alpha is different from unity, the output keys have attached "_Renyi" to their usual label.
 	svd_return_vec : list(bool), optional
 		Three booleans to determine which Singular Value Decomposition (svd) quantities are returned:
+
 		* `[ . ,True, . ]` svd singular values.
 		* `[ . , . ,True]` and `[True, . , . ]` are depricated.
 
@@ -82,17 +92,12 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 	Returns
 	-------
 	dict
-		The following keys of the output are possible, depending on the choice of flags. 	
+		The following keys of the output are possible, depending on the choice of flags:
+
 		* "Sent": entanglement entropy.
 		* "DM_chain_subsys": (optional) reduced density matrix of chain subsystem.
 		* "DM_other_subsys": (optional) reduced density matrix of the complement subsystem.
 		* "lmbda": (optional) svd singular values.
-	
-	Raises
-	------
-	ValueError
-		Only a set of pre-defined strings is allowed as keys for `system_state`, 
-		when parsed as a dictionary.
 
 	"""
 
@@ -724,42 +729,41 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	"""Calculates the expectation values of physical quantities in the Diagonal ensemble of the initial state. 
 
 	Equivalently, these are also the infinite-time expectation values after a sudden quench from a 
-	Hamiltonian $H_1$ to a Hamiltonian $H_2$. Let us label the two eigenbases as
+	Hamiltonian :math:`H_1` to a Hamiltonian :math:`H_2`. Let us label the two eigenbases by
 
-	$$V_1=\{|n_1\rangle: H_1|n_1\rangle=E_1|n_1\rangle\}$$
+	.. math::
+		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}
 
-	and 
-
-	$$V_2=\{|n_2\rangle: H_2|n_2\rangle=E_2|n_2\rangle\}$$.
-
-	See eg. arXiv:1509.06411 for definition of Diagonal Ensemble.
+	See eg. arXiv:1509.06411 for the physical definition of Diagonal Ensemble.
 	
-	Note
-	----
-		All expectation values depend statistically on the symmetry block used via the available number of 
-		states, due to the generic system-size dependence!
+	Notes
+	-----
+	All expectation values depend statistically on the symmetry block used via the available number of 
+	states, due to the generic system-size dependence!
 
 	Parameters
 	----------
 	N : int
 		System size/dimension (e.g. number of sites).
-	system_state : :obj:
+	system_state : obj
 		State of the quantum system; can be either of:
+		
 			* numpy.ndarray: pure state, shape = (Ns,) or (,Ns).
 			* numpy.ndarray: density matrix (DM), shape = (Ns,Ns).
-			* dict: mixed DM as dictionary {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} 
-				to define a diagonal DM in the basis $V_1$ of the Hamiltonian $H_1$. The meaning of the keys is
+			* dict: mixed DM as dictionary {"V1":V1, "E1":E1, "f":f, "f_args":f_args, "V1_state":int, "f_norm":`False`} 
+				to define a diagonal DM in the basis :math:`V_1` of the Hamiltonian :math:`H_1`. The meaning of the keys is
 				as flollows:
-				* numpy.ndarray: `V1` (required) contains eigenbasis of $H_1$ in the columns.
-				* numpy.ndarray: `E1` (required) eigenenergies of $H_1$.
-				* obj: 'f' (optional) is a function which represents the distribution of the spectrum 
+
+				* numpy.ndarray: `V1` (required) contains eigenbasis of :math:`H_1` in the columns.
+				* numpy.ndarray: `E1` (required) eigenenergies of :math:`H_1`.
+				* :obj:`function` 'f' (optional) is a function which represents the distribution of the spectrum 
 					used to define the mixed DM of the initial state (see example). 
 
 					Default is a thermal distribution with inverse temperature `beta`: 
-					'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
+					`f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )`. 
 				* list(float): `f_args` (required) list of arguments for function `f`. 
 
-					If `f` is not defined, by default we have `f=numpy.exp(-beta*(E - E[0]))`, 
+					If `f` is not defined, by default we have :math:`f(E)=\\exp(-\\beta(E - E_\\mathrm{GS}))`, 
 					and `f_args` specifies the inverse temeprature `[beta]`.
 				* list(int): `V1_state` (optional) is a list of integers to specify arbitrary states of `V1` 
 					whose pure expectations are also returned.
@@ -772,11 +776,12 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 				The keys CANNOT be chosen arbitrarily.
 
 				If this option is specified, then all Diagonal Ensemble quantities are averaged over 
-				the energy distribution $f(E_1,f\_args)$:
-    
-    			$$ \overline{\mathcal{M}_d} = \frac{1}{Z_f}\sum_{n_1} \mathcal{M}^{n_1}_d \times f(E_{n_1},f\_args), \qquad \mathcal{M}^{\psi}_d = \langle\mathcal{O}\rangle_d^\psi,\ \delta_q\mathcal{O}^\psi_d,\ \delta_t\mathcal{O}^\psi_d,\ S_d^\psi,\ S_\mathrm{rdm}^\psi $$
+				the energy distribution :math:`f(E_1,f\\_args)`:
+				
+				.. math::
+					\\overline{\\mathcal{M}_d} = \\frac{1}{Z_f}\\sum_{n_1} f(E_{n_1},f\\_args)\\mathcal{M}^{n_1}_d, \\qquad \\mathcal{M}^{\\psi}_d = \\langle\\mathcal{O}\\rangle_d^\\psi,\\ \\delta_q\\mathcal{O}^\\psi_d,\\ \\delta_t\\mathcal{O}^\\psi_d,\\ S_d^\\psi,\\ S_\\mathrm{rdm}^\\psi
 	V2 : numpy.ndarray
-		Contains the basis of the Hamiltonian $H_2$ in the columns.
+		Contains the basis of the Hamiltonian :math:`H_2` in the columns.
 	E2 : numpy.ndarray
 		Contains the eigenenergies corresponding to the eigenstates in `V2`. 
 
@@ -785,46 +790,51 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	rho_d : bool, optional 
 		When set to `True`, returns the Diagonal ensemble DM under the key `rho_d`. Default is `False`.
 
-		For example, if `system_state` is the pure state $|\psi\rangle$:
-
-		$$\rho_d^\psi = \sum_{n_2} \left|\langle\psi|n_2\rangle\right|^2\left|n_2\rangle\langle n_2\right| = \sum_{n_2} \left(\rho_d^\psi\right)_{n_2n_2}\left|n_2\rangle\langle n_2\right| $$ 
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+		
+		.. math::
+			\\rho_d^\\psi = \\sum_{n_2} \\left|\\langle\\psi|n_2\\rangle\\right|^2\\left|n_2\\rangle\\langle n_2\\right| = \\sum_{n_2} \\left(\\rho_d^\\psi\\right)_{n_2n_2}\\left|n_2\\rangle\\langle n_2\\right| 
 	Obs : :obj:, optional
 		Hermitian matrix of the same shape as `V2`, to calculate the Diagonal ensemble expectation value of. 
 		
 		Adds the key "Obs" to output. Can be of type `numpy.ndarray` or an instance of the `hamiltonian` class.
 
-		For example, if `system_state` is the pure state $|\psi\rangle$:
-  
-  		$$ \langle\mathcal{O}\rangle_d^\psi = \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \frac{1}{N}\langle\psi\left|\mathcal{O}(t)\right|\psi\rangle = \frac{1}{N}\sum_{n_2}\left(\rho_d^\psi\right)_{n_2n_2} \langle n_2\left|\mathcal{O}\right|n_2\rangle$$
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+  		
+  		.. math::
+  			\\langle\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle
 	delta_t_Obs : bool, optional
 		TEMPORAL fluctuations around infinite-time expectation of `Obs`. Requires `Obs`. 
 		
 		Adds the key "delta_t_Obs" to output.
 
-		For example, if `system_state` is the pure state $|\psi\rangle$:
-  
-  		$$ \delta_t\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{ \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|[\mathcal{O}(t)]^2\right|\psi\rangle - \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2} =  \frac{1}{N}\sqrt{\langle\mathcal{O}^2\rangle_d - \langle\mathcal{O}\rangle_d^2 - \delta_q\mathcal{O}^2 }$$
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+
+		.. math::  
+  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\delta_q\\mathcal{O}^2 }
 	delta_q_Obs : bool, optional
 		QUANTUM fluctuations of the expectation of `Obs` at infinite-times. Requires `Obs`. Calculates
 		temporal fluctuations `delta_t_Obs` for along the way (see above).
 		
 		Adds keys "delta_q_Obs" and "delta_t_Obs" to output.
 
-		For example, if `system_state` is the pure state $|\psi\rangle$:
-  
-  		$$ \delta_q\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{\lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2 - \langle\mathcal{O}\rangle_d^2}= \frac{1}{N}\sqrt{ \sum_{n_2\neq m_2} \left(\rho_d^\psi\right)_{n_2n_2} [\mathcal{O}]^2_{n_2m_2} \left(\rho_d^\psi\right)_{m_2m_2} } $$
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+  		
+  		.. math::
+  			\\delta_q\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{\\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left| \\mathcal{O}(t)\\right| \\psi\\rangle^2 - \\langle\\mathcal{O}\\rangle_d^2}= \\frac{1}{N}\\sqrt{ \\sum_{n_2\\neq m_2} \\left(\\rho_d^\\psi\\right)_{n_2n_2} [\\mathcal{O}]^2_{n_2m_2} \\left(\\rho_d^\\psi\\right)_{m_2m_2} }
 	alpha : float, optional
-		Renyi $alpha$ parameter. Default is `alpha = 1.0`.
+		Renyi .math:`alpha` parameter. Default is `alpha = 1.0`.
 	Sd_Renyi : bool, optional
-		Computes the DIAGONAL Renyi entropy in the basis of $H_2$. 
+		Computes the DIAGONAL Renyi entropy in the basis of :math:`H_2`. 
 
 		The default Renyi parameter is `alpha=1.0` (see below). 
 
 		Adds the key `Sd_Renyi` to output.
 
-		For example, if `system_state` is the pure state $|\psi\rangle$:
-  
-  		$$ S_d^\psi = \frac{1}{1-\alpha}\log\mathrm{tr}\left(\rho_d^\psi\right)^\alpha $$
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+  		
+  		.. math::
+  			S_d^\\psi = \\frac{1}{1-\\alpha}\\log\\mathrm{tr}\\left(\\rho_d^\\psi\\right)^\\alpha
 	Srdm_Renyi : bool, optional
 		Computes ENTANGLEMENT Renyi entropy of a subsystem (see `Srdm_args` for subsystem definition). 
 
@@ -834,18 +844,22 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 
 		Adds the key `Srdm_Renyi` to output.
 
-		For example, if `system_state` is the pure state $|\psi\rangle$ 
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle` 
 		(see also notation in documentation of `ent_entropy`):
-  
-  		$$ S_\mathrm{rdm}^\psi = \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha $$ 
+  		
+  		.. math::
+  			S_\\mathrm{rdm}^\\psi = \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha 
 	Srdm_args : dict, semi-optional
 		Dictionary which contains all arguments required for the computation of the entanglement Renyi 
 		entropy. Required when `Srdm_Renyi = True`. The following keys are allowed/supported:
+
 			* "basis": obj(basis), required
 				Basis used to build `system_state` in. Must be an instance of the `basis` class. 
 			* "chain_subsys" : list, optional 
 				Lattice sites to specify the chain subsystem of interest. Default is:
+
 				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+
 				-- [0,1,...,N-1,N] for 'photon_basis'.
 	density : bool, optional 
 		If set to `True`, all observables are normalised by the system size `N`, except
@@ -856,13 +870,14 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	------- 
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
-		* "rho_d": density matrix of Diagonal Ensemble
+
+		* "rho_d": density matrix of Diagonal Ensemble.
 		* "Obs_...": infinite-time expectation of observable `Obs`.
 		* "delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
 		* "delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
-		* "Sd_..."" ("Sd_Renyi_..."" for `alpha!=1.0`): Renyi diagonal entropy of density matrix of 
+		* "Sd_..." ("Sd_Renyi_..."" for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of 
 			`rho_d` with parameter `alpha`.
-		* "Srdm_..." ("Srdm_Renyi_..."" for `alpha!=1.0`): Renyi entanglement entropy of reduced DM of 
+		* "Srdm_..." ("Srdm_Renyi_..."" for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of 
 			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
 
 		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
@@ -1180,10 +1195,13 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 	----------
 	psi_t : :obj:
 		Time-dependent state data; can be either one of:
+
 		* tuple: `psi_t = (psi, E, V)` where 
 			-- np.ndarray: initial state `psi`.
-			-- np.ndarray: unitary matrix `V`, contains all eigenstates of the Hamiltonian $H$. 
-			-- np.ndarray: real-valued array `E`, contains all eigenvalues of the Hamiltonian $H$. 
+
+			-- np.ndarray: unitary matrix `V`, contains all eigenstates of the Hamiltonian :math:`H`.
+
+			-- np.ndarray: real-valued array `E`, contains all eigenvalues of the Hamiltonian :math:`H`. 
 			   The order of the eigenvalues must correspond to the order of the columns of `V`.
 
 			Use this option when the initial state is evolved witht a time-INdependent Hamiltonian $H$.
@@ -1193,6 +1211,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 
 			Use this option for PARALLELISATION over many states.
 		* obj: generator which generates the states.
+
 	Obs_dict : dict
 		Dictionary with observables (e.g. `hamiltonian objects`) stored in the values, to calculate 
 		their time-dependent expectation value of. Dictionary keys are chosen by user.
@@ -1205,6 +1224,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 	Srdm_args : dict, optional 
 		If nonempty, this dictionary contains the arguments necessary for the calculation of the entanglement
 		entropy. The following key is required:
+		
 		* "basis": the basis used to build `system_state` in. Must be an instance of the `basis` class.
 
 		The user can choose optional arguments according to those provided in the function method 
@@ -1222,6 +1242,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 	-------
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
+		
 		* "custom_name": for each key of `Obs_dict`, the time-dependent expectation of the 
 			corresponding observable `Obs_dict[key]` is calculated and returned under the user-defined name
 			for the observable.
@@ -1471,7 +1492,8 @@ def project_op(Obs,proj,dtype=_np.complex128):
 def KL_div(p1,p2):
 	"""Calculates Kullback-Leibler divergence of two discrete probability distributions.
 
-	$$ \mathrm{KL}(p_1||p_2) = \sum_n p_1(n)\log\frac{p_1(n)}{p_2(n)} $$
+	.. math::
+		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}`
 
 	Parameters
 	---------- 
@@ -1517,7 +1539,7 @@ def KL_div(p1,p2):
 def mean_level_spacing(E):
 	"""Calculates the mean-level spacing of an energy spectrum.
 
-	See mean lebel spacing, $r_\mathrm{ave}$, in arXiv:1212.5611 for more details.
+	See mean lebel spacing, :math:`r_\mathrm{ave}`, in arXiv:1212.5611 for more details.
 
 	Parameters
 	----------
@@ -1559,138 +1581,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured 
 	ODE solver in python, without any relation to other QuSpin objects.
 
-	Example
-	-------
-	Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven 
-	Gross-Pitaevskii equation on a one-imensional lattice:
-
-	$$ i\dot\varphi_j(t) = -J\left( e^{-iA\sin\Omega t}\varphi_{j-1}(t) + e^{+iA\sin\Omega t}\varphi_{j+1}(t) \right) + \mu_{trap}\varphi_j(t) + U|\varphi_j(t)|^2\varphi_j(t) $$
-
-	where $j$ labels the lattice sites. Let us start by defining the single-particle Hamiltonian $H(t)$.
-
-	```python
-	from quspin.operators import hamiltonian # Hamiltonians and operators
-	from quspin.basis import boson_basis_1d # Hilbert space spin basis
-	from quspin.tools.measurements import evolve # ODE evolve tool
-	from quspin.tools.Floquet import Floquet_t_vec # stroboscopic time vector
-	import numpy as np # generic math functions
-	#
-	L=50 # number of lattice sites
-	i_CM = L//2-0.5 # centre of chain
-	#
-	### static model parameters
-	J=1.0 # hopping
-	mu_trap=0.002 # harmonic trap strength
-	U=1.0 # mean-field (GPE) interaction
-	#
-	### periodic driving
-	A=1.0 # drive amplitude
-	Omega=10.0 # drive frequency
-	def drive(t,Omega):
-		return np.exp(-1j*A*np.sin(Omega*t) )
-	def drive_conj(t,Omega):
-		return np.exp(+1j*A*np.sin(Omega*t) )
-	drive_args=[Omega] # drive arguments
-	t=Floquet_t_vec(Omega,30,len_T=1) # time vector, 30 stroboscopic periods
-	#
-	### site-couping lists
-	hopping=[[-J,i,(i+1)%L] for i in range(L)]
-	trap=[[mu_trap*(i-i_CM)**2,i] for i in range(L)]
-	#
-	### operator strings for single-particle Hamiltonian
-	static=[['n',trap]]
-	dynamic=[["+-",hopping,drive,drive_args],["-+",hopping,drive_conj,drive_args]]
-	# define single-particle basis
-	basis = boson_basis_1d(L,Nb=1,sps=2) # Nb=1 boson and sps=2 states per site [empty and filled]
-	#
-	### build Hamiltonian
-	H=hamiltonian(static,dynamic,basis=basis,dtype=np.complex128)
-	# calculate eigenvalues and eigenvectors of free particle
-	E,V=H.eigh()
-	```
-
-	Next, we define the GPE and solve it using `evolve`:
-
-	```python
-	def GPE(time,phi):
-		'''
-		This function solves the complex-valued time-dependent Gross-Pitaevskii equation:
-
-		-i\dot\phi(t) = H(t)\phi(t) + U |\phi(t)|^2 \phi(t)
-
-		'''
-		# solve static part of GPE
-		phi_dot = -1j*( H.static.dot(phi) + U*np.abs(phi)**2*phi )
-		# solve dynamic part of GPE
-		for Hd,f,f_args in H.dynamic:
-		phi_dot += -1j*f(time,*f_args)*Hd.dot(phi)
-		return phi_dot
-	# initial state
-	phi0=V[:,0]*np.sqrt(L)
-	# solve cpx-valued GPE
-	phi_t = evolve(phi0,t.i,t.vals,GPE)
-	```
-
-	The above code requires the use of a complex-valued ODE solver [which is done by `evolve` under the hood, 
-	so long as no solver is explicitly specified]. An alternative way to solve the GPE using a real-valued 
-	solver would be
 	
-	```python
-	def GPE_real(time,psi,H,U):
-		'''
-		This function defines the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a 
-		real-valued ODE solver.
-
-		The goal is to solve: 
-
-		-i\dot\phi(t) = H(t)\phi(t) + U |\phi(t)|^2 \phi(t)
-
-		for the complex-valued $\phi(t)$ by casting it as a real-valued vector $\psi=[u,v]$ where 
-		$\phi(t) = u(t) + iv(t)$. The realand imaginary parts, $u(t)$ and $v(t)$, have the same dimension as 
-		$\phi(t)$.
-
-		In the most general form, the single-particle Hamiltonian can be decomposed as 
-		$H(t)= H_{stat} + f(t)H_{dyn}$, with a complex-valued driving function $f(t)$. Then, the GPE can be cast in 
-		the following real-valued form:
-
-		\dot u(t) = +\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)
-		\dot v(t) = -\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)
-
-		'''
-		# preallocate psi_dot
-		psi_dot = np.zeros_like(psi)
-		# read off number of lattice sites (number of complex elements in psi)
-		Ns=H.Ns
-		# static single-particle
-		psi_dot[:Ns] =  H.static.dot(psi[Ns:]).real
-		psi_dot[Ns:] = -H.static.dot(psi[:Ns]).real
-		# static GPE interaction
-		psi_dot_2 = np.abs(psi[:Ns])**2 + np.abs(psi[Ns:])**2
-		psi_dot[:Ns] += U*psi_dot_2*V[Ns:]
-		psi_dot[Ns:] -= U*psi_dot_2*V[:Ns]
-		# dynamic single-particle term
-		for Hdyn,f,f_args in H.dynamic:
-		psi_dot[:Ns] +=  ( +(f(time,*f_args).real)*Hdyn.dot(psi[Ns:]) \
-		                       + (f(time,*f_args).imag)*Hdyn.dot(psi[:Ns])    ).real
-		psy_dot[Ns:] +=  ( -(f(time,*f_args).real)*Hdyn.dot(psi[:Ns]) \
-		                       + (f(time,*f_args).imag)*Hdyn.dot(psi[Ns:])    ).real
-
-		return psi_dot
-
-	# define initial condition
-	phi0=V[:,0]*np.sqrt(L)
-	# define ODE solver parameters
-	GPE_params = (H,U)
-	# solve real-valued GPE
-	phi_t = evolve(phi0,t.i,t.vals,GPE_real,stack_state=True,f_params=GPE_params)
-	```
-	
-	The flag `stack_state=True` is required for `evolve` to handle the complex-valued initial condition properly,
-	as well as to put together the output solution as a complex-valued vector. Since the real-valued ODE solver 
-	allows to parse ODE parameters, we can include them in the user-defined ODE function and use the 
-	flag `f_params`. Notice the elegant way python allows one to circumvent this variable in the complex-valued 
-	example above. 
-
 	Parameters
 	----------
 	v0 : numpy.ndarray
@@ -1699,10 +1590,11 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		Initial time.
 	times : numpy.ndarray
 		Vector of times to compute the time-evolved state at.
-	f : :obj:
+	f : :obj:`function`
 		User-defined function to solve first-order ODE (see Example):
-		
-		$$ y'(t) = f(y(t),t) $$
+
+		.. math::
+			v'(t) = f(v(t),t)\\qquad v(t_0)=v_0
 	f_params : tuple, optional
 		A tuple to pass all parameters of the function `f` to ODE solver. Default is `f_params=()`.
 	iterate : bool, optional
@@ -1731,6 +1623,135 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		* numpy.ndarray containing evolved state against time.
 		* generator object for time-evolved state (requires `iterate = True`).
 
+	Example
+	-------
+
+	Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven 
+	Gross-Pitaevskii equation on a one-imensional lattice:
+
+	.. math::
+		i\\dot\\varphi_j(t) = -J\\left( e^{-iA\\sin\\Omega t}\\varphi_{j-1}(t) + e^{+iA\\sin\\Omega t}\\varphi_{j+1}(t) \\right) + \\mu_\\mathrm{trap}\\varphi_j(t) + U|\\varphi_j(t)|^2\\varphi_j(t)
+
+	where :math:`j` labels the lattice sites. Let us start by defining the single-particle Hamiltonian :math:`H(t)`.
+
+	>>> from quspin.operators import hamiltonian # Hamiltonians and operators
+	>>> from quspin.basis import boson_basis_1d # Hilbert space spin basis
+	>>> from quspin.tools.measurements import evolve # ODE evolve tool
+	>>> from quspin.tools.Floquet import Floquet_t_vec # stroboscopic time vector
+	>>> import numpy as np # generic math functions
+	>>> #
+	>>> L=50 # number of lattice sites
+	>>> i_CM = L//2-0.5 # centre of chain
+	>>> #
+	>>> ### static model parameters
+	>>> J=1.0 # hopping
+	>>> mu_trap=0.002 # harmonic trap strength
+	>>> U=1.0 # mean-field (GPE) interaction
+	>>> #
+	>>> ### periodic driving
+	>>> A=1.0 # drive amplitude
+	>>> Omega=10.0 # drive frequency
+	>>> def drive(t,Omega):
+	>>> 	return np.exp(-1j*A*np.sin(Omega*t) )
+	>>> def drive_conj(t,Omega):
+	>>> 	return np.exp(+1j*A*np.sin(Omega*t) )
+	>>> drive_args=[Omega] # drive arguments
+	>>> t=Floquet_t_vec(Omega,30,len_T=1) # time vector, 30 stroboscopic periods
+	>>> #
+	>>> ### site-couping lists
+	>>> hopping=[[-J,i,(i+1)%L] for i in range(L)]
+	>>> trap=[[mu_trap*(i-i_CM)**2,i] for i in range(L)]
+	>>> #
+	>>> ### operator strings for single-particle Hamiltonian
+	>>> static=[['n',trap]]
+	>>> dynamic=[["+-",hopping,drive,drive_args],["-+",hopping,drive_conj,drive_args]]
+	>>> # define single-particle basis
+	>>> basis = boson_basis_1d(L,Nb=1,sps=2) # Nb=1 boson and sps=2 states per site [empty and filled]
+	>>> #
+	>>> ### build Hamiltonian
+	>>> H=hamiltonian(static,dynamic,basis=basis,dtype=np.complex128)
+	>>> # calculate eigenvalues and eigenvectors of free particle
+	>>> E,V=H.eigh()
+	
+	Next, we define the GPE and solve it using `evolve()`:
+
+	>>> def GPE(time,phi):
+	>>> 	'''
+	>>> 	This function solves the complex-valued time-dependent Gross-Pitaevskii equation:
+	>>> 	#
+	>>> 	$-i\\dot\\phi(t) = H(t)\\phi(t) + U |\\phi(t)|^2 \phi(t)$
+	>>> 	#
+	>>> 	'''
+	>>> 	# solve static part of GPE
+	>>> 	phi_dot = -1j*( H.static.dot(phi) + U*np.abs(phi)**2*phi )
+	>>> 	# solve dynamic part of GPE
+	>>> 	for Hd,f,f_args in H.dynamic:
+	>>> 	phi_dot += -1j*f(time,*f_args)*Hd.dot(phi)
+	>>> 	return phi_dot
+	>>>	#
+	>>> # initial state
+	>>> phi0=V[:,0]*np.sqrt(L)
+	>>> # solve cpx-valued GPE
+	>>> phi_t = evolve(phi0,t.i,t.vals,GPE)
+	
+	The above code requires the use of a complex-valued ODE solver [which is done by `evolve()` under the hood, 
+	so long as no solver is explicitly specified]. An alternative way to solve the GPE using a real-valued 
+	solver would be
+	
+	>>> def GPE_real(time,psi,H,U):
+	>>> 	'''
+	>>> 	This function defines the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a 
+	>>> 	real-valued ODE solver.
+	>>> 	#
+	>>> 	The goal is to solve: 
+	>>> 	#
+	>>> 	$-i\\dot\\phi(t) = H(t)\\phi(t) + U |\\phi(t)|^2 \\phi(t)$
+	>>> 	#
+	>>> 	for the complex-valued $\\phi(t)$ by casting it as a real-valued vector $\\psi=[u,v]$ where 
+	>>> 	$\\phi(t) = u(t) + iv(t)$. The realand imaginary parts, $u(t)$ and $v(t)$, have the same dimension as 
+	>>> 	$\\phi(t)$.
+	>>> 	#
+	>>> 	In the most general form, the single-particle Hamiltonian can be decomposed as 
+	>>> 	$H(t)= H_{stat} + f(t)H_{dyn}$, with a complex-valued driving function $f(t)$. Then, the GPE can be cast in 
+	>>> 	the following real-valued form:
+	>>>  	#
+	>>> 	$\\dot u(t) = +\\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \\right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)$
+	>>> 	$\\dot v(t) = -\\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \\right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)$
+	>>> 	#
+	>>> 	'''
+	>>> 	# preallocate psi_dot
+	>>> 	psi_dot = np.zeros_like(psi)
+	>>> 	# read off number of lattice sites (number of complex elements in psi)
+	>>> 	Ns=H.Ns
+	>>> 	# static single-particle
+	>>> 	psi_dot[:Ns] =  H.static.dot(psi[Ns:]).real
+	>>> 	psi_dot[Ns:] = -H.static.dot(psi[:Ns]).real
+	>>> 	# static GPE interaction
+	>>> 	psi_dot_2 = np.abs(psi[:Ns])**2 + np.abs(psi[Ns:])**2
+	>>> 	psi_dot[:Ns] += U*psi_dot_2*V[Ns:]
+	>>> 	psi_dot[Ns:] -= U*psi_dot_2*V[:Ns]
+	>>> 	# dynamic single-particle term
+	>>> 	for Hdyn,f,f_args in H.dynamic:
+	>>> 	psi_dot[:Ns] +=  ( +(f(time,*f_args).real)*Hdyn.dot(psi[Ns:]) \\
+	>>> 						   + (f(time,*f_args).imag)*Hdyn.dot(psi[:Ns])	).real
+	>>> 	psy_dot[Ns:] +=  ( -(f(time,*f_args).real)*Hdyn.dot(psi[:Ns]) \\
+	>>> 						   + (f(time,*f_args).imag)*Hdyn.dot(psi[Ns:])	).real
+	>>> 	#
+	>>> 	return psi_dot
+	>>> #
+	>>> # define initial condition
+	>>> phi0=V[:,0]*np.sqrt(L)
+	>>> # define ODE solver parameters
+	>>> GPE_params = (H,U)
+	>>> # solve real-valued GPE
+	>>> phi_t = evolve(phi0,t.i,t.vals,GPE_real,stack_state=True,f_params=GPE_params)
+	
+	The flag `stack_state=True` is required for `evolve` to handle the complex-valued initial condition properly,
+	as well as to put together the output solution as a complex-valued vector. Since the real-valued ODE solver 
+	allows to parse ODE parameters, we can include them in the user-defined ODE function and use the 
+	flag `f_params`. Notice the elegant way python allows one to circumvent this variable in the complex-valued 
+	example above. 
+	
 	"""
 
 	from scipy.integrate import complex_ode
