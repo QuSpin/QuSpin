@@ -374,6 +374,9 @@ class block_ops(object):
 
 
 	def update_blocks(self,blocks,basis_con,basis_args,compute_all_blocks=False):
+		"""
+		add subtract blocks
+		"""
 		blocks = list(blocks)
 		for block in blocks:
 			if str(block) not in self._basis_dict.keys():
@@ -387,6 +390,9 @@ class block_ops(object):
 
 
 	def compute_all_blocks(self):
+		"""
+		construct basis for all blocks, not just ones found 
+		"""
 		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype,**self._get_proj_kwargs)

@@ -1226,8 +1226,9 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 			corresponding observable `Obs_dict[key]` is calculated and returned under the user-defined name
 			for the observable.
 		* "psi_t": (optional) returns time-dependent state, if `return_state=True` or `Srdm_args` is nonempty.
-		* "Sent_time": (optional) returns entanglement entropy of the state for each time in `times`.
-
+		* "Sent_time": (optional) returns dictionary with keys corresponding to the entanglement entropy 
+			calculation for each time in `times`. Can have more keys than just "Sent_A", e.g. if the reduced
+			DM was also requested (if specified through `Srdm_args`.)
 
 	"""
 
