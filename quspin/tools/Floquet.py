@@ -366,11 +366,13 @@ class Floquet(object):
 
 
 class Floquet_t_vec(object):
-	"""Creates a Floquet time vector.
+	"""Creates a Floquet time vector with fixed number of points per period.
 
 	This time vector hits all stroboscopic times, and has many useful attributes. The time vector 
 	can be divided in three parts corresponding to three regimes of periodic evolution: 
 	ramp-up, constant and ramp-down.
+	
+	Particularly useful for studying periodically-driven systems.
 	
 	"""
 

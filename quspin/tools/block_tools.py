@@ -254,7 +254,7 @@ def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args
 
 
 class block_ops(object):
-	"""This class is used to split the dynamics of a state up over various symmetry sectors.
+	"""This class is used to split up the dynamics of a state over various symmetry sectors.
 
 	Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does. 
 	Moreover, we provide a multiprocessing option which allows the user to split up the dynamics 
