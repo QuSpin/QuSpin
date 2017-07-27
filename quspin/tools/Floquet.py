@@ -130,7 +130,7 @@ class Floquet(object):
 	"""
 
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
-		"""Instantiates object.
+		"""
 		
 		Parameters
 		----------
@@ -375,7 +375,7 @@ class Floquet_t_vec(object):
 	"""
 
 	def __init__(self, Omega, N_const, len_T=100, N_up=0, N_down=0):
-		"""Instantiates object.
+		"""
 
 		Parameters
 		----------
@@ -507,7 +507,7 @@ class Floquet_t_vec(object):
 
 	@property
 	def strobo(self):
-		"""obj: calculates stroboscopic times in time vector t with period length len_T and assigns them as
+		"""obj: calculates stroboscopic times in time vector with period length `len_T` and assigns them as
 		attributes:
 
 		_.strobo.inds : numpy.ndarray(int)
@@ -515,7 +515,6 @@ class Floquet_t_vec(object):
 
 		_.strobo.vals : numpy.ndarray(float)
 			values of stroboscopic times (full periods).
-
 		"""
 		return self._strobo
 
@@ -524,9 +523,9 @@ class Floquet_t_vec(object):
 	def up(self):
 		"""obj: refers to time vector of up-part (regime).
 
-		Inherits all attributes (e.g. _.up.strobo.inds) except _.T, _.dt, and ._lenT.
+		Inherits all attributes (e.g. `_.up.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.
 
-		Requires optional __init___ parameter N_up to be specified.
+		Requires optional `__init___` parameter `N_up` to be specified.
 		
 		"""
 		if hasattr(self,"_up"):
@@ -538,7 +537,7 @@ class Floquet_t_vec(object):
 	def const(self):
 		"""obj: refers to time vector of const-part (regime).
 
-		Inherits all attributes (e.g. _.const.strobo.inds) except _.T, _.dt, and ._lenT.
+		Inherits all attributes (e.g. `_.const.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.
 		
 		"""
 		if hasattr(self,"_const"):
@@ -550,7 +549,7 @@ class Floquet_t_vec(object):
 	def down(self):
 		"""obj: refers to time vector of down-part (regime).
 
-		Inherits all attributes (e.g. _.down.strobo.inds) except _.T, _.dt, and ._lenT.
+		Inherits all attributes (e.g. `_.down.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.
 
 		Requires optional __init___ parameter N_down to be specified.
 		"""

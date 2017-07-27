@@ -734,7 +734,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	.. math::
 		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}
 
-	See eg. arXiv:1509.06411 for the physical definition of Diagonal Ensemble.
+	See eg. `arXiv:1509.06411 <https://arxiv.org/abs/1509.06411/>`_ for the physical definition of Diagonal Ensemble.
 	
 	Notes
 	-----
@@ -747,10 +747,10 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		System size/dimension (e.g. number of sites).
 	system_state : obj
 		State of the quantum system; can be either of:
-		
+
 			* numpy.ndarray: pure state, shape = (Ns,) or (,Ns).
 			* numpy.ndarray: density matrix (DM), shape = (Ns,Ns).
-			* dict: mixed DM as dictionary {"V1":V1, "E1":E1, "f":f, "f_args":f_args, "V1_state":int, "f_norm":`False`} 
+			* dict: mixed DM as dictionary `{"V1":V1, "E1":E1, "f":f, "f_args":f_args, "V1_state":int, "f_norm":`False`}`	 
 				to define a diagonal DM in the basis :math:`V_1` of the Hamiltonian :math:`H_1`. The meaning of the keys is
 				as flollows:
 
@@ -788,7 +788,9 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		This variable is only used to check for degeneracies, in which case the function is NOT expected to
 		produce correct results (see raised errors).
 	rho_d : bool, optional 
-		When set to `True`, returns the Diagonal ensemble DM under the key `rho_d`. Default is `False`.
+		When set to `True`, returns the Diagonal ensemble DM. Default is `False`.
+
+		Adds the key "rho_d" to output. 
 
 		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
 		
@@ -803,17 +805,8 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
   		
   		.. math::
   			\\langle\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle
-	delta_t_Obs : bool, optional
-		TEMPORAL fluctuations around infinite-time expectation of `Obs`. Requires `Obs`. 
-		
-		Adds the key "delta_t_Obs" to output.
-
-		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
-
-		.. math::  
-  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\delta_q\\mathcal{O}^2 }
 	delta_q_Obs : bool, optional
-		QUANTUM fluctuations of the expectation of `Obs` at infinite-times. Requires `Obs`. Calculates
+		QUANTUM fluctuations of the expectation of `Obs` at infinite times. Requires `Obs`. Calculates
 		temporal fluctuations `delta_t_Obs` for along the way (see above).
 		
 		Adds keys "delta_q_Obs" and "delta_t_Obs" to output.
@@ -822,6 +815,15 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
   		
   		.. math::
   			\\delta_q\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{\\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left| \\mathcal{O}(t)\\right| \\psi\\rangle^2 - \\langle\\mathcal{O}\\rangle_d^2}= \\frac{1}{N}\\sqrt{ \\sum_{n_2\\neq m_2} \\left(\\rho_d^\\psi\\right)_{n_2n_2} [\\mathcal{O}]^2_{n_2m_2} \\left(\\rho_d^\\psi\\right)_{m_2m_2} }
+	delta_t_Obs : bool, optional
+		TEMPORAL fluctuations around infinite-time expectation of `Obs`. Requires `Obs`. 
+		
+		Adds the key "delta_t_Obs" to output.
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+
+		.. math::  
+  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }
 	alpha : float, optional
 		Renyi .math:`alpha` parameter. Default is `alpha = 1.0`.
 	Sd_Renyi : bool, optional
@@ -829,7 +831,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 
 		The default Renyi parameter is `alpha=1.0` (see below). 
 
-		Adds the key `Sd_Renyi` to output.
+		Adds the key "Sd_Renyi" to output.
 
 		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
   		
@@ -842,7 +844,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		
 		The default Renyi parameter is `alpha=1.0` (see below). 
 
-		Adds the key `Srdm_Renyi` to output.
+		Adds the key "Srdm_Renyi" to output.
 
 		For example, if `system_state` is the pure state :math:`|\\psi\\rangle` 
 		(see also notation in documentation of `ent_entropy`):
@@ -875,9 +877,9 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		* "Obs_...": infinite-time expectation of observable `Obs`.
 		* "delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
 		* "delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
-		* "Sd_..." ("Sd_Renyi_..."" for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of 
+		* "Sd_..." ("Sd_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of 
 			`rho_d` with parameter `alpha`.
-		* "Srdm_..." ("Srdm_Renyi_..."" for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of 
+		* "Srdm_..." ("Srdm_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of 
 			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
 
 		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
@@ -1083,16 +1085,16 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 def ED_state_vs_time(psi,E,V,times,iterate=False):
 	"""Calculates the time evolved initial state as a function of time. 
 
-	The time evolution is carried out under the Hamiltonian $H$ with eigenenergies `E` and eigenstates `V`. 
+	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. 
 
 	Parameters
 	----------
 	psi : numpy.ndarray
 		Tnitial state.
 	V : numpy.ndarray
-		Unitary matrix containing in all eigenstates of the Hamiltonian $H$ in its columns. 
+		Unitary matrix containing in all eigenstates of the Hamiltonian :math:`H` in its columns. 
 	E : numpy.ndarray
-		Eigenvalues of the Hamiltonian $H$, in order which corresponds to the columns of `V`. 
+		Eigenvalues of the Hamiltonian :math:`H`, in order which corresponds to the columns of `V`. 
 	times : numpy.ndarray
 		Vector of times to evaluate the time evolved state at. 
 	iterate : bool, optional
@@ -1204,7 +1206,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 			-- np.ndarray: real-valued array `E`, contains all eigenvalues of the Hamiltonian :math:`H`. 
 			   The order of the eigenvalues must correspond to the order of the columns of `V`.
 
-			Use this option when the initial state is evolved witht a time-INdependent Hamiltonian $H$.
+			Use this option when the initial state is evolved witht a time-INdependent Hamiltonian :math:`H`.
 		* numpy.ndarray: array with the states evaluated at `times` stored in the last dimension. 
 			Can be 2D (single time-dependent state) or 3D (many time-dependent states or 
 			time-dep mixed density matrix, see `enforce_pure` argument.)
@@ -1422,10 +1424,11 @@ def project_op(Obs,proj,dtype=_np.complex128):
 		Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.
 	proj : :obj:
 		Either one of the following:
+
 		* `basis` object with the basis of the Hilbert space after the projection.
 		* numpy.ndarray: a matrix which contains the projector.
 
-		Projectors can ve calculated conveniently using the function method `basis.get_vec()`.
+		Projectors can be calculated conveniently using the function method `basis.get_vec()`.
 	dtype : type, optional
 		Data type of output. Default is `numpy.complex128`.
 
@@ -1433,6 +1436,7 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	------- 
 	dict
 		Dictionary with keys
+
 		* "Proj_Obs": projected observable `Obs`.
 
 	"""
@@ -1493,7 +1497,7 @@ def KL_div(p1,p2):
 	"""Calculates Kullback-Leibler divergence of two discrete probability distributions.
 
 	.. math::
-		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}`
+		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}
 
 	Parameters
 	---------- 
@@ -1539,7 +1543,8 @@ def KL_div(p1,p2):
 def mean_level_spacing(E):
 	"""Calculates the mean-level spacing of an energy spectrum.
 
-	See mean lebel spacing, :math:`r_\mathrm{ave}`, in arXiv:1212.5611 for more details.
+	See mean lebel spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, see 
+	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf>`_ for more details.
 
 	Parameters
 	----------
@@ -1602,9 +1607,9 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	solver_name : str, optional
 		Scipy solver integrator name. Default is `dop853`. 
 
-		See [scipy integrator (solver)](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html) for other options.
+		See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_ for other options.
 	solver_args : dict, optional
-		Dictionary with additional [scipy integrator (solver)](https://docs.scipy.org/doc/scipy/reference/tutorial/integrate.html) arguments.	
+		Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_.	
 	real : bool, optional 
 		Flag to determine if `f` is real or complex-valued. Default is `False`.
 	imag_time : bool, optional

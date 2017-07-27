@@ -263,7 +263,7 @@ class block_ops(object):
 	"""
 
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
-		"""Instantiates object.
+		"""
 		
 		Parameters
 		----------
