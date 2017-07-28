@@ -42,7 +42,7 @@ class spin_basis_1d(basis_1d):
 			raise ValueError("Cannot use Nup and m at the same time")
 		elif Nup is None and m is not None:
 			if m < -S or m > S:
-				raise ValueError("M must be between -S and S")
+				raise ValueError("N must be between -S and S")
 
 			Nup = int((m+S)*L)
 

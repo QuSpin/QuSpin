@@ -1,6 +1,6 @@
 from .base_hcb import hcb_basis_general
 from .base_higher_spin import higher_spin_basis_general
-
+import numpy as _np
 
 try:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in xrange(1,10001)}
@@ -10,10 +10,19 @@ except NameError:
 
 # general basis for hardcore bosons/spin-1/2
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
-	def __init__(self,N,Nup=None,S="1/2",pauli=True,_Np=None,**kwargs):
+	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,_Np=None,**kwargs):
 		self._S = S
 		self._pauli = pauli
-		sps,_ = S_dict[S]
+		sps,S = S_dict[S]
+
+		if Nup is not None and m is not None:
+			raise ValueError("Cannot use Nup and m at the same time")
+		if m is not None and Nup is None:
+			if m < -S or m > S:
+				raise ValueError("m must be between -S and S")
+
+			Nup = int((m+S)*L)
+
 		if sps==2:
 			hcb_basis_general.__init__(self,N,Nb=Nup,_Np=_Np,**kwargs)
 		else:
@@ -24,7 +33,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		if self._S == "1/2":
 			ME,row,col = hcb_basis_general.Op(self,opstr,indx,J,dtype)
 			if self._pauli:
-				n_= len(opstr.replace("I",""))
+				n = len(opstr.replace("I",""))
 				ME *= (1<<n)
 		else:
 			return higher_spin_basis_general.Op(self,opstr,indx,J,dtype)

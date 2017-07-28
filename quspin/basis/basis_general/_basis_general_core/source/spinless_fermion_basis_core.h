@@ -44,6 +44,9 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 				bool a = bool((r >> ind)&one);
 				char op = opstr[j];
 				switch(op){
+					case 'z':
+						m *= (a?0.5:-0.5);
+						break;
 					case 'n':
 						m *= (a?1:0);
 						break;

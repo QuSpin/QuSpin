@@ -31,7 +31,6 @@ def process_map(map,q):
 class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
 		self._unique_me = True
-		self._check_symm = None
 		self._check_pcon = None
 
 		if self.__class__ is basis_general:
@@ -55,7 +54,7 @@ class basis_general(lattice_basis):
 		sorted_items.reverse()
 
 		self._blocks = {block:((-1)**q if per==2 else q) for block,(_,per,q) in sorted_items}
-
+		self._maps_dict = {block:map for block,(map,_,_) in sorted_items}
 
 		if sorted_items:
 			blocks,items = zip(*sorted_items)
@@ -187,3 +186,69 @@ class basis_general(lattice_basis):
 				return  _np.squeeze(v_out)
 			else:
 				return v_out	
+
+	def _check_symm(self,static,dynamic,photon_basis=None):
+		if photon_basis is None:
+			basis_sort_opstr = self._sort_opstr
+			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+		else:
+			basis_sort_opstr = photon_basis._sort_opstr
+			static_list,dynamic_list = photon_basis.get_local_lists(static,dynamic)
+
+
+		static_blocks = {}
+		dynamic_blocks = {}
+		for block,map in self._maps_dict.items():
+			key = block+" symm"
+			odd_ops,missing_ops = _check_symm_map(map,basis_sort_opstr,static_list)
+			if odd_ops or missing_ops:
+				static_blocks[key] = (tuple(odd_ops),tuple(missing_ops))
+
+			odd_ops,missing_ops = _check_symm_map(map,basis_sort_opstr,dynamic_list)
+			if odd_ops or missing_ops:
+				dynamic_blocks[key] = (tuple(odd_ops),tuple(missing_ops))
+
+
+		return static_blocks,dynamic_blocks
+
+
+
+
+
+
+def _check_symm_map(map,sort_opstr,operator_list):
+	missing_ops=[]
+	odd_ops=[]
+	for op in operator_list:
+		opstr = str(op[0])
+		indx  = list(op[1])
+		J     = op[2]
+		for j,ind in enumerate(op[1]):
+			i = map[ind]
+			if i < 0:
+				if opstr[j] == "n":
+					odd_ops.append(op)
+
+				J *= (-1 if opstr[j] in ["z","y"] else 1)
+				opstr = opstr.replace("+","#").replace("-","+").replace("#","-")
+				i = -(i+1)
+
+			indx[j] = i
+
+		new_op = list(op)
+		new_op[0] = opstr
+		new_op[1] = indx
+		new_op[2] = J
+
+		new_op = sort_opstr(new_op)
+		if not (new_op in operator_list):
+			missing_ops.append(new_op)
+
+	return odd_ops,missing_ops
+
+
+
+
+
+
+

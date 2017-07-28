@@ -8,10 +8,15 @@ from scipy.misc import comb
 
 # general basis for hardcore bosons/spin-1/2
 class spinful_fermion_basis_general(basis_general):
-	def __init__(self,N,Nf=None,_Np=None,**kwargs):
+	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
 		# Nf = [(Nup,Ndown),...]
 		# Nup is left side of basis sites 0 - N-1
 		# Ndown is right side of basis sites N - 2*N-1
+
+		if Nf is not None and nf is not None:
+			raise ValueError("cannot use 'nf' and 'Nf' simultaineously.")
+		if Nf is None and nf is not None:
+			Nf = (int(nf[0]*N),int(nf[1]*N))
 
 		basis_general.__init__(self,2*N,**kwargs)
 		self._check_pcon = False
@@ -116,17 +121,15 @@ class spinful_fermion_basis_general(basis_general):
 			self._basis = basis[::-1].copy()
 			self._n = n[ind[::-1]].copy()
 
-		self._N = N
+		self._N = 2*N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","n","+","-"])
 
-		self._check_symm = None
-
 	def _get__str__(self):
 		def get_state(b):
-			bits_left = ((b>>(2*self.N-i-1))&1 for i in range(self.N))
+			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
 			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
-			bits_right = ((b>>(self.N-i-1))&1 for i in range(self.N))
+			bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
 			state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
 			return state_left+state_right
 
@@ -141,11 +144,80 @@ class spinful_fermion_basis_general(basis_general):
 
 		return tuple(str_list)
 
+	def _sort_opstr(self,op):
+		if op[0].count("|") > 0:
+			raise ValueError("'|' character found in op: {0},{1}".format(op[0],op[1]))
+		if len(op[0]) != len(op[1]):
+			raise ValueError("number of operators in opstr: {0} not equal to length of indx {1}".format(op[0],op[1]))
+
+		op = list(op)
+		zipstr = list(zip(op[0],op[1]))
+		if zipstr:
+			n = len(zipstr)
+			swapped = True
+			anticommutes = 0
+			while swapped:
+				swapped = False
+				for i in range(n-1):
+					if zipstr[i][1] > zipstr[i+1][1]:
+						temp = zipstr[i]
+						zipstr[i] = zipstr[i+1]
+						zipstr[i+1] = temp
+						swapped = True
+
+						if zipstr[i][0] in ["+","-"] and zipstr[i+1][0] in ["+","-"]:
+							anticommutes += 1
+
+			op1,op2 = zip(*zipstr)
+			op[0] = "".join(op1)
+			op[1] = tuple(op2)
+			op[2] *= (1 if anticommutes%2 == 0 else -1)
+		return tuple(op)
+
+	
+	def _non_zero(self,op):
+		opstr = _np.array(list(op[0]))
+		indx = _np.array(op[1])
+		if _np.any(indx):
+			indx_p = indx[opstr == "+"].tolist()
+			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			indx_p = indx[opstr == "-"].tolist()
+			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			return (p and m)
+		else:
+			return True
+		
+
+
+	def _hc_opstr(self,op):
+		op = list(op)
+		# take h.c. + <--> - , reverse operator order , and conjugate coupling
+		op[0] = list(op[0].replace("+","%").replace("-","+").replace("%","-"))
+		op[0].reverse()
+		op[0] = "".join(op[0])
+		op[1] = list(op[1])
+		op[1].reverse()
+		op[1] = tuple(op[1])
+		op[2] = op[2].conjugate()
+		return self._sort_opstr(op) # return the sorted op.
+
+
+	def _expand_opstr(self,op,num):
+		op = list(op)
+		op.append(num)
+		return [tuple(op)]	
+
 
 
 # general basis for hardcore bosons/spin-1/2
 class spinless_fermion_basis_general(basis_general):
-	def __init__(self,N,Nf=None,_Np=None,**kwargs):
+	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
+
+		if Nf is not None and nf is not None:
+			raise ValueError("cannot use 'nf' and 'Nf' simultaineously.")
+		if Nf is None and nf is not None:
+			Nf = int(nf*N)
+
 		basis_general.__init__(self,N,**kwargs)
 		self._check_pcon = False
 		count_particles = False
@@ -222,7 +294,68 @@ class spinless_fermion_basis_general(basis_general):
 
 		self._check_symm = None
 
+	def _sort_opstr(self,op):
+		if op[0].count("|") > 0:
+			raise ValueError("'|' character found in op: {0},{1}".format(op[0],op[1]))
+		if len(op[0]) != len(op[1]):
+			raise ValueError("number of operators in opstr: {0} not equal to length of indx {1}".format(op[0],op[1]))
 
+		op = list(op)
+		zipstr = list(zip(op[0],op[1]))
+		if zipstr:
+			n = len(zipstr)
+			swapped = True
+			anticommutes = 0
+			while swapped:
+				swapped = False
+				for i in range(n-1):
+					if zipstr[i][1] > zipstr[i+1][1]:
+						temp = zipstr[i]
+						zipstr[i] = zipstr[i+1]
+						zipstr[i+1] = temp
+						swapped = True
+
+						if zipstr[i][0] in ["+","-"] and zipstr[i+1][0] in ["+","-"]:
+							anticommutes += 1
+
+			op1,op2 = zip(*zipstr)
+			op[0] = "".join(op1)
+			op[1] = tuple(op2)
+			op[2] *= (1 if anticommutes%2 == 0 else -1)
+		return tuple(op)
+
+	
+	def _non_zero(self,op):
+		opstr = _np.array(list(op[0]))
+		indx = _np.array(op[1])
+		if _np.any(indx):
+			indx_p = indx[opstr == "+"].tolist()
+			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			indx_p = indx[opstr == "-"].tolist()
+			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			return (p and m)
+		else:
+			return True
+		
+
+
+	def _hc_opstr(self,op):
+		op = list(op)
+		# take h.c. + <--> - , reverse operator order , and conjugate coupling
+		op[0] = list(op[0].replace("+","%").replace("-","+").replace("%","-"))
+		op[0].reverse()
+		op[0] = "".join(op[0])
+		op[1] = list(op[1])
+		op[1].reverse()
+		op[1] = tuple(op[1])
+		op[2] = op[2].conjugate()
+		return self._sort_opstr(op) # return the sorted op.
+
+
+	def _expand_opstr(self,op,num):
+		op = list(op)
+		op.append(num)
+		return [tuple(op)]	
 
 
 

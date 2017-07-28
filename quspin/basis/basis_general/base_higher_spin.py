@@ -90,5 +90,3 @@ class higher_spin_basis_general(basis_general):
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","z","+","-"])
 
-		self._check_symm = None
-

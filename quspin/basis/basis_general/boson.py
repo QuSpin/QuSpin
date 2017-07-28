@@ -28,26 +28,51 @@ def H_dim(N,length,m_max):
 
 
 
-def get_basis_type(L, Np, sps, **blocks):
+def get_basis_type(N, Np, sps, **blocks):
     # calculates the datatype which will fit the largest representative state in basis
     if Np is None:
-        # if no particle conservation the largest representative is sps**L
-        dtype = _np.min_scalar_type(int(sps**L-1))
+        # if no particle conservation the largest representative is sps**N
+        dtype = _np.min_scalar_type(int(sps**N-1))
         return _np.result_type(dtype,_np.uint32)
     else:
         # if particles are conservated the largest representative is placing all particles as far left
         # as possible. 
         l=Np//(sps-1)
-        s_max = sum((sps-1)*sps**(L-1-i)  for i in range(l))
-        s_max += (Np%(sps-1))*sps**(L-l-1)
+        s_max = sum((sps-1)*sps**(N-1-i)  for i in range(l))
+        s_max += (Np%(sps-1))*sps**(N-l-1)
         dtype = _np.min_scalar_type(int(s_max))
         return _np.result_type(dtype,_np.uint32)
 
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
-	def __init__(self,N,Nb=None,sps=None,_Np=None,**kwargs):
-		if sps == 2:
+	def __init__(self,N,Nb=None,nb=None,sps=None,_Np=None,**kwargs):
+		if sps is None:
+
+			if Nb is not None:
+				if nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
+
+			elif nb is not None:
+				if Nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
+
+				Nb = int(nb*N)
+			else:
+				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
+
+			self._sps = Nb+1
+		else:
+			if Nb is not None:
+				if nb is not None:
+					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
+
+			elif nb is not None:
+				Nb = int(nb*N)
+
+			self._sps = sps
+
+		if self._sps == 2:
 			general_hcb_basis.__init__(self,N,Nb=Nb,_Np=_Np,**kwargs)
 			self._allowed_ops=set(["I","n","+","-"])
 		else:
@@ -68,29 +93,23 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				else:
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
-			if Nb is None and sps is None:
-				raise ValueError("must specify number of boons or sps")
-
-			if Nb is not None and sps is None:
-				sps = Nb+1
-
 			if Nb is None:
 				Ns = sps**N
 				basis_type = get_basis_type(N,Nb,sps)
 			elif type(Nb) is int:
 				self._check_pcon = True
-				Ns = H_dim(Nb,N,sps-1)
-				basis_type = get_basis_type(N,Nb,sps)
+				Ns = H_dim(Nb,N,self._sps-1)
+				basis_type = get_basis_type(N,Nb,self._sps)
 			else:
 				try:
 					Np_iter = iter(Nb)
 				except TypeError:
 					raise TypeError("Nb must be integer or iteratable object.")
 				Ns = 0
-				for Nb in Np_iter:
-					Ns += H_dim(Nb,N,sps-1)
+				for b in Nb:
+					Ns += H_dim(b,N,self._sps-1)
 
-				basis_type = get_basis_type(N,max(iter(Nb)),sps)
+				basis_type = get_basis_type(N,max(Nb),self._sps)
 
 			if len(self._pers)>0:
 				Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
@@ -98,16 +117,15 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			if basis_type==_np.uint32:
 				basis = _np.zeros(Ns,dtype=_np.uint32)
 				n     = _np.zeros(Ns,dtype=_np.uint16)
-				self._core = boson_basis_core_wrap_32(N,sps,self._maps,self._pers,self._qs)
+				self._core = boson_basis_core_wrap_32(N,self._sps,self._maps,self._pers,self._qs)
 			elif basis_type==_np.uint64:
 				basis = _np.zeros(Ns,dtype=_np.uint64)
 				n     = _np.zeros(Ns,dtype=_np.uint16)
-				self._core = boson_basis_core_wrap_64(N,sps,self._maps,self._pers,self._qs)
+				self._core = boson_basis_core_wrap_64(N,self._sps,self._maps,self._pers,self._qs)
 			else:
 				raise ValueError("states can't be represented as 64-bit unsigned integer")
 
-			self._sps=sps
-			if count_particles and (Nb is not None):
+			if count_particles and (Nb_list is not None):
 				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 				self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
 				basis,ind = _np.unique(basis,return_index=True)
@@ -129,8 +147,6 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._N = N
 			self._index_type = _np.min_scalar_type(-self._Ns)
-
-			self._check_symm = None
 
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:

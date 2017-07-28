@@ -93,6 +93,9 @@ class hcb_basis_core : public general_basis_core<I>
 					case 'z':
 						m *= (a?0.5:-0.5);
 						break;
+					case 'n':
+						m *= (a?1:0);
+						break;
 					case 'x':
 						r ^= b;
 						m *= 0.5;

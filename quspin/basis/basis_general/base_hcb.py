@@ -33,11 +33,12 @@ class hcb_basis_general(basis_general):
 				Np_iter = iter(Nb)
 			except TypeError:
 				raise TypeError("Nb must be integer or iteratable object.")
+			Nb = list(Nb)
 			Ns = 0
-			for Nb in Np_iter:
-				if Nb > N or Nb < 0:
+			for b in Nb:
+				if b > N or b < 0:
 					raise ValueError("particle number Nb must satisfy: 0 <= Nb <= N")
-				Ns += comb(N,Nb,exact=True)
+				Ns += comb(N,b,exact=True)
 
 		if len(self._pers)>0:
 			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
@@ -78,8 +79,6 @@ class hcb_basis_general(basis_general):
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","x","y","z","+","-"])
-
-		self._check_symm = None
 
 
 
