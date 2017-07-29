@@ -83,6 +83,9 @@ def _check_dynamic(sub_list):
 		if not hasattr(sub_list[1],"__call__"): raise TypeError('expecting callable object for driving function')
 		if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
 		return False
+	elif (type(sub_list) in [list,tuple]) and (len(sub_list) == 2): 
+		if not hasattr(sub_list[1],"__call__"): raise TypeError('expecting callable object for driving function')
+		return False
 	else:
 		raise TypeError('expecting list with object, driving function, and function arguments')
 
@@ -203,7 +206,7 @@ class hamiltonian(object):
 		# need for check_symm
 		self._static_opstr_list = static_opstr_list
 		self._dynamic_opstr_list = dynamic_opstr_list
-
+		self._basis=kwargs.get("basis")
 
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
@@ -244,7 +247,8 @@ class hamiltonian(object):
 			self._static=_make_static(basis,static_opstr_list,dtype)
 			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
-			self._basis=basis
+
+		
 
 
 		if static_other_list or dynamic_other_list:
@@ -323,9 +327,12 @@ class hamiltonian(object):
 
 
 
-			for	O,f,f_args in dynamic_other_list:
-				_test_function(f,f_args)
-				func = function(f,tuple(f_args))
+			for	tup in dynamic_other_list:
+				if len(tup) == 2:
+					O,func = tup
+				else:
+					_test_function(f,f_args)
+					func = function(f,tuple(f_args))
 
 				if _sp.issparse(O):
 					self._mat_checks(O)
@@ -1343,7 +1350,7 @@ class hamiltonian(object):
 
 
 	def copy(self):
-		return _deepcopy(self)
+		return hamiltonian([self.static],self.dynamic.items(),basis=self.basis,dtype=self._dtype,copy=True)
 
 
 	###################

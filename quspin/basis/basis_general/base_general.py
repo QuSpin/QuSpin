@@ -24,7 +24,6 @@ def process_map(map,q):
 		if not _np.any(sites - order):
 			break
 
-
 	return map,per,q
 
 
