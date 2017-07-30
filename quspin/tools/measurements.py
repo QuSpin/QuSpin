@@ -1544,7 +1544,7 @@ def mean_level_spacing(E):
 	"""Calculates the mean-level spacing of an energy spectrum.
 
 	See mean lebel spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, see 
-	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf>`_ for more details.
+	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf/>`_ for more details.
 
 	Parameters
 	----------
