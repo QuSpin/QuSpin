@@ -14,7 +14,7 @@ try:
 except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
-def check_ME(b1,b2,opstr,indx,dtype):
+def check_ME(b1,b2,opstr,indx,dtype,err_msg):
 
 	if b1.Ns != b2.Ns:
 		print(b1._basis)
@@ -36,9 +36,9 @@ def check_ME(b1,b2,opstr,indx,dtype):
 
 	if len(ME1)>0 and len(ME2)>0:
 		try:
-			np.testing.assert_allclose(row1-row2,0,atol=1e-6)
-			np.testing.assert_allclose(col1-col2,0,atol=1e-6)
-			np.testing.assert_allclose(ME1-ME2,0,atol=1e-6)
+			np.testing.assert_allclose(row1-row2,0,atol=1e-6,err_msg=err_msg)
+			np.testing.assert_allclose(col1-col2,0,atol=1e-6,err_msg=err_msg)
+			np.testing.assert_allclose(ME1-ME2,0,atol=1e-6,err_msg=err_msg)
 		except:
 			print(ME1)
 			print(row1)
@@ -98,7 +98,6 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 			basis_blocks["kblock"] = None
 			gen_blocks["kblock"] = None
 
-		print("testing: S={S:3} Nup={Nup:5} kblock={kblock:5} pblock={pblock:5} zblock={zblock:5}".format(Nup=Nup,**basis_blocks))
 		basis_1d = spin_basis_1d(L,Nup=Nup,**basis_blocks)
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
 		n = basis_1d.get_norms(np.float64)**2
@@ -121,11 +120,15 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 					printing["Nup"]=Nup
 					printing["S"]=S
 
-					print("testing: {opstr:5} {indx:10}  S={S:3} Nup={Nup:5} kblock={kblock:5} pblock={pblock:5} zblock={zblock:5}".format(**printing))
+					err_msg="testing: {opstr:5} {indx:10}  S={S:3} Nup={Nup:5} kblock={kblock:5} pblock={pblock:5} zblock={zblock:5}".format(**printing)
 
-					check_ME(basis_1d,gen_basis,opstr,indx,np.complex128)
+					check_ME(basis_1d,gen_basis,opstr,indx,np.complex128,err_msg)
 
+print("testing S=1/2")
 test_gen_basis_hcb(3,S="1/2")
+print("testing S=1")
 test_gen_basis_hcb(3,S="1")
+print("testing S=3/2")
 test_gen_basis_hcb(3,S="3/2")
+print("testing S=2")
 test_gen_basis_hcb(3,S="2")
