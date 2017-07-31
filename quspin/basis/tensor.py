@@ -658,10 +658,10 @@ class tensor_basis(basis):
 
 		opstr_left,opstr_right=opstr.split("|",1)
 
-
 		op1 = list(op)
 		op1[0] = opstr_left
 		op1[1] = indx_left
+		op1[2] = 1.0
 
 		op2 = list(op)
 		op2[0] = opstr_right
