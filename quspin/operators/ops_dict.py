@@ -829,3 +829,5 @@ class ops_dict(object):
 
 def isops_dict(obj):
 	return isinstance(obj,ops_dict)
+
+	

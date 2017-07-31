@@ -537,3 +537,6 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 
 def isexp_op(obj):
 	return isinstance(obj,exp_op)
+
+
+	

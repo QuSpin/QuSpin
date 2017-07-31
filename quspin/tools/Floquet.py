@@ -123,7 +123,7 @@ def _get_U_step_2(H,t_list,dt_list,n_jobs):
 
 
 class Floquet(object):
-	"""This class is used to calculate the Floquet spectrum and (optionally) the Floquet Hamiltonian and Floquet states.
+	"""Calculates the Floquet spectrum and (optionally) the Floquet Hamiltonian and Floquet states.
 
 	Loops over the basis states to compute the Floquet unitary (evolution operator over one period).
 	

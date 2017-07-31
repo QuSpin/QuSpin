@@ -138,19 +138,61 @@ def _hamiltonian_dot(hamiltonian,time,v):
 	return hamiltonian.dot(v,time=time,check=False)
 
 class hamiltonian(object):
-	""" This class is used to create quantum operators.
+	""" Constructs quantum operators.
+
+	The hamiltonian class wraps most of the functionalty of the package. This object allows the user to construct 
+	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
+	diagonalization, etc.
 
 	The user can create both static and time-dependent, hermitian and non-hermitian operators for a particle
-	type specified by the basis constructor.
+	type (e.g. boson, spin, fermion) specified by the basis constructor.
 
 	Note
 	----
-	Once caninitialize either by parsing a set of symmetries, or an instance of `basis`. Note that
-	initialization with a `basis` will automatically ignore all symmetry inputs. 
+	Once can instantiate the class either by parsing a set of symmetries, or an instance of `basis`. Note that
+	instantiation with a `basis` will automatically ignore all symmetry inputs. 
+
+	Example
+	-------
+
+	Here is an example how to construct the periodically driven XXZ Hamiltonian using a `basis` object
+	
+	.. math::
+		H(t) = \\sum_{j=0}^{L-1} \\left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\\Omega t)S^x_j \\right)
+
+	in the zero-momentum sector (`kblock=0`) of positive parity (`pblock=1`). We use periodic boundary conditions.
+ 
+	>>> from quspin.operators import hamiltonian # Hamiltonians and operators
+	>>> from quspin.basis import spin_basis_1d # Hilbert space spin basis
+	>>> import numpy as np # generic math functions
+	>>> #
+	>>> ##### define model parameters #####
+	>>> L=6 # system size
+	>>> J=1.0 # spin interaction
+	>>> g=0.809 # transverse field
+	>>> h=0.9045 # parallel field
+	>>> ##### define periodic drive #####
+	>>> Omega=4.5 # drive frequency
+	>>> def drive(t,Omega):
+	>>> 	return np.cos(Omega*t)
+	>>> drive_args=[Omega]
+	>>> #
+	>>> ##### construct basis in the 0-total momentum and +1-parity sector
+	>>> basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
+	>>> # define PBC site-coupling lists for operators
+	>>> x_field=[[g,i] for i in range(L)]
+	>>> z_field=[[h,i] for i in range(L)]
+	>>> J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC
+	>>> # static and dynamic lists
+	>>> static=[["zz",J_nn],["z",z_field]]
+	>>> dynamic=[["x",x_field,drive,drive_args]]
+	>>> ###### construct Hamiltonian
+	>>> H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
+	>>> print(H.toarray())
 
 	"""
 	def __init__(self,static_list,dynamic_list,N=None,dtype=_np.complex128,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**kwargs):
-		"""Intializes the `hamtilonian` objects (any quantum operator).
+		"""Intializes the `hamtilonian` object (any quantum operator).
 
 		Parameters
 		----------
@@ -160,7 +202,8 @@ class hamiltonian(object):
 			>>> static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
 			
 		dynamic_list : 
-			List of objects to calculate the dynamic part of a `hamiltonian` operator. The format goes like:
+			List of objects to calculate the dynamic (time-dependent) part of a `hamiltonian` operator.
+			The format goes like:
 
 			>>> dynamic_list=[[opstr_1,[indx_11,...,indx_1n],fun_1,fun_1_args],[matrix_2,fun_2,fun_2_args],...]
 			
@@ -169,24 +212,24 @@ class hamiltonian(object):
 
 				>>> f_val = func(t,*func_args)
 
-			If operator is time-INdependent, one must pass an empty list: `dynamic_list = []`.
+			If the operator is time-INdependent, one must pass an empty list: `dynamic_list = []`.
 		N : int, optional
-			Number of lattice sites for the `hamiltonian` object with.
+			Number of lattice sites for the `hamiltonian` object.
 		dtype : 'type'
-			The data type (e.g. numpy.float64) to construct the operator with.
+			Data type (e.g. numpy.float64) to construct the operator with.
 		shape : tuple, optional
-			Shape to create the `hamiltonian` object with. Detalus is `shape = None`.
+			Shape to create the `hamiltonian` object with. Default is `shape = None`.
 		copy: bool, optional
 			If set to `True`, this option creates a copy of the input array. 
 		check_symm : bool, optional 
-			Enable/Disable symmetry check of the operators for the first Hamiltonian constructed.
+			Enable/Disable symmetry check on `static_list` and `dynamic_list`.
 		check_herm : bool, optional
-			Enable/Disable hermiticity check of the operators for the first Hamiltonian constructed.
+			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.
 		check_pcon : bool, optional
-			Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.
+			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
-			to create the operator.
+			to create the operator (see Example).
 		 
 		"""
 
@@ -500,7 +543,7 @@ class hamiltonian(object):
 	### state manipulation/observable routines
 
 	def dot(self,V,time=0,check=True):
-		"""Matrix-vector multiplication of `hamiltonian` operator at time `time`, with vector `V`.
+		"""Matrix-vector multiplication of `hamiltonian` operator at time `time`, with state `V`.
 
 		.. math::
 			H(t=\\texttt{time})|V\\rangle
@@ -514,15 +557,33 @@ class hamiltonian(object):
 		----------
 		V : numpy.ndarray
 			Vector (quantums tate) to multiply the `hamiltonian` operator with.
-		time : float, optional
-			Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0`.
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* list: there are two possible outcomes:
+
+				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into the i-th column of `V` to get the i-th column of the output array.
+				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
+					in `time`. The results are then stacked such that the columns contain all the vectors. 
+
+				If either of these cases do not match, an error is thrown.
 		check : bool, optional
+			Whether or not to do checks for shape compatibility.
 			
 
 		Returns
 		-------
 		numpy.ndarray
-			Vector corresponding to the `hamiltonian` operator applied on the state `V`. 
+			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
+
+		Example
+		-------
+		>>> B = H.dot(A,time=0,check=True)
+
+		corresponds to :math:`B = HA`. 
 	
 		"""
 
@@ -621,7 +682,6 @@ class hamiltonian(object):
 
 			return V_dot
 
-
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		""" Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
 
@@ -633,8 +693,19 @@ class hamiltonian(object):
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
 			[see `enformce_pure`].
-		time : float, optional
-			Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0`.
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* list: there are two possible outcomes:
+
+				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into the i-th column of `V` to get the i-th column of the output array.
+				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
+					in `time`. The results are then stacked such that the columns contain all the vectors. 
+
+				If either of these cases do not match, an error is thrown.
 		enforce_pure : bool, optional
 			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
 			in the columns.
@@ -644,6 +715,12 @@ class hamiltonian(object):
 		-------
 		float
 			Expectation value of `hamiltonian` operator in state `V`.
+
+		Example
+		-------
+		>>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`H_\\{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
 		if self.Ns <= 0:
@@ -682,7 +759,6 @@ class hamiltonian(object):
 					return _np.einsum("ij,ij->j",V.conj(),V_dot)
 				else: # density matrix
 					return V_dot.trace()
-
 			
 	def matrix_ele(self,Vl,Vr,time=0,diagonal=False,check=True):
 		"""Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.
@@ -700,8 +776,19 @@ class hamiltonian(object):
 			Vector(s)/state(s) to multiple with on left side.
 		Vl : numpy.ndarray
 			Vector(s)/state(s) to multiple with on right side.
-		time : float, optional
-			Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0`.
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* list: there are two possible outcomes:
+
+				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into the i-th column of `V` to get the i-th column of the output array.
+				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
+					in `time`. The results are then stacked such that the columns contain all the vectors. 
+
+				If either of these cases do not match, an error is thrown.
 		diagonal : bool, optional
 			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
 		check : bool,
@@ -710,6 +797,12 @@ class hamiltonian(object):
 		-------
 		float
 			Matrix element of `hamiltonian` operator between the states `Vl` and `Vr`.
+
+		Example
+		-------
+		>>> H_lr = H.expt_value(Vl,Vr,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`H_\\{lr} = \\langle V_l|H(t=0)|V_r\\rangle`. 
 
 		"""
 		if self.Ns <= 0:
@@ -782,11 +875,12 @@ class hamiltonian(object):
 				return Vl.T.conj().dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
+
 		
 	### transformation routines
 
 	def project_to(self,proj):
-		"""Projects/transforms `hamiltonian` operator with projector/operator `proj`.
+		"""Projects/Transforms `hamiltonian` operator with projector/operator `proj`.
 
 		Let us call the projector/transformation :math:`V`. Then, the function computes
 
@@ -820,6 +914,13 @@ class hamiltonian(object):
 		obj
 			Projected/Transformed `hamiltonian` operator. The output object type depends on the object 
 			type of `proj`.
+
+		Example
+		-------
+
+		>>> H_new = H.project_to(V)
+
+		correponds to :math:`V^\\dagger H V`.
 
 		"""
 
@@ -868,7 +969,6 @@ class hamiltonian(object):
 			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
-
 	def rotate_by(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
 		"""Rotates/Transforms `hamiltonian` object by an operator `other`.
 
@@ -916,6 +1016,16 @@ class hamiltonian(object):
 		obj
 			Transformed `hamiltonian` operator. The output object type depends on the object type of `other`.
 	
+		Examples
+		--------
+		>>> H_new = H.rotate_by(V,generator=False)
+
+		corresponds to :math:`V^\\dagger H V`.
+
+		>>> H_new = H.rotate_by(K,generator=True,**exp_op_args)
+
+		corresponds to :math:`\\exp(K^\\dagger) H \\exp(K)`.
+
 		"""
 
 		if generator:
@@ -1178,7 +1288,7 @@ class hamiltonian(object):
 
 
 	def evolve(self,v0,t0,times,eom="SE",solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
-		"""Implements (imaginary) time evolution the `hamiltonian` object.
+		"""Implements (imaginary) time evolution generated by the `hamiltonian` object.
 
 		The functions handles evolution generated by both time-dependent and time-independent Hamiltonians. 
 
@@ -1233,6 +1343,10 @@ class hamiltonian(object):
 			* generator object for time-evolved state (requires `iterate = True`).
 
 			Note that for Liouvillian dynamics the output is a square complex `numpy.ndarray`.
+
+		Example
+		-------
+		>>> v_t = H.evolve(v0,t0,times,eom="SE",solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
 
 		"""
 
@@ -1415,6 +1529,10 @@ class hamiltonian(object):
 		-------
 		:obj:`scipy.sparse.linalg.LinearOperator`
 
+		Example
+		-------
+		>>> H_aslinop=H.aslinearoperator(time=time)
+
 		"""
 		time = _np.array(time)
 		if time.ndim > 0:
@@ -1438,6 +1556,10 @@ class hamiltonian(object):
 		Returns
 		-------
 		:obj:`scipy.sparse.csr_matrix`
+
+		Example
+		-------
+		>>> H_csr=H.tocsr(time=time)
 
 		"""
 
@@ -1474,6 +1596,10 @@ class hamiltonian(object):
 		Returns
 		-------
 		:obj:`scipy.sparse.csc_matrix`
+
+		Example
+		-------
+		>>> H_csc=H.tocsc(time=time)
 
 		"""
 		if self.Ns <= 0:
@@ -1524,6 +1650,10 @@ class hamiltonian(object):
 			* `numpy.ndarray`.
 			* `numpy.matrix`.
 
+		Example
+		-------
+		>>> H_dense=H.todense(time=time)
+
 		"""
 
 		if out is None:
@@ -1564,6 +1694,10 @@ class hamiltonian(object):
 		numpy.ndarray
 			Dense `hamiltonian` array.
 
+		Example
+		-------
+		>>> H_dense=H.toarray(time=time)
+
 		"""
 
 		if out is None:
@@ -1594,6 +1728,10 @@ class hamiltonian(object):
 
 			* Shallow copy, if `copy = False`.
 			* Deep copy, if `copy = True`.
+
+		Example
+		-------
+		>>> H_dense=H.as_dense_format()
 
 		"""
 		if copy:
@@ -1634,6 +1772,10 @@ class hamiltonian(object):
 			* Shallow copy, if `copy = False`.
 			* Deep copy, if `copy = True`.
 
+		Example
+		-------
+		>>> H_sparse=H.as_sparse_format()
+
 		"""
 		if type(fmt) is not str:
 			raise ValueError("Expecting string for 'fmt'")
@@ -1653,35 +1795,9 @@ class hamiltonian(object):
 		new._dynamic = {func:sparse_constructor(Hd) for func,Hd in iteritems(new._dynamic)}
 
 		return new
-	
 
 
-	def astype(self,dtype):
-		""" Changes data type of `hamiltonian` object.
-
-		Parameters
-		----------
-		dtype : 'type'
-			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
-
-		Returns
-		:obj:`hamiltonian`
-			`hamiltonian` operator with altered data type.
-
-		"""
-
-		if dtype not in supported_dtypes:
-			raise TypeError('hamiltonian does not support type: '+str(dtype))
-
-		new = _shallowcopy(self)
-
-		new._dtype = dtype
-		new._static = new._static.astype(dtype)
-		new._dynamic = {func:Hd.astype(dtype) for func,Hd in iteritems(new._dynamic)}
-
-		return new
-
-
+	### algebra operations
 
 	def transpose(self,copy=False):
 		"""Transposes `hamiltonian` operator.
@@ -1694,6 +1810,11 @@ class hamiltonian(object):
 		-------
 		:obj:`hamiltonian`
 			:math:`H_{ij}\\mapsto H_{ji}`
+
+		Example
+		-------
+
+		>>> H_tran = H.transpose()
 
 		"""
 		if copy:
@@ -1717,6 +1838,11 @@ class hamiltonian(object):
 		-------
 		:obj:`hamiltonian`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
+
+		Example
+		-------
+
+		>>> H_conj = H.conj()
 
 		"""
 		new = _shallowcopy(self)
@@ -1749,10 +1875,15 @@ class hamiltonian(object):
 		:obj:`hamiltonian`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
+		Example
+		-------
+
+		>>> H_herm = H.getH()
+
 		"""
 		return self.conj().transpose(copy=copy)	
 
-
+	### lin-alg operations
 
 	def diagonal(self,time=0):
 		"""Calculates diagonal of `hamiltonian` operator at time `time`.
@@ -1766,6 +1897,11 @@ class hamiltonian(object):
 		-------
 		numpy.ndarray
 			Diagonal part of operator :math:`H(t=\\texttt{time})`.
+
+		Example
+		-------
+
+		>>> H_diag = H.diagonal(time=0.0)
 
 		"""
 		if self.Ns <= 0:
@@ -1791,6 +1927,12 @@ class hamiltonian(object):
 		-------
 		float
 			Trace of operator :math:`\\sum_{j=1}^{Ns} H_{jj}(t=\\texttt{time})`.
+
+		Example
+		-------
+
+		>>> H_tr = H.tr(time=0.0)
+
 		"""
 		if self.Ns <= 0:
 			return 0
@@ -1804,6 +1946,34 @@ class hamiltonian(object):
 		return trace
  		
 
+	def astype(self,dtype):
+		""" Changes data type of `hamiltonian` object.
+
+		Parameters
+		----------
+		dtype : 'type'
+			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
+
+		Returns
+		:obj:`hamiltonian`
+			`hamiltonian` operator with altered data type.
+
+		Example
+		-------
+		>>> H_cpx=H.astype(np.complex128)
+
+		"""
+
+		if dtype not in supported_dtypes:
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
+
+		new = _shallowcopy(self)
+
+		new._dtype = dtype
+		new._static = new._static.astype(dtype)
+		new._dynamic = {func:Hd.astype(dtype) for func,Hd in iteritems(new._dynamic)}
+
+		return new
 
 	def copy(self):
 		"""Returns a deep copy of `hamiltonian` object."""

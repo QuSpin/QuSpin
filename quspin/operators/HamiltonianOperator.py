@@ -439,3 +439,5 @@ class HamiltonianOperator(object):
 
 def isHamiltonianOperator(obj):
 	return isinstance(obj,HamiltonianOperator)
+
+	
