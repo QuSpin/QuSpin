@@ -140,7 +140,7 @@ def _hamiltonian_dot(hamiltonian,time,v):
 class hamiltonian(object):
 	""" Constructs quantum operators.
 
-	The hamiltonian class wraps most of the functionalty of the package. This object allows the user to construct 
+	The `hamiltonian` class wraps most of the functionalty of the package. This object allows the user to construct 
 	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
 	diagonalization, etc.
 
@@ -523,12 +523,12 @@ class hamiltonian(object):
 
 	@property
 	def T(self):
-		""" Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`hamiltonian`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
-		""" Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`hamiltonian`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
 
