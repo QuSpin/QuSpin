@@ -58,17 +58,19 @@ cdef class spinless_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = (1ull<<self._N)
+		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
-			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
 
 		return Ns
 
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
+		cdef npy_intp mem_MAX = basis.shape[0]
 		cdef uint32_t s  = sum(1<<i for i in range(Np))
 		with nogil:
-			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
 
 		return Ns
 
@@ -111,17 +113,19 @@ cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = (1ull<<self._N)
+		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
-			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
 
 		return Ns
 
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
+		cdef npy_intp mem_MAX = basis.shape[0]
 		cdef uint64_t s = sum(1<<i for i in range(Np))
 		with nogil:
-			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
 
 		return Ns
 

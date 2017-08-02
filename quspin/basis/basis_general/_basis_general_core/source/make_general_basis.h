@@ -8,15 +8,20 @@
 #include <omp.h>
 
 template<class I,class J>
-npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,I basis[],J n[]){
+npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
-	#pragma omp parallel shared(Ns)
+	bool unsuff_mem = false;
+	#pragma omp parallel shared(Ns,unsuff_mem)
 	{
 		int n_th = omp_get_num_threads();
 		int id = omp_get_thread_num();
 		npy_intp ii = id;
 
-		for(npy_intp s=id;s<MAX;s+=n_th){
+		for(npy_intp s=id;s<MAX && !unsuff_mem;s+=n_th){
+			if(ii>=mem_MAX){
+				#pragma omp critical
+				unsuff_mem = true;
+			}
 			if(B->check_state(s)){
 				J nn = B->get_norm(s);
 				if(nn>0){
@@ -29,15 +34,20 @@ npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,I basis[],J n[]){
 		}
 		#pragma omp critical
 		Ns += ii/n_th;
-
 	}
-	return Ns;
+	if(unsuff_mem){
+		return -1;
+	}
+	else{
+		return Ns;
+	}
 }
 
 template<class I,class J>
-npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,I s,I basis[],J n[]){
+npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
 	npy_intp Ns = 0;
-	#pragma omp parallel firstprivate(s) shared(Ns)
+	bool unsuff_mem = false;
+	#pragma omp parallel firstprivate(s) shared(Ns,unsuff_mem)
 	{
 		int n_th = omp_get_num_threads();
 		int id = omp_get_thread_num();
@@ -47,7 +57,11 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,I s,I basis[],J n
 			s = B->next_state_pcon(s);
 		}
 		
-		for(npy_intp i=id;i<MAX;i+=n_th){
+		for(npy_intp i=id;i<MAX && !unsuff_mem;i+=n_th){
+			if(ii>=mem_MAX){
+				#pragma omp critical
+				unsuff_mem = true;
+			}
 			if(B->check_state(s)){
 				J nn = B->get_norm(s);
 				if(nn>0){
@@ -66,7 +80,12 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,I s,I basis[],J n
 		Ns += ii/n_th;
 	}
 
-	return Ns;
+	if(unsuff_mem){
+		return -1;
+	}
+	else{
+		return Ns;
+	}
 }
 
 #endif

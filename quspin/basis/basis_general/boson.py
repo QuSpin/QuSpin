@@ -128,6 +128,9 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			if count_particles and (Nb_list is not None):
 				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 				self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
+				if self._Ns < 0:
+					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+
 				basis,ind = _np.unique(basis,return_index=True)
 				if self.Ns != basis.shape[0]:
 					basis = basis[1:]
@@ -138,6 +141,9 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self._Np_list = Np_list[ind[::-1]].copy()
 			else:
 				self._Ns = self._core.make_basis(basis,n,Np=Nb)
+				if self._Ns < 0:
+					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+
 				basis,ind = _np.unique(basis,return_index=True)
 				if self.Ns != basis.shape[0]:
 					basis = basis[1:]

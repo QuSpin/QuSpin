@@ -1098,7 +1098,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_s
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":97
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":99
  * 
  * 
  * cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):             # <<<<<<<<<<<<<<
@@ -1111,12 +1111,12 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_s
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":85
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":86
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
- * 		cdef int l = Np/(self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon {
   PyObject_HEAD
@@ -1125,8 +1125,8 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_s
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":88
- * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":90
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))             # <<<<<<<<<<<<<<
  * 		s += (Np%(self._sps-1))*self._sps**l
@@ -1142,12 +1142,12 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_s
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":147
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":150
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
- * 		cdef int l = Np/(self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon {
   PyObject_HEAD
@@ -1156,8 +1156,8 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_s
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":150
- * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":154
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))             # <<<<<<<<<<<<<<
  * 		s += (Np%(self._sps-1))*self._sps**l
@@ -1266,7 +1266,7 @@ struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_16h
 static struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_32 *__pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_32;
 
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":97
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":99
  * 
  * 
  * cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):             # <<<<<<<<<<<<<<
@@ -21189,8 +21189,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   char __pyx_v_kind;
   int __pyx_v____pyx_int64_t_is_signed;
   int __pyx_v____pyx_int8_t_is_signed;
-  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
+  int __pyx_v____pyx_int32_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
   PyObject *__pyx_v_dtype = NULL;
   PyObject *__pyx_v_arg_base = NULL;
@@ -21301,8 +21301,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_itemsize = -1L;
   __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
   __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
-  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
+  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(0, 155, __pyx_L1_error)
@@ -29385,10 +29385,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_v_itemsize;
   int __pyx_v_dtype_signed;
   char __pyx_v_kind;
-  int __pyx_v____pyx_int64_t_is_signed;
-  int __pyx_v____pyx_int8_t_is_signed;
   int __pyx_v____pyx_int32_t_is_signed;
+  int __pyx_v____pyx_int64_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
+  int __pyx_v____pyx_int8_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
   PyObject *__pyx_v_dtype = NULL;
   PyObject *__pyx_v_arg_base = NULL;
@@ -29497,10 +29497,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_L11_try_end:;
   }
   __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
-  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
+  __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
+  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(0, 183, __pyx_L1_error)
@@ -34107,8 +34107,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   char __pyx_v_kind;
   int __pyx_v____pyx_int64_t_is_signed;
   int __pyx_v____pyx_int8_t_is_signed;
-  int __pyx_v____pyx_int32_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
+  int __pyx_v____pyx_int32_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
   PyObject *__pyx_v_dtype = NULL;
   PyObject *__pyx_v_arg_base = NULL;
@@ -34219,8 +34219,8 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_v_itemsize = -1L;
   __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
   __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
-  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
+  __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(0, 204, __pyx_L1_error)
@@ -42303,10 +42303,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_v_itemsize;
   int __pyx_v_dtype_signed;
   char __pyx_v_kind;
-  int __pyx_v____pyx_int64_t_is_signed;
-  int __pyx_v____pyx_int8_t_is_signed;
   int __pyx_v____pyx_int32_t_is_signed;
+  int __pyx_v____pyx_int64_t_is_signed;
   int __pyx_v____pyx_int16_t_is_signed;
+  int __pyx_v____pyx_int8_t_is_signed;
   PyObject *__pyx_v_arg = NULL;
   PyObject *__pyx_v_dtype = NULL;
   PyObject *__pyx_v_arg_base = NULL;
@@ -42415,10 +42415,10 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_L11_try_end:;
   }
   __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
-  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   __pyx_v____pyx_int32_t_is_signed = (((__pyx_t_5numpy_int32_t)-1L) < 0);
+  __pyx_v____pyx_int64_t_is_signed = (((__pyx_t_5numpy_int64_t)-1L) < 0);
   __pyx_v____pyx_int16_t_is_signed = (((__pyx_t_5numpy_int16_t)-1L) < 0);
+  __pyx_v____pyx_int8_t_is_signed = (((__pyx_t_5numpy_int8_t)-1L) < 0);
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(0, 232, __pyx_L1_error)
@@ -48082,11 +48082,12 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
- * 		with nogil:
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
 static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_32 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   npy_intp __pyx_v_Ns;
+  npy_intp __pyx_v_mem_MAX;
   npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
@@ -48097,16 +48098,25 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)             # <<<<<<<<<<<<<<
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
  */
   __pyx_v_Ns = __Pyx_pow_int(__pyx_v_self->__pyx_base._sps, __pyx_v_self->__pyx_base._N);
 
   /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":79
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
+ * 		with nogil:
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
+ */
+  __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
+
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":80
+ * 		cdef npy_intp Ns = (self._sps**self._N)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  */
   {
@@ -48116,10 +48126,10 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":80
- * 		cdef npy_intp Ns = (self._sps**self._N)
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":81
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])             # <<<<<<<<<<<<<<
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])             # <<<<<<<<<<<<<<
  * 
  * 		return Ns
  */
@@ -48127,14 +48137,14 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
         if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_basis.shape[0];
         __pyx_t_2 = 0;
         if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_n.shape[0];
-        __pyx_v_Ns = make_basis<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_1 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_2 * __pyx_v_n.strides[0]) )))));
+        __pyx_v_Ns = make_basis<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_1 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_2 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":79
- * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
+      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":80
  * 		cdef npy_intp Ns = (self._sps**self._N)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  */
       /*finally:*/ {
@@ -48148,8 +48158,8 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":82
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":83
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
  * 
@@ -48163,7 +48173,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
- * 		with nogil:
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
   /* function exit code */
@@ -48173,8 +48183,8 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
 }
 static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_15make_basis_pcon_2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":88
- * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":90
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))             # <<<<<<<<<<<<<<
  * 		s += (Np%(self._sps-1))*self._sps**l
@@ -48190,7 +48200,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 88, __pyx_L1_error)
+    __PYX_ERR(1, 90, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -48198,7 +48208,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_15make_basis_pcon_2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_higher_spin_basis_core_wrap_32_m, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 88, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_15make_basis_pcon_2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_higher_spin_basis_core_wrap_32_m, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -48234,24 +48244,24 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 88, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_l); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 90, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_l); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 88, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 90, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -48259,17 +48269,17 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 88, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 90, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 88, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 90, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -48279,7 +48289,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(1, 88, __pyx_L1_error)
+          else __PYX_ERR(1, 90, __pyx_L1_error)
         }
         break;
       }
@@ -48289,16 +48299,16 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_i, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 88, __pyx_L1_error) }
-    __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 90, __pyx_L1_error) }
+    __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 88, __pyx_L1_error) }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 88, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 90, __pyx_L1_error) }
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_Power(__pyx_t_5, __pyx_cur_scope->__pyx_v_i, Py_None); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 88, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Power(__pyx_t_5, __pyx_cur_scope->__pyx_v_i, Py_None); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Multiply(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 88, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Multiply(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -48319,7 +48329,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 88, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 90, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -48341,17 +48351,18 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":85
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":86
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
- * 		cdef int l = Np/(self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
 static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_32 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon *__pyx_cur_scope;
   npy_intp __pyx_v_Ns;
+  npy_intp __pyx_v_mem_MAX;
   __pyx_t_5numpy_uint32_t __pyx_v_s;
   npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -48373,7 +48384,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 85, __pyx_L1_error)
+    __PYX_ERR(1, 86, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -48381,20 +48392,20 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":86
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":87
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)             # <<<<<<<<<<<<<<
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
- * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_H_dim); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 86, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_H_dim); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 86, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 86, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 86, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = NULL;
   __pyx_t_7 = 0;
@@ -48411,7 +48422,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 86, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 87, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -48422,7 +48433,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 86, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 87, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -48431,7 +48442,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 86, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_6) {
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -48445,18 +48456,27 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
     __pyx_t_3 = 0;
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 86, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_9 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 86, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_9 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_Ns = __pyx_t_9;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":87
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":88
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
+ * 		cdef int l = Np/(self._sps-1)
+ * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
+ */
+  __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
+
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":89
+ * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)             # <<<<<<<<<<<<<<
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
  * 		s += (Np%(self._sps-1))*self._sps**l
@@ -48464,36 +48484,36 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_t_10 = (__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1);
   if (unlikely(__pyx_t_10 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(1, 87, __pyx_L1_error)
+    __PYX_ERR(1, 89, __pyx_L1_error)
   }
   else if (sizeof(long) == sizeof(long) && (!(((long)-1) > 0)) && unlikely(__pyx_t_10 == (long)-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_v_Np))) {
     PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-    __PYX_ERR(1, 87, __pyx_L1_error)
+    __PYX_ERR(1, 89, __pyx_L1_error)
   }
   __pyx_cur_scope->__pyx_v_l = __Pyx_div_long(__pyx_v_Np, __pyx_t_10);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":88
- * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":90
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))             # <<<<<<<<<<<<<<
  * 		s += (Np%(self._sps-1))*self._sps**l
  * 
  */
-  __pyx_t_1 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_32_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_11 = __Pyx_PyInt_As_npy_uint32(__pyx_t_1); if (unlikely((__pyx_t_11 == ((npy_uint32)-1)) && PyErr_Occurred())) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_npy_uint32(__pyx_t_1); if (unlikely((__pyx_t_11 == ((npy_uint32)-1)) && PyErr_Occurred())) __PYX_ERR(1, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_s = __pyx_t_11;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":89
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":91
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint32_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
  * 		s += (Np%(self._sps-1))*self._sps**l             # <<<<<<<<<<<<<<
@@ -48503,15 +48523,15 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_t_10 = (__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1);
   if (unlikely(__pyx_t_10 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(1, 89, __pyx_L1_error)
+    __PYX_ERR(1, 91, __pyx_L1_error)
   }
   __pyx_v_s = (__pyx_v_s + (__Pyx_mod_long(__pyx_v_Np, __pyx_t_10) * __Pyx_pow_int(__pyx_cur_scope->__pyx_v_self->__pyx_base._sps, __pyx_cur_scope->__pyx_v_l)));
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":91
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":93
  * 		s += (Np%(self._sps-1))*self._sps**l
  * 
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  */
   {
@@ -48521,10 +48541,10 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":92
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":94
  * 
  * 		with nogil:
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])             # <<<<<<<<<<<<<<
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])             # <<<<<<<<<<<<<<
  * 
  * 		return Ns
  */
@@ -48532,14 +48552,14 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
         if (__pyx_t_12 < 0) __pyx_t_12 += __pyx_v_basis.shape[0];
         __pyx_t_13 = 0;
         if (__pyx_t_13 < 0) __pyx_t_13 += __pyx_v_n.shape[0];
-        __pyx_v_Ns = make_basis_pcon<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t>(__pyx_cur_scope->__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_s, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_12 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_13 * __pyx_v_n.strides[0]) )))));
+        __pyx_v_Ns = make_basis_pcon<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t>(__pyx_cur_scope->__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, __pyx_v_s, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_12 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_13 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":91
+      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":93
  * 		s += (Np%(self._sps-1))*self._sps**l
  * 
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  */
       /*finally:*/ {
@@ -48553,8 +48573,8 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":94
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":96
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
  * 
@@ -48563,12 +48583,12 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":85
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":86
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
- * 		cdef int l = Np/(self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
   /* function exit code */
@@ -48588,7 +48608,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":98
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":100
  * 
  * cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
  * 	def __cinit__(self,object N,int sps,int[:,::1] maps, int[:] pers, int[:] qs):             # <<<<<<<<<<<<<<
@@ -48630,26 +48650,26 @@ static int __pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_16highe
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 1); __PYX_ERR(1, 98, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 1); __PYX_ERR(1, 100, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 2); __PYX_ERR(1, 98, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 2); __PYX_ERR(1, 100, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pers)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 3); __PYX_ERR(1, 98, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 3); __PYX_ERR(1, 100, __pyx_L3_error)
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_qs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 4); __PYX_ERR(1, 98, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, 4); __PYX_ERR(1, 100, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 98, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 100, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -48661,14 +48681,14 @@ static int __pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_16highe
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
     }
     __pyx_v_N = values[0];
-    __pyx_v_sps = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_sps == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 98, __pyx_L3_error)
-    __pyx_v_maps = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[2]); if (unlikely(!__pyx_v_maps.memview)) __PYX_ERR(1, 98, __pyx_L3_error)
-    __pyx_v_pers = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[3]); if (unlikely(!__pyx_v_pers.memview)) __PYX_ERR(1, 98, __pyx_L3_error)
-    __pyx_v_qs = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[4]); if (unlikely(!__pyx_v_qs.memview)) __PYX_ERR(1, 98, __pyx_L3_error)
+    __pyx_v_sps = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_sps == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 100, __pyx_L3_error)
+    __pyx_v_maps = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[2]); if (unlikely(!__pyx_v_maps.memview)) __PYX_ERR(1, 100, __pyx_L3_error)
+    __pyx_v_pers = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[3]); if (unlikely(!__pyx_v_pers.memview)) __PYX_ERR(1, 100, __pyx_L3_error)
+    __pyx_v_qs = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[4]); if (unlikely(!__pyx_v_qs.memview)) __PYX_ERR(1, 100, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 98, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 100, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("quspin.basis.basis_general._basis_general_core.higher_spin_core.higher_spin_basis_core_wrap_64.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -48693,17 +48713,17 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
   Py_ssize_t __pyx_t_7;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":100
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":102
  * 	def __cinit__(self,object N,int sps,int[:,::1] maps, int[:] pers, int[:] qs):
  * 
  * 		self._N = N             # <<<<<<<<<<<<<<
  * 		self._nt = pers.shape[0]
  * 		self._sps = sps
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 100, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 102, __pyx_L1_error)
   __pyx_v_self->__pyx_base._N = __pyx_t_1;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":101
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":103
  * 
  * 		self._N = N
  * 		self._nt = pers.shape[0]             # <<<<<<<<<<<<<<
@@ -48712,7 +48732,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
  */
   __pyx_v_self->__pyx_base._nt = (__pyx_v_pers.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":102
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":104
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  * 		self._sps = sps             # <<<<<<<<<<<<<<
@@ -48721,7 +48741,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
  */
   __pyx_v_self->__pyx_base._sps = __pyx_v_sps;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":104
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":106
  * 		self._sps = sps
  * 
  * 		if self._nt>0:             # <<<<<<<<<<<<<<
@@ -48731,14 +48751,14 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
   __pyx_t_2 = ((__pyx_v_self->__pyx_base._nt > 0) != 0);
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":105
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":107
  * 
  * 		if self._nt>0:
  * 			self._basis_core = new higher_spin_basis_core[uint64_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])             # <<<<<<<<<<<<<<
  * 		else:
  * 			self._basis_core = new higher_spin_basis_core[uint64_t](N,sps)
  */
-    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 105, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 107, __pyx_L1_error)
     __pyx_t_3 = 0;
     __pyx_t_4 = 0;
     __pyx_t_5 = -1;
@@ -48752,7 +48772,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
     } else if (unlikely(__pyx_t_4 >= __pyx_v_maps.shape[1])) __pyx_t_5 = 1;
     if (unlikely(__pyx_t_5 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_5);
-      __PYX_ERR(1, 105, __pyx_L1_error)
+      __PYX_ERR(1, 107, __pyx_L1_error)
     }
     __pyx_t_6 = 0;
     __pyx_t_5 = -1;
@@ -48762,7 +48782,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
     } else if (unlikely(__pyx_t_6 >= __pyx_v_pers.shape[0])) __pyx_t_5 = 0;
     if (unlikely(__pyx_t_5 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_5);
-      __PYX_ERR(1, 105, __pyx_L1_error)
+      __PYX_ERR(1, 107, __pyx_L1_error)
     }
     __pyx_t_7 = 0;
     __pyx_t_5 = -1;
@@ -48772,11 +48792,11 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
     } else if (unlikely(__pyx_t_7 >= __pyx_v_qs.shape[0])) __pyx_t_5 = 0;
     if (unlikely(__pyx_t_5 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_5);
-      __PYX_ERR(1, 105, __pyx_L1_error)
+      __PYX_ERR(1, 107, __pyx_L1_error)
     }
     __pyx_v_self->__pyx_base._basis_core = new higher_spin_basis_core<__pyx_t_5numpy_uint64_t> (__pyx_t_1, __pyx_v_sps, __pyx_v_self->__pyx_base._nt, (&(*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_maps.data + __pyx_t_3 * __pyx_v_maps.strides[0]) )) + __pyx_t_4)) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_pers.data + __pyx_t_6 * __pyx_v_pers.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_qs.data + __pyx_t_7 * __pyx_v_qs.strides[0]) )))));
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":104
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":106
  * 		self._sps = sps
  * 
  * 		if self._nt>0:             # <<<<<<<<<<<<<<
@@ -48786,7 +48806,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":107
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":109
  * 			self._basis_core = new higher_spin_basis_core[uint64_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
  * 		else:
  * 			self._basis_core = new higher_spin_basis_core[uint64_t](N,sps)             # <<<<<<<<<<<<<<
@@ -48794,12 +48814,12 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
  * 	@cython.boundscheck(False)
  */
   /*else*/ {
-    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 107, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 109, __pyx_L1_error)
     __pyx_v_self->__pyx_base._basis_core = new higher_spin_basis_core<__pyx_t_5numpy_uint64_t> (__pyx_t_1, __pyx_v_sps);
   }
   __pyx_L3:;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":98
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":100
  * 
  * cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
  * 	def __cinit__(self,object N,int sps,int[:,::1] maps, int[:] pers, int[:] qs):             # <<<<<<<<<<<<<<
@@ -48821,7 +48841,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16highe
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":110
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":112
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -48862,7 +48882,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_1
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, 1); __PYX_ERR(1, 110, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, 1); __PYX_ERR(1, 112, __pyx_L3_error)
         }
         case  2:
         if (kw_args > 0) {
@@ -48876,7 +48896,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_1
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_basis") < 0)) __PYX_ERR(1, 110, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_basis") < 0)) __PYX_ERR(1, 112, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -48888,11 +48908,11 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_1
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_basis = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint64_t(values[0]); if (unlikely(!__pyx_v_basis.memview)) __PYX_ERR(1, 110, __pyx_L3_error)
-    __pyx_v_n = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint16_t(values[1]); if (unlikely(!__pyx_v_n.memview)) __PYX_ERR(1, 110, __pyx_L3_error)
+    __pyx_v_basis = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint64_t(values[0]); if (unlikely(!__pyx_v_basis.memview)) __PYX_ERR(1, 112, __pyx_L3_error)
+    __pyx_v_n = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint16_t(values[1]); if (unlikely(!__pyx_v_n.memview)) __PYX_ERR(1, 112, __pyx_L3_error)
     __pyx_v_Np = values[2];
     if (values[3]) {
-      __pyx_v_count = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(values[3]); if (unlikely(!__pyx_v_count.memview)) __PYX_ERR(1, 110, __pyx_L3_error)
+      __pyx_v_count = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(values[3]); if (unlikely(!__pyx_v_count.memview)) __PYX_ERR(1, 112, __pyx_L3_error)
     } else {
       __pyx_v_count = __pyx_k__132;
       __PYX_INC_MEMVIEW(&__pyx_v_count, 1);
@@ -48900,7 +48920,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_1
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 110, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 112, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("quspin.basis.basis_general._basis_general_core.higher_spin_core.higher_spin_basis_core_wrap_64.make_basis", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -48935,7 +48955,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   Py_ssize_t __pyx_t_12;
   __Pyx_RefNannySetupContext("make_basis", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":111
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":113
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
  * 		cdef int Ns_1 = 0             # <<<<<<<<<<<<<<
@@ -48944,7 +48964,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  */
   __pyx_v_Ns_1 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":112
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":114
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
  * 		cdef int Ns_1 = 0
  * 		cdef int Ns_2 = 0             # <<<<<<<<<<<<<<
@@ -48953,7 +48973,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  */
   __pyx_v_Ns_2 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":113
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":115
  * 		cdef int Ns_1 = 0
  * 		cdef int Ns_2 = 0
  * 		cdef uint8_t np = 0             # <<<<<<<<<<<<<<
@@ -48962,7 +48982,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  */
   __pyx_v_np = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":114
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":116
  * 		cdef int Ns_2 = 0
  * 		cdef uint8_t np = 0
  * 		cdef npy_intp i = 0             # <<<<<<<<<<<<<<
@@ -48971,7 +48991,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  */
   __pyx_v_i = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":117
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":119
  * 
  * 
  * 		if Np is None:             # <<<<<<<<<<<<<<
@@ -48982,7 +49002,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":118
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":120
  * 
  * 		if Np is None:
  * 			Ns_1 = self.make_basis_full(basis,n)             # <<<<<<<<<<<<<<
@@ -48991,7 +49011,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  */
     __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_full(__pyx_v_self, __pyx_v_basis, __pyx_v_n);
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":117
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":119
  * 
  * 
  * 		if Np is None:             # <<<<<<<<<<<<<<
@@ -49001,7 +49021,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":119
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":121
  * 		if Np is None:
  * 			Ns_1 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:             # <<<<<<<<<<<<<<
@@ -49012,17 +49032,17 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":120
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":122
  * 			Ns_1 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:
  * 			Ns_1 = self.make_basis_pcon(Np,basis,n)             # <<<<<<<<<<<<<<
  * 		else:
  * 			Np_iter = iter(Np)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_Np); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 120, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_Np); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 122, __pyx_L1_error)
     __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_t_3, __pyx_v_basis, __pyx_v_n);
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":119
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":121
  * 		if Np is None:
  * 			Ns_1 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:             # <<<<<<<<<<<<<<
@@ -49032,7 +49052,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":122
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":124
  * 			Ns_1 = self.make_basis_pcon(Np,basis,n)
  * 		else:
  * 			Np_iter = iter(Np)             # <<<<<<<<<<<<<<
@@ -49040,12 +49060,12 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
  * 				for np in Np_iter:
  */
   /*else*/ {
-    __pyx_t_4 = PyObject_GetIter(__pyx_v_Np); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 122, __pyx_L1_error)
+    __pyx_t_4 = PyObject_GetIter(__pyx_v_Np); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 124, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_v_Np_iter = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":123
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":125
  * 		else:
  * 			Np_iter = iter(Np)
  * 			if count is None:             # <<<<<<<<<<<<<<
@@ -49055,7 +49075,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     __pyx_t_1 = ((((PyObject *) __pyx_v_count.memview) == Py_None) != 0);
     if (__pyx_t_1) {
 
-      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":124
+      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":126
  * 			Np_iter = iter(Np)
  * 			if count is None:
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -49066,26 +49086,26 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
         __pyx_t_4 = __pyx_v_Np_iter; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 124, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 124, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 126, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_4))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 124, __pyx_L1_error)
+            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 126, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 124, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 126, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 124, __pyx_L1_error)
+            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 126, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 124, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 126, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           }
@@ -49095,17 +49115,17 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(1, 124, __pyx_L1_error)
+              else __PYX_ERR(1, 126, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_7);
         }
-        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 124, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 126, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_v_np = __pyx_t_8;
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":125
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":127
  * 			if count is None:
  * 				for np in Np_iter:
  * 					Ns_1 += self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])             # <<<<<<<<<<<<<<
@@ -49130,7 +49150,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 125, __pyx_L1_error)
+    __PYX_ERR(1, 127, __pyx_L1_error)
 }
 
 __pyx_t_10.data = __pyx_v_n.data;
@@ -49151,7 +49171,7 @@ __pyx_t_10.data = __pyx_v_n.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 125, __pyx_L1_error)
+    __PYX_ERR(1, 127, __pyx_L1_error)
 }
 
 __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_v_np, __pyx_t_9, __pyx_t_10));
@@ -49162,7 +49182,7 @@ __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
         __pyx_t_10.memview = NULL;
         __pyx_t_10.data = NULL;
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":124
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":126
  * 			Np_iter = iter(Np)
  * 			if count is None:
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -49172,7 +49192,7 @@ __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":123
+      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":125
  * 		else:
  * 			Np_iter = iter(Np)
  * 			if count is None:             # <<<<<<<<<<<<<<
@@ -49182,7 +49202,7 @@ __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
       goto __pyx_L4;
     }
 
-    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":128
+    /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":130
  * 			else:
  * 
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -49194,26 +49214,26 @@ __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
         __pyx_t_4 = __pyx_v_Np_iter; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 128, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 130, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 128, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 130, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_4))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 128, __pyx_L1_error)
+            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 130, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 128, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 130, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 128, __pyx_L1_error)
+            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 130, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 128, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 130, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           }
@@ -49223,17 +49243,17 @@ __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(1, 128, __pyx_L1_error)
+              else __PYX_ERR(1, 130, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_7);
         }
-        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 128, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 130, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_v_np = __pyx_t_8;
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":129
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":131
  * 
  * 				for np in Np_iter:
  * 					Ns_2 = Ns_1 + self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])             # <<<<<<<<<<<<<<
@@ -49258,7 +49278,7 @@ __pyx_v_Ns_1 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 129, __pyx_L1_error)
+    __PYX_ERR(1, 131, __pyx_L1_error)
 }
 
 __pyx_t_10.data = __pyx_v_n.data;
@@ -49279,7 +49299,7 @@ __pyx_t_10.data = __pyx_v_n.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 129, __pyx_L1_error)
+    __PYX_ERR(1, 131, __pyx_L1_error)
 }
 
 __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_v_np, __pyx_t_9, __pyx_t_10));
@@ -49290,7 +49310,7 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
         __pyx_t_10.memview = NULL;
         __pyx_t_10.data = NULL;
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":130
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":132
  * 				for np in Np_iter:
  * 					Ns_2 = Ns_1 + self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])
  * 					for i in range(Ns_1,Ns_2,1):             # <<<<<<<<<<<<<<
@@ -49301,7 +49321,7 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
         for (__pyx_t_11 = __pyx_v_Ns_1; __pyx_t_11 < __pyx_t_3; __pyx_t_11+=1) {
           __pyx_v_i = __pyx_t_11;
 
-          /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":131
+          /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":133
  * 					Ns_2 = Ns_1 + self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])
  * 					for i in range(Ns_1,Ns_2,1):
  * 						count[i] = np             # <<<<<<<<<<<<<<
@@ -49313,7 +49333,7 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
           *((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_count.data + __pyx_t_12 * __pyx_v_count.strides[0]) )) = __pyx_v_np;
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":133
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":135
  * 						count[i] = np
  * 
  * 					Ns_1 = Ns_2             # <<<<<<<<<<<<<<
@@ -49322,7 +49342,7 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
  */
         __pyx_v_Ns_1 = __pyx_v_Ns_2;
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":128
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":130
  * 			else:
  * 
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -49336,7 +49356,7 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
   }
   __pyx_L3:;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":135
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":137
  * 					Ns_1 = Ns_2
  * 
  * 		return Ns_1             # <<<<<<<<<<<<<<
@@ -49344,13 +49364,13 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 135, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":110
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":112
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -49376,36 +49396,46 @@ __pyx_v_Ns_2 = (__pyx_v_Ns_1 + ((struct __pyx_vtabstruct_6quspin_5basis_13basis_
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":139
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":141
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
- * 		with nogil:
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
 static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_make_basis_full(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *__pyx_v_self, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   npy_intp __pyx_v_Ns;
+  npy_intp __pyx_v_mem_MAX;
   npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("make_basis_full", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":140
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":142
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)             # <<<<<<<<<<<<<<
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
  */
   __pyx_v_Ns = __Pyx_pow_int(__pyx_v_self->__pyx_base._sps, __pyx_v_self->__pyx_base._N);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":141
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":143
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (self._sps**self._N)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
+ * 		with nogil:
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
+ */
+  __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
+
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":144
+ * 		cdef npy_intp Ns = (self._sps**self._N)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  */
   {
@@ -49415,10 +49445,10 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":142
- * 		cdef npy_intp Ns = (self._sps**self._N)
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":145
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])             # <<<<<<<<<<<<<<
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])             # <<<<<<<<<<<<<<
  * 
  * 		return Ns
  */
@@ -49426,14 +49456,14 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
         if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_basis.shape[0];
         __pyx_t_2 = 0;
         if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_n.shape[0];
-        __pyx_v_Ns = make_basis<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_1 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_2 * __pyx_v_n.strides[0]) )))));
+        __pyx_v_Ns = make_basis<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_1 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_2 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":141
- * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
+      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":144
  * 		cdef npy_intp Ns = (self._sps**self._N)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  */
       /*finally:*/ {
@@ -49447,8 +49477,8 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":144
- * 			Ns = make_basis(self._basis_core,Ns,&basis[0],&n[0])
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":147
+ * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
  * 
@@ -49457,12 +49487,12 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":139
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":141
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = (self._sps**self._N)
- * 		with nogil:
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
   /* function exit code */
@@ -49472,8 +49502,8 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
 }
 static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_15make_basis_pcon_2generator1(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":150
- * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":154
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))             # <<<<<<<<<<<<<<
  * 		s += (Np%(self._sps-1))*self._sps**l
@@ -49489,7 +49519,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_3_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 150, __pyx_L1_error)
+    __PYX_ERR(1, 154, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -49497,7 +49527,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_1
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_15make_basis_pcon_2generator1, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_higher_spin_basis_core_wrap_64_m, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 150, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_15make_basis_pcon_2generator1, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_higher_spin_basis_core_wrap_64_m, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 154, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -49533,24 +49563,24 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 150, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_l); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 154, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_l); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 150, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 150, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 154, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 150, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 154, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -49558,17 +49588,17 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 150, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 154, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 150, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 154, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -49578,7 +49608,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(1, 150, __pyx_L1_error)
+          else __PYX_ERR(1, 154, __pyx_L1_error)
         }
         break;
       }
@@ -49588,16 +49618,16 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_i, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 150, __pyx_L1_error) }
-    __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 154, __pyx_L1_error) }
+    __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 150, __pyx_L1_error) }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 150, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(1, 154, __pyx_L1_error) }
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_base._sps); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 154, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_Power(__pyx_t_5, __pyx_cur_scope->__pyx_v_i, Py_None); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 150, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Power(__pyx_t_5, __pyx_cur_scope->__pyx_v_i, Py_None); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 154, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Multiply(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 150, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Multiply(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 154, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -49618,7 +49648,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 150, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 154, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -49640,17 +49670,18 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_1
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":147
+/* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":150
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
- * 		cdef int l = Np/(self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
 static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_make_basis_pcon(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *__pyx_v_self, int __pyx_v_Np, __Pyx_memviewslice __pyx_v_basis, __Pyx_memviewslice __pyx_v_n) {
   struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon *__pyx_cur_scope;
   npy_intp __pyx_v_Ns;
+  npy_intp __pyx_v_mem_MAX;
   __pyx_t_5numpy_uint64_t __pyx_v_s;
   npy_intp __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -49672,7 +49703,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 147, __pyx_L1_error)
+    __PYX_ERR(1, 150, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -49680,20 +49711,20 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":148
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":151
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)             # <<<<<<<<<<<<<<
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
- * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_H_dim); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 148, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_H_dim); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 148, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 148, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 148, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = NULL;
   __pyx_t_7 = 0;
@@ -49710,7 +49741,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 148, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 151, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -49721,7 +49752,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_t_3, __pyx_t_4, __pyx_t_5};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 148, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 151, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -49730,7 +49761,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 148, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_6) {
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -49744,18 +49775,27 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
     __pyx_t_3 = 0;
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 148, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_9 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 148, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_1); if (unlikely((__pyx_t_9 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 151, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_Ns = __pyx_t_9;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":149
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":152
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
+ * 		cdef int l = Np/(self._sps-1)
+ * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
+ */
+  __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
+
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":153
+ * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)             # <<<<<<<<<<<<<<
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
  * 		s += (Np%(self._sps-1))*self._sps**l
@@ -49763,36 +49803,36 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_t_10 = (__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1);
   if (unlikely(__pyx_t_10 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(1, 149, __pyx_L1_error)
+    __PYX_ERR(1, 153, __pyx_L1_error)
   }
   else if (sizeof(long) == sizeof(long) && (!(((long)-1) > 0)) && unlikely(__pyx_t_10 == (long)-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_v_Np))) {
     PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-    __PYX_ERR(1, 149, __pyx_L1_error)
+    __PYX_ERR(1, 153, __pyx_L1_error)
   }
   __pyx_cur_scope->__pyx_v_l = __Pyx_div_long(__pyx_v_Np, __pyx_t_10);
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":150
- * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":154
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))             # <<<<<<<<<<<<<<
  * 		s += (Np%(self._sps-1))*self._sps**l
  * 
  */
-  __pyx_t_1 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 150, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_11 = __Pyx_PyInt_As_npy_uint64(__pyx_t_1); if (unlikely((__pyx_t_11 == ((npy_uint64)-1)) && PyErr_Occurred())) __PYX_ERR(1, 150, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_npy_uint64(__pyx_t_1); if (unlikely((__pyx_t_11 == ((npy_uint64)-1)) && PyErr_Occurred())) __PYX_ERR(1, 154, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_s = __pyx_t_11;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":151
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":155
  * 		cdef int l = Np/(self._sps-1)
  * 		cdef uint64_t s  = sum((self._sps-1)*self._sps**i for i in range(l))
  * 		s += (Np%(self._sps-1))*self._sps**l             # <<<<<<<<<<<<<<
@@ -49802,15 +49842,15 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_t_10 = (__pyx_cur_scope->__pyx_v_self->__pyx_base._sps - 1);
   if (unlikely(__pyx_t_10 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(1, 151, __pyx_L1_error)
+    __PYX_ERR(1, 155, __pyx_L1_error)
   }
   __pyx_v_s = (__pyx_v_s + (__Pyx_mod_long(__pyx_v_Np, __pyx_t_10) * __Pyx_pow_int(__pyx_cur_scope->__pyx_v_self->__pyx_base._sps, __pyx_cur_scope->__pyx_v_l)));
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":153
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":157
  * 		s += (Np%(self._sps-1))*self._sps**l
  * 
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  */
   {
@@ -49820,10 +49860,10 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":154
+        /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":158
  * 
  * 		with nogil:
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])             # <<<<<<<<<<<<<<
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])             # <<<<<<<<<<<<<<
  * 
  * 		return Ns
  */
@@ -49831,14 +49871,14 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
         if (__pyx_t_12 < 0) __pyx_t_12 += __pyx_v_basis.shape[0];
         __pyx_t_13 = 0;
         if (__pyx_t_13 < 0) __pyx_t_13 += __pyx_v_n.shape[0];
-        __pyx_v_Ns = make_basis_pcon<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t>(__pyx_cur_scope->__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_s, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_12 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_13 * __pyx_v_n.strides[0]) )))));
+        __pyx_v_Ns = make_basis_pcon<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t>(__pyx_cur_scope->__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, __pyx_v_s, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_12 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_13 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":153
+      /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":157
  * 		s += (Np%(self._sps-1))*self._sps**l
  * 
  * 		with nogil:             # <<<<<<<<<<<<<<
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  */
       /*finally:*/ {
@@ -49852,8 +49892,8 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":156
- * 			Ns =  make_basis_pcon(self._basis_core,Ns,s,&basis[0],&n[0])
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":160
+ * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
  * 
@@ -49862,12 +49902,12 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16h
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":147
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":150
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
  * 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
- * 		cdef int l = Np/(self._sps-1)
+ * 		cdef npy_intp mem_MAX = basis.shape[0]
  */
 
   /* function exit code */
@@ -65785,7 +65825,7 @@ static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_AttributeError = __Pyx_GetBuiltinName(__pyx_n_s_AttributeError); if (!__pyx_builtin_AttributeError) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 165, __pyx_L1_error)
-  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(1, 90, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(2, 799, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(3, 146, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(3, 149, __pyx_L1_error)
@@ -67540,21 +67580,21 @@ PyMODINIT_FUNC PyInit_higher_spin_core(void)
   __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64.make_basis_full = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_make_basis_full;
   __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64.make_basis_pcon = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_30higher_spin_basis_core_wrap_64_make_basis_pcon;
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64.tp_base = __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_general_basis_core_wrap_64;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64) < 0) __PYX_ERR(1, 97, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64.tp_dict, __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64) < 0) __PYX_ERR(1, 97, __pyx_L1_error)
-  if (PyObject_SetAttrString(__pyx_m, "higher_spin_basis_core_wrap_64", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64) < 0) __PYX_ERR(1, 97, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64.tp_dict, __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "higher_spin_basis_core_wrap_64", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64 = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core_higher_spin_basis_core_wrap_64;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon) < 0) __PYX_ERR(1, 85, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon) < 0) __PYX_ERR(1, 86, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct__make_basis_pcon;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(1, 88, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(1, 90, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_1_genexpr.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_1_genexpr = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_1_genexpr;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon) < 0) __PYX_ERR(1, 147, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon) < 0) __PYX_ERR(1, 150, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_2_make_basis_pcon;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_3_genexpr) < 0) __PYX_ERR(1, 150, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_3_genexpr) < 0) __PYX_ERR(1, 154, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_3_genexpr.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_3_genexpr = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_16higher_spin_core___pyx_scope_struct_3_genexpr;
   __pyx_vtabptr_array = &__pyx_vtable_array;
@@ -68176,7 +68216,7 @@ PyMODINIT_FUNC PyInit_higher_spin_core(void)
   __pyx_t_14.memview = NULL;
   __pyx_t_14.data = NULL;
 
-  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":110
+  /* "quspin/basis/basis_general/_basis_general_core/higher_spin_core.pyx":112
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -68184,7 +68224,7 @@ PyMODINIT_FUNC PyInit_higher_spin_core(void)
  * 		cdef int Ns_2 = 0
  */
   __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(Py_None);
-  if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(1, 110, __pyx_L1_error)
+  if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(1, 112, __pyx_L1_error)
   __pyx_k__132 = __pyx_t_14;
   __pyx_t_14.memview = NULL;
   __pyx_t_14.data = NULL;

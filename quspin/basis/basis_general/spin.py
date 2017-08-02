@@ -21,7 +21,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			if m < -S or m > S:
 				raise ValueError("m must be between -S and S")
 
-			Nup = int((m+S)*L)
+			Nup = int((m+S)*N)
 
 		if sps==2:
 			hcb_basis_general.__init__(self,N,Nb=Nup,_Np=_Np,**kwargs)
