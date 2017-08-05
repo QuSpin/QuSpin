@@ -26,14 +26,59 @@ class exp_op(object):
 	matrix exponential through its Taylor series. This is slower but for sparse arrays it is more memory efficient.
 	All of the functions make use of the `expm_multiply` function in Scipy's sparse library.
 
-	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`
-
 	This class also allows the option to specify a grid of points on a line in the complex plane via the 
 	optional arguments. If this is specified, then an array `grid` is created via the function 
 	`numpy.linspace`, and the exponential is evaluated for all points on te grid: `exp(a*grid[i]*O)`.
 
+	Note
+	----
+	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
+
 	Example
 	-------
+
+	The example below shows how to compute the time-evolvution of a state under a constant Hamiltian.
+	This is done using the matrix exponential to define the evolution operator and apply it directly 
+	onto the initial state.
+
+	>>> from quspin.operators import hamiltonian, exp_op # Hamiltonians, operators and exp_op
+	>>> from quspin.basis import spin_basis_1d # Hilbert space spin basis
+	>>> import numpy as np # generic math functions
+	>>> #
+	>>> ##### define model parameters #####
+	>>> L=6 # system size
+	>>> J=1.0 # spin interaction
+	>>> g=0.809 # transverse field
+	>>> h=0.9045 # parallel field
+	>>> #
+	>>> ##### construct basis in the 0-total momentum and +1-parity sector
+	>>> basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
+	>>> # define PBC site-coupling lists for operators
+	>>> x_field=[[g,i] for i in range(L)]
+	>>> z_field=[[h,i] for i in range(L)]
+	>>> J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC
+	>>> # static and dynamic lists
+	>>> static=[["zz",J_nn],["z",z_field],["x",x_field]]
+	>>> dynamic=[]
+	>>> ###### construct Hamiltonian
+	>>> H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
+	>>> #
+	>>> ###### compute evolution operator as matrix exponential
+	>>> start, stop, N_t = 0.0, 4.0, 21 # time vector parameters
+	>>> # define evolution operator as a generator object to apply on the state
+	>>> U=exp_op(H,a=-1j,start=start,stop=stop,num=N_t,endpoint=True,iterate=True)
+	>>> print(U)
+	>>> #
+	>>> # compute domain wall initial state
+	>>> dw_str = "".join("1" for i in range(L//2)) + "".join("0" for i in range(L-L//2))
+	>>> i_0 = basis.index(s_f) # find index of product state in basis
+	>>> psi = np.zeros(basis.Ns) # allocate space for state
+	>>> psi[i_0] = 1.0 # set MB state to be the given product state
+	>>> #
+	>>> ##### calculate time-evolved state by successive application of matrix exponential
+	>>> for U_j in U:
+	>>> 	print("evolved state:", psi)
+	>>> 	psi=U_j.dot(psi)
 
 	"""
 	def __init__(self,O,a=1.0,time=0.0,start=None,stop=None,num=None,endpoint=None,iterate=False):

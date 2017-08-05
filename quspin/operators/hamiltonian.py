@@ -196,13 +196,13 @@ class hamiltonian(object):
 
 		Parameters
 		----------
-		static_list : 
-			List of objects to calculate the static part of a `hamiltonian` operator. The format goes like:
+		static_list : list
+			Contains list of objects to calculate the static part of a `hamiltonian` operator. The format goes like:
 
 			>>> static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
 			
-		dynamic_list : 
-			List of objects to calculate the dynamic (time-dependent) part of a `hamiltonian` operator.
+		dynamic_list : list
+			Contains list of objects to calculate the dynamic (time-dependent) part of a `hamiltonian` operator.
 			The format goes like:
 
 			>>> dynamic_list=[[opstr_1,[indx_11,...,indx_1n],fun_1,fun_1_args],[matrix_2,fun_2,fun_2_args],...]
@@ -229,7 +229,7 @@ class hamiltonian(object):
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
-			to create the operator (see Example).
+			to create the operator.
 		 
 		"""
 
@@ -550,8 +550,8 @@ class hamiltonian(object):
 
 		Note
 		----
-			It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
-			vectors together.
+		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
+		vectors together.
 
 		Parameters
 		----------
@@ -1088,7 +1088,6 @@ class hamiltonian(object):
 		----------
 		time : float
 			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
-		
 		eigh_args : 
 			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_.
 			
@@ -1133,7 +1132,6 @@ class hamiltonian(object):
 		----------
 		time : float
 			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
-		
 		eigvalsh_args : 
 			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_.
 			
@@ -1517,7 +1515,7 @@ class hamiltonian(object):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.linalg.LinearOperator`.
 
 		Casts the `hamiltonian` object as a
-		`scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>_
+		`scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>`_
 		object.
 
 		Parameters
@@ -1545,7 +1543,7 @@ class hamiltonian(object):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csr_matrix`.
 
 		Casts the `hamiltonian` object as a
-		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/>_
+		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/>`_
 		object.
 
 		Parameters
@@ -1585,7 +1583,7 @@ class hamiltonian(object):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csc_matrix`.
 
 		Casts the `hamiltonian` object as a
-		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/>_
+		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/>`_
 		object.
 
 		Parameters
@@ -1692,7 +1690,7 @@ class hamiltonian(object):
 		Returns
 		-------
 		numpy.ndarray
-			Dense `hamiltonian` array.
+			Dense array.
 
 		Example
 		-------
@@ -1956,7 +1954,7 @@ class hamiltonian(object):
 
 		Returns
 		:obj:`hamiltonian`
-			`hamiltonian` operator with altered data type.
+			Operator with altered data type.
 
 		Example
 		-------
@@ -2249,11 +2247,6 @@ class hamiltonian(object):
 
 	def __radd__(self,other): # other + self
 		return self.__add__(other)
-
-
-
-
-
 
 	def __iadd__(self,other): # self += other
 		if ishamiltonian(other):
