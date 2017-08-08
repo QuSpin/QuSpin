@@ -26,53 +26,53 @@ def _ops_dict_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
 class ops_dict(object):
-	""" Construct collections of operators.
+	"""Constructs parameter-dependent quantum operators.
 
-	This object maps operatators/matricies to keys, which when calling various operations allows to specify the scalar multiples
-	in front of these operators.
+		The `ops_dict` class maps operators to keys of a dictionary. When calling various methods
+		of the operators, it allows one to 'dynamically' specify the pre-factors of these operators.
+
+		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)`, e.g.
+
+		.. math::
+			H(J_{zz}, h_x) = \sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j
+
+		Example
+		-------
 
 	"""
 	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
-		"""Intializes the `ops_dict` object (any quantum operator).
+		"""Intializes the `ops_dict` object (parameter dependent quantum operators).
 
 		Parameters
 		----------
 		input_dict : dict
+			The `values` of this dictionary contain operator lists, in the same format as the `static_list` 
+			argument of the `hamiltonian` class.
 
-			this is a dictionary which should contain values which are operator lists like the
-			static_list input to the hamiltonian class while the key's correspond to the key vales which you use
-			to specify the coupling during other method calls. For example:
+			The `keys` of this dictionary correspond to the parameter values, e.g. :math:`J_{zz},h_x`, and are 
+			used to specify the coupling strength during calls of the `ops_dict` class methods.
 
-				>>> input_dict = {
-				>>>		"Jzz": [["zz",Jzz_bonds]] # use "Jzz" key to specify the zz interaction coupling
-				>>>		"hx" : [["x" ,hx_site ]] # use "hx" key to specify the field strength
-				>>>	}
-				>>>
+			>>> # use "Jzz" and "hx" keys to specify the zz and x coupling strengths, respectively
+			>>> input_dict = { "Jzz": [["zz",Jzz_bonds]], "hx" : [["x" ,hx_site ]] } 
 
-		N: int, optional
-			number of sites to create the hamiltonian with.
-
-		shape: tuple, optional
-			shape to create the hamiltonian with.
-
+		N : int, optional
+			Number of lattice sites for the `hamiltonian` object.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+		shape : tuple, optional
+			Shape to create the `hamiltonian` object with. Default is `shape = None`.
 		copy: bool, optional
-			weather or not to copy the values from the input arrays. 
-
-		check_symm: bool, optional
-			flag whether or not to check the operator strings if they obey the given symmetries.
-
-		check_herm: bool, optional
-			flag whether or not to check if the operator strings create hermitian matrix. 
-
-		check_pcon: bool, optional
-			flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
-
-		dtype: numpy.datatype, optional
-			data type to case the matrices with. 
-
-		**kw_args: 
-			extra options to pass to the basis class.		
-
+			If set to `True`, this option creates a copy of the input array. 
+		check_symm : bool, optional 
+			Enable/Disable symmetry check on `static_list` and `dynamic_list`.
+		check_herm : bool, optional
+			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.
+		check_pcon : bool, optional
+			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
+		kw_args : dict
+			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
+			to create the operator.		
+			
 		"""
 		self._is_dense = False
 		self._ndim = 2
@@ -267,8 +267,13 @@ class ops_dict(object):
 
 		self._Ns = self._shape[0]
 
+
 	@property
 	def basis(self):
+		""":obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if operator has 
+		no basis (i.e. was created externally and passed as a precalculated array).
+
+		"""
 		if self._basis is not None:
 			return self._basis
 		else:
@@ -276,181 +281,46 @@ class ops_dict(object):
 
 	@property
 	def ndim(self):
+		"""int: number of dimensions, always equal to 2. """
 		return self._ndim
 	
 	@property
 	def Ns(self):
+		"""int: number of states in the (symmetry-reduced) Hilbert space spanned by `basis`."""
 		return self._Ns
 
 	@property
 	def get_shape(self):
+		"""tuple: shape of the `ops_dict` object, always equal to `(Ns,Ns)`."""
 		return self._shape
 
 	@property
 	def is_dense(self):
+		"""bool: `True` if the operator contains a dense matrix as a componnent of either 
+		the static or dynamic lists.
+
+		"""
 		return self._is_dense
 
 	@property
 	def dtype(self):
+		"""type: data type of `ops_dict` object."""
 		return _np.dtype(self._dtype).name
 
 	@property
 	def T(self):
+		""":obj:`ops_dict`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
+		""":obj:`ops_dict`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
-	def copy(self,dtype=None):
-		return _deepcopy(self)
 
 
-	def transpose(self,copy = False):
-		new = _shallowcopy(self)
-		for key,op in self._ops_dict.items():
-			new._ops_dict[key] = op.transpose()
-		return new
 
-	def conjugate(self):
-		new = _shallowcopy(self)
-		for key,op in self._ops_dict.items():
-			new._ops_dict[key] = op.conj()
-		return new
-
-	def conj(self):
-		return self.conjugate()
-
-	def getH(self,copy=False):
-		return self.conj().transpose(copy=copy)
-
-	def astype(self,dtype):
-		if dtype not in hamiltonian.supported_dtypes:
-			raise ValueError("operator can only be cast to floating point types")
-		new = _shallowcopy(self)
-		new._dtype = dtype
-		for key in self._ops_dict.keys():
-			new._ops_dict[key] = self._ops_dict[key].astype(dtype)
-
-		return new
-
-
-	def tocsr(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-
-		H = _sp.csr_matrix(self.get_shape,dtype=self._dtype)
-
-		for key,J in pars.items():
-			try:
-				H += J*_sp.csr_matrix(self._ops_dict[key])
-			except:
-				H = H + J*_sp.csr_matrix(self._ops_dict[key])
-
-		return H
-
-	def tocsc(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-
-		H = _sp.csc_matrix(self.get_shape,dtype=self._dtype)
-
-		for key,J in pars.items():
-			try:
-				H += J*_sp.csc_matrix(self._ops_dict[key])
-			except:
-				H = H + J*_sp.csc_matrix(self._ops_dict[key])
-
-		return H
-
-
-	
-	def todense(self,out=None,pars={}):
-		"""
-		args:
-			time=0, the time to evalute drive at.
-
-		description:
-			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
-			This function can overflow memory if not careful.
-		"""
-		pars = self._check_scalar_pars(pars)
-
-		if out is None:
-			out = _np.zeros(self._shape,dtype=self.dtype)
-			out = _np.asmatrix(out)
-
-		for key,J in pars.items():
-			out += J * self._ops_dict[key]
-		
-		return out
-
-
-	def toarray(self,pars={},out=None):
-		"""
-		args:
-			pars, dictionary to evaluate couples at. 
-			out, array to output results too.
-
-		description:
-			this function simply returns a copy of the Hamiltonian as a dense matrix evaluated at the desired time.
-			This function can overflow memory if not careful.
-		"""
-
-		pars = self._check_scalar_pars(pars)
-
-		if out is None:
-			out = _np.zeros(self._shape,dtype=self.dtype)
-
-		for key,J in pars.items():
-			out += J * self._ops_dict[key]
-		
-		return out
-
-
-	def __call__(self,**pars):
-		pars = self._check_scalar_pars(pars)
-		if self.is_dense:
-			return self.todense(pars)
-		else:
-			return self.tocsr(pars)
-
-	def tohamiltonian(self,pars={}):
-		pars = self._check_hamiltonian_pars(pars)
-
-		static=[]
-		dynamic=[]
-
-		for key,J in pars.items():
-			if type(J) is tuple and len(J) == 2:
-				dynamic.append([self._ops_dict[key],J[0],J[1]])
-			else:
-				if J == 1.0:
-					static.append(self._ops_dict[key])
-				else:
-					static.append(J*self._ops_dict[key])
-
-		return hamiltonian.hamiltonian(static,dynamic,dtype=self._dtype)
-
-
-	def aslinearoperator(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-		matvec = functools.partial(_ops_dict_dot,self,pars)
-		rmatvec = functools.partial(_ops_dict_dot,self.H,pars)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
-
-	"""
-	def SO_LinearOperator(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-		i_pars = {}
-		i_pars_c = {}
-		for key,J in pars.items():
-			i_pars[key] = -1j*J
-			i_pars_c[key] = 1j*J
-
-		new = self.astype(_np.complex128)
-		matvec = functools.partial(_ops_dict_dot,new,i_pars)
-		rmatvec = functools.partial(_ops_dict_dot,new.H,i_pars_c)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=_np.complex128)		
-	"""
+	### state manipulation/observable routines
 
 	def matvec(self,V):
 		return self.dot(V)
@@ -462,15 +332,37 @@ class ops_dict(object):
 		return self.dot(V)
 
 	def dot(self,V,pars={},check=True):
-		"""
-		args:
-			V, the vector to multiple with
-			pars, dictionary to evaluate couples at. 
+		"""Matrix-vector multiplication of `ops_dict` operator for parameters `pars`, with state `V`.
 
-		description:
-			This function does the spare matrix vector multiplication of V with the Hamiltonian evaluated at 
-			the specified time. It is faster in this case to multiple each individual parts of the Hamiltonian 
-			first, then add all those vectors together.
+		.. math::
+			H(t=\\lambda)|V\\rangle
+
+		Note
+		----
+		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
+		vectors together.
+
+		Parameters
+		----------
+		V : numpy.ndarray
+			Vector (quantums tate) to multiply the `ops_dict` operator with.
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		check : bool, optional
+			Whether or not to do checks for shape compatibility.
+			
+
+		Returns
+		-------
+		numpy.ndarray
+			Vector corresponding to the `ops_dict` operator applied on the state `V`.
+
+		Example
+		-------
+		>>> B = H.dot(A,pars=pars,check=True)
+
+		corresponds to :math:`B = HA`. 
+	
 		"""
 
 		
@@ -540,6 +432,34 @@ class ops_dict(object):
 		return V_dot
 
 	def rdot(self,V,pars={},check=False):
+		"""Vector-matrix multiplication of `ops_dict` operator for parameters `pars`, with state `V`.
+
+		.. math::
+			\\lamgle V]H(t=\\lambda)
+
+		
+		Parameters
+		----------
+		V : numpy.ndarray
+			Vector (quantums tate) to multiply the `ops_dict` operator with.
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		check : bool, optional
+			Whether or not to do checks for shape compatibility.
+			
+
+		Returns
+		-------
+		numpy.ndarray
+			Vector corresponding to the `ops_dict` operator applied on the state `V`.
+
+		Example
+		-------
+		>>> B = H.dot(A,pars=pars,check=True)
+
+		corresponds to :math:`B = AH`. 
+	
+		"""
 		try:
 			V = V.transpose()
 		except AttributeError:
@@ -548,15 +468,38 @@ class ops_dict(object):
 		return (self.transpose().dot(V)).transpose()
 
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
-		"""
-		args:
-			Vl, the vector to multiple with on left side
-			Vr, the vector to multiple with on the right side
-			time=0, the time to evalute drive at.
+		"""Calculates matrix element of `ops_dict` operator for parameters `pars` in states `Vl` and `Vr`.
 
-		description:
-			This function takes the matrix element of the Hamiltonian at the specified time
-			between Vl and Vr.
+		.. math::
+			\\langle V_l|H(\\lambda)|V_r\\rangle
+
+		Note
+		----
+		Taking the conjugate or transpose of the state `Vl` is done automatically.  
+
+		Parameters
+		----------
+		Vl : numpy.ndarray
+			Vector(s)/state(s) to multiple with on left side.
+		Vl : numpy.ndarray
+			Vector(s)/state(s) to multiple with on right side.
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		diagonal : bool, optional
+			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
+		check : bool,
+
+		Returns
+		-------
+		float
+			Matrix element of `ops_dict` operator between the states `Vl` and `Vr`.
+
+		Example
+		-------
+		>>> H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)
+
+		corresponds to :math:`H_\\{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. 
+
 		"""
 		if self.Ns <= 0:
 			return _np.array([])
@@ -635,30 +578,69 @@ class ops_dict(object):
 				raise ValueError('Expecting Vl to have ndim < 3')
 
 
-	def trace(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-		tr = 0.0
-		for key,value in self._operator_dict.items():
-			try:
-				tr += pars[key] * value.trace()
-			except AttributeError:
-				tr += pars[key] * value.diagonal().sum()
-		return tr
-
+	### Diagonalisation routines
 
 	def eigsh(self,pars={},**eigsh_args):
+		"""Computes SOME eigenvalues of hermitian `ops_dict` operator using SPARSE hermitian methods.
 
+		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
+		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
+
+		Note
+		----
+		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
+		to reassure themselves of the hermiticity properties before use. 
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		eigsh_args : 
+			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+			
+		Returns
+		-------
+		tuple
+			Tuple containing the `(eigenvalues, eigenvectors)` of the `ops_dict` operator.
+
+		Example
+		-------
+		>>> eigenvalues,eigenvectors = H.eigsh(pars=pars,**eigsh_args)
+
+		"""
 		if self.Ns == 0:
 			return _np.array([]),_np.array([[]])
 
 		return _sla.eigsh(self.tocsr(pars),**eigsh_args)
 
-
 	def eigh(self,pars={},**eigh_args):
-		"""
-		description:
-			function which diagonalizes hamiltonian using dense methods solves for eigen values. 
-			uses wrapped lapack functions which are contained in module py_lapack
+		"""Computes COMPLETE eigensystem of hermitian `ops_dict` operator using DENSE hermitian methods.
+
+		This function method solves for all eigenvalues and eigenvectors. It calls 
+		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_, 
+		and uses wrapped LAPACK functions which are contained in the module py_lapack.
+
+		Note
+		----
+		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
+		to reassure themselves of the hermiticity properties before use. 
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		eigh_args : 
+			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_.
+			
+		Returns
+		-------
+		tuple
+			Tuple containing the `(eigenvalues, eigenvectors)` of the `ops_dict` operator.
+
+		Example
+		-------
+		>>> eigenvalues,eigenvectors = H.eigh(pars=pars,**eigh_args)
+
 		"""
 		eigh_args["overwrite_a"] = True
 		
@@ -671,12 +653,34 @@ class ops_dict(object):
 		E,H_dense = _la.eigh(H_dense,**eigh_args)
 		return E,H_dense
 
-
 	def eigvalsh(self,pars={},**eigvalsh_args):
-		"""
-		description:
-			function which diagonalizes hamiltonian using dense methods solves for eigen values 
-			and eigen vectors. uses wrapped lapack functions which are contained in module py_lapack
+		"""Computes ALL eigenvalues of hermitian `ops_dict` operator using DENSE hermitian methods.
+
+		This function method solves for all eigenvalues. It calls 
+		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_, 
+		and uses wrapped LAPACK functions which are contained in the module py_lapack.
+
+		Note
+		----
+		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
+		to reassure themselves of the hermiticity properties before use. 
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		eigvalsh_args : 
+			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_.
+			
+		Returns
+		-------
+		numpy.ndarray
+			Eigenvalues of the `ops_dict` operator.
+
+		Example
+		-------
+		>>> eigenvalues = H.eigvalsh(pars=pars,**eigvalsh_args)
+
 		"""
 
 		if self.Ns <= 0:
@@ -687,6 +691,389 @@ class ops_dict(object):
 		#eigvalsh_args["overwrite_a"] = True
 		#E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
+
+
+	### routines to change object type	
+
+	def tocsr(self,pars={}):
+		"""Returns copy of a `ops_dict` object for parameters `pars` as a `scipy.sparse.csr_matrix`.
+
+		Casts the `ops_dict` object as a
+		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/>`_
+		object.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+
+		Returns
+		-------
+		:obj:`scipy.sparse.csr_matrix`
+
+		Example
+		-------
+		>>> H_csr=H.tocsr(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+
+		H = _sp.csr_matrix(self.get_shape,dtype=self._dtype)
+
+		for key,J in pars.items():
+			try:
+				H += J*_sp.csr_matrix(self._ops_dict[key])
+			except:
+				H = H + J*_sp.csr_matrix(self._ops_dict[key])
+
+		return H
+
+	def tocsc(self,pars={}):
+		"""Returns copy of a `ops_dict` object for parameters `pars` as a `scipy.sparse.csc_matrix`.
+
+		Casts the `ops_dict` object as a
+		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/>`_
+		object.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+
+		Returns
+		-------
+		:obj:`scipy.sparse.csc_matrix`
+
+		Example
+		-------
+		>>> H_csc=H.tocsc(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+
+		H = _sp.csc_matrix(self.get_shape,dtype=self._dtype)
+
+		for key,J in pars.items():
+			try:
+				H += J*_sp.csc_matrix(self._ops_dict[key])
+			except:
+				H = H + J*_sp.csc_matrix(self._ops_dict[key])
+
+		return H
+
+	def todense(self,pars={},out=None):
+		"""Returns copy of a `ops_dict` object for parameters `pars` as a dense array.
+
+		This function can overflow memory if not used carefully!
+
+		Note
+		----
+		If the array dimension is too large, scipy may choose to cast the `ops_dict` operator as a
+		`numpy.matrix` instead of a `numpy.ndarray`. In such a case, one can use the `ops_dict.toarray()`
+		method.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		out : numpy.ndarray
+			Array to fill in with the output.
+		
+		Returns
+		-------
+		obj
+			Depending of size of array, can be either one of
+
+			* `numpy.ndarray`.
+			* `numpy.matrix`.
+
+		Example
+		-------
+		>>> H_dense=H.todense(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+			out = _np.asmatrix(out)
+
+		for key,J in pars.items():
+			out += J * self._ops_dict[key]
+		
+		return out
+
+	def toarray(self,pars={},out=None):
+		"""Returns copy of a `ops_dict` object for parameters `pars` as a dense array.
+
+		This function can overflow memory if not used carefully!
+
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+		out : numpy.ndarray
+			Array to fill in with the output.
+		
+		Returns
+		-------
+		numpy.ndarray
+			Dense array.
+
+		Example
+		-------
+		>>> H_dense=H.toarray(pars=pars)
+
+		"""
+
+		pars = self._check_scalar_pars(pars)
+
+		if out is None:
+			out = _np.zeros(self._shape,dtype=self.dtype)
+
+		for key,J in pars.items():
+			out += J * self._ops_dict[key]
+		
+		return out
+
+	def aslinearoperator(self,pars={}):
+		"""Returns copy of a `ops_dict` object for parameters `pars` as a `scipy.sparse.linalg.LinearOperator`.
+
+		Casts the `ops_dict` object as a
+		`scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>`_
+		object.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+
+		Returns
+		-------
+		:obj:`scipy.sparse.linalg.LinearOperator`
+
+		Example
+		-------
+		>>> H_aslinop=H.aslinearoperator(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+		matvec = functools.partial(_ops_dict_dot,self,pars)
+		rmatvec = functools.partial(_ops_dict_dot,self.H,pars)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
+
+	def tohamiltonian(self,pars={}):
+		"""Returns copy of a `ops_dict` object for parameters `pars` as a `hamiltonian` object.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+
+		Returns
+		-------
+		:obj:`hamiltonian`
+
+		Example
+		-------
+		>>> H_aslinop=H.tohamiltonian(pars=pars)
+
+		"""
+		pars = self._check_hamiltonian_pars(pars)
+
+		static=[]
+		dynamic=[]
+
+		for key,J in pars.items():
+			if type(J) is tuple and len(J) == 2:
+				dynamic.append([self._ops_dict[key],J[0],J[1]])
+			else:
+				if J == 1.0:
+					static.append(self._ops_dict[key])
+				else:
+					static.append(J*self._ops_dict[key])
+
+		return hamiltonian.hamiltonian(static,dynamic,dtype=self._dtype)
+
+
+	### algebra operations
+
+	def transpose(self,copy=False):
+		"""Transposes `ops_dict` operator.
+
+		Note
+		----
+		This function does NOT conjugate the operator.
+
+		Returns
+		-------
+		:obj:`ops_dict`
+			:math:`H_{ij}\\mapsto H_{ji}`
+
+		Example
+		-------
+
+		>>> H_tran = H.transpose()
+
+		"""
+		new = _shallowcopy(self)
+		for key,op in self._ops_dict.items():
+			new._ops_dict[key] = op.transpose()
+		return new
+
+	def conjugate(self):
+		"""Conjugates `ops_dict` operator.
+
+		Note
+		----
+		This function does NOT transpose the operator.
+
+		Returns
+		-------
+		:obj:`ops_dict`
+			:math:`H_{ij}\\mapsto H_{ij}^*`
+
+		Example
+		-------
+
+		>>> H_conj = H.conj()
+
+		"""
+		new = _shallowcopy(self)
+		for key,op in self._ops_dict.items():
+			new._ops_dict[key] = op.conj()
+		return new
+
+	def conj(self):
+		"""Conjugates `ops_dict` operator.
+
+		Note
+		----
+		This function does NOT transpose the operator.
+
+		Returns
+		-------
+		:obj:`ops_dict`
+			:math:`H_{ij}\\mapsto H_{ij}^*`
+
+		Example
+		-------
+
+		>>> H_conj = H.conj()
+
+		"""
+		return self.conjugate()
+
+	def getH(self,copy=False):
+		"""Calculates hermitian conjugate of `ops_dict` operator.
+
+		Parameters
+		----------
+		copy : bool, optional
+			Whether to return a deep copy of the original object. Default is `copy = False`.
+
+		Returns
+		-------
+		:obj:`ops_dict`
+			:math:`H_{ij}\\mapsto H_{ij}^*`
+
+		Example
+		-------
+
+		>>> H_herm = H.getH()
+
+		"""
+		return self.conj().transpose(copy=copy)
+
+
+	### lin-alg operations
+
+	def trace(self,pars={}):
+		""" Calculates trace of `ops_dict` operator for parameters `pars`.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+
+		Returns
+		-------
+		float
+			Trace of operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
+
+		Example
+		-------
+
+		>>> H_tr = H.tr(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+		tr = 0.0
+		for key,value in self._operator_dict.items():
+			try:
+				tr += pars[key] * value.trace()
+			except AttributeError:
+				tr += pars[key] * value.diagonal().sum()
+		return tr
+
+	
+
+	def astype(self,dtype):
+		""" Changes data type of `ops_dict` object.
+
+		Parameters
+		----------
+		dtype : 'type'
+			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
+
+		Returns
+		:obj:`ops_dict`
+			Operator with altered data type.
+
+		Example
+		-------
+		>>> H_cpx=H.astype(np.complex128)
+
+		"""
+		if dtype not in hamiltonian.supported_dtypes:
+			raise ValueError("operator can only be cast to floating point types")
+		new = _shallowcopy(self)
+		new._dtype = dtype
+		for key in self._ops_dict.keys():
+			new._ops_dict[key] = self._ops_dict[key].astype(dtype)
+
+		return new
+
+	def copy(self,dtype=None):
+		"""Returns a deep copy of `ops_dict` object."""
+		return _deepcopy(self)
+
+
+
+	"""
+	def SO_LinearOperator(self,pars={}):
+		pars = self._check_scalar_pars(pars)
+		i_pars = {}
+		i_pars_c = {}
+		for key,J in pars.items():
+			i_pars[key] = -1j*J
+			i_pars_c[key] = 1j*J
+
+		new = self.astype(_np.complex128)
+		matvec = functools.partial(_ops_dict_dot,new,i_pars)
+		rmatvec = functools.partial(_ops_dict_dot,new.H,i_pars_c)
+		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=_np.complex128)		
+	"""
+
+
+
+	def __call__(self,**pars):
+		pars = self._check_scalar_pars(pars)
+		if self.is_dense:
+			return self.todense(pars)
+		else:
+			return self.tocsr(pars)
 
 
 	def __neg__(self):
@@ -829,6 +1216,22 @@ class ops_dict(object):
 
 
 def isops_dict(obj):
+	"""Checks if instance is object of `ops_dict` class.
+
+	Parameters
+	----------
+	obj : 
+		Arbitraty python object.
+
+	Returns
+	-------
+	bool
+		Can be either of the following:
+
+		* `True`: `obj` is an instance of `ops_dict` class.
+		* `False`: `obj` is NOT an instance of `ops_dict` class.
+
+	"""
 	return isinstance(obj,ops_dict)
 
 	

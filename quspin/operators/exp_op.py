@@ -20,41 +20,95 @@ from six import iteritems
 __all__ = ["exp_op","isexp_op"]
 
 class exp_op(object):
-	""" Construct matrix exponential operators.
+	"""Constructs matrix exponentials of quantum operators.
 
-	This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```O```. 
-	It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through 
-	the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the 
-	expm_multiply function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in 
-	the complex plane via the optional arguments. if this is specified then an array `grid` is created via the numpy function 
-	linspace, then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
+	The `exp_op` class does not calculate the actual matrix exponential but instead computes the action of the 
+	matrix exponential through its Taylor series. This is slower but for sparse arrays it is more memory efficient.
+	All of the functions make use of the `expm_multiply` function in Scipy's sparse library.
+
+	This class also allows the option to specify a grid of points on a line in the complex plane via the 
+	optional arguments. If this is specified, then an array `grid` is created via the function 
+	`numpy.linspace`, and the exponential is evaluated for all points on te grid: `exp(a*grid[i]*O)`.
+
+	Note
+	----
+	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
+
+	Example
+	-------
+
+	The example below shows how to compute the time-evolvution of a state under a constant Hamiltian.
+	This is done using the matrix exponential to define the evolution operator and apply it directly 
+	onto the initial state.
+
+	>>> from quspin.operators import hamiltonian, exp_op # Hamiltonians, operators and exp_op
+	>>> from quspin.basis import spin_basis_1d # Hilbert space spin basis
+	>>> import numpy as np # generic math functions
+	>>> #
+	>>> ##### define model parameters #####
+	>>> L=6 # system size
+	>>> J=1.0 # spin interaction
+	>>> g=0.809 # transverse field
+	>>> h=0.9045 # parallel field
+	>>> #
+	>>> ##### construct basis in the 0-total momentum and +1-parity sector
+	>>> basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
+	>>> # define PBC site-coupling lists for operators
+	>>> x_field=[[g,i] for i in range(L)]
+	>>> z_field=[[h,i] for i in range(L)]
+	>>> J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC
+	>>> # static and dynamic lists
+	>>> static=[["zz",J_nn],["z",z_field],["x",x_field]]
+	>>> dynamic=[]
+	>>> ###### construct Hamiltonian
+	>>> H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
+	>>> #
+	>>> ###### compute evolution operator as matrix exponential
+	>>> start, stop, N_t = 0.0, 4.0, 21 # time vector parameters
+	>>> # define evolution operator as a generator object to apply on the state
+	>>> U=exp_op(H,a=-1j,start=start,stop=stop,num=N_t,endpoint=True,iterate=True)
+	>>> print(U)
+	>>> #
+	>>> # compute domain wall initial state
+	>>> dw_str = "".join("1" for i in range(L//2)) + "".join("0" for i in range(L-L//2))
+	>>> i_0 = basis.index(s_f) # find index of product state in basis
+	>>> psi = np.zeros(basis.Ns) # allocate space for state
+	>>> psi[i_0] = 1.0 # set MB state to be the given product state
+	>>> #
+	>>> ##### calculate time-evolved state by successive application of matrix exponential
+	>>> for U_j in U:
+	>>> 	print("evolved state:", psi)
+	>>> 	psi=U_j.dot(psi)
+
 	"""
-	def __init__(self, O, a = 1.0, start = None, stop = None, num = None, endpoint = None, iterate = False):
-		"""Intializes the `exp_op` object (any quantum operator).
+	def __init__(self,O,a=1.0,time=0.0,start=None,stop=None,num=None,endpoint=None,iterate=False):
+		"""Initialises the `exp_op` object (matrix exponential of the operator `O`).
 
 		Parameters
 		----------
-		H : numpy.ndarray,numpy.matrix,scipy.spmatrix,hamiltonian,ops_dict
-			The operator which to be exponentiated.
-
-		a : scalar, optional
-			prefactor to go in front of the operator in the exponential: exp(a*O)
-
+		O : obj
+			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `ops_dict` object: the operator to compute the matrix exponential of.
+		a : `numpy.dtype`, optional
+			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.
+			Default is `a = 1.0`.
+		time : scalar, optional
+			Time to evaluate the operator `O` at, when exponentiated: `exp(a*O(time))`. Default is `time = 0.0`.
 		start : scalar, optional
-			specify the starting point for a grid of points to evaluate the matrix exponential at.
-
+			Specifies the starting point for a grid of points to evaluate the matrix exponential at.
 		stop : scalar, optional
-			specify the end point of the grid of points. 
-
+			Specifies the end point of for a grid of points to evaluate the matrix exponential at.
 		num : int, optional
-			specify the number of grid points between start and stop (Default if 50)
+			Specifies the number of grid points between start and stop. Default is `num = 50`.
+		endpoint : bool, optional
+			Wehether or not the value `stop` is included in the set of grid points. Note that this changes 
+			the grid step size.
+		iterate : bool, optional
+			If set to `True` class methods return generators which will iterate over the `grid` points. 
 
-		endpoint: bool, optional
-			if True this will make sure stop is included in the set of grid points (Note this changes the grid step size).
+			If set to `False`, a list of all the evaluated points is produced. This is more memory efficient 
+			but at the sacrifice of speed.
 
-		iterate: bool, optional
-			if True when mathematical methods are called they will return iterators which will iterate over the grid 
-			points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
+			Default is `False`.
 
 		"""
 		if _np.array(a).ndim > 0:
@@ -134,47 +188,78 @@ class exp_op(object):
 	
 		self._ndim = 2
 
+
 	@property
 	def ndim(self):
+		"""int: number of dimensions, always equal to 2. """
 		return self._ndim
 	
 	@property
 	def H(self):
+		""":obj:`hamiltonian`: Transposes and conjugates the matrix exponential."""
 		return self.getH(copy = False)
 
 	@property
 	def T(self):
+		""":obj:`hamiltonian`: Transposes the matrix exponential."""
 		return self.transpose(copy = False)
 	
 	@property
-	def H(self):
-		return self.getH(copy = False)
-
-	@property
 	def O(self):
+		""":obj: Returns the operator to be exponentiated."""
 		return self._O
 
 	@property
 	def a(self):
+		"""`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated: `exp(a*O)`."""
 		return self._a
 
 	@property
 	def get_shape(self):
+		"""tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`."""
 		return self.O.get_shape
 
 	@property
 	def Ns(self):
+		"""int: number of states in the (symmetry-reduced) Hilbert space spanned by `basis`."""
 		return self.O.Ns
 
 	@property
 	def grid(self):
+		"""numpy.array: grid containing equidistant points to evaluate the matrix exponential at."""
 		return self._grid
 
 	@property
 	def step(self):
+		"""float: step size between equidistant grid points."""
 		return self._step
 
+	@property
+	def iterate(self):
+		"""bool: shows if iterate option is on/off."""
+		return self._iterate
+
+
+
+
 	def transpose(self,copy = False):
+		"""Transposes `exp_op` operator.
+
+		Note
+		----
+		This function does NOT conjugate the exponentiated operator.
+
+		Returns
+		-------
+		:obj:`exp_op`
+			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ji}`
+
+		Example
+		-------
+
+		>>> expO_tran = expO.transpose()
+
+		"""
 		if copy:
 			return self.copy().transpose(copy = False)
 		else:
@@ -182,11 +267,46 @@ class exp_op(object):
 			return self
 
 	def conj(self):
+		"""Conjugates `exp_op` operator.
+
+		Note
+		----
+		This function does NOT transpose the exponentiated operator.
+
+		Returns
+		-------
+		:obj:`exo_op`
+			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
+
+		Example
+		-------
+
+		>>> expO_conj = expO.conj()
+
+		"""
 		self._O=self._O.conj()
 		self._a = self._a.conjugate()
 		return self
 
 	def getH(self,copy = False):
+		"""Calculates hermitian conjugate of `exp_op` operator.
+
+		Parameters
+		----------
+		copy : bool, optional
+			Whether to return a deep copy of the original object. Default is `copy = False`.
+
+		Returns
+		-------
+		:obj:`exp_op`
+			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
+
+		Example
+		-------
+
+		>>> expO_herm = expO.getH()
+
+		"""
 		if copy:
 			return self.copy().getH(copy = False)
 		else:
@@ -194,15 +314,55 @@ class exp_op(object):
 			self._a = self._a.conjugate()
 			return self
 
+
 	def copy(self):
+		"""Returns a deep copy of `exp_op` object."""
 		return _deepcopy(self)
 
+
 	def set_a(self,new_a):
+		"""Resets attribute `a` to multiply the operator in `exp(a*O)`.
+		
+		Parameters
+		----------
+		new_a : `numpy.dtype`
+			New value for `a`.
+
+		Example
+		-------
+		>>> expO = exp_op(O,a=1.0)
+		>>> print(expO.a)
+		>>> expO.set_a(2.0)
+		>>> print(expO.a)
+
+		""" 
 		if not _np.isscalar(new_a):
 			raise ValueError("'a' must be set to scalar value.")
 		self._a = _np.complex128(new_a)
 
-	def set_grid(self, start, stop, num = None, endpoint = None):
+	def set_grid(self,start,stop,num=None,endpoint=None):
+		"""Resets attribute `grid` to evaluate the operator for every `i` in `exp(a*O*grid[i])`.
+		
+		Parameters
+		----------
+		start : scalar, optional
+			Specifies the new starting point for a grid of points to evaluate the matrix exponential at.
+		stop : scalar, optional
+			Specifies the new end point of for a grid of points to evaluate the matrix exponential at.
+		num : int, optional
+			Specifies the new number of grid points between start and stop. Default is `num = 50`.
+		endpoint : bool, optional
+			Wehether or not the value `stop` is included in the set of grid points. Note that this changes 
+			the grid step size.
+
+		Example
+		-------
+		>>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
+		>>> print(expO.grid)
+		>>> expO.set_grid(start=2.0,stop=4.0,num=200,endpoint=False)
+		>>> print(expO.grid)
+
+		"""
 
 		if not (_np.isscalar(start) and _np.isscalar(stop)):
 			raise ValueError("expecting scalar values for 'start' and 'stop'")
@@ -225,6 +385,16 @@ class exp_op(object):
 		self._grid, self._step = _np.linspace(start, stop, num = num, endpoint = endpoint, retstep = True)
 
 	def unset_grid(self):
+		"""Resets grid parameters to their default values.
+
+		Example
+		-------
+		>>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
+		>>> print(expO.grid)
+		>>> expO.unset_grid()
+		>>> print(expO.grid)
+
+		"""
 		self._iterate=False
 		self._start=None
 		self._stop=None
@@ -233,6 +403,22 @@ class exp_op(object):
 		self._grid, self._step = None, None
 
 	def set_iterate(self,Value):
+		"""Resets `iterate` attribute.
+
+		Parameters
+		----------
+		Value : bool
+			New value for `iterate` attribute.
+
+		Example
+		-------
+		>>> expO = exp_op(O,iterate=True)
+		>>> print(expO.iterate)
+		>>> expO.set_a(False)
+		>>> print(expO.iterate)
+
+		"""
+
 		if type(Value) is not bool:
 			raise ValueError("iterate option must be true or false.")
 
@@ -244,14 +430,65 @@ class exp_op(object):
 		
 
 	def get_mat(self,dense=False,**call_kwargs):
+		"""Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.
 
+		Parameters
+		----------
+		time : scalar, optional
+			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
+		dense : bool
+			Whether or not to return a dense or a sparse array. Detault is `dense = False`.
+
+		Returns
+		-------
+		obj
+			Can be either one of
+
+			* `numpy.ndarray`: dense array if `dense = True`.
+			* `scipy.sparse.csc`: sparse array if `dense = False`.
+
+		Example
+		-------
+		>>> expO = exp_op(O)
+		>>> print(expO.get_mat(time=0.0))
+		>>> print(expO.get_mat(time=0.0,dense=True))
+
+		"""
 		if self.O.is_dense or dense:
 			return _la.expm(self._a * self.O.todense(**call_kwargs))
 		else:
 			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
 
-
 	def dot(self, other,shift=None,**call_kwargs):
+		"""Left-multiply matrix exponential by an operator.
+
+		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies
+		it from the left be :math:`A`. Then this funcion implements:
+
+		.. math::
+			A\\exp(\\mathcal{O})
+
+		Parameters
+		----------
+		other : obj
+			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
+		time : scalar, optional
+			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
+		shift : 
+			
+
+		Returns
+		-------
+		obj
+			matrix exponential multiplied by `other` from the left.
+
+		Example
+		-------
+		>>> expO = exp_op(O)
+		>>> A = exp_op(O,a=2j).get_mat()
+		>>> print(expO.dot(A))
+		
+		"""
 
 		is_sp = False
 		is_ham = False
@@ -308,6 +545,35 @@ class exp_op(object):
 						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
 	def rdot(self, other,shift=None,**call_kwargs):
+		"""Right-multiply matrix exponential by an operator.
+
+		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies
+		it from the right be :math:`B`. Then this funcion implements:
+
+		.. math::
+			\\exp(\\mathcal{O})B
+
+		Parameters
+		----------
+		other : obj
+			The operator :math:`B` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
+		time : scalar, optional
+			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
+		shift : 
+			
+
+		Returns
+		-------
+		obj
+			matrix exponential multiplied by `other` from the right.
+
+		Example
+		-------
+		>>> expO = exp_op(O)
+		>>> B = exp_op(O,a=-2j).get_mat()
+		>>> print(expO.rdot(B))
+		
+		"""
 
 		is_sp = False
 		is_ham = False
@@ -365,9 +631,41 @@ class exp_op(object):
 						else:
 							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
-
 	def sandwich(self, other,shift=None,**call_kwargs):
+		"""Sandwich operator between matrix exponentials.
 
+		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator to be sandwiched be
+		:math:`C`. Then this funcion implements:
+
+		.. math::
+			\\exp(\\mathcal{O})^\\dagger C \\exp(\\mathcal{O})
+
+		Note
+		----
+		The matrix exponential to multiply :math:`C` from the left is hermitian conjugated.
+
+		Parameters
+		----------
+		other : obj
+			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`
+			and :math:`\\exp(\\mathcal{O})`.
+		time : scalar, optional
+			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
+		shift : 
+			
+
+		Returns
+		-------
+		obj
+			operator `other` sandwiched between matrix exponential `exp_op` and its hermitian conjugate.
+
+		Example
+		-------
+		>>> expO = exp_op(O,a=1j)
+		>>> A = exp_op(O.H)
+		>>> print(expO.sandwich(A))
+		
+		"""
 		is_ham = False
 		if hamiltonian.ishamiltonian(other):
 			shape = other._shape
@@ -418,6 +716,7 @@ class exp_op(object):
 					return _np.asarray([mat for mat in mat_iter]).transpose((1,2,0))
 
 
+### helper functions
 def _iter_dot(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
@@ -431,7 +730,6 @@ def _iter_dot(M, other, step, grid):
 		other = _expm_multiply(M, other)
 		yield other.copy()
 
-
 def _iter_rdot(M, other, step, grid):
 	if grid[0] != 0:
 		M *= grid[0]
@@ -444,7 +742,6 @@ def _iter_rdot(M, other, step, grid):
 	for t in grid[1:]:
 		other = _expm_multiply(M, other)
 		yield other.T.copy()
-
 
 def _iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
@@ -462,14 +759,12 @@ def _iter_sandwich(M, other, step, grid):
 
 		yield other.copy()
 
-
 def _hamiltonian_dot(M, other):
 	new = _shallowcopy(other)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
 	return new
-
 
 def _hamiltonian_iter_dot(M, other, grid, step):
 	if grid[0] != 0:
@@ -484,14 +779,12 @@ def _hamiltonian_iter_dot(M, other, grid, step):
 		other = _hamiltonian_dot(M, other)
 		yield other
 
-
 def _hamiltonian_rdot(M, other):
 	new = _shallowcopy(other)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
 	return new
-
 
 def _hamiltonian_iter_rdot(M, other, grid, step):
 	if grid[0] != 0:
@@ -505,7 +798,6 @@ def _hamiltonian_iter_rdot(M, other, grid, step):
 	for t in grid[1:]:
 		other = _hamiltonian_rdot(M, other)
 		yield other.transpose(copy=True)
-
 
 def _hamiltonian_iter_sandwich(M, other, step, grid):
 	if grid[0] != 0:
@@ -523,8 +815,25 @@ def _hamiltonian_iter_sandwich(M, other, step, grid):
 		yield other.copy()
 
 
-def isexp_op(obj):
-	return isinstance(obj,exp_op)
 
+
+def isexp_op(obj):
+	"""Checks if instance is object of `exp_op` class.
+
+	Parameters
+	----------
+	obj : 
+		Arbitraty python object.
+
+	Returns
+	-------
+	bool
+		Can be either of the following:
+
+		* `True`: `obj` is an instance of `exp_op` class.
+		* `False`: `obj` is NOT an instance of`exp_op` class.
+
+	"""
+	return isinstance(obj,exp_op)
 
 	
