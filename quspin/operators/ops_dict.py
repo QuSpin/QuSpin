@@ -26,51 +26,52 @@ def _ops_dict_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
 class ops_dict(object):
+	""" Construct collections of operators.
+
+	This object maps operatators/matricies to keys, which when calling various operations allows to specify the scalar multiples
+	in front of these operators.
+
+	"""
 	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
-		"""
-		this object maps operatators/matricies to keys, which when calling various operations allows to specify the scalar multiples
-		in front of these operators.
+		"""Intializes the `ops_dict` object (any quantum operator).
 
-		--- arguments ---
+		Parameters
+		----------
+		input_dict : dict
 
-		input_dict: dictionary (compulsory) this is a dictionary which should contain values which are operator lists like the
-					static_list input to the hamiltonian class while the key's correspond to the key vales which you use
-					to specify the coupling during other method calls:
+			this is a dictionary which should contain values which are operator lists like the
+			static_list input to the hamiltonian class while the key's correspond to the key vales which you use
+			to specify the coupling during other method calls. For example:
 
-					example:
-						input_dict = {
-										"Jzz": [["zz",Jzz_bonds]] # use "Jzz" key to specify the zz interaction coupling
-										"hx" : [["x" ,hx_site ]] # use "hx" key to specify the field strength
-									 }
-		* N: (optional) number of sites to create the hamiltonian with.
+				>>> input_dict = {
+				>>>		"Jzz": [["zz",Jzz_bonds]] # use "Jzz" key to specify the zz interaction coupling
+				>>>		"hx" : [["x" ,hx_site ]] # use "hx" key to specify the field strength
+				>>>	}
+				>>>
 
-		* shape: (optional) shape to create the hamiltonian with.
+		N: int, optional
+			number of sites to create the hamiltonian with.
 
-		* copy: (optional) weather or not to copy the values from the input arrays. 
+		shape: tuple, optional
+			shape to create the hamiltonian with.
 
-		* check_symm: (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+		copy: bool, optional
+			weather or not to copy the values from the input arrays. 
 
-		* check_herm: (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+		check_symm: bool, optional
+			flag whether or not to check the operator strings if they obey the given symmetries.
 
-		* check_pcon: (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+		check_herm: bool, optional
+			flag whether or not to check if the operator strings create hermitian matrix. 
 
-		* dtype: (optional) data type to case the matrices with. 
+		check_pcon: bool, optional
+			flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
 
-		* kw_args: extra options to pass to the basis class.		
+		dtype: numpy.datatype, optional
+			data type to case the matrices with. 
 
-		--- ops_dict attributes ---: '_. ' below stands for 'object. '		
-
-		* _.basis: the basis associated with this hamiltonian, is None if hamiltonian has no basis. 
-
-		* _.ndim: number of dimensions, always 2.
-		
-		* _.Ns: number of states in the hilbert space.
-
-		* _.get_shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
-
-		* _.is_dense: return 'True' if the hamiltonian contains a dense matrix as a componnent. 
-
-		* _.dtype: returns the data type of the hamiltonian
+		**kw_args: 
+			extra options to pass to the basis class.		
 
 		"""
 		self._is_dense = False

@@ -20,59 +20,47 @@ from six import iteritems
 __all__ = ["exp_op","isexp_op"]
 
 class exp_op(object):
-	def __init__(self, O, a = 1.0, time = 0.0, start = None, stop = None, num = None, endpoint = None, iterate = False):
-		"""
-		This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```O```. 
-		It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through 
-		the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the 
-		expm_multiply function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in 
-		the complex plane via the optional arguments. if this is specified then an array `grid` is created via the numpy function 
-		linspace, then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
+	""" Construct matrix exponential operators.
 
-		--- arguments ---
+	This class constructs an object which acts on various objects with the matrix exponential of the matrix/hamiltonian ```O```. 
+	It does not calculate the actual matrix exponential but instead computes the action of the matrix exponential through 
+	the taylor series. This is slower but for sparse arrays this is more memory efficient. All of the functions make use of the 
+	expm_multiply function in Scipy's sparse library. This class also allows the option to specify a grid of points on a line in 
+	the complex plane via the optional arguments. if this is specified then an array `grid` is created via the numpy function 
+	linspace, then every time a math function is called the exponential is evaluated with for `a*grid[i]*O`.
+	"""
+	def __init__(self, O, a = 1.0, start = None, stop = None, num = None, endpoint = None, iterate = False):
+		"""Intializes the `exp_op` object (any quantum operator).
 
-		* H: matrix/hamiltonian (compulsory), The operator which to be exponentiated.
+		Parameters
+		----------
+		H : numpy.ndarray,numpy.matrix,scipy.spmatrix,hamiltonian,ops_dict
+			The operator which to be exponentiated.
 
-		* a: scalar (optional), prefactor to go in front of the operator in the exponential: exp(a*O)
+		a : scalar, optional
+			prefactor to go in front of the operator in the exponential: exp(a*O)
 
-		* start: scalar (optional), specify the starting point for a grid of points to evaluate the matrix exponential at.
+		start : scalar, optional
+			specify the starting point for a grid of points to evaluate the matrix exponential at.
 
-		* stop: (optional), specify the end point of the grid of points. 
+		stop : scalar, optional
+			specify the end point of the grid of points. 
 
-		* num: (optional), specify the number of grid points between start and stop (Default if 50)
+		num : int, optional
+			specify the number of grid points between start and stop (Default if 50)
 
-		* endpoint: (optional), if True this will make sure stop is included in the set of grid points (Note this changes the grid step size).
+		endpoint: bool, optional
+			if True this will make sure stop is included in the set of grid points (Note this changes the grid step size).
 
-		* iterate: (optional), if True when mathematical methods are called they will return iterators which will iterate over the grid 
-		 points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
-
-		--- exp_op attributes ---: '_. ' below stands for 'object. '
-
-		* _.ndim: returns the number of dimensions, always 2
-
-		* _.a: returns the prefactor a
-
-		* _.H: returns the hermitian conjugate of this operator
-
-		* _.T: returns the transpose of this operator
-
-		* _.O: returns the operator which is being exponentiated
-
-		* _.get_shape: returns the tuple which contains the shape of the operator
-
-		* _.iterate: returns a bool telling whether or not this function will iterate over the grid of values or return a list
-
-		* _.grid: returns the array containing the grid points the exponential will be evaluated at
-
-		* _.step: returns the step size between the grid points
-
+		iterate: bool, optional
+			if True when mathematical methods are called they will return iterators which will iterate over the grid 
+			points as opposed to producing a list of all the evaluated points. This is more memory efficient but at the sacrifice of speed.
 
 		"""
 		if _np.array(a).ndim > 0:
 			raise TypeError('expecting scalar argument for a')
 
 		self._a = a
-		self._time = time
 
 		self._start = start
 		self._stop = stop
@@ -136,7 +124,7 @@ class exp_op(object):
 		if hamiltonian.ishamiltonian(O):
 			self._O = O
 		elif ops_dict.isops_dict(O):
-			self._O = O.tohamiltonian()
+			self._O = O
 		else:
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
 				self._O = hamiltonian.hamiltonian([O], [],dtype=O.dtype)
@@ -255,15 +243,15 @@ class exp_op(object):
 		self._iterate = Value
 		
 
-	def get_mat(self,time=0.0,dense=False):
+	def get_mat(self,dense=False,**call_kwargs):
 
 		if self.O.is_dense or dense:
-			return _la.expm(self._a * self.O.todense(time))
+			return _la.expm(self._a * self.O.todense(**call_kwargs))
 		else:
-			return _la.expm(self._a * self.O.tocsc(time))
+			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
 
 
-	def dot(self, other, time=0.0, shift=None):
+	def dot(self, other,shift=None,**call_kwargs):
 
 		is_sp = False
 		is_ham = False
@@ -287,9 +275,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
+			M = self._a * (self.O(**call_kwargs) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
 		else:
-			M = self._a * self.O(time)
+			M = self._a * self.O(**call_kwargs)
 
 		if self._iterate:
 			if is_ham:
@@ -319,7 +307,7 @@ class exp_op(object):
 					else:
 						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
-	def rdot(self, other, time=0.0,shift=None):
+	def rdot(self, other,shift=None,**call_kwargs):
 
 		is_sp = False
 		is_ham = False
@@ -343,9 +331,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
-			M = (self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))).T
+			M = (self._a * (self.O(**call_kwargs) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))).T
 		else:
-			M = (self._a * self.O(time)).T
+			M = (self._a * self.O(**call_kwargs)).T
 
 		if self._iterate:
 			if is_ham:
@@ -378,7 +366,7 @@ class exp_op(object):
 							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
 
-	def sandwich(self, other, time=0.0,shift=None):
+	def sandwich(self, other,shift=None,**call_kwargs):
 
 		is_ham = False
 		if hamiltonian.ishamiltonian(other):
@@ -402,9 +390,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a.conjugate() * (self.O.H(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
+			M = self._a.conjugate() * (self.O.H(**call_kwargs) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
 		else:
-			M = self._a.conjugate() * self.O.H(time)
+			M = self._a.conjugate() * self.O.H(**call_kwargs)
 			
 		if self._iterate:
 
@@ -417,8 +405,8 @@ class exp_op(object):
 		else:
 			if self._grid is None and self._step is None:
 
-				other = self.dot(other,time=time)
-				other = self.H.rdot(other,time=time)
+				other = self.dot(other,**call_kwargs)
+				other = self.H.rdot(other,**call_kwargs)
 				return other
 
 			else:

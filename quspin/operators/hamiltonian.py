@@ -138,7 +138,7 @@ def _hamiltonian_dot(hamiltonian,time,v):
 	return hamiltonian.dot(v,time=time,check=False)
 
 class hamiltonian(object):
-	""" Constructs quantum operators.
+	""" Construct quantum operators.
 
 	The hamiltonian class wraps most of the functionalty of the package. This object allows the user to construct 
 	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
@@ -215,7 +215,7 @@ class hamiltonian(object):
 			If the operator is time-INdependent, one must pass an empty list: `dynamic_list = []`.
 		N : int, optional
 			Number of lattice sites for the `hamiltonian` object.
-		dtype : 'type'
+		dtype : numpy.datatype, optional
 			Data type (e.g. numpy.float64) to construct the operator with.
 		shape : tuple, optional
 			Shape to create the `hamiltonian` object with. Default is `shape = None`.
@@ -3087,9 +3087,9 @@ class hamiltonian(object):
 
 	
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
-		"""Method for compatibility with NumPy's ufuncs and dot
-		functions.
-		"""
+		# """Method for compatibility with NumPy's ufuncs and dot
+		# functions.
+		# """
 
 		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:

@@ -30,13 +30,30 @@ sys.path.insert(0, os.path.abspath('../../'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
-              'sphinx.ext.intersphinx', 'sphinx.ext.coverage',
-                'sphinx.ext.autosummary','sphinx.ext.napoleon']
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.mathjax',
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.coverage',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.napoleon',
+              # 'numpydoc',
+                ]
 
 
 autosummary_generate = True
 
+
+# -- General configuration ------------------------------------------------
+autoclass_content = "class"  # include both class docstring and __init__
+autodoc_default_flags = [
+        # Make sure that any autodoc declarations show the right members
+        "members",
+        "no-special-members",
+        "no-undoc-members"
+]
+
+autosummary_generate = True  # Make _autosummary files and include them
+napoleon_use_rtype = False  # More legible
 # Napoleon settings
 napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = False

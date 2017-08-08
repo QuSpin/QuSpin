@@ -20,52 +20,39 @@ from copy import deepcopy as _deepcopy # copies only at top level references the
 __all__=["HamiltonianOperator","isHamiltonianOperator"]
 
 class HamiltonianOperator(object):
+	""" Object to perform Lanzos calculations.
+
+	This class uses the basis.Op function to calculate the matrix vector product on the fly greating reducing the amount of memory
+	needed for a calculation at the cost of speed. This object is useful for doing large scale Lanczos calculations using eigsh. 
+	"""
 	def __init__(self,operator_list,system_arg,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
-		"""
-		This class uses the basis.Op function to calculate the matrix vector product on the fly greating reducing the amount of memory
-		needed for a calculation at the cost of speed. This object is useful for doing large scale Lanczos calculations using eigsh. 
+		"""Intializes the `HamiltonianOperator` object (any quantum operator).
 
-		--- arguments ---
+		Parameters
+		----------
+		static_list: list
+		List of operator strings to be used for the HamiltonianOperator. The format goes like:
 
-		* static_list: (compulsory) list of operator strings to be used for the HamiltonianOperator. The format goes like:
-
-			```python
-			operator_list=[[opstr_1,[indx_11,...,indx_1m]],...]
-			```
+			>>> operator_list=[[opstr_1,[indx_11,...,indx_1m]],...]
+			>>>
 		
-		* system_arg: int/basis_object (compulsory) number of sites to create basis object/basis object.
+		system_arg: int, basis
+			number of sites to create basis object/basis object.
 
-		* check_symm: bool (optional) flag whether or not to check the operator strings if they obey the given symmetries.
+		check_symm: bool, optional
+			flag whether or not to check the operator strings if they obey the given symmetries.
 
-		* check_herm: bool (optional) flag whether or not to check if the operator strings create hermitian matrix. 
+		check_herm: bool, optional
+			flag whether or not to check if the operator strings create hermitian matrix. 
 
-		* check_pcon: bool (optional) flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
+		check_pcon: bool, optional
+			flag whether or not to check if the oeprator string whether or not they conserve magnetization/particles. 
 
-		* dtype: dtype (optional) data type to case the matrices with. 
+		dtype: numpy.datatype, optional
+			data type to case the matrices with. 
 
-		* kw_args: extra options to pass to the basis class.
-
-		--- hamiltonian attributes ---: '_. ' below stands for 'object. '
-		* _.basis: the basis associated with this HamiltonianOperator
-
-		* _.ndim: number of dimensions, always 2.
-		
-		* _.Ns: number of states in the hilbert space.
-
-		* _.shape: returns tuple which has the shape of the hamiltonian (Ns,Ns)
-
-		* _.dtype: returns the data type of the hamiltonian
-
-		* _.operator_list: return the list of operators given to this
-
-		* _.T: return the transpose of this operator
-
-		* _.H: return the hermitian conjugate of this operator
-
-		* _.basis: return the basis used by this operator
-
-		* _.LinearOperator: returns a linear operator of this object
-
+		**kw_args:
+			extra options to pass to the basis class.
 
 		"""
 
@@ -424,9 +411,9 @@ class HamiltonianOperator(object):
 		return _sla.eigsh(self.LinearOperator,**eigsh_args)
 
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
-		"""Method for compatibility with NumPy's ufuncs and dot
-		functions.
-		"""
+		# """Method for compatibility with NumPy's ufuncs and dot
+		# functions.
+		# """
 
 		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:
