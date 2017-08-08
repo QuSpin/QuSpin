@@ -174,7 +174,7 @@ cdef basis_type RefState_T_template(shifter shift,basis_type s,int L,int T,int *
     l = 0
 
     for i in range(1,L/T+1):
-        t=shift(t,-T,L,bitop_pars)
+        t=shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i;
 
@@ -197,13 +197,13 @@ cdef basis_type RefState_T_Z_template(shifter shift,bitop flip_all,basis_type s,
     g = 0
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; g=0;
 
     t = flip_all(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; g=1;
 
@@ -226,13 +226,13 @@ cdef basis_type RefState_T_ZA_template(shifter shift,bitop flip_sublat_A,basis_t
     gA = 0
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gA=0;
 
     t = flip_sublat_A(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gA=1;
 
@@ -254,13 +254,13 @@ cdef basis_type RefState_T_ZB_template(shifter shift,bitop flip_sublat_B,basis_t
     gB = 0
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gB=0;
 
     t = flip_sublat_B(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gB=1;
 
@@ -283,25 +283,25 @@ cdef basis_type RefState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bito
     gB = 0
     
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gA=0;gB=0;
 
     t = flip_sublat_A(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gA=1;gB=0;
 
     t = flip_sublat_B(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gA=0;gB=1;
 
     t = flip_all(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; gA=1;gB=1;
 
@@ -325,13 +325,13 @@ cdef basis_type RefState_T_P_template(shifter shift,bitop fliplr,basis_type s,in
     q = 0
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; q=0;
 
     t = fliplr(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; q=1;
 
@@ -363,14 +363,14 @@ cdef basis_type RefState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all
     qg = 0
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; qg=0;
 
     t = fliplr(s,L,bitop_pars)
     t = flip_all(t,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; qg=1;
 
@@ -402,26 +402,26 @@ cdef basis_type RefState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_al
     g = 0
     
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; q=0;g=0;
 
     t = fliplr(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; q=1;g=0;
 
     t = flip_all(s,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; q=0;g=1;
 
     t = fliplr(s,L,bitop_pars)
     t = flip_all(t,L,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < r:
             r=t; l=i; q=1;g=1;
 

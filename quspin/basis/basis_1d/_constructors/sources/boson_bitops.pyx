@@ -23,7 +23,7 @@ cdef basis_type shift(basis_type s,int shift,int length,basis_type[:] pars):
     cdef int i,j
 
     for i in range(length):
-        j = (i-shift+length)%length
+        j = (i+shift+length)%length
         v += ( s%sps ) * M[j]
         s //= sps
 

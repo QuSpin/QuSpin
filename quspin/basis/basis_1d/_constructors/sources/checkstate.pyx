@@ -151,7 +151,7 @@ cdef int CheckState_T_template(shifter shift,int kblock,int L,basis_type s,int T
     cdef int R=-1
     cdef int i
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             return R
         elif t == s:
@@ -185,7 +185,7 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
         return
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
         if t < s:
             return
         elif t==s:
@@ -204,7 +204,7 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     return
 
@@ -231,7 +231,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         return
 
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             R[0] = -1
             return
@@ -251,7 +251,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     t = s
     t = flip_all(t,L,bitop_pars)
@@ -262,7 +262,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         elif t == s:
             R[2] = i
             break
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
 
     t = s
     t = flip_all(t,L,bitop_pars)
@@ -274,7 +274,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         elif t == s:
             R[3] = i
             break
-        t = shift(t,-T,L,bitop_pars)    
+        t = shift(t,T,L,bitop_pars)    
 
     return
 
@@ -306,7 +306,7 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -326,7 +326,7 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     return
 
@@ -355,7 +355,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -374,7 +374,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     return
 
@@ -396,7 +396,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -415,7 +415,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     return
 
@@ -436,7 +436,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -455,7 +455,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     return
 
@@ -483,7 +483,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,-T,L,bitop_pars)
+        t = shift(t,T,L,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -502,7 +502,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
         elif t == s:
             R[1] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
 
     t = flip_sublat_B(s,L,bitop_pars)
@@ -513,7 +513,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
         elif t == s:
             R[2] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
 
     t = flip_all(s,L,bitop_pars)
@@ -524,7 +524,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
         elif t == s:
             R[3] = i
             break
-        t = shift(t,-T,L,bitop_pars) 
+        t = shift(t,T,L,bitop_pars) 
 
     return
 

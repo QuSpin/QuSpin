@@ -85,7 +85,6 @@ class ops_dict(object):
 		else:
 			self._dtype=dtype
 		
-
 		opstr_dict = {}
 		other_dict = {}
 		self._ops_dict = {}
@@ -173,7 +172,7 @@ class ops_dict(object):
 					found = True
 
 				if not found:
-					raise ValueError('missing argument shape')
+					raise ValueError('no dictionary entries have shape attribute.')
 				if shape[0] != shape[1]:
 					raise ValueError('operator must be square matrix')
 

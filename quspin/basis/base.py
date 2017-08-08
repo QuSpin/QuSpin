@@ -7,6 +7,8 @@ import warnings
 MAXPRINT = 50
 # this file stores the base class for all basis classes
 
+__all__=["basis","isbasis"]
+
 class basis(object):
 
 
