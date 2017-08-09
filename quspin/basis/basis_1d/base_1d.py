@@ -732,6 +732,10 @@ class basis_1d(lattice_basis):
 		return string 
 
 	def Op(self,opstr,indx,J,dtype):
+		"""
+		Parameters
+		----------
+		"""
 		indx = _np.asarray(indx,dtype=_np.int32)
 
 		if len(opstr) != len(indx):

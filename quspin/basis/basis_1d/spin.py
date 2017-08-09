@@ -9,9 +9,49 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 class spin_basis_1d(basis_1d):
-	def __init__(self,L,Nup=None,m=None,_Np=None,S="1/2",pauli=True,**blocks):
+	"""Basis for spin operators
+
+	"""	
+	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=True,**blocks):
+		""" Intializes the `fermion_basis_1d` object (basis for fermionic operators).
+
+		Parameters
+		----------
+
+		L: int
+			length of chain/number of sites
+
+		Nup: int,list, optional
+			total :math:`S^z` projection, can be integer or list to specify one or more particle sectors.
+
+		m: float, optional
+			density of fermions to put on chain.
+
+		S: str, optional
+			size of local spin degrees of freedom. could be one of the following:
+			"1/2","1","3/2",...,"9999/2","5000"
+
+		pauli: bool, optional
+			for S=1/2, switch between standard spin-1/2 and pauli-matrices.
+
+		**blocks: optional
+			extra keyword arguements which include:
+
+				**a** (*int*) - specify how many sites to step for translation.
+
+				**kblock** (*int*) - specify momentum block
+
+				**pblock** (*int*) - specify parity block
+
+				**zblock** (*int*) - specify spin inversion symmetry block.
+
+				**zAblock** (*int*) - specify spin inversion of sublattice A symmetry block
+
+				**zAblock** (*int*) - specify spin inversion of sublattice B symmetry block
+
+		"""
 		input_keys = set(blocks.keys())
-		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -20,6 +60,11 @@ class spin_basis_1d(basis_1d):
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
+
+		_Np = blocks.get("_Np")
+		if _Np is None:
+			blocks.pop("_Np")
+
 
 		self._blocks = blocks
 		
