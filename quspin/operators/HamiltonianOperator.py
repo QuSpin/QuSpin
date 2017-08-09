@@ -570,9 +570,9 @@ class HamiltonianOperator(object):
 		return NotImplemented
 
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
-		"""Method for compatibility with NumPy's ufuncs and dot
-		functions.
-		"""
+		# """Method for compatibility with NumPy's ufuncs and dot
+		# functions.
+		# """
 
 		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:

@@ -87,7 +87,7 @@ class exp_op(object):
 		Parameters
 		----------
 		O : obj
-			`numpy.ndarray` or `hamiltonian` object: the operator to compute the matrix exponential of.
+			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `ops_dict` object: the operator to compute the matrix exponential of.
 		a : `numpy.dtype`, optional
 			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.
 			Default is `a = 1.0`.
@@ -115,7 +115,6 @@ class exp_op(object):
 			raise TypeError('expecting scalar argument for a')
 
 		self._a = a
-		self._time = time
 
 		self._start = start
 		self._stop = stop
@@ -179,7 +178,7 @@ class exp_op(object):
 		if hamiltonian.ishamiltonian(O):
 			self._O = O
 		elif ops_dict.isops_dict(O):
-			self._O = O.tohamiltonian()
+			self._O = O
 		else:
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
 				self._O = hamiltonian.hamiltonian([O], [],dtype=O.dtype)
@@ -430,7 +429,7 @@ class exp_op(object):
 		self._iterate = Value
 		
 
-	def get_mat(self,time=0.0,dense=False):
+	def get_mat(self,dense=False,**call_kwargs):
 		"""Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.
 
 		Parameters
@@ -455,14 +454,12 @@ class exp_op(object):
 		>>> print(expO.get_mat(time=0.0,dense=True))
 
 		"""
-
 		if self.O.is_dense or dense:
-			return _la.expm(self._a * self.O.toarray(time))
+			return _la.expm(self._a * self.O.todense(**call_kwargs))
 		else:
-			return _la.expm(self._a * self.O.tocsc(time))
+			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
 
-
-	def dot(self,other,time=0.0,shift=None):
+	def dot(self, other,shift=None,**call_kwargs):
 		"""Left-multiply matrix exponential by an operator.
 
 		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies
@@ -515,9 +512,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
+			M = self._a * (self.O(**call_kwargs) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
 		else:
-			M = self._a * self.O(time)
+			M = self._a * self.O(**call_kwargs)
 
 		if self._iterate:
 			if is_ham:
@@ -547,7 +544,7 @@ class exp_op(object):
 					else:
 						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
-	def rdot(self,other,time=0.0,shift=None):
+	def rdot(self, other,shift=None,**call_kwargs):
 		"""Right-multiply matrix exponential by an operator.
 
 		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies
@@ -600,9 +597,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
-			M = (self._a * (self.O(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))).T
+			M = (self._a * (self.O(**call_kwargs) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))).T
 		else:
-			M = (self._a * self.O(time)).T
+			M = (self._a * self.O(**call_kwargs)).T
 
 		if self._iterate:
 			if is_ham:
@@ -634,7 +631,7 @@ class exp_op(object):
 						else:
 							return _expm_multiply(M, other.T, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint)
 
-	def sandwich(self,other,time=0.0,shift=None):
+	def sandwich(self, other,shift=None,**call_kwargs):
 		"""Sandwich operator between matrix exponentials.
 
 		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator to be sandwiched be
@@ -691,9 +688,9 @@ class exp_op(object):
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self.get_shape, other.shape))
 
 		if shift is not None:
-			M = self._a.conjugate() * (self.O.H(time) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
+			M = self._a.conjugate() * (self.O.H(**call_kwargs) + shift*_sp.identity(self.Ns,dtype=self.O.dtype))
 		else:
-			M = self._a.conjugate() * self.O.H(time)
+			M = self._a.conjugate() * self.O.H(**call_kwargs)
 			
 		if self._iterate:
 
@@ -706,8 +703,8 @@ class exp_op(object):
 		else:
 			if self._grid is None and self._step is None:
 
-				other = self.dot(other,time=time)
-				other = self.H.rdot(other,time=time)
+				other = self.dot(other,**call_kwargs)
+				other = self.H.rdot(other,**call_kwargs)
 				return other
 
 			else:

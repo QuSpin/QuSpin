@@ -6,10 +6,44 @@ import numpy as _np
 
 
 class fermion_basis_1d(basis_1d):
-	def __init__(self,L,Nf=None,nf=None,_Np=None,**blocks):
+	"""Basis for fermionic operators
+
+	"""	
+	def __init__(self,L,Nf=None,nf=None,**blocks):
+		""" Intializes the `fermion_basis_1d` object (basis for fermionic operators).
+
+		Parameters
+		----------
+
+		L: int
+			length of chain/number of sites
+
+		Nf: int,list, optional
+			number of fermions to put on chain, can be integer or list to specify one or more particle sectors.
+
+		nf: float, optional
+			density of fermions to put on chain
+
+		**blocks: optional
+			extra keyword arguements which include:
+
+				**a** (*int*) - specify how many sites to step for translation.
+
+				**kblock** (*int*) - specify momentum block
+
+				**pblock** (*int*) - specify parity block
+
+				**cblock** (*int*) - specify particle hole symmetry block.
+
+				**cAblock** (*int*) - specify particle hole of sublattice A symmetry block
+
+				**cAblock** (*int*) - specify particle hole of sublattice B symmetry block
+
+		"""
+
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -18,6 +52,10 @@ class fermion_basis_1d(basis_1d):
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
+
+		_Np = blocks.get("_Np")
+		if _Np is None:
+			blocks.pop("_Np")
 
 		self._blocks = blocks
 

@@ -7,10 +7,53 @@ import numpy as _np
 
 
 class boson_basis_1d(basis_1d):
-	def __init__(self,L,Nb=None,nb=None,sps=None,_Np=None,**blocks):
+	"""Basis for bosonic operators
+
+	"""
+	def __init__(self,L,Nb=None,nb=None,sps=None,**blocks):
+		""" Intializes the `boson_basis_1d` object (basis for bosonic operators).
+
+		Parameters
+		----------
+
+		L: int
+			length of chain/number of sites
+
+		Nb: int,list, optional
+			number of bosons to put on chain, can be integer or list to specify one or more particle sectors.
+
+		nb: float, optional
+			density of bosons to put on chain
+
+		sps: int, optional
+			number of states to have per site (including 0 bosons)
+
+		**blocks: optional
+			extra keyword arguements which include:
+
+				**a** (*int*) - specify how many sites to step for translation.
+
+				**kblock** (*int*) - specify momentum block
+
+				**pblock** (*int*) - specify parity block
+
+			and the following which only work for hardcore bosons (sps=2):
+
+				**cblock** (*int*) - specify particle hole symmetry block.
+
+				**cAblock** (*int*) - specify particle hole of sublattice A symmetry block
+
+				**cAblock** (*int*) - specify particle hole of sublattice B symmetry block
+
+		Note
+		----
+
+		If Nb or nb are specified by default sps is set to the number of bosons on the lattice.	If sps is specified while Nb or nb are not, all particle sectors are filled up to the maximumal occupation. If Nb or nb and sps are specified, the finite boson basis is constructed with the local hilbert space restrited by sps.
+
+		"""
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -46,12 +89,19 @@ class boson_basis_1d(basis_1d):
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
 
+		_Np = blocks.get("_Np")
+		if _Np is None:
+			blocks.pop("_Np")
+
 		self._blocks = blocks
 		
 		pblock = blocks.get("pblock")
 		zblock = blocks.get("cblock")
 		zAblock = blocks.get("cAblock")
 		zBblock = blocks.get("cBblock")
+
+		if sps > 2 and any(type(block) is int for block in [zblock,zAblock,zBblock]):
+			raise ValueError("particle hole symmetry doesn't exist with sps > 2.")
 
 		if type(zblock) is int:
 			del blocks["cblock"]

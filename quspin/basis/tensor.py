@@ -13,6 +13,8 @@ import warnings
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
+__all__=["tensor_basis"]
+
 # gives the basis for the kronecker/Tensor product of two basis: |basis_left> (x) |basis_right>
 class tensor_basis(basis):
 
@@ -658,10 +660,10 @@ class tensor_basis(basis):
 
 		opstr_left,opstr_right=opstr.split("|",1)
 
-
 		op1 = list(op)
 		op1[0] = opstr_left
 		op1[1] = indx_left
+		op1[2] = 1.0
 
 		op2 = list(op)
 		op2[0] = opstr_right

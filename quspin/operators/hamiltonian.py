@@ -102,22 +102,26 @@ def _check_static(sub_list):
 
 def _check_dynamic(sub_list):
 	"""Checks format of dynamic list. """
-	if (type(sub_list) in [list,tuple]) and (len(sub_list) == 4):
-		if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
-		if type(sub_list[1]) in [list,tuple]:
-			for sub_sub_list in sub_list[1]:
-				if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 0):
-					for element in sub_sub_list:
-						if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
-				else: raise TypeError('expecting list for indx') 
-		else: raise TypeError('expecting a list of one or more indx')
-		if not hasattr(sub_list[2],"__call__"): raise TypeError('expecting callable object for driving function')
-		if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
-		return True
-	elif (type(sub_list) in [list,tuple]) and (len(sub_list) == 3): 
-		if not hasattr(sub_list[1],"__call__"): raise TypeError('expecting callable object for driving function')
-		if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
-		return False
+	if (type(sub_list) in [list,tuple]):
+		if (len(sub_list) == 4):
+			if type(sub_list[0]) is not str: raise TypeError('expecting string type for opstr')
+			if type(sub_list[1]) in [list,tuple]:
+				for sub_sub_list in sub_list[1]:
+					if (type(sub_sub_list) in [list,tuple]) and (len(sub_sub_list) > 0):
+						for element in sub_sub_list:
+							if not _np.isscalar(element): raise TypeError('expecting scalar elements of indx')
+					else: raise TypeError('expecting list for indx') 
+			else: raise TypeError('expecting a list of one or more indx')
+			if not hasattr(sub_list[2],"__call__"): raise TypeError('expecting callable object for driving function')
+			if type(sub_list[3]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
+			return True
+		elif (len(sub_list) == 3):
+			if not hasattr(sub_list[1],"__call__"): raise TypeError('expecting callable object for driving function')
+			if type(sub_list[2]) not in [list,tuple]: raise TypeError('expecting list for function arguments')
+			return False
+		elif (len(sub_list) == 2):
+			if not hasattr(sub_list[1],"__call__"): raise TypeError('expecting callable object for driving function')
+			return False
 	else:
 		raise TypeError('expecting list with object, driving function, and function arguments')
 
@@ -138,7 +142,7 @@ def _hamiltonian_dot(hamiltonian,time,v):
 	return hamiltonian.dot(v,time=time,check=False)
 
 class hamiltonian(object):
-	""" Constructs quantum operators.
+	""" Construct quantum operators.
 
 	The `hamiltonian` class wraps most of the functionalty of the package. This object allows the user to construct 
 	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
@@ -215,7 +219,7 @@ class hamiltonian(object):
 			If the operator is time-INdependent, one must pass an empty list: `dynamic_list = []`.
 		N : int, optional
 			Number of lattice sites for the `hamiltonian` object.
-		dtype : 'type'
+		dtype : numpy.datatype, optional
 			Data type (e.g. numpy.float64) to construct the operator with.
 		shape : tuple, optional
 			Shape to create the `hamiltonian` object with. Default is `shape = None`.
@@ -235,7 +239,6 @@ class hamiltonian(object):
 
 		self._is_dense = False
 		self._ndim = 2
-		self._basis = None
 
 
 
@@ -271,48 +274,47 @@ class hamiltonian(object):
 		# need for check_symm
 		self._static_opstr_list = static_opstr_list
 		self._dynamic_opstr_list = dynamic_opstr_list
-
+		self._basis=kwargs.get("basis")
+		if self._basis is not None:
+			kwargs.pop('basis')
 
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
-			# check if user input basis
-			basis=kwargs.get('basis')
-
-			if basis is not None:
-				kwargs.pop('basis')
+			if self._basis is not None:
 				if len(kwargs) > 0:
 					wrong_keys = set(kwargs.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
 					raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
 			# if not
-			if basis is None: 
+			if self._basis is None: 
 				if N is None: # if L is missing 
 					raise Exception('if opstrs in use, argument N needed for basis class')
 
 				if type(N) is not int: # if L is not int
 					raise TypeError('argument N must be integer')
 
-				basis=_default_basis(N,**kwargs)
+				self._basis=_default_basis(N,**kwargs)
 
-			elif not _isbasis(basis):
+			elif not _isbasis(self._basis):
 				raise TypeError('expecting instance of basis class for argument: basis')
 
 			if check_herm:
-				basis.check_hermitian(static_opstr_list, dynamic_opstr_list)
+				self._basis.check_hermitian(static_opstr_list, dynamic_opstr_list)
 
 			if check_symm:
-				basis.check_symm(static_opstr_list,dynamic_opstr_list)
+				self._basis.check_symm(static_opstr_list,dynamic_opstr_list)
 
 			if check_pcon:
-				basis.check_pcon(static_opstr_list,dynamic_opstr_list)
+				self._basis.check_pcon(static_opstr_list,dynamic_opstr_list)
 
 
 
-			self._static=_make_static(basis,static_opstr_list,dtype)
-			self._dynamic=_make_dynamic(basis,dynamic_opstr_list,dtype)
+			self._static=_make_static(self._basis,static_opstr_list,dtype)
+			self._dynamic=_make_dynamic(self._basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
-			self._basis=basis
+
+		
 
 
 		if static_other_list or dynamic_other_list:
@@ -328,7 +330,12 @@ class hamiltonian(object):
 							continue
 
 					if not found:
-						for O,f,fargs in dynamic_other_list:
+						for tup in dynamic_other_list:
+							if len(tup) == 2:
+								O,_ = tup
+							else:
+								O,_,_ = tup
+								
 							try:
 								shape = O.shape
 								found = True
@@ -391,9 +398,13 @@ class hamiltonian(object):
 
 
 
-			for	O,f,f_args in dynamic_other_list:
-				_test_function(f,f_args)
-				func = function(f,tuple(f_args))
+			for	tup in dynamic_other_list:
+				if len(tup) == 2:
+					O,func = tup
+				else:
+					O,f,f_args = tup
+					_test_function(f,f_args)
+					func = function(f,tuple(f_args))
 
 				if _sp.issparse(O):
 					self._mat_checks(O)
@@ -431,18 +442,15 @@ class hamiltonian(object):
 		else:
 			if not hasattr(self,"_shape"):
 				if shape is None:
-					# check if user input basis
-					basis=kwargs.get('basis')	
-
 					# if not
-					if basis is None: 
+					if self._basis is None: 
 						if N is None: # if N is missing 
 							raise Exception("argument N or shape needed to create empty hamiltonian")
 
 						if type(N) is not int: # if L is not int
 							raise TypeError('argument N must be integer')
 
-						basis=_default_basis(N,**kwargs)
+						self._basis=_default_basis(N,**kwargs)
 
 					elif not _isbasis(basis):
 						raise TypeError('expecting instance of basis class for argument: basis')
@@ -450,7 +458,7 @@ class hamiltonian(object):
 					shape = (basis.Ns,basis.Ns)
 
 				else:
-					basis=kwargs.get('basis')	
+					self._basis=kwargs.get('basis')	
 					if not basis is None: 
 						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
 
@@ -1975,7 +1983,8 @@ class hamiltonian(object):
 
 	def copy(self):
 		"""Returns a deep copy of `hamiltonian` object."""
-		return _deepcopy(self)
+		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
+		return hamiltonian([self.static],dynamic,basis=self.basis,dtype=self._dtype,copy=True)
 
 
 	###################
@@ -3080,9 +3089,9 @@ class hamiltonian(object):
 
 	
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
-		"""Method for compatibility with NumPy's ufuncs and dot
-		functions.
-		"""
+		# """Method for compatibility with NumPy's ufuncs and dot
+		# functions.
+		# """
 
 		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:

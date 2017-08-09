@@ -51,7 +51,7 @@ class lattice_basis(basis):
 		  1. pure state (default) [numpy array of shape (Ns,)].
 		  2. density matrix [numpy array of shape (Ns,Ns)].
 		  3. collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
-		* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is `tuple(range(L//2))`.
+		* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is `tuple(range(N//2))`.
 		* `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
 		  These arguments differ when used with `photon` or `tensor` basis.
 		  1. 'A': str, returns reduced DM of subsystem A 
@@ -66,24 +66,24 @@ class lattice_basis(basis):
 
 
 		if sub_sys_A is None:
-			sub_sys_A = tuple(range(self.L//2))
-		elif len(sub_sys_A)==self.L:
-			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
+			sub_sys_A = tuple(range(self.N//2))
+		elif len(sub_sys_A)==self.N:
+			raise ValueError("Size of subsystem must be strictly smaller than total system size N!")
 
 
-		L_A = len(sub_sys_A)
-		L_B = self.L - L_A
+		N_A = len(sub_sys_A)
+		N_B = self.N - N_A
 
 		if sub_sys_A is None:
-			sub_sys_A = tuple(range(self.L//2))
+			sub_sys_A = tuple(range(self.N//2))
 
 		sub_sys_A = tuple(sub_sys_A)
 
 		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
-			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,N-1}!")
 
-		if any(s < 0 or s > self.L for s in sub_sys_A):
-			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+		if any(s < 0 or s > self.N for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,N-1}")
 
 		doubles = tuple(s for s in sub_sys_A if sub_sys_A.count(s) > 1)
 		if len(doubles) > 0:
@@ -96,7 +96,7 @@ class lattice_basis(basis):
 			sub_sys_A = sorted(sub_sys_A)
 
 		sps = self.sps
-		L = self.L
+		N = self.N
 
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
@@ -111,15 +111,15 @@ class lattice_basis(basis):
 			
 			if state.shape[0] == 1:
 				# sparse_pure partial trace
-				rdm_A,rdm_B = _lattice_partial_trace_sparse_pure(state,sub_sys_A,L,sps,return_rdm=return_rdm)
+				rdm_A,rdm_B = _lattice_partial_trace_sparse_pure(state,sub_sys_A,N,sps,return_rdm=return_rdm)
 			else:
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					# vectorize sparse_pure partial trace 
 					state = state.tocsr()
 					try:
-						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,L,sps,return_rdm=return_rdm) for i in xrange(state.shape[0]))
+						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,N,sps,return_rdm=return_rdm) for i in xrange(state.shape[0]))
 					except NameError:
-						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,L,sps,return_rdm=return_rdm) for i in range(state.shape[0]))
+						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,N,sps,return_rdm=return_rdm) for i in range(state.shape[0]))
 
 					left,right = zip(*state_gen)
 
@@ -137,13 +137,13 @@ class lattice_basis(basis):
 			if state.ndim==1:
 				# calculate full H-space representation of state
 				state=self.get_vec(state,sparse=False)
-				rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,L,sps,return_rdm=return_rdm)
+				rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 			elif state.ndim==2: 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					# calculate full H-space representation of state
 					state=self.get_vec(state,sparse=False)
-					rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,L,sps,return_rdm=return_rdm)
+					rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 				else: 
 					proj = self.get_proj(_dtypes[state.dtype.char])
@@ -152,7 +152,7 @@ class lattice_basis(basis):
 					shape0 = proj_state.shape
 					proj_state = proj_state.reshape((1,)+shape0)					
 
-					rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm=return_rdm)
+					rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 			elif state.ndim==3: #3D DM 
 				proj = self.get_proj(_dtypes[state.dtype.char])
@@ -168,7 +168,7 @@ class lattice_basis(basis):
 				for i,s in enumerate(gen):
 					proj_state[i,...] += s[...]
 
-				rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm=return_rdm)
+				rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm=return_rdm)
 			else:
 				raise ValueError("state must have ndim < 4")
 
@@ -186,7 +186,7 @@ class lattice_basis(basis):
 		# put states in rows
 		state=state.T
 		# reshape state according to sub_sys_A
-		v=_lattice_reshape_pure(state,sub_sys_A,self._L,self._sps)
+		v=_lattice_reshape_pure(state,sub_sys_A,self.N,self._sps)
 		
 		rdm_A=None
 		rdm_B=None
@@ -211,26 +211,26 @@ class lattice_basis(basis):
 
 		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
 
-		L_A=len(sub_sys_A)
-		L_B=self.L-L_A
+		N_A=len(sub_sys_A)
+		N_B=self.N-N_A
 
 		rdm_A=None
 		rdm_B=None
 
 		if return_rdm is None:
-			if L_A <= L_B:
+			if N_A <= N_B:
 				partial_trace_args["return_rdm"] = "A"
 				rdm = self.partial_trace(state,**partial_trace_args)
 			else:
 				partial_trace_args["return_rdm"] = "B"
 				rdm = self.partial_trace(state,**partial_trace_args)
 
-		elif return_rdm=='A' and L_A <= L_B:
+		elif return_rdm=='A' and N_A <= N_B:
 			partial_trace_args["return_rdm"] = "A"
 			rdm_A = self.partial_trace(state,**partial_trace_args)
 			rdm = rdm_A
 
-		elif return_rdm=='B' and L_B <= L_A:
+		elif return_rdm=='B' and N_B <= N_A:
 			partial_trace_args["return_rdm"] = "B"
 			rdm_B = self.partial_trace(state,**partial_trace_args)
 			rdm = rdm_B
@@ -239,7 +239,7 @@ class lattice_basis(basis):
 			partial_trace_args["return_rdm"] = "both"
 			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
 
-			if L_A < L_B:
+			if N_A < N_B:
 				rdm = rdm_A
 			else:
 				rdm = rdm_B
@@ -279,11 +279,11 @@ class lattice_basis(basis):
 		to reduce the calculation time but will only return the desired reduced density
 		matrix. 
 		"""
-		L = self.L
+		N = self.N
 		sps = self.sps
 
-		L_A = len(sub_sys_A)
-		L_B = L - L_A
+		N_A = len(sub_sys_A)
+		N_B = N - N_A
 
 		proj = self.get_proj(_dtypes[state.dtype.char])
 		state = state.transpose((2,0,1))
@@ -302,21 +302,21 @@ class lattice_basis(basis):
 		rdm_B,p_B=None,None
 		
 		if return_rdm=='both':
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="both")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="both")
 			
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
 		elif return_rdm=='A':
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="A")
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 		elif return_rdm=='B':
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="B")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="B")
 			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
 
 		else:
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,L,sps,return_rdm="A")
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="A")
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 			
@@ -348,7 +348,7 @@ class lattice_basis(basis):
 
 		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
 						[by python convention the first site of the chain is labelled j=0]. 
-						Default is tuple(range(L//2)).
+						Default is tuple(range(N//2)).
 
 		density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
 					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'False'.
@@ -377,26 +377,26 @@ class lattice_basis(basis):
 		sparse_diag: (optional) when `sparse=True`, this flat enforces the use of `scipy.sparse.linalg.eigsh()`
 		to calculate the eigenvaues of the reduced DM.
 
-		maxiter: (optional) specify number of iterations for Lanczos diagonalisation. Look up documentation
+		maxiter: (optional) specify number of iterations for Nanczos diagonalisation. Nook up documentation
 		for scipy.sparse.linalg.eigsh(). 
 
 		"""
 		if sub_sys_A is None:
-			sub_sys_A = list(range(self.L//2))
+			sub_sys_A = list(range(self.N//2))
 		else:
 			sub_sys_A = list(sub_sys_A)
 	
-		if len(sub_sys_A)>=self.L:
-			raise ValueError("Size of subsystem must be strictly smaller than total system size L!")
+		if len(sub_sys_A)>=self.N:
+			raise ValueError("Size of subsystem must be strictly smaller than total system size N!")
 
-		L_A = len(sub_sys_A)
-		L_B = self.L - L_A
+		N_A = len(sub_sys_A)
+		N_B = self.N - N_A
 
 		if any(not _np.issubdtype(type(s),_np.integer) for s in sub_sys_A):
-			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}!")
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,N-1}!")
 
-		if any(s < 0 or s > self.L for s in sub_sys_A):
-			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,L-1}")
+		if any(s < 0 or s > self.N for s in sub_sys_A):
+			raise ValueError("sub_sys_A must iterable of integers with values in {0,...,N-1}")
 
 		doubles = tuple(s for s in set(sub_sys_A) if sub_sys_A.count(s) > 1)
 		if len(doubles) > 0:
@@ -409,7 +409,7 @@ class lattice_basis(basis):
 			sub_sys_A = sorted(sub_sys_A)
 
 		sps = self.sps
-		L = self.L
+		N = self.N
 
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
@@ -488,17 +488,17 @@ class lattice_basis(basis):
 		if alpha == 1.0:
 			if p_A is not None:
 				Sent_A = - _np.nansum((p_A * _np.log(p_A)),axis=-1)
-				if density: Sent_A /= L_A
+				if density: Sent_A /= N_A
 			if p_B is not None:
 				Sent_B = - _np.nansum((p_B * _np.log(p_B)),axis=-1)
-				if density: Sent_B /= L_B
+				if density: Sent_B /= N_B
 		elif alpha >= 0.0:
 			if p_A is not None:
 				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1))/(1.0-alpha)
-				if density: Sent_A /= L_A
+				if density: Sent_A /= N_A
 			if p_B is not None:
 				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1))/(1.0-alpha)
-				if density: Sent_B /= L_B
+				if density: Sent_B /= N_B
 		else:
 			raise ValueError("alpha >= 0")
 
