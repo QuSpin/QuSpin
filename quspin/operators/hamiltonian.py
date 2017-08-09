@@ -149,7 +149,7 @@ class hamiltonian(object):
 
 	Note
 	----
-	Once can instantiate the class either by parsing a set of symmetries, or an instance of `basis`. Note that
+	One can instantiate the class either by parsing a set of symmetries, or an instance of `basis`. Note that
 	instantiation with a `basis` will automatically ignore all symmetry inputs. 
 
 	Example
