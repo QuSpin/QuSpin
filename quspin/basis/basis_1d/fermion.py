@@ -6,7 +6,7 @@ import numpy as _np
 
 
 class fermion_basis_1d(basis_1d):
-	"""Basis for fermionic operators
+	"""Basis for fermionic operators.
 
 	"""	
 	def __init__(self,L,Nf=None,nf=None,**blocks):
@@ -14,18 +14,14 @@ class fermion_basis_1d(basis_1d):
 
 		Parameters
 		----------
-
 		L: int
 			length of chain/number of sites
-
 		Nf: int,list, optional
 			number of fermions to put on chain, can be integer or list to specify one or more particle sectors.
-
 		nf: float, optional
 			density of fermions to put on chain
-
 		**blocks: optional
-			extra keyword arguements which include:
+			extra keyword arguments which include:
 
 				**a** (*int*) - specify how many sites to step for translation.
 
@@ -36,7 +32,7 @@ class fermion_basis_1d(basis_1d):
 				**cblock** (*int*) - specify particle hole symmetry block.
 
 				**cAblock** (*int*) - specify particle hole of sublattice A symmetry block
-
+				
 				**cAblock** (*int*) - specify particle hole of sublattice B symmetry block
 
 		"""
@@ -155,7 +151,6 @@ class fermion_basis_1d(basis_1d):
 			op[2] *= (1 if anticommutes%2 == 0 else -1)
 		return tuple(op)
 
-	
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
 		indx = _np.array(op[1])
@@ -168,8 +163,6 @@ class fermion_basis_1d(basis_1d):
 		else:
 			return True
 		
-
-
 	def _hc_opstr(self,op):
 		op = list(op)
 		# take h.c. + <--> - , reverse operator order , and conjugate coupling
@@ -181,7 +174,6 @@ class fermion_basis_1d(basis_1d):
 		op[1] = tuple(op[1])
 		op[2] = op[2].conjugate()
 		return self._sort_opstr(op) # return the sorted op.
-
 
 	def _expand_opstr(self,op,num):
 		op = list(op)

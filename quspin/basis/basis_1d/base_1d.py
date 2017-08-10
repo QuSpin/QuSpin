@@ -731,6 +731,8 @@ class basis_1d(lattice_basis):
 		string += self.operators
 		return string 
 
+
+
 	def Op(self,opstr,indx,J,dtype):
 		"""
 		Parameters
@@ -1092,8 +1094,6 @@ class basis_1d(lattice_basis):
 
 
 
-
-
 def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
 
@@ -1159,8 +1159,6 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 		ops.py_shift(basis_in,a,L,pars)
 	
 	return v
-
-
 
 def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
@@ -1274,7 +1272,6 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		ops.py_shift(basis_in,a,L,pars)
 
 	return v
-
 
 def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,L,**blocks):
 

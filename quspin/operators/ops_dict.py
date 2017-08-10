@@ -1040,7 +1040,7 @@ class ops_dict(object):
 			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
 
 		Returns
-		:obj:`ops_dict`
+		`ops_dict`
 			Operator with altered data type.
 
 		Example
