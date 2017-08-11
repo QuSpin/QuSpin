@@ -30,14 +30,14 @@ class exp_op(object):
 	optional arguments. If this is specified, then an array `grid` is created via the function 
 	`numpy.linspace`, and the exponential is evaluated for all points on te grid: `exp(a*grid[i]*O)`.
 
-	Note
-	----
+	Notes
+	-----
 	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
 
-	Example
-	-------
+	Examples
+	--------
 
-	The example below shows how to compute the time-evolvution of a state under a constant Hamiltian.
+	The Example below shows how to compute the time-evolvution of a state under a constant Hamiltian.
 	This is done using the matrix exponential to define the evolution operator and apply it directly 
 	onto the initial state.
 
@@ -245,8 +245,8 @@ class exp_op(object):
 	def transpose(self,copy = False):
 		"""Transposes `exp_op` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT conjugate the exponentiated operator.
 
 		Returns
@@ -254,8 +254,8 @@ class exp_op(object):
 		:obj:`exp_op`
 			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ji}`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> expO_tran = expO.transpose()
 
@@ -269,8 +269,8 @@ class exp_op(object):
 	def conj(self):
 		"""Conjugates `exp_op` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT transpose the exponentiated operator.
 
 		Returns
@@ -278,8 +278,8 @@ class exp_op(object):
 		:obj:`exo_op`
 			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> expO_conj = expO.conj()
 
@@ -301,8 +301,8 @@ class exp_op(object):
 		:obj:`exp_op`
 			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> expO_herm = expO.getH()
 
@@ -328,8 +328,8 @@ class exp_op(object):
 		new_a : `numpy.dtype`
 			New value for `a`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O,a=1.0)
 		>>> print(expO.a)
 		>>> expO.set_a(2.0)
@@ -355,8 +355,8 @@ class exp_op(object):
 			Wehether or not the value `stop` is included in the set of grid points. Note that this changes 
 			the grid step size.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
 		>>> print(expO.grid)
 		>>> expO.set_grid(start=2.0,stop=4.0,num=200,endpoint=False)
@@ -387,8 +387,8 @@ class exp_op(object):
 	def unset_grid(self):
 		"""Resets grid parameters to their default values.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
 		>>> print(expO.grid)
 		>>> expO.unset_grid()
@@ -410,8 +410,8 @@ class exp_op(object):
 		Value : bool
 			New value for `iterate` attribute.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O,iterate=True)
 		>>> print(expO.iterate)
 		>>> expO.set_a(False)
@@ -447,8 +447,8 @@ class exp_op(object):
 			* `numpy.ndarray`: dense array if `dense = True`.
 			* `scipy.sparse.csc`: sparse array if `dense = False`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O)
 		>>> print(expO.get_mat(time=0.0))
 		>>> print(expO.get_mat(time=0.0,dense=True))
@@ -482,8 +482,8 @@ class exp_op(object):
 		obj
 			matrix exponential multiplied by `other` from the left.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O)
 		>>> A = exp_op(O,a=2j).get_mat()
 		>>> print(expO.dot(A))
@@ -567,8 +567,8 @@ class exp_op(object):
 		obj
 			matrix exponential multiplied by `other` from the right.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O)
 		>>> B = exp_op(O,a=-2j).get_mat()
 		>>> print(expO.rdot(B))
@@ -640,8 +640,8 @@ class exp_op(object):
 		.. math::
 			\\exp(\\mathcal{O})^\\dagger C \\exp(\\mathcal{O})
 
-		Note
-		----
+		Notes
+		-----
 		The matrix exponential to multiply :math:`C` from the left is hermitian conjugated.
 
 		Parameters
@@ -659,8 +659,8 @@ class exp_op(object):
 		obj
 			operator `other` sandwiched between matrix exponential `exp_op` and its hermitian conjugate.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> expO = exp_op(O,a=1j)
 		>>> A = exp_op(O.H)
 		>>> print(expO.sandwich(A))

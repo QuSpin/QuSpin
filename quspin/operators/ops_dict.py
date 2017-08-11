@@ -36,8 +36,8 @@ class ops_dict(object):
 		.. math::
 			H(J_{zz}, h_x) = \sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j
 
-		Example
-		-------
+		Examples
+		--------
 
 	"""
 	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
@@ -336,8 +336,8 @@ class ops_dict(object):
 		.. math::
 			H(t=\\lambda)|V\\rangle
 
-		Note
-		----
+		Notes
+		-----
 		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
 		vectors together.
 
@@ -356,8 +356,8 @@ class ops_dict(object):
 		numpy.ndarray
 			Vector corresponding to the `ops_dict` operator applied on the state `V`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> B = H.dot(A,pars=pars,check=True)
 
 		corresponds to :math:`B = HA`. 
@@ -452,8 +452,8 @@ class ops_dict(object):
 		numpy.ndarray
 			Vector corresponding to the `ops_dict` operator applied on the state `V`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> B = H.dot(A,pars=pars,check=True)
 
 		corresponds to :math:`B = AH`. 
@@ -472,8 +472,8 @@ class ops_dict(object):
 		.. math::
 			\\langle V_l|H(\\lambda)|V_r\\rangle
 
-		Note
-		----
+		Notes
+		-----
 		Taking the conjugate or transpose of the state `Vl` is done automatically.  
 
 		Parameters
@@ -493,8 +493,8 @@ class ops_dict(object):
 		float
 			Matrix element of `ops_dict` operator between the states `Vl` and `Vr`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)
 
 		corresponds to :math:`H_\\{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. 
@@ -585,8 +585,8 @@ class ops_dict(object):
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
 		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -602,8 +602,8 @@ class ops_dict(object):
 		tuple
 			Tuple containing the `(eigenvalues, eigenvectors)` of the `ops_dict` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues,eigenvectors = H.eigsh(pars=pars,**eigsh_args)
 
 		"""
@@ -619,8 +619,8 @@ class ops_dict(object):
 		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -636,8 +636,8 @@ class ops_dict(object):
 		tuple
 			Tuple containing the `(eigenvalues, eigenvectors)` of the `ops_dict` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues,eigenvectors = H.eigh(pars=pars,**eigh_args)
 
 		"""
@@ -659,8 +659,8 @@ class ops_dict(object):
 		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -676,8 +676,8 @@ class ops_dict(object):
 		numpy.ndarray
 			Eigenvalues of the `ops_dict` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues = H.eigvalsh(pars=pars,**eigvalsh_args)
 
 		"""
@@ -710,8 +710,8 @@ class ops_dict(object):
 		-------
 		:obj:`scipy.sparse.csr_matrix`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_csr=H.tocsr(pars=pars)
 
 		"""
@@ -743,8 +743,8 @@ class ops_dict(object):
 		-------
 		:obj:`scipy.sparse.csc_matrix`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_csc=H.tocsc(pars=pars)
 
 		"""
@@ -765,8 +765,8 @@ class ops_dict(object):
 
 		This function can overflow memory if not used carefully!
 
-		Note
-		----
+		Notes
+		-----
 		If the array dimension is too large, scipy may choose to cast the `ops_dict` operator as a
 		`numpy.matrix` instead of a `numpy.ndarray`. In such a case, one can use the `ops_dict.toarray()`
 		method.
@@ -786,8 +786,8 @@ class ops_dict(object):
 			* `numpy.ndarray`.
 			* `numpy.matrix`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_dense=H.todense(pars=pars)
 
 		"""
@@ -820,8 +820,8 @@ class ops_dict(object):
 		numpy.ndarray
 			Dense array.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_dense=H.toarray(pars=pars)
 
 		"""
@@ -852,8 +852,8 @@ class ops_dict(object):
 		-------
 		:obj:`scipy.sparse.linalg.LinearOperator`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_aslinop=H.aslinearoperator(pars=pars)
 
 		"""
@@ -874,8 +874,8 @@ class ops_dict(object):
 		-------
 		:obj:`hamiltonian`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_aslinop=H.tohamiltonian(pars=pars)
 
 		"""
@@ -901,8 +901,8 @@ class ops_dict(object):
 	def transpose(self,copy=False):
 		"""Transposes `ops_dict` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT conjugate the operator.
 
 		Returns
@@ -910,8 +910,8 @@ class ops_dict(object):
 		:obj:`ops_dict`
 			:math:`H_{ij}\\mapsto H_{ji}`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_tran = H.transpose()
 
@@ -924,8 +924,8 @@ class ops_dict(object):
 	def conjugate(self):
 		"""Conjugates `ops_dict` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT transpose the operator.
 
 		Returns
@@ -933,8 +933,8 @@ class ops_dict(object):
 		:obj:`ops_dict`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_conj = H.conj()
 
@@ -947,8 +947,8 @@ class ops_dict(object):
 	def conj(self):
 		"""Conjugates `ops_dict` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT transpose the operator.
 
 		Returns
@@ -956,8 +956,8 @@ class ops_dict(object):
 		:obj:`ops_dict`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_conj = H.conj()
 
@@ -977,8 +977,8 @@ class ops_dict(object):
 		:obj:`ops_dict`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_herm = H.getH()
 
@@ -1001,8 +1001,8 @@ class ops_dict(object):
 		float
 			Trace of operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_tr = H.tr(pars=pars)
 
@@ -1030,8 +1030,8 @@ class ops_dict(object):
 		:obj:`ops_dict`
 			Operator with altered data type.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_cpx=H.astype(np.complex128)
 
 		"""

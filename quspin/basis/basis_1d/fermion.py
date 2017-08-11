@@ -54,7 +54,7 @@ class fermion_basis_1d(basis_1d):
 			blocks["a"] = 1
 
 		_Np = blocks.get("_Np")
-		if _Np is None:
+		if _Np is not None:
 			blocks.pop("_Np")
 
 		self._blocks = blocks

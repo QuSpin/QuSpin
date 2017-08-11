@@ -27,12 +27,12 @@ class HamiltonianOperator(object):
 
 	This object is useful for doing large scale Lanczos calculations using the `eigsh` method.
 
-	Note
-	----
+	Notes
+	-----
 	The class does NOT yet support time-dependent operators. 
 
-	Example
-	-------
+	Examples
+	--------
 
 	"""
 	def __init__(self,operator_list,system_arg,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
@@ -175,8 +175,8 @@ class HamiltonianOperator(object):
 		numpy.ndarray
 			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> B = H.dot(A,check=True)
 
 		corresponds to :math:`B = HA`. 
@@ -200,8 +200,8 @@ class HamiltonianOperator(object):
 		numpy.ndarray
 			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> B = H.dot(A,check=True)
 
 		corresponds to :math:`B = AH`. 
@@ -289,8 +289,8 @@ class HamiltonianOperator(object):
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
 		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -304,8 +304,8 @@ class HamiltonianOperator(object):
 		tuple
 			Tuple containing the `(eigenvalues, eigenvectors)` of the `HamiltonianOperator` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues,eigenvectors = H.eigsh(**eigsh_args)
 
 		"""
@@ -316,8 +316,8 @@ class HamiltonianOperator(object):
 	def transpose(self,copy=False):
 		"""Transposes `HamiltonianOperator` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT conjugate the operator.
 
 		Returns
@@ -325,8 +325,8 @@ class HamiltonianOperator(object):
 		:obj:`HamiltonianOperator`
 			:math:`H_{ij}\\mapsto H_{ji}`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_tran = H.transpose()
 
@@ -340,8 +340,8 @@ class HamiltonianOperator(object):
 	def conj(self):
 		"""Conjugates `HamiltonianOperator` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT transpose the operator.
 
 		Returns
@@ -349,8 +349,8 @@ class HamiltonianOperator(object):
 		:obj:`HamiltonianOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_conj = H.conj()
 
@@ -371,8 +371,8 @@ class HamiltonianOperator(object):
 		:obj:`HamiltonianOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_herm = H.getH()
 

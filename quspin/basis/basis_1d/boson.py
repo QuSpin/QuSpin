@@ -45,8 +45,8 @@ class boson_basis_1d(basis_1d):
 
 				**cAblock** (*int*) - specify particle hole of sublattice B symmetry block
 
-		Note
-		----
+		Notes
+		-----
 
 		If Nb or nb are specified by default sps is set to the number of bosons on the lattice.	If sps is specified while Nb or nb are not, all particle sectors are filled up to the maximumal occupation. If Nb or nb and sps are specified, the finite boson basis is constructed with the local hilbert space restrited by sps.
 
@@ -90,7 +90,7 @@ class boson_basis_1d(basis_1d):
 			blocks["a"] = 1
 
 		_Np = blocks.get("_Np")
-		if _Np is None:
+		if _Np is not None:
 			blocks.pop("_Np")
 
 		self._blocks = blocks

@@ -1597,7 +1597,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	times : numpy.ndarray
 		Vector of times to compute the time-evolved state at.
 	f : :obj:`function`
-		User-defined function to solve first-order ODE (see Example):
+		User-defined function to solve first-order ODE (see Examples):
 
 		.. math::
 			v'(t) = f(v(t),t)\\qquad v(t_0)=v_0
@@ -1617,7 +1617,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		Must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state 
 		at each time in `times`. Default is `False`.
 	stack_state : bool, optional
-		If `f` is written to take care of real and imaginary parts separately (see Example), this flag 
+		If `f` is written to take care of real and imaginary parts separately (see Examples), this flag 
 		will take this into account. Default is `False`.
 	verbose : bool, optional
 		If set to `True`, prints normalisation of state at teach time in `times`.
@@ -1629,8 +1629,8 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		* numpy.ndarray containing evolved state against time.
 		* generator object for time-evolved state (requires `iterate = True`).
 
-	Example
-	-------
+	Examples
+	--------
 
 	Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven 
 	Gross-Pitaevskii equation on a one-imensional lattice:

@@ -42,8 +42,8 @@ def commutator(H1,H2):
 	H2 : obj
 		`numpy.ndarray` or `hamiltonian` class object to define the Hamiltonian operator as a matrix. 
 
-	Return
-	------
+	Returns
+	-------
 	obj
 		Commutator: :math:`[H_1,H_2] = H_1 H_2 - H_2 H_1`
 	"""
@@ -65,8 +65,8 @@ def anti_commutator(H1,H2):
 	H2 : obj
 		`numpy.ndarray` or `hamiltonian` class object to define the Hamiltonian operator as a matrix. 
 	
-	Return
-	------
+	Returns
+	-------
 	obj
 		Anticommutator: :math:`\\{H_1,H_2\\}_+ = H_1 H_2 + H_2 H_1`
 
@@ -79,7 +79,6 @@ def anti_commutator(H1,H2):
 
 class HamiltonianEfficiencyWarning(Warning):
 	pass
-
 
 #global names:
 supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
@@ -151,15 +150,15 @@ class hamiltonian(object):
 	The user can create both static and time-dependent, hermitian and non-hermitian operators for a particle
 	type (e.g. boson, spin, fermion) specified by the basis constructor.
 
-	Note
-	----
+	Notes
+	-----
 	One can instantiate the class either by parsing a set of symmetries, or an instance of `basis`. Note that
 	instantiation with a `basis` will automatically ignore all symmetry inputs. 
 
-	Example
-	-------
+	Examples
+	--------
 
-	Here is an example how to construct the periodically driven XXZ Hamiltonian using a `basis` object
+	Here is an Example how to construct the periodically driven XXZ Hamiltonian using a `basis` object
 	
 	.. math::
 		H(t) = \\sum_{j=0}^{L-1} \\left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\\Omega t)S^x_j \\right)
@@ -195,7 +194,7 @@ class hamiltonian(object):
 	>>> print(H.toarray())
 
 	"""
-	def __init__(self,static_list,dynamic_list,N=None,dtype=_np.complex128,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**kwargs):
+	def __init__(self,static_list,dynamic_list,N=None,basis=None,shape=None,dtype=_np.complex128,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
 		"""Intializes the `hamtilonian` object (any quantum operator).
 
 		Parameters
@@ -239,7 +238,7 @@ class hamiltonian(object):
 
 		self._is_dense = False
 		self._ndim = 2
-
+		self._basis = basis
 
 
 		if not (dtype in supported_dtypes):
@@ -274,15 +273,13 @@ class hamiltonian(object):
 		# need for check_symm
 		self._static_opstr_list = static_opstr_list
 		self._dynamic_opstr_list = dynamic_opstr_list
-		self._basis=kwargs.get("basis")
-		if self._basis is not None:
-			kwargs.pop('basis')
+
 
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
 			if self._basis is not None:
-				if len(kwargs) > 0:
-					wrong_keys = set(kwargs.keys())
+				if len(basis_kwargs) > 0:
+					wrong_keys = set(basis_kwargs.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
 					raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
@@ -294,7 +291,7 @@ class hamiltonian(object):
 				if type(N) is not int: # if L is not int
 					raise TypeError('argument N must be integer')
 
-				self._basis=_default_basis(N,**kwargs)
+				self._basis=_default_basis(N,**basis_kwargs)
 
 			elif not _isbasis(self._basis):
 				raise TypeError('expecting instance of basis class for argument: basis')
@@ -450,7 +447,7 @@ class hamiltonian(object):
 						if type(N) is not int: # if L is not int
 							raise TypeError('argument N must be integer')
 
-						self._basis=_default_basis(N,**kwargs)
+						self._basis=_default_basis(N,**basis_kwargs)
 
 					elif not _isbasis(basis):
 						raise TypeError('expecting instance of basis class for argument: basis')
@@ -458,7 +455,7 @@ class hamiltonian(object):
 					shape = (basis.Ns,basis.Ns)
 
 				else:
-					self._basis=kwargs.get('basis')	
+					self._basis=basis_kwargs.get('basis')	
 					if not basis is None: 
 						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
 
@@ -473,9 +470,6 @@ class hamiltonian(object):
 				self._dynamic = {}
 
 		self._Ns = self._shape[0]
-
-
-	
 
 	@property
 	def basis(self):
@@ -539,9 +533,8 @@ class hamiltonian(object):
 		""":obj:`hamiltonian`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
-
 	def check_is_dense(self):
-		""" Toggles attribute `_.is_dense`."""
+		""" updates attribute `_.is_dense`."""
 		is_sparse = _sp.issparse(self._static)
 		for Hd in itervalues(self._dynamic):
 			is_sparse *= _sp.issparse(Hd)
@@ -556,8 +549,8 @@ class hamiltonian(object):
 		.. math::
 			H(t=\\texttt{time})|V\\rangle
 
-		Note
-		----
+		Notes
+		-----
 		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
 		vectors together.
 
@@ -587,20 +580,16 @@ class hamiltonian(object):
 		numpy.ndarray
 			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> B = H.dot(A,time=0,check=True)
 
 		corresponds to :math:`B = HA`. 
 	
 		"""
 
-		
-		if self.Ns <= 0:
-			return _np.asarray([])
-
 		if ishamiltonian(V):
-			raise ValueError("To multiply hamiltonians use '*' operator.")
+			return self * V
 
 
 		if _np.array(time).ndim > 0:
@@ -690,6 +679,56 @@ class hamiltonian(object):
 
 			return V_dot
 
+	def rdot(V,**dot_args):
+		"""vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.
+
+		.. math::
+			\\langle V|H(t=\\texttt{time})
+
+		Notes
+		-----
+		This function does the matrix multiplication with the state(s) and Hamiltonian as is.
+
+		Parameters
+		----------
+		V : numpy.ndarray
+			Vector (quantum state) to multiply the `hamiltonian` operator with on the left.
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* list: there are two possible outcomes:
+
+				-- if `V.shape[0] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into the i-th row of `V` to get the i-th row of the output array.
+				-- if `V.shape[0] == 1` or `V.shape[0] == 0`, the `_.rdot` is evaluated on `V` for each time
+					in `time`. The results are then stacked such that the columns contain all the vectors. 
+
+				If either of these cases do not match, an error is thrown.
+		check : bool, optional
+			Whether or not to do checks for shape compatibility.
+			
+
+		Returns
+		-------
+		numpy.ndarray
+			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
+
+		Examples
+		--------
+		>>> B = H.rdot(A,time=0,check=True)
+
+		corresponds to :math:`B = AH`. 
+	
+		"""
+		try:
+			V_hc = V.transpose()
+		except AttributeError:
+			V_hc = _np.asanyarray(V).transpose()
+
+		return (self.transpose().dot(V_transpose)).transpose()
+
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		""" Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
 
@@ -724,8 +763,8 @@ class hamiltonian(object):
 		float
 			Expectation value of `hamiltonian` operator in state `V`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
 
 		corresponds to :math:`H_\\{expt} = \\langle V|H(t=0)|V\\rangle`. 
@@ -774,8 +813,8 @@ class hamiltonian(object):
 		.. math::
 			\\langle V_l|H(t=\\texttt{time})|V_r\\rangle
 
-		Note
-		----
+		Notes
+		-----
 		Taking the conjugate or transpose of the state `Vl` is done automatically.  
 
 		Parameters
@@ -806,15 +845,13 @@ class hamiltonian(object):
 		float
 			Matrix element of `hamiltonian` operator between the states `Vl` and `Vr`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_lr = H.expt_value(Vl,Vr,time=0,diagonal=False,check=True)
 
 		corresponds to :math:`H_\\{lr} = \\langle V_l|H(t=0)|V_r\\rangle`. 
 
 		"""
-		if self.Ns <= 0:
-			return np.array([])
 
 		Vr=self.dot(Vr,time=time,check=check)
 
@@ -883,8 +920,7 @@ class hamiltonian(object):
 				return Vl.T.conj().dot(Vr)
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
-
-		
+	
 	### transformation routines
 
 	def project_to(self,proj):
@@ -895,8 +931,8 @@ class hamiltonian(object):
 		.. math::
 			V^\\dagger H V
 
-		Note
-		----
+		Notes
+		-----
 		The `proj` argument can be a square array, in which case the function just transforms the
 		`hailtonian` operator :math:`H`. Or it can be a projector which then projects :math:`H` onto
 		a smaller Hilbert space.
@@ -923,8 +959,8 @@ class hamiltonian(object):
 			Projected/Transformed `hamiltonian` operator. The output object type depends on the object 
 			type of `proj`.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_new = H.project_to(V)
 
@@ -977,7 +1013,7 @@ class hamiltonian(object):
 			new._shape = (proj.shape[1],proj.shape[1])
 			return new._imul_dense(proj)
 
-	def rotate_by(self, other, generator=False, a=1.0, time=0.0,start=None, stop=None, num=None, endpoint=None, iterate=False):
+	def rotate_by(self, other, generator=False,**exp_op_kwargs):
 		"""Rotates/Transforms `hamiltonian` object by an operator `other`.
 
 		Let us denote the transformation by :math:`V`. With `generator=False`, `other` corresponds to the
@@ -991,8 +1027,8 @@ class hamiltonian(object):
 		.. math::
 			\\exp(a^*K^\\dagger) H \\exp(a K)
 
-		Note
-		----
+		Notes
+		-----
 		If `generator = False`, this function calls `project_to`.
 
 		Parameters
@@ -1030,14 +1066,14 @@ class hamiltonian(object):
 
 		corresponds to :math:`V^\\dagger H V`.
 
-		>>> H_new = H.rotate_by(K,generator=True,**exp_op_args)
+		>>> H_new = H.rotate_by(K,generator=True,**exp_op_kwargs)
 
 		corresponds to :math:`\\exp(K^\\dagger) H \\exp(K)`.
 
 		"""
 
 		if generator:
-			return exp_op(other,a=a,time=time,start=start,stop=stop,num=num,endpoint=endpoint,iterate=iterate).sandwich(self)
+			return exp_op(other,**exp_op_kwargs).sandwich(self)
 		else:
 			return self.project_to(other)
 
@@ -1050,8 +1086,8 @@ class hamiltonian(object):
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
 		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -1067,11 +1103,14 @@ class hamiltonian(object):
 		tuple
 			Tuple containing the `(eigenvalues, eigenvectors)` of the `hamiltonian` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues,eigenvectors = H.eigsh(time=time,**eigsh_args)
 
 		"""
+		if self.Ns <= 0:
+			return _np.array([]),_np.array([[]])
+
 		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
@@ -1087,8 +1126,8 @@ class hamiltonian(object):
 		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -1104,19 +1143,19 @@ class hamiltonian(object):
 		tuple
 			Tuple containing the `(eigenvalues, eigenvectors)` of the `hamiltonian` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
 
 		"""
+		if self.Ns <= 0:
+			return _np.array([]),_np.array([[]])
+
 		eigh_args["overwrite_a"] = True
 		
 		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
-
-		if self.Ns <= 0:
-			return _np.asarray([]),_np.asarray([[]])
 
 		# fill dense array with hamiltonian
 		H_dense = self.todense(time=time)		
@@ -1131,8 +1170,8 @@ class hamiltonian(object):
 		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
-		Note
-		----
+		Notes
+		-----
 		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
@@ -1148,24 +1187,21 @@ class hamiltonian(object):
 		numpy.ndarray
 			Eigenvalues of the `hamiltonian` operator.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
 
 		"""
-
+		if self.Ns <= 0:
+			return _np.array([])
 		
 		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
-
-		if self.Ns <= 0:
-			return _np.asarray([])
 
 		H_dense = self.todense(time=time)
 		eigvalsh_args["overwrite_a"] = True
 		E = _la.eigvalsh(H_dense,**eigvalsh_args)
 		return E
-
 
 	### Schroedinger evolution routines
 
@@ -1292,7 +1328,6 @@ class hamiltonian(object):
 
 		return V_dot
 
-
 	def evolve(self,v0,t0,times,eom="SE",solver_name="dop853",H_real=False,verbose=False,iterate=False,imag_time=False,**solver_args):
 		"""Implements (imaginary) time evolution generated by the `hamiltonian` object.
 
@@ -1304,8 +1339,8 @@ class hamiltonian(object):
 			ii) imaginary-time Schroedinger equation: :math:`\\partial_t|v(t)\\rangle=-H(t)|v(t)\\rangle`
 			iii) Liouvillian dynamics: 
 
-		Note
-		----
+		Notes
+		-----
 		For a user-defined custom ODE solver which can handle non-linear equations, check out the
 		`measurements.evolve()` routine, which has a similar functionality but allows for a complete freedom
 		over the differential equation to be solved.
@@ -1350,8 +1385,8 @@ class hamiltonian(object):
 
 			Note that for Liouvillian dynamics the output is a square complex `numpy.ndarray`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> v_t = H.evolve(v0,t0,times,eom="SE",solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
 
 		"""
@@ -1441,8 +1476,7 @@ class hamiltonian(object):
 				return self._evolve_iter(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
 			else:
 				return self._evolve_list(solver,v0,t0,times,verbose,imag_time,H_real,n,shape0)
-
-			
+	
 	def _evolve_scalar(self,solver,v0,t0,time,imag_time,H_real,n,shape0):
 		from numpy.linalg import norm
 		N_ele = v0.size//2
@@ -1516,7 +1550,6 @@ class hamiltonian(object):
 			else:
 				raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 
-	
 	### routines to change object type	
 
 	def aslinearoperator(self,time=0.0):
@@ -1535,8 +1568,8 @@ class hamiltonian(object):
 		-------
 		:obj:`scipy.sparse.linalg.LinearOperator`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_aslinop=H.aslinearoperator(time=time)
 
 		"""
@@ -1563,14 +1596,12 @@ class hamiltonian(object):
 		-------
 		:obj:`scipy.sparse.csr_matrix`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_csr=H.tocsr(time=time)
 
 		"""
 
-		if self.Ns <= 0:
-			return _sp.csr_matrix(_np.asarray([[]]))
 		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
@@ -1603,13 +1634,11 @@ class hamiltonian(object):
 		-------
 		:obj:`scipy.sparse.csc_matrix`
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_csc=H.tocsc(time=time)
 
 		"""
-		if self.Ns <= 0:
-			return _sp.csc_matrix(_np.asarray([[]]))
 		if _np.array(time).ndim > 0:
 			raise TypeError('expecting scalar argument for time')
 
@@ -1629,8 +1658,8 @@ class hamiltonian(object):
 
 		This function can overflow memory if not used carefully!
 
-		Note
-		----
+		Notes
+		-----
 		If the array dimension is too large, scipy may choose to cast the `hamiltonian` operator as a
 		`numpy.matrix` instead of a `numpy.ndarray`. In such a case, one can use the `hamiltonian.toarray()`
 		method.
@@ -1656,8 +1685,8 @@ class hamiltonian(object):
 			* `numpy.ndarray`.
 			* `numpy.matrix`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_dense=H.todense(time=time)
 
 		"""
@@ -1700,8 +1729,8 @@ class hamiltonian(object):
 		numpy.ndarray
 			Dense array.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_dense=H.toarray(time=time)
 
 		"""
@@ -1735,30 +1764,20 @@ class hamiltonian(object):
 			* Shallow copy, if `copy = False`.
 			* Deep copy, if `copy = True`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_dense=H.as_dense_format()
 
 		"""
-		if copy:
-			new = _deepcopy(self)
+		if _sp.issparse(self._static):
+			new_static = self._static.todense()
 		else:
-			new = _shallowcopy(self)
+			new_static = _np.asarray(self._static,copy=copy)
 
+		dynamic = [([M.todense(),func] if _sp.issparse(M) else [M,func])
+						for func,M in iteritems(self.dynamic)]
 
-		if _sp.issparse(new._static):
-			new._static = new._static.todense()
-		else:
-			new._static = _np.asarray(new._static)
-
-
-		for func in new._dynamic:
-			if _sp.issparse(new._dynamic[func]):
-				new._dynamic[func] = new._dynamic[func].toarray()
-			else:
-				new._dynamic[func] = _np.asarray(new._dynamic[func],copy=copy)
-
-		return new
+		return hamiltonian([new_static],dynamic,basis=self._basis,dtype=self._dtype,copy=copy)
 
 	def as_sparse_format(self,fmt,copy=False):
 		"""Casts `hamiltonian` operator to SPARSE format.
@@ -1778,8 +1797,8 @@ class hamiltonian(object):
 			* Shallow copy, if `copy = False`.
 			* Deep copy, if `copy = True`.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_sparse=H.as_sparse_format()
 
 		"""
@@ -1789,27 +1808,22 @@ class hamiltonian(object):
 		if fmt not in ["csr","csc","dia","bsr"]:
 			raise ValueError("'{0}' is not a valid sparse format or does not support arithmetic.".format(fmt))
 
-		if copy:
-			new = _deepcopy(self)
-		else:
-			new = _shallowcopy(self)
 
 		sparse_constuctor = getattr(_sp,fmt+"_matrix")
 
-		new._static = sparse_constuctor(new._static)
-		new._dynamic = list(new._dynamic)
-		new._dynamic = {func:sparse_constructor(Hd) for func,Hd in iteritems(new._dynamic)}
+		dynamic = [[sparse_constuctor(M,copy=copy),func]
+						for func,M in iteritems(self.dynamic)]
 
-		return new
-
+		return hamiltonian([sparse_constuctor(self.static,copy=copy)],dynamic,
+						basis=self._basis,dtype=self._dtype)
 
 	### algebra operations
 
 	def transpose(self,copy=False):
 		"""Transposes `hamiltonian` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT conjugate the operator.
 
 		Returns
@@ -1817,27 +1831,22 @@ class hamiltonian(object):
 		:obj:`hamiltonian`
 			:math:`H_{ij}\\mapsto H_{ji}`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_tran = H.transpose()
 
 		"""
-		if copy:
-			new = _deepcopy(self)
-		else:
-			new = _shallowcopy(self)
+		dynamic = [[M.T,func] for func,M in iteritems(self.dynamic)]
 
-		new._static = new._static.T
-		new._dynamic = {func:Hd.T for func,Hd in iteritems(new._dynamic)}
+		return hamiltonian([self.static.T],dynamic,
+						basis=self._basis,dtype=self._dtype,copy=copy)
 
-		return new
-
-	def conj(self):
+	def conjugate(self):
 		"""Conjugates `hamiltonian` operator.
 
-		Note
-		----
+		Notes
+		-----
 		This function does NOT transpose the operator.
 
 		Returns
@@ -1845,28 +1854,19 @@ class hamiltonian(object):
 		:obj:`hamiltonian`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
-		>>> H_conj = H.conj()
+		>>> H_conj = H.conjugate()
 
 		"""
-		new = _shallowcopy(self)
+		dynamic = [[M.conj(),func.conj()] for func,M in iteritems(self.dynamic)]
+		return hamiltonian([self.static.conj()],dynamic,
+							basis=self._basis,dtype=self._dtype)		
 
-		new._static = new._static.conj()
-		new._dynamic = {func.conj():Hd.conj() for func,Hd in iteritems(new._dynamic)}
-		
-		'''
-		new._dynamic = list(new._dynamic)
-		n = len(self._dynamic)
-		for i in range(n):
-		 	new._dynamic[i] = list(new._dynamic[i])
-		 	new._dynamic[i][0] = new._dynamic[i][0].conj()
-		 	new._dynamic[i] = tuple(new._dynamic[i])
-
-		new._dynamic = tuple(new._dynamic)
-		'''
-		return new
+	def conj(self):
+		"""Same functionality as :func:`conjugate`."""
+		return self.conjugate()
 
 	def getH(self,copy=False):
 		"""Calculates hermitian conjugate of `hamiltonian` operator.
@@ -1881,8 +1881,8 @@ class hamiltonian(object):
 		:obj:`hamiltonian`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_herm = H.getH()
 
@@ -1904,8 +1904,8 @@ class hamiltonian(object):
 		numpy.ndarray
 			Diagonal part of operator :math:`H(t=\\texttt{time})`.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_diag = H.diagonal(time=0.0)
 
@@ -1934,8 +1934,8 @@ class hamiltonian(object):
 		float
 			Trace of operator :math:`\\sum_{j=1}^{Ns} H_{jj}(t=\\texttt{time})`.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> H_tr = H.tr(time=0.0)
 
@@ -1950,9 +1950,8 @@ class hamiltonian(object):
 			trace += Hd.diagonal().sum() * func(time)
 
 		return trace
- 		
 
-	def astype(self,dtype):
+	def astype(self,dtype,copy=True):
 		""" Changes data type of `hamiltonian` object.
 
 		Parameters
@@ -1964,8 +1963,8 @@ class hamiltonian(object):
 		:obj:`hamiltonian`
 			Operator with altered data type.
 
-		Example
-		-------
+		Examples
+		--------
 		>>> H_cpx=H.astype(np.complex128)
 
 		"""
@@ -1973,24 +1972,18 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
-		new = _shallowcopy(self)
-
-		new._dtype = dtype
-		new._static = new._static.astype(dtype)
-		new._dynamic = {func:Hd.astype(dtype) for func,Hd in iteritems(new._dynamic)}
-
-		return new
+		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
+		return hamiltonian([self.static],dynamic,basis=self._basis,dtype=dtype,copy=copy)
 
 	def copy(self):
 		"""Returns a deep copy of `hamiltonian` object."""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
-		return hamiltonian([self.static],dynamic,basis=self.basis,dtype=self._dtype,copy=True)
-
+		return hamiltonian([self.static],dynamic,
+					basis=self._basis,dtype=self._dtype,copy=True)
 
 	###################
 	# special methods #
 	###################
-
 
 	def __getitem__(self,key):
 		if len(key) != 3:
@@ -2017,9 +2010,6 @@ class hamiltonian(object):
 			ME = self.tocsr(time=time)[key]
 
 		return ME
-			
-		
-
 
 	def __str__(self):
 		string = "static mat: \n{0}\n\n\ndynamic:\n".format(self._static.__str__())
@@ -2030,7 +2020,6 @@ class hamiltonian(object):
 			string += ("{0}) func: {2}, mat: \n{1} \n".format(i,h_str,func_str))
 
 		return string
-		
 
 	def __repr__(self):
 		matrix_format={"csr":"Compressed Sparse Row",
@@ -2044,29 +2033,15 @@ class hamiltonian(object):
 			fmt = matrix_format[self._static.getformat()]
 			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
 
-
 	def __neg__(self): # -self
-		new = _shallowcopy(self)
+		dynamic = [[-M,func] for func,M in iteritems(self.dynamic)]		
+		return hamiltonian([-self.static],dynamic,basis=self._basis,dtype=self._dtype)
 
-		new._static = -new._static
-
-		new._dynamic = {func:-Hd for func,Hd in iteritems(new._dynamic)}
-		# new._dynamic = list(new._dynamic)
-		# n = len(new._dynamic)
-		# for i in range(n):
-		# 	new._dynamic[i][-1] = -new._dynamic[i][-1]
-
-		# new._dynamic = tuple(new._dynamic)
-		
-		return new
-
-
-	def __call__(self,time):
+	def __call__(self,time): # self(time)
 		if self.is_dense:
 			return self.toarray(time)
 		else:
 			return self.tocsr(time)
-
 
 	##################################
 	# symbolic arithmetic operations #
@@ -2074,13 +2049,11 @@ class hamiltonian(object):
 	# operators implimented.		 #
 	##################################
 
-	def __pow__(self,power):
+	def __pow__(self,power): # self ** power
 		if type(power) is not int:
 			raise TypeError("hamiltonian can only be raised to integer power.")
 
 		return reduce(mul,(self for i in range(power)))
-
-
 
 	def __mul__(self,other): # self * other
 		if ishamiltonian(other):			
@@ -2105,11 +2078,6 @@ class hamiltonian(object):
 			other = _np.asanyarray(other)
 			self._mat_checks(other,casting="unsafe")
 			return self._mul_dense(other)
-
-
-
-
-
 
 	def __rmul__(self,other): # other * self
 		if ishamiltonian(other):
@@ -2137,12 +2105,6 @@ class hamiltonian(object):
 			self._mat_checks(other,casting="unsafe")
 			return self._rmul_dense(other)
 
-
-
-
-
-
-
 	def __imul__(self,other): # self *= other
 		if ishamiltonian(other):
 			self._mat_checks(other)
@@ -2169,7 +2131,6 @@ class hamiltonian(object):
 			self._mat_checks(other)	
 			return self._imul_dense(other)
 
-
 	def __truediv__(self,other):
 		return self.__div__(other)
 
@@ -2192,13 +2153,8 @@ class hamiltonian(object):
 		else:
 			return NotImplemented
 
-
-
-
-
 	def __rdiv__(self,other): # other / self
 		return NotImplemented
-
 
 	def __idiv__(self,other): # self *= other
 		if ishamiltonian(other):
@@ -2218,9 +2174,6 @@ class hamiltonian(object):
 
 		else:
 			return NotImplemented
-
-
-
 
 	def __add__(self,other): # self + other
 		if ishamiltonian(other):
@@ -2250,10 +2203,6 @@ class hamiltonian(object):
 			self._mat_checks(other,casting="unsafe")
 			return self._add_dense(other)
 
-
-
-
-
 	def __radd__(self,other): # other + self
 		return self.__add__(other)
 
@@ -2281,11 +2230,6 @@ class hamiltonian(object):
 			self._mat_checks(other)				
 			return self._iadd_dense(other)
 
-
-
-
-
-
 	def __sub__(self,other): # self - other
 		if ishamiltonian(other):
 			self._mat_checks(other,casting="unsafe")
@@ -2310,14 +2254,9 @@ class hamiltonian(object):
 			self._mat_checks(other,casting="unsafe")
 			return self._sub_dense(other)
 
-
-
 	def __rsub__(self,other): # other - self
 		# NOTE: because we use signed types this is possble
 		return self.__sub__(other).__neg__()
-
-
-
 
 	def __isub__(self,other): # self -= other
 		if ishamiltonian(other):
@@ -2349,7 +2288,6 @@ class hamiltonian(object):
 	##########################################################################################
 	##########################################################################################
 
-
 	# checks
 	def _mat_checks(self,other,casting="same_kind"):
 		try:
@@ -2363,7 +2301,9 @@ class hamiltonian(object):
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 				raise ValueError('cannot cast types')			
 
-
+	##########################
+	# hamiltonian operations #
+	##########################
 
 	def _add_hamiltonian(self,other): 
 		dtype = _np.result_type(self._dtype, other.dtype)
@@ -2404,9 +2344,6 @@ class hamiltonian(object):
 		new.check_is_dense()
 		return new
 
-
-
-
 	def _iadd_hamiltonian(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 
@@ -2444,10 +2381,7 @@ class hamiltonian(object):
 		self.check_is_dense()
 		return _shallowcopy(self)
 
-
-
-
-	def _sub_hamiltonian(self,other): 
+	def _sub_hamiltonian(self,other):
 		dtype = _np.result_type(self._dtype, other.dtype)
 		new=self.astype(dtype)
 
@@ -2490,11 +2424,7 @@ class hamiltonian(object):
 		new.check_is_dense()
 		return new
 
-
-
-
-
-	def _isub_hamiltonian(self,other): 
+	def _isub_hamiltonian(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 
 		try:
@@ -2534,8 +2464,7 @@ class hamiltonian(object):
 		self.check_is_dense()
 		return _shallowcopy(self)
 
-
-	def _mul_hamiltonian(self,other): # self * other
+	def _mul_hamiltonian(self,other):
 		if self.dynamic and other.dynamic:
 			new = self.copy()
 			return new.__imul__(other)
@@ -2546,8 +2475,7 @@ class hamiltonian(object):
 		else:
 			return self.__mul__(other.static)
 
-
-	def _rmul_hamiltonian(self,other): # other * self
+	def _rmul_hamiltonian(self,other):
 		if self.dynamic and other.dynamic:
 			new = other.copy()
 			return (new.T.__imul__(self.T)).T #lazy implementation
@@ -2558,7 +2486,7 @@ class hamiltonian(object):
 		else:
 			return self.__rmul__(other.static)
 
-	def _imul_hamiltonian(self,other): # self *= other
+	def _imul_hamiltonian(self,other):
 		if self.dynamic and other.dynamic:
 			self._is_dense = self._is_dense or other._is_dense
 
@@ -2617,14 +2545,9 @@ class hamiltonian(object):
 		else:
 			return self.__imul__(other.static)
 
-
-
-
-
 	#####################
 	# sparse operations #
 	#####################
-
 
 	def _add_sparse(self,other):
 
@@ -2647,7 +2570,6 @@ class hamiltonian(object):
 		new.check_is_dense()
 		return new	
 
-
 	def _iadd_sparse(self,other):
 
 		try:
@@ -2665,9 +2587,6 @@ class hamiltonian(object):
 
 		self.check_is_dense()
 		return self	
-	
-
-
 
 	def _sub_sparse(self,other):
 
@@ -2690,7 +2609,6 @@ class hamiltonian(object):
 		new.check_is_dense()
 		return new	
 
-
 	def _isub_sparse(self,other):
 
 		try:
@@ -2708,9 +2626,6 @@ class hamiltonian(object):
 
 		self.check_is_dense()
 		return self
-
-
-
 
 	def _mul_sparse(self,other):
 
@@ -2742,10 +2657,6 @@ class hamiltonian(object):
 
 		new.check_is_dense()
 		return new
-
-
-
-
 
 	def _rmul_sparse(self,other):
 		# Auxellery function to calculate the right-side multipication with another sparse matrix.
@@ -2782,9 +2693,6 @@ class hamiltonian(object):
 		new.check_is_dense()		
 		return new
 
-
-
-
 	def _imul_sparse(self,other):
 
 
@@ -2813,14 +2721,9 @@ class hamiltonian(object):
 		self.check_is_dense()
 		return _shallowcopy(self)
 
-
-
-
 	#####################
 	# scalar operations #
 	#####################
-
-
 
 	def _mul_scalar(self,other):
 		dtype = _np.result_type(self._dtype, other)
@@ -2853,12 +2756,6 @@ class hamiltonian(object):
 		new.check_is_dense()
 		return new
 
-
-
-
-
-
-
 	def _imul_scalar(self,other):
 		if not _np.can_cast(other,self._dtype,casting="same_kind"):
 			raise TypeError("cannot cast types")
@@ -2888,12 +2785,9 @@ class hamiltonian(object):
 		self.check_is_dense()
 		return _shallowcopy(self)
 
-
-
 	####################
 	# dense operations #
 	####################
-
 
 	def _add_dense(self,other):
 
@@ -2919,8 +2813,6 @@ class hamiltonian(object):
 		new.check_is_dense()
 		return new
 
-
-
 	def _iadd_dense(self,other):
 
 		if not self._is_dense:
@@ -2939,9 +2831,6 @@ class hamiltonian(object):
 		self.check_is_dense()
 
 		return _shallowcopy(self)
-
-
-
 
 	def _sub_dense(self,other):
 
@@ -2969,8 +2858,6 @@ class hamiltonian(object):
 
 		return new
 
-
-
 	def _isub_dense(self,other):
 
 		if not self._is_dense:
@@ -2988,7 +2875,6 @@ class hamiltonian(object):
 
 		self.check_is_dense()
 		return _shallowcopy(self)
-
 
 	def _mul_dense(self,other):
 
@@ -3017,10 +2903,6 @@ class hamiltonian(object):
 		new.check_is_dense()
 
 		return new
-
-
-
-
 
 	def _rmul_dense(self,other):
 
@@ -3060,10 +2942,6 @@ class hamiltonian(object):
 
 		return new
 
-
-
-
-
 	def _imul_dense(self,other):
 
 		if not self._is_dense:
@@ -3086,8 +2964,6 @@ class hamiltonian(object):
 
 		return _shallowcopy(self)
 
-
-	
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
 		# """Method for compatibility with NumPy's ufuncs and dot
 		# functions.
@@ -3100,8 +2976,6 @@ class hamiltonian(object):
 				return self.__rmul__(inputs[0])
 			else:
 				return NotImplemented
-
-
 
 
 def ishamiltonian(obj):
@@ -3122,7 +2996,3 @@ def ishamiltonian(obj):
 
 	"""
 	return isinstance(obj,hamiltonian)
-
-
-
-

@@ -35,16 +35,13 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
-              'sphinx.ext.napoleon',
-              # 'numpydoc',
+              # 'sphinx.ext.napoleon',
+              'numpydoc',
                 ]
 
 
-autosummary_generate = True
-
-
 # -- General configuration ------------------------------------------------
-autoclass_content = "class"  # include both class docstring and __init__
+autoclass_content = "class"  
 autodoc_default_flags = [
         # Make sure that any autodoc declarations show the right members
         "members",
@@ -54,15 +51,21 @@ autodoc_default_flags = [
 ]
 
 autosummary_generate = True  # Make _autosummary files and include them
-napoleon_use_rtype = False  # More legible
+
+# NumPydoc settings
+numpydoc_show_class_members = True
+numpydoc_class_members_toctree = False
+numpydoc_show_inherited_class_members = True
+
 # Napoleon settings
+napoleon_use_rtype = False  # More legible
 napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = False
 napoleon_include_private_with_doc = False
 napoleon_include_special_with_doc = True
 napoleon_use_admonition_for_examples = False
 napoleon_use_admonition_for_notes = False
-napoleon_use_admonition_for_references = False
+napoleon_use_admonition_for_references = True
 napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
