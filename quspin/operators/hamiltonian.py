@@ -1975,6 +1975,9 @@ class hamiltonian(object):
 
 		Examples
 		--------
+		`hamiltonian`
+			Operator with altered data type.
+
 		>>> H_cpx=H.astype(np.complex128)
 
 		"""
@@ -1984,7 +1987,6 @@ class hamiltonian(object):
 
 		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype)
-
 
 	def copy(self):
 		"""Returns a deep copy of `hamiltonian` object."""

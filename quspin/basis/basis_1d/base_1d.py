@@ -726,6 +726,8 @@ class basis_1d(lattice_basis):
 		string += self.operators
 		return string 
 
+
+
 	def Op(self,opstr,indx,J,dtype):
 		"""Function which calculates matrix elements for a given operator string and coupling.
 
