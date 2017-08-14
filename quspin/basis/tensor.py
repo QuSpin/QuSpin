@@ -785,8 +785,6 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v = v1.multiply(v2).multiply(s)
 
 			v0 = v0 + v
-		
-		
 	else:
 		# take the vectors and convert them to their full hilbert space
 		v1 = V1[-1]

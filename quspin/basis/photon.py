@@ -534,7 +534,7 @@ class photon_basis(tensor_basis):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
 
-		return tensor_basis.sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
+		return tensor_basis._sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
 
 
 def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):

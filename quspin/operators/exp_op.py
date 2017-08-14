@@ -474,8 +474,9 @@ class exp_op(object):
 			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
 			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
-		shift : 
-			
+		shift : scalar
+			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
+
 
 		Returns
 		-------
@@ -559,9 +560,9 @@ class exp_op(object):
 			The operator :math:`B` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
 			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
-		shift : 
-			
-
+		shift : scalar
+			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
+ 
 		Returns
 		-------
 		obj
@@ -651,9 +652,9 @@ class exp_op(object):
 			and :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
 			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
-		shift : 
-			
-
+		shift : scalar
+			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
+ 
 		Returns
 		-------
 		obj

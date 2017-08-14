@@ -35,6 +35,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
+              'sphinx.ext.viewcode',
               # 'sphinx.ext.napoleon',
               'numpydoc',
                 ]
@@ -46,16 +47,18 @@ autodoc_default_flags = [
         # Make sure that any autodoc declarations show the right members
         "members",
         "inhiereted-members"
-        "no-special-members",
-        "no-undoc-members"
+        "show-inhieretance"
+        # "no-special-members",
+        # "no-private-members",
+        # "no-undoc-members"
 ]
 
 autosummary_generate = True  # Make _autosummary files and include them
 
-# NumPydoc settings
-numpydoc_show_class_members = True
-numpydoc_class_members_toctree = False
-numpydoc_show_inherited_class_members = True
+# # NumPydoc settings
+# numpydoc_show_class_members = True
+# numpydoc_class_members_toctree = True
+# numpydoc_show_inherited_class_members = True
 
 # Napoleon settings
 napoleon_use_rtype = False  # More legible

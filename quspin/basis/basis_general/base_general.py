@@ -189,10 +189,10 @@ class basis_general(lattice_basis):
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		if photon_basis is None:
 			basis_sort_opstr = self._sort_opstr
-			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
 		else:
 			basis_sort_opstr = photon_basis._sort_opstr
-			static_list,dynamic_list = photon_basis.get_local_lists(static,dynamic)
+			static_list,dynamic_list = photon_basis._get_local_lists(static,dynamic)
 
 
 		static_blocks = {}

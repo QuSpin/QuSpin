@@ -346,7 +346,8 @@ class ops_dict(object):
 		V : numpy.ndarray
 			Vector (quantums tate) to multiply the `ops_dict` operator with.
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 			
@@ -442,7 +443,8 @@ class ops_dict(object):
 		V : numpy.ndarray
 			Vector (quantums tate) to multiply the `ops_dict` operator with.
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 			
@@ -464,7 +466,7 @@ class ops_dict(object):
 		except AttributeError:
 			V = _np.asanyarray(V)
 			V = V.transpose()
-		return (self.transpose().dot(V)).transpose()
+		return (self.transpose().dot(V,pars=pars,check=check)).transpose()
 
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
 		"""Calculates matrix element of `ops_dict` operator for parameters `pars` in states `Vl` and `Vr`.
@@ -483,7 +485,8 @@ class ops_dict(object):
 		Vl : numpy.ndarray
 			Vector(s)/state(s) to multiple with on right side.
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		diagonal : bool, optional
 			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
 		check : bool,
@@ -593,7 +596,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		eigsh_args : 
 			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
 			
@@ -627,7 +631,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		eigh_args : 
 			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_.
 			
@@ -667,7 +672,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		eigvalsh_args : 
 			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_.
 			
@@ -704,7 +710,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity. 
 
 		Returns
 		-------
@@ -737,7 +744,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 
 		Returns
 		-------
@@ -774,7 +782,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		out : numpy.ndarray
 			Array to fill in with the output.
 		
@@ -811,7 +820,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 		out : numpy.ndarray
 			Array to fill in with the output.
 		
@@ -846,7 +856,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 
 		Returns
 		-------
@@ -868,7 +879,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 
 		Returns
 		-------
@@ -994,7 +1006,8 @@ class ops_dict(object):
 		Parameters
 		----------
 		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`.
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
 
 		Returns
 		-------
@@ -1027,7 +1040,7 @@ class ops_dict(object):
 			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
 
 		Returns
-		:obj:`ops_dict`
+		`ops_dict`
 			Operator with altered data type.
 
 		Examples

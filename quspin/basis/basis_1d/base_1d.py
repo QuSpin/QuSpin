@@ -41,9 +41,6 @@ class bitops:
 		try_add("py_flip_sublat_A","zAblock")
 		try_add("py_flip_sublat_B","zBblock")
 
-
-
-
 class basis_1d(lattice_basis):
 	def __init__(self,basis_module,ops_module,L,Np=None,_Np=None,pars=None,**blocks):
 
@@ -103,7 +100,7 @@ class basis_1d(lattice_basis):
 			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
 			for Np in Nup_iter:
 				temp_basis =self.__class__(L,Np,**blocks)
-				self.append(temp_basis)	
+				self._append(temp_basis)	
 
 	def _make_Np_block(self,basis_module,ops_module,L,Np=None,pars=None,**blocks):
 		# getting arguments which are used in basis.
@@ -647,15 +644,7 @@ class basis_1d(lattice_basis):
 
 		if count_particles: self._Np_list = _np.full(basis.shape,Np,dtype=_np.int8)
 
-	def append(self,other):
-		if not isinstance(other,self.__class__):
-			raise TypeError("can only append basis objects of the same type")
-		if self._L != other._L:
-			raise ValueError("appending incompatible system sizes with")
-		if self._blocks_1d != other._blocks_1d:
-			raise ValueError("appending incompatible blocks")
-		
-
+	def _append(self,other):
 		Ns = self._Ns + other._Ns
 
 		if self._conserved == "" or self._conserved == "N":
@@ -691,26 +680,32 @@ class basis_1d(lattice_basis):
 
 	@property
 	def blocks(self):
+		"""dict: containing the quantum numbers for the symmetry sectors. """
 		return self._blocks
 
 	@property
 	def L(self):
+		"""int: length of chain. """
 		return self._L
 
 	@property
 	def N(self):
+		"""int: number of sites for basis. """
 		return self._L
 
 	@property
 	def sps(self):
+		"""int: number of states per site. """
 		return self._sps
 
 	@property
 	def conserved(self):
+		"""str: conserved quantities. """
 		return self._conserved
 
 	@property
 	def description(self):
+		"""str: info about the basis. """
 		blocks = ""
 		lat_space = "lattice spacing: a = {a}".format(**self._blocks)
 
@@ -732,9 +727,38 @@ class basis_1d(lattice_basis):
 		return string 
 
 	def Op(self,opstr,indx,J,dtype):
-		"""
+		"""Function which calculates matrix elements for a given operator string and coupling.
+
 		Parameters
 		----------
+		opstr: str
+			operator string.
+
+		indx: array_like
+			list of site indices.
+
+		J: scalar
+			coupling which multiples the operator.
+
+		dtype: data-type
+			dtype to store the matrix elements as.
+
+		Returns
+		-------
+
+		ME: `numpy.ndarray`
+			array containing values of the matrix elements of type `dtype`
+
+		row: `numpy.ndarray`
+			array containing the values of the row indices for such that the row[i] is the row index of ME[i], stored as integer.
+
+		col: `numpy.ndarray`
+			array containing the values of the col indices for such that the col[i] is the row index of ME[i], stored as integer.
+
+
+		Examples
+		--------
+
 		"""
 		indx = _np.asarray(indx,dtype=_np.int32)
 
@@ -1032,10 +1056,10 @@ class basis_1d(lattice_basis):
 
 		if photon_basis is None:
 			basis_sort_opstr = self._sort_opstr
-			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
 		else:
 			basis_sort_opstr = photon_basis._sort_opstr
-			static_list,dynamic_list = photon_basis.get_local_lists(static,dynamic)
+			static_list,dynamic_list = photon_basis._get_local_lists(static,dynamic)
 
 
 		static_blocks = {}
@@ -1089,8 +1113,6 @@ class basis_1d(lattice_basis):
 			if missingops:	dynamic_blocks["PZ/PC symm"] = (tuple(missingops),)
 
 		return static_blocks,dynamic_blocks
-
-
 
 
 
@@ -1159,8 +1181,6 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 		ops.py_shift(basis_in,a,L,pars)
 	
 	return v
-
-
 
 def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
@@ -1274,7 +1294,6 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		ops.py_shift(basis_in,a,L,pars)
 
 	return v
-
 
 def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,L,**blocks):
 

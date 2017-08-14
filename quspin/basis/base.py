@@ -50,14 +50,17 @@ class basis(object):
 
 	@property
 	def unique_me(self):
+		"""bool: flag  """
 		return self._unique_me
 
 	@property
 	def Ns(self):
+		"""int: number of states in Hilbert space. """
 		return self._Ns
 
 	@property
 	def operators(self):
+		"""set: set of availible operator strings. """
 		return self._operators
 
 	def _get__str__(self):
@@ -70,28 +73,13 @@ class basis(object):
 	def __getitem__(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
 
-	def index(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'index' function!".format(self.__class__))
-
 #	def _get__str__(self,*args,**kwargs):
 #		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print basis!".format(self.__class__))		
 
 
-	# this method is required in order to create manybody hamiltonians/operators
-	def Op(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'Op' required for creating hamiltonians!".format(self.__class__))
-
-	# this method is required in order to use entanglement entropy functions		
-	def get_vec(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'get_vec' required for entanglement entropy calculations!".format(self.__class__))
-
 	@property
 	def sps(self):
 		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
-
-	# this method is required for the block_tools functions
-	def get_proj(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of 'get_proj' required for entanglement block_tools calculations!".format(self.__class__))
 
 	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
 	def _hc_opstr(self,*args,**kwargs):
@@ -105,29 +93,6 @@ class basis(object):
 
 	def _non_zero(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
-
-
-	# these methods can be overwritten in the event that the ones implimented below do not work
-	# for whatever reason
-	def sort_local_list(self,op_list):
-		return self.__class__._sort_local_list(self,op_list)
-
-	def get_local_lists(self,static,dynamic):
-		return self.__class__._get_local_lists(self,static,dynamic)
-
-	def get_hc_local_lists(self,static_list,dynamic_list):
-		return self.__class__._get_hc_local_lists(self,static_list,dynamic_list)
-
-	def consolidate_local_lists(self,static_list,dynamic_list):
-		return self.__class__._consolidate_local_lists(self,static_list,dynamic_list)
-
-	def expand_local_list(self,op_list):
-		return self.__class__._expand_local_list(self,op_list)
-
-	def expanded_form(self,static_list,dynamic_list):
-		return self.__class__._expanded_form(self,static_list,dynamic_list)
-
-
 
 	def _sort_local_list(self,op_list):
 		sorted_op_list = []
@@ -156,9 +121,9 @@ class basis(object):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,indx,J,f,f_args))
 
-		return self.sort_local_list(static_list),self.sort_local_list(dynamic_list)
+		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
 
-	# takes the list from the format given by get_local_lists and takes the hermitian conjugate of operators.
+	# takes the list from the format given by _get_local_lists and takes the hermitian conjugate of operators.
 	def _get_hc_local_lists(self,static_list,dynamic_list):
 		static_list_hc = []
 		for op in static_list:
@@ -193,7 +158,7 @@ class basis(object):
 				if self._non_zero(new_op):
 					op_list_exp.append(new_op)
 
-		return self.sort_local_list(op_list_exp)
+		return self._sort_local_list(op_list_exp)
 
 
 	def _consolidate_local_lists(self,static_list,dynamic_list):
@@ -238,11 +203,33 @@ class basis(object):
 		return static_list,dynamic_list
 
 
-	def _expanded_form(self,static,dynamic):
-		static_list,dynamic_list = self.get_local_lists(static,dynamic)
-		static_list = self.expand_local_list(static_list)
-		dynamic_list = self.expand_local_list(dynamic_list)
-		static_list,dynamic_list = self.consolidate_local_lists(static_list,dynamic_list)
+	def expanded_form(self,static=[],dynamic=[]):
+		"""Splits up operator strings containing "y" and "x" into operators of "+" and "-".
+
+		Parameters
+		----------
+		static: list
+			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
+
+		dynamic: list
+			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+
+		Returns
+		-------
+		static: list
+			list of static operators with "x" and "y" expanded into "+" and "-", formatted to be passed into the static argument of the `hamiltonian` class.
+
+		dynamic: list
+			list of static operators with "x" and "y" expanded into "+" and "-", formatted to be passed into the dynamic argument of the `hamiltonian` class.
+
+		Examples
+		--------
+
+		"""
+		static_list,dynamic_list = self._get_local_lists(static,dynamic)
+		static_list = self._expand_local_list(static_list)
+		dynamic_list = self._expand_local_list(dynamic_list)
+		static_list,dynamic_list = self._consolidate_local_lists(static_list,dynamic_list)
 
 		static_dict={}
 		for opstr,indx,J,ii in static_list:
@@ -269,16 +256,23 @@ class basis(object):
 		return static,dynamic
 
 
+	def check_hermitian(self,static,dynamic):
+		"""Checks operator lists to make sure the resulting operator is hermitian
 
+		Parameters
+		----------
+		static: list
+			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
 
+		dynamic: list
+			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
+		Examples
+		--------
 
-
-
-	def check_hermitian(self,static_list,dynamic_list):
-
-		static_list,dynamic_list = self.get_local_lists(static_list,dynamic_list)
-		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self.get_hc_local_lists(static_list,dynamic_list)
+		"""
+		static_list,dynamic_list = self._get_local_lists(static,dynamic)
+		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self._get_hc_local_lists(static_list,dynamic_list)
 		# calculate non-hermitian elements
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
 		
@@ -319,26 +313,30 @@ class basis(object):
 
 		print("Hermiticity check passed!")
 
-
-
-
-	
-
-
-
-
-
-
 	def check_pcon(self,static,dynamic):
+		"""Checks operator lists to make sure the resulting operator keeps the particle number conserved.
+
+		Parameters
+		----------
+		static: list
+			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
+
+		dynamic: list
+			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+
+		Examples
+		--------
+
+		"""
 		if self._check_pcon is None:
 			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return
 
 		if self._check_pcon:
-			static_list,dynamic_list = self.get_local_lists(static,dynamic)
-			static_list_exp = self.expand_local_list(static_list)
-			dynamic_list_exp = self.expand_local_list(dynamic_list)
-			static_list_exp,dynamic_list_exp = self.consolidate_local_lists(static_list_exp,dynamic_list_exp)
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
+			static_list_exp = self._expand_local_list(static_list)
+			dynamic_list_exp = self._expand_local_list(dynamic_list)
+			static_list_exp,dynamic_list_exp = self._consolidate_local_lists(static_list_exp,dynamic_list_exp)
 			con = ""
 
 			odd_ops = []
@@ -405,6 +403,20 @@ class basis(object):
 
 
 	def check_symm(self,static,dynamic):
+		"""Checks operator lists to make sure the resulting operator obeys the symmetry of the basis.
+
+		Parameters
+		----------
+		static: list
+			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
+
+		dynamic: list
+			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+
+		Examples
+		--------
+
+		"""
 		if self._check_symm is None:
 			warnings.warn("Test for symmetries not implemented for {0}, to turn off this warning set check_symm=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
 			return

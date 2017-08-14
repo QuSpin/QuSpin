@@ -21,7 +21,7 @@ class spin_basis_1d(basis_1d):
 		L: int
 			length of chain/number of sites
 
-		Nup: int,list, optional
+		Nup: {int,list}, optional
 			total :math:`S^z` projection, can be integer or list to specify one or more particle sectors.
 
 		m: float, optional

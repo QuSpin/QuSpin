@@ -58,7 +58,7 @@ class HamiltonianOperator(object):
 			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.
 		check_pcon : bool, optional
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
-		kw_args : dict
+		basis_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
 			to create the operator.
 
