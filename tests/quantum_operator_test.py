@@ -4,7 +4,7 @@ import sys,os
 quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
 
-from quspin.operators import ops_dict,hamiltonian
+from quspin.operators import quantum_operator,hamiltonian
 from quspin.basis import spin_basis_1d
 import numpy as np
 import scipy.sparse as sp
@@ -22,7 +22,7 @@ def dot_test():
 
 	input_dict = {"J":[M]}
 
-	op_dict = ops_dict(input_dict)
+	op_dict = quantum_operator(input_dict)
 
 	v_op = op_dict.dot(v)
 	assert(np.linalg.norm(v_op-M.dot(v))<eps)
@@ -54,7 +54,7 @@ def eigsh_test():
 	M = np.arange(16).reshape((4,4)).astype(np.complex128)
 	M = M.T+M
 	input_dict = {"J":[M]}
-	op_dict = ops_dict(input_dict)
+	op_dict = quantum_operator(input_dict)
 
 	E1,V1=sp.linalg.eigsh(M,k=2)
 	E2,V2=op_dict.eigsh(k=2)
@@ -71,7 +71,7 @@ def eigh_test():
 	M = np.arange(16).reshape((4,4)).astype(np.complex128)
 	M = M.T+M
 	input_dict = {"J":[M]}
-	op_dict = ops_dict(input_dict)
+	op_dict = quantum_operator(input_dict)
 
 	E1,V1=np.linalg.eigh(M)
 	E2,V2=op_dict.eigh()
@@ -88,7 +88,7 @@ def eigvalsh_test():
 	M = np.arange(16).reshape((4,4)).astype(np.complex128)
 	M = M.T+M
 	input_dict = {"J":[M]}
-	op_dict = ops_dict(input_dict)
+	op_dict = quantum_operator(input_dict)
 
 	E1=np.linalg.eigvalsh(M)
 	E2=op_dict.eigvalsh()

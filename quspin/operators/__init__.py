@@ -8,39 +8,19 @@ classes and function for doing Quantum Operations
 classes
 -------
 
-.. currentmodule:: quspin.operators.hamiltonian
+.. currentmodule:: quspin.operators
 .. autosummary::
    :nosignatures:
    :toctree: generated/
 
    hamiltonian
-
-.. currentmodule:: quspin.operators.ops_dict
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
-   ops_dict
-
-.. currentmodule:: quspin.operators.exp_op
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
+   quantum_operator
    exp_op
-
-.. currentmodule:: quspin.operators.HamiltonianOperator
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
    HamiltonianOperator
 
 functions
 ---------
 
-
-.. currentmodule:: quspin.operators.hamiltonian
 .. autosummary::
    :nosignatures:
    :toctree: generated/
@@ -49,21 +29,21 @@ functions
    commutator
    anti_commutator
 
-.. currentmodule:: quspin.operators.ops_dict
+
 .. autosummary::
    :nosignatures:
    :toctree: generated/
 
-   isops_dict
+   isquantum_operator
 
-.. currentmodule:: quspin.operators.exp_op
+
 .. autosummary::
    :nosignatures:
    :toctree: generated/
 
    isexp_op
 
-.. currentmodule:: quspin.operators.HamiltonianOperator
+
 .. autosummary::
    :nosignatures:
    :toctree: generated/
@@ -74,7 +54,7 @@ functions
 
 
 from .hamiltonian import *
-from .ops_dict import *
+from .quantum_operator import *
 from .exp_op import *
 from .HamiltonianOperator import *
 
