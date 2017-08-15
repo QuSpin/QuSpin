@@ -991,6 +991,33 @@ class quantum_operator(object):
 
 	### lin-alg operations
 
+	def diagonal(self,pars={}):
+		""" Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
+
+		Returns
+		-------
+		numpy.ndarray
+			array containing the diagonal part of the operator :math:`diag_j = H_{jj}(\\lambda)`.
+
+		Examples
+		--------
+
+		>>> H_diagonal = H.diagonal(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+		diag = _np.zeros(self.Ns,dtype=self._dtype)
+		for key,value in iteritems(self._quantum_operator_dict):
+			diag += pars[key] * value.diagonal()
+		return diag
+
+
 	def trace(self,pars={}):
 		""" Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.
 
@@ -1008,7 +1035,7 @@ class quantum_operator(object):
 		Examples
 		--------
 
-		>>> H_tr = H.tr(pars=pars)
+		>>> H_tr = H.trace(pars=pars)
 
 		"""
 		pars = self._check_scalar_pars(pars)
@@ -1049,22 +1076,6 @@ class quantum_operator(object):
 		"""Returns a deep copy of `quantum_operator` object."""
 		return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=self._dtype,copy=deep)
 
-	"""
-	def SO_Linearquantum_operator(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-		i_pars = {}
-		i_pars_c = {}
-		for key,J in pars.items():
-			i_pars[key] = -1j*J
-			i_pars_c[key] = 1j*J
-
-		new = self.astype(_np.complex128)
-		matvec = functools.partial(_quantum_operator_dot,new,i_pars)
-		rmatvec = functools.partial(_quantum_operator_dot,new.H,i_pars_c)
-		return _sla.Linearquantum_operator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=_np.complex128)		
-	"""
-
-
 
 	def __call__(self,**pars):
 		pars = self._check_scalar_pars(pars)
@@ -1073,10 +1084,8 @@ class quantum_operator(object):
 		else:
 			return self.tocsr(pars)
 
-
 	def __neg__(self):
 		return self.__imul__(-1)
-
 
 	def __iadd__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
@@ -1086,8 +1095,9 @@ class quantum_operator(object):
 					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] + value
 				else:
 					self._quantum_operator_dict[key] = value
+			return self
 		elif other == 0:
-			return self.copy()
+			return self
 		else:
 			return NotImplemented
 
@@ -1107,9 +1117,9 @@ class quantum_operator(object):
 					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] - value
 				else:
 					self._quantum_operator_dict[key] = -value
-
+			return self
 		elif other == 0:
-			return self.copy()
+			return self
 		else:
 			return NotImplemented
 

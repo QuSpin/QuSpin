@@ -1,8 +1,8 @@
 import sys,os
-quspin_path = os.path.join(os.getcwd(),"../")
+quspin_path = os.path.join(os.getcwd(),"..","..","..")
 sys.path.insert(0,quspin_path)
 from numpy.testing import assert_almost_equal
-from quspin.operators import HamiltonianOperator,hamiltonian
+from quspin.operators import quantum_LinearOperator,hamiltonian
 from quspin.basis import spin_basis_1d
 import numpy as np
 import scipy.sparse as sp
@@ -67,7 +67,7 @@ def test_ops():
 		if basis.Ns > 0:
 			for dtype in dtypes:
 				H = hamiltonian(operator_list,[],basis=basis,dtype=dtype,check_symm=False,check_herm=False,check_pcon=False)
-				H_op = HamiltonianOperator(operator_list,basis,dtype=dtype,check_symm=False,check_herm=False,check_pcon=False)
+				H_op = quantum_LinearOperator(operator_list,basis=basis,dtype=dtype,check_symm=False,check_herm=False,check_pcon=False)
 
 				v = np.random.randint(3,size=(H.Ns,)).astype(dtype)
 
@@ -131,11 +131,11 @@ def test_ops():
 				yield check_mul,H.H,H_op.H,v
 				yield check_mul,H.conj(),H_op.conj(),v
 
-#				v = sp.random(H.Ns,H.Ns).astype(dtype)
-#				yield check_mul,H,H_op,v
-#				yield check_mul,H.T,H_op.T,v
-#				yield check_mul,H.H,H_op.H,v
-#				yield check_mul,H.conj(),H_op.conj(),v
+				v = sp.random(H.Ns,H.Ns).astype(dtype)
+				yield check_mul,H,H_op,v
+				yield check_mul,H.T,H_op.T,v
+				yield check_mul,H.H,H_op.H,v
+				yield check_mul,H.conj(),H_op.conj(),v
 
 
 

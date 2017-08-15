@@ -676,7 +676,7 @@ class hamiltonian(object):
 
 			return V_dot
 
-	def rdot(V,**dot_args):
+	def rdot(self,V,**dot_args):
 		"""vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.
 
 		.. math::
@@ -720,9 +720,9 @@ class hamiltonian(object):
 	
 		"""
 		try:
-			V_hc = V.transpose()
+			V_transpose = V.transpose()
 		except AttributeError:
-			V_hc = _np.asanyarray(V).transpose()
+			V_transpose = _np.asanyarray(V).transpose()
 
 		return (self.transpose().dot(V_transpose)).transpose()
 

@@ -56,6 +56,6 @@ functions
 from .hamiltonian import *
 from .quantum_operator import *
 from .exp_op import *
-from .HamiltonianOperator import *
+from .quantum_LinearOperator import *
 
 

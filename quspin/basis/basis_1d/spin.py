@@ -163,12 +163,10 @@ class spin_basis_1d(basis_1d):
 			op[1] = tuple(op2)
 		return tuple(op)
 
-
-
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
 		indx = _np.array(op[1])
-		if _np.any(indx):
+		if _np.any(indx>=0):
 			indx_p = indx[opstr == "+"].tolist()
 			p = not any(indx_p.count(x) > 1 for x in indx_p)
 			indx_p = indx[opstr == "-"].tolist()
