@@ -55,7 +55,6 @@ class tensor_basis(basis):
 		basis_list : list(:obj:`basis`)
 			List of `basis` objects to tensor together. Required minimum number is two.
 
-
 		"""
 		if len(basis_list) < 2:
 			raise ValueError("basis_list must have more than one basis.")
@@ -477,6 +476,14 @@ class tensor_basis(basis):
 
 			.. math::
 				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
+		sparse_diag : bool, optional
+			When sparse=True, this flag enforces the use of
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_
+			to calculate the eigenvaues of the reduced DM.
+		maxiter : int, optional
+			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+		
 
 		Returns
 		-------
