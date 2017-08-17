@@ -17,8 +17,46 @@ __all__=["tensor_basis"]
 
 # gives the basis for the kronecker/Tensor product of two basis: |basis_left> (x) |basis_right>
 class tensor_basis(basis):
+	"""Constructs basis in tensor product Hilbert space.
 
+		The `tensor_basis` class combines two basis objects `basis1` and `basis2` together into a new basis 
+		object which can be then used, e.g., to create the Hamiltonian over the tensor product Hilbert space:
+
+		.. math::
+			\\mathcal{H}=\\mathcal{H}_1\\otimes\\mathcal{H}_2
+
+		Note
+		----
+
+		The `tensor_basis` operator strings are separated by a pipe symbol, '|'. The index array has
+		NO pipe symbol.
+
+		Examples
+		--------
+		The following lines show to to create the tensor basis out of two spin-1/2 basis objects.
+
+		>>> basis1 = spin_basis_1d(L,Nup=L/2)
+		>>> basis2 = spin_basis_1d(L,Nup=L/2)
+		>>> t_basis = tensor_basis(basis1,basis2)
+
+		The operator strings for constructing Hamiltonians with a `tensor_basis` object are separated by 
+		a pipe symbol, '|', while the index array has no splitting pipe character. For instance, the operator 
+		:math:`\\sigma^z_1\\otimes\\sigma^z_5` can be constructed using
+		
+		>>> indx = [1,5] # index array used for the site-coupling list: no pipe symbol needed
+		>>> opstr = "z|z" # operator string used in the opeator string list: pipe symbol separates two subspaces
+
+	"""
 	def __init__(self,*basis_list):
+		"""Initialises the `tensor_basis` object (basis for tensor product Hilbert spaces).
+
+		Parameters
+		----------
+		basis_list : list(:obj:`basis`)
+			List of `basis` objects to tensor together. Required minimum number is two.
+
+
+		"""
 		if len(basis_list) < 2:
 			raise ValueError("basis_list must have more than one basis.")
 		if not isinstance(basis_list[0],basis):
@@ -47,15 +85,54 @@ class tensor_basis(basis):
 		self._unique_me = self._basis_left.unique_me and self._basis_right.unique_me
 		self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
 
+
 	@property
 	def basis_left(self):
+		""":obj:`basis`: First basis constructor our of the list to be tensored."""
 		return self._basis_left
 
 	@property
 	def basis_right(self):
+		""":obj:`basis`: All others basis constructors except for the first one of the list to be tensored."""
 		return self._basis_right
 
+
+
 	def Op(self,opstr,indx,J,dtype):
+		"""Constructs operator from a site-coupling list and anoperator string in the tensor basis.
+
+		Parameters
+		----------
+		opstr : str
+			Operator string in the tensor basis format. For instance:
+			>>> opstr = "z|z"
+		indx : list(int)
+			List of integers to designate the sites the tensor basis operator is defined on. For instance:
+			>>> indx = [1,5]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+
+		Returns
+		-------
+		tuple
+			`(ME,row,col)` where
+			* scalar: `ME`: matrix element.
+			* int: `row`: column index of matrix representing the operator in the tensor basis.
+			* int: `col`: roen index of matrix representing the operator in the tensor basis.
+			
+		Example
+		-------
+
+		>>> J = 1.41
+		>>> indx = [1,5]
+		>>> opstr = "z|z"
+		>>> dtype = np.float64
+		>>> ME, row, col = Op(opstr,indx,J,dtype)
+
+		"""
+
 		# if opstr.count("|") > 1: 
 		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
@@ -106,7 +183,74 @@ class tensor_basis(basis):
 
 		return ME,row,col
 
+	def index(self,*states):
+		"""Finds the index of user-defined Fock state in tensor basis.
+
+		Note
+		----
+		Particularly useful for defining initial Fock states through a unit vector in the direction specified
+		by `index()`. 
+
+		Parameters
+		----------
+		states : list(str)
+			List of strings which separately define the Fock state in each of the `basis` used to construct 
+			the `tensor_basis` object.
+
+		Returns
+		-------
+		int
+			Position of tensor Fock state in the `tensor_basis`.
+
+		Example
+		-------
+
+		>>> s_1 = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
+		>>> s_2 = "".join("1" for i in range(4))
+		>>> print( basis.index(s_b,s_f) )
+
+		"""
+		if len(states) < 2:
+			raise ValueError("states must be list of atleast 2 elements long")
+		s_left = self.basis_left.index(states[0])
+		s_right = self.basis_right.index(*states[1:])
+		return s_right + self.basis_right.Ns*s_left
+
+
 	def get_vec(self,v0,sparse=True,full_left=True,full_right=True):
+		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Note
+		----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Supports parallelisation to multiple states listed in the columns.
+
+		Parameters
+		----------
+		v0 : numpy.ndarray
+			Contains in its columns the states in the symmetry-reduced basis.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		full_left : bool, optional
+			Whether or not to transform the state to the full state in `basis_left`. Default is `True`.
+		full_right : bool, optional
+			Whether or not to transform the state to the full state in `basis_right`. Default is `True`.
+
+		Returns
+		-------
+		numpy.ndarray
+			Array containing the state `v0` in the full basis.
+
+		Example
+		-------
+
+		>>> v_full = get_vec(v0)
+		>>> print(v_full.shape, v0.shape)
+
+		"""
+
 		if self._Ns <= 0:
 			return _np.array([])
 
@@ -131,15 +275,38 @@ class tensor_basis(basis):
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
-
-	def index(self,*states):
-		if len(states) < 2:
-			raise ValueError("states must be list of atleast 2 elements long")
-		s_left = self.basis_left.index(states[0])
-		s_right = self.basis_right.index(*states[1:])
-		return s_right + self.basis_right.Ns*s_left
-
 	def get_proj(self,dtype,full_left=True,full_right=True):
+		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Note
+		----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Parameters
+		----------
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the projector with.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		full_left : bool, optional
+			Whether or not to transform the state to the full state in `basis_left`. Default is `True`.
+		full_right : bool, optional
+			Whether or not to transform the state to the full state in `basis_right`. Default is `True`.
+
+		Returns
+		-------
+		numpy.ndarray
+			Transformation/projector between the symmetry-reduced and the full basis.
+
+		Example
+		-------
+
+		>>> P = get_proj(np.float64)
+		>>> print(P.shape)
+
+		"""
+
 		if full_left:
 			proj1 = self._basis_left.get_proj(dtype)
 		else:
@@ -152,6 +319,312 @@ class tensor_basis(basis):
 
 
 		return _sp.kron(proj1,proj2,format="csr")
+
+
+	def partial_trace(self,state,sub_sys_A="left",return_rdm=None,enforce_pure=False,sparse=False):
+		"""Calculates reduced density matrix, through a partial trace of a quantum state in `tensor_basis`.
+
+		Parameters
+		----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : str, optional
+			Subsystem to calculate the density matrix of. Can be either one of:
+
+				* "left": refers to `basis_left` (Default).
+				* "right": refers to `basis_right`.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+
+		Returns
+		-------
+		numpy.ndarray
+			Density matrix associated with `state`. Depends on optional arguments.
+
+
+		Example
+		-------
+
+		>>> partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False)
+
+		"""
+
+		if sub_sys_A is None:
+			sub_sys_A = "left"
+
+		if return_rdm not in set(["A","B","both",None]):
+			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
+		if sub_sys_A not in set(["left","right","both",None]):
+			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
+
+		if not hasattr(state,"shape"):
+			state = _np.asanyarray(state)
+			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
+
+		Ns_left = self._basis_left.Ns
+		Ns_right = self._basis_right.Ns
+		tensor_Ns =  Ns_left*Ns_right
+
+		if state.shape[0] != tensor_Ns:
+			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,tensor_Ns))
+
+		if _sp.issparse(state) or sparse:
+			if not _sp.issparse(state):
+				state = _sp.csr_matrix(state)
+
+			state = state.T
+			if state.shape[0] == 1:
+				# sparse_pure partial trace
+				rdm_A,rdm_B = _tensor_partial_trace_sparse_pure(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
+			else:
+				if state.shape[0] != state.shape[1] or enforce_pure:
+					# vectorize sparse_pure partial trace 
+					state = state.tocsr()
+					try:
+						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm) for i in xrange(state.shape[0]))
+					except NameError:
+						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm) for i in range(state.shape[0]))
+
+					left,right = zip(*state_gen)
+
+					rdm_A,rdm_B = _np.stack(left),_np.stack(right)
+
+					if any(rdm is None for rdm in rdm_A):
+						rdm_A = None
+
+					if any(rdm is None for rdm in rdm_B):
+						rdm_B = None
+				else: 
+					raise ValueError("Expecting a dense array for mixed states.")
+
+		else:
+			if state.ndim==1:
+				rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
+
+			elif state.ndim==2: 
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
+
+				else: 
+					shape0 = state.shape
+					state = state.reshape((1,)+shape0)					
+
+					rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
+
+			elif state.ndim==3: #3D DM 
+				rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
+			else:
+				raise ValueError("state must have ndim < 4")
+
+		if return_rdm == "A":
+			return rdm_A
+		elif return_rdm == "B":
+			return rdm_B
+		else:
+			return rdm_A,rdm_B
+
+	def ent_entropy(self,state,sub_sys_A="left",return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
+
+		Note
+		----
+		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
+
+		Parameters
+		----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : str, optional
+			Subsystem to calculate the density matrix of. Can be either one of:
+
+				* "left": refers to `basis_left` (Default).
+				* "right": refers to `basis_right`.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+		return_rdm_EVs : bool, optional 
+			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,
+			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+			the spectrum of `rdm_A` is returned by default. Default is `False`.
+		alpha : float, optional
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+
+			.. math::
+				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
+
+		Returns
+		-------
+		dict
+			Dictionary with following keys, depending on input parameters:
+				* "Sent_A": entanglement entropy of subsystem A (default).
+				* "Sent_B": entanglement entropy of subsystem B.
+				* "p_A": singular values of reduced DM of subsystem A (default).
+				* "p_B": singular values of reduced DM of subsystem B.
+				* "rdm_A": reduced DM of subsystem A.
+				* "rdm_B": reduced DM of subsystem B.
+
+		Example
+		-------
+
+		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>>				sparse=False,alpha=1.0,sparse_diag=True)
+
+		"""
+		if sub_sys_A is None:
+			sub_sys_A = "left"
+
+		if return_rdm not in set(["A","B","both",None]):
+			raise ValueError("return_rdm must be: 'A','B','both' or None")
+
+		if sub_sys_A not in set(["left","right","both"]):
+			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
+
+		if not hasattr(state,"shape"):
+			state = _np.asanyarray(state)
+			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
+
+		tensor_Ns =  self._basis_left.Ns*self._basis_right.Ns
+
+		if state.shape[0] != tensor_Ns:
+			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,tensor_Ns))
+
+		pure=True # set pure state parameter to True
+		if _sp.issparse(state) or sparse:
+			if not _sp.issparse(state):
+				if state.ndim == 1:
+					state = _sp.csr_matrix(state).T
+				else:
+					state = _sp.csr_matrix(state)
+
+			if state.shape[1] == 1:
+				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
+			else:
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
+				else: 
+					raise ValueError("Expecting a dense array for mixed states.")
+					
+		else:
+			if state.ndim==1:
+				state = state.reshape((-1,1))
+				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+			
+			elif state.ndim==2:
+
+				if state.shape[0]!=state.shape[1] or enforce_pure:
+					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+				else: # 2D mixed
+					pure=False
+					"""
+					# check if DM's are positive definite
+					try:
+						_np.linalg.cholesky(state)
+					except:
+						raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
+					# check oif trace of DM is unity
+					if _np.any( abs(_np.trace(state) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
+						raise ValueError("Expecting eigenvalues of DM to sum to unity!")
+					"""
+					shape0 = state.shape
+					state = state.reshape(shape0+(1,))
+					p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
+				
+			elif state.ndim==3: #3D DM 
+				pure=False
+
+				"""
+				# check if DM's are positive definite
+				try:
+					_np.linalg.cholesky(state)
+				except:
+					raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
+
+				# check oif trace of DM is unity
+				if _np.any( abs(_np.trace(state, axis1=1,axis2=2) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
+					raise ValueError("Expecting eigenvalues of DM to sum to unity!")
+				"""
+				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
+
+			else:
+				raise ValueError("state must have ndim < 4")
+
+		
+		if pure:
+			p_A, p_B = p, p
+
+		Sent_A, Sent_B = None, None
+		if alpha == 1.0:
+			if p_A is not None:
+				Sent_A = - _np.nansum(p_A * _np.log(p_A),axis=-1)
+			if p_B is not None:
+				Sent_B = - _np.nansum(p_B * _np.log(p_B),axis=-1)
+		elif alpha >= 0.0:
+			if p_A is not None:
+				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1)/(1.0-alpha))
+			if p_B is not None:
+				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1)/(1.0-alpha))
+		else:
+			raise ValueError("alpha >= 0")
+
+		# initiate variables
+		variables = ["Sent_A"]
+		
+		if return_rdm_EVs:
+			variables.append("p_A")
+
+		if return_rdm == "A":
+			variables.append("rdm_A")
+			
+		elif return_rdm == "B":
+			variables.extend(["Sent_B","rdm_B"])
+			if return_rdm_EVs:
+				variables.append("p_B")
+			
+		elif return_rdm == "both":
+			variables.extend(["rdm_A","Sent_B","rdm_B"])
+			if return_rdm_EVs:
+				variables.extend(["p_A","p_B"])
+	
+
+		# store variables to dictionar
+		return_dict = {}
+		for i in variables:
+			if locals()[i] is not None:
+				if sparse and 'rdm' in i:
+					return_dict[i] = locals()[i] # don't squeeze sparse matrix
+				else:
+					return_dict[i] = _np.squeeze( locals()[i] )
+
+		return return_dict
+
+
+	##### private methods
 
 	def _p_pure(self,state,sub_sys_A,return_rdm=None):
 		
@@ -287,257 +760,6 @@ class tensor_basis(basis):
 			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
 			
 		return p_A, p_B, rdm_A, rdm_B
-
-	def partial_trace(self,state,sub_sys_A="left",return_rdm=None,enforce_pure=False,sparse=False):
-		if sub_sys_A is None:
-			sub_sys_A = "left"
-
-		if return_rdm not in set(["A","B","both",None]):
-			raise ValueError("return_rdm must be: 'A','B','both' or None")
-
-		if sub_sys_A not in set(["left","right","both",None]):
-			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
-
-		if not hasattr(state,"shape"):
-			state = _np.asanyarray(state)
-			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
-
-		Ns_left = self._basis_left.Ns
-		Ns_right = self._basis_right.Ns
-		tensor_Ns =  Ns_left*Ns_right
-
-		if state.shape[0] != tensor_Ns:
-			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,tensor_Ns))
-
-		if _sp.issparse(state) or sparse:
-			if not _sp.issparse(state):
-				state = _sp.csr_matrix(state)
-
-			state = state.T
-			if state.shape[0] == 1:
-				# sparse_pure partial trace
-				rdm_A,rdm_B = _tensor_partial_trace_sparse_pure(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
-			else:
-				if state.shape[0] != state.shape[1] or enforce_pure:
-					# vectorize sparse_pure partial trace 
-					state = state.tocsr()
-					try:
-						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm) for i in xrange(state.shape[0]))
-					except NameError:
-						state_gen = (_tensor_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm) for i in range(state.shape[0]))
-
-					left,right = zip(*state_gen)
-
-					rdm_A,rdm_B = _np.stack(left),_np.stack(right)
-
-					if any(rdm is None for rdm in rdm_A):
-						rdm_A = None
-
-					if any(rdm is None for rdm in rdm_B):
-						rdm_B = None
-				else: 
-					raise ValueError("Expecting a dense array for mixed states.")
-
-		else:
-			if state.ndim==1:
-				rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
-
-			elif state.ndim==2: 
-				if state.shape[0]!=state.shape[1] or enforce_pure:
-					rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
-
-				else: 
-					shape0 = state.shape
-					state = state.reshape((1,)+shape0)					
-
-					rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
-
-			elif state.ndim==3: #3D DM 
-				rdm_A,rdm_B = _tensor_partial_trace_mixed(state,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
-			else:
-				raise ValueError("state must have ndim < 4")
-
-		if return_rdm == "A":
-			return rdm_A
-		elif return_rdm == "B":
-			return rdm_B
-		else:
-			return rdm_A,rdm_B
-
-	def ent_entropy(self,state,sub_sys_A="left",return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
-		"""
-		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
-		density matrix.
-
-		RETURNS: dictionary with keys:
-
-		'Sent_A': entanglement entropy of subystem A.
-		'Sent_B': (optional) entanglement entropy of subystem B.
-		'rdm_A': (optional) reduced density matrix of subsystem A
-		'rdm_B': (optional) reduced density matrix of subsystem B
-		'p_A': (optional) eigenvalues of reduced density matrix of subsystem A
-		'p_B': (optional) eigenvalues of reduced density matrix of subsystem B
-
-		--- arguments ---
-
-		state: (required) the state of the quantum system. Can be a:
-
-				-- pure state (default) [numpy array of shape (Ns,)].
-
-				-- density matrix [numpy array of shape (Ns,Ns)].
-
-				-- collection of states containing the states in the columns of state
-
-		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
-						[by python convention the first site of the chain is labelled j=0]. 
-						Default is tuple(range(L//2)).
-
-		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
-
-				-- 'A': str, returns reduced DM of subsystem A
-
-				-- 'B': str, returns reduced DM of subsystem B
-
-				-- 'both': str, returns reduced DM of both subsystems A and B
-
-		return_rdm_EVs: (optional) boolean to return eigenvalues of reduced DM. If `return_rdm` is specified,
-						the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
-						the spectrum of `rdm_A` is terurned. Default is `False`.
-
-		enforce_pure: (optional) boolean to determine if 'state' is a collection of pure states or
-						a density matrix
-
-		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
-
-		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
-
-		"""
-		if sub_sys_A is None:
-			sub_sys_A = "left"
-
-		if return_rdm not in set(["A","B","both",None]):
-			raise ValueError("return_rdm must be: 'A','B','both' or None")
-
-		if sub_sys_A not in set(["left","right","both"]):
-			raise ValueError("sub_sys_A must be 'left' or 'right' or 'both'.")
-
-		if not hasattr(state,"shape"):
-			state = _np.asanyarray(state)
-			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
-
-		tensor_Ns =  self._basis_left.Ns*self._basis_right.Ns
-
-		if state.shape[0] != tensor_Ns:
-			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,tensor_Ns))
-
-		pure=True # set pure state parameter to True
-		if _sp.issparse(state) or sparse:
-			if not _sp.issparse(state):
-				if state.ndim == 1:
-					state = _sp.csr_matrix(state).T
-				else:
-					state = _sp.csr_matrix(state)
-
-			if state.shape[1] == 1:
-				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
-			else:
-				if state.shape[0]!=state.shape[1] or enforce_pure:
-					p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
-				else: 
-					raise ValueError("Expecting a dense array for mixed states.")
-					
-		else:
-			if state.ndim==1:
-				state = state.reshape((-1,1))
-				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
-			
-			elif state.ndim==2:
-
-				if state.shape[0]!=state.shape[1] or enforce_pure:
-					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
-				else: # 2D mixed
-					pure=False
-					"""
-					# check if DM's are positive definite
-					try:
-						_np.linalg.cholesky(state)
-					except:
-						raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
-					# check oif trace of DM is unity
-					if _np.any( abs(_np.trace(state) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
-						raise ValueError("Expecting eigenvalues of DM to sum to unity!")
-					"""
-					shape0 = state.shape
-					state = state.reshape(shape0+(1,))
-					p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
-				
-			elif state.ndim==3: #3D DM 
-				pure=False
-
-				"""
-				# check if DM's are positive definite
-				try:
-					_np.linalg.cholesky(state)
-				except:
-					raise ValueError("LinAlgError: (collection of) DM(s) not positive definite")
-
-				# check oif trace of DM is unity
-				if _np.any( abs(_np.trace(state, axis1=1,axis2=2) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
-					raise ValueError("Expecting eigenvalues of DM to sum to unity!")
-				"""
-				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
-
-			else:
-				raise ValueError("state must have ndim < 4")
-
-		
-		if pure:
-			p_A, p_B = p, p
-
-		Sent_A, Sent_B = None, None
-		if alpha == 1.0:
-			if p_A is not None:
-				Sent_A = - _np.nansum(p_A * _np.log(p_A),axis=-1)
-			if p_B is not None:
-				Sent_B = - _np.nansum(p_B * _np.log(p_B),axis=-1)
-		elif alpha >= 0.0:
-			if p_A is not None:
-				Sent_A = _np.log(_np.nansum(_np.power(p_A,alpha),axis=-1)/(1.0-alpha))
-			if p_B is not None:
-				Sent_B = _np.log(_np.nansum(_np.power(p_B,alpha),axis=-1)/(1.0-alpha))
-		else:
-			raise ValueError("alpha >= 0")
-
-		# initiate variables
-		variables = ["Sent_A"]
-		
-		if return_rdm_EVs:
-			variables.append("p_A")
-
-		if return_rdm == "A":
-			variables.append("rdm_A")
-			
-		elif return_rdm == "B":
-			variables.extend(["Sent_B","rdm_B"])
-			if return_rdm_EVs:
-				variables.append("p_B")
-			
-		elif return_rdm == "both":
-			variables.extend(["rdm_A","Sent_B","rdm_B"])
-			if return_rdm_EVs:
-				variables.extend(["p_A","p_B"])
-	
-
-		# store variables to dictionar
-		return_dict = {}
-		for i in variables:
-			if locals()[i] is not None:
-				if sparse and 'rdm' in i:
-					return_dict[i] = locals()[i] # don't squeeze sparse matrix
-				else:
-					return_dict[i] = _np.squeeze( locals()[i] )
-
-		return return_dict
 
 	def __name__(self):
 		return "<type 'qspin.basis.tensor_basis'>"

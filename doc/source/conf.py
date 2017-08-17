@@ -36,8 +36,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
-              # 'sphinx.ext.napoleon',
-              'numpydoc',
+              'sphinx.ext.napoleon',
+              #'numpydoc',
                 ]
 
 
