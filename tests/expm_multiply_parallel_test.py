@@ -13,10 +13,9 @@ import numpy as np
 
 
 N = 1000
-for i in range(1000):
+for i in range(100):
 	print("testing random matrix {}".format(i+1))
 	A = (random(N,N) + 1j*random(N,N))
-	A = (A+A.H)/2
 	A = A.tocsr()
 	v = np.random.uniform(-1,1,size=N) + 1j * np.random.uniform(-1,1,size=N)
 
