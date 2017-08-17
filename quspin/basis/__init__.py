@@ -7,20 +7,10 @@ Basis module (:mod:`quspin.basis`)
 .. currentmodule:: quspin.basis
 .. autosummary::
    :nosignatures:
+   :template: autosummary/class.rst
    :toctree: generated/
 
-   tensor_basis
-   photon_basis
-
-   spin_basis_1d
-   spin_basis_general
-
-   spinless_fermion_basis_1d
-   spinless_fermion_basis_general
-   spinful_fermion_basis_general
-
-   boson_basis_1d
-   boson_basis_general
+   basis
 
 """
 from .basis_1d import *

@@ -15,8 +15,6 @@ QuSpin API reference
     :maxdepth: 1
     
     basis
-    operators
-    tools
     
 
 

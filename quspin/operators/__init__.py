@@ -16,7 +16,7 @@ classes
    hamiltonian
    quantum_operator
    exp_op
-   HamiltonianOperator
+   quantum_LinearOperator
 
 functions
 ---------
@@ -25,30 +25,12 @@ functions
    :nosignatures:
    :toctree: generated/
 
-   ishamiltonian
    commutator
    anti_commutator
-
-
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
+   ishamiltonian
    isquantum_operator
-
-
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
    isexp_op
-
-
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
-   isHamiltonianOperator
+   isquantum_LinearOperator
 
 """
 
