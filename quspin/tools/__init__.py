@@ -6,6 +6,15 @@ Tools module (:mod:`quspin.tools`)
 
 classes and tools to aid in calculations with QuSpin. 
 
+
+.. currentmodule:: quspin.tools
+.. autosummary::
+   :nosignatures:
+   :toctree: generated/
+
+   expm_multiply_parallel
+
+
 block_tools
 -----------
 
@@ -56,5 +65,6 @@ measurements
 from . import Floquet
 from . import block_tools
 from . import measurements
+from ._expm_multiply_parallel_core import expm_multiply_parallel
 
-__all__ = ["Floquet","block_tools","measurements"]
+__all__ = ["measurements","Floquet","block_tools","expm_multiply_parallel"]

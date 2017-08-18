@@ -2,6 +2,7 @@ def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
 	import os
 	config = Configuration('tools', parent_package, top_path)
+	config.add_subpackage('_expm_multiply_parallel_core')
 	return config
 
 if __name__ == '__main__':
