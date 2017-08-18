@@ -14,8 +14,8 @@ class expm_multiply_parallel(object):
 		----------
 		A : {array_like, scipy.sparse matrix}
 			The operator whose exponential is of interest.
-		a : scalar 
-			scalar value to take to put into the exponent ..math: expm(aH).
+		a : scalar, optional
+			scalar value to take to put into the exponent :math:`expm(aH)`.
 			
 		"""
 		self._a = a

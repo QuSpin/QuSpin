@@ -10,7 +10,9 @@ Basis module (:mod:`quspin.basis`)
    :template: autosummary/class.rst
    :toctree: generated/
 
-   basis
+   spin_basis_1d
+   spin_basis_general
+
 
 """
 from .basis_1d import *
