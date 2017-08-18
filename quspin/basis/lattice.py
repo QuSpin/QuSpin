@@ -25,6 +25,9 @@ class lattice_basis(basis):
 	def __getitem__(self,key):
 		return self._basis.__getitem__(key)
 
+	def __iter__(self):
+		return self._basis.__iter__()
+
 	def index(self,s):
 		if type(s) is int:
 			pass
@@ -39,9 +42,6 @@ class lattice_basis(basis):
 			return _np.squeeze(indx)
 		else:
 			raise ValueError("s must be representive state in basis. ")
-
-	def __iter__(self):
-		return self._basis.__iter__()
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""
@@ -178,149 +178,6 @@ class lattice_basis(basis):
 			return rdm_B
 		else:
 			return rdm_A,rdm_B
-
-	def _p_pure(self,state,sub_sys_A,return_rdm=None):
-		
-		# calculate full H-space representation of state
-		state=self.get_vec(state,sparse=False)
-		# put states in rows
-		state=state.T
-		# reshape state according to sub_sys_A
-		v=_lattice_reshape_pure(state,sub_sys_A,self.N,self._sps)
-		
-		rdm_A=None
-		rdm_B=None
-
-		# perform SVD	
-		if return_rdm is None:
-			lmbda = svd(v, compute_uv=False) 
-		else:
-			U, lmbda, V = svd(v, full_matrices=False)
-			if return_rdm=='A':
-				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
-			elif return_rdm=='B':
-				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-			elif return_rdm=='both':
-				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
-				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-
-
-		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
-
-	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
-
-		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
-
-		N_A=len(sub_sys_A)
-		N_B=self.N-N_A
-
-		rdm_A=None
-		rdm_B=None
-
-		if return_rdm is None:
-			if N_A <= N_B:
-				partial_trace_args["return_rdm"] = "A"
-				rdm = self.partial_trace(state,**partial_trace_args)
-			else:
-				partial_trace_args["return_rdm"] = "B"
-				rdm = self.partial_trace(state,**partial_trace_args)
-
-		elif return_rdm=='A' and N_A <= N_B:
-			partial_trace_args["return_rdm"] = "A"
-			rdm_A = self.partial_trace(state,**partial_trace_args)
-			rdm = rdm_A
-
-		elif return_rdm=='B' and N_B <= N_A:
-			partial_trace_args["return_rdm"] = "B"
-			rdm_B = self.partial_trace(state,**partial_trace_args)
-			rdm = rdm_B
-
-		else:
-			partial_trace_args["return_rdm"] = "both"
-			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
-
-			if N_A < N_B:
-				rdm = rdm_A
-			else:
-				rdm = rdm_B
-
-		if sparse_diag and rdm.shape[0] > 16:
-
-			def get_p_patchy(rdm):
-				n = rdm.shape[0]
-				p_LM = eigsh(rdm,k=n//2+n%2,which="LM",maxiter=maxiter,return_eigenvectors=False) # get upper half
-				p_SM = eigsh(rdm,k=n//2,which="SM",maxiter=maxiter,return_eigenvectors=False) # get lower half
-				p = _np.concatenate((p_LM[::-1],p_SM)) + _np.finfo(p_LM.dtype).eps
-				return p
-
-			if _sp.issparse(rdm):
-				p = get_p_patchy(rdm)
-				p = p.reshape((1,-1))
-			else:
-				p_gen = (get_p_patchy(dm) for dm in rdm[:])
-				p = _np.stack(p_gen)
-
-		else:
-			if _sp.issparse(rdm):
-				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
-				p = p.reshape((1,-1))
-			else:
-				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
-				p = _np.stack(p_gen)
-
-		return p,rdm_A,rdm_B
-	
-	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
-		"""
-		This function calculates the eigenvalues of the reduced density matrix.
-		It will first calculate the partial trace of the full density matrix and
-		then diagonalizes it to get the eigenvalues. It will automatically choose
-		the subsystem with the smaller hilbert space to do the diagonalization in order
-		to reduce the calculation time but will only return the desired reduced density
-		matrix. 
-		"""
-		N = self.N
-		sps = self.sps
-
-		N_A = len(sub_sys_A)
-		N_B = N - N_A
-
-		proj = self.get_proj(_dtypes[state.dtype.char])
-		state = state.transpose((2,0,1))
-
-		Ns_full = proj.shape[0]
-		n_states = state.shape[0]
-		
-		gen = (proj*s*proj.H for s in state[:])
-
-		proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
-		
-		for i,s in enumerate(gen):
-			proj_state[i,...] += s[...]	
-
-		rdm_A,p_A=None,None
-		rdm_B,p_B=None,None
-		
-		if return_rdm=='both':
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="both")
-			
-			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
-			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
-
-		elif return_rdm=='A':
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="A")
-			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
-			
-		elif return_rdm=='B':
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="B")
-			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
-
-		else:
-			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="A")
-			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
-			
-			
-		return p_A, p_B, rdm_A, rdm_B
 
 	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""
@@ -530,6 +387,153 @@ class lattice_basis(basis):
 					return_dict[i] = _np.squeeze( locals()[i] )
 
 		return return_dict
+
+
+
+	##### private methods
+
+	def _p_pure(self,state,sub_sys_A,return_rdm=None):
+		
+		# calculate full H-space representation of state
+		state=self.get_vec(state,sparse=False)
+		# put states in rows
+		state=state.T
+		# reshape state according to sub_sys_A
+		v=_lattice_reshape_pure(state,sub_sys_A,self.N,self._sps)
+		
+		rdm_A=None
+		rdm_B=None
+
+		# perform SVD	
+		if return_rdm is None:
+			lmbda = svd(v, compute_uv=False) 
+		else:
+			U, lmbda, V = svd(v, full_matrices=False)
+			if return_rdm=='A':
+				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
+			elif return_rdm=='B':
+				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
+			elif return_rdm=='both':
+				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
+				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
+
+
+		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+
+	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
+
+		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
+
+		N_A=len(sub_sys_A)
+		N_B=self.N-N_A
+
+		rdm_A=None
+		rdm_B=None
+
+		if return_rdm is None:
+			if N_A <= N_B:
+				partial_trace_args["return_rdm"] = "A"
+				rdm = self.partial_trace(state,**partial_trace_args)
+			else:
+				partial_trace_args["return_rdm"] = "B"
+				rdm = self.partial_trace(state,**partial_trace_args)
+
+		elif return_rdm=='A' and N_A <= N_B:
+			partial_trace_args["return_rdm"] = "A"
+			rdm_A = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_A
+
+		elif return_rdm=='B' and N_B <= N_A:
+			partial_trace_args["return_rdm"] = "B"
+			rdm_B = self.partial_trace(state,**partial_trace_args)
+			rdm = rdm_B
+
+		else:
+			partial_trace_args["return_rdm"] = "both"
+			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
+
+			if N_A < N_B:
+				rdm = rdm_A
+			else:
+				rdm = rdm_B
+
+		if sparse_diag and rdm.shape[0] > 16:
+
+			def get_p_patchy(rdm):
+				n = rdm.shape[0]
+				p_LM = eigsh(rdm,k=n//2+n%2,which="LM",maxiter=maxiter,return_eigenvectors=False) # get upper half
+				p_SM = eigsh(rdm,k=n//2,which="SM",maxiter=maxiter,return_eigenvectors=False) # get lower half
+				p = _np.concatenate((p_LM[::-1],p_SM)) + _np.finfo(p_LM.dtype).eps
+				return p
+
+			if _sp.issparse(rdm):
+				p = get_p_patchy(rdm)
+				p = p.reshape((1,-1))
+			else:
+				p_gen = (get_p_patchy(dm) for dm in rdm[:])
+				p = _np.stack(p_gen)
+
+		else:
+			if _sp.issparse(rdm):
+				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
+				p = p.reshape((1,-1))
+			else:
+				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
+				p = _np.stack(p_gen)
+
+		return p,rdm_A,rdm_B
+	
+	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
+		"""
+		This function calculates the eigenvalues of the reduced density matrix.
+		It will first calculate the partial trace of the full density matrix and
+		then diagonalizes it to get the eigenvalues. It will automatically choose
+		the subsystem with the smaller hilbert space to do the diagonalization in order
+		to reduce the calculation time but will only return the desired reduced density
+		matrix. 
+		"""
+		N = self.N
+		sps = self.sps
+
+		N_A = len(sub_sys_A)
+		N_B = N - N_A
+
+		proj = self.get_proj(_dtypes[state.dtype.char])
+		state = state.transpose((2,0,1))
+
+		Ns_full = proj.shape[0]
+		n_states = state.shape[0]
+		
+		gen = (proj*s*proj.H for s in state[:])
+
+		proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
+		
+		for i,s in enumerate(gen):
+			proj_state[i,...] += s[...]	
+
+		rdm_A,p_A=None,None
+		rdm_B,p_B=None,None
+		
+		if return_rdm=='both':
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="both")
+			
+			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
+			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+
+		elif return_rdm=='A':
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="A")
+			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
+			
+		elif return_rdm=='B':
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="B")
+			p_B = eigvalsh(rdm_B) + _np.finfo(rdm_B.dtype).eps
+
+		else:
+			rdm_A,rdm_B = _lattice_partial_trace_mixed(proj_state,sub_sys_A,N,sps,return_rdm="A")
+			p_A = eigvalsh(rdm_A) + _np.finfo(rdm_A.dtype).eps
+			
+			
+		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
 		def get_state(b):
