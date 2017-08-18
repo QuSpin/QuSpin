@@ -20,7 +20,7 @@ from copy import deepcopy as _deepcopy # copies only at top level references the
 __all__=["HamiltonianOperator","isHamiltonianOperator"]
 
 class HamiltonianOperator(object):
-	"""Applies quantum operator directly onto a state, without constructing operator.
+	"""Applies quantum operator directly on state, without constructing operator.
 
 	The `HamiltonianOperator` class uses the `basis.Op` function to calculate the matrix vector product on the 
 	fly, greatly reducing the amount of memory needed for a calculation at the cost of speed.

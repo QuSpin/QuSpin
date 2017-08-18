@@ -230,10 +230,12 @@ class photon_basis(tensor_basis):
 		Returns
 		-------
 		tuple
-			`(ME,row,col)` where
-			* scalar: `ME`: matrix element.
-			* int: `row`: column index of matrix representing the operator in the photon basis.
-			* int: `col`: roen index of matrix representing the operator in the photon basis.
+			`(ME,row,col)`, where
+				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
+				* numpy.ndarray(int): `row`: row indices of matrix representing the operator in the photon basis,
+					such that `row[i]` is the row index of `ME[i]`.
+				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the photon basis,
+					such that `col[i]` is the column index of `ME[i]`.
 			
 		Example
 		-------
@@ -375,8 +377,6 @@ class photon_basis(tensor_basis):
 		----------
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the projector with.
-		sparse : bool, optional
-			Whether or not the output should be in sparse format. Default is `True`.
 		Nph : int, optional
 			Nuber of photons. Required for conserving `photon` basis.
 		full_part : bool, optional
@@ -547,7 +547,7 @@ class photon_basis(tensor_basis):
 			.. math::
 				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
 		sparse_diag : bool, optional
-			When sparse=True, this flag enforces the use of
+			When `sparse=True`, this flag enforces the use of
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_
 			to calculate the eigenvaues of the reduced DM.
 		maxiter : int, optional

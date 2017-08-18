@@ -6,34 +6,36 @@ import numpy as _np
 
 
 class spinless_fermion_basis_1d(basis_1d):
-	"""Basis for fermionic operators.
+	"""Constructs basis for fermionic operators.
 
 	"""	
 	def __init__(self,L,Nf=None,nf=None,**blocks):
-		""" Intializes the `fermion_basis_1d` object (basis for fermionic operators).
+		"""Intializes the `fermion_basis_1d` object (basis for fermionic operators).
 
 		Parameters
 		----------
 		L: int
-			length of chain/number of sites
-		Nf: int,list, optional
-			number of fermions to put on chain, can be integer or list to specify one or more particle sectors.
+			Length of chain/number of sites.
+		Nf: {int,list}, optional
+			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
 		nf: float, optional
-			density of fermions to put on chain
+			Density of fermions in chain (fermions per site).
 		**blocks: optional
 			extra keyword arguments which include:
 
-				**a** (*int*) - specify how many sites to step for translation.
+				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specify momentum block
+				**kblock** (*int*) - specifies momentum block.
 
-				**pblock** (*int*) - specify parity block
+				**pblock** (*int*) - specifies parity block.
 
-				**cblock** (*int*) - specify particle hole symmetry block.
+				**cblock** (*int*) - specifies particle-hole symmetry block.
 
-				**cAblock** (*int*) - specify particle hole of sublattice A symmetry block
-				
-				**cAblock** (*int*) - specify particle hole of sublattice B symmetry block
+				**pcblock** (*int*) - specifies parity followed by particle-hole symmetry block.
+
+				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A.
+
+				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B.
 
 		"""
 
@@ -107,6 +109,7 @@ class spinless_fermion_basis_1d(basis_1d):
 
 	@property
 	def blocks(self):
+		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
 		return dict(self._blocks)
 
 	def __type__(self):

@@ -29,6 +29,31 @@ class lattice_basis(basis):
 		return self._basis.__iter__()
 
 	def index(self,s):
+		"""Finds the index of user-defined Fock state in any lattice basis.
+
+		Note
+		----
+		Particularly useful for defining initial Fock states through a unit vector in the direction specified
+		by `index()`. 
+
+		Parameters
+		----------
+		s : str
+			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
+
+		Returns
+		-------
+		int
+			Position of the Fock state in the lattice basis.
+
+		Example
+		-------
+
+		>>> s_1 = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
+		>>> s_2 = "".join("1" for i in range(4))
+		>>> print( basis.index(s_1), basis.index(s_2) )
+
+		"""
 		if type(s) is int:
 			pass
 		elif type(s) is str:
@@ -44,26 +69,44 @@ class lattice_basis(basis):
 			raise ValueError("s must be representive state in basis. ")
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
-		"""
-		--- arguments ---
-		
-		* `state`: (required) the state of the quantum system. Can be a
-		  1. pure state (default) [numpy array of shape (Ns,)].
-		  2. density matrix [numpy array of shape (Ns,Ns)].
-		  3. collection of states [dictionary {'V_states':V_states}] containing the states in the columns of `V_states` [shape (Ns,Nvecs)]
-		* `sub_sys_A`: (optional) tuple or list to define the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Default is `tuple(range(N//2))`.
-		* `return_rdm`: (optional) flag to return the reduced density matrix. Default is `None`.
-		  These arguments differ when used with `photon` or `tensor` basis.
-		  1. 'A': str, returns reduced DM of subsystem A 
-		  2. 'B': str, returns reduced DM of subsystem B
-		  3. 'both': str, returns reduced DM of both subsystems A and B
-		* 'subsys_ordering': (optional) reorder the sites in sub_sys_A list so that they are in ascending order. 
-		* 'enforce_pure': (optional) when `state` is a square matrix this option enfores the columns to be treated as independent states, so the partial trace is calculated for each state separately. Defauls is `False`.
-		* `sparse`: (optional) flag to enable usage of sparse linear algebra algorithms.
+		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
 
-		RETURNS: reduced DM
-		"""
+		Parameters
+		----------
+		state : obj
+			State of the quantum system. Can be either one of:
 
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple/list, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+
+		Returns
+		-------
+		numpy.ndarray
+			Density matrix associated with `state`. Depends on optional arguments.
+
+		Example
+		-------
+
+		>>> partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
+
+		"""
 
 		if sub_sys_A is None:
 			sub_sys_A = tuple(range(self.N//2))
@@ -180,64 +223,72 @@ class lattice_basis(basis):
 			return rdm_A,rdm_B
 
 	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
+
+		Note
+		----
+		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
+
+		Parameters
+		----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple/list, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+		return_rdm_EVs : bool, optional 
+			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,
+			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+			the spectrum of `rdm_A` is returned by default. Default is `False`.
+		alpha : float, optional
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+
+			.. math::
+				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
+		sparse_diag : bool, optional
+			When `sparse=True`, this flag enforces the use of
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_
+			to calculate the eigenvaues of the reduced DM.
+		maxiter : int, optional
+			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+
+		Returns
+		-------
+		dict
+			Dictionary with following keys, depending on input parameters:
+				* "Sent_A": entanglement entropy of subsystem A (default).
+				* "Sent_B": entanglement entropy of subsystem B.
+				* "p_A": singular values of reduced DM of subsystem A (default).
+				* "p_B": singular values of reduced DM of subsystem B.
+				* "rdm_A": reduced DM of subsystem A.
+				* "rdm_B": reduced DM of subsystem B.
+
+		Example
+		-------
+
+		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
+
 		"""
-		This function calculates the entanglement entropy of subsystem A and the corresponding reduced 
-		density matrix.
 
-		RETURNS: dictionary with keys:
-
-		'Sent_A': entanglement entropy of subystem A.
-		'Sent_B': (optional) entanglement entropy of subystem B.
-		'rdm_A': (optional) reduced density matrix of subsystem A
-		'rdm_B': (optional) reduced density matrix of subsystem B
-		'p_A': (optional) eigenvalues of reduced density matrix of subsystem A
-		'p_B': (optional) eigenvalues of reduced density matrix of subsystem B
-
-		--- arguments ---
-
-		state: (required) the state of the quantum system. Can be a:
-
-				-- pure state (default) [numpy array of shape (Ns,)].
-
-				-- density matrix [numpy array of shape (Ns,Ns)].
-
-				-- collection of states containing the states in the columns of state
-
-		sub_sys_A: (optional) tuple or list to define the sites contained in subsystem A 
-						[by python convention the first site of the chain is labelled j=0]. 
-						Default is tuple(range(N//2)).
-
-		density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-					subsystem [i.e., by the length of 'sub_sys_A']. Detault is 'False'.
-
-		subsys_ordering: (optional) if set to 'True', 'sub_sys_A' is being ordered. Default is 'True'.
-
-		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
-
-				-- 'A': str, returns reduced DM of subsystem A
-
-				-- 'B': str, returns reduced DM of subsystem B
-
-				-- 'both': str, returns reduced DM of both subsystems A and B
-
-		return_rdm_EVs: (optional) boolean to return eigenvalues of reduced DM. If `return_rdm` is specified,
-						the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
-						the spectrum of `rdm_A` is terurned. Default is `False`.
-
-		enforce_pure: (optional) boolean to determine if 'state' is a collection of pure states or
-						a density matrix
-
-		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
-
-		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
-
-		sparse_diag: (optional) when `sparse=True`, this flat enforces the use of `scipy.sparse.linalg.eigsh()`
-		to calculate the eigenvaues of the reduced DM.
-
-		maxiter: (optional) specify number of iterations for Nanczos diagonalisation. Nook up documentation
-		for scipy.sparse.linalg.eigsh(). 
-
-		"""
 		if sub_sys_A is None:
 			sub_sys_A = list(range(self.N//2))
 		else:

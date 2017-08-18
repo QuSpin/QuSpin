@@ -116,10 +116,12 @@ class tensor_basis(basis):
 		Returns
 		-------
 		tuple
-			`(ME,row,col)` where
-			* scalar: `ME`: matrix element.
-			* int: `row`: column index of matrix representing the operator in the tensor basis.
-			* int: `col`: roen index of matrix representing the operator in the tensor basis.
+			`(ME,row,col)`, where
+				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
+				* numpy.ndarray(int): `row`: row indices of matrix representing the operator in the tensor basis,
+					such that `row[i]` is the row index of `ME[i]`.
+				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the tensor basis,
+					such that `col[i]` is the column index of `ME[i]`.
 			
 		Example
 		-------
@@ -194,7 +196,7 @@ class tensor_basis(basis):
 		----------
 		states : list(str)
 			List of strings which separately define the Fock state in each of the `basis` used to construct 
-			the `tensor_basis` object.
+			the `tensor_basis` object. 
 
 		Returns
 		-------
@@ -206,7 +208,7 @@ class tensor_basis(basis):
 
 		>>> s_1 = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
 		>>> s_2 = "".join("1" for i in range(4))
-		>>> print( basis.index(s_b,s_f) )
+		>>> print( basis.index(s_1,s_2) )
 
 		"""
 		if len(states) < 2:
@@ -286,8 +288,6 @@ class tensor_basis(basis):
 		----------
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the projector with.
-		sparse : bool, optional
-			Whether or not the output should be in sparse format. Default is `True`.
 		full_left : bool, optional
 			Whether or not to transform the state to the full state in `basis_left`. Default is `True`.
 		full_right : bool, optional
@@ -352,7 +352,6 @@ class tensor_basis(basis):
 		-------
 		numpy.ndarray
 			Density matrix associated with `state`. Depends on optional arguments.
-
 
 		Example
 		-------
@@ -477,13 +476,12 @@ class tensor_basis(basis):
 			.. math::
 				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
 		sparse_diag : bool, optional
-			When sparse=True, this flag enforces the use of
+			When `sparse=True`, this flag enforces the use of
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_
 			to calculate the eigenvaues of the reduced DM.
 		maxiter : int, optional
 			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
-		
 
 		Returns
 		-------
@@ -503,6 +501,7 @@ class tensor_basis(basis):
 		>>>				sparse=False,alpha=1.0,sparse_diag=True)
 
 		"""
+
 		if sub_sys_A is None:
 			sub_sys_A = "left"
 

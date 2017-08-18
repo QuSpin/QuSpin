@@ -55,172 +55,38 @@ class basis(object):
 
 	@property
 	def Ns(self):
-		"""int: number of states in Hilbert space. """
+		"""int: number of states in the Hilbert space."""
 		return self._Ns
 
 	@property
 	def operators(self):
-		"""set: set of availible operator strings. """
+		"""set: set of availible operator strings."""
 		return self._operators
-
-	def _get__str__(self):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print out the basis!".format(self.__class__))
-
-	# this methods are optional and are not required for main functions:
-	def __iter__(self):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for iterating over basis!".format(self.__class__))
-
-	def __getitem__(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
-
-#	def _get__str__(self,*args,**kwargs):
-#		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print basis!".format(self.__class__))		
-
 
 	@property
 	def sps(self):
 		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
 
-	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
-	def _hc_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
-
-	def _sort_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks! turn this check off by setting check_herm=False".format(self.__class__))
-
-	def _expand_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
-
-	def _non_zero(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
-
-	def _sort_local_list(self,op_list):
-		sorted_op_list = []
-		for op in op_list:
-			sorted_op_list.append(self._sort_opstr(op))
-		sorted_op_list = tuple(sorted_op_list)
-
-		return sorted_op_list
-
-
-	# this function flattens out the static and dynamics lists to: 
-	# [[opstr1,indx11,J11,...],[opstr1,indx12,J12,...],...,[opstrn,indxnm,Jnm,...]]
-	# this function gets overridden in photon_basis because the index must be extended to include the photon index.
-	def _get_local_lists(self,static,dynamic):
-		static_list = []
-		for opstr,bonds in static:
-			for bond in bonds:
-				indx = list(bond[1:])
-				J = complex(bond[0])
-				static_list.append((opstr,indx,J))
-
-		dynamic_list = []
-		for opstr,bonds,f,f_args in dynamic:
-			for bond in bonds:
-				indx = list(bond[1:])
-				J = complex(bond[0])
-				dynamic_list.append((opstr,indx,J,f,f_args))
-
-		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
-
-	# takes the list from the format given by _get_local_lists and takes the hermitian conjugate of operators.
-	def _get_hc_local_lists(self,static_list,dynamic_list):
-		static_list_hc = []
-		for op in static_list:
-			static_list_hc.append(self._hc_opstr(op))
-
-		static_list_hc = tuple(static_list_hc)
-
-
-		# define arbitrarily complicated weird-ass number
-		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
-
-		dynamic_list_hc = []
-		dynamic_list_eval = []
-		for opstr,indx,J,f,f_args in dynamic_list:
-			J *= f(t,*f_args)
-			op = (opstr,indx,J)
-			dynamic_list_hc.append(self._hc_opstr(op))
-			dynamic_list_eval.append(self._sort_opstr(op))
-
-		dynamic_list_hc = tuple(dynamic_list_hc)
-		
-		return static_list,static_list_hc,dynamic_list_eval,dynamic_list_hc
-
-
-	# this function takes the list format giveb by get_local_lists and expands any operators into the most basic components
-	# 'n'(or 'z' for spins),'+','-' If by default one doesn't need to do this then _expand_opstr must do nothing. 
-	def _expand_local_list(self,op_list):
-		op_list_exp = []
-		for i,op in enumerate(op_list):
-			new_ops = self._expand_opstr(op,[i])
-			for new_op in new_ops:
-				if self._non_zero(new_op):
-					op_list_exp.append(new_op)
-
-		return self._sort_local_list(op_list_exp)
-
-
-	def _consolidate_local_lists(self,static_list,dynamic_list):
-
-		static_dict={}
-		for opstr,indx,J,ii in static_list:
-			if opstr in static_dict:
-				if indx in static_dict[opstr]:
-					static_dict[opstr][indx][0] += J
-					static_dict[opstr][indx][1].extend(ii)
-				else:
-					static_dict[opstr][indx] = [J,ii]
-			else:
-				static_dict[opstr] = {indx:[J,ii]}
-
-		static_list = []
-		for opstr,opstr_dict in static_dict.items():
-			for indx,(J,ii) in opstr_dict.items():
-				if J != 0:
-					static_list.append((opstr,indx,J,ii))
-
-
-		dynamic_dict={}
-		for opstr,indx,J,f,f_args,ii in dynamic_list:
-			if opstr in dynamic_dict:
-				if indx in dynamic_dict[opstr]:
-					dynamic_dict[opstr][indx][0] += J
-					dynamic_dict[opstr][indx][3].extend(ii)
-				else:
-					dynamic_dict[opstr][indx] = [J,f,f_args,ii]
-			else:
-				dynamic_dict[opstr] = {indx:[J,f,f_args,ii]}
-
-
-		dynamic_list = []
-		for opstr,opstr_dict in dynamic_dict.items():
-			for indx,(J,f,f_args,ii) in opstr_dict.items():
-				if J != 0:
-					dynamic_list.append((opstr,indx,J,f,f_args,ii))
-
-
-		return static_list,dynamic_list
 
 
 	def expanded_form(self,static=[],dynamic=[]):
-		"""Splits up operator strings containing "y" and "x" into operators of "+" and "-".
+		"""Splits up operator strings containing "y" and "x" into operator combinations of "+" and "-".
 
 		Parameters
 		----------
 		static: list
-			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
-
+			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
-			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Returns
 		-------
-		static: list
-			list of static operators with "x" and "y" expanded into "+" and "-", formatted to be passed into the static argument of the `hamiltonian` class.
-
-		dynamic: list
-			list of static operators with "x" and "y" expanded into "+" and "-", formatted to be passed into the dynamic argument of the `hamiltonian` class.
+		tuple
+			`(static, dynamic)`, where
+				* list: `static`: operator strings with "x" and "y" expanded into "+" and "-", formatted to 
+					be passed into the static argument of the `hamiltonian` class.
+				* list: `dynamic`: operator strings with "x" and "y" expanded into "+" and "-", formatted to 
+					be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
 		--------
@@ -257,15 +123,14 @@ class basis(object):
 
 
 	def check_hermitian(self,static,dynamic):
-		"""Checks operator lists to make sure the resulting operator is hermitian
+		"""Checks operator string lists for hermiticity of the combined operator.
 
 		Parameters
 		----------
 		static: list
-			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
-
+			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
-			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
 		--------
@@ -313,105 +178,15 @@ class basis(object):
 
 		print("Hermiticity check passed!")
 
-	def check_pcon(self,static,dynamic):
-		"""Checks operator lists to make sure the resulting operator keeps the particle number conserved.
-
-		Parameters
-		----------
-		static: list
-			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
-
-		dynamic: list
-			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
-
-		Examples
-		--------
-
-		"""
-		if self._check_pcon is None:
-			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
-			return
-
-		if self._check_pcon:
-			static_list,dynamic_list = self._get_local_lists(static,dynamic)
-			static_list_exp = self._expand_local_list(static_list)
-			dynamic_list_exp = self._expand_local_list(dynamic_list)
-			static_list_exp,dynamic_list_exp = self._consolidate_local_lists(static_list_exp,dynamic_list_exp)
-			con = ""
-
-			odd_ops = []
-			for opstr,indx,J,ii in static_list_exp:	
-				p = opstr.count("+")
-				m = opstr.count("-")
-
-				if (p-m) != 0:
-					for i in ii:
-						if static_list[i] not in odd_ops:
-							odd_ops.append(static_list[i])
-
-
-	
-			if odd_ops:
-				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
-				unique_odd_ops = []
-				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
-				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				try:
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
-				except NameError:
-					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
-
-				if user_input == 'y':
-					print(" these operators do not conserve particle number{0}:".format(con))
-					print("   (opstr, indices, coupling)")
-					for i,op in enumerate(unique_odd_ops):
-						print("{0}. {1}".format(i+1, op))
-				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
-
-			
-
-
-			odd_ops = []
-			for opstr,indx,J,f,f_args,ii in dynamic_list_exp:	
-				p = opstr.count("+")
-				m = opstr.count("-")
-				if (p-m) != 0:
-					for i in ii:
-						if dynamic_list[i] not in odd_ops:
-							odd_ops.append(dynamic_list[i])
-
-	
-			if odd_ops:
-				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
-				unique_odd_ops = []
-				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
-				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
-				try:
-					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
-				except NameError:
-					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
-				if user_input == 'y':
-					print(" these operators do not conserve particle number{0}:".format(con))
-					print("   (opstr, indices, coupling)")
-					for i,op in enumerate(unique_odd_ops):
-						print("{0}. {1}".format(i+1, op))
-				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
-
-			print("Particle conservation check passed!")
-
-
-
-
 	def check_symm(self,static,dynamic):
-		"""Checks operator lists to make sure the resulting operator obeys the symmetry of the basis.
+		"""Checks operator string lists for the required symemtries of the combined operator.
 
 		Parameters
 		----------
 		static: list
-			list of static operators formatted to be passed into the static argument of the `hamiltonian` class.
-
+			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
-			list of static operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
 		--------
@@ -530,15 +305,248 @@ class basis(object):
 
 		print("Symmetry checks passed!")
 
+	def check_pcon(self,static,dynamic):
+		"""Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.
+
+		Parameters
+		----------
+		static: list
+			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
+		dynamic: list
+			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
+
+		Examples
+		--------
+
+		"""
+		if self._check_pcon is None:
+			warnings.warn("Test for particle conservation not implemented for {0}, to turn off this warning set check_pcon=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			return
+
+		if self._check_pcon:
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
+			static_list_exp = self._expand_local_list(static_list)
+			dynamic_list_exp = self._expand_local_list(dynamic_list)
+			static_list_exp,dynamic_list_exp = self._consolidate_local_lists(static_list_exp,dynamic_list_exp)
+			con = ""
+
+			odd_ops = []
+			for opstr,indx,J,ii in static_list_exp:	
+				p = opstr.count("+")
+				m = opstr.count("-")
+
+				if (p-m) != 0:
+					for i in ii:
+						if static_list[i] not in odd_ops:
+							odd_ops.append(static_list[i])
+
+
+	
+			if odd_ops:
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
+				unique_odd_ops = []
+				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
+				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+
+				if user_input == 'y':
+					print(" these operators do not conserve particle number{0}:".format(con))
+					print("   (opstr, indices, coupling)")
+					for i,op in enumerate(unique_odd_ops):
+						print("{0}. {1}".format(i+1, op))
+				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
+
+			
+
+
+			odd_ops = []
+			for opstr,indx,J,f,f_args,ii in dynamic_list_exp:	
+				p = opstr.count("+")
+				m = opstr.count("-")
+				if (p-m) != 0:
+					for i in ii:
+						if dynamic_list[i] not in odd_ops:
+							odd_ops.append(dynamic_list[i])
+
+	
+			if odd_ops:
+				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
+				unique_odd_ops = []
+				[ unique_odd_ops.append(ele) for ele in odd_ops if ele not in unique_odd_ops]
+				warnings.warn("The following static operator strings do not conserve particle number{1}: {0}".format(unique_opstrs,con),UserWarning,stacklevel=4)
+				try:
+					user_input = raw_input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				except NameError:
+					user_input = input("Display all {0} couplings? (y or n) ".format(len(odd_ops)) )
+				if user_input == 'y':
+					print(" these operators do not conserve particle number{0}:".format(con))
+					print("   (opstr, indices, coupling)")
+					for i,op in enumerate(unique_odd_ops):
+						print("{0}. {1}".format(i+1, op))
+				raise TypeError("Hamiltonian does not conserve particle number{0} To turn off check, use check_pcon=False in hamiltonian.".format(con))
+
+			print("Particle conservation check passed!")
+
+
+
+	def _get__str__(self):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print out the basis!".format(self.__class__))
+
+	# this methods are optional and are not required for main functions:
+	def __iter__(self):
+		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for iterating over basis!".format(self.__class__))
+
+	def __getitem__(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
+
+#	def _get__str__(self,*args,**kwargs):
+#		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print basis!".format(self.__class__))		
+
+
+	
+	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
+	def _hc_opstr(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
+
+	def _sort_opstr(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks! turn this check off by setting check_herm=False".format(self.__class__))
+
+	def _expand_opstr(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
+
+	def _non_zero(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
+
+	def _sort_local_list(self,op_list):
+		sorted_op_list = []
+		for op in op_list:
+			sorted_op_list.append(self._sort_opstr(op))
+		sorted_op_list = tuple(sorted_op_list)
+
+		return sorted_op_list
+
+
+	# this function flattens out the static and dynamics lists to: 
+	# [[opstr1,indx11,J11,...],[opstr1,indx12,J12,...],...,[opstrn,indxnm,Jnm,...]]
+	# this function gets overridden in photon_basis because the index must be extended to include the photon index.
+	def _get_local_lists(self,static,dynamic):
+		static_list = []
+		for opstr,bonds in static:
+			for bond in bonds:
+				indx = list(bond[1:])
+				J = complex(bond[0])
+				static_list.append((opstr,indx,J))
+
+		dynamic_list = []
+		for opstr,bonds,f,f_args in dynamic:
+			for bond in bonds:
+				indx = list(bond[1:])
+				J = complex(bond[0])
+				dynamic_list.append((opstr,indx,J,f,f_args))
+
+		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
+
+	# takes the list from the format given by _get_local_lists and takes the hermitian conjugate of operators.
+	def _get_hc_local_lists(self,static_list,dynamic_list):
+		static_list_hc = []
+		for op in static_list:
+			static_list_hc.append(self._hc_opstr(op))
+
+		static_list_hc = tuple(static_list_hc)
+
+
+		# define arbitrarily complicated weird-ass number
+		t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
+
+		dynamic_list_hc = []
+		dynamic_list_eval = []
+		for opstr,indx,J,f,f_args in dynamic_list:
+			J *= f(t,*f_args)
+			op = (opstr,indx,J)
+			dynamic_list_hc.append(self._hc_opstr(op))
+			dynamic_list_eval.append(self._sort_opstr(op))
+
+		dynamic_list_hc = tuple(dynamic_list_hc)
+		
+		return static_list,static_list_hc,dynamic_list_eval,dynamic_list_hc
+
+
+	# this function takes the list format giveb by get_local_lists and expands any operators into the most basic components
+	# 'n'(or 'z' for spins),'+','-' If by default one doesn't need to do this then _expand_opstr must do nothing. 
+	def _expand_local_list(self,op_list):
+		op_list_exp = []
+		for i,op in enumerate(op_list):
+			new_ops = self._expand_opstr(op,[i])
+			for new_op in new_ops:
+				if self._non_zero(new_op):
+					op_list_exp.append(new_op)
+
+		return self._sort_local_list(op_list_exp)
+
+	def _consolidate_local_lists(self,static_list,dynamic_list):
+
+		static_dict={}
+		for opstr,indx,J,ii in static_list:
+			if opstr in static_dict:
+				if indx in static_dict[opstr]:
+					static_dict[opstr][indx][0] += J
+					static_dict[opstr][indx][1].extend(ii)
+				else:
+					static_dict[opstr][indx] = [J,ii]
+			else:
+				static_dict[opstr] = {indx:[J,ii]}
+
+		static_list = []
+		for opstr,opstr_dict in static_dict.items():
+			for indx,(J,ii) in opstr_dict.items():
+				if J != 0:
+					static_list.append((opstr,indx,J,ii))
+
+
+		dynamic_dict={}
+		for opstr,indx,J,f,f_args,ii in dynamic_list:
+			if opstr in dynamic_dict:
+				if indx in dynamic_dict[opstr]:
+					dynamic_dict[opstr][indx][0] += J
+					dynamic_dict[opstr][indx][3].extend(ii)
+				else:
+					dynamic_dict[opstr][indx] = [J,f,f_args,ii]
+			else:
+				dynamic_dict[opstr] = {indx:[J,f,f_args,ii]}
+
+
+		dynamic_list = []
+		for opstr,opstr_dict in dynamic_dict.items():
+			for indx,(J,f,f_args,ii) in opstr_dict.items():
+				if J != 0:
+					dynamic_list.append((opstr,indx,J,f,f_args,ii))
+
+
+		return static_list,dynamic_list
 
 
 
 
+def isbasis(obj):
+	"""Checks if instance is object of `basis` class.
 
+	Parameters
+	----------
+	obj : 
+		Arbitraty python object.
 
-def isbasis(x):
-	return isinstance(x,basis)
+	Returns
+	-------
+	bool
+		Can be either of the following:
 
+		* `True`: `obj` is an instance of `basis` class.
+		* `False`: `obj` is NOT an instance of `basis` class.
 
+	"""
+	return isinstance(obj,basis)
 
 

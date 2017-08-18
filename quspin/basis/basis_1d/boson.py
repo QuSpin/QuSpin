@@ -7,50 +7,57 @@ import numpy as _np
 
 
 class boson_basis_1d(basis_1d):
-	"""Basis for bosonic operators
+	"""Constructs basis for bosonic operators.
+
+	Notes
+	-----
+	* if `Nb` or `nb` are specified, by default `sps` is set to the number of bosons on the lattice.
+	* if `sps` is specified, while `Nb` or `nb` are not, all particle sectors are filled up to the maximumal 
+		occupation. 
+	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
+		restrited by `sps`.
+
+	Example
+	-------
+
+	>>> L=8
+	>>> boson_basis_1d(L,Nb=4,sps=3,cblock=1)
 
 	"""
 	def __init__(self,L,Nb=None,nb=None,sps=None,**blocks):
-		""" Intializes the `boson_basis_1d` object (basis for bosonic operators).
+		"""Intializes the `boson_basis_1d` object (basis for bosonic operators).
 
 		Parameters
 		----------
-
 		L: int
-			length of chain/number of sites
-
-		Nb: int,list, optional
-			number of bosons to put on chain, can be integer or list to specify one or more particle sectors.
-
+			Length of chain/number of sites.
+		Nb: {int,list}, optional
+			Number of bosons in chain. Can be integer or list to specify one or more particle sectors.
 		nb: float, optional
-			density of bosons to put on chain
-
+			Density of bosons in chain (bosons per site).
 		sps: int, optional
-			number of states to have per site (including 0 bosons)
-
+			Number of states per site (including zero bosons), or on-site Hilbert space dimension.
 		**blocks: optional
-			extra keyword arguements which include:
+			Extra keyword arguments which include:
 
-				**a** (*int*) - specify how many sites to step for translation.
+				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specify momentum block
+				**kblock** (*int*) - specifies momentum block.
 
-				**pblock** (*int*) - specify parity block
+				**pblock** (*int*) - specifies parity block.
 
-			and the following which only work for hardcore bosons (sps=2):
+			and the following which only work for hardcore bosons (`sps=2`):
 
-				**cblock** (*int*) - specify particle hole symmetry block.
+				**pcblock** (*int*) - specifies parity followed by particle-hole symmetry block.
 
-				**cAblock** (*int*) - specify particle hole of sublattice A symmetry block
+				**cblock** (*int*) - specifies particle-hole symmetry block.
 
-				**cAblock** (*int*) - specify particle hole of sublattice B symmetry block
+				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A.
 
-		Notes
-		-----
-
-		If Nb or nb are specified by default sps is set to the number of bosons on the lattice.	If sps is specified while Nb or nb are not, all particle sectors are filled up to the maximumal occupation. If Nb or nb and sps are specified, the finite boson basis is constructed with the local hilbert space restrited by sps.
+				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B.
 
 		"""
+
 		input_keys = set(blocks.keys())
 
 		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
@@ -153,6 +160,7 @@ class boson_basis_1d(basis_1d):
 
 	@property
 	def blocks(self):
+		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
 		return dict(self._blocks)
 
 	def __type__(self):

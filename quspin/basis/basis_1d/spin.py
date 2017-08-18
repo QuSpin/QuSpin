@@ -9,45 +9,42 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 class spin_basis_1d(basis_1d):
-	"""Basis for spin operators
+	"""Constructs basis for spin operators.
 
 	"""	
 	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=True,**blocks):
-		""" Intializes the `fermion_basis_1d` object (basis for fermionic operators).
+		"""Intializes the `spin_basis_1d` object (basis for spin operators).
 
 		Parameters
 		----------
-
 		L: int
-			length of chain/number of sites
-
+			Length of chain/number of sites.
 		Nup: {int,list}, optional
-			total :math:`S^z` projection, can be integer or list to specify one or more particle sectors.
-
+			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
+			more particle sectors.
 		m: float, optional
-			density of fermions to put on chain.
-
+			Density of spin up in chain (spin up per site).
 		S: str, optional
-			size of local spin degrees of freedom. could be one of the following:
-			"1/2","1","3/2",...,"9999/2","5000"
-
+			Size of local spin degrees of freedom. Can be any (half-)integer from:
+			"1/2","1","3/2",...,"9999/2","5000".
 		pauli: bool, optional
-			for S=1/2, switch between standard spin-1/2 and pauli-matrices.
-
+			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
 		**blocks: optional
 			extra keyword arguements which include:
 
-				**a** (*int*) - specify how many sites to step for translation.
+				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specify momentum block
+				**kblock** (*int*) - specifies momentum block.
 
-				**pblock** (*int*) - specify parity block
+				**pblock** (*int*) - specifies parity block.
 
-				**zblock** (*int*) - specify spin inversion symmetry block.
+				**zblock** (*int*) - specifies spin inversion symmetry block.
 
-				**zAblock** (*int*) - specify spin inversion of sublattice A symmetry block
+				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block.
 
-				**zAblock** (*int*) - specify spin inversion of sublattice B symmetry block
+				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A.
+
+				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B.
 
 		"""
 		input_keys = set(blocks.keys())
@@ -133,6 +130,7 @@ class spin_basis_1d(basis_1d):
 
 	@property
 	def blocks(self):
+		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
 		return dict(self._blocks)
 
 	def __type__(self):
@@ -163,8 +161,6 @@ class spin_basis_1d(basis_1d):
 			op[1] = tuple(op2)
 		return tuple(op)
 
-
-
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
 		indx = _np.array(op[1])
@@ -177,8 +173,6 @@ class spin_basis_1d(basis_1d):
 		else:
 			return True
 		
-
-
 	def _hc_opstr(self,op):
 		op = list(op)
 		# take h.c. + <--> - , reverse operator order , and conjugate coupling
@@ -190,7 +184,6 @@ class spin_basis_1d(basis_1d):
 		op[1] = tuple(op[1])
 		op[2] = op[2].conjugate()
 		return self._sort_opstr(op) # return the sorted op.
-
 
 	def _expand_opstr(self,op,num):
 		opstr = str(op[0])
