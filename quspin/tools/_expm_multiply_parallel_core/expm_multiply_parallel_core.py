@@ -4,12 +4,19 @@ import scipy.sparse as _sp
 import numpy as _np
 
 class expm_multiply_parallel(object):
-	"""
-
+	"""This class warps some c++ code which implements the scipy.expm_multiply code with openmp.
+	
 	"""
 	def __init__(self,A,a=1.0):
-		"""
+		"""Initialization of `expm_multiply_parallel`. 
 
+		Parameters
+		----------
+		A : {array_like, scipy.sparse matrix}
+			The operator whose exponential is of interest.
+		a : scalar 
+			scalar value to take to put into the exponent ..math: expm(aH).
+			
 		"""
 		self._a = a
 		self._A = _sp.csr_matrix(A,copy=False)
@@ -32,13 +39,22 @@ class expm_multiply_parallel(object):
 
 
 	def dot(self,v,work=None,overwrite_v=False):
-		"""
+		"""Initialization of `expm_multiply_parallel`. 
 
+		Parameters
+		----------
+		v : contiguous numpy.ndarray
+			array to calculate ..math: expm(aA)v
+		work : contiguous numpy.ndarray, optional
+			array of shape = (2*len(v),) which is used as work space for underlying c-code. This saves extra memory allocation for function operation.
+		overwrite_v : bool
+			flag, if True the data in v is overwritten by the function. This saves extra memory allocation for the results.
+			
 		"""
-		if not overwrite_v:
-			v = _np.ascontiguousarray(v).copy()
+		if overwrite_v:
+			v = _np.ascontiguousarray(v)
 		else:
-			v = _np.asanyarray(v)
+			v = _np.ascontiguousarray(v).copy()
 
 		if v.ndim != 1:
 			raise ValueError
@@ -59,8 +75,6 @@ class expm_multiply_parallel(object):
 					self._m_star,self._s,self._a,self._tol,self._mu,v,work)
 
 		return v
-
-
 
 
 # This table helps to compute bounds.
@@ -110,84 +124,6 @@ _theta = {
 		}
 
 
-class ScaledMatrixPowerOperator(LinearOperator):
-
-	def __init__(self, A, p, a):
-		if A.ndim != 2 or A.shape[0] != A.shape[1]:
-			raise ValueError('expected A to be like a square matrix')
-		if p < 0:
-			raise ValueError('expected p to be a non-negative integer')
-		self._A = A
-		self._p = p
-		self._a = a
-		self.ndim = A.ndim
-		self.shape = A.shape
-		self.dtype = A.dtype
-
-
-	def _matvec(self, x):
-		for i in range(self._p):
-			x = self._A.dot(x)
-		x *= self._a**self._p
-		return x
-
-	def _rmatvec(self, x):
-		for i in range(self._p):
-			x = x.dot(self._A)
-		x *= self._a**self._p
-		return x
-
-	def _matmat(self, X):
-		for i in range(self._p):
-			X =  self._A.dot(X)
-		X *= self._a**self._p
-		return X
-
-	@property
-	def T(self):
-		return ScaledMatrixPowerOperator(self._A.T, self._p, self._a)
-
-
-def _onenormest_matrix_power(A, p, a,
-		t=2, itmax=5, compute_v=False, compute_w=False):
-	"""
-	Efficiently estimate the 1-norm of A^p.
-
-	Parameters
-	----------
-	A : ndarray
-		Matrix whose 1-norm of a power is to be computed.
-	p : int
-		Non-negative integer power.
-	t : int, optional
-		A positive parameter controlling the tradeoff between
-		accuracy versus time and memory usage.
-		Larger values take longer and use more memory
-		but give more accurate output.
-	itmax : int, optional
-		Use at most this many iterations.
-	compute_v : bool, optional
-		Request a norm-maximizing linear operator i_nput vector if True.
-	compute_w : bool, optional
-		Request a norm-maximizing linear operator output vector if True.
-
-	Returns
-	-------
-	est : float
-		An underestimate of the 1-norm of the sparse matrix.
-	v : ndarray, optional
-		The vector such that ||Av||_1 == est*||v||_1.
-		It can be thought of as an i_nput to the linear operator
-		that gives an output with particularly large norm.
-	w : ndarray, optional
-		The vector Av which has relatively large 1-norm.
-		It can be thought of as an output of the linear operator
-		that is relatively large in norm compared to the i_nput.
-
-	"""
-	return onenormest((a*aslinearoperator(A))**p)
-
-
 class LazyOperatorNormInfo:
 	"""
 	Information about an operator is lazily computed.
@@ -230,7 +166,7 @@ class LazyOperatorNormInfo:
 		Lazily estimate d_p(A) ~= || A^p ||^(1/p) where ||.|| is the 1-norm.
 		"""
 		if p not in self._d:
-			est = _onenormest_matrix_power(self._A, p, self._a,  self._ell)
+			est = onenormest((self._a*aslinearoperator(self._A))**p)
 			self._d[p] = est ** (1.0 / p)
 		return self._d[p]
 
