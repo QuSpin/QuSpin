@@ -14,15 +14,17 @@ import scipy.sparse.linalg as _sla
 import scipy.sparse as _sp
 import numpy as _np
 
-from copy import deepcopy as _deepcopy # copies only at top level references the data of old objects
+from scipy.sparse.linalg import LinearOperator
 
+from six import iteritems
+from six.moves import zip
 
-__all__=["HamiltonianOperator","isHamiltonianOperator"]
+__all__=["quantum_LinearOperator","isquantum_LinearOperator"]
 
-class HamiltonianOperator(object):
-	"""Applies quantum operator directly on state, without constructing operator.
+class quantum_LinearOperator(LinearOperator):
+	"""Applies quantum operator directly onto a state, without constructing operator.
 
-	The `HamiltonianOperator` class uses the `basis.Op` function to calculate the matrix vector product on the 
+	The `quantum_LinearOperator` class uses the `basis.Op` function to calculate the matrix vector product on the 
 	fly, greatly reducing the amount of memory needed for a calculation at the cost of speed.
 
 	This object is useful for doing large scale Lanczos calculations using the `eigsh` method.
@@ -35,21 +37,24 @@ class HamiltonianOperator(object):
 	--------
 
 	"""
-	def __init__(self,operator_list,system_arg,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
-		"""Intializes the `HamiltonianOperator` object.
+	def __init__(self,operator_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+		"""Intializes the `quantum_LinearOperator` object.
 		
 		Parameters
 		----------
 
 		operator_list : list
-			Contains list of objects to calculate the static part of a `HamiltonianOperator` operator.
+			Contains list of objects to calculate the static part of a `quantum_LinearOperator` operator.
 			The format goes like:
 
 			>>> static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
-		system_arg : obj
-			Can be either one of
-				* int: number of sites to create the default spin basis with.
-				* :obj:`basis`: basis object to construct quantum operator with.
+
+		N : int, optional 
+			number of sites to create the default spin basis with.
+		basis : :obj:`basis`, optional
+			basis object to construct quantum operator with.
+		diagonal : array_like
+			array containing diagonal matrix elements precalculated by other means. 
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the operator with.
 		check_symm : bool, optional 
@@ -67,23 +72,29 @@ class HamiltonianOperator(object):
 		if type(operator_list) in [list,tuple]:
 			for ele in operator_list:
 				if not _check_static(ele):
-					raise ValueError("HamiltonianOperator only supports operator string representations.")
+					raise ValueError("quantum_LinearOperator only supports operator string representations.")
 		else: 
 			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
 
-		self._operator_list = tuple(operator_list)
-
-		if not (dtype in supported_dtypes):
+		if dtype not in supported_dtypes:
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 		else:
 			self._dtype=dtype
 
-		if type(system_arg) is int:
-			self._basis = _default_basis(system_arg,**basis_args)
-		elif _isbasis(system_arg):
-			self._basis = system_arg
+		if type(N) is int and basis is None:
+			self._basis = _default_basis(N,**basis_args)
+		elif N is None and _isbasis(basis):
+			self._basis = basis
 		else:
-			raise ValueError("expecting integer or basis object for 'system_arg'")
+			raise ValueError("expecting integer for N or basis object for basis.")
+
+		self._unique_me = self.basis.unique_me
+		self._transposed = False
+		self._conjugated = False
+		self._scale = _np.array(1.0,dtype=dtype)
+		self._dtype = dtype
+		self._ndim = 2
+		self._shape = (self._basis.Ns,self._basis.Ns)
 
 
 		if check_herm:
@@ -95,24 +106,59 @@ class HamiltonianOperator(object):
 		if check_pcon:
 			self.basis.check_pcon(operator_list,[])
 
-		self._unique_me = self.basis.unique_me
-		
+		if diagonal is not None:
+			self.set_diagonal(diagonal)
+		else:
+			self._diagonal = None
 
-		self._transposed = False
-		self._conjugated = False
-		self._scale = dtype(1.0)
-		self._dtype = dtype
-		self._ndim = 2
-		self._shape = (self._basis.Ns,self._basis.Ns)
-		self._LinearOperator = _sp.linalg.LinearOperator(self._shape,self.matvec,matmat=self.matvec,rmatvec=self.rmatvec,dtype=self._dtype)
+		self._operator_list = []
+
+		for opstr,bonds in operator_list:
+			offdiag_bonds = []
+			for bond in bonds:
+				indx = list(bond[1:])
+				J = complex(bond[0])
+				ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
+				if (row==col).all():
+					if self._diagonal is None:
+						self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
+
+					if self._unique_me:
+						if row.shape[0] == self.Ns:
+							self._diagonal += ME.real
+						else:
+							self._diagonal[row] += ME[row].real
+					else:
+						while len(row) > 0:
+							# if there are multiply matrix elements per row as there are for some
+							# symmetries availible then do the indexing for unique elements then
+							# delete them from the list and then repeat until all elements have been 
+							# taken care of. This is less memory efficient but works well for when
+							# there are a few number of matrix elements per row. 
+							row_unique,args = _np.unique(row,return_index=True)
+
+							self._diagonal[row_unique] += ME[args].real
+							row = _np.delete(row,args)
+							ME = _np.delete(ME,args)					
+				else:
+					offdiag_bonds.append(bond)
+					
+
+			if offdiag_bonds:
+				self._operator_list.append([opstr,offdiag_bonds])
 
 
+
+	@property
+	def shape(self):
+		"""tuple: shape of linear operator.
+		"""
+		return self._shape
 
 	@property
 	def basis(self):
 		""":obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if operator has 
 		no basis (i.e. was created externally and passed as a precalculated array).
-
 		"""
 		return self._basis
 
@@ -128,7 +174,7 @@ class HamiltonianOperator(object):
 
 	@property
 	def get_shape(self):
-		"""tuple: shape of the `HamiltonianOperator` object, always equal to `(Ns,Ns)`."""
+		"""tuple: shape of the `quantum_LinearOperator` object, always equal to `(Ns,Ns)`."""
 		return self._shape
 
 	@property
@@ -138,29 +184,46 @@ class HamiltonianOperator(object):
 
 	@property
 	def dtype(self):
-		"""type: data type of `HamiltonianOperator` object."""
-		return _np.dtype(self._dtype).name
+		"""type: data type of `quantum_LinearOperator` object."""
+		return _np.dtype(self._dtype)
 
 	@property
 	def T(self):
-		""":obj:`HamiltonianOperator`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_LinearOperator`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose(copy = False)
 
 	@property
 	def H(self):
-		""":obj:`HamiltonianOperator`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_LinearOperator`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH(copy = False)
 
 	@property
-	def LinearOperator(self):
-		""":obj:`scipy.sparse.linalg.LinearOperator`: Casts `HamiltonianOperator` object as `sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>`_."""
-		return self.get_LinearOperator()
+	def diagonal(self):
+		"""numpy.ndarray: static diagonal part of the linear operator. """
+		return self._diagonal
 
+	def set_diagonal(self,diagonal):
+		"""function to set the diagonal part of the quantum_LinearOperator.
+
+		Parameters
+		----------
+		diagonal: array_like
+			array_like object containing the new diagonal.
+
+		"""
+		if diagonal.__class__ != _np.ndarray:
+			diagonal = _np.asanyarray(diagonal)
+		if diagonal.ndim != 1:
+			raise ValueError("diagonal must be 1-d array.")
+		if diagonal.shape[0] != self.Ns:
+			raise ValueError("length of diagonal must be equal to dimension of matrix")
+
+		self._diagonal = diagonal
 
 	### state manipulation/observable routines
 
 	def dot(self,other):
-		"""Matrix-vector multiplication of `HamiltonianOperator` operator, with state `V`.
+		"""Matrix-vector multiplication of `quantum_LinearOperator` operator, with state `V`.
 
 		.. math::
 			H|V\\rangle
@@ -168,7 +231,7 @@ class HamiltonianOperator(object):
 		Parameters
 		----------
 		other : numpy.ndarray
-			Vector (quantums tate) to multiply the `HamiltonianOperator` operator with.	
+			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
 
 		Returns
 		-------
@@ -185,7 +248,7 @@ class HamiltonianOperator(object):
 		return self.__mul__(other)
 
 	def rdot(self,other):
-		"""Vector-matrix multiplication of `HamiltonianOperator` operator, with state `V`.
+		"""Vector-matrix multiplication of `quantum_LinearOperator` operator, with state `V`.
 
 		.. math::
 			\\langle V|H
@@ -193,7 +256,7 @@ class HamiltonianOperator(object):
 		Parameters
 		----------
 		other : numpy.ndarray
-			Vector (quantums tate) to multiply the `HamiltonianOperator` operator with.	
+			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
 
 		Returns
 		-------
@@ -209,82 +272,30 @@ class HamiltonianOperator(object):
 		"""
 		return self.__rmul__(other)
 
-	def rmatvec(self,other):
-		return self.H.matvec(other)
-
-	def matvec(self,other):
+	def _matvec(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
 		new_other = _np.zeros_like(other,dtype=result_dtype)
+		if self.diagonal is not None:
+			_np.multiply(other.T,self.diagonal,out=new_other.T)
+
 		for opstr, bonds in self.operator_list:
 			for bond in bonds:
 				J = bond[0]*self._scale
 				indx = _np.asarray(bond[1:])
-				if not self._transposed:
-					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-				else:
-					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
-
-				if self._conjugated:
-					ME = ME.conj()
-
-				if self._unique_me:
-					new_other[row] += (other[col] * ME)
-				else:
-					while len(row) > 0:
-						row_unique,args = _np.unique(row,return_index=True)
-						col_unique = col[args]
-
-						new_other[row_unique] += (other[col_unique] * ME[args])
-						row = _np.delete(row,args)
-						col = _np.delete(col,args)
-						ME = _np.delete(ME,args)
-
-
+				self.basis.inplace_Op(other,new_other,opstr, indx, J, self._dtype,
+										self._conjugated,self._transposed,)
 		return new_other
 
-	def matmat(self,other):
-		result_dtype = _np.result_type(self._dtype,other.dtype)
-		new_other = _np.zeros_like(other,dtype=result_dtype)
-		for opstr, bonds in self.operator_list:
-			for bond in bonds:
-				J = bond[0]*self._scale
-				indx = _np.asarray(bond[1:])
-				if not self._transposed:
-					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-				else:
-					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+	def _rmatvec(self,other):
+		return self.H._matvec(other)
 
-				if self._conjugated:
-					ME = ME.conj()
-
-
-				# if there are only one matirx element per row then the indexing should work
-				if self._unique_me:
-					new_other[row] += (other[col] * ME)
-				else:
-				# if there are multiply matrix elements per row as there are for some
-				# symmetries availible then do the indexing for unique elements then
-				# delete them from the list and then repeat until all elements have been 
-				# taken care of. This is less memory efficient but works well for when
-				# there are a few number of matrix elements per row. 
-					while len(row) > 0:
-						row_unique,args = _np.unique(row,return_index=True)
-						col_unique = col[args]
-
-						new_other[row_unique] += (other[col_unique] * ME[args])
-						row = _np.delete(row,args)
-						col = _np.delete(col,args)
-						ME = _np.delete(ME,args)
-	
-		if isinstance(other,_np.matrix):		
-			return _np.asmatrix(new_other)
-		else:
-			return new_other
+	def _matmat(self,other):
+		return self._matvec(other)
 
 	### Diagonalisation routines
 
 	def eigsh(self,**eigsh_args):
-		"""Computes SOME eigenvalues of hermitian `HamiltonianOperator` operator using SPARSE hermitian methods.
+		"""Computes SOME eigenvalues of hermitian `quantum_LinearOperator` operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
 		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
@@ -302,19 +313,19 @@ class HamiltonianOperator(object):
 		Returns
 		-------
 		tuple
-			Tuple containing the `(eigenvalues, eigenvectors)` of the `HamiltonianOperator` operator.
+			Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_LinearOperator` operator.
 
 		Examples
 		--------
 		>>> eigenvalues,eigenvectors = H.eigsh(**eigsh_args)
 
 		"""
-		return _sla.eigsh(self.LinearOperator,**eigsh_args)
+		return _sla.eigsh(self,**eigsh_args)
 
 	### algebra operations
 
 	def transpose(self,copy=False):
-		"""Transposes `HamiltonianOperator` operator.
+		"""Transposes `quantum_LinearOperator` operator.
 
 		Notes
 		-----
@@ -322,7 +333,7 @@ class HamiltonianOperator(object):
 
 		Returns
 		-------
-		:obj:`HamiltonianOperator`
+		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ji}`
 
 		Examples
@@ -337,8 +348,8 @@ class HamiltonianOperator(object):
 			self._transposed = not self._transposed
 			return self
 
-	def conj(self):
-		"""Conjugates `HamiltonianOperator` operator.
+	def conjugate(self):
+		"""Conjugates `quantum_LinearOperator` operator.
 
 		Notes
 		-----
@@ -346,7 +357,7 @@ class HamiltonianOperator(object):
 
 		Returns
 		-------
-		:obj:`HamiltonianOperator`
+		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
@@ -358,8 +369,28 @@ class HamiltonianOperator(object):
 		self._conjugated = not self._conjugated
 		return self
 
+	def conj(self):
+		"""Conjugates `quantum_LinearOperator` operator.
+
+		Notes
+		-----
+		This function does NOT transpose the operator.
+
+		Returns
+		-------
+		:obj:`quantum_LinearOperator`
+			:math:`H_{ij}\\mapsto H_{ij}^*`
+
+		Examples
+		--------
+
+		>>> H_conj = H.conj()
+
+		"""
+		return self.conjugate()
+
 	def getH(self,copy=False):
-		"""Calculates hermitian conjugate of `HamiltonianOperator` operator.
+		"""Calculates hermitian conjugate of `quantum_LinearOperator` operator.
 
 		Parameters
 		----------
@@ -368,7 +399,7 @@ class HamiltonianOperator(object):
 
 		Returns
 		-------
-		:obj:`HamiltonianOperator`
+		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
@@ -382,25 +413,16 @@ class HamiltonianOperator(object):
 		else:
 			return self.conj().transpose()
 
-	
 	### special methods
 
-	def get_LinearOperator(self):
-		"""Casts `HamiltonianOperator` object as `scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>`_."""
-		return self._LinearOperator
-
-
 	def copy(self):
-		"""Returns a deep copy of `HamiltonianOperator` object."""
-		return _deepcopy(self)
-
-
+		"""Returns a deep copy of `quantum_LinearOperator` object."""
+		return quantum_LinearOperator(self._operator_list,basis=self._basis,
+							diagonal=self._diagonal,dtype=self._dtype,
+							check_symm=False,check_herm=False,check_pcon=False)
 
 	def __repr__(self):
-		return "<{0}x{1} quspin HamiltonianOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
-
-
-
+		return "<{0}x{1} quspin quantum_LinearOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
 
 	def __neg__(self):
 		return self.__mul__(-1)
@@ -483,9 +505,9 @@ class HamiltonianOperator(object):
 
 		if dense:
 			if other.ndim == 1:
-				return self.matvec(other)
+				return self._matvec(other)
 			elif other.ndim == 2:
-				return self.matmat(other)
+				return self._matmat(other)
 			else:
 				raise ValueError
 		else:
@@ -506,11 +528,11 @@ class HamiltonianOperator(object):
 
 		if dense:
 			if other.ndim == 1:
-				return self.T.matvec(other)
+				return self.T._matvec(other)
 			elif other.ndim == 2:
 				if self._shape[0] != other.shape[1]:
 					raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
-				return (self.T.matmat(other.T)).T
+				return (self.T._matmat(other.T)).T
 			else:
 				raise ValueError
 		else:
@@ -518,29 +540,27 @@ class HamiltonianOperator(object):
 				raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 			return (self.T._mul_sparse(other.T)).T
 
-	
-
-
-
 	def _mul_scalar(self,other):
 		self._dtype = _np.result_type(self._dtype,other)
 		self._scale *= other
 
 	def _mul_hamiltonian(self,other):
-		return NotImplemented
-
-	def _rmul_hamiltonian(self,other):
-		return NotImplemented
-
-	def _add_hamiltonian(self,other):
-		return NotImplemented
-
-	def _sub_hamiltonian(self,other):
-		return NotImplemented
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		static = self.__mul__(other._static)
+		dynamic = [[self.__mul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
+		return hamiltonian.hamiltonian([static],dynamic,
+							basis=self._basis,dtype=result_dtype,copy=False)
 
 	def _mul_sparse(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		new_other = other.__class__(other.shape,dtype=result_dtype)
+		if self.diagonal is not None:
+			new_other = _sp.dia_matrix((_np.asarray([self._diagonal]),_np.array([0])),shape=self._shape).dot(other)
+			if new_other.dtype != result_dtype:
+				new_other = new_other.astype(result_dtype)
+		else:
+			new_other = _sp.csr_matrix(other.shape,dtype=result_dtype)
+
+
 		for opstr, bonds in self.operator_list:
 			for bond in bonds:
 				J = bond[0]
@@ -553,17 +573,30 @@ class HamiltonianOperator(object):
 				if self._conjugated:
 					ME = ME.conj()
 
-				new_other += _sp.csr_matrix((ME,(row,col)),shape=self._shape).dot(other)
+				new_other = new_other + _sp.csr_matrix((ME,(row,col)),shape=self._shape).dot(other)
 
 		return new_other
 
+	def _rmul_hamiltonian(self,other):
+		result_dtype = _np.result_type(self._dtype,other.dtype)
+		static = self.__rmul__(other._static)
+		dynamic = [[self.__rmul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
+		return hamiltonian.hamiltonian([static],dynamic,
+							basis=self._basis,dtype=result_dtype,copy=False)
+
+	def _add_hamiltonian(self,other):
+		return NotImplemented
+
 	def _add_sparse(self,other):
+		return NotImplemented
+
+	def _add_dense(self,other):
 		return NotImplemented
 
 	def _sub_sparse(self,other):
 		return NotImplemented
 
-	def _add_dense(self,other):
+	def _sub_hamiltonian(self,other):
 		return NotImplemented
 
 	def _sub_dense(self,other):
@@ -583,8 +616,8 @@ class HamiltonianOperator(object):
 				return NotImplemented
 
 
-def isHamiltonianOperator(obj):
-	"""Checks if instance is object of `HamiltonianOperator` class.
+def isquantum_LinearOperator(obj):
+	"""Checks if instance is object of `quantum_LinearOperator` class.
 
 	Parameters
 	----------
@@ -596,12 +629,10 @@ def isHamiltonianOperator(obj):
 	bool
 		Can be either of the following:
 
-		* `True`: `obj` is an instance of `HamiltonianOperator` class.
-		* `False`: `obj` is NOT an instance of `HamiltonianOperator` class.
+		* `True`: `obj` is an instance of `quantum_LinearOperator` class.
+		* `False`: `obj` is NOT an instance of `quantum_LinearOperator` class.
 
 	"""
-	return isinstance(obj,HamiltonianOperator)
-
-
+	return isinstance(obj,quantum_LinearOperator)
 
 	

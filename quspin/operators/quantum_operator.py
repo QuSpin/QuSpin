@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from .make_hamiltonian import make_static as _make_static
+from ._make_hamiltonian import make_static
 
 import hamiltonian
 
@@ -14,22 +14,19 @@ import scipy.sparse as _sp
 import numpy as _np
 
 import functools
+from six import iteritems,itervalues,viewkeys
 
-from copy import deepcopy as _deepcopy # recursively copies all data into new object
-from copy import copy as _shallowcopy # copies only at top level references the data of old objects
-
-
-__all__=["ops_dict","isops_dict"]
+__all__=["quantum_operator","isquantum_operator"]
 		
-# function used to create LinearOperator with fixed set of parameters. 
-def _ops_dict_dot(op,pars,v):
+# function used to create Linearquantum_operator with fixed set of parameters. 
+def _quantum_operator_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
-class ops_dict(object):
-	"""Constructs parameter-dependent quantum operators.
+class quantum_operator(object):
+	"""Constructs parameter-dependent quantum quantum_operators.
 
-		The `ops_dict` class maps operators to keys of a dictionary. When calling various methods
-		of the operators, it allows one to 'dynamically' specify the pre-factors of these operators.
+		The `quantum_operator` class maps quantum_operators to keys of a dictionary. When calling various methods
+		of the quantum_operators, it allows one to 'dynamically' specify the pre-factors of these quantum_operators.
 
 		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)`, e.g.
 
@@ -40,17 +37,17 @@ class ops_dict(object):
 		--------
 
 	"""
-	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**kwargs):
-		"""Intializes the `ops_dict` object (parameter dependent quantum operators).
+	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+		"""Intializes the `quantum_operator` object (parameter dependent quantum quantum_operators).
 
 		Parameters
 		----------
 		input_dict : dict
-			The `values` of this dictionary contain operator lists, in the same format as the `static_list` 
+			The `values` of this dictionary contain quantum_operator lists, in the same format as the `static_list` 
 			argument of the `hamiltonian` class.
 
 			The `keys` of this dictionary correspond to the parameter values, e.g. :math:`J_{zz},h_x`, and are 
-			used to specify the coupling strength during calls of the `ops_dict` class methods.
+			used to specify the coupling strength during calls of the `quantum_operator` class methods.
 
 			>>> # use "Jzz" and "hx" keys to specify the zz and x coupling strengths, respectively
 			>>> input_dict = { "Jzz": [["zz",Jzz_bonds]], "hx" : [["x" ,hx_site ]] } 
@@ -58,7 +55,7 @@ class ops_dict(object):
 		N : int, optional
 			Number of lattice sites for the `hamiltonian` object.
 		dtype : 'type'
-			Data type (e.g. numpy.float64) to construct the operator with.
+			Data type (e.g. numpy.float64) to construct the quantum_operator with.
 		shape : tuple, optional
 			Shape to create the `hamiltonian` object with. Default is `shape = None`.
 		copy: bool, optional
@@ -71,12 +68,12 @@ class ops_dict(object):
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
-			to create the operator.		
+			to create the quantum_operator.		
 			
 		"""
 		self._is_dense = False
 		self._ndim = 2
-		self._basis = None
+		self._basis = basis
 
 
 
@@ -87,7 +84,7 @@ class ops_dict(object):
 		
 		opstr_dict = {}
 		other_dict = {}
-		self._ops_dict = {}
+		self._quantum_operator = {}
 		if isinstance(input_dict,dict):
 			for key,op in input_dict.items():
 				if type(key) is not str:
@@ -107,10 +104,10 @@ class ops_dict(object):
 					opstr_dict[key] = opstr_list
 				if other_list:
 					other_dict[key] = other_list
-		elif isinstance(input_dict,ops_dict):
-			other_dict = {key:[value] for key,value in input_dict._operator_dict.items()} 
+		elif isinstance(input_dict,quantum_operator):
+			other_dict = {key:[value] for key,value in input_dict._quantum_operator_dict.items()} 
 		else:
-			raise ValueError("input_dict must be dictionary or another ops_dict operators")
+			raise ValueError("input_dict must be dictionary or another quantum_operator quantum_operators")
 			
 
 
@@ -118,8 +115,8 @@ class ops_dict(object):
 			# check if user input basis
 
 			if basis is not None:
-				if len(kwargs) > 0:
-					wrong_keys = set(kwargs.keys())
+				if len(basis_args) > 0:
+					wrong_keys = set(basis_args.keys())
 					temp = ", ".join(["{}" for key in wrong_keys])
 					raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
@@ -131,14 +128,14 @@ class ops_dict(object):
 				if type(N) is not int: # if L is not int
 					raise TypeError('argument N must be integer')
 
-				basis=_default_basis(N,**kwargs)
+				basis=_default_basis(N,**basis_args)
 
 			elif not _isbasis(basis):
 				raise TypeError('expecting instance of basis class for argument: basis')
 
 
 			static_opstr_list = []
-			for key,opstr_list in opstr_dict.items():
+			for key,opstr_list in iteritems(opstr_dict):
 				static_opstr_list.extend(opstr_list)
 
 			if check_herm:
@@ -150,17 +147,16 @@ class ops_dict(object):
 			if check_pcon:
 				basis.check_pcon(static_opstr_list,[])
 
-			self._basis=basis
 			self._shape=(basis.Ns,basis.Ns)
 
-			for key,opstr_list in opstr_dict.items():
-				self._ops_dict[key]=_make_static(basis,opstr_list,dtype)
+			for key,opstr_list in iteritems(opstr_dict):
+				self._quantum_operator[key]=make_static(basis,opstr_list,dtype)
 
 		if other_dict:
 			if not hasattr(self,"_shape"):
 				found = False
 				if shape is None: # if no shape argument found, search to see if the inputs have shapes.
-					for key,O_list in other_dict.items():
+					for key,O_list in iteritems(other_dict):
 						for O in O_list:
 							try: # take the first shape found
 								shape = O.shape
@@ -174,56 +170,56 @@ class ops_dict(object):
 				if not found:
 					raise ValueError('no dictionary entries have shape attribute.')
 				if shape[0] != shape[1]:
-					raise ValueError('operator must be square matrix')
+					raise ValueError('quantum_operator must be square matrix')
 
 				self._shape=shape
 
 
 
-			for key,O_list in other_dict.items():
+			for key,O_list in iteritems(other_dict):
 				for i,O in enumerate(O_list):
 					if _sp.issparse(O):
 						self._mat_checks(O)
 						if i == 0:
-							self._ops_dict[key] = O
+							self._quantum_operator[key] = O
 						else:
 							try:
-								self._ops_dict[key] += O
+								self._quantum_operator[key] += O
 							except NotImplementedError:
-								self._ops_dict[key] = self._ops_dict[key] + O
+								self._quantum_operator[key] = self._quantum_operator[key] + O
 
 					elif O.__class__ is _np.ndarray:
 						self._mat_checks(O)
 						self._is_dense=True
 						if i == 0:
-							self._ops_dict[key] = O
+							self._quantum_operator[key] = O
 						else:
 							try:
-								self._ops_dict[key] += O
+								self._quantum_operator[key] += O
 							except NotImplementedError:
-								self._ops_dict[key] = self._ops_dict[key] + O
+								self._quantum_operator[key] = self._quantum_operator[key] + O
 
 					elif O.__class__ is _np.matrix:
 						self._mat_checks(O)
 						self._is_dense=True
 						if i == 0:
-							self._ops_dict[key] = O
+							self._quantum_operator[key] = O
 						else:
 							try:
-								self._ops_dict[key] += O
+								self._quantum_operator[key] += O
 							except NotImplementedError:
-								self._ops_dict[key] = self._ops_dict[key] + O
+								self._quantum_operator[key] = self._quantum_operator[key] + O
 
 					else:
 						O = _np.asanyarray(O)
 						self._mat_checks(O)
 						if i == 0:
-							self._ops_dict[key] = O
+							self._quantum_operator[key] = O
 						else:
 							try:
-								self._ops_dict[key] += O
+								self._quantum_operator[key] += O
 							except NotImplementedError:
-								self._ops_dict[key] = self._ops_dict[key] + O
+								self._quantum_operator[key] = self._quantum_operator[key] + O
 
 					
 
@@ -231,7 +227,7 @@ class ops_dict(object):
 			if not hasattr(self,"_shape"):
 				if shape is None:
 					# check if user input basis
-					basis=kwargs.get('basis')	
+					basis=basis_args.get('basis')	
 
 					# if not
 					if basis is None: 
@@ -241,7 +237,7 @@ class ops_dict(object):
 						if type(N) is not int: # if L is not int
 							raise TypeError('argument N must be integer')
 
-						basis=_default_basis(N,**kwargs)
+						basis=_default_basis(N,**basis_args)
 
 					elif not _isbasis(basis):
 						raise TypeError('expecting instance of basis class for argument: basis')
@@ -249,7 +245,7 @@ class ops_dict(object):
 					shape = (basis.Ns,basis.Ns)
 
 				else:
-					basis=kwargs.get('basis')	
+					basis=basis_args.get('basis')	
 					if not basis is None: 
 						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
 
@@ -269,7 +265,7 @@ class ops_dict(object):
 
 	@property
 	def basis(self):
-		""":obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if operator has 
+		""":obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if quantum_operator has 
 		no basis (i.e. was created externally and passed as a precalculated array).
 
 		"""
@@ -290,12 +286,12 @@ class ops_dict(object):
 
 	@property
 	def get_shape(self):
-		"""tuple: shape of the `ops_dict` object, always equal to `(Ns,Ns)`."""
+		"""tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`."""
 		return self._shape
 
 	@property
 	def is_dense(self):
-		"""bool: `True` if the operator contains a dense matrix as a componnent of either 
+		"""bool: `True` if the quantum_operator contains a dense matrix as a componnent of either 
 		the static or dynamic lists.
 
 		"""
@@ -303,17 +299,17 @@ class ops_dict(object):
 
 	@property
 	def dtype(self):
-		"""type: data type of `ops_dict` object."""
+		"""type: data type of `quantum_operator` object."""
 		return _np.dtype(self._dtype).name
 
 	@property
 	def T(self):
-		""":obj:`ops_dict`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_operator`: Transposes the matrix defining the quantum_operator: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
-		""":obj:`ops_dict`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_operator`: Transposes and conjugates the matrix defining the quantum_operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
 
@@ -331,7 +327,7 @@ class ops_dict(object):
 		return self.dot(V)
 
 	def dot(self,V,pars={},check=True):
-		"""Matrix-vector multiplication of `ops_dict` operator for parameters `pars`, with state `V`.
+		"""Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
 			H(t=\\lambda)|V\\rangle
@@ -344,7 +340,7 @@ class ops_dict(object):
 		Parameters
 		----------
 		V : numpy.ndarray
-			Vector (quantums tate) to multiply the `ops_dict` operator with.
+			Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to inity.
@@ -355,7 +351,7 @@ class ops_dict(object):
 		Returns
 		-------
 		numpy.ndarray
-			Vector corresponding to the `ops_dict` operator applied on the state `V`.
+			Vector corresponding to the `quantum_operator` quantum_operator applied on the state `V`.
 
 		Examples
 		--------
@@ -376,7 +372,7 @@ class ops_dict(object):
 			result_dtype = _np.result_type(V,self._dtype)
 			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
-				V_dot += J*self._ops_dict[key].dot(V)
+				V_dot += J*self._quantum_operator[key].dot(V)
 			return V_dot
 
 		if V.ndim > 2:
@@ -392,7 +388,7 @@ class ops_dict(object):
 			result_dtype = _np.result_type(V,self._dtype)
 			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
-				V_dot += J*self._ops_dict[key].dot(V)
+				V_dot += J*self._quantum_operator[key].dot(V)
 
 
 		elif _sp.issparse(V):
@@ -402,7 +398,7 @@ class ops_dict(object):
 			result_dtype = _np.result_type(V,self._dtype)
 			V_dot = _np.zeros(V.shape,dtype=result_dtype)	
 			for key,J in pars.items():
-				V_dot += J*self._ops_dict[key].dot(V)
+				V_dot += J*self._quantum_operator[key].dot(V)
 
 
 
@@ -413,7 +409,7 @@ class ops_dict(object):
 			result_dtype = _np.result_type(V,self._dtype)
 			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
-				V_dot += J*self._ops_dict[key].dot(V)
+				V_dot += J*self._quantum_operator[key].dot(V)
 
 		else:
 			V = _np.asanyarray(V)
@@ -426,13 +422,13 @@ class ops_dict(object):
 			result_dtype = _np.result_type(V,self._dtype)
 			V_dot = _np.zeros(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
-				V_dot += J*self._ops_dict[key].dot(V)
+				V_dot += J*self._quantum_operator[key].dot(V)
 
 
 		return V_dot
 
 	def rdot(self,V,pars={},check=False):
-		"""Vector-matrix multiplication of `ops_dict` operator for parameters `pars`, with state `V`.
+		"""Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
 			\\lamgle V]H(t=\\lambda)
@@ -441,7 +437,7 @@ class ops_dict(object):
 		Parameters
 		----------
 		V : numpy.ndarray
-			Vector (quantums tate) to multiply the `ops_dict` operator with.
+			Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to inity.
@@ -452,7 +448,7 @@ class ops_dict(object):
 		Returns
 		-------
 		numpy.ndarray
-			Vector corresponding to the `ops_dict` operator applied on the state `V`.
+			Vector corresponding to the `quantum_operator` quantum_operator applied on the state `V`.
 
 		Examples
 		--------
@@ -469,7 +465,7 @@ class ops_dict(object):
 		return (self.transpose().dot(V,pars=pars,check=check)).transpose()
 
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
-		"""Calculates matrix element of `ops_dict` operator for parameters `pars` in states `Vl` and `Vr`.
+		"""Calculates matrix element of `quantum_operator` quantum_operator for parameters `pars` in states `Vl` and `Vr`.
 
 		.. math::
 			\\langle V_l|H(\\lambda)|V_r\\rangle
@@ -494,7 +490,7 @@ class ops_dict(object):
 		Returns
 		-------
 		float
-			Matrix element of `ops_dict` operator between the states `Vl` and `Vr`.
+			Matrix element of `quantum_operator` quantum_operator between the states `Vl` and `Vr`.
 
 		Examples
 		--------
@@ -579,18 +575,17 @@ class ops_dict(object):
 			else:
 				raise ValueError('Expecting Vl to have ndim < 3')
 
-
 	### Diagonalisation routines
 
 	def eigsh(self,pars={},**eigsh_args):
-		"""Computes SOME eigenvalues of hermitian `ops_dict` operator using SPARSE hermitian methods.
+		"""Computes SOME eigenvalues of hermitian `quantum_operator` quantum_operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
 		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
 
 		Notes
 		-----
-		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
+		Assumes the quantum_operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
 		Parameters
@@ -604,7 +599,7 @@ class ops_dict(object):
 		Returns
 		-------
 		tuple
-			Tuple containing the `(eigenvalues, eigenvectors)` of the `ops_dict` operator.
+			Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_operator` quantum_operator.
 
 		Examples
 		--------
@@ -617,7 +612,7 @@ class ops_dict(object):
 		return _sla.eigsh(self.tocsr(pars),**eigsh_args)
 
 	def eigh(self,pars={},**eigh_args):
-		"""Computes COMPLETE eigensystem of hermitian `ops_dict` operator using DENSE hermitian methods.
+		"""Computes COMPLETE eigensystem of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues and eigenvectors. It calls 
 		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_, 
@@ -625,7 +620,7 @@ class ops_dict(object):
 
 		Notes
 		-----
-		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
+		Assumes the quantum_operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
 		Parameters
@@ -639,7 +634,7 @@ class ops_dict(object):
 		Returns
 		-------
 		tuple
-			Tuple containing the `(eigenvalues, eigenvectors)` of the `ops_dict` operator.
+			Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_operator` quantum_operator.
 
 		Examples
 		--------
@@ -658,7 +653,7 @@ class ops_dict(object):
 		return E,H_dense
 
 	def eigvalsh(self,pars={},**eigvalsh_args):
-		"""Computes ALL eigenvalues of hermitian `ops_dict` operator using DENSE hermitian methods.
+		"""Computes ALL eigenvalues of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues. It calls 
 		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_, 
@@ -666,7 +661,7 @@ class ops_dict(object):
 
 		Notes
 		-----
-		Assumes the operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
+		Assumes the quantum_operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user
 		to reassure themselves of the hermiticity properties before use. 
 
 		Parameters
@@ -680,7 +675,7 @@ class ops_dict(object):
 		Returns
 		-------
 		numpy.ndarray
-			Eigenvalues of the `ops_dict` operator.
+			Eigenvalues of the `quantum_operator` quantum_operator.
 
 		Examples
 		--------
@@ -701,9 +696,9 @@ class ops_dict(object):
 	### routines to change object type	
 
 	def tocsr(self,pars={}):
-		"""Returns copy of a `ops_dict` object for parameters `pars` as a `scipy.sparse.csr_matrix`.
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csr_matrix`.
 
-		Casts the `ops_dict` object as a
+		Casts the `quantum_operator` object as a
 		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/>`_
 		object.
 
@@ -728,16 +723,16 @@ class ops_dict(object):
 
 		for key,J in pars.items():
 			try:
-				H += J*_sp.csr_matrix(self._ops_dict[key])
+				H += J*_sp.csr_matrix(self._quantum_operator[key])
 			except:
-				H = H + J*_sp.csr_matrix(self._ops_dict[key])
+				H = H + J*_sp.csr_matrix(self._quantum_operator[key])
 
 		return H
 
 	def tocsc(self,pars={}):
-		"""Returns copy of a `ops_dict` object for parameters `pars` as a `scipy.sparse.csc_matrix`.
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csc_matrix`.
 
-		Casts the `ops_dict` object as a
+		Casts the `quantum_operator` object as a
 		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/>`_
 		object.
 
@@ -762,21 +757,21 @@ class ops_dict(object):
 
 		for key,J in pars.items():
 			try:
-				H += J*_sp.csc_matrix(self._ops_dict[key])
+				H += J*_sp.csc_matrix(self._quantum_operator[key])
 			except:
-				H = H + J*_sp.csc_matrix(self._ops_dict[key])
+				H = H + J*_sp.csc_matrix(self._quantum_operator[key])
 
 		return H
 
 	def todense(self,pars={},out=None):
-		"""Returns copy of a `ops_dict` object for parameters `pars` as a dense array.
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a dense array.
 
 		This function can overflow memory if not used carefully!
 
 		Notes
 		-----
-		If the array dimension is too large, scipy may choose to cast the `ops_dict` operator as a
-		`numpy.matrix` instead of a `numpy.ndarray`. In such a case, one can use the `ops_dict.toarray()`
+		If the array dimension is too large, scipy may choose to cast the `quantum_operator` quantum_operator as a
+		`numpy.matrix` instead of a `numpy.ndarray`. In such a case, one can use the `quantum_operator.toarray()`
 		method.
 
 		Parameters
@@ -807,12 +802,12 @@ class ops_dict(object):
 			out = _np.asmatrix(out)
 
 		for key,J in pars.items():
-			out += J * self._ops_dict[key]
+			out += J * self._quantum_operator[key]
 		
 		return out
 
 	def toarray(self,pars={},out=None):
-		"""Returns copy of a `ops_dict` object for parameters `pars` as a dense array.
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a dense array.
 
 		This function can overflow memory if not used carefully!
 
@@ -842,15 +837,15 @@ class ops_dict(object):
 			out = _np.zeros(self._shape,dtype=self.dtype)
 
 		for key,J in pars.items():
-			out += J * self._ops_dict[key]
+			out += J * self._quantum_operator[key]
 		
 		return out
 
 	def aslinearoperator(self,pars={}):
-		"""Returns copy of a `ops_dict` object for parameters `pars` as a `scipy.sparse.linalg.LinearOperator`.
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.linalg.Linearquantum_operator`.
 
-		Casts the `ops_dict` object as a
-		`scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>`_
+		Casts the `quantum_operator` object as a
+		`scipy.sparse.linalg.Linearquantum_operator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html/>`_
 		object.
 
 		Parameters
@@ -861,20 +856,20 @@ class ops_dict(object):
 
 		Returns
 		-------
-		:obj:`scipy.sparse.linalg.LinearOperator`
+		:obj:`scipy.sparse.linalg.Linearquantum_operator`
 
 		Examples
 		--------
-		>>> H_aslinop=H.aslinearoperator(pars=pars)
+		>>> H_aslinop=H.aslinearquantum_operator(pars=pars)
 
 		"""
 		pars = self._check_scalar_pars(pars)
-		matvec = functools.partial(_ops_dict_dot,self,pars)
-		rmatvec = functools.partial(_ops_dict_dot,self.H,pars)
+		matvec = functools.partial(_quantum_operator_dot,self,pars)
+		rmatvec = functools.partial(_quantum_operator_dot,self.H,pars)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
 	def tohamiltonian(self,pars={}):
-		"""Returns copy of a `ops_dict` object for parameters `pars` as a `hamiltonian` object.
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `hamiltonian` object.
 
 		Parameters
 		----------
@@ -898,12 +893,12 @@ class ops_dict(object):
 
 		for key,J in pars.items():
 			if type(J) is tuple and len(J) == 2:
-				dynamic.append([self._ops_dict[key],J[0],J[1]])
+				dynamic.append([self._quantum_operator[key],J[0],J[1]])
 			else:
 				if J == 1.0:
-					static.append(self._ops_dict[key])
+					static.append(self._quantum_operator[key])
 				else:
-					static.append(J*self._ops_dict[key])
+					static.append(J*self._quantum_operator[key])
 
 		return hamiltonian.hamiltonian(static,dynamic,dtype=self._dtype)
 
@@ -911,15 +906,15 @@ class ops_dict(object):
 	### algebra operations
 
 	def transpose(self,copy=False):
-		"""Transposes `ops_dict` operator.
+		"""Transposes `quantum_operator` quantum_operator.
 
 		Notes
 		-----
-		This function does NOT conjugate the operator.
+		This function does NOT conjugate the quantum_operator.
 
 		Returns
 		-------
-		:obj:`ops_dict`
+		:obj:`quantum_operator`
 			:math:`H_{ij}\\mapsto H_{ji}`
 
 		Examples
@@ -928,21 +923,19 @@ class ops_dict(object):
 		>>> H_tran = H.transpose()
 
 		"""
-		new = _shallowcopy(self)
-		for key,op in self._ops_dict.items():
-			new._ops_dict[key] = op.transpose()
-		return new
+		new_dict = {key:op.transpose() for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=copy)
 
 	def conjugate(self):
-		"""Conjugates `ops_dict` operator.
+		"""Conjugates `quantum_operator` quantum_operator.
 
 		Notes
 		-----
-		This function does NOT transpose the operator.
+		This function does NOT transpose the quantum_operator.
 
 		Returns
 		-------
-		:obj:`ops_dict`
+		:obj:`quantum_operator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
@@ -951,21 +944,19 @@ class ops_dict(object):
 		>>> H_conj = H.conj()
 
 		"""
-		new = _shallowcopy(self)
-		for key,op in self._ops_dict.items():
-			new._ops_dict[key] = op.conj()
-		return new
+		new_dict = {key:op.conjugate() for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=False)
 
 	def conj(self):
-		"""Conjugates `ops_dict` operator.
+		"""Conjugates `quantum_operator` quantum_operator.
 
 		Notes
 		-----
-		This function does NOT transpose the operator.
+		This function does NOT transpose the quantum_operator.
 
 		Returns
 		-------
-		:obj:`ops_dict`
+		:obj:`quantum_operator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
@@ -977,7 +968,7 @@ class ops_dict(object):
 		return self.conjugate()
 
 	def getH(self,copy=False):
-		"""Calculates hermitian conjugate of `ops_dict` operator.
+		"""Calculates hermitian conjugate of `quantum_operator` quantum_operator.
 
 		Parameters
 		----------
@@ -986,7 +977,7 @@ class ops_dict(object):
 
 		Returns
 		-------
-		:obj:`ops_dict`
+		:obj:`quantum_operator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
@@ -1000,8 +991,35 @@ class ops_dict(object):
 
 	### lin-alg operations
 
+	def diagonal(self,pars={}):
+		""" Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.
+
+		Parameters
+		----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to inity.
+
+		Returns
+		-------
+		numpy.ndarray
+			array containing the diagonal part of the operator :math:`diag_j = H_{jj}(\\lambda)`.
+
+		Examples
+		--------
+
+		>>> H_diagonal = H.diagonal(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+		diag = _np.zeros(self.Ns,dtype=self._dtype)
+		for key,value in iteritems(self._quantum_operator_dict):
+			diag += pars[key] * value.diagonal()
+		return diag
+
+
 	def trace(self,pars={}):
-		""" Calculates trace of `ops_dict` operator for parameters `pars`.
+		""" Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.
 
 		Parameters
 		----------
@@ -1012,27 +1030,25 @@ class ops_dict(object):
 		Returns
 		-------
 		float
-			Trace of operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
+			Trace of quantum_operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
 
 		Examples
 		--------
 
-		>>> H_tr = H.tr(pars=pars)
+		>>> H_tr = H.trace(pars=pars)
 
 		"""
 		pars = self._check_scalar_pars(pars)
 		tr = 0.0
-		for key,value in self._operator_dict.items():
+		for key,value in iteritems(self._quantum_operator_dict):
 			try:
 				tr += pars[key] * value.trace()
 			except AttributeError:
 				tr += pars[key] * value.diagonal().sum()
 		return tr
 
-	
-
 	def astype(self,dtype):
-		""" Changes data type of `ops_dict` object.
+		""" Changes data type of `quantum_operator` object.
 
 		Parameters
 		----------
@@ -1040,8 +1056,8 @@ class ops_dict(object):
 			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
 
 		Returns
-		`ops_dict`
-			Operator with altered data type.
+		`quantum_operator`
+			quantum_operator with altered data type.
 
 		Examples
 		--------
@@ -1049,35 +1065,16 @@ class ops_dict(object):
 
 		"""
 		if dtype not in hamiltonian.supported_dtypes:
-			raise ValueError("operator can only be cast to floating point types")
-		new = _shallowcopy(self)
-		new._dtype = dtype
-		for key in self._ops_dict.keys():
-			new._ops_dict[key] = self._ops_dict[key].astype(dtype)
+			raise ValueError("quantum_operator can only be cast to floating point types")
 
-		return new
+		if dtype == self._dtype:
+			return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=dtype,copy=False)
+		else:
+			return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=dtype,copy=True)
 
-	def copy(self,dtype=None):
-		"""Returns a deep copy of `ops_dict` object."""
-		return _deepcopy(self)
-
-
-
-	"""
-	def SO_LinearOperator(self,pars={}):
-		pars = self._check_scalar_pars(pars)
-		i_pars = {}
-		i_pars_c = {}
-		for key,J in pars.items():
-			i_pars[key] = -1j*J
-			i_pars_c[key] = 1j*J
-
-		new = self.astype(_np.complex128)
-		matvec = functools.partial(_ops_dict_dot,new,i_pars)
-		rmatvec = functools.partial(_ops_dict_dot,new.H,i_pars_c)
-		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=_np.complex128)		
-	"""
-
+	def copy(self,deep=False):
+		"""Returns a deep copy of `quantum_operator` object."""
+		return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=self._dtype,copy=deep)
 
 
 	def __call__(self,**pars):
@@ -1087,21 +1084,20 @@ class ops_dict(object):
 		else:
 			return self.tocsr(pars)
 
-
 	def __neg__(self):
 		return self.__imul__(-1)
 
-
 	def __iadd__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
-		if isinstance(other,ops_dict):
-			for key,value in other._operator_dict.items():
-				if key in self._operator_dict:
-					self._operator_dict[key] = self._operator_dict[key] + value
+		if isinstance(other,quantum_operator):
+			for key,value in iteritems(other._quantum_operator_dict):
+				if key in self._quantum_operator_dict:
+					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] + value
 				else:
-					self._operator_dict[key] = value
+					self._quantum_operator_dict[key] = value
+			return self
 		elif other == 0:
-			return _shallowcopy(self)
+			return self
 		else:
 			return NotImplemented
 
@@ -1115,13 +1111,13 @@ class ops_dict(object):
 
 	def __isub__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
-		if isinstance(other,ops_dict):
-			for key,values in other._operator_dict.items():
-				if key in self._operator_dict:
-					self._operator_dict[key] = self._operator_dict[key] - value
+		if isinstance(other,quantum_operator):
+			for key,values in iteritems(other._quantum_operator_dict):
+				if key in self._quantum_operator_dict:
+					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] - value
 				else:
-					self._operator_dict[key] = -value
-
+					self._quantum_operator_dict[key] = -value
+			return self
 		elif other == 0:
 			return self
 		else:
@@ -1137,7 +1133,7 @@ class ops_dict(object):
 		if not _np.isscalar(other):
 			return NotImplemented
 		else:
-			for op in self._operator_dict.values():
+			for op in itervalues(self._quantum_operator_dict):
 				op *= other
 
 			return self
@@ -1152,7 +1148,7 @@ class ops_dict(object):
 		if not _np.isscalar(other):
 			return NotImplemented
 		else:
-			for op in self._operator_dict.values():
+			for op in itervalues(self._quantum_operator_dict):
 				op /= other
 
 			return self
@@ -1171,11 +1167,11 @@ class ops_dict(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
-		extra = set(pars.keys()) - set(self._ops_dict.keys())
+		extra = set(pars.keys()) - set(self._quantum_operator.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
-		missing = set(self._ops_dict.keys()) - set(pars.keys())
+		missing = set(self._quantum_operator.keys()) - set(pars.keys())
 		for key in missing:
 			pars[key] = _np.array(1,dtype=_np.int32)
 
@@ -1197,12 +1193,12 @@ class ops_dict(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
-		extra = set(pars.keys()) - set(self._ops_dict.keys())
+		extra = set(pars.keys()) - set(self._quantum_operator.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
 
-		missing = set(self._ops_dict.keys()) - set(pars.keys())
+		missing = set(self._quantum_operator.keys()) - set(pars.keys())
 		for key in missing:
 			pars[key] = _np.array(1,dtype=_np.int32)
 
@@ -1227,8 +1223,8 @@ class ops_dict(object):
 				raise ValueError('cannot cast types')	
 
 
-def isops_dict(obj):
-	"""Checks if instance is object of `ops_dict` class.
+def isquantum_operator(obj):
+	"""Checks if instance is object of `quantum_operator` class.
 
 	Parameters
 	----------
@@ -1240,10 +1236,10 @@ def isops_dict(obj):
 	bool
 		Can be either of the following:
 
-		* `True`: `obj` is an instance of `ops_dict` class.
-		* `False`: `obj` is NOT an instance of `ops_dict` class.
+		* `True`: `obj` is an instance of `quantum_operator` class.
+		* `False`: `obj` is NOT an instance of `quantum_operator` class.
 
 	"""
-	return isinstance(obj,ops_dict)
+	return isinstance(obj,quantum_operator)
 
 	

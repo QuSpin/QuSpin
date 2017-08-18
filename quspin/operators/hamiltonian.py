@@ -5,9 +5,9 @@ from ..basis import isbasis as _isbasis
 
 import exp_op
 
-from .make_hamiltonian import make_static as _make_static
-from .make_hamiltonian import make_dynamic as _make_dynamic
-from .make_hamiltonian import test_function as _test_function
+from ._make_hamiltonian import make_static
+from ._make_hamiltonian import make_dynamic
+from ._make_hamiltonian import test_function
 from ._functions import function
 
 # need linear algebra packages
@@ -21,9 +21,6 @@ from operator import mul
 import functools
 from six import iteritems,itervalues,viewkeys
 
-
-from copy import deepcopy as _deepcopy # recursively copies all data into new object
-from copy import copy as _shallowcopy # copies only at top level references the data of old objects
 import warnings
 
 
@@ -307,8 +304,8 @@ class hamiltonian(object):
 
 
 
-			self._static=_make_static(self._basis,static_opstr_list,dtype)
-			self._dynamic=_make_dynamic(self._basis,dynamic_opstr_list,dtype)
+			self._static=make_static(self._basis,static_opstr_list,dtype)
+			self._dynamic=make_dynamic(self._basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
 
 		
@@ -400,7 +397,7 @@ class hamiltonian(object):
 					O,func = tup
 				else:
 					O,f,f_args = tup
-					_test_function(f,f_args)
+					test_function(f,f_args)
 					func = function(f,tuple(f_args))
 
 				if _sp.issparse(O):
@@ -679,7 +676,7 @@ class hamiltonian(object):
 
 			return V_dot
 
-	def rdot(V,**dot_args):
+	def rdot(self,V,**dot_args):
 		"""vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.
 
 		.. math::
@@ -723,9 +720,9 @@ class hamiltonian(object):
 	
 		"""
 		try:
-			V_hc = V.transpose()
+			V_transpose = V.transpose()
 		except AttributeError:
-			V_hc = _np.asanyarray(V).transpose()
+			V_transpose = _np.asanyarray(V).transpose()
 
 		return (self.transpose().dot(V_transpose)).transpose()
 
@@ -1988,11 +1985,11 @@ class hamiltonian(object):
 		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype)
 
-	def copy(self):
-		"""Returns a deep copy of `hamiltonian` object."""
+	def copy(self,deep=False):
+		"""Returns a deep or shallow copy of `hamiltonian` object."""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,
-					basis=self._basis,dtype=self._dtype,copy=True)
+					basis=self._basis,dtype=self._dtype,copy=deep)
 
 	###################
 	# special methods #
@@ -2411,7 +2408,8 @@ class hamiltonian(object):
 				self._dynamic[func] = Hd
 
 		self.check_is_dense()
-		return _shallowcopy(self)
+
+		return self.copy()
 
 	def _sub_hamiltonian(self,other):
 		dtype = _np.result_type(self._dtype, other.dtype)
@@ -2494,7 +2492,7 @@ class hamiltonian(object):
 
 	
 		self.check_is_dense()
-		return _shallowcopy(self)
+		return self.copy()
 
 	def _mul_hamiltonian(self,other):
 		if self.dynamic and other.dynamic:
@@ -2569,7 +2567,7 @@ class hamiltonian(object):
 
 
 			self._dynamic = new_dynamic_ops
-			return _shallowcopy(self)
+			return self.copy()
 		elif self.dynamic:
 			return self.__imul__(other.static)
 		elif other.dynamic:
@@ -2751,7 +2749,7 @@ class hamiltonian(object):
 				self._dynamic.pop(func)
 
 		self.check_is_dense()
-		return _shallowcopy(self)
+		return self.copy()
 
 	#####################
 	# scalar operations #
@@ -2815,7 +2813,7 @@ class hamiltonian(object):
 				self._dynamic.pop(func)
 
 		self.check_is_dense()
-		return _shallowcopy(self)
+		return self.copy()
 
 	####################
 	# dense operations #
@@ -2862,7 +2860,7 @@ class hamiltonian(object):
 
 		self.check_is_dense()
 
-		return _shallowcopy(self)
+		return self.copy()
 
 	def _sub_dense(self,other):
 
@@ -2906,7 +2904,7 @@ class hamiltonian(object):
 			new._static = _sp.csr_matrix(new._shape,dtype=new._dtype)
 
 		self.check_is_dense()
-		return _shallowcopy(self)
+		return self.copy()
 
 	def _mul_dense(self,other):
 
@@ -2994,7 +2992,7 @@ class hamiltonian(object):
 
 		self.check_is_dense()
 
-		return _shallowcopy(self)
+		return self.copy()
 
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
 		# """Method for compatibility with NumPy's ufuncs and dot

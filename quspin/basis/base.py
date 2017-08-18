@@ -529,6 +529,47 @@ class basis(object):
 
 
 
+	def inplace_Op(self,v_in,v_out,opstr,indx,J,dtype,transposed=False,conjugated=False):
+		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
+			v_in = _np.asanyarray(v_in)
+
+		if v_out.__class__ not in [_np.ndarray, _np.matrix]:
+			v_out = _np.asanyarray(v_out)
+
+		if v_in.shape[0] != self.Ns:
+			raise ValueError("dimension mismatch")
+
+		if v_out.shape != v_in.shape:
+			raise ValueError("v_in.shape != v_out.shape")
+
+		if not transposed:
+			ME, row, col = self.Op(opstr, indx, J, dtype)
+		else:
+			ME, col, row = self.Op(opstr, indx, J, dtype)
+
+		if conjugated:
+			ME = ME.conj()
+
+		# TODO: implement these in low level language.
+		if self._unique_me:
+			v_out[row] += _np.multiply(v_in[col].T,ME).T
+		else:
+			while len(row) > 0:
+				# if there are multiply matrix elements per row as there are for some
+				# symmetries availible then do the indexing for unique elements then
+				# delete them from the list and then repeat until all elements have been 
+				# taken care of. This is less memory efficient but works well for when
+				# there are a few number of matrix elements per row. 
+				row_unique,args = _np.unique(row,return_index=True)
+				col_unique = col[args]
+
+				v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
+				row = _np.delete(row,args)
+				col = _np.delete(col,args)
+				ME = _np.delete(ME,args)			
+
+
+
 
 def isbasis(obj):
 	"""Checks if instance is object of `basis` class.

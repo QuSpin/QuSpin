@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 
 import hamiltonian
-import ops_dict
+import quantum_operator
 
 # need linear algebra packages
 import scipy
@@ -87,7 +87,7 @@ class exp_op(object):
 		Parameters
 		----------
 		O : obj
-			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `ops_dict` object: the operator to compute the matrix exponential of.
+			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.
 		a : `numpy.dtype`, optional
 			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.
 			Default is `a = 1.0`.
@@ -177,7 +177,7 @@ class exp_op(object):
 
 		if hamiltonian.ishamiltonian(O):
 			self._O = O
-		elif ops_dict.isops_dict(O):
+		elif quantum_operator.isquantum_operator(O):
 			self._O = O
 		else:
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:

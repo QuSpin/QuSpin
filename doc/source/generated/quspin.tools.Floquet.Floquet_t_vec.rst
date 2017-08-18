@@ -1,12 +1,11 @@
-quspin\.tools\.Floquet\.Floquet\_t\_vec
-=======================================
+quspin.tools.Floquet.Floquet_t_vec
+==================================
 
 .. currentmodule:: quspin.tools.Floquet
 
 .. autoclass:: Floquet_t_vec
 
    
-   .. automethod:: __init__
 
    
    
