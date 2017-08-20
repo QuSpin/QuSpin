@@ -1,5 +1,5 @@
-from ._constructors import hcp_basis,hcp_ops
-from ._constructors import boson_basis,boson_ops
+from ._basis_1d_core import hcp_basis,hcp_ops
+from ._basis_1d_core import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -7,7 +7,7 @@ import numpy as _np
 
 
 class boson_basis_1d(basis_1d):
-	"""Constructs basis for bosonic operators.
+	"""Constructs basis for boson operators in a specified 1-d symmetry sector.
 
 	Notes
 	-----
@@ -17,8 +17,8 @@ class boson_basis_1d(basis_1d):
 	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
 		restrited by `sps`.
 
-	Example
-	-------
+	Examples
+	--------
 
 	>>> L=8
 	>>> boson_basis_1d(L,Nb=4,sps=3,cblock=1)
@@ -28,7 +28,7 @@ class boson_basis_1d(basis_1d):
 		"""Intializes the `boson_basis_1d` object (basis for bosonic operators).
 
 		Parameters
-		----------
+		-----------
 		L: int
 			Length of chain/number of sites.
 		Nb: {int,list}, optional
@@ -156,12 +156,6 @@ class boson_basis_1d(basis_1d):
 
 			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
-
-
-	@property
-	def blocks(self):
-		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
-		return dict(self._blocks)
 
 	def __type__(self):
 		return "<type 'qspin.basis.boson_basis_1d'>"

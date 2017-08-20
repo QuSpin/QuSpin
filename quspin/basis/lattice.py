@@ -31,23 +31,23 @@ class lattice_basis(basis):
 	def index(self,s):
 		"""Finds the index of user-defined Fock state in any lattice basis.
 
-		Note
-		----
+		Notes
+		-----
 		Particularly useful for defining initial Fock states through a unit vector in the direction specified
 		by `index()`. 
 
 		Parameters
-		----------
-		s : str
+		-----------
+		s : {str, int}
 			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
 
 		Returns
-		-------
+		--------
 		int
 			Position of the Fock state in the lattice basis.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> s_1 = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
 		>>> s_2 = "".join("1" for i in range(4))
@@ -72,7 +72,7 @@ class lattice_basis(basis):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
 
 		Parameters
-		----------
+		-----------
 		state : obj
 			State of the quantum system. Can be either one of:
 
@@ -97,12 +97,12 @@ class lattice_basis(basis):
 			Whether or not to return a sparse DM. Default is `False`.
 
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Density matrix associated with `state`. Depends on optional arguments.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
 
@@ -225,12 +225,12 @@ class lattice_basis(basis):
 	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
-		Note
-		----
+		Notes
+		-----
 		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
 
 		Parameters
-		----------
+		-----------
 		state : obj
 			State of the quantum system. Can be either one of:
 
@@ -271,7 +271,7 @@ class lattice_basis(basis):
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
 
 		Returns
-		-------
+		--------
 		dict
 			Dictionary with following keys, depending on input parameters:
 				* "Sent_A": entanglement entropy of subsystem A (default).
@@ -281,8 +281,8 @@ class lattice_basis(basis):
 				* "rdm_A": reduced DM of subsystem A.
 				* "rdm_B": reduced DM of subsystem B.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)

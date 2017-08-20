@@ -36,9 +36,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
-              'sphinx.ext.napoleon',
-              #'numpydoc',
-                ]
+              'numpydoc',
+            ]
 
 
 # -- General configuration ------------------------------------------------
@@ -46,11 +45,11 @@ autoclass_content = "class"
 autodoc_default_flags = [
         # Make sure that any autodoc declarations show the right members
         "members",
-        "inhiereted-members"
-        "show-inhieretance"
-        # "no-special-members",
-        # "no-private-members",
-        # "no-undoc-members"
+        "inherited-members",
+        "show-inheritance"
+        "no-special-members",
+        "no-private-members",
+        "no-undoc-members"
 ]
 
 autosummary_generate = True  # Make _autosummary files and include them
@@ -61,17 +60,17 @@ autosummary_generate = True  # Make _autosummary files and include them
 # numpydoc_show_inherited_class_members = True
 
 # Napoleon settings
-napoleon_use_rtype = False  # More legible
-napoleon_numpy_docstring = True
-napoleon_include_init_with_doc = True
-napoleon_include_private_with_doc = False
-napoleon_include_special_with_doc = True
-napoleon_use_admonition_for_examples = False
-napoleon_use_admonition_for_notes = False
-napoleon_use_admonition_for_references = True
-napoleon_use_ivar = False
-napoleon_use_param = True
-napoleon_use_rtype = True
+# napoleon_use_rtype = False  # More legible
+# napoleon_numpy_docstring = True
+# napoleon_include_init_with_doc = True
+# napoleon_include_private_with_doc = False
+# napoleon_include_special_with_doc = True
+# napoleon_use_admonition_for_examples = False
+# napoleon_use_admonition_for_notes = False
+# napoleon_use_admonition_for_references = True
+# napoleon_use_ivar = False
+# napoleon_use_param = True
+# napoleon_use_rtype = True
 
 
 # autodoc_mock_imports = ["numpy","scipy","scipy.sparse","scipy.linalg","multiprocessing","joblib","six"]

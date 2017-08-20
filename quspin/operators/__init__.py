@@ -6,11 +6,11 @@ Operators module (:mod:`quspin.operators`)
 classes and function for doing Quantum Operations
 
 classes
--------
+--------
 
 .. currentmodule:: quspin.operators
+
 .. autosummary::
-   :nosignatures:
    :toctree: generated/
 
    hamiltonian
@@ -19,10 +19,9 @@ classes
    quantum_LinearOperator
 
 functions
----------
+----------
 
 .. autosummary::
-   :nosignatures:
    :toctree: generated/
 
    commutator
@@ -33,11 +32,7 @@ functions
    isquantum_LinearOperator
 
 """
-
-
-from .hamiltonian import *
-from .quantum_operator import *
-from .exp_op import *
-from .quantum_LinearOperator import *
-
-
+from .hamiltonian_core import *
+from .quantum_operator_core import *
+from .exp_op_core import *
+from .quantum_LinearOperator_core import *

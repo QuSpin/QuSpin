@@ -1,10 +1,9 @@
 from __future__ import print_function, division
 
-import hamiltonian
-
-from .hamiltonian import ishamiltonian
-from .hamiltonian import _check_static
-from .hamiltonian import supported_dtypes
+from .hamiltonian_core import ishamiltonian
+from .hamiltonian_core import _check_static
+from .hamiltonian_core import supported_dtypes
+from .hamiltonian_core import hamiltonian
 
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
@@ -34,14 +33,14 @@ class quantum_LinearOperator(LinearOperator):
 	The class does NOT yet support time-dependent operators. 
 
 	Examples
-	--------
+	---------
 
 	"""
 	def __init__(self,operator_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_LinearOperator` object.
 		
 		Parameters
-		----------
+		-----------
 
 		operator_list : list
 			Contains list of objects to calculate the static part of a `quantum_LinearOperator` operator.
@@ -206,7 +205,7 @@ class quantum_LinearOperator(LinearOperator):
 		"""function to set the diagonal part of the quantum_LinearOperator.
 
 		Parameters
-		----------
+		-----------
 		diagonal: array_like
 			array_like object containing the new diagonal.
 
@@ -229,17 +228,17 @@ class quantum_LinearOperator(LinearOperator):
 			H|V\\rangle
 
 		Parameters
-		----------
+		-----------
 		other : numpy.ndarray
 			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
 
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
 		Examples
-		--------
+		---------
 		>>> B = H.dot(A,check=True)
 
 		corresponds to :math:`B = HA`. 
@@ -254,17 +253,17 @@ class quantum_LinearOperator(LinearOperator):
 			\\langle V|H
 
 		Parameters
-		----------
+		-----------
 		other : numpy.ndarray
 			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
 
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
 		Examples
-		--------
+		---------
 		>>> B = H.dot(A,check=True)
 
 		corresponds to :math:`B = AH`. 
@@ -306,17 +305,17 @@ class quantum_LinearOperator(LinearOperator):
 		to reassure themselves of the hermiticity properties before use. 
 
 		Parameters
-		----------
+		-----------
 		eigsh_args : 
 			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
 			
 		Returns
-		-------
+		--------
 		tuple
 			Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_LinearOperator` operator.
 
 		Examples
-		--------
+		---------
 		>>> eigenvalues,eigenvectors = H.eigsh(**eigsh_args)
 
 		"""
@@ -332,12 +331,12 @@ class quantum_LinearOperator(LinearOperator):
 		This function does NOT conjugate the operator.
 
 		Returns
-		-------
+		--------
 		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ji}`
 
 		Examples
-		--------
+		---------
 
 		>>> H_tran = H.transpose()
 
@@ -356,12 +355,12 @@ class quantum_LinearOperator(LinearOperator):
 		This function does NOT transpose the operator.
 
 		Returns
-		-------
+		--------
 		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
-		--------
+		---------
 
 		>>> H_conj = H.conj()
 
@@ -377,12 +376,12 @@ class quantum_LinearOperator(LinearOperator):
 		This function does NOT transpose the operator.
 
 		Returns
-		-------
+		--------
 		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
-		--------
+		---------
 
 		>>> H_conj = H.conj()
 
@@ -393,17 +392,17 @@ class quantum_LinearOperator(LinearOperator):
 		"""Calculates hermitian conjugate of `quantum_LinearOperator` operator.
 
 		Parameters
-		----------
+		-----------
 		copy : bool, optional
 			Whether to return a deep copy of the original object. Default is `copy = False`.
 
 		Returns
-		-------
+		--------
 		:obj:`quantum_LinearOperator`
 			:math:`H_{ij}\\mapsto H_{ij}^*`
 
 		Examples
-		--------
+		---------
 
 		>>> H_herm = H.getH()
 
@@ -548,7 +547,7 @@ class quantum_LinearOperator(LinearOperator):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
 		static = self.__mul__(other._static)
 		dynamic = [[self.__mul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
-		return hamiltonian.hamiltonian([static],dynamic,
+		return hamiltonian([static],dynamic,
 							basis=self._basis,dtype=result_dtype,copy=False)
 
 	def _mul_sparse(self,other):
@@ -581,7 +580,7 @@ class quantum_LinearOperator(LinearOperator):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
 		static = self.__rmul__(other._static)
 		dynamic = [[self.__rmul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
-		return hamiltonian.hamiltonian([static],dynamic,
+		return hamiltonian([static],dynamic,
 							basis=self._basis,dtype=result_dtype,copy=False)
 
 	def _add_hamiltonian(self,other):
@@ -620,12 +619,12 @@ def isquantum_LinearOperator(obj):
 	"""Checks if instance is object of `quantum_LinearOperator` class.
 
 	Parameters
-	----------
+	-----------
 	obj : 
 		Arbitraty python object.
 
 	Returns
-	-------
+	--------
 	bool
 		Can be either of the following:
 

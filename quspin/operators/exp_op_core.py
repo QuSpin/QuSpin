@@ -1,8 +1,7 @@
 from __future__ import print_function, division
 
-
-import hamiltonian
-import quantum_operator
+import hamiltonian_core
+import quantum_operator_core 
 
 # need linear algebra packages
 import scipy
@@ -35,9 +34,9 @@ class exp_op(object):
 	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
 
 	Examples
-	--------
+	---------
 
-	The Example below shows how to compute the time-evolvution of a state under a constant Hamiltian.
+	The Examples below shows how to compute the time-evolvution of a state under a constant Hamiltian.
 	This is done using the matrix exponential to define the evolution operator and apply it directly 
 	onto the initial state.
 
@@ -81,18 +80,16 @@ class exp_op(object):
 	>>> 	psi=U_j.dot(psi)
 
 	"""
-	def __init__(self,O,a=1.0,time=0.0,start=None,stop=None,num=None,endpoint=None,iterate=False):
+	def __init__(self,O,a=1.0,start=None,stop=None,num=None,endpoint=None,iterate=False):
 		"""Initialises the `exp_op` object (matrix exponential of the operator `O`).
 
 		Parameters
-		----------
+		-----------
 		O : obj
 			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.
 		a : `numpy.dtype`, optional
 			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.
 			Default is `a = 1.0`.
-		time : scalar, optional
-			Time to evaluate the operator `O` at, when exponentiated: `exp(a*O(time))`. Default is `time = 0.0`.
 		start : scalar, optional
 			Specifies the starting point for a grid of points to evaluate the matrix exponential at.
 		stop : scalar, optional
@@ -175,16 +172,16 @@ class exp_op(object):
 				self._grid, self._step = _np.linspace(start, stop, num=num, endpoint=endpoint, retstep=True)
 
 
-		if hamiltonian.ishamiltonian(O):
+		if hamiltonian_core.ishamiltonian(O):
 			self._O = O
-		elif quantum_operator.isquantum_operator(O):
+		elif quantum_operator_core.isquantum_operator(O):
 			self._O = O
 		else:
 			if _sp.issparse(O) or O.__class__ in [_np.ndarray,_np.matrix]:
-				self._O = hamiltonian.hamiltonian([O], [],dtype=O.dtype)
+				self._O = hamiltonian_core.hamiltonian([O], [],dtype=O.dtype)
 			else:
 				O = _np.asanyarray(O)
-				self._O = hamiltonian.hamiltonian([O],[],dtype=O.dtype)
+				self._O = hamiltonian_core.hamiltonian([O],[],dtype=O.dtype)
 	
 		self._ndim = 2
 
@@ -250,12 +247,12 @@ class exp_op(object):
 		This function does NOT conjugate the exponentiated operator.
 
 		Returns
-		-------
+		--------
 		:obj:`exp_op`
 			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ji}`
 
 		Examples
-		--------
+		---------
 
 		>>> expO_tran = expO.transpose()
 
@@ -274,12 +271,12 @@ class exp_op(object):
 		This function does NOT transpose the exponentiated operator.
 
 		Returns
-		-------
+		--------
 		:obj:`exo_op`
 			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
 
 		Examples
-		--------
+		---------
 
 		>>> expO_conj = expO.conj()
 
@@ -292,17 +289,17 @@ class exp_op(object):
 		"""Calculates hermitian conjugate of `exp_op` operator.
 
 		Parameters
-		----------
+		-----------
 		copy : bool, optional
 			Whether to return a deep copy of the original object. Default is `copy = False`.
 
 		Returns
-		-------
+		--------
 		:obj:`exp_op`
 			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
 
 		Examples
-		--------
+		---------
 
 		>>> expO_herm = expO.getH()
 
@@ -324,12 +321,12 @@ class exp_op(object):
 		"""Resets attribute `a` to multiply the operator in `exp(a*O)`.
 		
 		Parameters
-		----------
+		-----------
 		new_a : `numpy.dtype`
 			New value for `a`.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O,a=1.0)
 		>>> print(expO.a)
 		>>> expO.set_a(2.0)
@@ -344,7 +341,7 @@ class exp_op(object):
 		"""Resets attribute `grid` to evaluate the operator for every `i` in `exp(a*O*grid[i])`.
 		
 		Parameters
-		----------
+		-----------
 		start : scalar, optional
 			Specifies the new starting point for a grid of points to evaluate the matrix exponential at.
 		stop : scalar, optional
@@ -356,7 +353,7 @@ class exp_op(object):
 			the grid step size.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
 		>>> print(expO.grid)
 		>>> expO.set_grid(start=2.0,stop=4.0,num=200,endpoint=False)
@@ -388,7 +385,7 @@ class exp_op(object):
 		"""Resets grid parameters to their default values.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
 		>>> print(expO.grid)
 		>>> expO.unset_grid()
@@ -406,12 +403,12 @@ class exp_op(object):
 		"""Resets `iterate` attribute.
 
 		Parameters
-		----------
+		-----------
 		Value : bool
 			New value for `iterate` attribute.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O,iterate=True)
 		>>> print(expO.iterate)
 		>>> expO.set_a(False)
@@ -433,14 +430,14 @@ class exp_op(object):
 		"""Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.
 
 		Parameters
-		----------
+		-----------
 		time : scalar, optional
 			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
 		dense : bool
 			Whether or not to return a dense or a sparse array. Detault is `dense = False`.
 
 		Returns
-		-------
+		--------
 		obj
 			Can be either one of
 
@@ -448,7 +445,7 @@ class exp_op(object):
 			* `scipy.sparse.csc`: sparse array if `dense = False`.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O)
 		>>> print(expO.get_mat(time=0.0))
 		>>> print(expO.get_mat(time=0.0,dense=True))
@@ -469,7 +466,7 @@ class exp_op(object):
 			A\\exp(\\mathcal{O})
 
 		Parameters
-		----------
+		-----------
 		other : obj
 			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
@@ -479,12 +476,12 @@ class exp_op(object):
 
 
 		Returns
-		-------
+		--------
 		obj
 			matrix exponential multiplied by `other` from the left.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O)
 		>>> A = exp_op(O,a=2j).get_mat()
 		>>> print(expO.dot(A))
@@ -494,7 +491,7 @@ class exp_op(object):
 		is_sp = False
 		is_ham = False
 
-		if hamiltonian.ishamiltonian(other):
+		if hamiltonian_core.ishamiltonian(other):
 			shape = other._shape
 			is_ham = True
 		elif _sp.issparse(other):
@@ -555,7 +552,7 @@ class exp_op(object):
 			\\exp(\\mathcal{O})B
 
 		Parameters
-		----------
+		-----------
 		other : obj
 			The operator :math:`B` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
@@ -564,12 +561,12 @@ class exp_op(object):
 			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
  
 		Returns
-		-------
+		--------
 		obj
 			matrix exponential multiplied by `other` from the right.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O)
 		>>> B = exp_op(O,a=-2j).get_mat()
 		>>> print(expO.rdot(B))
@@ -579,7 +576,7 @@ class exp_op(object):
 		is_sp = False
 		is_ham = False
 
-		if hamiltonian.ishamiltonian(other):
+		if hamiltonian_core.ishamiltonian(other):
 			shape = other._shape
 			is_ham = True
 		elif _sp.issparse(other):
@@ -646,7 +643,7 @@ class exp_op(object):
 		The matrix exponential to multiply :math:`C` from the left is hermitian conjugated.
 
 		Parameters
-		----------
+		-----------
 		other : obj
 			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`
 			and :math:`\\exp(\\mathcal{O})`.
@@ -656,19 +653,19 @@ class exp_op(object):
 			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
  
 		Returns
-		-------
+		--------
 		obj
 			operator `other` sandwiched between matrix exponential `exp_op` and its hermitian conjugate.
 
 		Examples
-		--------
+		---------
 		>>> expO = exp_op(O,a=1j)
 		>>> A = exp_op(O.H)
 		>>> print(expO.sandwich(A))
 		
 		"""
 		is_ham = False
-		if hamiltonian.ishamiltonian(other):
+		if hamiltonian_core.ishamiltonian(other):
 			shape = other._shape
 			is_ham = True
 		elif _sp.issparse(other):
@@ -822,12 +819,12 @@ def isexp_op(obj):
 	"""Checks if instance is object of `exp_op` class.
 
 	Parameters
-	----------
+	-----------
 	obj : 
 		Arbitraty python object.
 
 	Returns
-	-------
+	--------
 	bool
 		Can be either of the following:
 

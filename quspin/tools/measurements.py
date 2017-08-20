@@ -44,7 +44,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 	For :math:`\\rho` pure, we have :math:`S_\\mathrm{ent}^A = S_\\mathrm{ent}^B`.
 
 	Parameters
-	----------
+	-----------
 	system_state : :obj:
 		State of the quantum system; can be either of:
 
@@ -91,7 +91,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 		Default is `[False,False,False]`.
 
 	Returns
-	-------
+	--------
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
 
@@ -743,7 +743,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	states, due to the generic system-size dependence!
 
 	Parameters
-	----------
+	-----------
 	N : int
 		System size/dimension (e.g. number of sites).
 	system_state : obj
@@ -870,7 +870,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		Detault is 'True'.
 
 	Returns
-	------- 
+	-------- 
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
 
@@ -1089,7 +1089,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. 
 
 	Parameters
-	----------
+	-----------
 	psi : numpy.ndarray
 		Tnitial state.
 	V : numpy.ndarray
@@ -1102,7 +1102,7 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 		If set to `True`, the function returns the generator of the time evolved state. 
 
 	Returns
-	-------
+	--------
 	obj
 		Either of the following:
 		* numpy.ndarray with the time evolved states as rows. 
@@ -1195,7 +1195,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
 
 	Parameters
-	----------
+	-----------
 	psi_t : :obj:
 		Time-dependent state data; can be either one of:
 
@@ -1242,7 +1242,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 		Default is `False`.
 
 	Returns
-	-------
+	--------
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
 		
@@ -1420,7 +1420,7 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	onto that reduced basis.
 
 	Parameters
-	----------
+	-----------
 	Obs : :obj:
 		Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.
 	proj : :obj:
@@ -1434,7 +1434,7 @@ def project_op(Obs,proj,dtype=_np.complex128):
 		Data type of output. Default is `numpy.complex128`.
 
 	Returns
-	------- 
+	-------- 
 	dict
 		Dictionary with keys
 
@@ -1501,14 +1501,14 @@ def KL_div(p1,p2):
 		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}
 
 	Parameters
-	---------- 
+	----------- 
 	p1 : numpy.ndarray
 		Dscrete probability distribution.
 	p2 : numpy.ndarray
 		Discrete probability distribution.
 
 	Returns
-	-------
+	--------
 	numpy.ndarray
 		Kullback-Leibler divergence of `p1` and `p2`.
 
@@ -1548,12 +1548,12 @@ def mean_level_spacing(E):
 	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf/>`_ for more details.
 
 	Parameters
-	----------
+	-----------
 	E : numpy.ndarray
 		Ordered list of ascending, NONdegenerate energies.
 
 	Returns
-	------- 
+	-------- 
 	float
 		mean-level spacing.
 
@@ -1589,7 +1589,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 
 	
 	Parameters
-	----------
+	-----------
 	v0 : numpy.ndarray
 		Initial state.
 	t0 : float
@@ -1623,14 +1623,14 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		If set to `True`, prints normalisation of state at teach time in `times`.
 
 	Returns
-	-------
+	--------
 	obj
 		Can be either one of the following:
 		* numpy.ndarray containing evolved state against time.
 		* generator object for time-evolved state (requires `iterate = True`).
 
 	Examples
-	--------
+	---------
 
 	Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven 
 	Gross-Pitaevskii equation on a one-imensional lattice:

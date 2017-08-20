@@ -32,7 +32,7 @@ def cython_files():
 def configuration(parent_package='', top_path=None):
 		import numpy,os
 		from numpy.distutils.misc_util import Configuration
-		config = Configuration('_constructors',parent_package, top_path)
+		config = Configuration('_basis_1d_core',parent_package, top_path)
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
 

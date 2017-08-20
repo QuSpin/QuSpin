@@ -133,7 +133,7 @@ class Floquet(object):
 		"""
 		
 		Parameters
-		----------
+		-----------
 		evo_dict : dict
 			Dictionary which passes the different types of protocols to calculate the Floquet unitary. 
 			Depending on the protocol type, it contains the following keys:
@@ -380,7 +380,7 @@ class Floquet_t_vec(object):
 		"""
 
 		Parameters
-		----------
+		-----------
 		Omega : float
 			Drive frequency.
 		N_const : int
