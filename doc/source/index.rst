@@ -8,6 +8,15 @@ Welcome to QuSpin's documentation!
 
 blah blah general descriptions and usage/references
 
+
+Examples Scripts
+================
+
+.. toctree::
+    :maxdepth: 1
+    
+    Examples
+
 QuSpin API reference
 ====================
 
