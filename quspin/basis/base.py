@@ -77,6 +77,93 @@ class basis(object):
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
 
+	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+		"""Calculates the action of an operator on a state.
+
+		Parameters
+		-----------
+		v_in : array_like
+			state (or states stored in columns) to act on with the operator.
+		opstr : str
+			Operator string in the lattice basis format. For instance:
+			>>> opstr = "zz"
+		indx : list(int)
+			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			>>> indx = [2,3]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+		transposed : bool, optional
+			if True this function will act with the trasposed operator.
+		conjugated : bool, optional
+			if True this function will act with the conjugated operator.
+		v_out : array_like
+			output array, must be the same shape as `v_in` aand matching type of the output.
+
+		Returns
+		--------
+		numpy.ndarray
+			* if v_out is not None, this function modifies v_out inplace and returns it. 
+
+			
+		Examples
+		--------
+
+		>>> J = 1.41
+		>>> indx = [2,3]
+		>>> opstr = "zz"
+		>>> dtype = np.float64
+		>>> ME, row, col = Op(opstr,indx,J,dtype)
+
+		"""
+
+		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
+			v_in = _np.asanyarray(v_in)
+
+		if v_in.shape[0] != self.Ns:
+			raise ValueError("dimension mismatch")
+
+		if v_out is None:
+			result_dtype = _np.result_type(v_in.dtype,dtype)
+			v_out = _np.zeros_like(v_in,dtype=result_dtype)
+		else:
+			if v_out.__class__ not in [_np.ndarray, _np.matrix]:
+				v_out = _np.asanyarray(v_out)
+
+			if v_out.shape != v_in.shape:
+				raise ValueError("v_in.shape != v_out.shape")
+
+
+
+		if not transposed:
+			ME, row, col = self.Op(opstr, indx, J, dtype)
+		else:
+			ME, col, row = self.Op(opstr, indx, J, dtype)
+
+		if conjugated:
+			ME = ME.conj()
+
+		# TODO: implement these in low level language.
+		if self._unique_me:
+			v_out[row] += _np.multiply(v_in[col].T,ME).T
+		else:
+			while len(row) > 0:
+				# if there are multiply matrix elements per row as there are for some
+				# symmetries availible then do the indexing for unique elements then
+				# delete them from the list and then repeat until all elements have been 
+				# taken care of. This is less memory efficient but works well for when
+				# there are a few number of matrix elements per row. 
+				row_unique,args = _np.unique(row,return_index=True)
+				col_unique = col[args]
+
+				v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
+				row = _np.delete(row,args)
+				col = _np.delete(col,args)
+				ME = _np.delete(ME,args)
+
+		return v_out			
+
 	def Op(self,opstr,indx,J,dtype):
 		"""Constructs operator from a site-coupling list and anoperator string in a lattice basis.
 
@@ -562,93 +649,6 @@ class basis(object):
 
 
 		return static_list,dynamic_list
-
-	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
-		"""Calculates the action of an operator on a state.
-
-		Parameters
-		-----------
-		v_in : array_like
-			state (or states stored in columns) to act on with the operator.
-		opstr : str
-			Operator string in the lattice basis format. For instance:
-			>>> opstr = "zz"
-		indx : list(int)
-			List of integers to designate the sites the lattice basis operator is defined on. For instance:
-			>>> indx = [2,3]
-		J : scalar
-			Coupling strength.
-		dtype : 'type'
-			Data type (e.g. numpy.float64) to construct the operator with.
-		transposed : bool, optional
-			if True this function will act with the trasposed operator.
-		conjugated : bool, optional
-			if True this function will act with the conjugated operator.
-		v_out : array_like
-			output array, must be the same shape as `v_in` aand matching type of the output.
-
-		Returns
-		--------
-		numpy.ndarray
-			* if v_out is not None, this function modifies v_out inplace and returns it. 
-
-			
-		Examples
-		--------
-
-		>>> J = 1.41
-		>>> indx = [2,3]
-		>>> opstr = "zz"
-		>>> dtype = np.float64
-		>>> ME, row, col = Op(opstr,indx,J,dtype)
-
-		"""
-
-		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
-			v_in = _np.asanyarray(v_in)
-
-		if v_in.shape[0] != self.Ns:
-			raise ValueError("dimension mismatch")
-
-		if v_out is None:
-			result_dtype = _np.result_type(v_in.dtype,dtype)
-			v_out = _np.zeros_like(v_in,dtype=result_dtype)
-		else:
-			if v_out.__class__ not in [_np.ndarray, _np.matrix]:
-				v_out = _np.asanyarray(v_out)
-
-			if v_out.shape != v_in.shape:
-				raise ValueError("v_in.shape != v_out.shape")
-
-
-
-		if not transposed:
-			ME, row, col = self.Op(opstr, indx, J, dtype)
-		else:
-			ME, col, row = self.Op(opstr, indx, J, dtype)
-
-		if conjugated:
-			ME = ME.conj()
-
-		# TODO: implement these in low level language.
-		if self._unique_me:
-			v_out[row] += _np.multiply(v_in[col].T,ME).T
-		else:
-			while len(row) > 0:
-				# if there are multiply matrix elements per row as there are for some
-				# symmetries availible then do the indexing for unique elements then
-				# delete them from the list and then repeat until all elements have been 
-				# taken care of. This is less memory efficient but works well for when
-				# there are a few number of matrix elements per row. 
-				row_unique,args = _np.unique(row,return_index=True)
-				col_unique = col[args]
-
-				v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
-				row = _np.delete(row,args)
-				col = _np.delete(col,args)
-				ME = _np.delete(ME,args)
-
-		return v_out			
 
 
 def isbasis(obj):
