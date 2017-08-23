@@ -169,7 +169,6 @@ class basis_1d(lattice_basis):
 			self._k = 2*pi*a*kblock/L
 
 		self._L = L
-		self._N = L
 		Ns = basis_module.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
 		self._basis_type = basis_module.get_basis_type(L,Np,self.sps,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
@@ -683,6 +682,12 @@ class basis_1d(lattice_basis):
 	def L(self):
 		"""int: length of lattice."""
 		return self._L
+
+	@property
+	def N(self):
+		"""int: number of sites the basis is constructed with."""
+		return self._L
+
 
 	@property
 	def description(self):

@@ -17,7 +17,6 @@ import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed()
 
-
 """
 This script tests the Floquet class.
 """

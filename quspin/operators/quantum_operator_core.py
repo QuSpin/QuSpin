@@ -95,7 +95,7 @@ class quantum_operator(object):
 				opstr_list = []
 				other_list = []
 				for ele in op:
-					if hamiltonian._check_static(ele):
+					if hamiltonian_core._check_static(ele):
 						opstr_list.append(ele)
 					else:
 						other_list.append(ele)
@@ -900,7 +900,7 @@ class quantum_operator(object):
 				else:
 					static.append(J*self._quantum_operator[key])
 
-		return hamiltonian.hamiltonian(static,dynamic,dtype=self._dtype)
+		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
 
 
 	### algebra operations
@@ -1064,7 +1064,7 @@ class quantum_operator(object):
 		>>> H_cpx=H.astype(np.complex128)
 
 		"""
-		if dtype not in hamiltonian.supported_dtypes:
+		if dtype not in hamiltonian_core.supported_dtypes:
 			raise ValueError("quantum_operator can only be cast to floating point types")
 
 		if dtype == self._dtype:

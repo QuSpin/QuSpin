@@ -81,7 +81,7 @@ class tensor_basis(basis):
 		self._blocks = self._basis_left._blocks.copy()
 		self._blocks.update(self._basis_right._blocks)
 
-		self._unique_me = self._basis_left.unique_me and self._basis_right.unique_me
+		self._unique_me = self._basis_left._unique_me and self._basis_right._unique_me
 		self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
 
 

@@ -100,7 +100,7 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 
 		basis_1d = spin_basis_1d(L,Nup=Nup,**basis_blocks)
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
-		n = basis_1d.get_norms(np.float64)**2
+		n = basis_1d._get_norms(np.float64)**2
 
 		if basis_1d.Ns != gen_basis.Ns:
 			print(basis_1d)
