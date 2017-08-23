@@ -11,7 +11,12 @@ Basis module (:mod:`quspin.basis`)
    :toctree: generated/
 
    spin_basis_1d
-   spin_basis_general
+
+   boson_basis_1d
+   spinless_fermion_basis_1d
+   tensor_basis
+   photon_basis
+
 
 
 """

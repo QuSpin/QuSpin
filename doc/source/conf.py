@@ -42,15 +42,15 @@ extensions = ['sphinx.ext.autodoc',
 
 
 # -- General configuration ------------------------------------------------
-autoclass_content = "class"  
+autoclass_content = "init"  
 autodoc_default_flags = [
         # Make sure that any autodoc declarations show the right members
         "members",
         "inhiereted-members"
         "show-inhieretance"
-        # "no-special-members",
-        # "no-private-members",
-        # "no-undoc-members"
+        "no-special-members",
+        "no-private-members",
+        "no-undoc-members"
 ]
 
 autosummary_generate = True  # Make _autosummary files and include them
@@ -63,7 +63,7 @@ autosummary_generate = True  # Make _autosummary files and include them
 # Napoleon settings
 napoleon_use_rtype = False  # More legible
 napoleon_numpy_docstring = True
-napoleon_include_init_with_doc = True
+napoleon_include_init_with_doc = False
 napoleon_include_private_with_doc = False
 napoleon_include_special_with_doc = True
 napoleon_use_admonition_for_examples = False

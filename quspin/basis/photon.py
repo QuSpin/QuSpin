@@ -118,11 +118,11 @@ class photon_basis(tensor_basis):
 		Parameters
 		----------
 		basis_constructor : :obj:`basis`
-			`basis` object to construct the lattice part of the `photon_basis`.
+			`basis` constructor for the lattice part of the `photon_basis`.
 		constructor_args : :obj:
-			Various arguments required by the specific `basis_constructor`.
+			Required arguments required by the specific `basis_constructor`.
 		blocks : :obj:
-			Additional keyword arguements which include:
+			Optional keyword arguments for `basis_constructor` which include (but are not limited to):
 
 				**Nph** (*int*) - specify the dimension of photon (HO) Hilbert space.
 

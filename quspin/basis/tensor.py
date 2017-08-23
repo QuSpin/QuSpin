@@ -336,6 +336,9 @@ class tensor_basis(basis):
 
 				* "left": refers to `basis_left` (Default).
 				* "right": refers to `basis_right`.
+				* "both": for initial mixed states the Renyi entropy of subsystem A and its complement
+					B need not be the same. This option automatically sets `return_rdm=both`.
+					
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 
@@ -455,6 +458,8 @@ class tensor_basis(basis):
 
 				* "left": refers to `basis_left` (Default).
 				* "right": refers to `basis_right`.
+				* "both": for initial mixed states the Renyi entropy of subsystem A and its complement
+					B need not be the same. This option automatically sets `return_rdm=both`.
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 

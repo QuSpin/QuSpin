@@ -765,7 +765,6 @@ class basis_1d(lattice_basis):
 
 		"""
 
-
 		indx = _np.asarray(indx,dtype=_np.int32)
 
 		if len(opstr) != len(indx):
@@ -1108,7 +1107,7 @@ class basis_1d(lattice_basis):
 		_np.sqrt(norm,norm)
 
 		return norm
-		
+
 	##### provate methods
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
