@@ -46,13 +46,6 @@ class basis(object):
 		string += "\nsee review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.\n"
 		return string
 
-
-
-	@property
-	def unique_me(self):
-		"""bool: flag  """
-		return self._unique_me
-
 	@property
 	def Ns(self):
 		"""int: number of states in the Hilbert space."""
@@ -64,23 +57,76 @@ class basis(object):
 		return self._operators
 
 	@property
+	def N(self):
+		"""int: number of sites the basis is constructed with."""
+		return self._N
+
+	@property
+	def blocks(self):
+		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
+		return dict(self._blocks)
+
+	@property
 	def sps(self):
-		raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
+		"""int: number of local degrees of freedom."""
+		try:
+			return self._sps
+		except AttributeError:
+			raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
 
+	def _Op(self,opstr,indx,J,dtype):
+		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
 
+	def Op(self,opstr,indx,J,dtype):
+		"""Constructs operator from a site-coupling list and anoperator string in a lattice basis.
+
+		Parameters
+		-----------
+		opstr : str
+			Operator string in the lattice basis format. For instance:
+			>>> opstr = "zz"
+		indx : list(int)
+			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			>>> indx = [2,3]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+
+		Returns
+		--------
+		tuple 
+			`(ME,row,col)`, where
+				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
+				* numpy.ndarray(int): `row`: row indices of matrix representing the operator in the lattice basis,
+					such that `row[i]` is the row index of `ME[i]`.
+				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the lattice basis,
+					such that `col[i]` is the column index of `ME[i]`.
+			
+		Examples
+		--------
+
+		>>> J = 1.41
+		>>> indx = [2,3]
+		>>> opstr = "zz"
+		>>> dtype = np.float64
+		>>> ME, row, col = Op(opstr,indx,J,dtype)
+
+		"""
+		return self._Op(opstr,indx,J,dtype)
 
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "y" and "x" into operator combinations of "+" and "-".
 
 		Parameters
-		----------
+		-----------
 		static: list
 			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
 			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Returns
-		-------
+		--------
 		tuple
 			`(static, dynamic)`, where
 				* list: `static`: operator strings with "x" and "y" expanded into "+" and "-", formatted to 
@@ -89,7 +135,7 @@ class basis(object):
 					be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
-		--------
+		---------
 
 		"""
 		static_list,dynamic_list = self._get_local_lists(static,dynamic)
@@ -121,19 +167,18 @@ class basis(object):
 
 		return static,dynamic
 
-
 	def check_hermitian(self,static,dynamic):
 		"""Checks operator string lists for hermiticity of the combined operator.
 
 		Parameters
-		----------
+		-----------
 		static: list
 			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
 			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
-		--------
+		---------
 
 		"""
 		static_list,dynamic_list = self._get_local_lists(static,dynamic)
@@ -182,14 +227,14 @@ class basis(object):
 		"""Checks operator string lists for the required symemtries of the combined operator.
 
 		Parameters
-		----------
+		-----------
 		static: list
 			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
 			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
-		--------
+		---------
 
 		"""
 		if self._check_symm is None:
@@ -309,14 +354,14 @@ class basis(object):
 		"""Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.
 
 		Parameters
-		----------
+		-----------
 		static: list
 			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
 		dynamic: list
 			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
 		Examples
-		--------
+		---------
 
 		"""
 		if self._check_pcon is None:
@@ -390,8 +435,6 @@ class basis(object):
 
 			print("Particle conservation check passed!")
 
-
-
 	def _get__str__(self):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print out the basis!".format(self.__class__))
 
@@ -402,11 +445,6 @@ class basis(object):
 	def __getitem__(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
 
-#	def _get__str__(self,*args,**kwargs):
-#		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print basis!".format(self.__class__))		
-
-
-	
 	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
 	def _hc_opstr(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
@@ -427,7 +465,6 @@ class basis(object):
 		sorted_op_list = tuple(sorted_op_list)
 
 		return sorted_op_list
-
 
 	# this function flattens out the static and dynamics lists to: 
 	# [[opstr1,indx11,J11,...],[opstr1,indx12,J12,...],...,[opstrn,indxnm,Jnm,...]]
@@ -472,7 +509,6 @@ class basis(object):
 		dynamic_list_hc = tuple(dynamic_list_hc)
 		
 		return static_list,static_list_hc,dynamic_list_eval,dynamic_list_hc
-
 
 	# this function takes the list format giveb by get_local_lists and expands any operators into the most basic components
 	# 'n'(or 'z' for spins),'+','-' If by default one doesn't need to do this then _expand_opstr must do nothing. 
@@ -527,20 +563,64 @@ class basis(object):
 
 		return static_list,dynamic_list
 
+	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+		"""Calculates the action of an operator on a state.
 
+		Parameters
+		-----------
+		v_in : array_like
+			state (or states stored in columns) to act on with the operator.
+		opstr : str
+			Operator string in the lattice basis format. For instance:
+			>>> opstr = "zz"
+		indx : list(int)
+			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			>>> indx = [2,3]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+		transposed : bool, optional
+			if True this function will act with the trasposed operator.
+		conjugated : bool, optional
+			if True this function will act with the conjugated operator.
+		v_out : array_like
+			output array, must be the same shape as `v_in` aand matching type of the output.
 
-	def inplace_Op(self,v_in,v_out,opstr,indx,J,dtype,transposed=False,conjugated=False):
+		Returns
+		--------
+		numpy.ndarray
+			* if v_out is not None, this function modifies v_out inplace and returns it. 
+
+			
+		Examples
+		--------
+
+		>>> J = 1.41
+		>>> indx = [2,3]
+		>>> opstr = "zz"
+		>>> dtype = np.float64
+		>>> ME, row, col = Op(opstr,indx,J,dtype)
+
+		"""
+
 		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
 			v_in = _np.asanyarray(v_in)
-
-		if v_out.__class__ not in [_np.ndarray, _np.matrix]:
-			v_out = _np.asanyarray(v_out)
 
 		if v_in.shape[0] != self.Ns:
 			raise ValueError("dimension mismatch")
 
-		if v_out.shape != v_in.shape:
-			raise ValueError("v_in.shape != v_out.shape")
+		if v_out is None:
+			result_dtype = _np.result_type(v_in.dtype,dtype)
+			v_out = _np.zeros_like(v_in,dtype=result_dtype)
+		else:
+			if v_out.__class__ not in [_np.ndarray, _np.matrix]:
+				v_out = _np.asanyarray(v_out)
+
+			if v_out.shape != v_in.shape:
+				raise ValueError("v_in.shape != v_out.shape")
+
+
 
 		if not transposed:
 			ME, row, col = self.Op(opstr, indx, J, dtype)
@@ -566,21 +646,21 @@ class basis(object):
 				v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
 				row = _np.delete(row,args)
 				col = _np.delete(col,args)
-				ME = _np.delete(ME,args)			
+				ME = _np.delete(ME,args)
 
-
+		return v_out			
 
 
 def isbasis(obj):
 	"""Checks if instance is object of `basis` class.
 
 	Parameters
-	----------
+	-----------
 	obj : 
 		Arbitraty python object.
 
 	Returns
-	-------
+	--------
 	bool
 		Can be either of the following:
 

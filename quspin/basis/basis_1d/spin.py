@@ -1,5 +1,5 @@
-from ._constructors import hcp_basis,hcp_ops
-from ._constructors import boson_basis,boson_ops
+from ._basis_1d_core import hcp_basis,hcp_ops
+from ._basis_1d_core import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -9,14 +9,14 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 class spin_basis_1d(basis_1d):
-	"""Constructs basis for spin operators.
+	"""Constructs basis for spin operators in a specified 1-d symmetry sector.
 
 	"""	
 	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=True,**blocks):
 		"""Intializes the `spin_basis_1d` object (basis for spin operators).
 
 		Parameters
-		----------
+		-----------
 		L: int
 			Length of chain/number of sites.
 		Nup: {int,list}, optional
@@ -119,19 +119,14 @@ class spin_basis_1d(basis_1d):
 			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 
 
-	def Op(self,opstr,indx,J,dtype):
-		ME,row,col = basis_1d.Op(self,opstr,indx,J,dtype)
+	def _Op(self,opstr,indx,J,dtype):
+		ME,row,col = basis_1d._Op(self,opstr,indx,J,dtype)
 		if self._pauli:
 			n_ops = len(opstr.replace("I",""))
 			ME *= (1<<n_ops)
 
 		return ME,row,col
 
-
-	@property
-	def blocks(self):
-		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
-		return dict(self._blocks)
 
 	def __type__(self):
 		return "<type 'qspin.basis.spin_basis_1d'>"

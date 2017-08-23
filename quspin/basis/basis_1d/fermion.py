@@ -1,4 +1,4 @@
-from ._constructors import hcp_basis,hcp_ops
+from ._basis_1d_core import hcp_basis,hcp_ops
 from .base_1d import basis_1d
 from ..base import basis
 import numpy as _np
@@ -6,14 +6,14 @@ import numpy as _np
 
 
 class spinless_fermion_basis_1d(basis_1d):
-	"""Constructs basis for fermionic operators.
+	"""Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.
 
 	"""	
 	def __init__(self,L,Nf=None,nf=None,**blocks):
 		"""Intializes the `fermion_basis_1d` object (basis for fermionic operators).
 
 		Parameters
-		----------
+		-----------
 		L: int
 			Length of chain/number of sites.
 		Nf: {int,list}, optional
@@ -105,12 +105,6 @@ class spinless_fermion_basis_1d(basis_1d):
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
 		self._check_symm=None
-
-
-	@property
-	def blocks(self):
-		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
-		return dict(self._blocks)
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"

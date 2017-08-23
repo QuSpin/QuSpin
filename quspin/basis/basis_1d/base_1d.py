@@ -169,6 +169,7 @@ class basis_1d(lattice_basis):
 			self._k = 2*pi*a*kblock/L
 
 		self._L = L
+		self._N = L
 		Ns = basis_module.get_Ns(L,Np,self.sps,**blocks) # estimate how many states in H-space to preallocate memory.
 		self._basis_type = basis_module.get_basis_type(L,Np,self.sps,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
@@ -679,29 +680,9 @@ class basis_1d(lattice_basis):
 		self._Ns = Ns
 
 	@property
-	def blocks(self):
-		"""dict: contains the quantum numbers (blocks) for the symmetry sectors."""
-		return self._blocks
-
-	@property
 	def L(self):
 		"""int: length of lattice."""
 		return self._L
-
-	@property
-	def N(self):
-		"""int: number of sites the basis is constructed with."""
-		return self._L
-
-	@property
-	def sps(self):
-		"""int: number of states per site, i.e. on-site Hilbert space dimension."""
-		return self._sps
-
-	@property
-	def conserved(self):
-		"""str: conserved quantities."""
-		return self._conserved
 
 	@property
 	def description(self):
@@ -728,42 +709,7 @@ class basis_1d(lattice_basis):
 
 
 
-	def Op(self,opstr,indx,J,dtype):
-		"""Constructs operator from a site-coupling list and anoperator string in a lattice basis.
-
-		Parameters
-		----------
-		opstr : str
-			Operator string in the lattice basis format. For instance:
-			>>> opstr = "zz"
-		indx : list(int)
-			List of integers to designate the sites the lattice basis operator is defined on. For instance:
-			>>> indx = [2,3]
-		J : scalar
-			Coupling strength.
-		dtype : 'type'
-			Data type (e.g. numpy.float64) to construct the operator with.
-
-		Returns
-		-------
-		tuple 
-			`(ME,row,col)`, where
-				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
-				* numpy.ndarray(int): `row`: row indices of matrix representing the operator in the lattice basis,
-					such that `row[i]` is the row index of `ME[i]`.
-				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the lattice basis,
-					such that `col[i]` is the column index of `ME[i]`.
-			
-		Example
-		-------
-
-		>>> J = 1.41
-		>>> indx = [2,3]
-		>>> opstr = "zz"
-		>>> dtype = np.float64
-		>>> ME, row, col = Op(opstr,indx,J,dtype)
-
-		"""
+	def _Op(self,opstr,indx,J,dtype):
 
 		indx = _np.asarray(indx,dtype=_np.int32)
 
@@ -803,27 +749,27 @@ class basis_1d(lattice_basis):
 	def get_vec(self,v0,sparse=True):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
-		Note
-		----
+		Notes
+		-----
 		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
 
 		Supports parallelisation to multiple states listed in the columns.
 
 		Parameters
-		----------
+		-----------
 		v0 : numpy.ndarray
 			Contains in its columns the states in the symmetry-reduced basis.
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
 		
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Array containing the state `v0` in the full basis.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> v_full = get_vec(v0)
 		>>> print(v_full.shape, v0.shape)
@@ -856,7 +802,7 @@ class basis_1d(lattice_basis):
 		if _sp.issparse(v0): # current work around for sparse states.
 			return self.get_proj(v0.dtype).dot(v0)
 
-		norms = self.get_norms(v0.dtype)
+		norms = self._get_norms(v0.dtype)
 
 		a = self._blocks_1d.get("a")
 		kblock = self._blocks_1d.get("kblock")
@@ -900,13 +846,13 @@ class basis_1d(lattice_basis):
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
-		Note
-		----
+		Notes
+		-----
 		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
 
 		Parameters
-		----------
+		-----------
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the projector with.
 		sparse : bool, optional
@@ -916,19 +862,19 @@ class basis_1d(lattice_basis):
 			(useful in bosonic/single particle systems). Default is `pcon=False`.
 		
 		Returns
-		-------
-		numpy.ndarray
+		--------
+		scipy.sparse.csr_matrix
 			Transformation/projector between the symmetry-reduced and the full basis.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> P = get_proj(np.float64,pcon=False)
 		>>> print(P.shape)
 
 		"""
 
-		norms = self.get_norms(dtype)
+		norms = self._get_norms(dtype)
 
 		a = self._blocks_1d.get("a")
 		kblock = self._blocks_1d.get("kblock")
@@ -986,7 +932,7 @@ class basis_1d(lattice_basis):
 
 		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
 
-	def get_norms(self,dtype):
+	def _get_norms(self,dtype):
 		
 		a = self._blocks_1d.get("a")
 		kblock = self._blocks_1d.get("kblock")

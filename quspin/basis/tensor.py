@@ -25,14 +25,14 @@ class tensor_basis(basis):
 		.. math::
 			\\mathcal{H}=\\mathcal{H}_1\\otimes\\mathcal{H}_2
 
-		Note
-		----
+		Notes
+		-----
 
 		The `tensor_basis` operator strings are separated by a pipe symbol, '|'. The index array has
 		NO pipe symbol.
 
 		Examples
-		--------
+		---------
 		The following lines show to to create the tensor basis out of two spin-1/2 basis objects.
 
 		>>> basis1 = spin_basis_1d(L,Nup=L/2)
@@ -51,7 +51,7 @@ class tensor_basis(basis):
 		"""Initialises the `tensor_basis` object (basis for tensor product Hilbert spaces).
 
 		Parameters
-		----------
+		-----------
 		basis_list : list(:obj:`basis`)
 			List of `basis` objects to tensor together. Required minimum number is two.
 
@@ -101,7 +101,7 @@ class tensor_basis(basis):
 		"""Constructs operator from a site-coupling list and anoperator string in the tensor basis.
 
 		Parameters
-		----------
+		-----------
 		opstr : str
 			Operator string in the tensor basis format. For instance:
 			>>> opstr = "z|z"
@@ -114,7 +114,7 @@ class tensor_basis(basis):
 			Data type (e.g. numpy.float64) to construct the operator with.
 
 		Returns
-		-------
+		--------
 		tuple
 			`(ME,row,col)`, where
 				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
@@ -123,8 +123,8 @@ class tensor_basis(basis):
 				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the tensor basis,
 					such that `col[i]` is the column index of `ME[i]`.
 			
-		Example
-		-------
+		Examples
+		--------
 
 		>>> J = 1.41
 		>>> indx = [1,5]
@@ -187,24 +187,24 @@ class tensor_basis(basis):
 	def index(self,*states):
 		"""Finds the index of user-defined Fock state in tensor basis.
 
-		Note
-		----
+		Notes
+		-----
 		Particularly useful for defining initial Fock states through a unit vector in the direction specified
 		by `index()`. 
 
 		Parameters
-		----------
+		-----------
 		states : list(str)
 			List of strings which separately define the Fock state in each of the `basis` used to construct 
 			the `tensor_basis` object. 
 
 		Returns
-		-------
+		--------
 		int
 			Position of tensor Fock state in the `tensor_basis`.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> s_1 = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
 		>>> s_2 = "".join("1" for i in range(4))
@@ -221,15 +221,15 @@ class tensor_basis(basis):
 	def get_vec(self,v0,sparse=True,full_left=True,full_right=True):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
-		Note
-		----
+		Notes
+		-----
 		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
 
 		Supports parallelisation to multiple states listed in the columns.
 
 		Parameters
-		----------
+		-----------
 		v0 : numpy.ndarray
 			Contains in its columns the states in the symmetry-reduced basis.
 		sparse : bool, optional
@@ -240,12 +240,12 @@ class tensor_basis(basis):
 			Whether or not to transform the state to the full state in `basis_right`. Default is `True`.
 
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Array containing the state `v0` in the full basis.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> v_full = get_vec(v0)
 		>>> print(v_full.shape, v0.shape)
@@ -279,13 +279,13 @@ class tensor_basis(basis):
 	def get_proj(self,dtype,full_left=True,full_right=True):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
-		Note
-		----
+		Notes
+		-----
 		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
 
 		Parameters
-		----------
+		-----------
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the projector with.
 		full_left : bool, optional
@@ -294,12 +294,12 @@ class tensor_basis(basis):
 			Whether or not to transform the state to the full state in `basis_right`. Default is `True`.
 
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Transformation/projector between the symmetry-reduced and the full basis.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> P = get_proj(np.float64)
 		>>> print(P.shape)
@@ -324,7 +324,7 @@ class tensor_basis(basis):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in `tensor_basis`.
 
 		Parameters
-		----------
+		-----------
 		state : obj
 			State of the quantum system. Can be either one of:
 
@@ -352,12 +352,12 @@ class tensor_basis(basis):
 			Whether or not to return a sparse DM. Default is `False`.
 
 		Returns
-		-------
+		--------
 		numpy.ndarray
 			Density matrix associated with `state`. Depends on optional arguments.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False)
 
@@ -441,12 +441,12 @@ class tensor_basis(basis):
 	def ent_entropy(self,state,sub_sys_A="left",return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
-		Note
-		----
+		Notes
+		-----
 		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
 
 		Parameters
-		----------
+		-----------
 		state : obj
 			State of the quantum system. Can be either one of:
 
@@ -489,7 +489,7 @@ class tensor_basis(basis):
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
 
 		Returns
-		-------
+		--------
 		dict
 			Dictionary with following keys, depending on input parameters:
 				* "Sent_A": entanglement entropy of subsystem A (default).
@@ -499,8 +499,8 @@ class tensor_basis(basis):
 				* "rdm_A": reduced DM of subsystem A.
 				* "rdm_B": reduced DM of subsystem B.
 
-		Example
-		-------
+		Examples
+		--------
 
 		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True)

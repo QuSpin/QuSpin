@@ -5,15 +5,35 @@ Basis module (:mod:`quspin.basis`)
 
 
 .. currentmodule:: quspin.basis
+
+1-dimensional symmetries
+---------------------------
+
 .. autosummary::
-   :nosignatures:
-   :template: autosummary/class.rst
    :toctree: generated/
 
    spin_basis_1d
-
    boson_basis_1d
    spinless_fermion_basis_1d
+
+general lattice symmetries
+-----------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   spin_basis_general
+   boson_basis_general
+   spinless_fermion_basis_general
+   spinful_fermion_basis_general
+
+
+misc
+----
+
+.. autosummary::
+   :toctree: generated/
+
    tensor_basis
    photon_basis
 

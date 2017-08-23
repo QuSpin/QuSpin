@@ -10,19 +10,17 @@ classes and tools to aid in calculations with QuSpin.
 .. currentmodule:: quspin.tools
 
 .. autosummary::
-   :nosignatures:
    :toctree: generated/
 
    expm_multiply_parallel
 
 
 block_tools
------------
+------------
 
 .. currentmodule:: quspin.tools.block_tools
 
 .. autosummary::
-   :nosignatures:
    :toctree: generated/
 
    block_ops 
@@ -30,12 +28,11 @@ block_tools
 
 
 Floquet
--------
+--------
 
 .. currentmodule:: quspin.tools.Floquet
 
 .. autosummary::
-   :nosignatures:
    :toctree: generated/
 
    Floquet
@@ -43,12 +40,11 @@ Floquet
 
 
 measurements
-------------
+-------------
 
 .. currentmodule:: quspin.tools.measurements
 
 .. autosummary::
-   :nosignatures:
    :toctree: generated/
 
    ent_entropy
@@ -61,8 +57,6 @@ measurements
    evolve
 
 """
-
-
 from . import Floquet
 from . import block_tools
 from . import measurements
