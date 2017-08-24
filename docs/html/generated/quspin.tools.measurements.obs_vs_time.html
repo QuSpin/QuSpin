@@ -1,0 +1,220 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.tools.measurements.project_op" href="quspin.tools.measurements.project_op.html" />
+    <link rel="prev" title="quspin.tools.measurements.ED_state_vs_time" href="quspin.tools.measurements.ED_state_vs_time.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.measurements.project_op.html" title="quspin.tools.measurements.project_op"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.measurements.ED_state_vs_time.html" title="quspin.tools.measurements.ED_state_vs_time"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quspin-tools-measurements-obs-vs-time">
+<h1>quspin.tools.measurements.obs_vs_time<a class="headerlink" href="#quspin-tools-measurements-obs-vs-time" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="quspin.tools.measurements.obs_vs_time">
+<code class="descclassname">quspin.tools.measurements.</code><code class="descname">obs_vs_time</code><span class="sig-paren">(</span><em>psi_t</em>, <em>times</em>, <em>Obs_dict</em>, <em>return_state=False</em>, <em>Sent_args={}</em>, <em>enforce_pure=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/measurements.html#obs_vs_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.obs_vs_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psi_t</strong> : :obj:</p>
+<blockquote>
+<div><p>Time-dependent state data; can be either one of:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>tuple: <cite>psi_t = (psi, E, V)</cite> where </dt>
+<dd><p class="first">– np.ndarray: initial state <cite>psi</cite>.</p>
+<p>– np.ndarray: unitary matrix <cite>V</cite>, contains all eigenstates of the Hamiltonian <span class="math">\(H\)</span>.</p>
+<dl class="docutils">
+<dt>– np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math">\(H\)</span>. </dt>
+<dd><p class="first last">The order of the eigenvalues must correspond to the order of the columns of <cite>V</cite>.</p>
+</dd>
+</dl>
+<p class="last">Use this option when the initial state is evolved witht a time-INdependent Hamiltonian <span class="math">\(H\)</span>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>numpy.ndarray: array with the states evaluated at <cite>times</cite> stored in the last dimension. </dt>
+<dd><p class="first">Can be 2D (single time-dependent state) or 3D (many time-dependent states or 
+time-dep mixed density matrix, see <cite>enforce_pure</cite> argument.)</p>
+<p class="last">Use this option for PARALLELISATION over many states.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">obj: generator which generates the states.</p>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Obs_dict</strong> : dict</p>
+<blockquote>
+<div><p>Dictionary with observables (e.g. <cite>hamiltonian objects</cite>) stored in the values, to calculate 
+their time-dependent expectation value of. Dictionary keys are chosen by user.</p>
+</div></blockquote>
+<p><strong>times</strong> : numpy.ndarray</p>
+<blockquote>
+<div><p>Vector of times to evaluate the expectation values at. This is important for time-dependent observables.</p>
+</div></blockquote>
+<p><strong>return_state</strong> : bool, optional</p>
+<blockquote>
+<div><p>If set to <cite>True</cite>, adds key <cite>psi_time</cite> to output. The columns of the array
+containt the state vector at the <cite>times</cite> which specifies the column index. Default is <cite>False</cite>, unless
+<cite>Sent_args</cite> is nonempty.</p>
+</div></blockquote>
+<p><strong>Srdm_args</strong> : dict, optional</p>
+<blockquote>
+<div><p>If nonempty, this dictionary contains the arguments necessary for the calculation of the entanglement
+entropy. The following key is required:</p>
+<ul class="simple">
+<li>“basis”: the basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</li>
+</ul>
+<p>The user can choose optional arguments according to those provided in the function method 
+<cite>basis.ent_entropy()</cite> of the <cite>basis</cite> class [preferred], or the function <cite>ent_entropy()</cite>.</p>
+<p>If only the <cite>basis</cite> is passed, the default parameters of <cite>basis.ent_entropy()</cite> are assumed.</p>
+</div></blockquote>
+<p><strong>enforce_pure</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag to enforce pure state expectation values in the case that <cite>psi_t</cite> is an array of pure states
+in the columns. (<cite>psi_t</cite> will otherwise be interpreted as a mixed density matrix).</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If set to <cite>True</cite>, displays a message at every <cite>times</cite> step after the calculation is complete.
+Default is <cite>False</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dict</p>
+<blockquote class="last">
+<div><p>The following keys of the output are possible, depending on the choice of flags:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>“custom_name”: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the </dt>
+<dd>corresponding observable <cite>Obs_dict[key]</cite> is calculated and returned under the user-defined name
+for the observable.</dd>
+</dl>
+</li>
+<li>“psi_t”: (optional) returns time-dependent state, if <cite>return_state=True</cite> or <cite>Srdm_args</cite> is nonempty.</li>
+<li><dl class="first docutils">
+<dt>“Sent_time”: (optional) returns dictionary with keys corresponding to the entanglement entropy </dt>
+<dd>calculation for each time in <cite>times</cite>. Can have more keys than just “Sent_A”, e.g. if the reduced
+DM was also requested (if specified through <cite>Srdm_args</cite>.)</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quspin.tools.measurements.ED_state_vs_time.html"
+                        title="previous chapter">quspin.tools.measurements.ED_state_vs_time</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quspin.tools.measurements.project_op.html"
+                        title="next chapter">quspin.tools.measurements.project_op</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/generated/quspin.tools.measurements.obs_vs_time.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.measurements.project_op.html" title="quspin.tools.measurements.project_op"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.measurements.ED_state_vs_time.html" title="quspin.tools.measurements.ED_state_vs_time"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>
