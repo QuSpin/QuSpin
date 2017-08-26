@@ -31,9 +31,41 @@ H2=hamiltonian(static_2,dynamic,basis=basis,dtype=np.float64)
 # compute GS of H1 and sigen system of H2
 E1,V1=H1.eigh()
 E2,V2=H2.eigh()
-psi=V1[:,0]
+psi=V1[:,14]
 # calculate entanglement entropy
-print(basis.N)
-exit()
 Sent=ent_entropy(psi,basis,chain_subsys=[1,3,6,7,11])
+print(Sent['Sent_A'])
+#
+# calculate long-time (diagonal ensemble) expectations
+Diag_Ens=diag_ensemble(L,psi,E2,V2,Obs=H1,delta_t_Obs=True)
+print(Diag_Ens['Obs_pure'],Diag_Ens['delta_t_Obs_pure'])
+#
+# time-evolve state by decomposing it in an eigensystem (E1,V1)
+times=np.linspace(0.0,5.0,10)
+psi_time=ED_state_vs_time(psi,E1,V1,times,iterate=False)
+print(type(psi_time))
+# as above butusing a generator
+psi_t=ED_state_vs_time(psi,E1,V1,times,iterate=True)
+print(type(psi_t))
+for i, psi_n in enumerate(psi_t):
+	print("psi_n is the state at time[%i]"%(i))
+#
+# project Hamiltonian from `kblock=0` and `pblock=1` onto full Hilbert space
+proj=basis.get_proj(np.float64) # calculate projector
+H2_full=project_op(H2,proj,dtype=np.float128)["Proj_Obs"]
+print("dimenions of symmetry-reduced and full Hilbert spaces are %i and %i " %(H2.Ns,H2_full.Ns) )
+#
+# calculate expectations of observables
+Obs_time=obs_vs_time(psi_time,times,dict(E1=H1,Energy2=H2))
+print("Output keys are same as input keys:", Obs_time.keys())
+E1_time=Obs_time['E1']
+#
+# calculate mean level spacing of spectrum E2
+d_2=mean_level_spacing(E2)
+print("mean level spacings are", d_2)
+
+
+
+
+
 
