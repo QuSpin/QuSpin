@@ -19,44 +19,6 @@ def eps(dtype):
 	return 2*10.0**(-5)
 
 
-
-
-
-def check_opstr(Lmax):
-	for dtype in dtypes:
-		for L in range(2,Lmax+1):
-			
-			J1=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
-			J2=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
-			J3_p=[[J2[i][0]*0.5,i,(i+1)%L] for i in range(L)]
-			J3_m=[[-J2[i][0]*0.5,i,(i+1)%L] for i in range(L)]
-
-			Delta=random()
-			J_pp=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)] # PBC
-			J_mm=[[-J_pp[i][0],i,(i+1)%L] for i in range(L)] # PBC
-
-			Id=[[-0.5*J2[i][0],i] for i in range(L)]
-			h=[[J2[i][0],i] for i in range(L)]
-
-			static2=[["z",h],["+-",J3_p],["-+",J3_m],["++",J_pp],["--",J_mm]]
-
-			static1=[["n",h],["I",Id],["+-",J3_p],["-+",J3_m],["++",J_pp],["--",J_mm]]
-
-
-			basis=spinless_fermion_basis_1d(L=L)
-
-			H2=hamiltonian(static2,[],dtype=dtype,basis=basis)
-			H1=hamiltonian(static1,[],dtype=dtype,basis=basis)
-
-
-			if norm(H1.todense()-H2.todense()) > eps(dtype):
-				raise Exception( "test failed opstr at L={0:3d} with dtype {1} {2}".format(L,np.dtype(dtype)), norm(H1.todense()-H2.todense()) )
-
-
-
-
-
-
 def check_m(Lmax):
 	for dtype in dtypes:
 		for L in range(2,Lmax+1):
@@ -65,7 +27,7 @@ def check_m(Lmax):
 			J2_p=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)]
 			J2_m=[[-J2_p[i][0],i,(i+1)%L] for i in range(L)]
 
-			static=[["zz",J1],["+-",J2_p],["-+",J2_m],["n",h]]
+			static=[["zz",J1],["+-",J2_p],["-+",J2_m],["z",h]]
 			
 			basis=spinless_fermion_basis_1d(L=L)
 			H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -94,13 +56,13 @@ def check_z(L,dtype,Nf=None):
 	J2_p=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
 	J2_m=[[-J2_p[i][0],i,(i+1)%L] for i in range(L-1)]
 
-	J_pp=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L)] # PBC
-	J_mm=[[-J_pp[i][0],i,(i+1)%L] for i in range(L)] # PBC
+	J_pp=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
+	J_mm=[[-J_pp[i][0],i,(i+1)%L] for i in range(L-1)]
 
 	if type(Nf) is int:
-		static=[["+-",J2_p],["-+",J2_m],["n",h],["nn",J1]]
+		static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
 	else:
-		static=[["+-",J2_p],["-+",J2_m],["++",J_pp],["--",J_pp]]
+		static=[["+-",J2_p],["-+",J2_m],["++",J_pp],["--",J_mm]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -156,7 +118,7 @@ def check_zB(L,dtype):
 	J2_p=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
 	J2_m=[[-J2_p[i][0],i,(i+2)%L] for i in range(L-1)]
 
-	static=[["+-",J2_p],["-+",J2_m],["nn",J1]]
+	static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
 
 	basis=spinless_fermion_basis_1d(L=L)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -185,7 +147,7 @@ def check_zA_zB(L,dtype):
 	J2_p=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
 	J2_m=[[-J2_p[i][0],i,(i+2)%L] for i in range(L-1)]
 	
-	static=[["+-",J2_p],["-+",J2_m],["nn",J1]]
+	static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
 
 	basis=spinless_fermion_basis_1d(L=L)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -228,9 +190,9 @@ def check_p(L,dtype,Nf=None):
 	J_mm=[[-np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # PBC
 
 	if type(Nf) is int:
-		static=[["+-",J_p],["-+",J_m],["n",h],["nn",J]]
+		static=[["+-",J_p],["-+",J_m],["z",h],["zz",J]]
 	else:
-		static=[["+-",J_p],["-+",J_m],["n",h],["++",J_pp],["--",J_mm]]
+		static=[["+-",J_p],["-+",J_m],["z",h],["++",J_pp],["--",J_mm]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -264,7 +226,7 @@ def check_pz(L,dtype,Nf=None):
 	J_p=[[1.0,i,(i+1)%L] for i in range(L-1)]
 	J_n=[[-1.0,i,(i+1)%L] for i in range(L-1)]
 
-	static=[["nn",J],["+-",J_n],["-+",J_p],["n",h]]
+	static=[["zz",J],["+-",J_n],["-+",J_p],["z",h]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -337,17 +299,17 @@ def check_obc(Lmax):
 			check_z(L,dtype,Nf=int(L/2))
 			check_z(L,dtype)
 	
-	for dtype in dtypes:
-		for L in range(2,Lmax+1,2):
-			check_zA(L,dtype)
+	# for dtype in dtypes:
+	# 	for L in range(2,Lmax+1,2):
+	# 		check_zA(L,dtype)
 	
-	for dtype in dtypes:
-		for L in range(2,Lmax+1,2):
-			check_zB(L,dtype)
+	# for dtype in dtypes:
+	# 	for L in range(2,Lmax+1,2):
+	# 		check_zB(L,dtype)
 	
-	for dtype in dtypes:
-		for L in range(2,Lmax+1,2):
-			check_zA_zB(L,dtype)
+	# for dtype in dtypes:
+	# 	for L in range(2,Lmax+1,2):
+	# 		check_zA_zB(L,dtype)
 	
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
@@ -383,9 +345,9 @@ def check_t(L,dtype,Nf=None):
 	J_mm=[[-Delta,i,(i+1)%L] for i in range(L)] # PBC
 
 	if type(Nf) is int:
-		static=[["+-",J1_p],["-+",J1_m],["nn",J1],["n",h]]
+		static=[["+-",J1_p],["-+",J1_m],["zz",J1],["z",h]]
 	else:
-		static=[["nn",J1],["++",J_pp],["--",J_mm],["n",h]]
+		static=[["zz",J1],["++",J_pp],["--",J_mm],["z",h]]
 
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
@@ -420,9 +382,9 @@ def check_t_z(L,dtype,Nf=None):
 	J_mm=[[-Delta,i,(i+1)%L] for i in range(L)] # PBC
 
 	if type(Nf) is int:
-		static=[["+-",J1_p],["-+",J1_n],["n",h],["nn",J1]]
+		static=[["+-",J1_p],["-+",J1_n],["z",h],["zz",J1]]
 	else:
-		static=[["nn",J1],["++",J_pp],["--",J_mm]]
+		static=[["zz",J1],["++",J_pp],["--",J_mm]]
 
 	L_2=int(L/2)
 
@@ -455,7 +417,7 @@ def check_t_zA(L,dtype,a=2):
 	J1_p=[[+J,i,(i+1)%L] for i in range(L)]
 	J1_m=[[-J,i,(i+1)%L] for i in range(L)]
 	
-	static=[["+-",J1_p],["-+",J1_m],["n",h],["nn",J1]]
+	static=[["+-",J1_p],["-+",J1_m],["z",h],["zz",J1]]
 
 	L_2=int(L/a)
 
@@ -487,7 +449,7 @@ def check_t_zB(L,dtype,a=2):
 	J1_p=[[+J,i,(i+1)%L] for i in range(L)]
 	J1_m=[[-J,i,(i+1)%L] for i in range(L)]
 	
-	static=[["+-",J1_p],["-+",J1_m],["n",h],["nn",J1]]
+	static=[["+-",J1_p],["-+",J1_m],["z",h],["zz",J1]]
 
 	L_2=int(L/a)
 
@@ -519,7 +481,7 @@ def check_t_zA_zB(L,dtype,a=2):
 	J1_p=[[+J,i,(i+1)%L] for i in range(L)]
 	J1_m=[[-J,i,(i+1)%L] for i in range(L)]
 	
-	static=[["+-",J1_p],["-+",J1_m],["n",h],["nn",J1]]
+	static=[["+-",J1_p],["-+",J1_m],["z",h],["zz",J1]]
 	
 	L_2=int(L/a)
 
@@ -563,9 +525,9 @@ def check_t_p(L,dtype,Nf=None):
 	J_mm=[[-Delta,i,(i+1)%L] for i in range(L)] # PBC
 
 	if type(Nf) is int:
-		static=[["+-",J1_p],["-+",J1_n],["n",h],["nn",J]]
+		static=[["+-",J1_p],["-+",J1_n],["z",h],["zz",J]]
 	else:
-		static=[["nn",J],["++",J_pp],["--",J_mm]]
+		static=[["zz",J],["++",J_pp],["--",J_mm]]
 
 
 	L_2=int(L/2)
@@ -698,9 +660,9 @@ def check_t_pz(L,dtype,Nf=None):
 	J_mm=[[-Delta,i,(i+1)%L] for i in range(L)] # PBC
 
 	if type(Nf) is int:
-		static=[["+-",J1_p],["-+",J1_n],["n",h2],["nn",J1]]
+		static=[["+-",J1_p],["-+",J1_n],["z",h2],["zz",J1]]
 	else:
-		static=[["nn",J1],["++",J_pp],["--",J_pp]]	
+		static=[["zz",J1],["++",J_pp],["--",J_pp]]	
 
 	if dtype is np.float32:
 		kdtype = np.complex64
@@ -921,7 +883,6 @@ def check_pbc(Lmax):
 		
 
 check_m(4)
-check_opstr(4)
 check_obc(8)
 check_pbc(8)
 
