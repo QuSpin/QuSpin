@@ -18,7 +18,7 @@ def py_shift(basis_type[:] x,int d,int length, basis_type[:] pars):
 cdef NP_INT32_t bit_count(basis_type I, int l, int L):
     cdef NP_INT32_t out = 0
     cdef int i
-    for i in range(l,L-1,1):
+    for i in range(L-l-1,L-1,1):
         out += ((I >> i) & 1) 
 
     return out
