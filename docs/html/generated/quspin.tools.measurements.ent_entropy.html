@@ -57,7 +57,9 @@
 <dl class="function">
 <dt id="quspin.tools.measurements.ent_entropy">
 <code class="descclassname">quspin.tools.measurements.</code><code class="descname">ent_entropy</code><span class="sig-paren">(</span><em>system_state, basis, chain_subsys=None, DM=False, svd_return_vec=[False, False, False], **_basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/measurements.html#ent_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.ent_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates entanglement entropy of a subsystem based on the Singular Value Decomposition (svd).</p>
+<dd><p>Calculates entanglement entropy of a subsystem using the Singular Value Decomposition (svd).</p>
+<p><strong>Note: We recommend the use of the</strong> <cite>basis.ent_entropy()</cite> <strong>method instead of this function.
+This function is a wrapper.</strong></p>
 <p>The entanglement entropy is NORMALISED by the size of the reduced subsystem.</p>
 <p>Consider a quantum chain of <span class="math">\(N\)</span> sites in the state defined by the density matrix <span class="math">\(\rho\)</span>.
 Define a subsystem <span class="math">\(A\)</span> of <span class="math">\(N_A\)</span> sites and its complement <span class="math">\(A^c\)</span> containing <span class="math">\(N=N_A + N_{A^c}\)</span>
@@ -72,7 +74,7 @@ sites. Given the reduced density matrices</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>system_state</strong> : :obj:</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>system_state</strong> : {array_like,dict}</p>
 <blockquote>
 <div><p>State of the quantum system; can be either of:</p>
 <blockquote>
@@ -108,32 +110,35 @@ sites. Given the reduced density matrices</p>
 <blockquote>
 <div><p>Lattice sites to specify the chain subsystem of interest. Default is:</p>
 <ul class="simple">
-<li>[0,1,…,N/2-1,N/2] for ‘spin_basis_1d’, ‘fermion_basis_1d’, ‘boson_basis_1d’.</li>
-<li>[0,1,…,N-1,N] for ‘photon_basis’.</li>
+<li>[0,1,…,N/2-1,N/2] for <cite>spin_basis_1d</cite>, <cite>fermion_basis_1d</cite>, <cite>boson_basis_1d</cite>.</li>
+<li>[0,1,…,N-1,N] for <cite>photon_basis</cite>.</li>
 </ul>
 </div></blockquote>
 <p><strong>DM</strong> : str, optional</p>
 <blockquote>
-<div><p>Flag to enable the calculation of the reduced density matrix. Available expressions are:</p>
-<ul class="simple">
+<div><p>Flag to enable the calculation of the reduced density matrix. Available string expressions are:</p>
+<ul>
 <li><dl class="first docutils">
 <dt>“chain_subsys”: calculates the reduced DM of the subsystem ‘chain_subsys’ and</dt>
-<dd>returns it under the key “DM_chain_subsys”.</dd>
+<dd><p class="first last">returns it under the key “DM_chain_subsys”.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>“other_subsys”: calculates the reduced DM of the complement of ‘chain_subsys’ and</dt>
-<dd>returns it under the key “DM_other_subsys”.</dd>
+<dd><p class="first last">returns it under the key “DM_other_subsys”.</p>
+</dd>
 </dl>
 </li>
-<li>“both”: calculates and returns both density matrices as defined above.</li>
+<li><p class="first">“both”: calculates and returns both density matrices as defined above.</p>
+</li>
 </ul>
 <p>Default is “False”.</p>
 </div></blockquote>
 <p><strong>alpha</strong> : float, optional</p>
 <blockquote>
 <div><p>Renyi <span class="math">\(\alpha\)</span> parameter. Default is ‘1.0’.</p>
-<p>When alpha is different from unity, the output keys have attached “_Renyi” to their usual label.</p>
+<p>When <cite>alpha</cite> is different from unity, the output keys have attached “_Renyi” to their label.</p>
 </div></blockquote>
 <p><strong>svd_return_vec</strong> : list(bool), optional</p>
 <blockquote>
@@ -148,7 +153,7 @@ sites. Given the reduced density matrices</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dict</p>
 <blockquote class="last">
-<div><p>The following keys of the output are possible, depending on the choice of flags:</p>
+<div><p>The following keys of the output dict are available, depending on the choice of flags:</p>
 <ul class="simple">
 <li>“Sent”: entanglement entropy.</li>
 <li>“DM_chain_subsys”: (optional) reduced density matrix of chain subsystem.</li>
@@ -160,8 +165,60 @@ sites. Given the reduced density matrices</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>We recommend the use of <cite>basis.ent_entropy()</cite> method instead of this function (this function is a wrapper).</p>
+<p class="rubric">Examples</p>
+<p>The example below shows how to compute the entanglement entropy of a pure state. The state is chosen as one of
+the eigenstates of the spin-1/2 Hamiltonian <span class="math">\(H=\sum_j hS^x_j + g S^z_j\)</span>.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">ent_entropy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">12</span> <span class="c1"># syste size</span>
+<span class="c1"># coupling strenghts</span>
+<span class="n">h</span><span class="o">=</span><span class="mf">0.8945</span> <span class="c1"># x-field strength</span>
+<span class="n">g</span><span class="o">=</span><span class="mf">0.945</span> <span class="c1"># z-field strength</span>
+<span class="c1"># create site-coupling lists</span>
+<span class="n">x_field</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">z_field</span><span class="o">=</span><span class="p">[[</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="c1"># create static and dynamic lists</span>
+<span class="n">static_1</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1"># create spin-1/2 basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># set up Hamiltonian</span>
+<span class="n">H1</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_1</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1"># compute eigensystems of H1</span>
+<span class="n">E1</span><span class="p">,</span><span class="n">V1</span><span class="o">=</span><span class="n">H1</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="n">psi1</span><span class="o">=</span><span class="n">V1</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="c1"># pick any state as initial state</span>
+<span class="c1"># calculate entanglement entropy</span>
+<span class="n">Sent</span><span class="o">=</span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">psi1</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">11</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Sent</span><span class="p">[</span><span class="s1">&#39;Sent_A&#39;</span><span class="p">])</span>
+</pre></div>
+</td></tr></table></div>
 </dd></dl>
 
 </div>

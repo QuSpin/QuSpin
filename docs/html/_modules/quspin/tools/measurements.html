@@ -83,7 +83,11 @@
 
 
 <div class="viewcode-block" id="ent_entropy"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.ent_entropy.html#quspin.tools.measurements.ent_entropy">[docs]</a><span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">DM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">svd_return_vec</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">],</span><span class="o">**</span><span class="n">_basis_kwargs</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of a subsystem based on the Singular Value Decomposition (svd).</span>
+	<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of a subsystem using the Singular Value Decomposition (svd).</span>
+
+<span class="sd">	**Note: We recommend the use of the** `basis.ent_entropy()` **method instead of this function.</span>
+<span class="sd">	This function is a wrapper.**</span>
+
 
 <span class="sd">	The entanglement entropy is NORMALISED by the size of the reduced subsystem. </span>
 
@@ -101,13 +105,22 @@
 
 <span class="sd">	For :math:`\\rho` pure, we have :math:`S_\\mathrm{ent}^A = S_\\mathrm{ent}^B`.</span>
 
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	We recommend the use of `basis.ent_entropy()` method instead of this function (this function is a wrapper).</span>
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The example below shows how to compute the entanglement entropy of a pure state. The state is chosen as one of</span>
+<span class="sd">	the eigenstates of the spin-1/2 Hamiltonian :math:`H=\\sum_j hS^x_j + g S^z_j`.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/ent_entropy-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
-<span class="sd">	system_state : :obj:</span>
+<span class="sd">	system_state : {array_like,dict}</span>
 <span class="sd">		State of the quantum system; can be either of:</span>
 
 <span class="sd">			* numpy.ndarray: pure state, shape = (Ns,).</span>
@@ -128,10 +141,10 @@
 <span class="sd">	chain_subsys : list, optional </span>
 <span class="sd">		Lattice sites to specify the chain subsystem of interest. Default is:</span>
 
-<span class="sd">		* [0,1,...,N/2-1,N/2] for &#39;spin_basis_1d&#39;, &#39;fermion_basis_1d&#39;, &#39;boson_basis_1d&#39;.</span>
-<span class="sd">		* [0,1,...,N-1,N] for &#39;photon_basis&#39;.</span>
+<span class="sd">		* [0,1,...,N/2-1,N/2] for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.</span>
+<span class="sd">		* [0,1,...,N-1,N] for `photon_basis`.</span>
 <span class="sd">	DM : str, optional </span>
-<span class="sd">		Flag to enable the calculation of the reduced density matrix. Available expressions are:</span>
+<span class="sd">		Flag to enable the calculation of the reduced density matrix. Available string expressions are:</span>
 
 <span class="sd">		* &quot;chain_subsys&quot;: calculates the reduced DM of the subsystem &#39;chain_subsys&#39; and</span>
 <span class="sd">			returns it under the key &quot;DM_chain_subsys&quot;.</span>
@@ -143,7 +156,7 @@
 <span class="sd">	alpha : float, optional </span>
 <span class="sd">		Renyi :math:`\\alpha` parameter. Default is &#39;1.0&#39;. </span>
 
-<span class="sd">		When alpha is different from unity, the output keys have attached &quot;_Renyi&quot; to their usual label.</span>
+<span class="sd">		When `alpha` is different from unity, the output keys have attached &quot;_Renyi&quot; to their label.</span>
 <span class="sd">	svd_return_vec : list(bool), optional</span>
 <span class="sd">		Three booleans to determine which Singular Value Decomposition (svd) quantities are returned:</span>
 
@@ -155,7 +168,7 @@
 <span class="sd">	Returns</span>
 <span class="sd">	--------</span>
 <span class="sd">	dict</span>
-<span class="sd">		The following keys of the output are possible, depending on the choice of flags:</span>
+<span class="sd">		The following keys of the output dict are available, depending on the choice of flags:</span>
 
 <span class="sd">		* &quot;Sent&quot;: entanglement entropy.</span>
 <span class="sd">		* &quot;DM_chain_subsys&quot;: (optional) reduced density matrix of chain subsystem.</span>
@@ -225,7 +238,7 @@
 	<span class="k">return</span> <span class="n">return_dict</span></div>
 		
 <div class="viewcode-block" id="diag_ensemble"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.diag_ensemble.html#quspin.tools.measurements.diag_ensemble">[docs]</a><span class="k">def</span> <span class="nf">diag_ensemble</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">system_state</span><span class="p">,</span><span class="n">E2</span><span class="p">,</span><span class="n">V2</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">rho_d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_q_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_args</span><span class="o">=</span><span class="p">{}):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates the expectation values of physical quantities in the Diagonal ensemble of the initial state. </span>
+	<span class="sd">&quot;&quot;&quot;Calculates expectation values in the Diagonal ensemble of the initial state. </span>
 
 <span class="sd">	Equivalently, these are also the infinite-time expectation values after a sudden quench from a </span>
 <span class="sd">	Hamiltonian :math:`H_1` to a Hamiltonian :math:`H_2`. Let us label the two eigenbases by</span>
@@ -235,23 +248,32 @@
 
 <span class="sd">	See eg. `arXiv:1509.06411 &lt;https://arxiv.org/abs/1509.06411/&gt;`_ for the physical definition of Diagonal Ensemble.</span>
 <span class="sd">	</span>
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	All expectation values depend statistically on the symmetry block used via the available number of </span>
-<span class="sd">	states, due to the generic system-size dependence!</span>
+<span class="sd">	**Note: All expectation values depend statistically on the symmetry block used via the available number of </span>
+<span class="sd">	states, due to the generic system-size dependence!**</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	We prepare a quantum system in an eigenstate :math:`\\psi_1` of the Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.</span>
+<span class="sd">	At time :math:`t=0` we quench to the Hamiltonian :math:`H_2=\\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j`, and evolve</span>
+<span class="sd">	the initial state :math:`\\psi_1` with it. We compute the infinite-time (i.e. Diagonal Ensemble) expectation value of the Hamiltonian :math:`H_1`, and</span>
+<span class="sd">	it&#39;s infinite-time temporal fluctuations :math:`\\delta_t\\mathcal{O}^\\psi_d` (see above for the definition). </span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/diag_ens-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
 <span class="sd">	N : int</span>
 <span class="sd">		System size/dimension (e.g. number of sites).</span>
-<span class="sd">	system_state : obj</span>
+<span class="sd">	system_state : {array_like,dict}</span>
 <span class="sd">		State of the quantum system; can be either of:</span>
 
 <span class="sd">			* numpy.ndarray: pure state, shape = (Ns,) or (,Ns).</span>
 <span class="sd">			* numpy.ndarray: density matrix (DM), shape = (Ns,Ns).</span>
-<span class="sd">			* dict: mixed DM as dictionary `{&quot;V1&quot;:V1, &quot;E1&quot;:E1, &quot;f&quot;:f, &quot;f_args&quot;:f_args, &quot;V1_state&quot;:int, &quot;f_norm&quot;:`False`}`	 </span>
-<span class="sd">				to define a diagonal DM in the basis :math:`V_1` of the Hamiltonian :math:`H_1`. The meaning of the keys is</span>
-<span class="sd">				as flollows:</span>
+<span class="sd">			* dict: mixed DM as dictionary `{&quot;V1&quot;:V1, &quot;E1&quot;:E1, &quot;f&quot;:f, &quot;f_args&quot;:f_args, &quot;V1_state&quot;:int, &quot;f_norm&quot;:`False`}` to define a diagonal DM in the basis :math:`V_1` of the Hamiltonian :math:`H_1`. The meaning of the keys (keys CANNOT be chosen arbitrarily) is as flollows:</span>
 
 <span class="sd">				* numpy.ndarray: `V1` (required) contains eigenbasis of :math:`H_1` in the columns.</span>
 <span class="sd">				* numpy.ndarray: `E1` (required) eigenenergies of :math:`H_1`.</span>
@@ -263,16 +285,14 @@
 <span class="sd">				* list(float): `f_args` (required) list of arguments for function `f`. </span>
 
 <span class="sd">					If `f` is not defined, by default we have :math:`f(E)=\\exp(-\\beta(E - E_\\mathrm{GS}))`, </span>
-<span class="sd">					and `f_args` specifies the inverse temeprature `[beta]`.</span>
+<span class="sd">					and `f_args=[beta]` specifies the inverse temeprature.</span>
 <span class="sd">				* list(int): `V1_state` (optional) is a list of integers to specify arbitrary states of `V1` </span>
 <span class="sd">					whose pure expectations are also returned.</span>
 <span class="sd">				* bool: `f_norm` (optional). If set to `False` the mixed DM built from `f` is NOT normalised</span>
 <span class="sd">					and the norm is returned under the key `f_norm`. </span>
 
 <span class="sd">					Use this option if you need to average your results over multiple symmetry blocks, which</span>
-<span class="sd">					require a separate normalisation, to be determined by the user. </span>
-
-<span class="sd">				The keys CANNOT be chosen arbitrarily.</span>
+<span class="sd">					require a separate normalisations. </span>
 
 <span class="sd">				If this option is specified, then all Diagonal Ensemble quantities are averaged over </span>
 <span class="sd">				the energy distribution :math:`f(E_1,f\\_args)`:</span>
@@ -285,7 +305,7 @@
 <span class="sd">		Contains the eigenenergies corresponding to the eigenstates in `V2`. </span>
 
 <span class="sd">		This variable is only used to check for degeneracies, in which case the function is NOT expected to</span>
-<span class="sd">		produce correct results (see raised errors).</span>
+<span class="sd">		produce correct resultsand raises an error.</span>
 <span class="sd">	rho_d : bool, optional </span>
 <span class="sd">		When set to `True`, returns the Diagonal ensemble DM. Default is `False`.</span>
 
@@ -324,13 +344,13 @@
 <span class="sd">		.. math::  </span>
 <span class="sd">  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }</span>
 <span class="sd">	alpha : float, optional</span>
-<span class="sd">		Renyi .math:`alpha` parameter. Default is `alpha = 1.0`.</span>
+<span class="sd">		Renyi :math:`alpha` parameter. Default is `alpha = 1.0`.</span>
 <span class="sd">	Sd_Renyi : bool, optional</span>
-<span class="sd">		Computes the DIAGONAL Renyi entropy in the basis of :math:`H_2`. </span>
+<span class="sd">		Computes the DIAGONAL Renyi entropy in the basis of :math:`H_2`. \</span>
 
-<span class="sd">		The default Renyi parameter is `alpha=1.0` (see below). </span>
+<span class="sd">		The default Renyi parameter is `alpha=1.0` (see below). \</span>
 
-<span class="sd">		Adds the key &quot;Sd_Renyi&quot; to output.</span>
+<span class="sd">		Adds the key &quot;Sd_Renyi&quot; to output.\</span>
 
 <span class="sd">		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:</span>
 <span class="sd">  		</span>
@@ -359,13 +379,13 @@
 <span class="sd">			* &quot;chain_subsys&quot; : list, optional </span>
 <span class="sd">				Lattice sites to specify the chain subsystem of interest. Default is:</span>
 
-<span class="sd">				-- [0,1,...,N/2-1,N/2] for &#39;spin_basis_1d&#39;, &#39;fermion_basis_1d&#39;, &#39;boson_basis_1d&#39;.</span>
+<span class="sd">				-- [0,1,...,N/2-1,N/2] for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.</span>
 
-<span class="sd">				-- [0,1,...,N-1,N] for &#39;photon_basis&#39;.</span>
+<span class="sd">				-- [0,1,...,N-1,N] for `photon_basis`.</span>
 <span class="sd">	density : bool, optional </span>
 <span class="sd">		If set to `True`, all observables are normalised by the system size `N`, except</span>
 <span class="sd">		for the `Srdm_Renyi` which is normalised by the subsystem size, i.e. by the length of `chain_subsys`.</span>
-<span class="sd">		Detault is &#39;True&#39;.</span>
+<span class="sd">		Default is &#39;True&#39;.</span>
 
 <span class="sd">	Returns</span>
 <span class="sd">	-------- </span>
@@ -388,7 +408,7 @@
 
 	<span class="c1"># check if E2 are all unique</span>
 	<span class="n">E2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">E2</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">E2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1E3</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">E2</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">E2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="n">E3</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">E2</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
 		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot use function &#39;diag_ensemble&#39; with dengenerate e&#39;values &#39;E2&#39;!&quot;</span><span class="p">)</span>
 	<span class="k">del</span> <span class="n">E2</span>
 
@@ -484,7 +504,7 @@
 	<span class="k">del</span> <span class="n">system_state</span>
 
 	<span class="c1"># add floating point number to zero elements</span>
-	<span class="n">rho</span><span class="p">[</span><span class="n">rho</span><span class="o">&lt;=</span><span class="mf">1E-16</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+	<span class="n">rho</span><span class="p">[</span><span class="n">rho</span><span class="o">&lt;=</span><span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rho</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
 
 	<span class="c1"># prepare observables</span>
@@ -581,120 +601,26 @@
 
 	<span class="k">return</span> <span class="n">Expt_Diag</span></div>
 
-<div class="viewcode-block" id="ED_state_vs_time"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.ED_state_vs_time.html#quspin.tools.measurements.ED_state_vs_time">[docs]</a><span class="k">def</span> <span class="nf">ED_state_vs_time</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates the time evolved initial state as a function of time. </span>
-
-<span class="sd">	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. </span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	psi : numpy.ndarray</span>
-<span class="sd">		Tnitial state.</span>
-<span class="sd">	V : numpy.ndarray</span>
-<span class="sd">		Unitary matrix containing in all eigenstates of the Hamiltonian :math:`H` in its columns. </span>
-<span class="sd">	E : numpy.ndarray</span>
-<span class="sd">		Eigenvalues of the Hamiltonian :math:`H`, in order which corresponds to the columns of `V`. </span>
-<span class="sd">	times : numpy.ndarray</span>
-<span class="sd">		Vector of times to evaluate the time evolved state at. </span>
-<span class="sd">	iterate : bool, optional</span>
-<span class="sd">		If set to `True`, the function returns the generator of the time evolved state. </span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	obj</span>
-<span class="sd">		Either of the following:</span>
-<span class="sd">		* numpy.ndarray with the time evolved states as rows. </span>
-<span class="sd">		* generator which generates time-dependent states one by one.</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">psi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span>
-
-
-	<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;V&#39; must be a square matrix&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Number of eigenstates in &#39;V&#39; must equal number of eigenvalues in &#39;E&#39;!&quot;</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variables &#39;psi&#39; and &#39;E&#39; must have the same dimension!&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mixed states must be square!&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psi must be 1 or 2 dimension array.&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-		<span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variable &#39;times&#39; must be a array or iter like object!&quot;</span><span class="p">)</span>
-
-	<span class="n">times</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-	
-
-	<span class="c1"># define generator of time-evolved state in basis V2</span>
-	<span class="k">def</span> <span class="nf">pure_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">):</span>
-		<span class="c1"># a_n: probability amplitudes</span>
-		<span class="c1"># times: time vector</span>
-		<span class="n">a_n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-			<span class="k">yield</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">E</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">a_n</span> <span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">mixed_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">):</span>
-		<span class="c1"># a_n: probability amplitudes</span>
-		<span class="c1"># times: time vector</span>
-		<span class="n">rho_d</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
-			<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,j,jk,k,lk-&gt;il&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-
-
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">pure_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">c_n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
-
-			<span class="n">Ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-			<span class="n">Ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-
-			<span class="c1"># generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]</span>
-			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">Ns</span><span class="p">,</span><span class="n">Ntime</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> 
-			<span class="c1"># [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]</span>
-			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">psi_t</span><span class="o">*</span><span class="n">E</span>
-			<span class="c1"># [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]</span>
-			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">psi_t</span><span class="p">)</span>
-
-			<span class="c1"># [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]</span>
-			<span class="n">psi_t</span> <span class="o">*=</span> <span class="n">c_n</span> 
-
-			<span class="c1"># for each vector trasform back to original basis</span>
-			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> 
-
-			<span class="k">return</span> <span class="n">psi_t</span> <span class="c1"># [ psi(times[0]), ...,psi(times[-1]) ]</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">mixed_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">Ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-			<span class="n">Ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-
-			<span class="n">rho_d</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-
-			<span class="c1"># generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]</span>
-			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">Ns</span><span class="p">,</span><span class="n">Ntime</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
-			<span class="c1"># [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]</span>
-			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">exp_t</span><span class="o">*</span><span class="n">E</span>
-			<span class="c1"># [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]</span>
-			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exp_t</span><span class="p">,</span><span class="n">exp_t</span><span class="p">)</span>
-			
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,tj,jk,tk,lk-&gt;ilt&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span></div>
-
 <div class="viewcode-block" id="obs_vs_time"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.obs_vs_time.html#quspin.tools.measurements.obs_vs_time">[docs]</a><span class="k">def</span> <span class="nf">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">Obs_dict</span><span class="p">,</span><span class="n">return_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sent_args</span><span class="o">=</span><span class="p">{},</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Calculates expectation value of observable(s) as a function of time in a time-dependent state.</span>
 
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to calculate the expectation values :math:`\\langle\\psi_1(t)|H_1|\\psi_1(t)\\rangle`</span>
+<span class="sd">	and :math:`\\langle\\psi_1(t)|H_2|\\psi_1(t)\\rangle`.</span>
+
+<span class="sd">	The initial state is an eigenstate of :math:`H_1=\\sum_j hS^x_j + g S^z_j`. The time evolution is done </span>
+<span class="sd">	under :math:`H_2=\\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j`.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/obs_vs_time-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
-<span class="sd">	psi_t : :obj:</span>
+<span class="sd">	psi_t : {tuple,aray_like,generator}</span>
 <span class="sd">		Time-dependent state data; can be either one of:</span>
 
 <span class="sd">		* tuple: `psi_t = (psi, E, V)` where </span>
@@ -705,7 +631,7 @@
 <span class="sd">			-- np.ndarray: real-valued array `E`, contains all eigenvalues of the Hamiltonian :math:`H`. </span>
 <span class="sd">			   The order of the eigenvalues must correspond to the order of the columns of `V`.</span>
 
-<span class="sd">			Use this option when the initial state is evolved witht a time-INdependent Hamiltonian :math:`H`.</span>
+<span class="sd">			Use this option when the initial state is evolved with a time-INdependent Hamiltonian :math:`H`.</span>
 <span class="sd">		* numpy.ndarray: array with the states evaluated at `times` stored in the last dimension. </span>
 <span class="sd">			Can be 2D (single time-dependent state) or 3D (many time-dependent states or </span>
 <span class="sd">			time-dep mixed density matrix, see `enforce_pure` argument.)</span>
@@ -714,19 +640,19 @@
 <span class="sd">		* obj: generator which generates the states.</span>
 
 <span class="sd">	Obs_dict : dict</span>
-<span class="sd">		Dictionary with observables (e.g. `hamiltonian objects`) stored in the values, to calculate </span>
-<span class="sd">		their time-dependent expectation value of. Dictionary keys are chosen by user.</span>
+<span class="sd">		Dictionary with observables (e.g. `hamiltonian objects`) stored in the `values`, to calculate </span>
+<span class="sd">		their time-dependent expectation value. Dictionary `keys` are chosen by user.</span>
 <span class="sd">	times : numpy.ndarray</span>
 <span class="sd">		Vector of times to evaluate the expectation values at. This is important for time-dependent observables. </span>
 <span class="sd">	return_state : bool, optional</span>
-<span class="sd">		If set to `True`, adds key `psi_time` to output. The columns of the array</span>
-<span class="sd">		containt the state vector at the `times` which specifies the column index. Default is `False`, unless</span>
+<span class="sd">		If set to `True`, adds key &quot;psi_time&quot; to output. The columns of the array</span>
+<span class="sd">		contain the state vector at the `times` which specifies the column index. Default is `False`, unless</span>
 <span class="sd">		`Sent_args` is nonempty.</span>
 <span class="sd">	Srdm_args : dict, optional </span>
 <span class="sd">		If nonempty, this dictionary contains the arguments necessary for the calculation of the entanglement</span>
 <span class="sd">		entropy. The following key is required:</span>
-<span class="sd">		</span>
-<span class="sd">		* &quot;basis&quot;: the basis used to build `system_state` in. Must be an instance of the `basis` class.</span>
+<span class="sd">			</span>
+<span class="sd">			* &quot;basis&quot;: the basis used to build `system_state` in. Must be an instance of the `basis` class.</span>
 
 <span class="sd">		The user can choose optional arguments according to those provided in the function method </span>
 <span class="sd">		`basis.ent_entropy()` of the `basis` class [preferred], or the function `ent_entropy()`. </span>
@@ -744,13 +670,13 @@
 <span class="sd">	dict</span>
 <span class="sd">		The following keys of the output are possible, depending on the choice of flags:</span>
 <span class="sd">		</span>
-<span class="sd">		* &quot;custom_name&quot;: for each key of `Obs_dict`, the time-dependent expectation of the </span>
-<span class="sd">			corresponding observable `Obs_dict[key]` is calculated and returned under the user-defined name</span>
-<span class="sd">			for the observable.</span>
-<span class="sd">		* &quot;psi_t&quot;: (optional) returns time-dependent state, if `return_state=True` or `Srdm_args` is nonempty.</span>
-<span class="sd">		* &quot;Sent_time&quot;: (optional) returns dictionary with keys corresponding to the entanglement entropy </span>
-<span class="sd">			calculation for each time in `times`. Can have more keys than just &quot;Sent_A&quot;, e.g. if the reduced</span>
-<span class="sd">			DM was also requested (if specified through `Srdm_args`.)</span>
+<span class="sd">			* &quot;custom_name&quot;: for each key of `Obs_dict`, the time-dependent expectation of the </span>
+<span class="sd">				corresponding observable `Obs_dict[key]` is calculated and returned under the user-defined name</span>
+<span class="sd">				for the observable.</span>
+<span class="sd">			* &quot;psi_t&quot;: (optional) returns time-dependent state, if `return_state=True` or `Srdm_args` is nonempty.</span>
+<span class="sd">			* &quot;Sent_time&quot;: (optional) returns dictionary with keys corresponding to the entanglement entropy </span>
+<span class="sd">				calculation for each time in `times`. Can have more keys than just &quot;Sent_A&quot;, e.g. if the reduced</span>
+<span class="sd">				DM was also requested (toggled through `Srdm_args`.)</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
 
@@ -764,7 +690,7 @@
 
 	<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">Obs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="n">_ishamiltonian</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-			<span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]):</span>
+			<span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]):</span>
 				<span class="n">val</span> <span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
 			<span class="n">Obs_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">([</span><span class="n">val</span><span class="p">],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">val</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -799,7 +725,7 @@
 			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">ED_state_vs_time</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-	<span class="k">elif</span> <span class="n">psi_t</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+	<span class="k">elif</span> <span class="n">psi_t</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 
 
 		<span class="k">for</span> <span class="n">Obs</span> <span class="ow">in</span> <span class="n">Obs_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -911,11 +837,141 @@
 
 	<span class="k">return</span> <span class="n">return_dict</span></div>
 
+<div class="viewcode-block" id="ED_state_vs_time"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.ED_state_vs_time.html#quspin.tools.measurements.ED_state_vs_time">[docs]</a><span class="k">def</span> <span class="nf">ED_state_vs_time</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Calculates the time evolution of initial state using a complete eigenbasis. </span>
+
+<span class="sd">	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. </span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to time-evolve a state :math:`\\psi` using the entire eigensystem </span>
+<span class="sd">	:math:`(E_1,V_1)` of a Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.</span>
+<span class="sd">	</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/ED_state_vs_time-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	psi : numpy.ndarray</span>
+<span class="sd">		Initial state.</span>
+<span class="sd">	V : numpy.ndarray</span>
+<span class="sd">		Unitary matrix containing all eigenstates of the Hamiltonian :math:`H` in its columns. </span>
+<span class="sd">	E : numpy.ndarray</span>
+<span class="sd">		Eigenvalues of the Hamiltonian :math:`H`, listed in the order which corresponds to the columns of `V`. </span>
+<span class="sd">	times : numpy.ndarray</span>
+<span class="sd">		Vector of time to evaluate the time evolved state at. </span>
+<span class="sd">	iterate : bool, optional</span>
+<span class="sd">		If set to `True`, the function returns the generator of the time evolved state. </span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	--------</span>
+<span class="sd">	obj</span>
+<span class="sd">		Either of the following:</span>
+<span class="sd">			* `numpy.ndarray` with the time evolved states as rows. </span>
+<span class="sd">			* `generator` which generates time-dependent states one by one.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">psi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span>
+
+
+	<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;V&#39; must be a square matrix&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Number of eigenstates in &#39;V&#39; must equal number of eigenvalues in &#39;E&#39;!&quot;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variables &#39;psi&#39; and &#39;E&#39; must have the same dimension!&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mixed states must be square!&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psi must be 1 or 2 dimension array.&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+		<span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variable &#39;times&#39; must be a array or iter like object!&quot;</span><span class="p">)</span>
+
+	<span class="n">times</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+	
+
+	<span class="c1"># define generator of time-evolved state in basis V2</span>
+	<span class="k">def</span> <span class="nf">pure_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">):</span>
+		<span class="c1"># a_n: probability amplitudes</span>
+		<span class="c1"># times: time vector</span>
+		<span class="n">a_n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+			<span class="k">yield</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">E</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">a_n</span> <span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">mixed_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">):</span>
+		<span class="c1"># a_n: probability amplitudes</span>
+		<span class="c1"># times: time vector</span>
+		<span class="n">rho_d</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
+			<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,j,jk,k,lk-&gt;il&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+
+
+	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">pure_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">c_n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+
+			<span class="n">Ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+			<span class="n">Ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+			<span class="c1"># generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]</span>
+			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">Ns</span><span class="p">,</span><span class="n">Ntime</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> 
+			<span class="c1"># [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]</span>
+			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">psi_t</span><span class="o">*</span><span class="n">E</span>
+			<span class="c1"># [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]</span>
+			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">psi_t</span><span class="p">)</span>
+
+			<span class="c1"># [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]</span>
+			<span class="n">psi_t</span> <span class="o">*=</span> <span class="n">c_n</span> 
+
+			<span class="c1"># for each vector trasform back to original basis</span>
+			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> 
+
+			<span class="k">return</span> <span class="n">psi_t</span> <span class="c1"># [ psi(times[0]), ...,psi(times[-1]) ]</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">mixed_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">Ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+			<span class="n">Ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+			<span class="n">rho_d</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+
+			<span class="c1"># generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]</span>
+			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">Ns</span><span class="p">,</span><span class="n">Ntime</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+			<span class="c1"># [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]</span>
+			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">exp_t</span><span class="o">*</span><span class="n">E</span>
+			<span class="c1"># [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]</span>
+			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exp_t</span><span class="p">,</span><span class="n">exp_t</span><span class="p">)</span>
+			
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,tj,jk,tk,lk-&gt;ilt&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span></div>
+
 <div class="viewcode-block" id="project_op"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.project_op.html#quspin.tools.measurements.project_op">[docs]</a><span class="k">def</span> <span class="nf">project_op</span><span class="p">(</span><span class="n">Obs</span><span class="p">,</span><span class="n">proj</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Projects observable onto symmetry-reduced subspace.</span>
 
 <span class="sd">	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`</span>
 <span class="sd">	onto that reduced basis.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to project an operator :math:`H_1=\\sum_j hS^x_j + g S^z_j` from the</span>
+<span class="sd">	symmetry-reduced basis to the full basis.</span>
+<span class="sd">	</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/project_op-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
@@ -927,7 +983,7 @@
 <span class="sd">		* `basis` object with the basis of the Hilbert space after the projection.</span>
 <span class="sd">		* numpy.ndarray: a matrix which contains the projector.</span>
 
-<span class="sd">		Projectors can be calculated conveniently using the function method `basis.get_vec()`.</span>
+<span class="sd">		Projectors can be calculated conveniently using the function method `basis.get_proj()`.</span>
 <span class="sd">	dtype : type, optional</span>
 <span class="sd">		Data type of output. Default is `numpy.complex128`.</span>
 
@@ -944,7 +1000,7 @@
 
 	<span class="k">if</span> <span class="n">isbasis</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
 		<span class="n">proj</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="k">elif</span> <span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">proj</span><span class="p">)):</span>
+	<span class="k">elif</span> <span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">proj</span><span class="p">)):</span>
 		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting either matrix/array or basis object for proj argument.&quot;</span><span class="p">)</span>
 
 	<span class="k">if</span> <span class="n">_ishamiltonian</span><span class="p">(</span><span class="n">Obs</span><span class="p">):</span>
@@ -1024,10 +1080,10 @@
 	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p1</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p2</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">):</span>
 		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting all entries of the probability distributions &#39;p1&#39; and &#39;p2&#39; to be non-negative!&quot;</span><span class="p">)</span>
 	
-	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E-13</span><span class="p">:</span>
+	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span>
 		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting &#39;p1&#39; to be normalised!&quot;</span><span class="p">)</span>
 
-	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E-13</span><span class="p">:</span>
+	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span>
 		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting &#39;p2&#39; to be normalised!&quot;</span><span class="p">)</span>
 
 	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p1</span><span class="o">==</span><span class="mf">0.0</span><span class="p">):</span>
@@ -1042,8 +1098,22 @@
 <div class="viewcode-block" id="mean_level_spacing"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.mean_level_spacing.html#quspin.tools.measurements.mean_level_spacing">[docs]</a><span class="k">def</span> <span class="nf">mean_level_spacing</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Calculates the mean-level spacing of an energy spectrum.</span>
 
-<span class="sd">	See mean lebel spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, see </span>
+<span class="sd">	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in </span>
 <span class="sd">	`arXiv:1212.5611 &lt;https://arxiv.org/pdf/1212.5611.pdf/&gt;`_ for more details.</span>
+
+<span class="sd">	For Wigner-Dyson statistics, we have :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.53`, while</span>
+<span class="sd">	for Poisson statistics: :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.38`.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to calculate the mean level spacing :math:`\\langle\\tilde r_\mathrm{W}\\rangle` for the</span>
+<span class="sd">	spectrum of the ergodic Hamiltonian :math:`H_1=\\sum_jJ S^z_{j+1}S^z + hS^x_j + g S^z_j`.</span>
+<span class="sd">	</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/mean_level_spacing-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
@@ -1291,9 +1361,9 @@
 		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nsteps&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
 		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rtol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
+			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">9</span>
 		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
+			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">9</span>
 
 
 	<span class="n">solver</span><span class="o">.</span><span class="n">set_integrator</span><span class="p">(</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
@@ -1543,7 +1613,7 @@
 		<span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmbda</span><span class="o">**</span><span class="mf">2.0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 	
 	<span class="c1"># add floating point number to zero elements</span>
-	<span class="n">p</span><span class="p">[</span><span class="n">p</span><span class="o">&lt;=</span><span class="mf">1E-16</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+	<span class="n">p</span><span class="p">[</span><span class="n">p</span><span class="o">&lt;=</span><span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 		
 	<span class="c1"># calculate entanglement _entropy of &#39;system_state&#39;</span>
 	<span class="k">if</span> <span class="n">alpha</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
@@ -1655,7 +1725,7 @@
 			<span class="k">if</span> <span class="n">system_state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="n">system_state</span> <span class="o">=</span> <span class="n">system_state</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
-		<span class="k">elif</span> <span class="n">system_state</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">not</span> <span class="ow">in</span>  <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+		<span class="k">elif</span> <span class="n">system_state</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">not</span> <span class="ow">in</span>  <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 			<span class="n">system_state</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">system_state</span><span class="p">)</span>
 
 
@@ -1670,7 +1740,7 @@
 			<span class="n">system_state</span> <span class="o">=</span> <span class="n">system_state</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
 			<span class="k">if</span> <span class="n">system_state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="n">system_state</span> <span class="o">=</span> <span class="n">system_state</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-		<span class="k">elif</span> <span class="n">system_state</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">not</span> <span class="ow">in</span>  <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+		<span class="k">elif</span> <span class="n">system_state</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">not</span> <span class="ow">in</span>  <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 			<span class="n">system_state</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">system_state</span><span class="p">)</span>
 
 			
@@ -1687,9 +1757,9 @@
 			<span class="n">istate</span> <span class="o">=</span> <span class="s1">&#39;DM&#39;</span>
 			<span class="c1"># diagonalise DM</span>
 			<span class="n">rho_d</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">_la</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">system_state</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rho_d</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rho_d</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">1E3</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rho_d</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rho_d</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rho_d</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">E3</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rho_d</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting DM to have positive spectrum&quot;</span><span class="p">)</span>
-			<span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rho_d</span><span class="p">)</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E3</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rho_d</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
+			<span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rho_d</span><span class="p">)</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">E3</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rho_d</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting eigenvalues of DM to sum to unity!&quot;</span><span class="p">)</span>
 			<span class="n">rho_d</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rho_d</span><span class="p">)</span>
 
@@ -1705,7 +1775,7 @@
 	<span class="c1"># define number of participating states in &#39;system_state&#39;</span>
 	<span class="n">Ns</span> <span class="o">=</span> <span class="n">psi</span><span class="p">[</span><span class="mi">0</span><span class="p">,]</span><span class="o">.</span><span class="n">size</span>
 
-	<span class="k">if</span> <span class="n">basis</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[:</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">,</span><span class="s1">&#39;boson&#39;</span><span class="p">,</span><span class="s1">&#39;fermion&#39;</span><span class="p">]:</span>
+	<span class="k">if</span> <span class="n">basis</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">[:</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;spin&#39;</span><span class="p">,</span><span class="s1">&#39;boson&#39;</span><span class="p">,</span><span class="s1">&#39;fermion&#39;</span><span class="p">]:</span>
 
 		<span class="c1"># set chain subsys if not defined</span>
 		<span class="k">if</span> <span class="n">chain_subsys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
@@ -1760,7 +1830,7 @@
 			<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">reshape_tuple2</span><span class="p">)</span>
 			
 
-	<span class="k">elif</span> <span class="n">basis</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[:</span><span class="o">-</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;photon&#39;</span><span class="p">:</span>
+	<span class="k">elif</span> <span class="n">basis</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">[:</span><span class="o">-</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;photon&#39;</span><span class="p">:</span>
 
 		<span class="c1"># set chain subsys if not defined; </span>
 		<span class="k">if</span> <span class="n">chain_subsys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
@@ -1829,7 +1899,7 @@
 			<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">reshape_tuple2</span><span class="p">)</span>
 				
 	<span class="k">else</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;basis&#39; class </span><span class="si">{}</span><span class="s2"> not supported!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;basis&#39; class </span><span class="si">{}</span><span class="s2"> not supported!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
 
 	<span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">rho_d</span><span class="p">,</span> <span class="n">N_A</span>
 

@@ -54,10 +54,16 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 
 	For :math:`\\rho` pure, we have :math:`S_\\mathrm{ent}^A = S_\\mathrm{ent}^B`.
 
-	.. literalinclude:: ../../doc_examples/measurements.py
+	Examples
+	--------
+
+	The example below shows how to compute the entanglement entropy of a pure state. The state is chosen as one of
+	the eigenstates of the spin-1/2 Hamiltonian :math:`H=\\sum_j hS^x_j + g S^z_j`.
+
+	.. literalinclude:: ../../doc_examples/ent_entropy-example.py
 		:linenos:
 		:language: python
-		:lines: 35-37
+		:lines: 7-
 
 
 
@@ -194,10 +200,18 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	**Note: All expectation values depend statistically on the symmetry block used via the available number of 
 	states, due to the generic system-size dependence!**
 
-	.. literalinclude:: ../../doc_examples/measurements.py
+	Examples
+	--------
+
+	We prepare a quantum system in an eigenstate :math:`\\psi_1` of the Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.
+	At time :math:`t=0` we quench to the Hamiltonian :math:`H_2=\\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j`, and evolve
+	the initial state :math:`\\psi_1` with it. We compute the infinite-time (i.e. Diagonal Ensemble) expectation value of the Hamiltonian :math:`H_1`, and
+	it's infinite-time temporal fluctuations :math:`\\delta_t\\mathcal{O}^\\psi_d` (see above for the definition). 
+
+	.. literalinclude:: ../../doc_examples/diag_ens-example.py
 		:linenos:
 		:language: python
-		:lines: 39-41
+		:lines: 7-
 
 	Parameters
 	-----------
@@ -536,126 +550,22 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 
 	return Expt_Diag
 
-def ED_state_vs_time(psi,E,V,times,iterate=False):
-	"""Calculates the time evolution of initial state using a complete eigenbasis. 
-
-	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. 
-
-	.. literalinclude:: ../../doc_examples/measurements.py
-		:linenos:
-		:language: python
-		:lines: 43-51
-
-	Parameters
-	-----------
-	psi : numpy.ndarray
-		Initial state.
-	V : numpy.ndarray
-		Unitary matrix containing all eigenstates of the Hamiltonian :math:`H` in its columns. 
-	E : numpy.ndarray
-		Eigenvalues of the Hamiltonian :math:`H`, listed in the order which corresponds to the columns of `V`. 
-	times : numpy.ndarray
-		Vector of time to evaluate the time evolved state at. 
-	iterate : bool, optional
-		If set to `True`, the function returns the generator of the time evolved state. 
-
-	Returns
-	--------
-	obj
-		Either of the following:
-			* `numpy.ndarray` with the time evolved states as rows. 
-			* `generator` which generates time-dependent states one by one.
-
-	"""
-	psi = _np.squeeze(_np.asarray(psi))
-
-
-	if V.ndim != 2 or V.shape[0] != V.shape[1]:
-		raise ValueError("'V' must be a square matrix")
-
-	if V.shape[0] != len(E):
-		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-	if psi.shape[0] != len(E):
-		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-
-	if psi.ndim == 2:
-		if psi.shape[0] != psi.shape[1]:
-			raise ValueError("mixed states must be square!")
-
-	if psi.ndim > 2:
-		raise ValueError("psi must be 1 or 2 dimension array.")
-
-	if _np.isscalar(times):
-		TypeError("Variable 'times' must be a array or iter like object!")
-
-	times = -1j*_np.asarray(times)
-	
-
-	# define generator of time-evolved state in basis V2
-	def pure_t_iter(V,psi,times):
-		# a_n: probability amplitudes
-		# times: time vector
-		a_n = V.T.conj().dot(psi)
-		for t in times:
-			yield V.dot( _np.exp(E*t)*a_n )
-
-	def mixed_t_iter(V,psi,times):
-		# a_n: probability amplitudes
-		# times: time vector
-		rho_d = V.T.conj().dot(psi.dot(V))
-		for t in times:
-			exp_t = _np.exp(t*E)
-			yield _np.einsum("ij,j,jk,k,lk->il",V,exp_t,rho_d,exp_t.conj(),V.conj())
-
-
-	if psi.ndim == 1:
-		if iterate:
-			return pure_t_iter(V,psi,times)
-		else:
-			c_n = V.T.conj().dot(psi)
-
-			Ntime = len(times)
-			Ns = len(E)
-
-			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T 
-			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-			psi_t = psi_t*E
-			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
-			_np.exp(psi_t,psi_t)
-
-			# [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
-			psi_t *= c_n 
-
-			# for each vector trasform back to original basis
-			psi_t = V.dot(psi_t.T) 
-
-			return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
-	else:
-		if iterate:
-			return mixed_t_iter(V,psi,times)
-		else:
-			Ntime = len(times)
-			Ns = len(E)
-
-			rho_d = V.T.conj().dot(psi.dot(V))
-
-			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T
-			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-			exp_t = exp_t*E
-			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
-			_np.exp(exp_t,exp_t)
-			
-			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
-
 def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pure=False,verbose=False):
 	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
 
-	.. literalinclude:: ../../doc_examples/measurements.py
+	Examples
+	--------
+
+	The following example shows how to calculate the expectation values :math:`\\langle\\psi_1(t)|H_1|\\psi_1(t)\\rangle`
+	and :math:`\\langle\\psi_1(t)|H_2|\\psi_1(t)\\rangle`.
+
+	The initial state is an eigenstate of :math:`H_1=\\sum_j hS^x_j + g S^z_j`. The time evolution is done 
+	under :math:`H_2=\\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j`.
+
+	.. literalinclude:: ../../doc_examples/obs_vs_time-example.py
 		:linenos:
 		:language: python
-		:lines: 58-61
+		:lines: 7-
 
 	Parameters
 	-----------
@@ -876,16 +786,141 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 
 	return return_dict
 
+def ED_state_vs_time(psi,E,V,times,iterate=False):
+	"""Calculates the time evolution of initial state using a complete eigenbasis. 
+
+	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. 
+
+	Examples
+	--------
+
+	The following example shows how to time-evolve a state :math:`\\psi` using the entire eigensystem 
+	:math:`(E_1,V_1)` of a Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.
+	
+	.. literalinclude:: ../../doc_examples/ED_state_vs_time-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	psi : numpy.ndarray
+		Initial state.
+	V : numpy.ndarray
+		Unitary matrix containing all eigenstates of the Hamiltonian :math:`H` in its columns. 
+	E : numpy.ndarray
+		Eigenvalues of the Hamiltonian :math:`H`, listed in the order which corresponds to the columns of `V`. 
+	times : numpy.ndarray
+		Vector of time to evaluate the time evolved state at. 
+	iterate : bool, optional
+		If set to `True`, the function returns the generator of the time evolved state. 
+
+	Returns
+	--------
+	obj
+		Either of the following:
+			* `numpy.ndarray` with the time evolved states as rows. 
+			* `generator` which generates time-dependent states one by one.
+
+	"""
+	psi = _np.squeeze(_np.asarray(psi))
+
+
+	if V.ndim != 2 or V.shape[0] != V.shape[1]:
+		raise ValueError("'V' must be a square matrix")
+
+	if V.shape[0] != len(E):
+		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
+	if psi.shape[0] != len(E):
+		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+
+	if psi.ndim == 2:
+		if psi.shape[0] != psi.shape[1]:
+			raise ValueError("mixed states must be square!")
+
+	if psi.ndim > 2:
+		raise ValueError("psi must be 1 or 2 dimension array.")
+
+	if _np.isscalar(times):
+		TypeError("Variable 'times' must be a array or iter like object!")
+
+	times = -1j*_np.asarray(times)
+	
+
+	# define generator of time-evolved state in basis V2
+	def pure_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		a_n = V.T.conj().dot(psi)
+		for t in times:
+			yield V.dot( _np.exp(E*t)*a_n )
+
+	def mixed_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		rho_d = V.T.conj().dot(psi.dot(V))
+		for t in times:
+			exp_t = _np.exp(t*E)
+			yield _np.einsum("ij,j,jk,k,lk->il",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
+
+	if psi.ndim == 1:
+		if iterate:
+			return pure_t_iter(V,psi,times)
+		else:
+			c_n = V.T.conj().dot(psi)
+
+			Ntime = len(times)
+			Ns = len(E)
+
+			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T 
+			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			psi_t = psi_t*E
+			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			_np.exp(psi_t,psi_t)
+
+			# [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+			psi_t *= c_n 
+
+			# for each vector trasform back to original basis
+			psi_t = V.dot(psi_t.T) 
+
+			return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
+	else:
+		if iterate:
+			return mixed_t_iter(V,psi,times)
+		else:
+			Ntime = len(times)
+			Ns = len(E)
+
+			rho_d = V.T.conj().dot(psi.dot(V))
+
+			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T
+			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			exp_t = exp_t*E
+			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			_np.exp(exp_t,exp_t)
+			
+			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
 def project_op(Obs,proj,dtype=_np.complex128):
 	"""Projects observable onto symmetry-reduced subspace.
 
 	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`
 	onto that reduced basis.
 
-	.. literalinclude:: ../../doc_examples/measurements.py
+	Examples
+	--------
+
+	The following example shows how to project an operator :math:`H_1=\\sum_j hS^x_j + g S^z_j` from the
+	symmetry-reduced basis to the full basis.
+	
+	.. literalinclude:: ../../doc_examples/project_op-example.py
 		:linenos:
 		:language: python
-		:lines: 53-56
+		:lines: 7-
 
 	Parameters
 	-----------
@@ -1015,10 +1050,19 @@ def mean_level_spacing(E):
 	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in 
 	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf/>`_ for more details.
 
-	.. literalinclude:: ../../doc_examples/measurements.py
+	For Wigner-Dyson statistics, we have :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.53`, while
+	for Poisson statistics: :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.38`.
+
+	Examples
+	--------
+
+	The following example shows how to calculate the mean level spacing :math:`\\langle\\tilde r_\mathrm{W}\\rangle` for the
+	spectrum of the ergodic Hamiltonian :math:`H_1=\\sum_jJ S^z_{j+1}S^z + hS^x_j + g S^z_j`.
+	
+	.. literalinclude:: ../../doc_examples/mean_level_spacing-example.py
 		:linenos:
 		:language: python
-		:lines: 63-65
+		:lines: 7-
 
 	Parameters
 	-----------

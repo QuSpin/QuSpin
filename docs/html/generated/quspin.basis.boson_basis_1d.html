@@ -55,16 +55,19 @@
 <em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">boson_basis_1d</code><span class="sig-paren">(</span><em>L</em>, <em>Nb=None</em>, <em>nb=None</em>, <em>sps=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/basis/basis_1d/boson.html#boson_basis_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.boson_basis_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for boson operators in a specified 1-d symmetry sector.</p>
 <p class="rubric">Notes</p>
-<ul class="simple">
-<li>if <cite>Nb</cite> or <cite>nb</cite> are specified, by default <cite>sps</cite> is set to the number of bosons on the lattice.</li>
+<ul>
+<li><p class="first">if <cite>Nb</cite> or <cite>nb</cite> are specified, by default <cite>sps</cite> is set to the number of bosons on the lattice.</p>
+</li>
 <li><dl class="first docutils">
 <dt>if <cite>sps</cite> is specified, while <cite>Nb</cite> or <cite>nb</cite> are not, all particle sectors are filled up to the maximumal </dt>
-<dd>occupation.</dd>
+<dd><p class="first last">occupation.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>if <cite>Nb</cite> or <cite>nb</cite> and <cite>sps</cite> are specified, the finite boson basis is constructed with the local Hilbert space </dt>
-<dd>restrited by <cite>sps</cite>.</dd>
+<dd><p class="first last">restrited by <cite>sps</cite>.</p>
+</dd>
 </dl>
 </li>
 </ul>
@@ -241,16 +244,19 @@
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(ME,row,col)</cite>, where</dt>
-<dd><ul class="first last simple">
-<li>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</li>
+<dd><ul class="first last">
+<li><p class="first">numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</p>
+</li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>row</cite>: row indices of matrix representing the operator in the lattice basis,</dt>
-<dd>such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</dd>
+<dd><p class="first last">such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>col</cite>: column index of matrix representing the operator in the lattice basis,</dt>
-<dd>such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</dd>
+<dd><p class="first last">such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</p>
+</dd>
 </dl>
 </li>
 </ul>
@@ -472,15 +478,17 @@ to calculate the eigenvaues of the reduced DM.</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(static, dynamic)</cite>, where</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><dl class="first docutils">
 <dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd>be passed into the static argument of the <cite>hamiltonian</cite> class.</dd>
+<dd><p class="first last">be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</dd>
+<dd><p class="first last">be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+</dd>
 </dl>
 </li>
 </ul>
