@@ -4,18 +4,35 @@ import scipy.sparse as _sp
 import numpy as _np
 
 class expm_multiply_parallel(object):
-	"""This class warps some c++ code which implements the scipy.expm_multiply code with openmp.
+	"""Implements `scipy.expm_multiply` for *openmp*.
+
+	Notes
+	-----
+	This is a wrapper over custom c++ code.
+
+	Examples
+	--------
+
+	This example shows how to construct the `expm_multiply_parallel` object.
+
+	Further code snippets can be found in the examples for the function methods of the class.
+	The code snippet below initiates the class, and is required to run the example codes for the function methods.
+	
+	.. literalinclude:: ../../doc_examples/expm_multiply_parallel-example.py
+		:linenos:
+		:language: python
+		:lines: 7-30
 	
 	"""
 	def __init__(self,A,a=1.0):
-		"""Initialization of `expm_multiply_parallel`. 
+		"""Initializes `expm_multiply_parallel`. 
 
 		Parameters
 		-----------
 		A : {array_like, scipy.sparse matrix}
-			The operator whose exponential is of interest.
+			The operator (matrix) whose exponential is to be calculated.
 		a : scalar, optional
-			scalar value to take to put into the exponent :math:`e^{aA}`.
+			scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.
 			
 		"""
 		self._a = a
@@ -34,58 +51,66 @@ class expm_multiply_parallel(object):
 
 	@property
 	def a(self):
-		"""scalar: value multiplying `A` in matrix exponential: :math:`e^{aA}`"""
+		"""scalar: value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`"""
 		return self._a
 
 	@property
 	def A(self):
-		"""scipy.sparse.csr_matrix: csr_matrix which is being exponentiated."""
+		"""scipy.sparse.csr_matrix: csr_matrix to be exponentiated."""
 		return self._A
 
 
 	def set_a(self,a):
-		"""function to set the value `a`.
-		
+		"""Sets the value of the property `a`.
+
+		Examples
+		--------
+
+		.. literalinclude:: ../../doc_examples/expm_multiply_parallel-example.py
+			:linenos:
+			:language: python
+			:lines: 32-35
+			
 		Parameters
 		-----------
-
 		a : scalar
 			new value of `a`.
 
-
 		"""
-		if _np.array(a).ndim == 1:
+
+		if _np.array(a).ndim == 0:
 
 			self._a = a
 			self._calculate_partition()
 		else:
 			raise ValueError("expecting 'a' to be scalar.")
 
-	def _calculate_partition(self):
-		if _np.abs(self._a)*self._A_1_norm == 0:
-			self._m_star, self._s = 0, 1
-		else:
-			ell = 2
-			self._norm_info = LazyOperatorNormInfo(self._A, self._A_1_norm, self._a, ell=ell)
-			self._m_star, self._s = _fragment_3_1(self._norm_info, 1, self._tol, ell=ell)
-
 	def dot(self,v,work=None,overwrite_v=False):
-		"""Calculate the action of :math:`e^{aA}` on vector v. 
+		"""Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :mathrm:`v`. 
+
+		Examples
+		--------
+
+		.. literalinclude:: ../../doc_examples/expm_multiply_parallel-example.py
+			:linenos:
+			:language: python
+			:lines: 37-
 
 		Parameters
 		-----------
 		v : contiguous numpy.ndarray
-			array to calculate :math:`e^{aA}` on.
+			array to apply :math:`\\mathrm{e}^{aA}` on.
 		work : contiguous numpy.ndarray, optional
-			array of shape = (2*len(v),) which is used as work space for underlying c-code. This saves extra memory allocation for function operation.
+			array of `shape = (2*len(v),)` which is used as work space for the underlying c-code. This saves extra memory allocation for function operations.
 		overwrite_v : bool
-			flag, if True the data in v is overwritten by the function. This saves extra memory allocation for the results.
-
+			if set to `True`, the data in `v` is overwritten by the function. This saves extra memory allocation for the results.
 
 		Returns
 		--------
 		numpy.ndarray
-			result of :math:`e^{aA}v`, if `overwrite_v` is true then it returns v with data overwritten, otherwise the result is stored in a new array.  
+			result of :math:`\\mathrm{e}^{aA}v`. 
+
+			If `overwrite_v = True` the dunction returns `v` with the data overwritten, otherwise the result is stored in a new array.  
 
 		"""
 		if overwrite_v:
@@ -112,6 +137,15 @@ class expm_multiply_parallel(object):
 					self._m_star,self._s,self._a,self._tol,self._mu,v,work)
 
 		return v
+
+	def _calculate_partition(self):
+		if _np.abs(self._a)*self._A_1_norm == 0:
+			self._m_star, self._s = 0, 1
+		else:
+			ell = 2
+			self._norm_info = LazyOperatorNormInfo(self._A, self._A_1_norm, self._a, ell=ell)
+			self._m_star, self._s = _fragment_3_1(self._norm_info, 1, self._tol, ell=ell)
+
 
 ##### code below is copied from scipy.sparse.linalg._expm_multiply_core and modified slightly.
 

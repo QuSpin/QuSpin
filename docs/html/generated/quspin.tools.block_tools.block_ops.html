@@ -53,7 +53,7 @@
 <dl class="class">
 <dt id="quspin.tools.block_tools.block_ops">
 <em class="property">class </em><code class="descclassname">quspin.tools.block_tools.</code><code class="descname">block_ops</code><span class="sig-paren">(</span><em>blocks</em>, <em>static</em>, <em>dynamic</em>, <em>basis_con</em>, <em>basis_args</em>, <em>dtype</em>, <em>basis_kwargs={}</em>, <em>get_proj_kwargs={}</em>, <em>save_previous_data=True</em>, <em>compute_all_blocks=False</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/block_tools.html#block_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops" title="Permalink to this definition">¶</a></dt>
-<dd><p>Split up the dynamics of a state over various symmetry sectors.</p>
+<dd><p>Splits up the dynamics of a state over various symmetry sectors.</p>
 <p>Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does. 
 Moreover, we provide a multiprocessing option which allows the user to split up the dynamics 
 over multiple processing cores.</p>
@@ -67,8 +67,8 @@ over multiple processing cores.</p>
 <p>to show how to use the <cite>block_ops</cite> class to evolve a Fock state, which explicitly breaks
 translational invariance, by decomposing it in all momentum blocks, time-evolving the projections, and putting
 the state back together in the Fock basis in the end. We use the time-evolved state to measure the local density operator <span class="math">\(n_j\)</span>.</p>
-<p>The code snippets for the time evolution can be found in the examples for the function methods of the <cite>block_ops</cite>
-class. The code snippet below initiates the class, and is required to run the example codes for the function methods.</p>
+<p>The code snippets for the time evolution can be found in the examples for the function methods of the class.
+The code snippet below initiates the class, and is required to run the example codes for the function methods.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3

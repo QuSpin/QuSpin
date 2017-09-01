@@ -294,8 +294,8 @@ class block_ops(object):
 	translational invariance, by decomposing it in all momentum blocks, time-evolving the projections, and putting
 	the state back together in the Fock basis in the end. We use the time-evolved state to measure the local density operator :math:`n_j`.
 
-	The code snippets for the time evolution can be found in the examples for the function methods of the `block_ops`
-	class. The code snippet below initiates the class, and is required to run the example codes for the function methods.
+	The code snippets for the time evolution can be found in the examples for the function methods of the class.
+	The code snippet below initiates the class, and is required to run the example codes for the function methods.
 
 	.. literalinclude:: ../../doc_examples/block_ops-example.py
 		:linenos:

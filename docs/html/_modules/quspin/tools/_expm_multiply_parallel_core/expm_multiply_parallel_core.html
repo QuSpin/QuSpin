@@ -55,18 +55,35 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
 <div class="viewcode-block" id="expm_multiply_parallel"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel">[docs]</a><span class="k">class</span> <span class="nc">expm_multiply_parallel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;This class warps some c++ code which implements the scipy.expm_multiply code with openmp.</span>
+	<span class="sd">&quot;&quot;&quot;Implements `scipy.expm_multiply` for *openmp*.</span>
+
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+<span class="sd">	This is a wrapper over custom c++ code.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	This example shows how to construct the `expm_multiply_parallel` object.</span>
+
+<span class="sd">	Further code snippets can be found in the examples for the function methods of the class.</span>
+<span class="sd">	The code snippet below initiates the class, and is required to run the example codes for the function methods.</span>
+<span class="sd">	</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/expm_multiply_parallel-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-30</span>
 <span class="sd">	</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="expm_multiply_parallel.__init__"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Initialization of `expm_multiply_parallel`. </span>
+		<span class="sd">&quot;&quot;&quot;Initializes `expm_multiply_parallel`. </span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
 <span class="sd">		A : {array_like, scipy.sparse matrix}</span>
-<span class="sd">			The operator whose exponential is of interest.</span>
+<span class="sd">			The operator (matrix) whose exponential is to be calculated.</span>
 <span class="sd">		a : scalar, optional</span>
-<span class="sd">			scalar value to take to put into the exponent :math:`e^{aA}`.</span>
+<span class="sd">			scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.</span>
 <span class="sd">			</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
@@ -85,58 +102,66 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;scalar: value multiplying `A` in matrix exponential: :math:`e^{aA}`&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;scalar: value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;scipy.sparse.csr_matrix: csr_matrix which is being exponentiated.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;scipy.sparse.csr_matrix: csr_matrix to be exponentiated.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
 
 
 <div class="viewcode-block" id="expm_multiply_parallel.set_a"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.set_a">[docs]</a>	<span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;function to set the value `a`.</span>
-<span class="sd">		</span>
+		<span class="sd">&quot;&quot;&quot;Sets the value of the property `a`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/expm_multiply_parallel-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 32-35</span>
+<span class="sd">			</span>
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
-
 <span class="sd">		a : scalar</span>
 <span class="sd">			new value of `a`.</span>
 
-
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition</span><span class="p">()</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting &#39;a&#39; to be scalar.&quot;</span><span class="p">)</span></div>
 
-	<span class="k">def</span> <span class="nf">_calculate_partition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">ell</span> <span class="o">=</span> <span class="mi">2</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_norm_info</span> <span class="o">=</span> <span class="n">LazyOperatorNormInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">_fragment_3_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_norm_info</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span>
-
 <div class="viewcode-block" id="expm_multiply_parallel.dot"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Calculate the action of :math:`e^{aA}` on vector v. </span>
+		<span class="sd">&quot;&quot;&quot;Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :mathrm:`v`. </span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/expm_multiply_parallel-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 37-</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
 <span class="sd">		v : contiguous numpy.ndarray</span>
-<span class="sd">			array to calculate :math:`e^{aA}` on.</span>
+<span class="sd">			array to apply :math:`\\mathrm{e}^{aA}` on.</span>
 <span class="sd">		work : contiguous numpy.ndarray, optional</span>
-<span class="sd">			array of shape = (2*len(v),) which is used as work space for underlying c-code. This saves extra memory allocation for function operation.</span>
+<span class="sd">			array of `shape = (2*len(v),)` which is used as work space for the underlying c-code. This saves extra memory allocation for function operations.</span>
 <span class="sd">		overwrite_v : bool</span>
-<span class="sd">			flag, if True the data in v is overwritten by the function. This saves extra memory allocation for the results.</span>
-
+<span class="sd">			if set to `True`, the data in `v` is overwritten by the function. This saves extra memory allocation for the results.</span>
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		numpy.ndarray</span>
-<span class="sd">			result of :math:`e^{aA}v`, if `overwrite_v` is true then it returns v with data overwritten, otherwise the result is stored in a new array.  </span>
+<span class="sd">			result of :math:`\\mathrm{e}^{aA}v`. </span>
+
+<span class="sd">			If `overwrite_v = True` the dunction returns `v` with the data overwritten, otherwise the result is stored in a new array.  </span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="n">overwrite_v</span><span class="p">:</span>
@@ -162,7 +187,16 @@
 		<span class="n">_wrapper_expm_multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work</span><span class="p">)</span>
 
-		<span class="k">return</span> <span class="n">v</span></div></div>
+		<span class="k">return</span> <span class="n">v</span></div>
+
+	<span class="k">def</span> <span class="nf">_calculate_partition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">ell</span> <span class="o">=</span> <span class="mi">2</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_norm_info</span> <span class="o">=</span> <span class="n">LazyOperatorNormInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">_fragment_3_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_norm_info</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span></div>
+
 
 <span class="c1">##### code below is copied from scipy.sparse.linalg._expm_multiply_core and modified slightly.</span>
 
