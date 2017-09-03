@@ -3,7 +3,8 @@
 
 cdef int CheckState_P_template(bitop fliplr,int p, basis_type s, int L, basis_type[:] bitop_pars):
     cdef basis_type t=s
-    t=fliplr(t,L,bitop_pars)
+    cdef NP_INT8_t sign[1]
+    t=fliplr(t,L,sign,bitop_pars)
     
     if t > s: 
         return 2
@@ -22,9 +23,10 @@ cdef int CheckState_P_template(bitop fliplr,int p, basis_type s, int L, basis_ty
 
 cdef int CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,basis_type s,int L, basis_type[:] bitop_pars):
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
     
-    t=fliplr(t,L,bitop_pars)
-    t=flip_all(t,L,bitop_pars)
+    t=fliplr(t,L,sign,bitop_pars)
+    t=flip_all(t,L,sign,bitop_pars)
     if t > s:
         return 2
     elif t == s:
@@ -41,7 +43,9 @@ cdef int CheckState_PZ_template(bitop fliplr,bitop flip_all,int pz,basis_type s,
 
 cdef int CheckState_Z_template(bitop flip_all,int z,basis_type s,int L, basis_type[:] bitop_pars):
     cdef basis_type t=s
-    t=flip_all(t,L,bitop_pars)
+    cdef NP_INT8_t sign[1]
+
+    t=flip_all(t,L,sign,bitop_pars)
     
     if t > s: 
         return 2
@@ -56,6 +60,7 @@ cdef int CheckState_Z_template(bitop flip_all,int z,basis_type s,int L, basis_ty
 
 cdef int CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_type s,int L, basis_type[:] bitop_pars):
     cdef int rp,rz,rps
+    cdef NP_INT8_t sign[1]
 
     rz = CheckState_Z_template(flip_all,z,s,L,bitop_pars)
     if rz < 0:
@@ -83,8 +88,9 @@ cdef int CheckState_P_Z_template(bitop fliplr,bitop flip_all,int p,int z,basis_t
 
 cdef int CheckState_ZA_template(bitop flip_sublat_A,int zA,basis_type s,int L, basis_type[:] bitop_pars):
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
 
-    t=flip_sublat_A(t,L,bitop_pars)
+    t=flip_sublat_A(t,L,sign,bitop_pars)
     if t > s: 
         return 2
     elif t == s:
@@ -98,8 +104,9 @@ cdef int CheckState_ZA_template(bitop flip_sublat_A,int zA,basis_type s,int L, b
 
 cdef int CheckState_ZB_template(bitop flip_sublat_B,int zB,basis_type s,int L, basis_type[:] bitop_pars):
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
 
-    t=flip_sublat_B(t,L,bitop_pars)
+    t=flip_sublat_B(t,L,sign,bitop_pars)
     if t > s: 
         return 2
     elif t == s:
@@ -114,6 +121,7 @@ cdef int CheckState_ZB_template(bitop flip_sublat_B,int zB,basis_type s,int L, b
 
 cdef int CheckState_ZA_ZB_template(bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,int zA,int zB,basis_type s,int L, basis_type[:] bitop_pars):
     cdef int rA,rB,rAB
+    cdef NP_INT8_t sign[1]
 
     rA = CheckState_ZA_template(flip_sublat_A,zA,s,L,bitop_pars)
     if rA < 0:
@@ -148,10 +156,12 @@ cdef int CheckState_T_template(shifter shift,int kblock,int L,basis_type s,int T
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     cdef int R=-1
     cdef int i
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             return R
         elif t == s:
@@ -176,6 +186,8 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     cdef int i,r
     R[0] = -1
     R[1] = -1
@@ -185,7 +197,7 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
         return
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
         if t < s:
             return
         elif t==s:
@@ -196,7 +208,7 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
             break
 
     t = s
-    t = fliplr(t,L,bitop_pars)
+    t = fliplr(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -204,7 +216,7 @@ cdef void CheckState_T_P_template(shifter shift,bitop fliplr,int kblock,int L,ba
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     return
 
@@ -219,6 +231,8 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     R[0] = -1
     R[1] = -1
     R[2] = -1
@@ -231,7 +245,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         return
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             R[0] = -1
             return
@@ -243,7 +257,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
             break    
 
     t = s
-    t = fliplr(t,L,bitop_pars)
+    t = fliplr(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -251,10 +265,10 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     t = s
-    t = flip_all(t,L,bitop_pars)
+    t = flip_all(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -262,11 +276,11 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         elif t == s:
             R[2] = i
             break
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
 
     t = s
-    t = flip_all(t,L,bitop_pars)
-    t = fliplr(t,L,bitop_pars)
+    t = flip_all(t,L,sign,bitop_pars)
+    t = fliplr(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -274,7 +288,7 @@ cdef void CheckState_T_P_Z_template(shifter shift,bitop fliplr,bitop flip_all,in
         elif t == s:
             R[3] = i
             break
-        t = shift(t,T,L,bitop_pars)    
+        t = shift(t,T,L,sign,bitop_pars)    
 
     return
 
@@ -297,6 +311,8 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     R[0] = -1
     R[1] = -1 
     cdef int i,r
@@ -306,7 +322,7 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -317,8 +333,8 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
             break
 
     t = s
-    t = flip_all(t,L,bitop_pars)
-    t = fliplr(t,L,bitop_pars)
+    t = flip_all(t,L,sign,bitop_pars)
+    t = fliplr(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -326,7 +342,7 @@ cdef void CheckState_T_PZ_template(shifter shift,bitop fliplr,bitop flip_all,int
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     return
 
@@ -347,6 +363,8 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     R[0] = -1
     R[1] = -1
     cdef int i,r
@@ -355,7 +373,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -366,7 +384,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
             break
 
     t = s
-    t = flip_all(t,L,bitop_pars)
+    t = flip_all(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -374,7 +392,7 @@ cdef void CheckState_T_Z_template(shifter shift,bitop flip_all,int kblock,int L,
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     return
 
@@ -388,6 +406,8 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     R[0] = -1
     R[1] = -1
     cdef int i,r
@@ -396,7 +416,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -407,7 +427,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
             break
 
     t = s
-    t = flip_sublat_A(t,L,bitop_pars)
+    t = flip_sublat_A(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -415,7 +435,7 @@ cdef void CheckState_T_ZA_template(shifter shift,bitop flip_sublat_A,int kblock,
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     return
 
@@ -428,6 +448,8 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     R[0] = -1
     R[1] = -1
     cdef int i,r
@@ -436,7 +458,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -447,7 +469,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
             break
 
     t = s
-    t = flip_sublat_B(t,L,bitop_pars)
+    t = flip_sublat_B(t,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -455,7 +477,7 @@ cdef void CheckState_T_ZB_template(shifter shift,bitop flip_sublat_B,int kblock,
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     return
 
@@ -472,6 +494,8 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
     #        s: integer which represents a spin config in Sz basis
     #        T: number of sites to translate by, not 1 if the unit cell on the lattice has 2 sites in it.
     cdef basis_type t=s
+    cdef NP_INT8_t sign[1]
+
     R[0] = -1
     R[1] = -1
     R[2] = -1
@@ -483,7 +507,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,bitop_pars)
+        t = shift(t,T,L,sign,bitop_pars)
         if t < s:
             return
         elif t==s:
@@ -494,7 +518,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
             break
 
 
-    t = flip_sublat_A(s,L,bitop_pars)
+    t = flip_sublat_A(s,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -502,10 +526,10 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
 
-    t = flip_sublat_B(s,L,bitop_pars)
+    t = flip_sublat_B(s,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -513,10 +537,10 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
         elif t == s:
             R[2] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
 
-    t = flip_all(s,L,bitop_pars)
+    t = flip_all(s,L,sign,bitop_pars)
     for i in range(r):
         if t < s:
             R[0] = -1
@@ -524,7 +548,7 @@ cdef void CheckState_T_ZA_ZB_template(shifter shift,bitop flip_sublat_A,bitop fl
         elif t == s:
             R[3] = i
             break
-        t = shift(t,T,L,bitop_pars) 
+        t = shift(t,T,L,sign,bitop_pars) 
 
     return
 

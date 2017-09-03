@@ -4,7 +4,7 @@ Each cython function comes with its python counterpart (used by get_vec)
 """
 
 
-cdef basis_type shift(basis_type s,int shift,int length,basis_type[:] pars):
+cdef basis_type shift(basis_type s,int shift,int length,NP_INT8_t * sign,basis_type[:] pars):
     """
     Returns integer representation of shifted bosonic state.
 
@@ -16,6 +16,7 @@ cdef basis_type shift(basis_type s,int shift,int length,basis_type[:] pars):
     sps: number of states per site
     M = [sps**i for i in range(L+1)]
     """
+    sign[0] *= 1
     cdef basis_type v = 0
     cdef basis_type[:] M = pars[1:]
     cdef basis_type sps = M[1]
@@ -29,16 +30,16 @@ cdef basis_type shift(basis_type s,int shift,int length,basis_type[:] pars):
 
     return v
 
-def py_shift(basis_type[:] x,int d,int length, basis_type[:] pars):
+def py_shift(basis_type[:] x,int d,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
 
     for i in range(Ns):
-        x[i] = shift(x[i],d,length,pars)
+        x[i] = shift(x[i],d,length,&signs[i],pars)
 
 
 
-cdef basis_type fliplr(basis_type s, int length, basis_type[:] pars):
+cdef basis_type fliplr(basis_type s, int length, NP_INT8_t * sign, basis_type[:] pars):
     """
     Returns integer representation of reflected bosonic state wrt middle of chain.
 
@@ -48,6 +49,7 @@ cdef basis_type fliplr(basis_type s, int length, basis_type[:] pars):
     length: total number of sites
     sps: number of states per site
     """
+    sign[0] *= 1
     cdef basis_type v = 0
     cdef basis_type[:] M = pars[1:]
     cdef basis_type sps = M[1]
@@ -60,16 +62,16 @@ cdef basis_type fliplr(basis_type s, int length, basis_type[:] pars):
 
     return v
 
-def py_fliplr(basis_type[:] x,int length, basis_type[:] pars):
+def py_fliplr(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
 
     for i in range(Ns):
-        x[i] = fliplr(x[i],length,pars)
+        x[i] = fliplr(x[i],length,&signs[i],pars)
 
 
 
-cdef basis_type flip_all(basis_type s, int length,basis_type[:] pars):
+cdef basis_type flip_all(basis_type s, int length,NP_INT8_t * sign,basis_type[:] pars):
     """
     Returns integer representation of bosonic state with complementary site occulation.
 
@@ -80,6 +82,7 @@ cdef basis_type flip_all(basis_type s, int length,basis_type[:] pars):
     sps: number of states per site
     M = [sps**i for i in range(L)]
     """
+    sign[0] *= 1
     cdef basis_type v = 0
     cdef basis_type[:] M = pars[1:]
     cdef basis_type sps = M[1]
@@ -92,16 +95,16 @@ cdef basis_type flip_all(basis_type s, int length,basis_type[:] pars):
     return v
 
 
-def py_flip_all(basis_type[:] x,int length, basis_type[:] pars):
+def py_flip_all(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
 
     for i in range(Ns):
-        x[i] = flip_all(x[i],length,pars)
+        x[i] = flip_all(x[i],length,&signs[i],pars)
 
 
 
-cdef basis_type flip_sublat_A(basis_type s, int length,basis_type[:] pars):
+cdef basis_type flip_sublat_A(basis_type s, int length,NP_INT8_t * sign,basis_type[:] pars):
     """
     Returns integer representation of bosonic state with complementary site occulation on sublattice A.
 
@@ -112,6 +115,7 @@ cdef basis_type flip_sublat_A(basis_type s, int length,basis_type[:] pars):
     sps: number of states per site
     M = [sps**i for i in range(L)]
     """
+    sign[0] *= 1
     cdef basis_type v = 0
     cdef basis_type[:] M = pars[1:]
     cdef basis_type sps = M[1]
@@ -129,16 +133,16 @@ cdef basis_type flip_sublat_A(basis_type s, int length,basis_type[:] pars):
     return v
 
 
-def py_flip_sublat_A(basis_type[:] x,int length, basis_type[:] pars):
+def py_flip_sublat_A(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
 
     for i in range(Ns):
-        x[i] = flip_sublat_A(x[i],length,pars)
+        x[i] = flip_sublat_A(x[i],length,&signs[i],pars)
 
 
 
-cdef basis_type flip_sublat_B(basis_type s, int length,basis_type[:] pars):
+cdef basis_type flip_sublat_B(basis_type s, int length,NP_INT8_t * sign,basis_type[:] pars):
     """
     Returns integer representation of bosonic state with complementary site occulation on sublattice B.
 
@@ -149,6 +153,7 @@ cdef basis_type flip_sublat_B(basis_type s, int length,basis_type[:] pars):
     sps: number of states per site
     M = [sps**i for i in range(L)]
     """
+    sign[0] *= 1
     cdef basis_type v = 0
     cdef basis_type[:] M = pars[1:]
     cdef basis_type sps = M[1]
@@ -166,12 +171,12 @@ cdef basis_type flip_sublat_B(basis_type s, int length,basis_type[:] pars):
     return v
 
 
-def py_flip_sublat_B(basis_type[:] x,int length, basis_type[:] pars):
+def py_flip_sublat_B(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
 
     for i in range(Ns):
-        x[i] = flip_sublat_B(x[i],length,pars)
+        x[i] = flip_sublat_B(x[i],length,&signs[i],pars)
 
 
 

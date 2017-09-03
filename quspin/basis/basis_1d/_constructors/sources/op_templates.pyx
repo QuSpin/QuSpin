@@ -24,6 +24,7 @@ cdef int n_op_template(op_type op_func,basis_type[:] op_pars, npy_intp Ns, basis
     cdef basis_type s
     cdef int error = 0
     cdef bool found
+
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
     if error != 0:
@@ -57,6 +58,7 @@ cdef int p_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,basis_
     cdef int q
     cdef double n
     cdef bool found
+    cdef NP_INT8_t sign
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -67,7 +69,7 @@ cdef int p_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,basis_
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_P_template(fliplr,row[i],L,&q,ref_pars)
+        s = RefState_P_template(fliplr,row[i],L,&sign,&q,ref_pars)
         s = findzstate(basis,Ns,s,&found)
         
         if not found:
@@ -92,6 +94,7 @@ cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop
     cdef int error,qg
     cdef double n
     cdef bool found
+    cdef NP_INT8_t sign
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -102,7 +105,7 @@ cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_PZ_template(fliplr,flip_all,row[i],L,&qg,ref_pars)
+        s = RefState_PZ_template(fliplr,flip_all,row[i],L,&sign,&qg,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -136,6 +139,7 @@ cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bito
     cdef int R[2]
     cdef double n
     cdef bool found
+    cdef NP_INT8_t sign
 
     R[0] = 0
     R[1] = 0
@@ -149,7 +153,7 @@ cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bito
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_P_Z_template(fliplr,flip_all,row[i],L,R,ref_pars)
+        s = RefState_P_Z_template(fliplr,flip_all,row[i],L,&sign,R,ref_pars)
 
         q = R[0]
         g = R[1]
@@ -196,6 +200,7 @@ cdef int t_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,basis
     cdef int error,l
     cdef double n,k
     cdef bool found
+    cdef NP_INT8_t sign
 
     k = (2.0*_np.pi*kblock*a)/L
     l = 0
@@ -211,7 +216,7 @@ cdef int t_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,basis
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_template(shift,row[i],L,a,&l,ref_pars)
+        s = RefState_T_template(shift,row[i],L,a,&sign,&l,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -297,6 +302,7 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
     cdef int error,l,q
     cdef int R[2]
     cdef bool found
+    cdef NP_INT8_t sign
 
     R[0] = 0
     R[1] = 0
@@ -316,7 +322,7 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         for i in range(Ns):
-            s = RefState_T_P_template(shift,fliplr,row[i],L,a,R,ref_pars)
+            s = RefState_T_P_template(shift,fliplr,row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -339,7 +345,7 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
             else:
                 o = 1
 
-            s = RefState_T_P_template(shift,fliplr,row[i],L,a,R,ref_pars)
+            s = RefState_T_P_template(shift,fliplr,row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -472,6 +478,7 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
     cdef int error,l,q,g
     cdef int R[3]
     cdef bool found
+    cdef NP_INT8_t sign
 
     cdef double k = (2.0*_np.pi*kblock*a)/L
 
@@ -492,7 +499,7 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         for i in range(Ns):
-            s = RefState_T_P_Z_template(shift,fliplr,flip_all,row[i],L,a,R,ref_pars)
+            s = RefState_T_P_Z_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -516,7 +523,7 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
             else:
                 o = 1
 
-            s = RefState_T_P_Z_template(shift,fliplr,flip_all,row[i],L,a,R,ref_pars)
+            s = RefState_T_P_Z_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -625,6 +632,7 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
     cdef int error,l,qg
     cdef int R[2]
     cdef bool found
+    cdef NP_INT8_t sign
 
     cdef double k = (2.0*_np.pi*kblock*a)/L
 
@@ -644,7 +652,7 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         for i in range(Ns):
-            s = RefState_T_PZ_template(shift,fliplr,flip_all,row[i],L,a,R,ref_pars)
+            s = RefState_T_PZ_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             qg = R[1]
@@ -668,7 +676,7 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
             else:
                 o = 1
 
-            s = RefState_T_PZ_template(shift,fliplr,flip_all,row[i],L,a,R,ref_pars)
+            s = RefState_T_PZ_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             qg = R[1]
@@ -752,6 +760,7 @@ cdef int t_zA_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
+    cdef NP_INT8_t sign
 
     R[0] = 0
     R[1] = 0
@@ -768,7 +777,7 @@ cdef int t_zA_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_ZA_template(shift,flip_sublat_A,row[i],L,a,R,ref_pars)
+        s = RefState_T_ZA_template(shift,flip_sublat_A,row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         gA = R[1]
@@ -864,6 +873,7 @@ cdef int t_zA_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
+    cdef NP_INT8_t sign
 
     R[0] = 0
     R[1] = 0
@@ -881,7 +891,7 @@ cdef int t_zA_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,row[i],L,a,R,ref_pars)
+        s = RefState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         gA = R[1]
@@ -949,6 +959,7 @@ cdef int t_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
+    cdef NP_INT8_t sign
 
     R[0] = 0
     R[1] = 0
@@ -965,7 +976,7 @@ cdef int t_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_ZB_template(shift,flip_sublat_B,row[i],L,a,R,ref_pars)
+        s = RefState_T_ZB_template(shift,flip_sublat_B,row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         gB = R[1]
@@ -1028,6 +1039,7 @@ cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
+    cdef NP_INT8_t sign
 
     R[0] = 0
     R[1] = 0
@@ -1044,7 +1056,7 @@ cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_Z_template(shift,flip_all,row[i],L,a,R,ref_pars)
+        s = RefState_T_Z_template(shift,flip_all,row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         g = R[1]
@@ -1080,6 +1092,7 @@ cdef int zA_op_template(op_type op_func, basis_type[:] op_pars,bitop flip_sublat
     cdef npy_intp ss,i
     cdef int error,gA
     cdef bool found
+    cdef NP_INT8_t sign
     cdef double n
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -1091,7 +1104,7 @@ cdef int zA_op_template(op_type op_func, basis_type[:] op_pars,bitop flip_sublat
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_ZA_template(flip_sublat_A,row[i],L,&gA,ref_pars)
+        s = RefState_ZA_template(flip_sublat_A,row[i],L,&sign,&gA,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -1121,6 +1134,7 @@ cdef int zA_zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_subl
     cdef int error,gA,gB
     cdef int R[2]
     cdef bool found
+    cdef NP_INT8_t sign
     cdef double n
 
     R[0] = 0
@@ -1135,7 +1149,7 @@ cdef int zA_zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_subl
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,row[i],L,R,ref_pars)
+        s = RefState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,row[i],L,&sign,R,ref_pars)
 
         gA = R[0]
         gB = R[1]
@@ -1162,6 +1176,7 @@ cdef int zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_sublat_
     cdef npy_intp ss,i
     cdef int error,gB
     cdef bool found
+    cdef NP_INT8_t sign
     cdef double n
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -1173,7 +1188,7 @@ cdef int zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_sublat_
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_ZB_template(flip_sublat_B,row[i],L,&gB,ref_pars)
+        s = RefState_ZB_template(flip_sublat_B,row[i],L,&sign,&gB,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -1197,6 +1212,7 @@ cdef int z_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_all,basi
     cdef npy_intp i
     cdef int error,g
     cdef bool found
+    cdef NP_INT8_t sign
     cdef double n
 
 
@@ -1209,7 +1225,7 @@ cdef int z_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_all,basi
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_Z_template(flip_all,row[i],L,&g,ref_pars)
+        s = RefState_Z_template(flip_all,row[i],L,&sign,&g,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:

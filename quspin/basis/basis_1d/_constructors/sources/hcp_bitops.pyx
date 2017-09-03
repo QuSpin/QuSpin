@@ -1,20 +1,4 @@
 
-
-cdef inline basis_type shift(basis_type I,int shift,int period,basis_type[:] pars):
-# this functino is used to shift the bits of an integer by 'shift' bits.
-# it is used when constructing the momentum states
-    cdef int l = (shift+period)%period
-    return ((I << l) & pars[2]) | (I >> (period - l))
-
-
-def py_shift(basis_type[:] x,int d,int length, basis_type[:] pars):
-    cdef npy_intp i 
-    cdef npy_intp Ns = x.shape[0]
-    for i in range(Ns):
-        x[i] = shift(x[i],d,length,pars)
-
-
-
 cdef NP_INT32_t bit_count(basis_type I, int length):
     cdef NP_INT32_t out = 0
     cdef int i
@@ -23,11 +7,25 @@ cdef NP_INT32_t bit_count(basis_type I, int length):
 
     return out
 
+cdef inline basis_type shift(basis_type I,int shift,int period,NP_INT8_t * sign,basis_type[:] pars):
+# this functino is used to shift the bits of an integer by 'shift' bits.
+# it is used when constructing the momentum states
+    sign[0] *= 1
+    cdef int l = (shift+period)%period
+    return ((I << l) & pars[2]) | (I >> (period - l))
 
 
-cdef basis_type fliplr(basis_type I, int length, basis_type[:] pars):
+def py_shift(basis_type[:] x,int d,int length, NP_INT8_t[:] signs, basis_type[:] pars):
+    cdef npy_intp i 
+    cdef npy_intp Ns = x.shape[0]
+    for i in range(Ns):
+        x[i] = shift(x[i],d,length,&signs[i],pars)
+
+
+cdef basis_type fliplr(basis_type I, int length,NP_INT8_t * sign, basis_type[:] pars):
     # this function flips the bits of an integer around the centre, e.g. 1010 -> 0101
     # (generator of) parity symmetry
+    sign[0] *= 1
     cdef basis_type out = 0
     cdef basis_type II = I
     cdef int i,j
@@ -41,55 +39,58 @@ cdef basis_type fliplr(basis_type I, int length, basis_type[:] pars):
 
 
 
-def py_fliplr(basis_type[:] x,int length, basis_type[:] pars):
+def py_fliplr(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
     for i in range(Ns):
-        x[i] = fliplr(x[i],length,pars)
+        x[i] = fliplr(x[i],length,&signs[i],pars)
 
 
 
 
 
-cdef inline basis_type flip_all(basis_type I, int length,basis_type[:] pars):
+cdef inline basis_type flip_all(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
     # flip all bits
+    sign[0] *= 1
     return I^pars[2]
 
 
-def py_flip_all(basis_type[:] x,int length, basis_type[:] pars):
+def py_flip_all(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
     for i in range(Ns):
-        x[i] = flip_all(x[i],length,pars)
+        x[i] = flip_all(x[i],length,&signs[i],pars)
 
 
 
 
-cdef inline basis_type flip_sublat_A(basis_type I, int length,basis_type[:] pars):
+cdef inline basis_type flip_sublat_A(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
     # flip all even bits: sublat A
+    sign[0] *= 1
     return I^pars[3]
 
 
-def py_flip_sublat_A(basis_type[:] x,int length, basis_type[:] pars):
+def py_flip_sublat_A(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
     for i in range(Ns):
-        x[i] = flip_sublat_A(x[i],length,pars)
+        x[i] = flip_sublat_A(x[i],length,&signs[i],pars)
 
 
 
 
-cdef inline basis_type flip_sublat_B(basis_type I, int length,basis_type[:] pars):
+cdef inline basis_type flip_sublat_B(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
     # flip all odd bits: sublat B
+    sign[0] *= 1
     return I^pars[4]
 
 
 
-def py_flip_sublat_B(basis_type[:] x,int length, basis_type[:] pars):
+def py_flip_sublat_B(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
     for i in range(Ns):
-        x[i] = flip_sublat_B(x[i],length,pars)
+        x[i] = flip_sublat_B(x[i],length,&signs[i],pars)
 
 
 
