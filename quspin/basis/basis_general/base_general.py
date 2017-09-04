@@ -81,27 +81,7 @@ class basis_general(lattice_basis):
 			self._qs   = _np.array([],dtype=_np.int32)
 			self._pers = _np.array([],dtype=_np.int32)
 
-	@property
-	def blocks(self):
-		return self._blocks
-
-	@property
-	def N(self):
-		return self._N
-
-	@property
-	def sps(self):
-		return self._sps
-
-	@property
-	def Ns(self):
-		return self._Ns
-
-	def append(self,other):
-		if self.__class__ != other.__class__:
-			raise ValueError
-
-	def Op(self,opstr,indx,J,dtype):
+	def _Op(self,opstr,indx,J,dtype):
 
 		indx = _np.asarray(indx,dtype=_np.int32)
 
@@ -131,10 +111,33 @@ class basis_general(lattice_basis):
 
 		return ME,row,col	
 
-	def get_norms(self):
-		return _np.sqrt(self._n)
-
 	def get_proj(self,dtype):
+		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Parameters
+		-----------
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the projector with.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		
+		Returns
+		--------
+		scipy.sparse.csr_matrix
+			Transformation/projector between the symmetry-reduced and the full basis.
+
+		Examples
+		--------
+
+		>>> P = get_proj(np.float64,pcon=False)
+		>>> print(P.shape)
+
+		"""
 		c = _np.ones_like(self._basis,dtype=dtype)
 		c[:] = self._n[:]
 		_np.sqrt(c,out=c)
@@ -144,43 +147,72 @@ class basis_general(lattice_basis):
 		row = _np.arange(self._Ns,dtype=index_type)
 		return self._core.get_proj(self._basis,dtype,c,row,col)
 
-	def get_vec(self,v_in,sparse=True):
-		if not hasattr(v_in,"shape"):
-			v_in = _np.asanyarray(v_in)
+	def get_vec(self,v0,sparse=True):
+		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Supports parallelisation to multiple states listed in the columns.
+
+		Parameters
+		-----------
+		v0 : numpy.ndarray
+			Contains in its columns the states in the symmetry-reduced basis.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		
+		Returns
+		--------
+		numpy.ndarray
+			Array containing the state `v0` in the full basis.
+
+		Examples
+		--------
+
+		>>> v_full = get_vec(v0)
+		>>> print(v_full.shape, v0.shape)
+
+		"""
+
+		if not hasattr(v0,"shape"):
+			v0 = _np.asanyarray(v0)
 
 		squeeze = False
 
-		if v_in.ndim == 1:
+		if v0.ndim == 1:
 			shape = (self._sps**self._N,1)
-			v_in = v_in.reshape((-1,1))
+			v0 = v0.reshape((-1,1))
 			squeeze = True
-		elif v_in.ndim == 2:
-			shape = (self._sps**self._N,v_in.shape[1])
+		elif v0.ndim == 2:
+			shape = (self._sps**self._N,v0.shape[1])
 		else:
-			raise ValueError("excpecting v_in to have ndim at most 2")
+			raise ValueError("excpecting v0 to have ndim at most 2")
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._N,0),dtype=v_in.dtype)
+				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._N,0),dtype=v0.dtype)
 			else:
-				return _np.zeros((self._sps**self._N,0),dtype=v_in.dtype)
+				return _np.zeros((self._sps**self._N,0),dtype=v0.dtype)
 
-		if v_in.shape[0] != self._Ns:
-			raise ValueError("v_in shape {0} not compatible with Ns={1}".format(v_in.shape,self._Ns))
+		if v0.shape[0] != self._Ns:
+			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
 
-		if _sp.issparse(v_in): # current work around for sparse states.
-			# return self.get_proj(v_in.dtype).dot(v_in)
+		if _sp.issparse(v0): # current work around for sparse states.
+			# return self.get_proj(v0.dtype).dot(v0)
 			raise ValueError
 
-		if not v_in.flags["C_CONTIGUOUS"]:
-			v_in = _np.ascontiguousarray(v_in)
+		if not v0.flags["C_CONTIGUOUS"]:
+			v0 = _np.ascontiguousarray(v0)
 
 		if sparse:
 			# current work-around for sparse
-			return self.get_proj(v_in.dtype).dot(_sp.csr_matrix(v_in))
+			return self.get_proj(v0.dtype).dot(_sp.csr_matrix(v0))
 		else:
-			v_out = _np.zeros(shape,dtype=v_in.dtype,)
-			self._core.get_vec_dense(self._basis,self._n,v_in,v_out)
+			v_out = _np.zeros(shape,dtype=v0.dtype,)
+			self._core.get_vec_dense(self._basis,self._n,v0,v_out)
 			if squeeze:
 				return  _np.squeeze(v_out)
 			else:
@@ -189,10 +221,10 @@ class basis_general(lattice_basis):
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		if photon_basis is None:
 			basis_sort_opstr = self._sort_opstr
-			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
 		else:
 			basis_sort_opstr = photon_basis._sort_opstr
-			static_list,dynamic_list = photon_basis.get_local_lists(static,dynamic)
+			static_list,dynamic_list = photon_basis._get_local_lists(static,dynamic)
 
 
 		static_blocks = {}
@@ -209,10 +241,6 @@ class basis_general(lattice_basis):
 
 
 		return static_blocks,dynamic_blocks
-
-
-
-
 
 
 def _check_symm_map(map,sort_opstr,operator_list):

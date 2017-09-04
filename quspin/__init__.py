@@ -1,5 +1,5 @@
 # local modules
-import numpy
+import numpy,dill
 from . import operators
 from . import basis
 from . import tools

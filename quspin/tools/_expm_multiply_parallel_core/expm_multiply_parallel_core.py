@@ -11,11 +11,11 @@ class expm_multiply_parallel(object):
 		"""Initialization of `expm_multiply_parallel`. 
 
 		Parameters
-		----------
+		-----------
 		A : {array_like, scipy.sparse matrix}
 			The operator whose exponential is of interest.
-		a : scalar 
-			scalar value to take to put into the exponent ..math: expm(aH).
+		a : scalar, optional
+			scalar value to take to put into the exponent :math:`e^{aA}`.
 			
 		"""
 		self._a = a
@@ -29,7 +29,39 @@ class expm_multiply_parallel(object):
 		self._mu = _wrapper_csr_trace(self._A.indptr,self._A.indices,self._A.data)/self._A.shape[0]
 		self._A -= self._mu * _sp.identity(self._A.shape[0],dtype=self._A.dtype,format="csr")
 		self._A_1_norm = _np.max(_np.abs(A).sum(axis=0))
+		self._calculate_partition()
 
+
+	@property
+	def a(self):
+		"""scalar: value multiplying `A` in matrix exponential: :math:`e^{aA}`"""
+		return self._a
+
+	@property
+	def A(self):
+		"""scipy.sparse.csr_matrix: csr_matrix which is being exponentiated."""
+		return self._A
+
+
+	def set_a(self,a):
+		"""function to set the value `a`.
+		
+		Parameters
+		-----------
+
+		a : scalar
+			new value of `a`.
+
+
+		"""
+		if _np.array(a).ndim == 1:
+
+			self._a = a
+			self._calculate_partition()
+		else:
+			raise ValueError("expecting 'a' to be scalar.")
+
+	def _calculate_partition(self):
 		if _np.abs(self._a)*self._A_1_norm == 0:
 			self._m_star, self._s = 0, 1
 		else:
@@ -37,19 +69,24 @@ class expm_multiply_parallel(object):
 			self._norm_info = LazyOperatorNormInfo(self._A, self._A_1_norm, self._a, ell=ell)
 			self._m_star, self._s = _fragment_3_1(self._norm_info, 1, self._tol, ell=ell)
 
-
 	def dot(self,v,work=None,overwrite_v=False):
-		"""Initialization of `expm_multiply_parallel`. 
+		"""Calculate the action of :math:`e^{aA}` on vector v. 
 
 		Parameters
-		----------
+		-----------
 		v : contiguous numpy.ndarray
-			array to calculate ..math: expm(aA)v
+			array to calculate :math:`e^{aA}` on.
 		work : contiguous numpy.ndarray, optional
 			array of shape = (2*len(v),) which is used as work space for underlying c-code. This saves extra memory allocation for function operation.
 		overwrite_v : bool
 			flag, if True the data in v is overwritten by the function. This saves extra memory allocation for the results.
-			
+
+
+		Returns
+		--------
+		numpy.ndarray
+			result of :math:`e^{aA}v`, if `overwrite_v` is true then it returns v with data overwritten, otherwise the result is stored in a new array.  
+
 		"""
 		if overwrite_v:
 			v = _np.ascontiguousarray(v)
@@ -75,6 +112,8 @@ class expm_multiply_parallel(object):
 					self._m_star,self._s,self._a,self._tol,self._mu,v,work)
 
 		return v
+
+##### code below is copied from scipy.sparse.linalg._expm_multiply_core and modified slightly.
 
 
 # This table helps to compute bounds.
@@ -140,7 +179,7 @@ class LazyOperatorNormInfo:
 		Provide the operator and some norm-related information.
 
 		Parameters
-		----------
+		-----------
 		A : linear operator
 			The operator of interest.
 		A_1_norm : float
@@ -185,7 +224,7 @@ def _compute_cost_div_m(m, p, norm_info):
 	It measures cost in terms of the number of required matrix products.
 
 	Parameters
-	----------
+	-----------
 	m : int
 		A valid key of _theta.
 	p : int
@@ -194,7 +233,7 @@ def _compute_cost_div_m(m, p, norm_info):
 		Information about 1-norms of related operators.
 
 	Returns
-	-------
+	--------
 	cost_div_m : int
 		Required number of matrix products divided by m.
 
@@ -209,7 +248,7 @@ def _compute_p_max(m_max):
 	Do this in a slightly dumb way, but safe and not too slow.
 
 	Parameters
-	----------
+	-----------
 	m_max : int
 		A count related to bounds.
 
@@ -225,7 +264,7 @@ def _fragment_3_1(norm_info, n0, tol, m_max=55, ell=2):
 	A helper function for the _expm_multiply_* functions.
 
 	Parameters
-	----------
+	-----------
 	norm_info : LazyOperatorNormInfo
 		Information about norms of certain linear operators of interest.
 	n0 : int
@@ -241,7 +280,7 @@ def _fragment_3_1(norm_info, n0, tol, m_max=55, ell=2):
 		This is usually taken to be small, maybe between 1 and 5.
 
 	Returns
-	-------
+	--------
 	best_m : int
 		Related to bounds for error control.
 	best_s : int
@@ -283,7 +322,7 @@ def _condition_3_13(A_1_norm, n0, m_max, ell):
 	A helper function for the _expm_multiply_* functions.
 
 	Parameters
-	----------
+	-----------
 	A_1_norm : float
 		The precomputed 1-norm of A.
 	n0 : int
@@ -295,7 +334,7 @@ def _condition_3_13(A_1_norm, n0, m_max, ell):
 		This is usually taken to be small, maybe between 1 and 5.
 
 	Returns
-	-------
+	--------
 	value : bool
 		Indicates whether or not the condition has been met.
 

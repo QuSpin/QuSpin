@@ -46,7 +46,13 @@ def get_basis_type(N, Np, sps, **blocks):
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
+	"""boson basis class for constructing a general set of lattice symmetires. 
+
+	"""
 	def __init__(self,N,Nb=None,nb=None,sps=None,_Np=None,**kwargs):
+		"""
+
+		"""
 		if sps is None:
 
 			if Nb is not None:

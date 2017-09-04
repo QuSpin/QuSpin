@@ -8,12 +8,35 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 
-# general basis for hardcore bosons/spin-1/2
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
-	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,_Np=None,**kwargs):
+	"""Spin basis class for spin operators in a specified lattice symmetry sector.
+
+	"""
+	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,**blocks):
+		"""Intializes the `spin_basis_general` object (basis for spin operators).
+
+		Parameters
+		-----------
+		N: int
+			number of sites.
+		Nup: {int,list}, optional
+			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
+			more particle sectors.
+		m: float, optional
+			Density of spin up in chain (spin up per site).
+		S: str, optional
+			Size of local spin degrees of freedom. Can be any (half-)integer from:
+			"1/2","1","3/2",...,"9999/2","5000".
+		pauli: bool, optional
+			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
+		**blocks: optional
+			keyword arguments which pass the symmetry generator arrays. 
+		"""
 		self._S = S
 		self._pauli = pauli
 		sps,S = S_dict[S]
+
+		_Np = blocks.get("_Np")
 
 		if Nup is not None and m is not None:
 			raise ValueError("Cannot use Nup and m at the same time")
@@ -24,19 +47,19 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			Nup = int((m+S)*N)
 
 		if sps==2:
-			hcb_basis_general.__init__(self,N,Nb=Nup,_Np=_Np,**kwargs)
+			hcb_basis_general.__init__(self,N,Nb=Nup,_Np=_Np,**blocks)
 		else:
-			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,_Np=_Np,**kwargs)
+			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,_Np=_Np,**blocks)
 
-	def Op(self,opstr,indx,J,dtype):
+	def _Op(self,opstr,indx,J,dtype):
 		
 		if self._S == "1/2":
-			ME,row,col = hcb_basis_general.Op(self,opstr,indx,J,dtype)
+			ME,row,col = hcb_basis_general._Op(self,opstr,indx,J,dtype)
 			if self._pauli:
 				n = len(opstr.replace("I",""))
 				ME *= (1<<n)
 		else:
-			return higher_spin_basis_general.Op(self,opstr,indx,J,dtype)
+			return higher_spin_basis_general._Op(self,opstr,indx,J,dtype)
 
 		return ME,row,col
 
@@ -49,9 +72,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	def __name__(self):
 		return "<type 'qspin.basis.general_hcb'>"
 
-
 	# functions called in base class:
-
 
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
@@ -68,8 +89,6 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			op[1] = tuple(op2)
 		return tuple(op)
 
-
-
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
 		indx = _np.array(op[1])
@@ -82,8 +101,6 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		else:
 			return True
 		
-
-
 	def _hc_opstr(self,op):
 		op = list(op)
 		# take h.c. + <--> - , reverse operator order , and conjugate coupling
@@ -95,7 +112,6 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		op[1] = tuple(op[1])
 		op[2] = op[2].conjugate()
 		return self._sort_opstr(op) # return the sorted op.
-
 
 	def _expand_opstr(self,op,num):
 		opstr = str(op[0])
@@ -159,7 +175,4 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 					l.append(tuple(op))
 
 			return tuple(l)
-
-
-
 

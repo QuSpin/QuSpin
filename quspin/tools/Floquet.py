@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import print_function, division
 
 from ..operators import hamiltonian,ishamiltonian
@@ -16,16 +18,19 @@ from numpy import vstack
 
 import warnings
 
-__all__ = ['Floquet_t_vec','Floquet']
+__all__ = ['Floquet_t_vec','Floquet_t_vec']
 
 #warnings.warn("Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.",UserWarning,stacklevel=3)
 
 
-# xrange is replaced with range in python 3.
-# if python 2 is being used, range will cause memory overflow.
-# This function is a work around to get the functionality of 
-# xrange for both python 2 and 3 simultaineously. 
-def range_iter(start,stop,step):
+
+def _range_iter(start,stop,step):
+	"""
+
+	'xrange' is replaced with 'range' in python 3. If python 2 is being used, range will cause memory overflow.
+	This function is a work around to get the functionality of 'xrange' for both python 2 and 3 simultaineously. 
+	
+	"""
 	from itertools import count
 	counter = count(start,step)
 	while True:
@@ -35,11 +40,12 @@ def range_iter(start,stop,step):
 		else:
 			break
 
-
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 	"""
-	This function evolves the ith local basis state under the Hamiltonian H up to period T. 
-	This is used to construct the stroboscpoic evolution operator
+	
+	This function evolves the i-th local basis state under the Hamiltonian H up to period T. 
+	It is used to construct the stroboscpoic evolution operator.
+	
 	"""
 	
 	nsteps=_np.iinfo(_np.int32).max # huge number to make sure solver is successful.
@@ -68,8 +74,8 @@ def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 
 
 def _evolve_step_1(i,H_list,dt_list):
-	"""
-	This function calculates the evolved state 
+	"""This function calculates the evolved state for Periodic Step (point 2. in def of 'evo_dict'). 
+	
 	"""
 	
 	psi0=_np.zeros((H_list[0].Ns,),dtype=_np.complex128) 
@@ -80,9 +86,10 @@ def _evolve_step_1(i,H_list,dt_list):
 
 	return psi0
 
-
-
 def _evolve_step_2(i,H,t_list,dt_list):
+	"""This function calculates the evolved state for Periodic Step (point 3. in def of 'evo_dict'. 
+	
+	"""
 	
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
@@ -97,84 +104,66 @@ def _evolve_step_2(i,H,t_list,dt_list):
 ### USING JOBLIB ###
 def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in range_iter(0,H.Ns,1))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in _range_iter(0,H.Ns,1))
 
 	return vstack(sols)
 
-
 def _get_U_step_1(H_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in range_iter(0,H_list[0].Ns,1))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in _range_iter(0,H_list[0].Ns,1))
 
 	return vstack(sols)
 
 def _get_U_step_2(H,t_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_2)(i,H,t_list,dt_list) for i in range_iter(0,H.Ns,1))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_2)(i,H,t_list,dt_list) for i in _range_iter(0,H.Ns,1))
 
 	return vstack(sols)
 
 
+
 class Floquet(object):
+	"""Calculates the Floquet spectrum and (optionally) the Floquet Hamiltonian and Floquet states.
+
+	Loops over the basis states to compute the Floquet unitary (evolution operator over one period).
+	
+	"""
+
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
 		"""
-		Calculates the Floquet spectrum for a given protocol, and optionally the Floquet hamiltonian matrix,
-		and Floquet eigen-vectors.
+		
+		Parameters
+		-----------
+		evo_dict : dict
+			Dictionary which passes the different types of protocols to calculate the Floquet unitary. 
+			Depending on the protocol type, it contains the following keys:
 
-		--- arguments ---
-		* evo_dict: (compulsory) dictionary which passes the different types of protocols to calculate evolution operator:
+			i) Periodic continuous protocol from a `hamiltonian` object.
+				* 'H' : hamiltonian object to generate the time evolution. 
+				* 'T' : period of the protocol. 
+				* 'rtol' : (optional) relative tolerance for the ODE solver. (default = 1E-9)
+				* 'atol' : (optional) absolute tolerance for the ODE solver. (default = 1E-9)
 
-			1. Continuous protocol.
+			ii) Periodic step protocol from a `hamiltonian` object. 
+				* 'H' : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. sign(cos(Omega*t)).
+				* 't_list' : list of times to evaluate the hamiltonian at for each step.
+				* 'dt_list' : list of time step durations for each step of the evolution. 
 
-				* 'H': (compulsory) hamiltonian object to generate the time evolution. 
-
-				* 'T': (compulsory) period of the protocol. 
-
-				* 'rtol': (optional) relative tolerance for the ode solver. (default = 1E-9)
-
-				* 'atol': (optional) absolute tolerance for the ode solver. (default = 1E-9)
-
-			2. Step protocol from a hamiltonian object. 
-
-				* 'H': (compulsory) hamiltonian object to generate the hamiltonians at each step.
-				
-				* 't_list': (compulsory) list of times to evaluate the hamiltonian at when doing each step.
-
-				* 'dt_list': (compulsory) list of time steps for each step of the evolution. 
-
-			3. Step protocol from a list of hamiltonians. 
-
-				* 'H_list': (compulsory) list of matrices which to evolve with.
-
-				* 'dt_list': (compulsory) list of time steps to evolve with. 
-
-
-		* HF: (optional) if set to 'True' calculate Floquet hamiltonian. 
-
-		* UF: (optional) if set to 'True' save evolution operator. 
-
-		* ThetaF: (optional) if set to 'True' save the eigenvalues of the evolution operator. 
-
-		* VF: (optional) if set to 'True' save the eigenvectors of the evolution operator. 
-
-		* n_jobs: (optional) set the number of processors which are used when looping over the basis states. 
-
-		--- Floquet attributes ---: '_. ' below stands for 'object. '
-
-		Always given:
-
-		_.EF: ordered Floquet qausi-energies in interval [-Omega,Omega]
-
-		Calculate via flags:
-
-		_.HF: Floquet Hamiltonian dense array
-
-		_.UF: Evolution operator
-
-		_.VF: Floquet eigenstates
-
-		_.thetaF: eigenvalues of evolution operator
-
+			iii) Periodic step protocol from a list of hamiltonians. 
+				* 'H_list' : list of matrices to evolve with.
+				* 'dt_list' : list of time step durations. Must be the same size as 'H_list'.
+		
+		HF : bool
+			Set to 'True' to calculate and return Floquet Hamiltonian under attribute _.HF. Default is 'False'.
+		UF : bool
+			Set to 'True' to save evolution operator under attribute _.UF. Default is 'False'.
+		thetaF : bool
+			Set to 'True' to save eigenvalues of the evolution operator (Floquet phases) under attribute _.thetaF. Default is 'False'.
+		VF : bool
+			Set to 'True' to save Floquet states under attribute _.VF. Default is 'False'. 
+		n_jobs : int, optional
+			Set the number of processors which are used when looping over the basis states to compute 
+			the Floquet unitary. Default is 'False'. 
 
 		"""
 
@@ -316,14 +305,21 @@ class Floquet(object):
 
 	@property
 	def T(self):
+		"""float: drive period."""
 		return self._T
 
 	@property
 	def EF(self):
+		"""numpy.ndarray(float): ordered Floquet quasi-energies in interval [-Omega,Omega]."""
 		return self._EF
 
 	@property
 	def HF(self):
+		"""numpy.ndarray(float): Floquet Hamiltonian.
+		
+		Requires __init__ argument HF=True.	
+		
+		"""
 		if hasattr(self,"_HF"):
 			return self._HF
 		else:
@@ -331,6 +327,11 @@ class Floquet(object):
 
 	@property
 	def UF(self):
+		"""numpy.ndarray(float): Floquet unitary.
+		
+		Requires __init__ argument UF=True.	
+		
+		"""
 		if hasattr(self,"_UF"):
 			return self._UF
 		else:
@@ -338,6 +339,11 @@ class Floquet(object):
 
 	@property
 	def thetaF(self):
+		"""numpy.ndarray(float): Floquet eigenphases.
+		
+		Requires __init__ argument thetaF=True.	
+		
+		"""
 		if hasattr(self,"_thetaF"):
 			return self._thetaF
 		else:
@@ -346,6 +352,11 @@ class Floquet(object):
 
 	@property
 	def VF(self):
+		"""numpy.ndarray(float): Floquet eigenbasis (in columns).
+		
+		Requires __init__ argument VF=True.	
+		
+		"""
 		if hasattr(self,"_VF"):
 			return self._VF
 		else:
@@ -355,64 +366,33 @@ class Floquet(object):
 
 
 class Floquet_t_vec(object):
-	def __init__(self,Omega,N_const,len_T=100,N_up=0,N_down=0):
+	"""Creates a Floquet time vector with fixed number of points per period.
+
+	This time vector hits all stroboscopic times, and has many useful attributes. The time vector 
+	can be divided in three parts corresponding to three regimes of periodic evolution: 
+	ramp-up, constant and ramp-down.
+	
+	Particularly useful for studying periodically-driven systems.
+	
+	"""
+
+	def __init__(self, Omega, N_const, len_T=100, N_up=0, N_down=0):
 		"""
-		Returns a time vector (np.array) which hits the stroboscopic times, and has as attributes
-		their indices. The time vector can be divided in three regimes: ramp-up, constant and ramp-down.
 
-		--- arguments ---
-
-		Omega: (compulsory) drive frequency
-
-		N_const: (compulsory) # of time periods in the constant period
-
-		N_up: (optional) # of time periods in the ramp-up period
-
-		N_up: (optional) # of time periods in the ramp-down period
-
-		len_T: (optional) # of time points within a period. N.B. the last period interval is assumed 
-				open on the right, i.e. [0,T) and the point T does not go into the definition of 'len_T'. 
-
-
-		--- time vector attributes ---: '_. ' below stands for 'object. '
-
-
-		_.vals: time vector values
-
-		_.i: initial time value
-
-		_.f: final time value
-
-		_.tot: total length of time: t.i - t.f 
-
-		_.T: period of drive
-
-		_.dt: time vector spacing
-
-		_.len: length of total time vector
-
-		_.len_T: # of points in a single period interval, assumed half-open: [0,T)
-
-		_.N: total # of periods
-
-
-		--- strobo attribues ---
-
-
-		_.strobo.vals: strobosopic time values
-
-		_.strobo.inds: strobosopic time indices
-
-
-		--- regime attributes --- (available if N_up or N_down are parsed)
-
-
-		_.up : referes to time vector of up-regime; inherits the above attributes (e.g. _up.strobo.inds) except _.T, _.dt, and ._lenT
-
-		_.const : referes to time vector of const-regime; inherits the above attributes except _.T, _.dt, and ._lenT
-
-		_.down : referes to time vector of down-regime; inherits the above attributes except _.T, _.dt, and ._lenT
-
+		Parameters
+		-----------
+		Omega : float
+			Drive frequency.
+		N_const : int
+			Number of time periods in the constant part (period) of the time vector.
+		len_T : int
+			Number of time points within a single period. N.B. the last period interval is assumed 
+			open on the right, i.e. [0,T) and the point T is NOT counted towards 'len_T'.
+		N_up : int, optional
+			Number of time periods in the up-part (period) of time vector.
+		N_down : int, optional
+			Number of time periods in the down-part (period) of time vector.
+		
 		"""
 
 		# total number of periods
@@ -482,49 +462,74 @@ class Floquet_t_vec(object):
 
 	@property
 	def N(self):
+		"""int: total number of periods."""
 		return self._N
 
 	@property
 	def len_T(self):
+		"""int: number of time points within one period, assumed half-open; [0,T)."""
 		return self._len_T
 
 	@property
 	def T(self):
+		"""float: drive period."""
 		return self._T
 
 	@property
 	def vals(self):
+		"""np.ndarray(float): time vector values."""
 		return self._vals
 
 	@property
 	def len(self):
+		"""int: length of time vector."""
 		return self._len
 
 	@property
 	def dt(self):
+		"""float: time vector step size."""
 		return self._dt
 
 	@property
-	def strobo(self):
-		return self._strobo
-
-	@property
 	def i(self):
+		"""float: initial time value."""
 		return self._i
 
 	@property
 	def f(self):
+		"""foat: final time value."""
 		return self._f
 
 
 	@property
 	def tot(self):
+		"""float: total time duration; `_.f - _.i` ."""
 		return self._tot
 
+
+	@property
+	def strobo(self):
+		"""obj: calculates stroboscopic times in time vector with period length `len_T` and assigns them as
+		attributes:
+
+		_.strobo.inds : numpy.ndarray(int)
+			indices of stroboscopic times (full periods).
+
+		_.strobo.vals : numpy.ndarray(float)
+			values of stroboscopic times (full periods).
+		"""
+		return self._strobo
 
 
 	@property
 	def up(self):
+		"""obj: refers to time vector of up-part (regime).
+
+		Inherits all attributes (e.g. `_.up.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.
+
+		Requires optional `__init___` parameter `N_up` to be specified.
+		
+		"""
 		if hasattr(self,"_up"):
 			return self._up
 		else:
@@ -532,6 +537,11 @@ class Floquet_t_vec(object):
 
 	@property
 	def const(self):
+		"""obj: refers to time vector of const-part (regime).
+
+		Inherits all attributes (e.g. `_.const.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.
+		
+		"""
 		if hasattr(self,"_const"):
 			return self._up
 		else:
@@ -539,6 +549,12 @@ class Floquet_t_vec(object):
 
 	@property
 	def down(self):
+		"""obj: refers to time vector of down-part (regime).
+
+		Inherits all attributes (e.g. `_.down.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.
+
+		Requires optional __init___ parameter N_down to be specified.
+		"""
 		if hasattr(self,"_down"):
 			return self._up
 		else:
@@ -556,6 +572,7 @@ class _strobo_times():
 		"""
 		Calculates stroboscopic times in time vector t with period length len_T and assigns them as
 		attributes.
+		
 		"""
 		# indices of strobo times
 		self._inds = _np.arange(0,t.size,len_T).astype(int)
@@ -577,8 +594,8 @@ class _strobo_times():
 
 class _periodic_ramp():
 	def __init__(self,N,t,T,len_T,ind0):
-		"""
-		Defines time vector attributes of each regime.
+		"""Defines time vector attributes of each regime.
+		
 		"""
 		self._N=N # total # periods
 		self._vals = t # time values
@@ -624,14 +641,3 @@ class _periodic_ramp():
 	@property
 	def strobo(self):
 		return self._strobo
-	
-	
-	
-	
-	
-	
-
-
-
-
-

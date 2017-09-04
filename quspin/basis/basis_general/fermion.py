@@ -8,6 +8,9 @@ from scipy.misc import comb
 
 # general basis for hardcore bosons/spin-1/2
 class spinful_fermion_basis_general(basis_general):
+	"""Spinful fermion basis class for constructing a general set of lattice symmetires. 
+
+	"""
 	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
 		# Nf = [(Nup,Ndown),...]
 		# Nup is left side of basis sites 0 - N-1
@@ -217,6 +220,10 @@ class spinful_fermion_basis_general(basis_general):
 
 # general basis for hardcore bosons/spin-1/2
 class spinless_fermion_basis_general(basis_general):
+	"""Spinless fermion basis class for constructing a general set of lattice symmetires. 
+
+	"""
+
 	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
 
 		if Nf is not None and nf is not None:

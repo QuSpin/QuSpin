@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import print_function, division
 
 # need linear algebra packages
@@ -18,77 +20,109 @@ from ..basis.photon import photon_Hspace_dim
 import warnings
 
 
-__all__ = ["ent_entropy", "diag_ensemble", "KL_div", "obs_vs_time", "ED_state_vs_time", "mean_level_spacing","project_operator"]
+__all__ =  ["ent_entropy", 
+			"diag_ensemble",
+			"ED_state_vs_time",
+			"obs_vs_time",
+			"project_op",
+			"KL_div",
+			"mean_level_spacing",
+			"evolve"]
 
 
 
 def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**_basis_kwargs):
-	"""
-	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the
-	reduced subsystem. 
+	"""Calculates entanglement entropy of a subsystem using the Singular Value Decomposition (svd).
 
-	RETURNS:	dictionary with keys:
+	**Note: We recommend the use of the** `basis.ent_entropy()` **method instead of this function.
+	This function is a wrapper.**
 
-	'Sent': entanglement entropy.
 
-	'DM_chain_subsys': (optional) reduced density matrix of chain subsystem.
+	The entanglement entropy is NORMALISED by the size of the reduced subsystem. 
 
-	'DM_other_subsys': (optional) reduced density matrix of the complement subsystem.
+	Consider a quantum chain of :math:`N` sites in the state defined by the density matrix :math:`\\rho`.
+	Define a subsystem :math:`A` of :math:`N_A` sites and its complement :math:`A^c` containing :math:`N=N_A + N_{A^c}`
+	sites. Given the reduced density matrices 
+	
+	.. math::
+		\\rho_A = \\mathrm{tr}_B \\rho, \\qquad \\rho_{A^c} = \\mathrm{tr}_{A^c} \\rho 
 
-	'lmbda': (optional) svd singular values
+	the entanglement entropy densities of subsystems :math:`A` and :math:`B` (normalised w.r.t. their size, respectively) read 
 
-	--- arguments ---
+	.. math::
+		S_\\mathrm{ent}^A = -\\frac{1}{N_A}\\mathrm{tr}_A \\rho_A\\log\\rho_A,\\qquad S_\\mathrm{ent}^B = -\\frac{1}{N_A}\\mathrm{tr}_{A^c} \\rho_{A^c}\\log\\rho_{A^c}
 
-	system_state: (required) the state of the quantum system. Can be a:
+	For :math:`\\rho` pure, we have :math:`S_\\mathrm{ent}^A = S_\\mathrm{ent}^B`.
 
-				-- pure state [numpy array of shape (Ns,)].
+	Examples
+	--------
 
-				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
+	The example below shows how to compute the entanglement entropy of a pure state. The state is chosen as one of
+	the eigenstates of the spin-1/2 Hamiltonian :math:`H=\\sum_j hS^x_j + g S^z_j`.
 
-				-- diagonal DM [dictionary {'V_rho': V_rho, 'rho_d': rho_d} containing the diagonal DM
-					rho_d [numpy array of shape (Ns,)] and its eigenbasis in the columns of V_rho
-					[numpy arary of shape (Ns,Ns)]. The keys CANNOT be chosen arbitrarily.].
+	.. literalinclude:: ../../doc_examples/ent_entropy-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
-				-- a collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
 
-	basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-				'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
 
-	chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
+	Parameters
+	-----------
+	system_state : {array_like,dict}
+		State of the quantum system; can be either of:
 
-				-- [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
+			* numpy.ndarray: pure state, shape = (Ns,).
+			* numpy.ndarray: density matrix (DM), shape=(Ns,Ns).
+			* dict: diagonal DM as dictionary of the form {'V_rho': V_rho, 'rho_d': rho_d}, where 
 
-				-- [0,1,...,N-1,N] for 'photon_basis'.
+				-- numpy.ndarray: `rho_d` is a diagonal DM, shape = (Ns,).
 
-	DM: (optional) String to enable the calculation of the reduced density matrix. Available options are
+				-- numpy.ndarray: `V_rho` contains eigenbasis of the DM in the columns, shape = (Ns,Ns).
 
-				-- 'chain_subsys': calculates the reduced DM of the subsystem 'chain_subsys' and
-					returns it under the key 'DM_chain_subsys'.
+				The dict keys CANNOT be chosen arbitrarily.
+			* dict: collection of pure states as dict of the form {'V_states': V_states}, contained
+				in the columns of V_states, shape = (Ns,Nvecs). 
 
-				-- 'other_subsys': calculates the reduced DM of the complement of 'chain_subsys' and
-					returns it under the key 'DM_other_subsys'.
+				Use this input to PARALLELISE the calculation of the entanglement entropy.
+	basis : :obj:`basis`
+		Basis used to construct `system_state` in. Must be instance of either one of QuSpin's `basis` classes. 
+	chain_subsys : list, optional 
+		Lattice sites to specify the chain subsystem of interest. Default is:
 
-				-- 'both': calculates and returns both density matrices as defined above.
+		* [0,1,...,N/2-1,N/2] for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.
+		* [0,1,...,N-1,N] for `photon_basis`.
+	DM : str, optional 
+		Flag to enable the calculation of the reduced density matrix. Available string expressions are:
 
-				Default is 'False'. 	
+		* "chain_subsys": calculates the reduced DM of the subsystem 'chain_subsys' and
+			returns it under the key "DM_chain_subsys".
+		* "other_subsys": calculates the reduced DM of the complement of 'chain_subsys' and
+			returns it under the key "DM_other_subsys".
+		* "both": calculates and returns both density matrices as defined above.
 
-	alpha: (optional) Renyi alpha parameter. Default is '1.0'. When alpha is different from unity,
-				the _entropy keys have attached '_Renyi' to their label.
+		Default is "False". 	
+	alpha : float, optional 
+		Renyi :math:`\\alpha` parameter. Default is '1.0'. 
 
-	density: (optional) if set to 'True', the entanglement _entropy is normalised by the size of the
-				subsystem [i.e., by the length of 'chain_subsys']. Detault is 'False'.
+		When `alpha` is different from unity, the output keys have attached "_Renyi" to their label.
+	svd_return_vec : list(bool), optional
+		Three booleans to determine which Singular Value Decomposition (svd) quantities are returned:
 
-	subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
+		* `[ . ,True, . ]` svd singular values.
+		* `[ . , . ,True]` and `[True, . , . ]` are depricated.
 
-	* `svd_return_vec`: (optional) list of three booleans to return the Singular Value Decomposition (svd) 
-		  parameters:
+		Default is `[False,False,False]`.
 
-		  * `[ . ,True, . ]` svd singular values.
+	Returns
+	--------
+	dict
+		The following keys of the output dict are available, depending on the choice of flags:
 
-		  * `[ . , . ,True]` and `[True, . , . ]` are depricated.
-
-		  Default is ```[False,False,False]```.
+		* "Sent": entanglement entropy.
+		* "DM_chain_subsys": (optional) reduced density matrix of chain subsystem.
+		* "DM_other_subsys": (optional) reduced density matrix of the complement subsystem.
+		* "lmbda": (optional) svd singular values.
 
 	"""
 
@@ -151,6 +185,1226 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 	return_dict.update(Sent)
 
 	return return_dict
+		
+def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
+	"""Calculates expectation values in the Diagonal ensemble of the initial state. 
+
+	Equivalently, these are also the infinite-time expectation values after a sudden quench from a 
+	Hamiltonian :math:`H_1` to a Hamiltonian :math:`H_2`. Let us label the two eigenbases by
+
+	.. math::
+		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}
+
+	See eg. `arXiv:1509.06411 <https://arxiv.org/abs/1509.06411/>`_ for the physical definition of Diagonal Ensemble.
+	
+	**Note: All expectation values depend statistically on the symmetry block used via the available number of 
+	states, due to the generic system-size dependence!**
+
+	Examples
+	--------
+
+	We prepare a quantum system in an eigenstate :math:`\\psi_1` of the Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.
+	At time :math:`t=0` we quench to the Hamiltonian :math:`H_2=\\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j`, and evolve
+	the initial state :math:`\\psi_1` with it. We compute the infinite-time (i.e. Diagonal Ensemble) expectation value of the Hamiltonian :math:`H_1`, and
+	it's infinite-time temporal fluctuations :math:`\\delta_t\\mathcal{O}^\\psi_d` (see above for the definition). 
+
+	.. literalinclude:: ../../doc_examples/diag_ens-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	N : int
+		System size/dimension (e.g. number of sites).
+	system_state : {array_like,dict}
+		State of the quantum system; can be either of:
+
+			* numpy.ndarray: pure state, shape = (Ns,) or (,Ns).
+			* numpy.ndarray: density matrix (DM), shape = (Ns,Ns).
+			* dict: mixed DM as dictionary `{"V1":V1, "E1":E1, "f":f, "f_args":f_args, "V1_state":int, "f_norm":`False`}` to define a diagonal DM in the basis :math:`V_1` of the Hamiltonian :math:`H_1`. The meaning of the keys (keys CANNOT be chosen arbitrarily) is as flollows:
+
+				* numpy.ndarray: `V1` (required) contains eigenbasis of :math:`H_1` in the columns.
+				* numpy.ndarray: `E1` (required) eigenenergies of :math:`H_1`.
+				* :obj:`function` 'f' (optional) is a function which represents the distribution of the spectrum 
+					used to define the mixed DM of the initial state (see example). 
+
+					Default is a thermal distribution with inverse temperature `beta`: 
+					`f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )`. 
+				* list(float): `f_args` (required) list of arguments for function `f`. 
+
+					If `f` is not defined, by default we have :math:`f(E)=\\exp(-\\beta(E - E_\\mathrm{GS}))`, 
+					and `f_args=[beta]` specifies the inverse temeprature.
+				* list(int): `V1_state` (optional) is a list of integers to specify arbitrary states of `V1` 
+					whose pure expectations are also returned.
+				* bool: `f_norm` (optional). If set to `False` the mixed DM built from `f` is NOT normalised
+					and the norm is returned under the key `f_norm`. 
+
+					Use this option if you need to average your results over multiple symmetry blocks, which
+					require a separate normalisations. 
+
+				If this option is specified, then all Diagonal Ensemble quantities are averaged over 
+				the energy distribution :math:`f(E_1,f\\_args)`:
+				
+				.. math::
+					\\overline{\\mathcal{M}_d} = \\frac{1}{Z_f}\\sum_{n_1} f(E_{n_1},f\\_args)\\mathcal{M}^{n_1}_d, \\qquad \\mathcal{M}^{\\psi}_d = \\langle\\mathcal{O}\\rangle_d^\\psi,\\ \\delta_q\\mathcal{O}^\\psi_d,\\ \\delta_t\\mathcal{O}^\\psi_d,\\ S_d^\\psi,\\ S_\\mathrm{rdm}^\\psi
+	V2 : numpy.ndarray
+		Contains the basis of the Hamiltonian :math:`H_2` in the columns.
+	E2 : numpy.ndarray
+		Contains the eigenenergies corresponding to the eigenstates in `V2`. 
+
+		This variable is only used to check for degeneracies, in which case the function is NOT expected to
+		produce correct resultsand raises an error.
+	rho_d : bool, optional 
+		When set to `True`, returns the Diagonal ensemble DM. Default is `False`.
+
+		Adds the key "rho_d" to output. 
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+		
+		.. math::
+			\\rho_d^\\psi = \\sum_{n_2} \\left|\\langle\\psi|n_2\\rangle\\right|^2\\left|n_2\\rangle\\langle n_2\\right| = \\sum_{n_2} \\left(\\rho_d^\\psi\\right)_{n_2n_2}\\left|n_2\\rangle\\langle n_2\\right| 
+	Obs : :obj:, optional
+		Hermitian matrix of the same shape as `V2`, to calculate the Diagonal ensemble expectation value of. 
+		
+		Adds the key "Obs" to output. Can be of type `numpy.ndarray` or an instance of the `hamiltonian` class.
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+  		
+  		.. math::
+  			\\langle\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle
+	delta_q_Obs : bool, optional
+		QUANTUM fluctuations of the expectation of `Obs` at infinite times. Requires `Obs`. Calculates
+		temporal fluctuations `delta_t_Obs` for along the way (see above).
+		
+		Adds keys "delta_q_Obs" and "delta_t_Obs" to output.
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+  		
+  		.. math::
+  			\\delta_q\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{\\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left| \\mathcal{O}(t)\\right| \\psi\\rangle^2 - \\langle\\mathcal{O}\\rangle_d^2}= \\frac{1}{N}\\sqrt{ \\sum_{n_2\\neq m_2} \\left(\\rho_d^\\psi\\right)_{n_2n_2} [\\mathcal{O}]^2_{n_2m_2} \\left(\\rho_d^\\psi\\right)_{m_2m_2} }
+	delta_t_Obs : bool, optional
+		TEMPORAL fluctuations around infinite-time expectation of `Obs`. Requires `Obs`. 
+		
+		Adds the key "delta_t_Obs" to output.
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+
+		.. math::  
+  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }
+	alpha : float, optional
+		Renyi :math:`alpha` parameter. Default is `alpha = 1.0`.
+	Sd_Renyi : bool, optional
+		Computes the DIAGONAL Renyi entropy in the basis of :math:`H_2`. \
+
+		The default Renyi parameter is `alpha=1.0` (see below). \
+
+		Adds the key "Sd_Renyi" to output.\
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
+  		
+  		.. math::
+  			S_d^\\psi = \\frac{1}{1-\\alpha}\\log\\mathrm{tr}\\left(\\rho_d^\\psi\\right)^\\alpha
+	Srdm_Renyi : bool, optional
+		Computes ENTANGLEMENT Renyi entropy of a subsystem (see `Srdm_args` for subsystem definition). 
+
+		Requires passing the (otherwise optional) argument `Srdm_args` (see below).
+		
+		The default Renyi parameter is `alpha=1.0` (see below). 
+
+		Adds the key "Srdm_Renyi" to output.
+
+		For example, if `system_state` is the pure state :math:`|\\psi\\rangle` 
+		(see also notation in documentation of `ent_entropy`):
+  		
+  		.. math::
+  			S_\\mathrm{rdm}^\\psi = \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha 
+	Srdm_args : dict, semi-optional
+		Dictionary which contains all arguments required for the computation of the entanglement Renyi 
+		entropy. Required when `Srdm_Renyi = True`. The following keys are allowed/supported:
+
+			* "basis": obj(basis), required
+				Basis used to build `system_state` in. Must be an instance of the `basis` class. 
+			* "chain_subsys" : list, optional 
+				Lattice sites to specify the chain subsystem of interest. Default is:
+
+				-- [0,1,...,N/2-1,N/2] for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.
+
+				-- [0,1,...,N-1,N] for `photon_basis`.
+	density : bool, optional 
+		If set to `True`, all observables are normalised by the system size `N`, except
+		for the `Srdm_Renyi` which is normalised by the subsystem size, i.e. by the length of `chain_subsys`.
+		Default is 'True'.
+
+	Returns
+	-------- 
+	dict
+		The following keys of the output are possible, depending on the choice of flags:
+
+		* "rho_d": density matrix of Diagonal Ensemble.
+		* "Obs_...": infinite-time expectation of observable `Obs`.
+		* "delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
+		* "delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
+		* "Sd_..." ("Sd_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of 
+			`rho_d` with parameter `alpha`.
+		* "Srdm_..." ("Srdm_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of 
+			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
+
+		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
+
+	
+	"""
+
+	# check if E2 are all unique
+	E2 = _np.asarray(E2)
+	if _np.any( _np.diff(_np.sort(E2)) < 1E3*_np.finfo(E2.dtype).eps):
+		raise TypeError("Cannot use function 'diag_ensemble' with dengenerate e'values 'E2'!")
+	del E2
+
+	if N and not(type(N) is int):
+		raise TypeError("System size 'N' must be a positive integer!")
+
+
+	# various checks
+	if delta_t_Obs or delta_q_Obs:
+		if not Obs:
+			raise TypeError("Expecting to parse the observable 'Obs' whenever 'delta_t_Obs = True' or 'delta_q_Obs = True'!")
+	
+	# calculate diagonal ensemble DM
+
+	if isinstance(system_state,(list, tuple, _np.ndarray)): # initial state either pure or DM
+
+		if len(system_state.shape)==1: # pure state
+			istate = 'pure'
+			# calculate diag ensemble DM
+			rho = abs( system_state.conj().dot(V2) )**2;
+		elif len(system_state.shape)==2: # DM
+			istate = 'DM'
+			# calculate diag ensemble DM
+			rho = _np.einsum( 'ij,ji->i', V2.T.conj(), system_state.dot(V2) ).real
+
+	
+	elif isinstance(system_state,dict): # initial state is defined by diag distr
+		# define allowed keys
+		key_strings = ['V1','E1','f','f_args','V1_state','f_norm']
+
+		if 'V1' in system_state.keys():
+			V1 = system_state['V1']
+		else:
+			raise TypeError("Dictionary 'system_state' must contain states matrix 'V1'!")
+		
+		if 'E1' in system_state.keys():
+			E1 = _np.asarray( system_state['E1'] )
+			if any(sorted(E1)!=E1):
+				raise TypeError("Expecting ordered vector of energies 'E1'!")
+		else:
+			raise TypeError("Dictionary 'system_state' must contain eigenvalues vector 'E1'!")
+		
+		if 'f_args' in system_state.keys():
+			f_args = system_state['f_args']
+		else:
+			raise TypeError("Dictionary 'system_state' must contain function arguments list 'f_args'!")
+
+		if 'V1_state' in system_state.keys():
+			V1_state = system_state['V1_state']
+
+		# check if user has passed the distribution 'f'
+		if 'f' in system_state.keys():
+			f = system_state['f']
+			istate = 'mixed'
+		else:
+			istate = 'thermal'
+			# define Gibbs distribution (up to normalisation)
+			f = lambda E1,beta: _np.exp(-beta*(E1 - E1[0]))
+
+		if 'f_norm' in system_state.keys():
+			f_norm = system_state['f_norm']
+			f_norms = _np.zeros((len(f_args[0])),dtype=type(f_args[0][0]) )
+		else:
+			f_norm = True
+
+		if 'V1_state' in locals():
+			if not all(isinstance(item, int) for item in V1_state):
+				raise TypeError("Expecting an integer value for variable 'V1_state'!")
+			if min(V1_state) < 0 or max(V1_state) > len(E1)-1:
+				raise TypeError("Value 'V1_state' violates '0 <= V1_state <= len(E1)-1'!")
+
+		# define diagonal (in V1) mixed DM
+		
+		rho_mixed = _np.zeros((len(E1),len(f_args[0])),dtype=type(f_args[0][0]) )
+		for i, arg in enumerate(f_args[0]):
+			if f_norm:
+				rho_mixed[:,i] = f(E1,arg) / sum(f(E1,arg))
+			else:
+				rho_mixed[:,i] = f(E1,arg)
+				# calculate normalisation
+				f_norms[i] = sum(f(E1,arg))
+
+
+		# calculate diag ensemble DM for each state in V1
+		rho = abs( V2.conj().T.dot(V1) )**2 # components are (n,psi)
+
+		del V1, E1
+	else:
+		raise TypeError("Wrong variable type for 'system_state'! E.g., use np.ndarray.")
+
+
+	# clear up memory
+	del system_state
+
+	# add floating point number to zero elements
+	rho[rho<=1E-16] = _np.finfo(rho.dtype).eps
+
+
+	# prepare observables
+	if Obs is not False or delta_t_Obs is not False or delta_q_Obs is not False:
+
+		if (delta_t_Obs or delta_q_Obs) and Obs is not False:
+			# diagonal matrix elements of Obs^2 in the basis V2
+			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
+			Obs = V2.T.conj().dot( Obs.dot(V2) )
+			delta_t_Obs = _np.square(Obs)
+			_np.fill_diagonal(delta_t_Obs,0.0)
+			if delta_q_Obs is not False:
+				delta_q_Obs = _np.diag(Obs.dot(Obs)).real
+			Obs = _np.diag(Obs).real
+			
+		elif Obs is not False:
+			# diagonal matrix elements of Obs in the basis V2
+			Obs = _np.einsum('ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real
+
+		
+	if Srdm_Renyi:
+		"""
+		# calculate singular values of columns of V2
+		v, _, N_A = _reshape_as_subsys({"V_states":V2},**Srdm_args)
+
+		U, lmbda, _ = _npla.svd(v, full_matrices=False)
+		if istate in ['mixed','thermal']:
+			DM_chain_subsys = _np.einsum('nm,nij,nj,nkj->mik',rho,U,lmbda**2,U.conj() )
+		else:
+			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho,U,lmbda**2,U.conj() )
+			
+		Srdm_Renyi = _npla.eigvalsh(DM_chain_subsys).T # components (i,psi)
+		del v, U, DM_chain_subsys
+		"""
+		basis=Srdm_args['basis']
+		partial_tr_args=Srdm_args.copy()
+		del partial_tr_args['basis']
+		if 'sub_sys_A' in Srdm_args:
+			sub_sys_A = Srdm_args['sub_sys_A']
+			del partial_tr_args['sub_sys_A']
+
+		elif 'chain_subsys' in Srdm_args:
+			sub_sys_A = Srdm_args['chain_subsys']
+			del partial_tr_args['chain_subsys']
+		else:
+			sub_sys_A=tuple(range(basis.L//2))
+		N_A=len(sub_sys_A)
+		rdm_A = basis.partial_trace(V2,sub_sys_A=sub_sys_A,enforce_pure=True,**partial_tr_args)
+		rdm = _np.einsum('n...,nij->...ij',rho,rdm_A)
+	
+		Srdm_Renyi = _npla.eigvalsh(rdm).T # components (i,psi) 
+		
+	# clear up memory
+	del V2
+
+	# calculate diag expectation values
+	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_q_Obs,Srdm_Renyi=Srdm_Renyi,Sd_Renyi=Sd_Renyi)
+	
+
+	Expt_Diag_Vstate={}
+	# compute density
+	for key,value in Expt_Diag.items():
+		if density:
+			if 'rdm' in key:
+				value /= N_A
+			else:
+				value /= N
+
+		Expt_Diag[key] = value
+		# calculate thermal expectations
+		if istate in ['mixed','thermal']:
+			Expt_Diag_state = {}
+			Expt_Diag[key] = value.dot(rho_mixed)
+			# if 'GS' option is passed save GS value
+			if 'V1_state' in locals():
+				state_key = key[:-len(istate)]+'V1_state'
+				Expt_Diag_Vstate[state_key] = value[V1_state]
+			# merge state and mixed dicts
+			Expt_Diag.update(Expt_Diag_state)
+
+	if istate in ['mixed','thermal']:
+		if f_norm==False:
+			Expt_Diag['f_norm'] = f_norms
+		if 'V1_state' in locals():
+			Expt_Diag.update(Expt_Diag_Vstate)
+			
+	# return diag ensemble density matrix if requested
+	if rho_d:
+		if 'V1_state' in locals():
+			Expt_Diag['rho_d'] = rho[:,V1_state]
+		else:
+			Expt_Diag['rho_d'] = rho
+
+
+	return Expt_Diag
+
+def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pure=False,verbose=False):
+	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
+
+	Examples
+	--------
+
+	The following example shows how to calculate the expectation values :math:`\\langle\\psi_1(t)|H_1|\\psi_1(t)\\rangle`
+	and :math:`\\langle\\psi_1(t)|H_2|\\psi_1(t)\\rangle`.
+
+	The initial state is an eigenstate of :math:`H_1=\\sum_j hS^x_j + g S^z_j`. The time evolution is done 
+	under :math:`H_2=\\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j`.
+
+	.. literalinclude:: ../../doc_examples/obs_vs_time-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	psi_t : {tuple,aray_like,generator}
+		Time-dependent state data; can be either one of:
+
+		* tuple: `psi_t = (psi, E, V)` where 
+			-- np.ndarray: initial state `psi`.
+
+			-- np.ndarray: unitary matrix `V`, contains all eigenstates of the Hamiltonian :math:`H`.
+
+			-- np.ndarray: real-valued array `E`, contains all eigenvalues of the Hamiltonian :math:`H`. 
+			   The order of the eigenvalues must correspond to the order of the columns of `V`.
+
+			Use this option when the initial state is evolved with a time-INdependent Hamiltonian :math:`H`.
+		* numpy.ndarray: array with the states evaluated at `times` stored in the last dimension. 
+			Can be 2D (single time-dependent state) or 3D (many time-dependent states or 
+			time-dep mixed density matrix, see `enforce_pure` argument.)
+
+			Use this option for PARALLELISATION over many states.
+		* obj: generator which generates the states.
+
+	Obs_dict : dict
+		Dictionary with observables (e.g. `hamiltonian objects`) stored in the `values`, to calculate 
+		their time-dependent expectation value. Dictionary `keys` are chosen by user.
+	times : numpy.ndarray
+		Vector of times to evaluate the expectation values at. This is important for time-dependent observables. 
+	return_state : bool, optional
+		If set to `True`, adds key "psi_time" to output. The columns of the array
+		contain the state vector at the `times` which specifies the column index. Default is `False`, unless
+		`Sent_args` is nonempty.
+	Srdm_args : dict, optional 
+		If nonempty, this dictionary contains the arguments necessary for the calculation of the entanglement
+		entropy. The following key is required:
+			
+			* "basis": the basis used to build `system_state` in. Must be an instance of the `basis` class.
+
+		The user can choose optional arguments according to those provided in the function method 
+		`basis.ent_entropy()` of the `basis` class [preferred], or the function `ent_entropy()`. 
+
+		If only the `basis` is passed, the default parameters of `basis.ent_entropy()` are assumed.
+	enforce_pure : bool, optional
+		Flag to enforce pure state expectation values in the case that `psi_t` is an array of pure states
+		in the columns. (`psi_t` will otherwise be interpreted as a mixed density matrix).
+	verbose : bool, optional
+		If set to `True`, displays a message at every `times` step after the calculation is complete.
+		Default is `False`.
+
+	Returns
+	--------
+	dict
+		The following keys of the output are possible, depending on the choice of flags:
+		
+			* "custom_name": for each key of `Obs_dict`, the time-dependent expectation of the 
+				corresponding observable `Obs_dict[key]` is calculated and returned under the user-defined name
+				for the observable.
+			* "psi_t": (optional) returns time-dependent state, if `return_state=True` or `Srdm_args` is nonempty.
+			* "Sent_time": (optional) returns dictionary with keys corresponding to the entanglement entropy 
+				calculation for each time in `times`. Can have more keys than just "Sent_A", e.g. if the reduced
+				DM was also requested (toggled through `Srdm_args`.)
+
+	"""
+
+	
+	variables = ['Expt_time']
+	
+	if not isinstance(Obs_dict,dict):
+		raise ValueError("Obs_dict must be a dictionary.")
+
+	num_Obs = len(Obs_dict.keys())
+
+	for key, val in Obs_dict.items():
+		if not _ishamiltonian(val):
+			if not(_sp.issparse(val)) and not(val.__class__ in [_np.ndarray,_np.matrix]):
+				val =_np.asanyarray(val)
+
+			Obs_dict[key] = _hamiltonian([val],[],dtype=val.dtype)
+
+
+	if type(psi_t) is tuple:
+
+		psi,E,V = psi_t
+
+		if V.ndim != 2 or V.shape[0] != V.shape[1]:
+			raise ValueError("'V' must be a square matrix")
+		if V.shape[0] != len(E):
+			raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
+		if len(psi) != len(E):
+			raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+		for Obs in Obs_dict.values():
+			if V.shape != Obs._shape:
+				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
+			
+
+		if _np.isscalar(times):
+			TypeError("Variable 'times' must be a array or iter like object!")
+
+		if return_state:
+			variables.append("psi_t")
+
+		
+		# get iterator over time dependent state (see function above)
+		if return_state:
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate=False)
+		else:
+			psi_t = ED_state_vs_time(psi,E,V,times,iterate=True)
+
+
+	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
+
+
+		for Obs in Obs_dict.values():
+			if psi_t.shape[0] != Obs._shape[1]:
+				raise ValueError("states must be in columns of input matrix.")
+
+
+		if return_state:
+			variables.append("psi_t")
+		else:
+			return_state=True # set to True to use einsum but do not return state
+
+	elif _isgenerator(psi_t):
+		if return_state:
+			variables.append("psi_t")
+			psi_t_list = []
+			for psi in psi_t:
+				psi_t_list.append(psi)
+
+			psi_t = _np.squeeze(_np.dstack(psi_t_list))
+
+			for Obs in Obs_dict.values():
+				if psi_t.shape[0] != Obs._shape[1]:
+					raise ValueError("states must be in columns of input matrix.")
+
+	else:
+		raise ValueError("input not recognized")
+	
+	# calculate observables and Sent
+	Expt_time = {}
+	calc_Sent = False
+	
+	if len(Sent_args) > 0:
+		Sent_args = dict(Sent_args)
+		basis = Sent_args.get("basis")
+		if basis is None:
+			raise ValueError("Sent_args requires 'basis' for calculation")
+		if not isbasis(basis):
+			raise ValueError("'basis' object must be a proper basis object")
+
+		if ("chain_subsys" in Sent_args) or ("DM" in Sent_args) or ("svd_return_vec" in Sent_args):
+			calc_ent_entropy = ent_entropy
+		else:
+			calc_ent_entropy = basis.ent_entropy
+			del Sent_args["basis"]
+
+		calc_Sent = True
+		variables.append("Sent_time")
+	
+	if return_state:
+		for key,Obs in Obs_dict.items():
+			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
+			
+		# calculate entanglement entropy if requested	
+		if calc_Sent:
+			Sent_time = calc_ent_entropy(psi_t,**Sent_args)
+
+
+	else:
+		psi = next(psi_t) # get first state from iterator.
+		# do first calculations of loop
+
+		time = times[0]
+
+		for key,Obs in Obs_dict.items():
+			
+			val = Obs.expt_value(psi,time=time,check=False).real
+			dtype = _np.dtype(val)
+			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
+			Expt_time[key][0] = val
+
+
+
+		# get initial dictionary from ent_entropy function
+		# use this to set up dictionary for the rest of calculation.
+		if calc_Sent:
+			Sent_time = calc_ent_entropy(psi,**Sent_args)
+
+			for key,val in Sent_time.items():
+				val = _np.asarray(val)
+				dtype = val.dtype
+				shape = (len(times),) + val.shape
+				Sent_time[key] = _np.zeros(shape,dtype=dtype)
+				Sent_time[key][0] = val
+
+		# loop over psi generator
+		for m,psi in enumerate(psi_t):
+
+			time = times[m+1]
+
+			if verbose: print("obs_vs_time integrated to t={:.4f}".format(time))
+
+			for key,Obs in Obs_dict.items():
+				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
+
+			if calc_Sent:
+				Sent_time_update = calc_ent_entropy(psi,**Sent_args)
+				for key in Sent_time.keys():
+					Sent_time[key][m+1] = Sent_time_update[key]
+
+		
+	return_dict = {}
+	for i in variables:
+		if i == 'Expt_time':
+			for key,val in Expt_time.items():
+				return_dict[key] = _np.asarray(val)
+		else:
+			return_dict[i] = locals()[i]
+
+	return return_dict
+
+def ED_state_vs_time(psi,E,V,times,iterate=False):
+	"""Calculates the time evolution of initial state using a complete eigenbasis. 
+
+	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. 
+
+	Examples
+	--------
+
+	The following example shows how to time-evolve a state :math:`\\psi` using the entire eigensystem 
+	:math:`(E_1,V_1)` of a Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.
+	
+	.. literalinclude:: ../../doc_examples/ED_state_vs_time-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	psi : numpy.ndarray
+		Initial state.
+	V : numpy.ndarray
+		Unitary matrix containing all eigenstates of the Hamiltonian :math:`H` in its columns. 
+	E : numpy.ndarray
+		Eigenvalues of the Hamiltonian :math:`H`, listed in the order which corresponds to the columns of `V`. 
+	times : numpy.ndarray
+		Vector of time to evaluate the time evolved state at. 
+	iterate : bool, optional
+		If set to `True`, the function returns the generator of the time evolved state. 
+
+	Returns
+	--------
+	obj
+		Either of the following:
+			* `numpy.ndarray` with the time evolved states as rows. 
+			* `generator` which generates time-dependent states one by one.
+
+	"""
+	psi = _np.squeeze(_np.asarray(psi))
+
+
+	if V.ndim != 2 or V.shape[0] != V.shape[1]:
+		raise ValueError("'V' must be a square matrix")
+
+	if V.shape[0] != len(E):
+		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
+	if psi.shape[0] != len(E):
+		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
+
+	if psi.ndim == 2:
+		if psi.shape[0] != psi.shape[1]:
+			raise ValueError("mixed states must be square!")
+
+	if psi.ndim > 2:
+		raise ValueError("psi must be 1 or 2 dimension array.")
+
+	if _np.isscalar(times):
+		TypeError("Variable 'times' must be a array or iter like object!")
+
+	times = -1j*_np.asarray(times)
+	
+
+	# define generator of time-evolved state in basis V2
+	def pure_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		a_n = V.T.conj().dot(psi)
+		for t in times:
+			yield V.dot( _np.exp(E*t)*a_n )
+
+	def mixed_t_iter(V,psi,times):
+		# a_n: probability amplitudes
+		# times: time vector
+		rho_d = V.T.conj().dot(psi.dot(V))
+		for t in times:
+			exp_t = _np.exp(t*E)
+			yield _np.einsum("ij,j,jk,k,lk->il",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
+
+	if psi.ndim == 1:
+		if iterate:
+			return pure_t_iter(V,psi,times)
+		else:
+			c_n = V.T.conj().dot(psi)
+
+			Ntime = len(times)
+			Ns = len(E)
+
+			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T 
+			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			psi_t = psi_t*E
+			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			_np.exp(psi_t,psi_t)
+
+			# [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
+			psi_t *= c_n 
+
+			# for each vector trasform back to original basis
+			psi_t = V.dot(psi_t.T) 
+
+			return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
+	else:
+		if iterate:
+			return mixed_t_iter(V,psi,times)
+		else:
+			Ntime = len(times)
+			Ns = len(E)
+
+			rho_d = V.T.conj().dot(psi.dot(V))
+
+			# generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
+			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T
+			# [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
+			exp_t = exp_t*E
+			# [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
+			_np.exp(exp_t,exp_t)
+			
+			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
+def project_op(Obs,proj,dtype=_np.complex128):
+	"""Projects observable onto symmetry-reduced subspace.
+
+	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`
+	onto that reduced basis.
+
+	Examples
+	--------
+
+	The following example shows how to project an operator :math:`H_1=\\sum_j hS^x_j + g S^z_j` from the
+	symmetry-reduced basis to the full basis.
+	
+	.. literalinclude:: ../../doc_examples/project_op-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	Obs : :obj:
+		Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.
+	proj : :obj:
+		Either one of the following:
+
+		* `basis` object with the basis of the Hilbert space after the projection.
+		* numpy.ndarray: a matrix which contains the projector.
+
+		Projectors can be calculated conveniently using the function method `basis.get_proj()`.
+	dtype : type, optional
+		Data type of output. Default is `numpy.complex128`.
+
+	Returns
+	-------- 
+	dict
+		Dictionary with keys
+
+		* "Proj_Obs": projected observable `Obs`.
+
+	"""
+
+	variables = ["Proj_Obs"]
+
+	if isbasis(proj):
+		proj = proj.get_proj(dtype)
+	elif (proj.__class__ not in [_np.ndarray,_np.matrix]) and (not _sp.issparse(proj)):
+		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
+
+	if _ishamiltonian(Obs):
+
+		if Obs.Ns != proj.shape[0]:
+			if Obs.Ns != proj.shape[1]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
+			else:
+				# projecting from a smaller to larger H-space
+				proj_down=False
+		else:
+			# projecting from larger to smaller H-space
+			proj_down=True
+
+		if proj_down:
+			Proj_Obs = Obs.project_to(proj)		
+		else:
+			Proj_Obs = Obs.project_to(proj.T.conj())
+
+	else:
+
+		if Obs.ndim != 2:
+			raise ValueError("Expecting Obs to be a 2 dimensional array.")
+
+		if Obs.shape[0] != Obs.shape[1]:
+			raise ValueError("Expecting Obs to be a square array.")
+
+		if Obs.shape[1] != proj.shape[0]:
+			if Obs.shape[0] != proj.shape[1]:
+				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
+			else:
+				proj_down=False
+		else:
+			proj_down=True
+
+		if proj_down:
+			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
+		else:
+			Proj_Obs = proj.dot(Obs.dot(proj.T.conj()))
+
+	# define dictionary with outputs
+	return_dict = {}
+	for i in range(len(variables)):
+		return_dict[variables[i]] = locals()[variables[i]]
+
+	return return_dict
+
+def KL_div(p1,p2):
+	"""Calculates Kullback-Leibler divergence of two discrete probability distributions.
+
+	.. math::
+		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}
+
+	Parameters
+	----------- 
+	p1 : numpy.ndarray
+		Dscrete probability distribution.
+	p2 : numpy.ndarray
+		Discrete probability distribution.
+
+	Returns
+	--------
+	numpy.ndarray
+		Kullback-Leibler divergence of `p1` and `p2`.
+
+	"""
+	p1 = _np.asarray(p1)
+	p2 = _np.asarray(p2)
+
+
+	if len(p1) != len(p2):
+		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have same size!")
+	if p1.ndim != 1 or p2.ndim != 1:
+		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have linear dimension!")
+
+
+	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
+		raise TypeError("Expecting all entries of the probability distributions 'p1' and 'p2' to be non-negative!")
+	
+	if abs(sum(p1)-1.0) > 1E-13:
+		raise ValueError("Expecting 'p1' to be normalised!")
+
+	if abs(sum(p2)-1.0) > 1E-13:
+		raise ValueError("Expecting 'p2' to be normalised!")
+
+	if _np.any(p1==0.0):
+
+		inds = _np.where(p1 == 0)
+
+		p1 = _np.delete(p1,inds)
+		p2 = _np.delete(p2,inds)
+
+	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
+
+def mean_level_spacing(E):
+	"""Calculates the mean-level spacing of an energy spectrum.
+
+	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in 
+	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf/>`_ for more details.
+
+	For Wigner-Dyson statistics, we have :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.53`, while
+	for Poisson statistics: :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.38`.
+
+	Examples
+	--------
+
+	The following example shows how to calculate the mean level spacing :math:`\\langle\\tilde r_\mathrm{W}\\rangle` for the
+	spectrum of the ergodic Hamiltonian :math:`H_1=\\sum_jJ S^z_{j+1}S^z + hS^x_j + g S^z_j`.
+	
+	.. literalinclude:: ../../doc_examples/mean_level_spacing-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	E : numpy.ndarray
+		Ordered list of ascending, NONdegenerate energies.
+
+	Returns
+	-------- 
+	float
+		mean-level spacing.
+
+	"""
+
+	if not isinstance(E,_np.ndarray):
+		E = _np.asarray(E)
+
+	if _np.any(_np.sort(E)!=E):
+		raise TypeError("Expecting a sorted list of ascending, nondegenerate eigenenergies 'E'.")
+
+	# compute consecutive E-differences
+	sn = _np.diff(E)
+	# check for degeneracies
+	if len(_np.unique(E)) != len(E):
+		raise ValueError("Degeneracies found in spectrum 'E'!")
+	# calculate the ratios of consecutive spacings
+	aux = _np.zeros((len(E)-1,2),dtype=_np.float64)
+
+	aux[:,0] = sn
+	aux[:,1] = _np.roll(sn,-1)
+
+	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
+
+
+##### below are the routines for arbitary user-defimed time evolution.
+
+def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
+	"""Implements (imaginary) time evolution for a custom user-defined first-order ODE.
+
+	The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured 
+	ODE solver in python, without any relation to other QuSpin objects.
+
+	
+	Parameters
+	-----------
+	v0 : numpy.ndarray
+		Initial state.
+	t0 : float
+		Initial time.
+	times : numpy.ndarray
+		Vector of times to compute the time-evolved state at.
+	f : :obj:`function`
+		User-defined function to solve first-order ODE (see Examples):
+
+		.. math::
+			v'(t) = f(v(t),t)\\qquad v(t_0)=v_0
+	f_params : tuple, optional
+		A tuple to pass all parameters of the function `f` to ODE solver. Default is `f_params=()`.
+	iterate : bool, optional
+		If set to `True`, creates a generator object for the time-evolved the state. Default is `False`.
+	solver_name : str, optional
+		Scipy solver integrator name. Default is `dop853`. 
+
+		See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_ for other options.
+	solver_args : dict, optional
+		Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_.	
+	real : bool, optional 
+		Flag to determine if `f` is real or complex-valued. Default is `False`.
+	imag_time : bool, optional
+		Must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state 
+		at each time in `times`. Default is `False`.
+	stack_state : bool, optional
+		If `f` is written to take care of real and imaginary parts separately (see Examples), this flag 
+		will take this into account. Default is `False`.
+	verbose : bool, optional
+		If set to `True`, prints normalisation of state at teach time in `times`.
+
+	Returns
+	--------
+	obj
+		Can be either one of the following:
+		* numpy.ndarray containing evolved state against time.
+		* generator object for time-evolved state (requires `iterate = True`).
+
+	Examples
+	---------
+
+	Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven 
+	Gross-Pitaevskii equation on a one-imensional lattice:
+
+	.. math::
+		i\\dot\\varphi_j(t) = -J\\left( e^{-iA\\sin\\Omega t}\\varphi_{j-1}(t) + e^{+iA\\sin\\Omega t}\\varphi_{j+1}(t) \\right) + \\mu_\\mathrm{trap}\\varphi_j(t) + U|\\varphi_j(t)|^2\\varphi_j(t)
+
+	where :math:`j` labels the lattice sites. Let us start by defining the single-particle Hamiltonian :math:`H(t)`.
+
+	>>> from quspin.operators import hamiltonian # Hamiltonians and operators
+	>>> from quspin.basis import boson_basis_1d # Hilbert space spin basis
+	>>> from quspin.tools.measurements import evolve # ODE evolve tool
+	>>> from quspin.tools.Floquet import Floquet_t_vec # stroboscopic time vector
+	>>> import numpy as np # generic math functions
+	>>> #
+	>>> L=50 # number of lattice sites
+	>>> i_CM = L//2-0.5 # centre of chain
+	>>> #
+	>>> ### static model parameters
+	>>> J=1.0 # hopping
+	>>> mu_trap=0.002 # harmonic trap strength
+	>>> U=1.0 # mean-field (GPE) interaction
+	>>> #
+	>>> ### periodic driving
+	>>> A=1.0 # drive amplitude
+	>>> Omega=10.0 # drive frequency
+	>>> def drive(t,Omega):
+	>>> 	return np.exp(-1j*A*np.sin(Omega*t) )
+	>>> def drive_conj(t,Omega):
+	>>> 	return np.exp(+1j*A*np.sin(Omega*t) )
+	>>> drive_args=[Omega] # drive arguments
+	>>> t=Floquet_t_vec(Omega,30,len_T=1) # time vector, 30 stroboscopic periods
+	>>> #
+	>>> ### site-couping lists
+	>>> hopping=[[-J,i,(i+1)%L] for i in range(L)]
+	>>> trap=[[mu_trap*(i-i_CM)**2,i] for i in range(L)]
+	>>> #
+	>>> ### operator strings for single-particle Hamiltonian
+	>>> static=[['n',trap]]
+	>>> dynamic=[["+-",hopping,drive,drive_args],["-+",hopping,drive_conj,drive_args]]
+	>>> # define single-particle basis
+	>>> basis = boson_basis_1d(L,Nb=1,sps=2) # Nb=1 boson and sps=2 states per site [empty and filled]
+	>>> #
+	>>> ### build Hamiltonian
+	>>> H=hamiltonian(static,dynamic,basis=basis,dtype=np.complex128)
+	>>> # calculate eigenvalues and eigenvectors of free particle
+	>>> E,V=H.eigh()
+	
+	Next, we define the GPE and solve it using `evolve()`:
+
+	>>> def GPE(time,phi):
+	>>> 	'''
+	>>> 	This function solves the complex-valued time-dependent Gross-Pitaevskii equation:
+	>>> 	#
+	>>> 	$-i\\dot\\phi(t) = H(t)\\phi(t) + U |\\phi(t)|^2 \phi(t)$
+	>>> 	#
+	>>> 	'''
+	>>> 	# solve static part of GPE
+	>>> 	phi_dot = -1j*( H.static.dot(phi) + U*np.abs(phi)**2*phi )
+	>>> 	# solve dynamic part of GPE
+	>>> 	for Hd,f,f_args in H.dynamic:
+	>>> 	phi_dot += -1j*f(time,*f_args)*Hd.dot(phi)
+	>>> 	return phi_dot
+	>>>	#
+	>>> # initial state
+	>>> phi0=V[:,0]*np.sqrt(L)
+	>>> # solve cpx-valued GPE
+	>>> phi_t = evolve(phi0,t.i,t.vals,GPE)
+	
+	The above code requires the use of a complex-valued ODE solver [which is done by `evolve()` under the hood, 
+	so long as no solver is explicitly specified]. An alternative way to solve the GPE using a real-valued 
+	solver would be
+	
+	>>> def GPE_real(time,psi,H,U):
+	>>> 	'''
+	>>> 	This function defines the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a 
+	>>> 	real-valued ODE solver.
+	>>> 	#
+	>>> 	The goal is to solve: 
+	>>> 	#
+	>>> 	$-i\\dot\\phi(t) = H(t)\\phi(t) + U |\\phi(t)|^2 \\phi(t)$
+	>>> 	#
+	>>> 	for the complex-valued $\\phi(t)$ by casting it as a real-valued vector $\\psi=[u,v]$ where 
+	>>> 	$\\phi(t) = u(t) + iv(t)$. The realand imaginary parts, $u(t)$ and $v(t)$, have the same dimension as 
+	>>> 	$\\phi(t)$.
+	>>> 	#
+	>>> 	In the most general form, the single-particle Hamiltonian can be decomposed as 
+	>>> 	$H(t)= H_{stat} + f(t)H_{dyn}$, with a complex-valued driving function $f(t)$. Then, the GPE can be cast in 
+	>>> 	the following real-valued form:
+	>>>  	#
+	>>> 	$\\dot u(t) = +\\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \\right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)$
+	>>> 	$\\dot v(t) = -\\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \\right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)$
+	>>> 	#
+	>>> 	'''
+	>>> 	# preallocate psi_dot
+	>>> 	psi_dot = np.zeros_like(psi)
+	>>> 	# read off number of lattice sites (number of complex elements in psi)
+	>>> 	Ns=H.Ns
+	>>> 	# static single-particle
+	>>> 	psi_dot[:Ns] =  H.static.dot(psi[Ns:]).real
+	>>> 	psi_dot[Ns:] = -H.static.dot(psi[:Ns]).real
+	>>> 	# static GPE interaction
+	>>> 	psi_dot_2 = np.abs(psi[:Ns])**2 + np.abs(psi[Ns:])**2
+	>>> 	psi_dot[:Ns] += U*psi_dot_2*V[Ns:]
+	>>> 	psi_dot[Ns:] -= U*psi_dot_2*V[:Ns]
+	>>> 	# dynamic single-particle term
+	>>> 	for Hdyn,f,f_args in H.dynamic:
+	>>> 	psi_dot[:Ns] +=  ( +(f(time,*f_args).real)*Hdyn.dot(psi[Ns:]) \\
+	>>> 						   + (f(time,*f_args).imag)*Hdyn.dot(psi[:Ns])	).real
+	>>> 	psy_dot[Ns:] +=  ( -(f(time,*f_args).real)*Hdyn.dot(psi[:Ns]) \\
+	>>> 						   + (f(time,*f_args).imag)*Hdyn.dot(psi[Ns:])	).real
+	>>> 	#
+	>>> 	return psi_dot
+	>>> #
+	>>> # define initial condition
+	>>> phi0=V[:,0]*np.sqrt(L)
+	>>> # define ODE solver parameters
+	>>> GPE_params = (H,U)
+	>>> # solve real-valued GPE
+	>>> phi_t = evolve(phi0,t.i,t.vals,GPE_real,stack_state=True,f_params=GPE_params)
+	
+	The flag `stack_state=True` is required for `evolve` to handle the complex-valued initial condition properly,
+	as well as to put together the output solution as a complex-valued vector. Since the real-valued ODE solver 
+	allows to parse ODE parameters, we can include them in the user-defined ODE function and use the 
+	flag `f_params`. Notice the elegant way python allows one to circumvent this variable in the complex-valued 
+	example above. 
+	
+	"""
+
+	from scipy.integrate import complex_ode
+	from scipy.integrate import ode
+
+	if v0.ndim > 2:
+		raise ValueError("state mush have ndim < 3.")
+
+	shape0 = v0.shape
+
+	if v0.ndim == 2:
+		if v0.shape[0] != v0.shape[1]:
+			v0 = v0.ravel()
+	 
+	
+	if _np.iscomplexobj(times):
+		raise ValueError("times must be real number(s).")
+
+	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
+
+	if stack_state:
+		v1 = v0
+		v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
+		v0[:shape0[0]] = v1.real
+		v0[shape0[0]:] = v1.imag
+		solver = ode(f) # y_f = f(t,y,*args)
+	elif real:
+		solver = ode(f) # y_f = f(t,y,*args)
+	else:
+		solver = complex_ode(f) # y_f = f(t,y,*args)
+
+	if solver_name in ["dop853","dopri5"]:
+		if solver_args.get("nsteps") is None:
+			solver_args["nsteps"] = _np.iinfo(_np.int32).max
+		if solver_args.get("rtol") is None:
+			solver_args["rtol"] = 1E-9
+		if solver_args.get("atol") is None:
+			solver_args["atol"] = 1E-9
+
+
+	solver.set_integrator(solver_name,**solver_args)
+	solver.set_f_params(*f_params)
+	solver.set_initial_value(v0, t0)
+
+	if _np.isscalar(times):
+		return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
+	else:
+		if iterate:
+			return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+		else:
+			return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+
+
+def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
+	from numpy.linalg import norm
+	Ns=shape0[0]
+
+	if time == t0:
+		if stack_state:
+			return (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
+		else:
+			return _np.array(v0).reshape(shape0)
+
+	solver.integrate(time)
+	if solver.successful():
+		if imag_time: solver._y /= (norm(solver._y)/n)
+		if stack_state:
+			return (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+		else:
+			return _np.array(solver.y).reshape(shape0)
+	else:
+		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
+
+def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
+	from numpy.linalg import norm
+
+	Ns=shape0[0]
+	v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
+	
+	for i,t in enumerate(times):
+
+		if t == t0:
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if stack_state:
+				v[...,i] = (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
+			else:
+				v[...,i] = _np.array(v0).reshape(shape0)
+			continue
+
+		solver.integrate(t)
+		if solver.successful():
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
+			if stack_state:
+				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+			else:
+				v[...,i] = solver.y.reshape(shape0)
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
+			
+
+	return v
+
+def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
+	from numpy.linalg import norm
+	Ns=shape0[0]
+
+
+	for i,t in enumerate(times):
+		if t == t0:
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if stack_state:
+				yield (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
+			else:
+				yield _np.array(v0).reshape(shape0)
+			continue
+			
+
+		solver.integrate(t)
+		if solver.successful():
+			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
+			if imag_time: solver._y /= (norm(solver._y)/n)
+			if stack_state:
+				yield (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
+			else:
+				yield solver.y.reshape(shape0)
+		else:
+			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
+
+##### private functions
 
 def _ent_entropy(system_state,basis,chain_subsys=None,density=False,subsys_ordering=True,alpha=1.0,DM=False,svd_return_vec=[False,False,False]):
 	"""
@@ -715,922 +1969,4 @@ def _inf_time_obs(rho,istate,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Re
 	
 
 	return return_dict
-		
-def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=False,delta_t_Obs=False,delta_q_Obs=False,Sd_Renyi=False,Srdm_Renyi=False,Srdm_args={}):
-	"""
-	This function calculates the expectation values of physical quantities in the Diagonal ensemble 
-	set by the initial state (see eg. arXiv:1509.06411). Equivalently, these are the infinite-time 
-	expectation values after a sudden quench at time t=0 from a Hamiltonian H1 to a Hamiltonian H2.
-
-
-	RETURNS: 	dictionary with keys depending on the passed optional arguments:
-
-
-	replace "..." below by 'pure', 'thermal' or 'mixed' depending on input params.
-
-	'Obs_...': infinite time expectation of observable 'Obs'.
-
-	'delta_t_Obs_...': infinite time temporal fluctuations of 'Obs'.
-
-	'delta_q_Obs_...': infinite time quantum fluctuations of 'Obs'.
-
-	'Sd_...' ('Sd_Renyi_...' for alpha!=1.0): Renyi _entropy of density matrix of Diagonal Ensemble with parameter 'alpha'.
-
-	'Srdm_...' ('Srdm_Renyi_...' for alpha!=1.0): Renyi entanglement _entropy of reduced density matrix of Diagonal Ensemble 
-			with parameter 'alpha'.
-
-	'rho_d': density matrix of diagonal ensemble
-
-
-	--- arguments ---
-
-
-	N: (required) system size N.
-
-	system_state: (required) the state of the quantum system. Can be a:
-
-				-- pure state [numpy array of shape (Ns,) or (,Ns)].
-
-				-- density matrix (DM) [numpy array of shape (Ns,Ns)].
-
-				-- mixed DM [dictionary] {'V1':V1,'E1':E1,'f':f,'f_args':f_args,'V1_state':int,'f_norm':False} to 
-					define a diagonal DM in the basis 'V1' of the Hamiltonian H1. The keys are
-
-					All expectation values depend statistically on the symmetry block via the available number of 
-					states as part of the system-size dependence!
-
-					== 'V1': (required) array with the eigenbasis of H1 in the columns.
-
-					== 'E1': (required) eigenenergies of H1.
-
-					== 'f': (optional) the distribution used to define the mixed DM. Default is
-						'f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )'. 
-
-					== 'f_args': (required) list of arguments of function 'f'. If 'f' is not defined, by 
-						default we have 'f=numpy.exp(-beta*(E - E[0]))', and 'f_args' specifies the inverse temeprature list [beta].
-
-					== 'V1_state' (optional) : list of integers to specify the states of 'V1' wholse pure 
-						expectations are also returned.
-
-					== 'f_norm': (optional) if set to 'False' the mixed DM built from 'f' is NOT normalised
-						and the norm is returned under the key 'f_norm'. 
-
-					The keys are CANNOT be chosen arbitrarily.
-
-	V2: (required) numpy array containing the basis of the Hamiltonian H2 in the columns.
-
-	E2: (required) numpy array containing the eigenenergies corresponding to the eigenstates in 'V2'.
-		This variable is only used to check for degeneracies.
-
-	rho_d: (optional) When set to 'True', returns the Diagonal ensemble DM under the key 'rho_d'. 
-
-	Obs: (optional) hermitian matrix of the same size as V2, to calculate the Diagonal ensemble 
-			expectation value of. Appears under the key 'Obs'.
-
-	delta_t_Obs: (optional) TIME fluctuations around infinite-time expectation of 'Obs'. Requires 'Obs'. 
-			Appears under the key 'delta_t_Obs'.
-
-	delta_q_Obs: (optional) QUANTUM fluctuations of the expectation of 'Obs' at infinite-times. 
-			Requires 'Obs'. Appears under the key 'delta_q_Obs'. Returns temporal fluctuations 
-			'delta_t_Obs' for free.
-
-	Sd_Renyi: (optional) diagonal Renyi _entropy in the basis of H2. The default Renyi parameter is 
-			'alpha=1.0' (see below). Appears under the key Sd_Renyi'.
-
-	Srdm_Renyi: (optional) entanglement Renyi _entropy of a subsystem of a choice. The default Renyi 
-			parameter is 'alpha=1.0' (see below). Appears under the key Srdm_Renyi'. Requires 
-			'Srdm_args'. To specify the subsystem, see documentation of '_reshape_as_subsys'.
-
-	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
-			following keys are allowed:
-
-			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-			  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
-
-			* chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
-
-			 * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
-
-			 * [0,1,...,N-1,N] for 'photon_basis'. 
-
-			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
-
-	density: (optional) if set to 'True', all observables are normalised by the system size N, except
-				for the entanglement _entropy which is normalised by the subsystem size 
-				[i.e., by the length of 'chain_subsys']. Detault is 'True'.
-
-	alpha: (optional) Renyi alpha parameter. Default is '1.0'.
-	"""
-
-	# check if E2 are all unique
-	E2 = _np.asarray(E2)
-	if _np.any( _np.diff(_np.sort(E2)) < 1E3*_np.finfo(E2.dtype).eps):
-		raise TypeError("Cannot use function 'diag_ensemble' with dengenerate e'values 'E2'!")
-	del E2
-
-	if N and not(type(N) is int):
-		raise TypeError("System size 'N' must be a positive integer!")
-
-
-	# various checks
-	if delta_t_Obs or delta_q_Obs:
-		if not Obs:
-			raise TypeError("Expecting to parse the observable 'Obs' whenever 'delta_t_Obs = True' or 'delta_q_Obs = True'!")
-	
-	# calculate diagonal ensemble DM
-
-	if isinstance(system_state,(list, tuple, _np.ndarray)): # initial state either pure or DM
-
-		if len(system_state.shape)==1: # pure state
-			istate = 'pure'
-			# calculate diag ensemble DM
-			rho = abs( system_state.conj().dot(V2) )**2;
-		elif len(system_state.shape)==2: # DM
-			istate = 'DM'
-			# calculate diag ensemble DM
-			rho = _np.einsum( 'ij,ji->i', V2.T.conj(), system_state.dot(V2) ).real
-
-	
-	elif isinstance(system_state,dict): # initial state is defined by diag distr
-		# define allowed keys
-		key_strings = ['V1','E1','f','f_args','V1_state','f_norm']
-
-		if 'V1' in system_state.keys():
-			V1 = system_state['V1']
-		else:
-			raise TypeError("Dictionary 'system_state' must contain states matrix 'V1'!")
-		
-		if 'E1' in system_state.keys():
-			E1 = _np.asarray( system_state['E1'] )
-			if any(sorted(E1)!=E1):
-				raise TypeError("Expecting ordered vector of energies 'E1'!")
-		else:
-			raise TypeError("Dictionary 'system_state' must contain eigenvalues vector 'E1'!")
-		
-		if 'f_args' in system_state.keys():
-			f_args = system_state['f_args']
-		else:
-			raise TypeError("Dictionary 'system_state' must contain function arguments list 'f_args'!")
-
-		if 'V1_state' in system_state.keys():
-			V1_state = system_state['V1_state']
-
-		# check if user has passed the distribution 'f'
-		if 'f' in system_state.keys():
-			f = system_state['f']
-			istate = 'mixed'
-		else:
-			istate = 'thermal'
-			# define Gibbs distribution (up to normalisation)
-			f = lambda E1,beta: _np.exp(-beta*(E1 - E1[0]))
-
-		if 'f_norm' in system_state.keys():
-			f_norm = system_state['f_norm']
-			f_norms = _np.zeros((len(f_args[0])),dtype=type(f_args[0][0]) )
-		else:
-			f_norm = True
-
-		if 'V1_state' in locals():
-			if not all(isinstance(item, int) for item in V1_state):
-				raise TypeError("Expecting an integer value for variable 'V1_state'!")
-			if min(V1_state) < 0 or max(V1_state) > len(E1)-1:
-				raise TypeError("Value 'V1_state' violates '0 <= V1_state <= len(E1)-1'!")
-
-		# define diagonal (in V1) mixed DM
-		
-		rho_mixed = _np.zeros((len(E1),len(f_args[0])),dtype=type(f_args[0][0]) )
-		for i, arg in enumerate(f_args[0]):
-			if f_norm:
-				rho_mixed[:,i] = f(E1,arg) / sum(f(E1,arg))
-			else:
-				rho_mixed[:,i] = f(E1,arg)
-				# calculate normalisation
-				f_norms[i] = sum(f(E1,arg))
-
-
-		# calculate diag ensemble DM for each state in V1
-		rho = abs( V2.conj().T.dot(V1) )**2 # components are (n,psi)
-
-		del V1, E1
-	else:
-		raise TypeError("Wrong variable type for 'system_state'! E.g., use np.ndarray.")
-
-
-	# clear up memory
-	del system_state
-
-	# add floating point number to zero elements
-	rho[rho<=1E-16] = _np.finfo(rho.dtype).eps
-
-
-	# prepare observables
-	if Obs is not False or delta_t_Obs is not False or delta_q_Obs is not False:
-
-		if (delta_t_Obs or delta_q_Obs) and Obs is not False:
-			# diagonal matrix elements of Obs^2 in the basis V2
-			#delta_t_Obs =  _np.einsum( 'ij,ji->i', V2.T.conj(), Obs.dot(Obs).dot(V2) ).real
-			Obs = V2.T.conj().dot( Obs.dot(V2) )
-			delta_t_Obs = _np.square(Obs)
-			_np.fill_diagonal(delta_t_Obs,0.0)
-			if delta_q_Obs is not False:
-				delta_q_Obs = _np.diag(Obs.dot(Obs)).real
-			Obs = _np.diag(Obs).real
-			
-		elif Obs is not False:
-			# diagonal matrix elements of Obs in the basis V2
-			Obs = _np.einsum('ij,ji->i', V2.transpose().conj(), Obs.dot(V2) ).real
-
-		
-	if Srdm_Renyi:
-		"""
-		# calculate singular values of columns of V2
-		v, _, N_A = _reshape_as_subsys({"V_states":V2},**Srdm_args)
-
-		U, lmbda, _ = _npla.svd(v, full_matrices=False)
-		if istate in ['mixed','thermal']:
-			DM_chain_subsys = _np.einsum('nm,nij,nj,nkj->mik',rho,U,lmbda**2,U.conj() )
-		else:
-			DM_chain_subsys = _np.einsum('n,nij,nj,nkj->ik',rho,U,lmbda**2,U.conj() )
-			
-		Srdm_Renyi = _npla.eigvalsh(DM_chain_subsys).T # components (i,psi)
-		del v, U, DM_chain_subsys
-		"""
-		basis=Srdm_args['basis']
-		partial_tr_args=Srdm_args.copy()
-		del partial_tr_args['basis']
-		if 'sub_sys_A' in Srdm_args:
-			sub_sys_A = Srdm_args['sub_sys_A']
-			del partial_tr_args['sub_sys_A']
-
-		elif 'chain_subsys' in Srdm_args:
-			sub_sys_A = Srdm_args['chain_subsys']
-			del partial_tr_args['chain_subsys']
-		else:
-			sub_sys_A=tuple(range(basis.L//2))
-		N_A=len(sub_sys_A)
-		rdm_A = basis.partial_trace(V2,sub_sys_A=sub_sys_A,enforce_pure=True,**partial_tr_args)
-		rdm = _np.einsum('n...,nij->...ij',rho,rdm_A)
-	
-		Srdm_Renyi = _npla.eigvalsh(rdm).T # components (i,psi) 
-		
-	# clear up memory
-	del V2
-
-	# calculate diag expectation values
-	Expt_Diag = _inf_time_obs(rho,istate,alpha=alpha,Obs=Obs,delta_t_Obs=delta_t_Obs,delta_q_Obs=delta_q_Obs,Srdm_Renyi=Srdm_Renyi,Sd_Renyi=Sd_Renyi)
-	
-
-	Expt_Diag_Vstate={}
-	# compute density
-	for key,value in Expt_Diag.items():
-		if density:
-			if 'rdm' in key:
-				value /= N_A
-			else:
-				value /= N
-
-		Expt_Diag[key] = value
-		# calculate thermal expectations
-		if istate in ['mixed','thermal']:
-			Expt_Diag_state = {}
-			Expt_Diag[key] = value.dot(rho_mixed)
-			# if 'GS' option is passed save GS value
-			if 'V1_state' in locals():
-				state_key = key[:-len(istate)]+'V1_state'
-				Expt_Diag_Vstate[state_key] = value[V1_state]
-			# merge state and mixed dicts
-			Expt_Diag.update(Expt_Diag_state)
-
-	if istate in ['mixed','thermal']:
-		if f_norm==False:
-			Expt_Diag['f_norm'] = f_norms
-		if 'V1_state' in locals():
-			Expt_Diag.update(Expt_Diag_Vstate)
-			
-	# return diag ensemble density matrix if requested
-	if rho_d:
-		if 'V1_state' in locals():
-			Expt_Diag['rho_d'] = rho[:,V1_state]
-		else:
-			Expt_Diag['rho_d'] = rho
-
-
-	return Expt_Diag
-
-def ED_state_vs_time(psi,E,V,times,iterate=False):
-	"""
-	This routine calculates the time evolved initial state as a function of time. The initial 
-	state is 'psi' and the time evolution is carried out under the Hamiltonian H with eigenenergies 
-	'E' and eigensystem 'V'. 
-
-	RETURNS:	either a matrix with the time evolved states as rows, 
-				or an iterator which generates the states one by one.
-
-	--- arguments --- 
-
-	psi: (required) initial state.
-
-	V: (required) unitary matrix containing in its columns all eigenstates of the Hamiltonian H. 
-
-	E: (required) array containing the eigenvalues of the Hamiltonian H2. 
-			The order of the eigenvalues must correspond to the order of the columns of V2. 
-
-	times: (required) a vector of times to evaluate the time evolved state at. 
-
-	iterate: (optional) if True this function returns the generator of the time evolved state. 
-	"""
-	psi = _np.squeeze(_np.asarray(psi))
-
-
-	if V.ndim != 2 or V.shape[0] != V.shape[1]:
-		raise ValueError("'V' must be a square matrix")
-
-	if V.shape[0] != len(E):
-		raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-	if psi.shape[0] != len(E):
-		raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-
-	if psi.ndim == 2:
-		if psi.shape[0] != psi.shape[1]:
-			raise ValueError("mixed states must be square!")
-
-	if psi.ndim > 2:
-		raise ValueError("psi must be 1 or 2 dimension array.")
-
-	if _np.isscalar(times):
-		TypeError("Variable 'times' must be a array or iter like object!")
-
-	times = -1j*_np.asarray(times)
-	
-
-	# define generator of time-evolved state in basis V2
-	def pure_t_iter(V,psi,times):
-		# a_n: probability amplitudes
-		# times: time vector
-		a_n = V.T.conj().dot(psi)
-		for t in times:
-			yield V.dot( _np.exp(E*t)*a_n )
-
-	def mixed_t_iter(V,psi,times):
-		# a_n: probability amplitudes
-		# times: time vector
-		rho_d = V.T.conj().dot(psi.dot(V))
-		for t in times:
-			exp_t = _np.exp(t*E)
-			yield _np.einsum("ij,j,jk,k,lk->il",V,exp_t,rho_d,exp_t.conj(),V.conj())
-
-
-	if psi.ndim == 1:
-		if iterate:
-			return pure_t_iter(V,psi,times)
-		else:
-			c_n = V.T.conj().dot(psi)
-
-			Ntime = len(times)
-			Ns = len(E)
-
-			psi_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-			psi_t = psi_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-			_np.exp(psi_t,psi_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
-
-			psi_t *= c_n # [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]
-
-			# for each vector trasform back to original basis
-			psi_t = V.dot(psi_t.T) 
-
-			return psi_t # [ psi(times[0]), ...,psi(times[-1]) ]
-	else:
-		if iterate:
-			return mixed_t_iter(V,psi,times)
-		else:
-			Ntime = len(times)
-			Ns = len(E)
-
-			rho_d = V.T.conj().dot(psi.dot(V))
-
-			exp_t = _np.broadcast_to(times,(Ns,Ntime)).T # generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]
-			exp_t = exp_t*E # [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]
-			_np.exp(exp_t,exp_t) # [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]
-			
-			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
-
-			
-
-def obs_vs_time(psi_t,times,Obs_dict,enforce_pure=False,return_state=False,Sent_args={},disp=False):
-	
-	"""
-	This routine calculates the expectation value of (a list of) observable(s) as a function of time 
-	in the time-dependent state 'psi_t'.
-
-	RETURNS:	dictionary with keys:
-
-	'custom_name': for each key of 'Obs_dict', the time-dependent expectation of the 
-				observable 'Obs_dict[key]' is calculated and returned.
-
-	'psi_t': (optional) returns a 2D array the columns of which give the state at the associated time.
-
-	'Sent_time': (optional) returns the entanglement _entropy of the state at time 'times'.
-
-	--- arguments ---
-
-	psi_t: (required) three different inputs:
-		i) psi_t tuple(psi,E,V) 
-			psi: initial state
-	
-			V: unitary matrix containing in its columns all eigenstates of the Hamiltonian H2. 
-
-			E: real vector containing the eigenvalues of the Hamiltonian H2. 
-			   The order of the eigenvalues must correspond to the order of the columns of V2.
-
-		ii) numpy array or matrix with states in the columns.
-
-		iii) generator which generates the states
-
-	Obs_dict: (required) dictionary of hermitian matrices to calculate its time-dependent expectation value. 
-
-	times: (required) a vector of times to evaluate the expectation value at. 
-
-	return_state: (optional) when set to 'True' or Sent_args is nonempty, returns a matrix whose columns give the state vector 
-			at the times specified by the column index. The return dictonary key is 'psi_time'.
-
-	Srdm_args: (optional) dictionary of ent_entropy arguments, required when 'Srdm_Renyi = True'. The 
-			following keys are allowed:
-
-			* basis: (required) the basis used to build 'system_state'. Must be an instance of 'photon_basis',
-			  'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'. 
-
-			* chain_subsys: (optional) a list of lattice sites to specify the chain subsystem. Default is
-
-			 * [0,1,...,N/2-1,N/2] for 'spin_basis_1d', 'fermion_basis_1d', 'boson_basis_1d'.
-
-			 * [0,1,...,N-1,N] for 'photon_basis'. 
-
-			 * subsys_ordering: (optional) if set to 'True', 'chain_subsys' is being ordered. Default is 'True'.
-
-	"""
-
-	
-	variables = ['Expt_time']
-	
-	if not isinstance(Obs_dict,dict):
-		raise ValueError("Obs_dict must be a dictionary.")
-
-	num_Obs = len(Obs_dict.keys())
-
-	for key, val in Obs_dict.items():
-		if not _ishamiltonian(val):
-			if not(_sp.issparse(val)) and not(val.__class__ in [_np.ndarray,_np.matrix]):
-				val =_np.asanyarray(val)
-
-			Obs_dict[key] = _hamiltonian([val],[],dtype=val.dtype)
-
-
-	if type(psi_t) is tuple:
-
-		psi,E,V = psi_t
-
-		if V.ndim != 2 or V.shape[0] != V.shape[1]:
-			raise ValueError("'V' must be a square matrix")
-		if V.shape[0] != len(E):
-			raise TypeError("Number of eigenstates in 'V' must equal number of eigenvalues in 'E'!")
-		if len(psi) != len(E):
-			raise TypeError("Variables 'psi' and 'E' must have the same dimension!")
-		for Obs in Obs_dict.values():
-			if V.shape != Obs._shape:
-				raise TypeError("shapes of 'V1' and 'Obs' must be equal!")
-			
-
-		if _np.isscalar(times):
-			TypeError("Variable 'times' must be a array or iter like object!")
-
-		if return_state:
-			variables.append("psi_t")
-
-		
-		# get iterator over time dependent state (see function above)
-		if return_state:
-			psi_t = ED_state_vs_time(psi,E,V,times,iterate=False)
-		else:
-			psi_t = ED_state_vs_time(psi,E,V,times,iterate=True)
-
-
-	elif psi_t.__class__ in [_np.ndarray,_np.matrix]:
-
-
-		for Obs in Obs_dict.values():
-			if psi_t.shape[0] != Obs._shape[1]:
-				raise ValueError("states must be in columns of input matrix.")
-
-
-		if return_state:
-			variables.append("psi_t")
-		else:
-			return_state=True # set to True to use einsum but do not return state
-
-	elif _isgenerator(psi_t):
-		if return_state:
-			variables.append("psi_t")
-			psi_t_list = []
-			for psi in psi_t:
-				psi_t_list.append(psi)
-
-			psi_t = _np.squeeze(_np.dstack(psi_t_list))
-
-			for Obs in Obs_dict.values():
-				if psi_t.shape[0] != Obs._shape[1]:
-					raise ValueError("states must be in columns of input matrix.")
-
-	else:
-		raise ValueError("input not recognized")
-	
-	# calculate observables and Sent
-	Expt_time = {}
-	calc_Sent = False
-	
-	if len(Sent_args) > 0:
-		Sent_args = dict(Sent_args)
-		basis = Sent_args.get("basis")
-		if basis is None:
-			raise ValueError("Sent_args requires 'basis' for calculation")
-		if not isbasis(basis):
-			raise ValueError("'basis' object must be a proper basis object")
-
-		if "chain_subsys" in Sent_args or"DM" in Sent_args or "svd_return_vec" in Sent_args:
-			calc_ent_entropy = ent_entropy
-		else:
-			calc_ent_entropy = basis.ent_entropy
-			del Sent_args["basis"]
-
-		calc_Sent = True
-		variables.append("Sent_time")
-	
-	if return_state:
-		for key,Obs in Obs_dict.items():
-			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
-			
-		# calculate entanglement _entropy if requested	
-		if calc_Sent:
-			Sent_time = calc_ent_entropy(psi_t,**Sent_args)
-
-
-	else:
-		psi = next(psi_t) # get first state from iterator.
-		# do first calculations of loop
-
-		time = times[0]
-
-		for key,Obs in Obs_dict.items():
-			
-			val = Obs.expt_value(psi,time=time,check=False).real
-			dtype = _np.dtype(val)
-			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
-			Expt_time[key][0] = val
-
-
-
-		# get initial dictionary from ent_entropy function
-		# use this to set up dictionary for the rest of calculation.
-		if calc_Sent:
-			Sent_time = calc_ent_entropy(psi,**Sent_args)
-
-			for key,val in Sent_time.items():
-				val = _np.asarray(val)
-				dtype = val.dtype
-				shape = (len(times),) + val.shape
-				Sent_time[key] = _np.zeros(shape,dtype=dtype)
-				Sent_time[key][0] = val
-
-		# loop over psi generator
-		for m,psi in enumerate(psi_t):
-
-			time = times[m+1]
-
-			if disp: print("obs_vs_time integrated to t={:.4f}".format(time))
-
-			for key,Obs in Obs_dict.items():
-				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
-
-			if calc_Sent:
-				Sent_time_update = calc_ent_entropy(psi,**Sent_args)
-				for key in Sent_time.keys():
-					Sent_time[key][m+1] = Sent_time_update[key]
-
-		
-	return_dict = {}
-	for i in variables:
-		if i == 'Expt_time':
-			for key,val in Expt_time.items():
-				return_dict[key] = _np.asarray(val)
-		else:
-			return_dict[i] = locals()[i]
-
-	return return_dict
-
-def project_op(Obs,proj,dtype=_np.complex128):
-	"""
-	This function takes an observable 'Obs' and a reduced basis or a projector and projects 'Obs'
-	onto that reduced basis.
-
-	RETURNS: 	dictionary with keys 
-
-	'Proj_Obs': projected observable 'Obs'
-
-	--- arguments ---
-
-	Obs: (required) operator to be projected.
-
-	proj: (required) basis of the final space after the projection or a matrix which contains the projector.
-
-	dtype: (optional) data type. Default is np.complex128.
-
-	"""
-
-	variables = ["Proj_Obs"]
-
-	if isbasis(proj):
-		proj = proj.get_proj(dtype)
-	elif (proj.__class__ not in [_np.ndarray,_np.matrix]) and (not _sp.issparse(proj)):
-		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
-
-	if _ishamiltonian(Obs):
-
-		if Obs.Ns != proj.shape[0]:
-			if Obs.Ns != proj.shape[1]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.get_shape,proj.shape))
-			else:
-				# projecting from a smaller to larger H-space
-				proj_down=False
-		else:
-			# projecting from larger to smaller H-space
-			proj_down=True
-
-		if proj_down:
-			Proj_Obs = Obs.project_to(proj)		
-		else:
-			Proj_Obs = Obs.project_to(proj.T.conj())
-
-	else:
-
-		if Obs.ndim != 2:
-			raise ValueError("Expecting Obs to be a 2 dimensional array.")
-
-		if Obs.shape[0] != Obs.shape[1]:
-			raise ValueError("Expecting Obs to be a square array.")
-
-		if Obs.shape[1] != proj.shape[0]:
-			if Obs.shape[0] != proj.shape[1]:
-				raise ValueError("Dimension mismatch Obs:{0} proj{1}".format(Obs.shape,proj.shape))
-			else:
-				proj_down=False
-		else:
-			proj_down=True
-
-		if proj_down:
-			Proj_Obs = proj.T.conj().dot(Obs.dot(proj))
-		else:
-			Proj_Obs = proj.dot(Obs.dot(proj.T.conj()))
-
-	# define dictionary with outputs
-	return_dict = {}
-	for i in range(len(variables)):
-		return_dict[variables[i]] = locals()[variables[i]]
-
-	return return_dict
-
-def KL_div(p1,p2):
-	"""
-	This routine returns the Kullback-Leibler divergence of the discrete probability distributions 
-	p1 and p2.
-	"""
-	p1 = _np.asarray(p1)
-	p2 = _np.asarray(p2)
-
-
-	if len(p1) != len(p2):
-		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have same size!")
-	if p1.ndim != 1 or p2.ndim != 1:
-		raise TypeError("Expecting the probability distributions 'p1' and 'p2' to have linear dimension!")
-
-
-	if _np.any(p1<=0.0) or _np.any(p2<=0.0):
-		raise TypeError("Expecting all entries of the probability distributions 'p1' and 'p2' to be non-negative!")
-	
-	if abs(sum(p1)-1.0) > 1E-13:
-		raise ValueError("Expecting 'p1' to be normalised!")
-
-	if abs(sum(p2)-1.0) > 1E-13:
-		raise ValueError("Expecting 'p2' to be normalised!")
-
-	if _np.any(p1==0.0):
-
-		inds = _np.where(p1 == 0)
-
-		p1 = _np.delete(p1,inds)
-		p2 = _np.delete(p2,inds)
-
-	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
-
-def mean_level_spacing(E):
-	"""
-	This routine calculates the mean-level spacing 'r_ave' of the energy distribution E, see arXiv:1212.5611.
-
-	RETURNS: float with mean-level spacing 'r_ave'.
-
-	--- arguments ---
-
-	E: (required) ordered list of ascending, nondegenerate eigenenergies.
-	"""
-
-	if not isinstance(E,_np.ndarray):
-		E = _np.asarray(E)
-
-	if _np.any(_np.sort(E)!=E):
-		raise TypeError("Expecting a sorted list of ascending, nondegenerate eigenenergies 'E'.")
-
-	# compute consecutive E-differences
-	sn = _np.diff(E)
-	# check for degeneracies
-	if len(_np.unique(E)) != len(E):
-		raise ValueError("Degeneracies found in spectrum 'E'!")
-	# calculate the ratios of consecutive spacings
-	aux = _np.zeros((len(E)-1,2),dtype=_np.float64)
-
-	aux[:,0] = sn
-	aux[:,1] = _np.roll(sn,-1)
-
-	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
-
-
-
-def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
-	"""
-	This function implements (imaginary) time evolution for a user-defined first-order f function.
-
-	RETURNS: 	array containing evolved state in time
-
-	--- arguments ---
-
-	* `v0`: (required) initial state
-
-	* `t0`: (required) initial time
-
-	* `times`: (required) vector of times to evaluate the time-evolved state at
-
-	* `f`: (required) user-defined `f` function (all derivatives must be first order)
-
-	* `solver_name`: (optional) scipy solver integrator. Default is `dop853`.
-
-	* `real`: (optional) flag to determine if `f` is real or complex-valued. Default is `False`.
-
-	* `stack_state`: (optional) if `f` is written to take care of real and imaginary parts separately, this flag will take this into account. Default is `False`.
-
-	* `verbose`: (optional) prints normalisation of state at teach time in `times`
-
-	* `imag_time`: (optional) must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state at each time in `times`. Default is `False`.
-
-	* `iterate`: (optional) creates a generator object to time-evolve the state. Default is `False`.
-
-	* `f_params`: (optional) a tuple to pass all parameters of the function `f` to solver. Default is `f_params=()`.
-
-	* `solver_args`: (optional) dictionary with additional [scipy integrator (solver)](https://docs.scipy.org/doc/scipy/reference/tutorial/integrate.html) arguments.	
-		"""
-
-	from scipy.integrate import complex_ode
-	from scipy.integrate import ode
-
-	if v0.ndim > 2:
-		raise ValueError("state mush have ndim < 3.")
-
-	shape0 = v0.shape
-
-	if v0.ndim == 2:
-		if v0.shape[0] != v0.shape[1]:
-			v0 = v0.ravel()
-	 
-	
-	if _np.iscomplexobj(times):
-		raise ValueError("times must be real number(s).")
-
-	#v0 = v0.ravel()
-	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
-
-
-
-	if stack_state:
-		v1 = v0
-		v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
-		v0[:shape0[0]] = v1.real
-		v0[shape0[0]:] = v1.imag
-		solver = ode(f) # y_f = f(t,y,*args)
-	elif real:
-		solver = ode(f) # y_f = f(t,y,*args)
-	else:
-		solver = complex_ode(f) # y_f = f(t,y,*args)
-
-	
-
-	if solver_name in ["dop853","dopri5"]:
-		if solver_args.get("nsteps") is None:
-			solver_args["nsteps"] = _np.iinfo(_np.int32).max
-		if solver_args.get("rtol") is None:
-			solver_args["rtol"] = 1E-9
-		if solver_args.get("atol") is None:
-			solver_args["atol"] = 1E-9
-
-
-				
-
-	solver.set_integrator(solver_name,**solver_args)
-	solver.set_f_params(*f_params)
-	solver.set_initial_value(v0, t0)
-
-	if _np.isscalar(times):
-		return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
-	else:
-		if iterate:
-			return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
-		else:
-			return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
-
-
-def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
-	from numpy.linalg import norm
-	Ns=shape0[0]
-
-	if time == t0:
-		if stack_state:
-			return (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
-		else:
-			return _np.array(v0).reshape(shape0)
-
-	solver.integrate(time)
-	if solver.successful():
-		if imag_time: solver._y /= (norm(solver._y)/n)
-		if stack_state:
-			return (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
-		else:
-			return _np.array(solver.y).reshape(shape0)
-	else:
-		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
-
-
-
-def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
-	from numpy.linalg import norm
-
-	Ns=shape0[0]
-	v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
-	
-	for i,t in enumerate(times):
-
-		if t == t0:
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if stack_state:
-				v[...,i] = (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
-			else:
-				v[...,i] = _np.array(v0).reshape(shape0)
-			continue
-
-		solver.integrate(t)
-		if solver.successful():
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if imag_time: solver._y /= (norm(solver._y)/n)
-			if stack_state:
-				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
-			else:
-				v[...,i] = solver.y.reshape(shape0)
-		else:
-			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
-			
-
-	return v
-
-
-
-def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
-	from numpy.linalg import norm
-	Ns=shape0[0]
-
-
-	for i,t in enumerate(times):
-		if t == t0:
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if stack_state:
-				yield (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
-			else:
-				yield _np.array(v0).reshape(shape0)
-			continue
-			
-
-		solver.integrate(t)
-		if solver.successful():
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if imag_time: solver._y /= (norm(solver._y)/n)
-			if stack_state:
-				yield (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
-			else:
-				yield solver.y.reshape(shape0)
-		else:
-			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
-
 

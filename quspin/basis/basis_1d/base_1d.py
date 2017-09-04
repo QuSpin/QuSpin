@@ -41,9 +41,6 @@ class bitops:
 		try_add("py_flip_sublat_A","zAblock")
 		try_add("py_flip_sublat_B","zBblock")
 
-
-
-
 class basis_1d(lattice_basis):
 	def __init__(self,basis_module,ops_module,L,Np=None,_Np=None,pars=None,**blocks):
 
@@ -103,7 +100,7 @@ class basis_1d(lattice_basis):
 			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
 			for Np in Nup_iter:
 				temp_basis =self.__class__(L,Np,**blocks)
-				self.append(temp_basis)	
+				self._append(temp_basis)	
 
 	def _make_Np_block(self,basis_module,ops_module,L,Np=None,pars=None,**blocks):
 		# getting arguments which are used in basis.
@@ -647,15 +644,7 @@ class basis_1d(lattice_basis):
 
 		if count_particles: self._Np_list = _np.full(basis.shape,Np,dtype=_np.int8)
 
-	def append(self,other):
-		if not isinstance(other,self.__class__):
-			raise TypeError("can only append basis objects of the same type")
-		if self._L != other._L:
-			raise ValueError("appending incompatible system sizes with")
-		if self._blocks_1d != other._blocks_1d:
-			raise ValueError("appending incompatible blocks")
-		
-
+	def _append(self,other):
 		Ns = self._Ns + other._Ns
 
 		if self._conserved == "" or self._conserved == "N":
@@ -690,27 +679,19 @@ class basis_1d(lattice_basis):
 		self._Ns = Ns
 
 	@property
-	def blocks(self):
-		return self._blocks
-
-	@property
 	def L(self):
+		"""int: length of lattice."""
 		return self._L
 
 	@property
 	def N(self):
+		"""int: number of sites the basis is constructed with."""
 		return self._L
 
-	@property
-	def sps(self):
-		return self._sps
-
-	@property
-	def conserved(self):
-		return self._conserved
 
 	@property
 	def description(self):
+		"""str: information about `basis` object."""
 		blocks = ""
 		lat_space = "lattice spacing: a = {a}".format(**self._blocks)
 
@@ -731,7 +712,10 @@ class basis_1d(lattice_basis):
 		string += self.operators
 		return string 
 
-	def Op(self,opstr,indx,J,dtype):
+
+
+	def _Op(self,opstr,indx,J,dtype):
+
 		indx = _np.asarray(indx,dtype=_np.int32)
 
 		if len(opstr) != len(indx):
@@ -767,7 +751,194 @@ class basis_1d(lattice_basis):
 
 		return ME,row,col		
 
-	def get_norms(self,dtype):
+	def get_vec(self,v0,sparse=True):
+		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Supports parallelisation to multiple states listed in the columns.
+
+		Parameters
+		-----------
+		v0 : numpy.ndarray
+			Contains in its columns the states in the symmetry-reduced basis.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		
+		Returns
+		--------
+		numpy.ndarray
+			Array containing the state `v0` in the full basis.
+
+		Examples
+		--------
+
+		>>> v_full = get_vec(v0)
+		>>> print(v_full.shape, v0.shape)
+
+		"""
+
+		if not hasattr(v0,"shape"):
+			v0 = _np.asanyarray(v0)
+
+		squeeze = False
+
+		if v0.ndim == 1:
+			shape = (self._sps**self._L,1)
+			v0 = v0.reshape((-1,1))
+			squeeze = True
+		elif v0.ndim == 2:
+			shape = (self._sps**self._L,v0.shape[1])
+		else:
+			raise ValueError("excpecting v0 to have ndim at most 2")
+
+		if self._Ns <= 0:
+			if sparse:
+				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._L,0),dtype=v0.dtype)
+			else:
+				return _np.zeros((self._sps**self._L,0),dtype=v0.dtype)
+
+		if v0.shape[0] != self._Ns:
+			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
+
+		if _sp.issparse(v0): # current work around for sparse states.
+			return self.get_proj(v0.dtype).dot(v0)
+
+		norms = self._get_norms(v0.dtype)
+
+		a = self._blocks_1d.get("a")
+		kblock = self._blocks_1d.get("kblock")
+		pblock = self._blocks_1d.get("pblock")
+		zblock = self._blocks_1d.get("zblock")
+		zAblock = self._blocks_1d.get("zAblock")
+		zBblock = self._blocks_1d.get("zBblock")
+		pzblock = self._blocks_1d.get("pzblock")
+
+
+		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
+			mask = (self._N < 0)
+			ind_neg, = _np.nonzero(mask)
+			mask = (self._N > 0)
+			ind_pos, = _np.nonzero(mask)
+			del mask
+			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
+				c[ind_pos] = cos(dtype(k*r))
+				c[ind_neg] = sin(dtype(k*r))
+				_np.true_divide(c,norms,c)
+		else:
+			ind_pos = _np.fromiter(range(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
+			ind_neg = array([],dtype=_np.int32)
+			def C(r,k,c,norms,dtype,*args):
+				if k == 0.0:
+					c[:] = 1.0
+				elif k == pi:
+					c[:] = (-1.0)**r
+				else:
+					c[:] = exp(dtype(-1.0j*k*r))
+				_np.true_divide(c,norms,c)
+
+		if sparse:
+			return _get_vec_sparse(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
+		else:
+			if squeeze:
+				return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
+			else:
+				return _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
+
+	def get_proj(self,dtype,pcon=False):
+		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Parameters
+		-----------
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the projector with.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		pcon : bool, optional
+			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			(useful in bosonic/single particle systems). Default is `pcon=False`.
+		
+		Returns
+		--------
+		scipy.sparse.csr_matrix
+			Transformation/projector between the symmetry-reduced and the full basis.
+
+		Examples
+		--------
+
+		>>> P = get_proj(np.float64,pcon=False)
+		>>> print(P.shape)
+
+		"""
+
+		norms = self._get_norms(dtype)
+
+		a = self._blocks_1d.get("a")
+		kblock = self._blocks_1d.get("kblock")
+		pblock = self._blocks_1d.get("pblock")
+		zblock = self._blocks_1d.get("zblock")
+		zAblock = self._blocks_1d.get("zAblock")
+		zBblock = self._blocks_1d.get("zBblock")
+		pzblock = self._blocks_1d.get("pzblock")
+
+		
+
+		if pcon and self._get_proj_pcon:
+			basis_pcon = _np.ones(self._Ns_pcon,dtype=self._basis_type)
+			self._make_n_basis(self.L,self._Np,self._Ns_pcon,self._pars,basis_pcon)
+			shape = (self._Ns_pcon,self._Ns)
+		elif pcon and not self._get_proj_pcon:
+			raise TypeError("pcon=True only works for basis of a single particle number sector.")
+		else:
+			shape = (self.sps**self.L,self._Ns)
+			basis_pcon = None
+
+		if self._Ns <= 0:
+			return _sp.csr_matrix(([],([],[])),shape=shape)
+
+
+		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
+			mask = (self._N < 0)
+			ind_neg, = _np.nonzero(mask)
+			mask = (self._N > 0)
+			ind_pos, = _np.nonzero(mask)
+			del mask
+			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
+				c[ind_pos] = cos(dtype(k*r))
+				c[ind_neg] = sin(dtype(k*r))
+				_np.true_divide(c,norms,c)
+		else:
+			if (type(kblock) is int):
+				if ((2*kblock*a) % self._L != 0) and not _np.iscomplexobj(dtype(1.0)):
+					raise TypeError("symmetries give complex vector, requested dtype is not complex")
+
+			ind_pos = _np.arange(0,self._Ns,1)
+			ind_neg = array([],dtype=_np.int32)
+			def C(r,k,c,norms,dtype,*args):
+				if k == 0.0:
+					c[:] = 1.0
+				elif k == pi:
+					c[:] = (-1.0)**r
+				else:
+					c[:] = exp(dtype(-1.0j*k*r))
+				_np.true_divide(c,norms,c)
+
+
+
+
+
+		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
+
+	def _get_norms(self,dtype):
+		
 		a = self._blocks_1d.get("a")
 		kblock = self._blocks_1d.get("kblock")
 		pblock = self._blocks_1d.get("pblock")
@@ -888,133 +1059,7 @@ class basis_1d(lattice_basis):
 
 		return norm
 
-	def get_vec(self,v0,sparse=True):
-
-		if not hasattr(v0,"shape"):
-			v0 = _np.asanyarray(v0)
-
-		squeeze = False
-
-		if v0.ndim == 1:
-			shape = (self._sps**self._L,1)
-			v0 = v0.reshape((-1,1))
-			squeeze = True
-		elif v0.ndim == 2:
-			shape = (self._sps**self._L,v0.shape[1])
-		else:
-			raise ValueError("excpecting v0 to have ndim at most 2")
-
-		if self._Ns <= 0:
-			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._L,0),dtype=v0.dtype)
-			else:
-				return _np.zeros((self._sps**self._L,0),dtype=v0.dtype)
-
-		if v0.shape[0] != self._Ns:
-			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
-
-		if _sp.issparse(v0): # current work around for sparse states.
-			return self.get_proj(v0.dtype).dot(v0)
-
-		norms = self.get_norms(v0.dtype)
-
-		a = self._blocks_1d.get("a")
-		kblock = self._blocks_1d.get("kblock")
-		pblock = self._blocks_1d.get("pblock")
-		zblock = self._blocks_1d.get("zblock")
-		zAblock = self._blocks_1d.get("zAblock")
-		zBblock = self._blocks_1d.get("zBblock")
-		pzblock = self._blocks_1d.get("pzblock")
-
-
-		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
-			mask = (self._N < 0)
-			ind_neg, = _np.nonzero(mask)
-			mask = (self._N > 0)
-			ind_pos, = _np.nonzero(mask)
-			del mask
-			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
-				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = sin(dtype(k*r))
-				_np.true_divide(c,norms,c)
-		else:
-			ind_pos = _np.fromiter(range(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
-			ind_neg = array([],dtype=_np.int32)
-			def C(r,k,c,norms,dtype,*args):
-				if k == 0.0:
-					c[:] = 1.0
-				elif k == pi:
-					c[:] = (-1.0)**r
-				else:
-					c[:] = exp(dtype(-1.0j*k*r))
-				_np.true_divide(c,norms,c)
-
-		if sparse:
-			return _get_vec_sparse(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
-		else:
-			if squeeze:
-				return  _np.squeeze(_get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d))
-			else:
-				return _get_vec_dense(self._bitops,self._pars,v0,self._basis,norms,ind_neg,ind_pos,shape,C,self._L,**self._blocks_1d)
-
-	def get_proj(self,dtype,pcon=False):
-		norms = self.get_norms(dtype)
-
-		a = self._blocks_1d.get("a")
-		kblock = self._blocks_1d.get("kblock")
-		pblock = self._blocks_1d.get("pblock")
-		zblock = self._blocks_1d.get("zblock")
-		zAblock = self._blocks_1d.get("zAblock")
-		zBblock = self._blocks_1d.get("zBblock")
-		pzblock = self._blocks_1d.get("pzblock")
-
-		
-
-		if pcon and self._get_proj_pcon:
-			basis_pcon = _np.ones(self._Ns_pcon,dtype=self._basis_type)
-			self._make_n_basis(self.L,self._Np,self._Ns_pcon,self._pars,basis_pcon)
-			shape = (self._Ns_pcon,self._Ns)
-		elif pcon and not self._get_proj_pcon:
-			raise TypeError("pcon=True only works for basis of a single particle number sector.")
-		else:
-			shape = (self.sps**self.L,self._Ns)
-			basis_pcon = None
-
-		if self._Ns <= 0:
-			return _sp.csr_matrix(([],([],[])),shape=shape)
-
-
-		if (type(kblock) is int) and ((type(pblock) is int) or (type(pzblock) is int)):
-			mask = (self._N < 0)
-			ind_neg, = _np.nonzero(mask)
-			mask = (self._N > 0)
-			ind_pos, = _np.nonzero(mask)
-			del mask
-			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
-				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = sin(dtype(k*r))
-				_np.true_divide(c,norms,c)
-		else:
-			if (type(kblock) is int):
-				if ((2*kblock*a) % self._L != 0) and not _np.iscomplexobj(dtype(1.0)):
-					raise TypeError("symmetries give complex vector, requested dtype is not complex")
-
-			ind_pos = _np.arange(0,self._Ns,1)
-			ind_neg = array([],dtype=_np.int32)
-			def C(r,k,c,norms,dtype,*args):
-				if k == 0.0:
-					c[:] = 1.0
-				elif k == pi:
-					c[:] = (-1.0)**r
-				else:
-					c[:] = exp(dtype(-1.0j*k*r))
-				_np.true_divide(c,norms,c)
-
-
-
-
-
-		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
+	##### provate methods
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		kblock = self._blocks_1d.get("kblock")
@@ -1028,10 +1073,10 @@ class basis_1d(lattice_basis):
 
 		if photon_basis is None:
 			basis_sort_opstr = self._sort_opstr
-			static_list,dynamic_list = self.get_local_lists(static,dynamic)
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
 		else:
 			basis_sort_opstr = photon_basis._sort_opstr
-			static_list,dynamic_list = photon_basis.get_local_lists(static,dynamic)
+			static_list,dynamic_list = photon_basis._get_local_lists(static,dynamic)
 
 
 		static_blocks = {}
@@ -1085,8 +1130,6 @@ class basis_1d(lattice_basis):
 			if missingops:	dynamic_blocks["PZ/PC symm"] = (tuple(missingops),)
 
 		return static_blocks,dynamic_blocks
-
-
 
 
 
@@ -1155,8 +1198,6 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 		ops.py_shift(basis_in,a,L,pars)
 	
 	return v
-
-
 
 def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]
@@ -1271,7 +1312,6 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 
 	return v
 
-
 def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,L,**blocks):
 
 	a = blocks.get("a")
@@ -1373,3 +1413,5 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 
 
 	return v
+
+
