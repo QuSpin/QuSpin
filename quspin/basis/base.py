@@ -254,12 +254,12 @@ class basis(object):
 		for opstr,indx,J,f,f_args,ii in dynamic_list:
 			indx = list(indx)
 			indx.insert(0,J)
-			if opstr in dynamic_dict:
-				dynamic_dict[opstr].append(indx)
+			if (opstr,f,f_args) in dynamic_dict:
+				dynamic_dict[(opstr,f,f_args)].append(indx)
 			else:
-				dynamic_dict[opstr] = [indx]
+				dynamic_dict[(opstr,f,f_args)] = [indx]
 
-		dynamic = [[str(key),list(value)] for key,value in dynamic_dict.items()]
+		dynamic = [[opstr,indx,f,f_args] for (opstr,f,f_args),indx in dynamic_dict.items()]
 
 		return static,dynamic
 

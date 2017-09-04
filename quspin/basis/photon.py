@@ -656,6 +656,32 @@ class photon_basis(tensor_basis):
 
 			return str_list	
 
+	def _check_symm(self,static,dynamic):
+		# pick out operators which have charactors to the left of the '|' charactor. 
+		# otherwise this is operator must be
+		new_static = []
+		for opstr,bonds in static:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_static.append([opstr,bonds])
+
+
+		new_dynamic = []
+		for opstr,bonds,f,f_args in dynamic:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_dynamic.append([opstr,bonds,f,f_args])
+		
+		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
+
 	def _sort_opstr(self,op):
 		op = list(op)
 		opstr = op[0]
@@ -695,32 +721,6 @@ class photon_basis(tensor_basis):
 		op[1] = op1[1] + op2[1]
 		
 		return tuple(op)
-
-	def _check_symm(self,static,dynamic):
-		# pick out operators which have charactors to the left of the '|' charactor. 
-		# otherwise this is operator must be
-		new_static = []
-		for opstr,bonds in static:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' character in: {0}".format(opstr))
-
-			opstr1,opstr2=opstr.split("|")
-
-			if opstr1:
-				new_static.append([opstr,bonds])
-
-
-		new_dynamic = []
-		for opstr,bonds,f,f_args in dynamic:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' character in: {0}".format(opstr))
-
-			opstr1,opstr2=opstr.split("|")
-
-			if opstr1:
-				new_dynamic.append([opstr,bonds,f,f_args])
-		
-		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
 
 	def _get_local_lists(self,static,dynamic): #overwrite the default get_local_lists from base.
 		static_list = []
@@ -773,7 +773,7 @@ class photon_basis(tensor_basis):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
 
-		return tensor_basis._sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
+		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
 
 
 def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
@@ -923,6 +923,20 @@ class ho_basis(basis):
 
 	def _sort_opstr(self,op):
 		return tuple(op)
+
+	def _get__str__(self):
+		def get_state(b):
+			return ("|{0:"+str(len(str(self.Ns)))+"}>").format(b)
+
+		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+
+		return tuple(str_list)
 
 
 	def _hc_opstr(self,op):
