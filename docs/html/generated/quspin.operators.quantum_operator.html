@@ -53,12 +53,90 @@
 <dl class="class">
 <dt id="quspin.operators.quantum_operator">
 <em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_operator</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_operator_core.html#quantum_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs parameter-dependent quantum quantum_operators.</p>
-<p>The <cite>quantum_operator</cite> class maps quantum_operators to keys of a dictionary. When calling various methods
-of the quantum_operators, it allows one to ‘dynamically’ specify the pre-factors of these quantum_operators.</p>
-<p>It is often required to be able to handle a parameter-dependent Hamiltonian <span class="math">\(H(\lambda)\)</span>, e.g.</p>
+<dd><p>Constructs parameter-dependent <cite>hamiltonian</cite> operators.</p>
+<p>The <cite>quantum_operator</cite> class maps quantum operators to keys of a dictionary. When calling various methods
+of <cite>quantum_operator</cite>, it allows one to ‘dynamically’ specify the pre-factors of these operators.</p>
+<p class="rubric">Examples</p>
+<p>It is often required to be able to handle a parameter-dependent Hamiltonian <span class="math">\(H(\lambda)=H_1 + \lambda H_2\)</span>, e.g.</p>
 <div class="math">
-\[H(J_{zz}, h_x) = \sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j\]</div>
+\[H_1=\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \qquad H_2=\sum_j S^z_j\]</div>
+<p>The following code snippet shows how to use the <cite>quantum_operator</cite> class to vary the parameter <span class="math">\(\lambda\)</span>
+without having to re-build the Hamiltonian every time.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">quantum_operator</span> <span class="c1"># operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert spaces</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">uniform</span>
+<span class="c1">#</span>
+<span class="c1">##### setting parameters for simulation</span>
+<span class="c1"># physical parameters</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1"># system size</span>
+<span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># interaction strength</span>
+<span class="n">hx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># transverse field strength</span>
+<span class="c1">#</span>
+<span class="c1">###### create the basis</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># up basis</span>
+<span class="c1">##### create model</span>
+<span class="c1"># define static (fixed) site-coupling lists</span>
+<span class="n">J_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># nnn interaction PBC</span>
+<span class="n">hx_list</span><span class="o">=</span> <span class="p">[[</span><span class="n">hx</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># onsite field</span>
+<span class="c1"># create static lists for H0</span>
+<span class="n">operator_list_0</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span> <span class="n">J_list</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">hx_list</span><span class="p">]]</span>
+<span class="c1"># define parametric lists for H1 (corresponding to operators the coupling of which will be changed)</span>
+<span class="n">hz_list</span><span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># onsite field</span>
+<span class="n">operator_list_1</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">hz_list</span><span class="p">]]</span>
+<span class="c1">#</span>
+<span class="c1">###### create operator dictionary for quantum_operator class</span>
+<span class="c1"># add keys for TFI operators tring list and the longitudinal field</span>
+<span class="n">operator_dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">operator_list_0</span><span class="p">,</span><span class="n">H1</span><span class="o">=</span><span class="n">operator_list_1</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">###### setting up `quantum_operator` hamiltonian dictionary</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">operator_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1"># print Hamiltonian H = H0 + H1</span>
+<span class="n">params_dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">H1</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span> <span class="c1"># dict containing the couplings to operators in keys of operator_dict</span>
+<span class="n">H_lmbda1</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">tohamiltonian</span><span class="p">(</span><span class="n">params_dict</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">H_lmbda1</span><span class="p">)</span>
+<span class="c1"># change z-coupling strength: print Hamiltonian H = H0 + 2H1</span>
+<span class="n">params_dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">H1</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span> <span class="c1"># dict containing the couplings to operators in keys of operator_dict</span>
+<span class="n">H_lmbda2</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">tohamiltonian</span><span class="p">(</span><span class="n">params_dict</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">H_lmbda2</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 <p class="rubric">Attributes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -67,13 +145,13 @@ of the quantum_operators, it allows one to ‘dynamically’ specify the pre-fac
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.H" title="quspin.operators.quantum_operator.H"><code class="xref py py-obj docutils literal"><span class="pre">H</span></code></a></td>
-<td><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: Transposes and conjugates the matrix defining the quantum_operator: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</td>
+<td><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: transposes and conjugates the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.Ns" title="quspin.operators.quantum_operator.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
 <td>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.T" title="quspin.operators.quantum_operator.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
-<td><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: Transposes the matrix defining the quantum_operator: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</td>
+<td><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: transposes the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.basis" title="quspin.operators.quantum_operator.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a></td>
 <td><a class="reference internal" href="#quspin.operators.quantum_operator.basis" title="quspin.operators.quantum_operator.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a>: basis used to build the <cite>hamiltonian</cite> object. Defaults to <cite>None</cite> if quantum_operator has</td>
@@ -234,7 +312,7 @@ to create the quantum_operator.</p>
 <dl class="attribute">
 <dt id="quspin.operators.quantum_operator.H">
 <code class="descname">H</code><a class="headerlink" href="#quspin.operators.quantum_operator.H" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: Transposes and conjugates the matrix defining the quantum_operator: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</p>
+<dd><p><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: transposes and conjugates the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -246,7 +324,7 @@ to create the quantum_operator.</p>
 <dl class="attribute">
 <dt id="quspin.operators.quantum_operator.T">
 <code class="descname">T</code><a class="headerlink" href="#quspin.operators.quantum_operator.T" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: Transposes the matrix defining the quantum_operator: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</p>
+<dd><p><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: transposes the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -645,7 +723,7 @@ are assumed to be set to inity.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H_lr</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">Vl</span><span class="p">,</span><span class="n">Vr</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>corresponds to <span class="math">\(H_\{lr} = \langle V_l|H(\lambda=0)|V_r\rangle\)</span>.</p>
+<p>corresponds to <span class="math">\(H_{lr} = \langle V_l|H(\lambda=0)|V_r\rangle\)</span>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -659,7 +737,7 @@ are assumed to be set to inity.</p>
 <code class="descname">rdot</code><span class="sig-paren">(</span><em>V</em>, <em>pars={}</em>, <em>check=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_operator_core.html#quantum_operator.rdot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.rdot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vector-matrix multiplication of <cite>quantum_operator</cite> quantum_operator for parameters <cite>pars</cite>, with state <cite>V</cite>.</p>
 <div class="math">
-\[\lamgle V]H(t=\lambda)\]</div>
+\[\langle V]H(t=\lambda)\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

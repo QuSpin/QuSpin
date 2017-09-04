@@ -84,51 +84,19 @@
 <span class="sd">	-----</span>
 <span class="sd">	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.</span>
 
+<span class="sd">	For a fast computations, look up the `tools.expm_multiply_parallel` function.</span>
+
 <span class="sd">	Examples</span>
 <span class="sd">	---------</span>
 
-<span class="sd">	The Examples below shows how to compute the time-evolvution of a state under a constant Hamiltian.</span>
-<span class="sd">	This is done using the matrix exponential to define the evolution operator and apply it directly </span>
+<span class="sd">	The Example below shows how to compute the time-evolvution of a state under a constant Hamiltonian.</span>
+<span class="sd">	This is done using the matrix exponential to define the evolution operator and then applying it directly </span>
 <span class="sd">	onto the initial state.</span>
 
-<span class="sd">	&gt;&gt;&gt; from quspin.operators import hamiltonian, exp_op # Hamiltonians, operators and exp_op</span>
-<span class="sd">	&gt;&gt;&gt; from quspin.basis import spin_basis_1d # Hilbert space spin basis</span>
-<span class="sd">	&gt;&gt;&gt; import numpy as np # generic math functions</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ##### define model parameters #####</span>
-<span class="sd">	&gt;&gt;&gt; L=6 # system size</span>
-<span class="sd">	&gt;&gt;&gt; J=1.0 # spin interaction</span>
-<span class="sd">	&gt;&gt;&gt; g=0.809 # transverse field</span>
-<span class="sd">	&gt;&gt;&gt; h=0.9045 # parallel field</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ##### construct basis in the 0-total momentum and +1-parity sector</span>
-<span class="sd">	&gt;&gt;&gt; basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)</span>
-<span class="sd">	&gt;&gt;&gt; # define PBC site-coupling lists for operators</span>
-<span class="sd">	&gt;&gt;&gt; x_field=[[g,i] for i in range(L)]</span>
-<span class="sd">	&gt;&gt;&gt; z_field=[[h,i] for i in range(L)]</span>
-<span class="sd">	&gt;&gt;&gt; J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC</span>
-<span class="sd">	&gt;&gt;&gt; # static and dynamic lists</span>
-<span class="sd">	&gt;&gt;&gt; static=[[&quot;zz&quot;,J_nn],[&quot;z&quot;,z_field],[&quot;x&quot;,x_field]]</span>
-<span class="sd">	&gt;&gt;&gt; dynamic=[]</span>
-<span class="sd">	&gt;&gt;&gt; ###### construct Hamiltonian</span>
-<span class="sd">	&gt;&gt;&gt; H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ###### compute evolution operator as matrix exponential</span>
-<span class="sd">	&gt;&gt;&gt; start, stop, N_t = 0.0, 4.0, 21 # time vector parameters</span>
-<span class="sd">	&gt;&gt;&gt; # define evolution operator as a generator object to apply on the state</span>
-<span class="sd">	&gt;&gt;&gt; U=exp_op(H,a=-1j,start=start,stop=stop,num=N_t,endpoint=True,iterate=True)</span>
-<span class="sd">	&gt;&gt;&gt; print(U)</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; # compute domain wall initial state</span>
-<span class="sd">	&gt;&gt;&gt; dw_str = &quot;&quot;.join(&quot;1&quot; for i in range(L//2)) + &quot;&quot;.join(&quot;0&quot; for i in range(L-L//2))</span>
-<span class="sd">	&gt;&gt;&gt; i_0 = basis.index(s_f) # find index of product state in basis</span>
-<span class="sd">	&gt;&gt;&gt; psi = np.zeros(basis.Ns) # allocate space for state</span>
-<span class="sd">	&gt;&gt;&gt; psi[i_0] = 1.0 # set MB state to be the given product state</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ##### calculate time-evolved state by successive application of matrix exponential</span>
-<span class="sd">	&gt;&gt;&gt; for U_j in U:</span>
-<span class="sd">	&gt;&gt;&gt; 	print(&quot;evolved state:&quot;, psi)</span>
-<span class="sd">	&gt;&gt;&gt; 	psi=U_j.dot(psi)</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/exp_op-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="exp_op.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -137,7 +105,7 @@
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
 <span class="sd">		O : obj</span>
-<span class="sd">			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.</span>
+<span class="sd">			`numpy.ndarray`, `scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.</span>
 <span class="sd">		a : `numpy.dtype`, optional</span>
 <span class="sd">			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.</span>
 <span class="sd">			Default is `a = 1.0`.</span>
@@ -244,17 +212,17 @@
 	
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: Transposes and conjugates the matrix exponential.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes and conjugates the matrix exponential.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: Transposes the matrix exponential.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes the matrix exponential.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 	
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">O</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj: Returns the operator to be exponentiated.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;obj: Returns the operator to be exponentiated.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_O</span>
 
 	<span class="nd">@property</span>

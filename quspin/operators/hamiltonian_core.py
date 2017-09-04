@@ -32,6 +32,15 @@ def commutator(H1,H2):
 	.. math::
 		[H_1,H_2] = H_1 H_2 - H_2 H_1
 
+	Examples
+	--------
+	The following script shows how to compute the commutator of two `hamiltonian` objects.
+
+	.. literalinclude:: ../../doc_examples/commutator-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 	Parameters
 	-----------
 	H1 : obj
@@ -50,10 +59,19 @@ def commutator(H1,H2):
 		return H1.dot(H2) - H2.dot(H1)
 
 def anti_commutator(H1,H2):
-	""" Calculates the anti-commutator of two Hamiltonians :math:`H_1` and :math:`H_2`.
+	""" Calculates the anticommutator of two Hamiltonians :math:`H_1` and :math:`H_2`.
 
 	.. math::
 		\\{H_1,H_2\\}_+ = H_1 H_2 + H_2 H_1
+
+	Examples
+	--------
+	The following script shows how to compute the anticommutator of two `hamiltonian` objects.
+
+	.. literalinclude:: ../../doc_examples/anti_commutator-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
 	Parameters
 	-----------
@@ -138,14 +156,14 @@ def _hamiltonian_dot(hamiltonian,time,v):
 
 
 class hamiltonian(object):
-	"""Construct quantum operators.
+	"""Constructs quantum operators.
 
-	The `hamiltonian` class wraps most of the functionalty of the package. This object allows the user to construct 
+	The `hamiltonian` class wraps most of the functionalty of the QuSpin package. This object allows the user to construct 
 	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
 	diagonalization, etc.
 
-	The user can create both static and time-dependent, hermitian and non-hermitian operators for a particle
-	type (e.g. boson, spin, fermion) specified by the basis constructor.
+	The user can create both static and time-dependent, hermitian and non-hermitian operators for any particle
+	type (boson, spin, fermion) specified by the basis constructor.
 
 	Notes
 	-----
@@ -155,40 +173,19 @@ class hamiltonian(object):
 	Examples
 	---------
 
-	Here is an Examples how to construct the periodically driven XXZ Hamiltonian using a `basis` object
+	Here is an Examples how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian
 	
 	.. math::
 		H(t) = \\sum_{j=0}^{L-1} \\left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\\Omega t)S^x_j \\right)
 
 	in the zero-momentum sector (`kblock=0`) of positive parity (`pblock=1`). We use periodic boundary conditions.
  
-	>>> from quspin.operators import hamiltonian # Hamiltonians and operators
-	>>> from quspin.basis import spin_basis_1d # Hilbert space spin basis
-	>>> import numpy as np # generic math functions
-	>>> #
-	>>> ##### define model parameters #####
-	>>> L=6 # system size
-	>>> J=1.0 # spin interaction
-	>>> g=0.809 # transverse field
-	>>> h=0.9045 # parallel field
-	>>> ##### define periodic drive #####
-	>>> Omega=4.5 # drive frequency
-	>>> def drive(t,Omega):
-	>>> 	return np.cos(Omega*t)
-	>>> drive_args=[Omega]
-	>>> #
-	>>> ##### construct basis in the 0-total momentum and +1-parity sector
-	>>> basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
-	>>> # define PBC site-coupling lists for operators
-	>>> x_field=[[g,i] for i in range(L)]
-	>>> z_field=[[h,i] for i in range(L)]
-	>>> J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC
-	>>> # static and dynamic lists
-	>>> static=[["zz",J_nn],["z",z_field]]
-	>>> dynamic=[["x",x_field,drive,drive_args]]
-	>>> ###### construct Hamiltonian
-	>>> H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
-	>>> print(H.toarray())
+ 	The code snippet below initiates the class, and is required to run the example codes for the function methods.
+
+	.. literalinclude:: ../../doc_examples/hamiltonian-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
 	"""
 	def __init__(self,static_list,dynamic_list,N=None,basis=None,shape=None,dtype=_np.complex128,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
@@ -208,9 +205,9 @@ class hamiltonian(object):
 			>>> dynamic_list=[[opstr_1,[indx_11,...,indx_1n],fun_1,fun_1_args],[matrix_2,fun_2,fun_2_args],...]
 			
 			* `fun`: function object which multiplies the matrix or operator given in the same list.
-			* `func_args`: tuple of the extra arguments which go into the function to evaluate it like: 
+			* `fun_args`: tuple of the extra arguments which go into the function to evaluate it like: 
 
-				>>> f_val = func(t,*func_args)
+				>>> f_val = fun(t,*fun_args)
 
 			If the operator is time-INdependent, one must pass an empty list: `dynamic_list = []`.
 		N : int, optional
@@ -227,7 +224,7 @@ class hamiltonian(object):
 			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.
 		check_pcon : bool, optional
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
-		kw_args : dict
+		basis_kwargs : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
 			to create the operator.
 		 
@@ -470,8 +467,9 @@ class hamiltonian(object):
 
 	@property
 	def basis(self):
-		""":obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if operator has 
-		no basis (i.e. was created externally and passed as a precalculated array).
+		""":obj:`basis`: basis used to build the `hamiltonian` object.
+
+		Defaults to `None` if operator has no basis (i.e. was created externally and passed as a precalculated array).
 
 		"""
 		if self._basis is not None:
@@ -496,7 +494,9 @@ class hamiltonian(object):
 
 	@property
 	def is_dense(self):
-		"""bool: `True` if the operator contains a dense matrix as a componnent of either 
+		"""bool: checks sparsity of operator matrix.
+
+		`True` if the operator contains a dense matrix as a component of either 
 		the static or dynamic lists.
 
 		""" 
@@ -514,20 +514,23 @@ class hamiltonian(object):
 
 	@property
 	def dynamic(self):
-		"""tuple: contains dynamic parts of the operator as `(scipy.sparse.csr, fun, fun_args)`. See definition
-		if the `dynamic_list` argument.
+		"""dict: contains dynamic parts of the operator as `{func: Hdyn}`.
+
+		Here `func` is the memory address of the time-dependent function which can be called as `func(time)`.
+		The function arguments are hard-coded, and are not passed. `Hdyn` is the sparse matrix to which
+		the drive couples.
 		
 		"""
 		return self._dynamic
 
 	@property
 	def T(self):
-		""":obj:`hamiltonian`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`hamiltonian`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
-		""":obj:`hamiltonian`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`hamiltonian`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
 	def check_is_dense(self):
@@ -764,7 +767,7 @@ class hamiltonian(object):
 		---------
 		>>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
 
-		corresponds to :math:`H_\\{expt} = \\langle V|H(t=0)|V\\rangle`. 
+		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
 		if self.Ns <= 0:
@@ -846,7 +849,7 @@ class hamiltonian(object):
 		---------
 		>>> H_lr = H.expt_value(Vl,Vr,time=0,diagonal=False,check=True)
 
-		corresponds to :math:`H_\\{lr} = \\langle V_l|H(t=0)|V_r\\rangle`. 
+		corresponds to :math:`H_{lr} = \\langle V_l|H(t=0)|V_r\\rangle`. 
 
 		"""
 

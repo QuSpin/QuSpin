@@ -28,23 +28,26 @@ class tensor_basis(basis):
 		Notes
 		-----
 
-		The `tensor_basis` operator strings are separated by a pipe symbol, '|'. The index array has
+		The `tensor_basis` operator strings are separated by a pipe symbol, '|'. However, the index array has
 		NO pipe symbol.
+
+		The `tensor_basis` class does not allow one to make use of symmetries, save for particle conservation.
 
 		Examples
 		---------
-		The following lines show to to create the tensor basis out of two spin-1/2 basis objects.
+		The following code shows how to construct the Fermi-Hubbard Hamiltonian by tensoring two 
+		`spinless_fermion_basis_1d` objects. This model can also be set up using the `spinful_fermion_basis_1d` class),
+		which also allows the implementation of symmetries.
 
-		>>> basis1 = spin_basis_1d(L,Nup=L/2)
-		>>> basis2 = spin_basis_1d(L,Nup=L/2)
-		>>> t_basis = tensor_basis(basis1,basis2)
+		Notice that the operator strings for constructing Hamiltonians with a `tensor_basis` object are separated by 
+		a pipe symbol, '|', while the index array has no splitting pipe character.
+		 
+		The code snippet below initiates the class, and is required to run the example codes for the function methods.
 
-		The operator strings for constructing Hamiltonians with a `tensor_basis` object are separated by 
-		a pipe symbol, '|', while the index array has no splitting pipe character. For instance, the operator 
-		:math:`\\sigma^z_1\\otimes\\sigma^z_5` can be constructed using
-		
-		>>> indx = [1,5] # index array used for the site-coupling list: no pipe symbol needed
-		>>> opstr = "z|z" # operator string used in the opeator string list: pipe symbol separates two subspaces
+		.. literalinclude:: ../../doc_examples/tensor_basis-example.py
+			:linenos:
+			:language: python
+			:lines: 7-
 
 	"""
 	def __init__(self,*basis_list):
@@ -87,18 +90,18 @@ class tensor_basis(basis):
 
 	@property
 	def basis_left(self):
-		""":obj:`basis`: First basis constructor our of the list to be tensored."""
+		""":obj:`basis`: first basis constructor out of the `basis` objects list to be tensored."""
 		return self._basis_left
 
 	@property
 	def basis_right(self):
-		""":obj:`basis`: All others basis constructors except for the first one of the list to be tensored."""
+		""":obj:`basis`: all others basis constructors except for the first one of the `basis` objects list to be tensored."""
 		return self._basis_right
 
 
 
 	def Op(self,opstr,indx,J,dtype):
-		"""Constructs operator from a site-coupling list and anoperator string in the tensor basis.
+		"""Constructs operator from a site-coupling list and an operator string in the tensor basis.
 
 		Parameters
 		-----------

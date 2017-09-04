@@ -25,9 +25,7 @@ __all__ = ['Floquet_t_vec','Floquet_t_vec']
 
 
 def _range_iter(start,stop,step):
-	"""
-
-	'xrange' is replaced with 'range' in python 3. If python 2 is being used, range will cause memory overflow.
+	"""'xrange' is replaced with 'range' in python 3. If python 2 is being used, range will cause memory overflow.
 	This function is a work around to get the functionality of 'xrange' for both python 2 and 3 simultaineously. 
 	
 	"""
@@ -41,9 +39,7 @@ def _range_iter(start,stop,step):
 			break
 
 def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
-	"""
-	
-	This function evolves the i-th local basis state under the Hamiltonian H up to period T. 
+	"""This function evolves the i-th local basis state under the Hamiltonian H up to period T. 
 	It is used to construct the stroboscpoic evolution operator.
 	
 	"""
@@ -123,10 +119,39 @@ def _get_U_step_2(H,t_list,dt_list,n_jobs):
 
 
 class Floquet(object):
-	"""Calculates the Floquet spectrum and (optionally) the Floquet Hamiltonian and Floquet states.
+	"""Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.
 
-	Loops over the basis states to compute the Floquet unitary (evolution operator over one period).
-	
+	Loops over the basis states to compute the Floquet unitary :math:`U_F` (evolution operator over one period) for a
+	periodically-driven system governed by the Hamiltonian :math:`H(t)=H(t+T)`:
+
+	.. math::
+		U_F=U(T,0)=\\mathcal{T}_t\\exp\\left(-i\\int_0^T\\mathrm{d}t H(t) \\right)
+
+	with :math:`\\mathcal{T}_t\exp` denoting the time-ordered exponential.
+
+	Examples
+	--------
+
+	Consider the following periodically driven spin-1/2 Hamiltonian
+
+	.. math::
+		H(t) = \\left\\{ 
+		\\begin{array}{cl} \sum_j J\sigma^z_{j+1}\sigma^z_j + h\sigma^z_j , &  t\\in[-T/4,T/4] \\newline 
+		\sum_j g\sigma^x_j, &  t \\in[T/4,3T/4] 
+		\\end{array} 
+		\\right\\}  \mathrm{mod}\\ T
+
+	where :math:`T=2\\pi/\\Omega` is the drive period. We choose the starting point of the evolution 
+	(or equivalently -- the driving phase) to be :math:`t=0`.
+
+	The following snippet of code shows how to calculate the Floquet eigenstates and the corresponding quasienergies,
+	using `evo_dict` variable, case ii (see below). 
+
+	.. literalinclude:: ../../doc_examples/Floquet_class-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 	"""
 
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
@@ -139,31 +164,30 @@ class Floquet(object):
 			Depending on the protocol type, it contains the following keys:
 
 			i) Periodic continuous protocol from a `hamiltonian` object.
-				* 'H' : hamiltonian object to generate the time evolution. 
-				* 'T' : period of the protocol. 
-				* 'rtol' : (optional) relative tolerance for the ODE solver. (default = 1E-9)
-				* 'atol' : (optional) absolute tolerance for the ODE solver. (default = 1E-9)
+				* `H` : hamiltonian object to generate the time evolution. 
+				* `T` : period of the protocol. 
+				* `rtol` : (optional) relative tolerance for the ODE solver. (default = 1E-9)
+				* `atol` : (optional) absolute tolerance for the ODE solver. (default = 1E-9)
 
 			ii) Periodic step protocol from a `hamiltonian` object. 
-				* 'H' : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. sign(cos(Omega*t)).
-				* 't_list' : list of times to evaluate the hamiltonian at for each step.
-				* 'dt_list' : list of time step durations for each step of the evolution. 
+				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\sign(\\cos(\\Omega t))`.
+				* `t_list` : list of times to evaluate the hamiltonian at for each step.
+				* `dt_list` : list of time step durations for each step of the evolution. 
 
 			iii) Periodic step protocol from a list of hamiltonians. 
-				* 'H_list' : list of matrices to evolve with.
-				* 'dt_list' : list of time step durations. Must be the same size as 'H_list'.
+				* `H_list` : list of matrices to evolve with.
+				* `dt_list` : list of time step durations. Must be the same size as `H_list`.
 		
 		HF : bool
-			Set to 'True' to calculate and return Floquet Hamiltonian under attribute _.HF. Default is 'False'.
+			Set to `True` to calculate and return Floquet Hamiltonian under attribute `_.HF`. Default is `False`.
 		UF : bool
-			Set to 'True' to save evolution operator under attribute _.UF. Default is 'False'.
+			Set to `True` to save evolution operator under attribute `_.UF`. Default is `False`.
 		thetaF : bool
-			Set to 'True' to save eigenvalues of the evolution operator (Floquet phases) under attribute _.thetaF. Default is 'False'.
+			Set to `True` to save eigenvalues of the evolution operator (Floquet phases) under attribute `_.thetaF`. Default is `False`.
 		VF : bool
-			Set to 'True' to save Floquet states under attribute _.VF. Default is 'False'. 
+			Set to `True` to save Floquet states under attribute _.VF. Default is `False`. 
 		n_jobs : int, optional
-			Set the number of processors which are used when looping over the basis states to compute 
-			the Floquet unitary. Default is 'False'. 
+			Set the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
 
 		"""
 
@@ -310,7 +334,7 @@ class Floquet(object):
 
 	@property
 	def EF(self):
-		"""numpy.ndarray(float): ordered Floquet quasi-energies in interval [-Omega,Omega]."""
+		"""numpy.ndarray(float): ordered Floquet quasi-energies in interval :math:`[-\\Omega,\\Omega]`."""
 		return self._EF
 
 	@property
@@ -373,6 +397,16 @@ class Floquet_t_vec(object):
 	ramp-up, constant and ramp-down.
 	
 	Particularly useful for studying periodically-driven systems.
+
+	Examples
+	--------
+
+	The following code shows how to use the `Floquet_t_vec` class.
+
+	.. literalinclude:: ../../doc_examples/Floquet_t_vec-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 	
 	"""
 
@@ -419,7 +453,7 @@ class Floquet_t_vec(object):
 		# define initial and final times and total duration
 		self._i = self.vals[0]
 		self._f = self.vals[-1]
-		self._tot = self._i - self._f
+		self._tot = self._f - self._i
 
 		# if ramp is on, define more attributes
 		if N_up > 0 and N_down > 0:

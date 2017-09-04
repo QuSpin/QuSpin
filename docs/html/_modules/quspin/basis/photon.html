@@ -135,12 +135,12 @@
 <span class="sd">		couples a lattice particle to a single photon mode.</span>
 
 <span class="sd">		There are two types of `photon_basis` objects that one can create:</span>
-<span class="sd">			* conserving basis: lattice particle + photon numbers conserved separately. This object is constructed</span>
+<span class="sd">			* conserving basis: lattice particle basis and photon number conserved separately. This object is constructed</span>
 <span class="sd">				using the `tensor_basis` class.</span>
-<span class="sd">			* non-conserving basis: only sum of lattice particles and photons conserved.</span>
+<span class="sd">			* non-conserving basis: only total sum of lattice particles and photons conserved.</span>
 
-<span class="sd">		The operator strings for the photon and lattice sectors are the same as for the harmonic oscillator basis</span>
-<span class="sd">		lattice bases, respectively. The `photon_basis` operator string uses the pipe character &#39;|&#39; to distinguish</span>
+<span class="sd">		The operator strings for the photon and lattice sectors are the same as for the lattice bases, respectively.</span>
+<span class="sd">		The `photon_basis` operator string uses the pipe character &#39;|&#39; to distinguish</span>
 <span class="sd">		between lattice operators (left) and photon operators (right).</span>
 
 <span class="sd">		.. math::</span>
@@ -148,7 +148,7 @@
 <span class="sd">				\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}   &amp;   \\texttt{&quot;x&quot;}   &amp;   \\texttt{&quot;y&quot;}  \\newline	</span>
 <span class="sd">				\\texttt{spin_basis_1d} &amp;   \\hat{1}        &amp;   \\hat\\sigma^+       &amp;   \\hat\\sigma^-      &amp;         -         &amp;   \\hat\\sigma^z       &amp;   (\\hat\\sigma^x)     &amp;   (\\hat\\sigma^y)  \\  \\newline</span>
 <span class="sd">				\\texttt{boson_basis_1d}&amp;   \\hat{1}        &amp;   \\hat b^\\dagger      &amp;       \\hat b          &amp; \\hat b^\\dagger b     &amp;  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &amp;   -       &amp;   -  \\newline</span>
-<span class="sd">				\\texttt{fermion_basis_1d}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &amp;   -       &amp;   -  \\newline</span>
+<span class="sd">				\\texttt{spinless_fermion_basis_1d}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &amp;   -       &amp;   -  \\newline</span>
 <span class="sd">			\\end{array}</span>
 
 <span class="sd">		Examples</span>
@@ -161,6 +161,14 @@
 <span class="sd">		states using the `Nph` argument:</span>
 
 <span class="sd">		&gt;&gt;&gt; p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)</span>
+
+<span class="sd">		The code snippet below shows how to use the `photon_basis` class to construct the Jaynes-Cummings Hamiltonian.</span>
+<span class="sd">		As an initial state, we choose a coherent state in the photon sector and the ground state of the two-level system (atom).</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/photon_basis-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 7-</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="photon_basis.__init__"><a class="viewcode-back" href="../../../generated/quspin.basis.photon_basis.html#quspin.basis.photon_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">basis_constructor</span><span class="p">,</span><span class="o">*</span><span class="n">constructor_args</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
@@ -224,17 +232,17 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">particle_Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Number of states in the lattice Hilbert space only.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states in the lattice Hilbert space only.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">particle_N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;nt: Number of sites on lattice.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;nt: number of sites on lattice.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">N</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">particle_sps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Number of lattice states per site.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of lattice states per site.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">sps</span>
 
 	<span class="nd">@property</span>
@@ -244,22 +252,22 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">photon_Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Number of states in the photon Hilbert space only.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states in the photon Hilbert space only.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">photon_sps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Number of photon states per site.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of photon states per site.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">sps</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">chain_Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Number of states in the photon Hilbert space only.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states in the photon Hilbert space only.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">chain_N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Number of sites on lattice.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of sites on lattice.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">N</span>
 
 <div class="viewcode-block" id="photon_basis.Op"><a class="viewcode-back" href="../../../generated/quspin.basis.photon_basis.html#quspin.basis.photon_basis.Op">[docs]</a>	<span class="k">def</span> <span class="nf">Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
@@ -622,7 +630,7 @@
 <span class="sd">		Examples</span>
 <span class="sd">		--------</span>
 
-<span class="sd">		&gt;&gt;&gt; ent_entropy(state,sub_sys_A=&quot;left&quot;,return_rdm=&quot;A&quot;,enforce_pure=False,return_rdm_EVs=False,</span>
+<span class="sd">		&gt;&gt;&gt; ent_entropy(state,sub_sys_A=&quot;photons&quot;,return_rdm=&quot;A&quot;,enforce_pure=False,return_rdm_EVs=False,</span>
 <span class="sd">		&gt;&gt;&gt;				sparse=False,alpha=1.0,sparse_diag=True)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>

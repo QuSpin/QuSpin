@@ -94,7 +94,8 @@
 			<span class="n">str_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">MAXPRINT</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
 		
 		<span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_list</span><span class="p">)</span>
-		<span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.</span><span class="se">\n</span><span class="s2">&quot;</span>
+		<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;block&#39;</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">):</span> 
+			<span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The states printed do NOT correspond to the physical states: see review arXiv:1101.3281 for more details about reference states for symmetry-reduced blocks.</span><span class="se">\n</span><span class="s2">&quot;</span>
 		<span class="k">return</span> <span class="n">string</span>
 
 	<span class="nd">@property</span>
@@ -119,7 +120,7 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">sps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: number of local degrees of freedom.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states per site (i.e. the local degrees of freedom).&quot;&quot;&quot;</span>
 		<span class="k">try</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span>
 		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -137,25 +138,29 @@
 <span class="sd">			state (or states stored in columns) to act on with the operator.</span>
 <span class="sd">		opstr : str</span>
 <span class="sd">			Operator string in the lattice basis format. For instance:</span>
+
 <span class="sd">			&gt;&gt;&gt; opstr = &quot;zz&quot;</span>
+
 <span class="sd">		indx : list(int)</span>
 <span class="sd">			List of integers to designate the sites the lattice basis operator is defined on. For instance:</span>
+<span class="sd">			</span>
 <span class="sd">			&gt;&gt;&gt; indx = [2,3]</span>
+
 <span class="sd">		J : scalar</span>
 <span class="sd">			Coupling strength.</span>
 <span class="sd">		dtype : &#39;type&#39;</span>
-<span class="sd">			Data type (e.g. numpy.float64) to construct the operator with.</span>
+<span class="sd">			Data type (e.g. `numpy.float64`) to construct the operator with.</span>
 <span class="sd">		transposed : bool, optional</span>
-<span class="sd">			if True this function will act with the trasposed operator.</span>
+<span class="sd">			if `True` this function will act with the trasposed operator.</span>
 <span class="sd">		conjugated : bool, optional</span>
-<span class="sd">			if True this function will act with the conjugated operator.</span>
+<span class="sd">			if `True` this function will act with the conjugated operator.</span>
 <span class="sd">		v_out : array_like</span>
-<span class="sd">			output array, must be the same shape as `v_in` aand matching type of the output.</span>
+<span class="sd">			output array, must be the same shape as `v_in` and must match the type of the output.</span>
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		numpy.ndarray</span>
-<span class="sd">			* if v_out is not None, this function modifies v_out inplace and returns it. </span>
+<span class="sd">			* if `v_out` is not `None`, this function modifies `v_out` inplace and returns it. </span>
 
 <span class="sd">			</span>
 <span class="sd">		Examples</span>
@@ -254,7 +259,7 @@
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">expanded_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static</span><span class="o">=</span><span class="p">[],</span><span class="n">dynamic</span><span class="o">=</span><span class="p">[]):</span>
-		<span class="sd">&quot;&quot;&quot;Splits up operator strings containing &quot;y&quot; and &quot;x&quot; into operator combinations of &quot;+&quot; and &quot;-&quot;.</span>
+		<span class="sd">&quot;&quot;&quot;Splits up operator strings containing &quot;x&quot; and &quot;y&quot; into operator combinations of &quot;+&quot; and &quot;-&quot;.</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
@@ -274,6 +279,10 @@
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; static = [[&quot;xx&quot;,[[1.0,0,1]]],[&quot;yy&quot;,[[1.0,0,1]]]]</span>
+<span class="sd">		&gt;&gt;&gt; dynamic = [[&quot;y&quot;,[[1.0,0]],lambda t: t,[]]]</span>
+<span class="sd">		&gt;&gt;&gt; expanded_form(static,dynamic)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">static_list</span><span class="p">,</span><span class="n">dynamic_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_lists</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
@@ -574,27 +583,27 @@
 			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Particle conservation check passed!&quot;</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">_get__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;_get__str__&#39; required to print out the basis!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;_get__str__&#39; required to print out the basis!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="c1"># this methods are optional and are not required for main functions:</span>
 	<span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;__iter__&#39; required for iterating over basis!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;__iter__&#39; required for iterating over basis!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;__getitem__&#39; required for &#39;[]&#39; operator!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;__getitem__&#39; required for &#39;[]&#39; operator!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="c1"># thes methods are required for the symmetry, particle conservation, and hermiticity checks</span>
 	<span class="k">def</span> <span class="nf">_hc_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;_hc_opstr&#39; required for hermiticity check! turn this check off by setting test_herm=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;_hc_opstr&#39; required for hermiticity check! turn this check off by setting test_herm=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">_sort_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;_sort_opstr&#39; required for symmetry and hermiticity checks! turn this check off by setting check_herm=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;_sort_opstr&#39; required for symmetry and hermiticity checks! turn this check off by setting check_herm=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">_expand_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;_expand_opstr&#39; required for particle conservation check! turn this check off by setting check_pcon=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;_expand_opstr&#39; required for particle conservation check! turn this check off by setting check_pcon=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">_non_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implimentation of &#39;_non_zero&#39; required for particle conservation check! turn this check off by setting check_pcon=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;basis class: </span><span class="si">{0}</span><span class="s2"> missing implementation of &#39;_non_zero&#39; required for particle conservation check! turn this check off by setting check_pcon=False&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">_sort_local_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op_list</span><span class="p">):</span>
 		<span class="n">sorted_op_list</span> <span class="o">=</span> <span class="p">[]</span>

@@ -30,7 +30,25 @@ except ImportError:
 __all__=["block_diag_hamiltonian","block_ops"]
 
 def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},get_proj=True,check_symm=True,check_herm=True,check_pcon=True):
-	"""Constructs a block-diagonal hamiltonian object with the blocks being created via the argument 'blocks'.
+	"""Block-diagonalises a Hamiltonian obeying a symmetry.
+
+	The symmetry blocks are created via the argument 'blocks'.
+
+	Examples
+	--------
+
+	The example below demonstrates how to to use the `block_diag_hamiltonian()` function to block-diagonalise
+	the single-particle Hamiltonian
+	
+	.. math::
+		H=\\sum_j (J+(-1)^j\\delta J)b^\\dagger_{j+1} b_j + \\mathrm{h.c.} + \\Delta(-1)^j b^\\dagger_j b_j
+
+	with respect to translation symemtry. The Fourier transform is computed along the way.
+
+	.. literalinclude:: ../../doc_examples/block_diag_hamiltonian-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
 	Parameters
 	-----------
@@ -140,7 +158,6 @@ def _worker(gen_func,args_list,q,e):
 		e.wait()
 
 	q.close()
-
  
 def _generate_parallel(n_process,n_iter,gen_func,args_list):
 	"""
@@ -208,8 +225,6 @@ def _generate_parallel(n_process,n_iter,gen_func,args_list):
 	for p in ps:
 		p.join()
 
-
-
 def _evolve_gen(psi,H,t0,times,H_real,imag_time,solver_name,solver_args):
 	"""Generating function for evolution with `H.evolve`."""
 	for psi in H.evolve(psi,t0,times,H_real=H_real,imag_time=imag_time,solver_name=solver_name,iterate=True,**solver_args):
@@ -254,7 +269,7 @@ def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args
 
 
 class block_ops(object):
-	"""Split up the dynamics of a state over various symmetry sectors.
+	"""Splits up the dynamics of a state over various symmetry sectors.
 
 	Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does. 
 	Moreover, we provide a multiprocessing option which allows the user to split up the dynamics 
@@ -262,10 +277,35 @@ class block_ops(object):
 
 	Can be used to calculate nonequal time correlators in symmetry-reduced sectors.
 
+	Notes
+	-----
+
+	The `block_ops` object is initialised only after calling the function methods of the class to save memory.
+
+	Examples
+	--------
+
+	The following sequence of examples uses the Bose-Hubbard model
+
+	.. math::
+		H=-J\\sum_j b^\\dagger_{j+1}b_j + \\mathrm{h.c.} + \\frac{U}{2}\\sum_j n_j(n_j-1)
+
+	to show how to use the `block_ops` class to evolve a Fock state, which explicitly breaks
+	translational invariance, by decomposing it in all momentum blocks, time-evolving the projections, and putting
+	the state back together in the Fock basis in the end. We use the time-evolved state to measure the local density operator :math:`n_j`.
+
+	The code snippets for the time evolution can be found in the examples for the function methods of the class.
+	The code snippet below initiates the class, and is required to run the example codes for the function methods.
+
+	.. literalinclude:: ../../doc_examples/block_ops-example.py
+		:linenos:
+		:language: python
+		:lines: 7-55
+
 	"""
 
 	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,basis_kwargs={},get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):
-		"""
+		"""Instantiates the `block_ops` class.
 		
 		Parameters
 		-----------
@@ -408,6 +448,16 @@ class block_ops(object):
 	def compute_all_blocks(self):
 		"""Sets `compute_all_blocks = True`.
 
+		Examples
+		--------
+
+		The example below builds on the code snippet shown in the description of the `block_ops` class.
+
+		.. literalinclude:: ../../doc_examples/block_ops-example.py
+			:linenos:
+			:language: python
+			:lines: 57-58
+
 		"""
 		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
@@ -426,9 +476,17 @@ class block_ops(object):
 	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,block_diag=False,H_real=False,imag_time=False,solver_name="dop853",**solver_args):
 		"""Creates symmetry blocks of the Hamiltonian and then uses them to run `hamiltonian.evolve()` in parallel.
 		
-		Notes
-		-----
-		The arguments not described below can be found in the documentation for the `hamiltonian.evolve()` method.
+		**Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.**
+
+		Examples
+		--------
+
+		The example below builds on the code snippet shown in the description of the `block_ops` class.
+
+		.. literalinclude:: ../../doc_examples/block_ops-example.py
+			:linenos:
+			:language: python
+			:lines: 69-
 
 		Parameters
 		-----------
@@ -450,7 +508,7 @@ class block_ops(object):
 			blocks, such that there is roughly an equal workload for each process. Otherwise the computation 
 			will be as slow as the slowest process.
 		block_diag : bool, optional 
-			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtri blocks
+			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtry blocks
 			into a list and then loops over it to do time evolution. When set to `False`, it puts all
 			blocks in a single giant sparse block diagonal matrix. Default is `False`.
 
@@ -555,9 +613,17 @@ class block_ops(object):
 	def expm(self,psi_0,H_time_eval=0.0,iterate=False,n_jobs=1,block_diag=False,a=-1j,start=None,stop=None,endpoint=None,num=None,shift=None):
 		"""Creates symmetry blocks of the Hamiltonian and then uses them to run `_expm_multiply()` in parallel.
 		
-		Notes
-		-----
-		The arguments not described below can be found in the documentation for the `exp_op` class.
+		**Arguments NOT described below can be found in the documentation for the `exp_op` class.**
+
+		Examples
+		--------
+
+		The example below builds on the code snippet shown in the description of the `block_ops` class.
+
+		.. literalinclude:: ../../doc_examples/block_ops-example.py
+			:linenos:
+			:language: python
+			:lines: 60-67
 
 		Parameters
 		-----------

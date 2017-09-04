@@ -9,6 +9,14 @@ import numpy as _np
 class boson_basis_1d(basis_1d):
 	"""Constructs basis for boson operators in a specified 1-d symmetry sector.
 
+	The supposrted operator strings for `boson_basis_1d` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}     \\newline	
+			\\texttt{boson_basis_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+		\\end{array}
+
 	Notes
 	-----
 	* if `Nb` or `nb` are specified, by default `sps` is set to the number of bosons on the lattice.
@@ -20,8 +28,15 @@ class boson_basis_1d(basis_1d):
 	Examples
 	--------
 
-	>>> L=8
-	>>> boson_basis_1d(L,Nb=4,sps=3,cblock=1)
+	The code snippet below shows how to use the `boson_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the bosonic Hamiltonian 
+
+	.. math::
+		H(t)=-J\\sum_j b^\\dagger_{j+1}b_j + \\mathrm{h.c.} -\\mu\\sum_j n_j + U\\sum_j n_j n_j + g\\cos\\Omega t\\sum_j (b^\\dagger_j + b_j)
+
+	.. literalinclude:: ../../doc_examples/boson_basis_1d-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
 	"""
 	def __init__(self,L,Nb=None,nb=None,sps=None,**blocks):

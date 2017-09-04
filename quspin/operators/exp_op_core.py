@@ -33,51 +33,19 @@ class exp_op(object):
 	-----
 	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
 
+	For a fast computations, look up the `tools.expm_multiply_parallel` function.
+
 	Examples
 	---------
 
-	The Examples below shows how to compute the time-evolvution of a state under a constant Hamiltian.
-	This is done using the matrix exponential to define the evolution operator and apply it directly 
+	The Example below shows how to compute the time-evolvution of a state under a constant Hamiltonian.
+	This is done using the matrix exponential to define the evolution operator and then applying it directly 
 	onto the initial state.
 
-	>>> from quspin.operators import hamiltonian, exp_op # Hamiltonians, operators and exp_op
-	>>> from quspin.basis import spin_basis_1d # Hilbert space spin basis
-	>>> import numpy as np # generic math functions
-	>>> #
-	>>> ##### define model parameters #####
-	>>> L=6 # system size
-	>>> J=1.0 # spin interaction
-	>>> g=0.809 # transverse field
-	>>> h=0.9045 # parallel field
-	>>> #
-	>>> ##### construct basis in the 0-total momentum and +1-parity sector
-	>>> basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
-	>>> # define PBC site-coupling lists for operators
-	>>> x_field=[[g,i] for i in range(L)]
-	>>> z_field=[[h,i] for i in range(L)]
-	>>> J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC
-	>>> # static and dynamic lists
-	>>> static=[["zz",J_nn],["z",z_field],["x",x_field]]
-	>>> dynamic=[]
-	>>> ###### construct Hamiltonian
-	>>> H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
-	>>> #
-	>>> ###### compute evolution operator as matrix exponential
-	>>> start, stop, N_t = 0.0, 4.0, 21 # time vector parameters
-	>>> # define evolution operator as a generator object to apply on the state
-	>>> U=exp_op(H,a=-1j,start=start,stop=stop,num=N_t,endpoint=True,iterate=True)
-	>>> print(U)
-	>>> #
-	>>> # compute domain wall initial state
-	>>> dw_str = "".join("1" for i in range(L//2)) + "".join("0" for i in range(L-L//2))
-	>>> i_0 = basis.index(s_f) # find index of product state in basis
-	>>> psi = np.zeros(basis.Ns) # allocate space for state
-	>>> psi[i_0] = 1.0 # set MB state to be the given product state
-	>>> #
-	>>> ##### calculate time-evolved state by successive application of matrix exponential
-	>>> for U_j in U:
-	>>> 	print("evolved state:", psi)
-	>>> 	psi=U_j.dot(psi)
+	.. literalinclude:: ../../doc_examples/exp_op-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
 	"""
 	def __init__(self,O,a=1.0,start=None,stop=None,num=None,endpoint=None,iterate=False):
@@ -86,7 +54,7 @@ class exp_op(object):
 		Parameters
 		-----------
 		O : obj
-			`numpy.ndarray`,`scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.
+			`numpy.ndarray`, `scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.
 		a : `numpy.dtype`, optional
 			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.
 			Default is `a = 1.0`.
@@ -193,17 +161,17 @@ class exp_op(object):
 	
 	@property
 	def H(self):
-		""":obj:`hamiltonian`: Transposes and conjugates the matrix exponential."""
+		""":obj:`hamiltonian`: transposes and conjugates the matrix exponential."""
 		return self.getH(copy = False)
 
 	@property
 	def T(self):
-		""":obj:`hamiltonian`: Transposes the matrix exponential."""
+		""":obj:`hamiltonian`: transposes the matrix exponential."""
 		return self.transpose(copy = False)
 	
 	@property
 	def O(self):
-		""":obj: Returns the operator to be exponentiated."""
+		"""obj: Returns the operator to be exponentiated."""
 		return self._O
 
 	@property

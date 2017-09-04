@@ -79,23 +79,26 @@
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
 
-<span class="sd">		The `tensor_basis` operator strings are separated by a pipe symbol, &#39;|&#39;. The index array has</span>
+<span class="sd">		The `tensor_basis` operator strings are separated by a pipe symbol, &#39;|&#39;. However, the index array has</span>
 <span class="sd">		NO pipe symbol.</span>
+
+<span class="sd">		The `tensor_basis` class does not allow one to make use of symmetries, save for particle conservation.</span>
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
-<span class="sd">		The following lines show to to create the tensor basis out of two spin-1/2 basis objects.</span>
+<span class="sd">		The following code shows how to construct the Fermi-Hubbard Hamiltonian by tensoring two </span>
+<span class="sd">		`spinless_fermion_basis_1d` objects. This model can also be set up using the `spinful_fermion_basis_1d` class),</span>
+<span class="sd">		which also allows the implementation of symmetries.</span>
 
-<span class="sd">		&gt;&gt;&gt; basis1 = spin_basis_1d(L,Nup=L/2)</span>
-<span class="sd">		&gt;&gt;&gt; basis2 = spin_basis_1d(L,Nup=L/2)</span>
-<span class="sd">		&gt;&gt;&gt; t_basis = tensor_basis(basis1,basis2)</span>
+<span class="sd">		Notice that the operator strings for constructing Hamiltonians with a `tensor_basis` object are separated by </span>
+<span class="sd">		a pipe symbol, &#39;|&#39;, while the index array has no splitting pipe character.</span>
+<span class="sd">		 </span>
+<span class="sd">		The code snippet below initiates the class, and is required to run the example codes for the function methods.</span>
 
-<span class="sd">		The operator strings for constructing Hamiltonians with a `tensor_basis` object are separated by </span>
-<span class="sd">		a pipe symbol, &#39;|&#39;, while the index array has no splitting pipe character. For instance, the operator </span>
-<span class="sd">		:math:`\\sigma^z_1\\otimes\\sigma^z_5` can be constructed using</span>
-<span class="sd">		</span>
-<span class="sd">		&gt;&gt;&gt; indx = [1,5] # index array used for the site-coupling list: no pipe symbol needed</span>
-<span class="sd">		&gt;&gt;&gt; opstr = &quot;z|z&quot; # operator string used in the opeator string list: pipe symbol separates two subspaces</span>
+<span class="sd">		.. literalinclude:: ../../doc_examples/tensor_basis-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="tensor_basis.__init__"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">basis_list</span><span class="p">):</span>
@@ -138,18 +141,18 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">basis_left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`basis`: First basis constructor our of the list to be tensored.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`basis`: first basis constructor out of the `basis` objects list to be tensored.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">basis_right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`basis`: All others basis constructors except for the first one of the list to be tensored.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`basis`: all others basis constructors except for the first one of the `basis` objects list to be tensored.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span>
 
 
 
 <div class="viewcode-block" id="tensor_basis.Op"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.Op">[docs]</a>	<span class="k">def</span> <span class="nf">Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Constructs operator from a site-coupling list and anoperator string in the tensor basis.</span>
+		<span class="sd">&quot;&quot;&quot;Constructs operator from a site-coupling list and an operator string in the tensor basis.</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>

@@ -59,6 +59,27 @@
 <div class="viewcode-block" id="spinless_fermion_basis_1d"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d">[docs]</a><span class="k">class</span> <span class="nc">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">basis_1d</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.</span>
 
+<span class="sd">	The supposrted operator strings for `spinless_fermion_basis_1d` are:</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">			\\begin{array}{cccc}</span>
+<span class="sd">				\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    \\newline	</span>
+<span class="sd">				\\texttt{spinless_fermion_basis_1d}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline</span>
+<span class="sd">			\\end{array}</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the femrion Hamiltonian </span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
 <span class="sd">	&quot;&quot;&quot;</span>	
 <div class="viewcode-block" id="spinless_fermion_basis_1d.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `fermion_basis_1d` object (basis for fermionic operators).</span>

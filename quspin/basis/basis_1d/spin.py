@@ -11,6 +11,29 @@ except NameError:
 class spin_basis_1d(basis_1d):
 	"""Constructs basis for spin operators in a specified 1-d symmetry sector.
 
+	The supposrted operator strings for `spin_basis_1d` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &     \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
+			\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
+		\\end{array}
+
+	where the "x" ad "y" operator strings are supported only for spin-1/2 systems, and are NOT available for higher spins. 
+
+	Examples
+	--------
+
+	The code snippet below shows how to use the `spin_boson_1d` class to construct the basis in the zero momentum sector of positive parity for the spin Hamiltonian.
+
+	.. math::
+		H(t) = \\sum_j J\\sigma^z_{j+1}\\sigma^z_j + h\\sigma^z_j + g\\cos\\Omega t\\sigma^x_j 
+
+	.. literalinclude:: ../../doc_examples/spin_basis_1d-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 	"""	
 	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=True,**blocks):
 		"""Intializes the `spin_basis_1d` object (basis for spin operators).

@@ -81,7 +81,25 @@
 <span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;block_diag_hamiltonian&quot;</span><span class="p">,</span><span class="s2">&quot;block_ops&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="block_diag_hamiltonian"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_diag_hamiltonian.html#quspin.tools.block_tools.block_diag_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">block_diag_hamiltonian</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis_con</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">basis_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">get_proj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Constructs a block-diagonal hamiltonian object with the blocks being created via the argument &#39;blocks&#39;.</span>
+	<span class="sd">&quot;&quot;&quot;Block-diagonalises a Hamiltonian obeying a symmetry.</span>
+
+<span class="sd">	The symmetry blocks are created via the argument &#39;blocks&#39;.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The example below demonstrates how to to use the `block_diag_hamiltonian()` function to block-diagonalise</span>
+<span class="sd">	the single-particle Hamiltonian</span>
+<span class="sd">	</span>
+<span class="sd">	.. math::</span>
+<span class="sd">		H=\\sum_j (J+(-1)^j\\delta J)b^\\dagger_{j+1} b_j + \\mathrm{h.c.} + \\Delta(-1)^j b^\\dagger_j b_j</span>
+
+<span class="sd">	with respect to translation symemtry. The Fourier transform is computed along the way.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/block_diag_hamiltonian-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
@@ -191,7 +209,6 @@
 		<span class="n">e</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 
 	<span class="n">q</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
  
 <span class="k">def</span> <span class="nf">_generate_parallel</span><span class="p">(</span><span class="n">n_process</span><span class="p">,</span><span class="n">n_iter</span><span class="p">,</span><span class="n">gen_func</span><span class="p">,</span><span class="n">args_list</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -259,8 +276,6 @@
 	<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">:</span>
 		<span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-
-
 <span class="k">def</span> <span class="nf">_evolve_gen</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Generating function for evolution with `H.evolve`.&quot;&quot;&quot;</span>
 	<span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
@@ -305,7 +320,7 @@
 
 
 <div class="viewcode-block" id="block_ops"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops">[docs]</a><span class="k">class</span> <span class="nc">block_ops</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Split up the dynamics of a state over various symmetry sectors.</span>
+	<span class="sd">&quot;&quot;&quot;Splits up the dynamics of a state over various symmetry sectors.</span>
 
 <span class="sd">	Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does. </span>
 <span class="sd">	Moreover, we provide a multiprocessing option which allows the user to split up the dynamics </span>
@@ -313,10 +328,35 @@
 
 <span class="sd">	Can be used to calculate nonequal time correlators in symmetry-reduced sectors.</span>
 
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+
+<span class="sd">	The `block_ops` object is initialised only after calling the function methods of the class to save memory.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following sequence of examples uses the Bose-Hubbard model</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		H=-J\\sum_j b^\\dagger_{j+1}b_j + \\mathrm{h.c.} + \\frac{U}{2}\\sum_j n_j(n_j-1)</span>
+
+<span class="sd">	to show how to use the `block_ops` class to evolve a Fock state, which explicitly breaks</span>
+<span class="sd">	translational invariance, by decomposing it in all momentum blocks, time-evolving the projections, and putting</span>
+<span class="sd">	the state back together in the Fock basis in the end. We use the time-evolved state to measure the local density operator :math:`n_j`.</span>
+
+<span class="sd">	The code snippets for the time evolution can be found in the examples for the function methods of the class.</span>
+<span class="sd">	The code snippet below initiates the class, and is required to run the example codes for the function methods.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-55</span>
+
 <span class="sd">	&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="block_ops.__init__"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis_con</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">basis_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">save_previous_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">compute_all_blocks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;Instantiates the `block_ops` class.</span>
 <span class="sd">		</span>
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
@@ -459,6 +499,16 @@
 <div class="viewcode-block" id="block_ops.compute_all_blocks"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.compute_all_blocks">[docs]</a>	<span class="k">def</span> <span class="nf">compute_all_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Sets `compute_all_blocks = True`.</span>
 
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		The example below builds on the code snippet shown in the description of the `block_ops` class.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 57-58</span>
+
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">_iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="p">):</span>
 			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -477,9 +527,17 @@
 <div class="viewcode-block" id="block_ops.evolve"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Creates symmetry blocks of the Hamiltonian and then uses them to run `hamiltonian.evolve()` in parallel.</span>
 <span class="sd">		</span>
-<span class="sd">		Notes</span>
-<span class="sd">		-----</span>
-<span class="sd">		The arguments not described below can be found in the documentation for the `hamiltonian.evolve()` method.</span>
+<span class="sd">		**Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.**</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		The example below builds on the code snippet shown in the description of the `block_ops` class.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 69-</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
@@ -501,7 +559,7 @@
 <span class="sd">			blocks, such that there is roughly an equal workload for each process. Otherwise the computation </span>
 <span class="sd">			will be as slow as the slowest process.</span>
 <span class="sd">		block_diag : bool, optional </span>
-<span class="sd">			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtri blocks</span>
+<span class="sd">			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtry blocks</span>
 <span class="sd">			into a list and then loops over it to do time evolution. When set to `False`, it puts all</span>
 <span class="sd">			blocks in a single giant sparse block diagonal matrix. Default is `False`.</span>
 
@@ -606,9 +664,17 @@
 <div class="viewcode-block" id="block_ops.expm"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.expm">[docs]</a>	<span class="k">def</span> <span class="nf">expm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">H_time_eval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Creates symmetry blocks of the Hamiltonian and then uses them to run `_expm_multiply()` in parallel.</span>
 <span class="sd">		</span>
-<span class="sd">		Notes</span>
-<span class="sd">		-----</span>
-<span class="sd">		The arguments not described below can be found in the documentation for the `exp_op` class.</span>
+<span class="sd">		**Arguments NOT described below can be found in the documentation for the `exp_op` class.**</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		The example below builds on the code snippet shown in the description of the `block_ops` class.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 60-67</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>

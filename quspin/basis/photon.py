@@ -84,12 +84,12 @@ class photon_basis(tensor_basis):
 		couples a lattice particle to a single photon mode.
 
 		There are two types of `photon_basis` objects that one can create:
-			* conserving basis: lattice particle + photon numbers conserved separately. This object is constructed
+			* conserving basis: lattice particle basis and photon number conserved separately. This object is constructed
 				using the `tensor_basis` class.
-			* non-conserving basis: only sum of lattice particles and photons conserved.
+			* non-conserving basis: only total sum of lattice particles and photons conserved.
 
-		The operator strings for the photon and lattice sectors are the same as for the harmonic oscillator basis
-		lattice bases, respectively. The `photon_basis` operator string uses the pipe character '|' to distinguish
+		The operator strings for the photon and lattice sectors are the same as for the lattice bases, respectively.
+		The `photon_basis` operator string uses the pipe character '|' to distinguish
 		between lattice operators (left) and photon operators (right).
 
 		.. math::
@@ -97,7 +97,7 @@ class photon_basis(tensor_basis):
 				\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
 				\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &         -         &   \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
 				\\texttt{boson_basis_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &   -       &   -  \\newline
-				\\texttt{fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   -       &   -  \\newline
+				\\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   -       &   -  \\newline
 			\\end{array}
 
 		Examples
@@ -110,6 +110,14 @@ class photon_basis(tensor_basis):
 		states using the `Nph` argument:
 
 		>>> p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
+
+		The code snippet below shows how to use the `photon_basis` class to construct the Jaynes-Cummings Hamiltonian.
+		As an initial state, we choose a coherent state in the photon sector and the ground state of the two-level system (atom).
+
+		.. literalinclude:: ../../doc_examples/photon_basis-example.py
+			:linenos:
+			:language: python
+			:lines: 7-
 
 		"""
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
@@ -173,17 +181,17 @@ class photon_basis(tensor_basis):
 
 	@property
 	def particle_Ns(self):
-		"""int: Number of states in the lattice Hilbert space only."""
+		"""int: number of states in the lattice Hilbert space only."""
 		return self._basis_left.Ns
 
 	@property
 	def particle_N(self):
-		"""nt: Number of sites on lattice."""
+		"""nt: number of sites on lattice."""
 		return self._basis_left.N
 
 	@property
 	def particle_sps(self):
-		"""int: Number of lattice states per site."""
+		"""int: number of lattice states per site."""
 		return self._basis_left.sps
 
 	@property
@@ -193,22 +201,22 @@ class photon_basis(tensor_basis):
 
 	@property
 	def photon_Ns(self):
-		"""int: Number of states in the photon Hilbert space only."""
+		"""int: number of states in the photon Hilbert space only."""
 		return self._basis_right.Ns
 
 	@property
 	def photon_sps(self):
-		"""int: Number of photon states per site."""
+		"""int: number of photon states per site."""
 		return self._basis_right.sps
 
 	@property
 	def chain_Ns(self):
-		"""int: Number of states in the photon Hilbert space only."""
+		"""int: number of states in the photon Hilbert space only."""
 		return self._basis_left.Ns
 
 	@property
 	def chain_N(self):
-		"""int: Number of sites on lattice."""
+		"""int: number of sites on lattice."""
 		return self._basis_left.N
 
 	def Op(self,opstr,indx,J,dtype):
@@ -571,7 +579,7 @@ class photon_basis(tensor_basis):
 		Examples
 		--------
 
-		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>> ent_entropy(state,sub_sys_A="photons",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True)
 
 		"""
@@ -648,6 +656,32 @@ class photon_basis(tensor_basis):
 
 			return str_list	
 
+	def _check_symm(self,static,dynamic):
+		# pick out operators which have charactors to the left of the '|' charactor. 
+		# otherwise this is operator must be
+		new_static = []
+		for opstr,bonds in static:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_static.append([opstr,bonds])
+
+
+		new_dynamic = []
+		for opstr,bonds,f,f_args in dynamic:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_dynamic.append([opstr,bonds,f,f_args])
+		
+		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
+
 	def _sort_opstr(self,op):
 		op = list(op)
 		opstr = op[0]
@@ -687,32 +721,6 @@ class photon_basis(tensor_basis):
 		op[1] = op1[1] + op2[1]
 		
 		return tuple(op)
-
-	def _check_symm(self,static,dynamic):
-		# pick out operators which have charactors to the left of the '|' charactor. 
-		# otherwise this is operator must be
-		new_static = []
-		for opstr,bonds in static:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' character in: {0}".format(opstr))
-
-			opstr1,opstr2=opstr.split("|")
-
-			if opstr1:
-				new_static.append([opstr,bonds])
-
-
-		new_dynamic = []
-		for opstr,bonds,f,f_args in dynamic:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' character in: {0}".format(opstr))
-
-			opstr1,opstr2=opstr.split("|")
-
-			if opstr1:
-				new_dynamic.append([opstr,bonds,f,f_args])
-		
-		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
 
 	def _get_local_lists(self,static,dynamic): #overwrite the default get_local_lists from base.
 		static_list = []
@@ -765,7 +773,7 @@ class photon_basis(tensor_basis):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
 
-		return tensor_basis._sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
+		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
 
 
 def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
@@ -915,6 +923,20 @@ class ho_basis(basis):
 
 	def _sort_opstr(self,op):
 		return tuple(op)
+
+	def _get__str__(self):
+		def get_state(b):
+			return ("|{0:"+str(len(str(self.Ns)))+"}>").format(b)
+
+		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+
+		return tuple(str_list)
 
 
 	def _hc_opstr(self,op):

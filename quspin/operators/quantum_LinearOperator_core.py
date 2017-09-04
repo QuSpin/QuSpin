@@ -21,9 +21,9 @@ from six.moves import zip
 __all__=["quantum_LinearOperator","isquantum_LinearOperator"]
 
 class quantum_LinearOperator(LinearOperator):
-	"""Applies quantum operator directly onto a state, without constructing operator.
+	"""Applies a quantum operator directly onto a state, without constructing the operator matrix.
 
-	The `quantum_LinearOperator` class uses the `basis.Op` function to calculate the matrix vector product on the 
+	The `quantum_LinearOperator` class uses the `basis.Op()` function to calculate the matrix vector product on the 
 	fly, greatly reducing the amount of memory needed for a calculation at the cost of speed.
 
 	This object is useful for doing large scale Lanczos calculations using the `eigsh` method.
@@ -35,6 +35,13 @@ class quantum_LinearOperator(LinearOperator):
 	Examples
 	---------
 
+	The following example shows how to construct and use `quantum_LinearOperator` objects.
+
+	.. literalinclude:: ../../doc_examples/quantum_linearOperator-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 	"""
 	def __init__(self,operator_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_LinearOperator` object.
@@ -43,10 +50,10 @@ class quantum_LinearOperator(LinearOperator):
 		-----------
 
 		operator_list : list
-			Contains list of objects to calculate the static part of a `quantum_LinearOperator` operator.
-			The format goes like:
+			Contains list of objects to calculate the static part of a `quantum_LinearOperator` operator. Same as
+			the `static` argument of the `quantum_operator` class. The format goes like:
 
-			>>> static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
+			>>> operator_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
 
 		N : int, optional 
 			number of sites to create the default spin basis with.
@@ -80,14 +87,16 @@ class quantum_LinearOperator(LinearOperator):
 		else:
 			self._dtype=dtype
 
-		if type(N) is int and basis is None:
+		if N==[]:
+			raise ValueError("second argument of `quantum_LinearOperator()` canNOT be an empty list.")
+		elif type(N) is int and basis is None:
 			self._basis = _default_basis(N,**basis_args)
 		elif N is None and _isbasis(basis):
 			self._basis = basis
 		else:
 			raise ValueError("expecting integer for N or basis object for basis.")
 
-		self._unique_me = self.basis.unique_me
+		self._unique_me = self.basis._unique_me
 		self._transposed = False
 		self._conjugated = False
 		self._scale = _np.array(1.0,dtype=dtype)
@@ -150,20 +159,20 @@ class quantum_LinearOperator(LinearOperator):
 
 	@property
 	def shape(self):
-		"""tuple: shape of linear operator.
-		"""
+		"""tuple: shape of linear operator."""
 		return self._shape
 
 	@property
 	def basis(self):
-		""":obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if operator has 
-		no basis (i.e. was created externally and passed as a precalculated array).
+		""":obj:`basis`: basis used to build the `hamiltonian` object. 
+
+		Defaults to `None` if operator has  no basis (i.e. was created externally and passed as a precalculated array).
 		"""
 		return self._basis
 
 	@property
 	def ndim(self):
-		"""int: number of dimensions, always equal to 2. """
+		"""int: number of dimensions, always equal to 2."""
 		return self._ndim
 
 	@property
@@ -188,12 +197,12 @@ class quantum_LinearOperator(LinearOperator):
 
 	@property
 	def T(self):
-		""":obj:`quantum_LinearOperator`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_LinearOperator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose(copy = False)
 
 	@property
 	def H(self):
-		""":obj:`quantum_LinearOperator`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_LinearOperator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH(copy = False)
 
 	@property
@@ -202,7 +211,7 @@ class quantum_LinearOperator(LinearOperator):
 		return self._diagonal
 
 	def set_diagonal(self,diagonal):
-		"""function to set the diagonal part of the quantum_LinearOperator.
+		"""Sets the diagonal part of the quantum_LinearOperator.
 
 		Parameters
 		-----------
@@ -437,7 +446,7 @@ class quantum_LinearOperator(LinearOperator):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if self._shape != other.shape:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
@@ -464,7 +473,7 @@ class quantum_LinearOperator(LinearOperator):
 			return self._mul_scalar(other)
 		else:
 			dense = False
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if self._shape != other.shape:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
@@ -497,8 +506,7 @@ class quantum_LinearOperator(LinearOperator):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = np.asanyarray(other)
-
+			other = _np.asanyarray(other)
 		if self._shape[1] != other.shape[0]:
 			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
 
@@ -523,7 +531,7 @@ class quantum_LinearOperator(LinearOperator):
 			return self._mul_scalar(other)
 		else:
 			dense = True
-			other = np.asanyarray(other)
+			other = _np.asanyarray(other)
 
 		if dense:
 			if other.ndim == 1:
@@ -545,7 +553,7 @@ class quantum_LinearOperator(LinearOperator):
 
 	def _mul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		static = self.__mul__(other._static)
+		static = self.__mul__(other._operator_list)
 		dynamic = [[self.__mul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
 		return hamiltonian([static],dynamic,
 							basis=self._basis,dtype=result_dtype,copy=False)
@@ -578,7 +586,7 @@ class quantum_LinearOperator(LinearOperator):
 
 	def _rmul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		static = self.__rmul__(other._static)
+		static = self.__rmul__(other._operator_list)
 		dynamic = [[self.__rmul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
 		return hamiltonian([static],dynamic,
 							basis=self._basis,dtype=result_dtype,copy=False)
@@ -606,7 +614,7 @@ class quantum_LinearOperator(LinearOperator):
 		# functions.
 		# """
 
-		if (func == np.dot) or (func == np.multiply):
+		if (func == _np.dot) or (func == _np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:

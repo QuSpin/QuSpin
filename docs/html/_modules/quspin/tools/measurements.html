@@ -83,7 +83,7 @@
 
 
 <div class="viewcode-block" id="ent_entropy"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.ent_entropy.html#quspin.tools.measurements.ent_entropy">[docs]</a><span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">DM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">svd_return_vec</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">],</span><span class="o">**</span><span class="n">_basis_kwargs</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of a subsystem using the Singular Value Decomposition (svd).</span>
+	<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of a subsystem using Singular Value Decomposition (svd).</span>
 
 <span class="sd">	**Note: We recommend the use of the** `basis.ent_entropy()` **method instead of this function.</span>
 <span class="sd">	This function is a wrapper.**</span>
@@ -1155,7 +1155,82 @@
 <span class="sd">	The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured </span>
 <span class="sd">	ODE solver in python, without any relation to other QuSpin objects.</span>
 
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to use the`evolve()` function to solve the periodically-driven </span>
+<span class="sd">	Gross-Pitaevskii equation (GPE) on a one-imensional lattice. The GPE has a linear part, comprising the</span>
+<span class="sd">	kinetic energy and the external potentials (e.g. a harmonic trap), and a nonlinear part which describes</span>
+<span class="sd">	the interactions.</span>
+
+<span class="sd">	Below, in a few steps we show how to use the functionality of the `evolve()` function to solve the GPE </span>
+<span class="sd">	on a one-dimensional lattice for periodically-driven particles in a harmonic trap:</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		i\\dot\\varphi_j(t) = -J\\left( e^{-iA\\sin\\Omega t}\\varphi_{j-1}(t) + e^{+iA\\sin\\Omega t}\\varphi_{j+1}(t) \\right) + \\kappa_\\mathrm{trap}\\varphi_j(t) + U|\\varphi_j(t)|^2\\varphi_j(t)</span>
+
+<span class="sd">	where :math:`j` labels the lattice sites, :math:`J` is the lattice hopping amplitude, :math:`\\kappa_\\mathrm{trap}` is</span>
+<span class="sd">	the strength of the harmonic trap, and :math:`U` -- the mean-field interaction.</span>
+
+<span class="sd">	Let us start by defining the single-particle Hamiltonian :math:`H(t)`.</span>
+
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/evolve-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-47</span>
+
+<span class="sd">	Next, we define the GPE </span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		-i\\dot\\varphi(t) = H(t)\\varphi(t) + U |\\varphi(t)|^2 \\varphi(t)</span>
+
+<span class="sd">	and solve it using `evolve()`:</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/evolve-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 49-61</span>
+<span class="sd">		:lineno-start: 43</span>
+
+<span class="sd">	Since the GPE is a complex-valued equation, the above code requires the use of a complex-valued ODE solver </span>
+<span class="sd">	[which is done by `evolve()` under the hood, so long as no solver is explicitly specified].</span>
+
+<span class="sd">	An alternative way </span>
+<span class="sd">	to solve the GPE using a real-valued solver might be useful to speed-up the computation. This can be achieved </span>
+<span class="sd">	by decomposing the condensate wave function into a real and imaginary part, and proceeds as follows:</span>
 <span class="sd">	</span>
+<span class="sd">	The goal is to solve: </span>
+<span class="sd">	</span>
+<span class="sd">	.. math::</span>
+<span class="sd">		-i\\dot\\varphi(t) = H(t)\\varphi(t) + U |\\varphi(t)|^2 \\varphi(t)</span>
+<span class="sd">	</span>
+<span class="sd">	for the complex-valued :math:`\\varphi(t)` by re-writing it as a real-valued vector `phi=[u,v]` where </span>
+<span class="sd">	:math:`\\varphi(t) = u(t) + iv(t)`. The real and imaginary parts, :math:`u(t)` and :math:`v(t)`, have the same dimension as </span>
+<span class="sd">	:math:`\phi(t)`.</span>
+<span class="sd">	</span>
+<span class="sd">	In the most general form, the single-particle Hamiltonian can be decomposed as </span>
+<span class="sd">	:math:`H(t)= H_{stat} + f(t)H_{dyn}`, with a complex-valued driving function :math:`f(t)`. Then, the GPE can be cast in </span>
+<span class="sd">	the following real-valued form:</span>
+<span class="sd">	</span>
+<span class="sd">	.. math::</span>
+<span class="sd">		\\dot u(t) = +\\left[H_{stat} + U\\left(|u(t)|^2 + |v(t)|^2\\right) \\right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)</span>
+<span class="sd">	.. math::	</span>
+<span class="sd">		\\dot v(t) = -\\left[H_{stat} + U\\left(|u(t)|^2 + |v(t)|^2\\right) \\right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)</span>
+
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/evolve-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 63-</span>
+<span class="sd">		:lineno-start: 59</span>
+
+<span class="sd">	The flag `stack_state=True` is required for `evolve()` to handle the complex-valued initial condition properly,</span>
+<span class="sd">	as well as to put together the output solution as a complex-valued vector in the end. Since the real-valued ODE solver </span>
+<span class="sd">	allows to parse ODE parameters, we can include them in the user-defined ODE function and use the </span>
+<span class="sd">	flag `f_params`. Notice the elegant way python allows one to circumvent the usage of this variable in the </span>
+<span class="sd">	complex-valued example above. </span>
+
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
 <span class="sd">	v0 : numpy.ndarray</span>
@@ -1178,7 +1253,7 @@
 
 <span class="sd">		See `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_ for other options.</span>
 <span class="sd">	solver_args : dict, optional</span>
-<span class="sd">		Dictionary with additional `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_.	</span>
+<span class="sd">		Dictionary with additional `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_ arguments.	</span>
 <span class="sd">	real : bool, optional </span>
 <span class="sd">		Flag to determine if `f` is real or complex-valued. Default is `False`.</span>
 <span class="sd">	imag_time : bool, optional</span>
@@ -1186,7 +1261,8 @@
 <span class="sd">		at each time in `times`. Default is `False`.</span>
 <span class="sd">	stack_state : bool, optional</span>
 <span class="sd">		If `f` is written to take care of real and imaginary parts separately (see Examples), this flag </span>
-<span class="sd">		will take this into account. Default is `False`.</span>
+<span class="sd">		will return a signgle complex-valued solution instead of the real and imaginary parts separately.</span>
+<span class="sd">		Default is `False`.</span>
 <span class="sd">	verbose : bool, optional</span>
 <span class="sd">		If set to `True`, prints normalisation of state at teach time in `times`.</span>
 
@@ -1194,138 +1270,9 @@
 <span class="sd">	--------</span>
 <span class="sd">	obj</span>
 <span class="sd">		Can be either one of the following:</span>
-<span class="sd">		* numpy.ndarray containing evolved state against time.</span>
-<span class="sd">		* generator object for time-evolved state (requires `iterate = True`).</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	---------</span>
-
-<span class="sd">	Below, we provide an example how to use the measurements `evolve` function to solve the periodically-driven </span>
-<span class="sd">	Gross-Pitaevskii equation on a one-imensional lattice:</span>
-
-<span class="sd">	.. math::</span>
-<span class="sd">		i\\dot\\varphi_j(t) = -J\\left( e^{-iA\\sin\\Omega t}\\varphi_{j-1}(t) + e^{+iA\\sin\\Omega t}\\varphi_{j+1}(t) \\right) + \\mu_\\mathrm{trap}\\varphi_j(t) + U|\\varphi_j(t)|^2\\varphi_j(t)</span>
-
-<span class="sd">	where :math:`j` labels the lattice sites. Let us start by defining the single-particle Hamiltonian :math:`H(t)`.</span>
-
-<span class="sd">	&gt;&gt;&gt; from quspin.operators import hamiltonian # Hamiltonians and operators</span>
-<span class="sd">	&gt;&gt;&gt; from quspin.basis import boson_basis_1d # Hilbert space spin basis</span>
-<span class="sd">	&gt;&gt;&gt; from quspin.tools.measurements import evolve # ODE evolve tool</span>
-<span class="sd">	&gt;&gt;&gt; from quspin.tools.Floquet import Floquet_t_vec # stroboscopic time vector</span>
-<span class="sd">	&gt;&gt;&gt; import numpy as np # generic math functions</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; L=50 # number of lattice sites</span>
-<span class="sd">	&gt;&gt;&gt; i_CM = L//2-0.5 # centre of chain</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ### static model parameters</span>
-<span class="sd">	&gt;&gt;&gt; J=1.0 # hopping</span>
-<span class="sd">	&gt;&gt;&gt; mu_trap=0.002 # harmonic trap strength</span>
-<span class="sd">	&gt;&gt;&gt; U=1.0 # mean-field (GPE) interaction</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ### periodic driving</span>
-<span class="sd">	&gt;&gt;&gt; A=1.0 # drive amplitude</span>
-<span class="sd">	&gt;&gt;&gt; Omega=10.0 # drive frequency</span>
-<span class="sd">	&gt;&gt;&gt; def drive(t,Omega):</span>
-<span class="sd">	&gt;&gt;&gt; 	return np.exp(-1j*A*np.sin(Omega*t) )</span>
-<span class="sd">	&gt;&gt;&gt; def drive_conj(t,Omega):</span>
-<span class="sd">	&gt;&gt;&gt; 	return np.exp(+1j*A*np.sin(Omega*t) )</span>
-<span class="sd">	&gt;&gt;&gt; drive_args=[Omega] # drive arguments</span>
-<span class="sd">	&gt;&gt;&gt; t=Floquet_t_vec(Omega,30,len_T=1) # time vector, 30 stroboscopic periods</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ### site-couping lists</span>
-<span class="sd">	&gt;&gt;&gt; hopping=[[-J,i,(i+1)%L] for i in range(L)]</span>
-<span class="sd">	&gt;&gt;&gt; trap=[[mu_trap*(i-i_CM)**2,i] for i in range(L)]</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ### operator strings for single-particle Hamiltonian</span>
-<span class="sd">	&gt;&gt;&gt; static=[[&#39;n&#39;,trap]]</span>
-<span class="sd">	&gt;&gt;&gt; dynamic=[[&quot;+-&quot;,hopping,drive,drive_args],[&quot;-+&quot;,hopping,drive_conj,drive_args]]</span>
-<span class="sd">	&gt;&gt;&gt; # define single-particle basis</span>
-<span class="sd">	&gt;&gt;&gt; basis = boson_basis_1d(L,Nb=1,sps=2) # Nb=1 boson and sps=2 states per site [empty and filled]</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ### build Hamiltonian</span>
-<span class="sd">	&gt;&gt;&gt; H=hamiltonian(static,dynamic,basis=basis,dtype=np.complex128)</span>
-<span class="sd">	&gt;&gt;&gt; # calculate eigenvalues and eigenvectors of free particle</span>
-<span class="sd">	&gt;&gt;&gt; E,V=H.eigh()</span>
-<span class="sd">	</span>
-<span class="sd">	Next, we define the GPE and solve it using `evolve()`:</span>
-
-<span class="sd">	&gt;&gt;&gt; def GPE(time,phi):</span>
-<span class="sd">	&gt;&gt;&gt; 	&#39;&#39;&#39;</span>
-<span class="sd">	&gt;&gt;&gt; 	This function solves the complex-valued time-dependent Gross-Pitaevskii equation:</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	$-i\\dot\\phi(t) = H(t)\\phi(t) + U |\\phi(t)|^2 \phi(t)$</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	&#39;&#39;&#39;</span>
-<span class="sd">	&gt;&gt;&gt; 	# solve static part of GPE</span>
-<span class="sd">	&gt;&gt;&gt; 	phi_dot = -1j*( H.static.dot(phi) + U*np.abs(phi)**2*phi )</span>
-<span class="sd">	&gt;&gt;&gt; 	# solve dynamic part of GPE</span>
-<span class="sd">	&gt;&gt;&gt; 	for Hd,f,f_args in H.dynamic:</span>
-<span class="sd">	&gt;&gt;&gt; 	phi_dot += -1j*f(time,*f_args)*Hd.dot(phi)</span>
-<span class="sd">	&gt;&gt;&gt; 	return phi_dot</span>
-<span class="sd">	&gt;&gt;&gt;	#</span>
-<span class="sd">	&gt;&gt;&gt; # initial state</span>
-<span class="sd">	&gt;&gt;&gt; phi0=V[:,0]*np.sqrt(L)</span>
-<span class="sd">	&gt;&gt;&gt; # solve cpx-valued GPE</span>
-<span class="sd">	&gt;&gt;&gt; phi_t = evolve(phi0,t.i,t.vals,GPE)</span>
-<span class="sd">	</span>
-<span class="sd">	The above code requires the use of a complex-valued ODE solver [which is done by `evolve()` under the hood, </span>
-<span class="sd">	so long as no solver is explicitly specified]. An alternative way to solve the GPE using a real-valued </span>
-<span class="sd">	solver would be</span>
-<span class="sd">	</span>
-<span class="sd">	&gt;&gt;&gt; def GPE_real(time,psi,H,U):</span>
-<span class="sd">	&gt;&gt;&gt; 	&#39;&#39;&#39;</span>
-<span class="sd">	&gt;&gt;&gt; 	This function defines the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a </span>
-<span class="sd">	&gt;&gt;&gt; 	real-valued ODE solver.</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	The goal is to solve: </span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	$-i\\dot\\phi(t) = H(t)\\phi(t) + U |\\phi(t)|^2 \\phi(t)$</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	for the complex-valued $\\phi(t)$ by casting it as a real-valued vector $\\psi=[u,v]$ where </span>
-<span class="sd">	&gt;&gt;&gt; 	$\\phi(t) = u(t) + iv(t)$. The realand imaginary parts, $u(t)$ and $v(t)$, have the same dimension as </span>
-<span class="sd">	&gt;&gt;&gt; 	$\\phi(t)$.</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	In the most general form, the single-particle Hamiltonian can be decomposed as </span>
-<span class="sd">	&gt;&gt;&gt; 	$H(t)= H_{stat} + f(t)H_{dyn}$, with a complex-valued driving function $f(t)$. Then, the GPE can be cast in </span>
-<span class="sd">	&gt;&gt;&gt; 	the following real-valued form:</span>
-<span class="sd">	&gt;&gt;&gt;  	#</span>
-<span class="sd">	&gt;&gt;&gt; 	$\\dot u(t) = +\\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \\right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)$</span>
-<span class="sd">	&gt;&gt;&gt; 	$\\dot v(t) = -\\left[H_{stat} + U(|u(t)|^2 + |v(t)|^2) \\right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)$</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	&#39;&#39;&#39;</span>
-<span class="sd">	&gt;&gt;&gt; 	# preallocate psi_dot</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot = np.zeros_like(psi)</span>
-<span class="sd">	&gt;&gt;&gt; 	# read off number of lattice sites (number of complex elements in psi)</span>
-<span class="sd">	&gt;&gt;&gt; 	Ns=H.Ns</span>
-<span class="sd">	&gt;&gt;&gt; 	# static single-particle</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot[:Ns] =  H.static.dot(psi[Ns:]).real</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot[Ns:] = -H.static.dot(psi[:Ns]).real</span>
-<span class="sd">	&gt;&gt;&gt; 	# static GPE interaction</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot_2 = np.abs(psi[:Ns])**2 + np.abs(psi[Ns:])**2</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot[:Ns] += U*psi_dot_2*V[Ns:]</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot[Ns:] -= U*psi_dot_2*V[:Ns]</span>
-<span class="sd">	&gt;&gt;&gt; 	# dynamic single-particle term</span>
-<span class="sd">	&gt;&gt;&gt; 	for Hdyn,f,f_args in H.dynamic:</span>
-<span class="sd">	&gt;&gt;&gt; 	psi_dot[:Ns] +=  ( +(f(time,*f_args).real)*Hdyn.dot(psi[Ns:]) \\</span>
-<span class="sd">	&gt;&gt;&gt; 						   + (f(time,*f_args).imag)*Hdyn.dot(psi[:Ns])	).real</span>
-<span class="sd">	&gt;&gt;&gt; 	psy_dot[Ns:] +=  ( -(f(time,*f_args).real)*Hdyn.dot(psi[:Ns]) \\</span>
-<span class="sd">	&gt;&gt;&gt; 						   + (f(time,*f_args).imag)*Hdyn.dot(psi[Ns:])	).real</span>
-<span class="sd">	&gt;&gt;&gt; 	#</span>
-<span class="sd">	&gt;&gt;&gt; 	return psi_dot</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; # define initial condition</span>
-<span class="sd">	&gt;&gt;&gt; phi0=V[:,0]*np.sqrt(L)</span>
-<span class="sd">	&gt;&gt;&gt; # define ODE solver parameters</span>
-<span class="sd">	&gt;&gt;&gt; GPE_params = (H,U)</span>
-<span class="sd">	&gt;&gt;&gt; # solve real-valued GPE</span>
-<span class="sd">	&gt;&gt;&gt; phi_t = evolve(phi0,t.i,t.vals,GPE_real,stack_state=True,f_params=GPE_params)</span>
-<span class="sd">	</span>
-<span class="sd">	The flag `stack_state=True` is required for `evolve` to handle the complex-valued initial condition properly,</span>
-<span class="sd">	as well as to put together the output solution as a complex-valued vector. Since the real-valued ODE solver </span>
-<span class="sd">	allows to parse ODE parameters, we can include them in the user-defined ODE function and use the </span>
-<span class="sd">	flag `f_params`. Notice the elegant way python allows one to circumvent this variable in the complex-valued </span>
-<span class="sd">	example above. </span>
-<span class="sd">	</span>
+<span class="sd">			* numpy.ndarray containing evolved state against time.</span>
+<span class="sd">			* generator object for time-evolved state (requires `iterate = True`).</span>
+<span class="sd">		</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">complex_ode</span>

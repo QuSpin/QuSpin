@@ -43,7 +43,8 @@ class basis(object):
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
-		string += "\nsee review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.\n"
+		if any('block' in x for x in self._blocks): 
+			string += "\nThe states printed do NOT correspond to the physical states: see review arXiv:1101.3281 for more details about reference states for symmetry-reduced blocks.\n"
 		return string
 
 	@property
@@ -68,7 +69,7 @@ class basis(object):
 
 	@property
 	def sps(self):
-		"""int: number of local degrees of freedom."""
+		"""int: number of states per site (i.e. the local degrees of freedom)."""
 		try:
 			return self._sps
 		except AttributeError:
@@ -86,25 +87,29 @@ class basis(object):
 			state (or states stored in columns) to act on with the operator.
 		opstr : str
 			Operator string in the lattice basis format. For instance:
+
 			>>> opstr = "zz"
+
 		indx : list(int)
 			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			
 			>>> indx = [2,3]
+
 		J : scalar
 			Coupling strength.
 		dtype : 'type'
-			Data type (e.g. numpy.float64) to construct the operator with.
+			Data type (e.g. `numpy.float64`) to construct the operator with.
 		transposed : bool, optional
-			if True this function will act with the trasposed operator.
+			if `True` this function will act with the trasposed operator.
 		conjugated : bool, optional
-			if True this function will act with the conjugated operator.
+			if `True` this function will act with the conjugated operator.
 		v_out : array_like
-			output array, must be the same shape as `v_in` aand matching type of the output.
+			output array, must be the same shape as `v_in` and must match the type of the output.
 
 		Returns
 		--------
 		numpy.ndarray
-			* if v_out is not None, this function modifies v_out inplace and returns it. 
+			* if `v_out` is not `None`, this function modifies `v_out` inplace and returns it. 
 
 			
 		Examples
@@ -203,7 +208,7 @@ class basis(object):
 		return self._Op(opstr,indx,J,dtype)
 
 	def expanded_form(self,static=[],dynamic=[]):
-		"""Splits up operator strings containing "y" and "x" into operator combinations of "+" and "-".
+		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-".
 
 		Parameters
 		-----------
@@ -223,6 +228,10 @@ class basis(object):
 
 		Examples
 		---------
+
+		>>> static = [["xx",[[1.0,0,1]]],["yy",[[1.0,0,1]]]]
+		>>> dynamic = [["y",[[1.0,0]],lambda t: t,[]]]
+		>>> expanded_form(static,dynamic)
 
 		"""
 		static_list,dynamic_list = self._get_local_lists(static,dynamic)
@@ -245,12 +254,12 @@ class basis(object):
 		for opstr,indx,J,f,f_args,ii in dynamic_list:
 			indx = list(indx)
 			indx.insert(0,J)
-			if opstr in dynamic_dict:
-				dynamic_dict[opstr].append(indx)
+			if (opstr,f,f_args) in dynamic_dict:
+				dynamic_dict[(opstr,f,f_args)].append(indx)
 			else:
-				dynamic_dict[opstr] = [indx]
+				dynamic_dict[(opstr,f,f_args)] = [indx]
 
-		dynamic = [[str(key),list(value)] for key,value in dynamic_dict.items()]
+		dynamic = [[opstr,indx,f,f_args] for (opstr,f,f_args),indx in dynamic_dict.items()]
 
 		return static,dynamic
 
@@ -523,27 +532,27 @@ class basis(object):
 			print("Particle conservation check passed!")
 
 	def _get__str__(self):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_get__str__' required to print out the basis!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '_get__str__' required to print out the basis!".format(self.__class__))
 
 	# this methods are optional and are not required for main functions:
 	def __iter__(self):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__iter__' required for iterating over basis!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '__iter__' required for iterating over basis!".format(self.__class__))
 
 	def __getitem__(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '__getitem__' required for '[]' operator!".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '__getitem__' required for '[]' operator!".format(self.__class__))
 
 	# thes methods are required for the symmetry, particle conservation, and hermiticity checks
 	def _hc_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '_hc_opstr' required for hermiticity check! turn this check off by setting test_herm=False".format(self.__class__))
 
 	def _sort_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_sort_opstr' required for symmetry and hermiticity checks! turn this check off by setting check_herm=False".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '_sort_opstr' required for symmetry and hermiticity checks! turn this check off by setting check_herm=False".format(self.__class__))
 
 	def _expand_opstr(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_expand_opstr' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '_expand_opstr' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
 
 	def _non_zero(self,*args,**kwargs):
-		raise NotImplementedError("basis class: {0} missing implimentation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
+		raise NotImplementedError("basis class: {0} missing implementation of '_non_zero' required for particle conservation check! turn this check off by setting check_pcon=False".format(self.__class__))
 
 	def _sort_local_list(self,op_list):
 		sorted_op_list = []
