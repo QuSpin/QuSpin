@@ -83,6 +83,15 @@
 <span class="sd">	.. math::</span>
 <span class="sd">		[H_1,H_2] = H_1 H_2 - H_2 H_1</span>
 
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+<span class="sd">	The following script shows how to compute the commutator of two `hamiltonian` objects.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/commutator-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
 <span class="sd">	H1 : obj</span>
@@ -101,10 +110,19 @@
 		<span class="k">return</span> <span class="n">H1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">H2</span><span class="p">)</span> <span class="o">-</span> <span class="n">H2</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="anti_commutator"><a class="viewcode-back" href="../../../generated/quspin.operators.anti_commutator.html#quspin.operators.anti_commutator">[docs]</a><span class="k">def</span> <span class="nf">anti_commutator</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span><span class="n">H2</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot; Calculates the anti-commutator of two Hamiltonians :math:`H_1` and :math:`H_2`.</span>
+	<span class="sd">&quot;&quot;&quot; Calculates the anticommutator of two Hamiltonians :math:`H_1` and :math:`H_2`.</span>
 
 <span class="sd">	.. math::</span>
 <span class="sd">		\\{H_1,H_2\\}_+ = H_1 H_2 + H_2 H_1</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+<span class="sd">	The following script shows how to compute the anticommutator of two `hamiltonian` objects.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/anti_commutator-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
@@ -189,14 +207,14 @@
 
 
 <div class="viewcode-block" id="hamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian">[docs]</a><span class="k">class</span> <span class="nc">hamiltonian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Construct quantum operators.</span>
+	<span class="sd">&quot;&quot;&quot;Constructs quantum operators.</span>
 
-<span class="sd">	The `hamiltonian` class wraps most of the functionalty of the package. This object allows the user to construct </span>
+<span class="sd">	The `hamiltonian` class wraps most of the functionalty of the QuSpin package. This object allows the user to construct </span>
 <span class="sd">	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos </span>
 <span class="sd">	diagonalization, etc.</span>
 
-<span class="sd">	The user can create both static and time-dependent, hermitian and non-hermitian operators for a particle</span>
-<span class="sd">	type (e.g. boson, spin, fermion) specified by the basis constructor.</span>
+<span class="sd">	The user can create both static and time-dependent, hermitian and non-hermitian operators for any particle</span>
+<span class="sd">	type (boson, spin, fermion) specified by the basis constructor.</span>
 
 <span class="sd">	Notes</span>
 <span class="sd">	-----</span>
@@ -206,40 +224,19 @@
 <span class="sd">	Examples</span>
 <span class="sd">	---------</span>
 
-<span class="sd">	Here is an Examples how to construct the periodically driven XXZ Hamiltonian using a `basis` object</span>
+<span class="sd">	Here is an Examples how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian</span>
 <span class="sd">	</span>
 <span class="sd">	.. math::</span>
 <span class="sd">		H(t) = \\sum_{j=0}^{L-1} \\left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\\Omega t)S^x_j \\right)</span>
 
 <span class="sd">	in the zero-momentum sector (`kblock=0`) of positive parity (`pblock=1`). We use periodic boundary conditions.</span>
 <span class="sd"> </span>
-<span class="sd">	&gt;&gt;&gt; from quspin.operators import hamiltonian # Hamiltonians and operators</span>
-<span class="sd">	&gt;&gt;&gt; from quspin.basis import spin_basis_1d # Hilbert space spin basis</span>
-<span class="sd">	&gt;&gt;&gt; import numpy as np # generic math functions</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ##### define model parameters #####</span>
-<span class="sd">	&gt;&gt;&gt; L=6 # system size</span>
-<span class="sd">	&gt;&gt;&gt; J=1.0 # spin interaction</span>
-<span class="sd">	&gt;&gt;&gt; g=0.809 # transverse field</span>
-<span class="sd">	&gt;&gt;&gt; h=0.9045 # parallel field</span>
-<span class="sd">	&gt;&gt;&gt; ##### define periodic drive #####</span>
-<span class="sd">	&gt;&gt;&gt; Omega=4.5 # drive frequency</span>
-<span class="sd">	&gt;&gt;&gt; def drive(t,Omega):</span>
-<span class="sd">	&gt;&gt;&gt; 	return np.cos(Omega*t)</span>
-<span class="sd">	&gt;&gt;&gt; drive_args=[Omega]</span>
-<span class="sd">	&gt;&gt;&gt; #</span>
-<span class="sd">	&gt;&gt;&gt; ##### construct basis in the 0-total momentum and +1-parity sector</span>
-<span class="sd">	&gt;&gt;&gt; basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)</span>
-<span class="sd">	&gt;&gt;&gt; # define PBC site-coupling lists for operators</span>
-<span class="sd">	&gt;&gt;&gt; x_field=[[g,i] for i in range(L)]</span>
-<span class="sd">	&gt;&gt;&gt; z_field=[[h,i] for i in range(L)]</span>
-<span class="sd">	&gt;&gt;&gt; J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC</span>
-<span class="sd">	&gt;&gt;&gt; # static and dynamic lists</span>
-<span class="sd">	&gt;&gt;&gt; static=[[&quot;zz&quot;,J_nn],[&quot;z&quot;,z_field]]</span>
-<span class="sd">	&gt;&gt;&gt; dynamic=[[&quot;x&quot;,x_field,drive,drive_args]]</span>
-<span class="sd">	&gt;&gt;&gt; ###### construct Hamiltonian</span>
-<span class="sd">	&gt;&gt;&gt; H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)</span>
-<span class="sd">	&gt;&gt;&gt; print(H.toarray())</span>
+<span class="sd"> 	The code snippet below initiates the class, and is required to run the example codes for the function methods.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/hamiltonian-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="hamiltonian.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static_list</span><span class="p">,</span><span class="n">dynamic_list</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">basis_kwargs</span><span class="p">):</span>
@@ -259,9 +256,9 @@
 <span class="sd">			&gt;&gt;&gt; dynamic_list=[[opstr_1,[indx_11,...,indx_1n],fun_1,fun_1_args],[matrix_2,fun_2,fun_2_args],...]</span>
 <span class="sd">			</span>
 <span class="sd">			* `fun`: function object which multiplies the matrix or operator given in the same list.</span>
-<span class="sd">			* `func_args`: tuple of the extra arguments which go into the function to evaluate it like: </span>
+<span class="sd">			* `fun_args`: tuple of the extra arguments which go into the function to evaluate it like: </span>
 
-<span class="sd">				&gt;&gt;&gt; f_val = func(t,*func_args)</span>
+<span class="sd">				&gt;&gt;&gt; f_val = fun(t,*fun_args)</span>
 
 <span class="sd">			If the operator is time-INdependent, one must pass an empty list: `dynamic_list = []`.</span>
 <span class="sd">		N : int, optional</span>
@@ -278,7 +275,7 @@
 <span class="sd">			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.</span>
 <span class="sd">		check_pcon : bool, optional</span>
 <span class="sd">			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.</span>
-<span class="sd">		kw_args : dict</span>
+<span class="sd">		basis_kwargs : dict</span>
 <span class="sd">			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object</span>
 <span class="sd">			to create the operator.</span>
 <span class="sd">		 </span>
@@ -521,8 +518,9 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if operator has </span>
-<span class="sd">		no basis (i.e. was created externally and passed as a precalculated array).</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`basis`: basis used to build the `hamiltonian` object.</span>
+
+<span class="sd">		Defaults to `None` if operator has no basis (i.e. was created externally and passed as a precalculated array).</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -547,7 +545,9 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;bool: `True` if the operator contains a dense matrix as a componnent of either </span>
+		<span class="sd">&quot;&quot;&quot;bool: checks sparsity of operator matrix.</span>
+
+<span class="sd">		`True` if the operator contains a dense matrix as a component of either </span>
 <span class="sd">		the static or dynamic lists.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span> 
@@ -565,20 +565,23 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;tuple: contains dynamic parts of the operator as `(scipy.sparse.csr, fun, fun_args)`. See definition</span>
-<span class="sd">		if the `dynamic_list` argument.</span>
+		<span class="sd">&quot;&quot;&quot;dict: contains dynamic parts of the operator as `{func: Hdyn}`.</span>
+
+<span class="sd">		Here `func` is the memory address of the time-dependent function which can be called as `func(time)`.</span>
+<span class="sd">		The function arguments are hard-coded, and are not passed. `Hdyn` is the sparse matrix to which</span>
+<span class="sd">		the drive couples.</span>
 <span class="sd">		</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: Transposes the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: Transposes and conjugates the matrix defining the operator: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
 
 <div class="viewcode-block" id="hamiltonian.check_is_dense"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.check_is_dense">[docs]</a>	<span class="k">def</span> <span class="nf">check_is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -815,7 +818,7 @@
 <span class="sd">		---------</span>
 <span class="sd">		&gt;&gt;&gt; H_expt = H.expt_value(V,time=0,diagonal=False,check=True)</span>
 
-<span class="sd">		corresponds to :math:`H_\\{expt} = \\langle V|H(t=0)|V\\rangle`. </span>
+<span class="sd">		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. </span>
 <span class="sd">			 </span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -897,7 +900,7 @@
 <span class="sd">		---------</span>
 <span class="sd">		&gt;&gt;&gt; H_lr = H.expt_value(Vl,Vr,time=0,diagonal=False,check=True)</span>
 
-<span class="sd">		corresponds to :math:`H_\\{lr} = \\langle V_l|H(t=0)|V_r\\rangle`. </span>
+<span class="sd">		corresponds to :math:`H_{lr} = \\langle V_l|H(t=0)|V_r\\rangle`. </span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 

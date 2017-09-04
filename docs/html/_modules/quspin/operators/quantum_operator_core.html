@@ -74,18 +74,26 @@
 	<span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="quantum_operator"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator">[docs]</a><span class="k">class</span> <span class="nc">quantum_operator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Constructs parameter-dependent quantum quantum_operators.</span>
+	<span class="sd">&quot;&quot;&quot;Constructs parameter-dependent `hamiltonian` operators.</span>
 
-<span class="sd">		The `quantum_operator` class maps quantum_operators to keys of a dictionary. When calling various methods</span>
-<span class="sd">		of the quantum_operators, it allows one to &#39;dynamically&#39; specify the pre-factors of these quantum_operators.</span>
-
-<span class="sd">		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)`, e.g.</span>
-
-<span class="sd">		.. math::</span>
-<span class="sd">			H(J_{zz}, h_x) = \sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j</span>
+<span class="sd">		The `quantum_operator` class maps quantum operators to keys of a dictionary. When calling various methods</span>
+<span class="sd">		of `quantum_operator`, it allows one to &#39;dynamically&#39; specify the pre-factors of these operators.</span>
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
+
+<span class="sd">		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_1 + \\lambda H_2`, e.g.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			H_1=\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j</span>
+
+<span class="sd">		The following code snippet shows how to use the `quantum_operator` class to vary the parameter :math:`\\lambda`</span>
+<span class="sd">		without having to re-build the Hamiltonian every time.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/quantum_operator-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="quantum_operator.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_dict</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="o">**</span><span class="n">basis_args</span><span class="p">):</span>
@@ -355,12 +363,12 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: Transposes the matrix defining the quantum_operator: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: Transposes and conjugates the matrix defining the quantum_operator: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
 
 
@@ -482,7 +490,7 @@
 		<span class="sd">&quot;&quot;&quot;Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.</span>
 
 <span class="sd">		.. math::</span>
-<span class="sd">			\\lamgle V]H(t=\\lambda)</span>
+<span class="sd">			\\langle V]H(t=\\lambda)</span>
 
 <span class="sd">		</span>
 <span class="sd">		Parameters</span>
@@ -547,7 +555,7 @@
 <span class="sd">		---------</span>
 <span class="sd">		&gt;&gt;&gt; H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)</span>
 
-<span class="sd">		corresponds to :math:`H_\\{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. </span>
+<span class="sd">		corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. </span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -1067,7 +1075,6 @@
 		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator_dict</span><span class="p">):</span>
 			<span class="n">diag</span> <span class="o">+=</span> <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">value</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
 		<span class="k">return</span> <span class="n">diag</span></div>
-
 
 <div class="viewcode-block" id="quantum_operator.trace"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.trace">[docs]</a>	<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
 		<span class="sd">&quot;&quot;&quot; Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.</span>

@@ -23,18 +23,26 @@ def _quantum_operator_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
 class quantum_operator(object):
-	"""Constructs parameter-dependent quantum quantum_operators.
+	"""Constructs parameter-dependent `hamiltonian` operators.
 
-		The `quantum_operator` class maps quantum_operators to keys of a dictionary. When calling various methods
-		of the quantum_operators, it allows one to 'dynamically' specify the pre-factors of these quantum_operators.
-
-		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)`, e.g.
-
-		.. math::
-			H(J_{zz}, h_x) = \sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j
+		The `quantum_operator` class maps quantum operators to keys of a dictionary. When calling various methods
+		of `quantum_operator`, it allows one to 'dynamically' specify the pre-factors of these operators.
 
 		Examples
 		---------
+
+		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_1 + \\lambda H_2`, e.g.
+
+		.. math::
+			H_1=\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j
+
+		The following code snippet shows how to use the `quantum_operator` class to vary the parameter :math:`\\lambda`
+		without having to re-build the Hamiltonian every time.
+
+		.. literalinclude:: ../../doc_examples/quantum_operator-example.py
+			:linenos:
+			:language: python
+			:lines: 7-
 
 	"""
 	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
@@ -304,12 +312,12 @@ class quantum_operator(object):
 
 	@property
 	def T(self):
-		""":obj:`quantum_operator`: Transposes the matrix defining the quantum_operator: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_operator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
-		""":obj:`quantum_operator`: Transposes and conjugates the matrix defining the quantum_operator: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_operator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
 
@@ -431,7 +439,7 @@ class quantum_operator(object):
 		"""Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
-			\\lamgle V]H(t=\\lambda)
+			\\langle V]H(t=\\lambda)
 
 		
 		Parameters
@@ -496,7 +504,7 @@ class quantum_operator(object):
 		---------
 		>>> H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)
 
-		corresponds to :math:`H_\\{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. 
+		corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. 
 
 		"""
 		if self.Ns <= 0:
@@ -1016,7 +1024,6 @@ class quantum_operator(object):
 		for key,value in iteritems(self._quantum_operator_dict):
 			diag += pars[key] * value.diagonal()
 		return diag
-
 
 	def trace(self,pars={}):
 		""" Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.
