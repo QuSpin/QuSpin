@@ -74,7 +74,7 @@
 <td>set: set of availible operator strings.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.sps" title="quspin.basis.boson_basis_general.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
-<td>int: number of local degrees of freedom.</td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
 </tr>
 </tbody>
 </table>
@@ -101,7 +101,7 @@
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.expanded_form" title="quspin.basis.boson_basis_general.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “y” and “x” into operator combinations of “+” and “-“.</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.get_proj" title="quspin.basis.boson_basis_general.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype)</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -369,7 +369,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <p class="rubric">Notes</p>
 <p>Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -378,7 +378,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.boson_basis_general.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.boson_basis_general.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “y” and “x” into operator combinations of “+” and “-“.</p>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -418,6 +418,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -540,13 +546,17 @@ by <cite>index()</cite>.</p>
 </div></blockquote>
 <p><strong>opstr</strong> : str</p>
 <blockquote>
-<div><p>Operator string in the lattice basis format. For instance:
-&gt;&gt;&gt; opstr = “zz”</p>
+<div><p>Operator string in the lattice basis format. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>indx</strong> : list(int)</p>
 <blockquote>
-<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:
-&gt;&gt;&gt; indx = [2,3]</p>
+<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>J</strong> : scalar</p>
 <blockquote>
@@ -554,26 +564,26 @@ by <cite>index()</cite>.</p>
 </div></blockquote>
 <p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
-<div><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
+<div><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </div></blockquote>
 <p><strong>transposed</strong> : bool, optional</p>
 <blockquote>
-<div><p>if True this function will act with the trasposed operator.</p>
+<div><p>if <cite>True</cite> this function will act with the trasposed operator.</p>
 </div></blockquote>
 <p><strong>conjugated</strong> : bool, optional</p>
 <blockquote>
-<div><p>if True this function will act with the conjugated operator.</p>
+<div><p>if <cite>True</cite> this function will act with the conjugated operator.</p>
 </div></blockquote>
 <p><strong>v_out</strong> : array_like</p>
 <blockquote>
-<div><p>output array, must be the same shape as <cite>v_in</cite> aand matching type of the output.</p>
+<div><p>output array, must be the same shape as <cite>v_in</cite> and must match the type of the output.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy.ndarray</p>
 <blockquote class="last">
 <div><ul class="simple">
-<li>if v_out is not None, this function modifies v_out inplace and returns it.</li>
+<li>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</li>
 </ul>
 </div></blockquote>
 </td>
@@ -655,7 +665,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -663,7 +673,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 <dl class="attribute">
 <dt id="quspin.basis.boson_basis_general.sps">
 <code class="descname">sps</code><a class="headerlink" href="#quspin.basis.boson_basis_general.sps" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: number of local degrees of freedom.</p>
+<dd><p>int: number of states per site (i.e. the local degrees of freedom).</p>
 </dd></dl>
 
 </dd></dl>

@@ -21,6 +21,7 @@ drive_args=[Omega]
 #
 ##### construct basis in the 0-total momentum and +1-parity sector
 basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
+print(basis)
 # define PBC site-coupling lists for operators
 x_field=[[g,i] for i in range(L)]
 z_field=[[h,i] for i in range(L)]
@@ -30,4 +31,3 @@ static=[["zz",J_nn],["z",z_field]]
 dynamic=[["x",x_field,drive,drive_args]]
 ###### construct Hamiltonian
 H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
-print(H.toarray())

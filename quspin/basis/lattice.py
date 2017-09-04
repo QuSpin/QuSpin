@@ -104,7 +104,7 @@ class lattice_basis(basis):
 		Examples
 		--------
 
-		>>> partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
+		>>> partial_trace(state,sub_sys_A=tuple(range(basis.N//2),return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
 
 		"""
 
@@ -284,7 +284,7 @@ class lattice_basis(basis):
 		Examples
 		--------
 
-		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>> ent_entropy(state,sub_sys_A=[0,3,4,7],return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
 
 		"""

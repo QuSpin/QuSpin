@@ -155,7 +155,7 @@
 <span class="sd">		Examples</span>
 <span class="sd">		--------</span>
 
-<span class="sd">		&gt;&gt;&gt; partial_trace(state,sub_sys_A=None,return_rdm=&quot;A&quot;,enforce_pure=False,sparse=False,subsys_ordering=True)</span>
+<span class="sd">		&gt;&gt;&gt; partial_trace(state,sub_sys_A=tuple(range(basis.N//2),return_rdm=&quot;A&quot;,enforce_pure=False,sparse=False,subsys_ordering=True)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 
@@ -335,7 +335,7 @@
 <span class="sd">		Examples</span>
 <span class="sd">		--------</span>
 
-<span class="sd">		&gt;&gt;&gt; ent_entropy(state,sub_sys_A=&quot;left&quot;,return_rdm=&quot;A&quot;,enforce_pure=False,return_rdm_EVs=False,</span>
+<span class="sd">		&gt;&gt;&gt; ent_entropy(state,sub_sys_A=[0,3,4,7],return_rdm=&quot;A&quot;,enforce_pure=False,return_rdm_EVs=False,</span>
 <span class="sd">		&gt;&gt;&gt;				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>

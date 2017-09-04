@@ -86,7 +86,7 @@ class expm_multiply_parallel(object):
 			raise ValueError("expecting 'a' to be scalar.")
 
 	def dot(self,v,work=None,overwrite_v=False):
-		"""Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :mathrm:`v`. 
+		"""Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :math:`v`. 
 
 		Examples
 		--------

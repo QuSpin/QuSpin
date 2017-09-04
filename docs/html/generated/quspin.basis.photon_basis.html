@@ -60,25 +60,25 @@ couples a lattice particle to a single photon mode.</p>
 <dt>There are two types of <cite>photon_basis</cite> objects that one can create:</dt>
 <dd><ul class="first last">
 <li><dl class="first docutils">
-<dt>conserving basis: lattice particle + photon numbers conserved separately. This object is constructed</dt>
+<dt>conserving basis: lattice particle basis and photon number conserved separately. This object is constructed</dt>
 <dd><p class="first last">using the <cite>tensor_basis</cite> class.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first">non-conserving basis: only sum of lattice particles and photons conserved.</p>
+<li><p class="first">non-conserving basis: only total sum of lattice particles and photons conserved.</p>
 </li>
 </ul>
 </dd>
 </dl>
-<p>The operator strings for the photon and lattice sectors are the same as for the harmonic oscillator basis
-lattice bases, respectively. The <cite>photon_basis</cite> operator string uses the pipe character ‘|’ to distinguish
+<p>The operator strings for the photon and lattice sectors are the same as for the lattice bases, respectively.
+The <cite>photon_basis</cite> operator string uses the pipe character ‘|’ to distinguish
 between lattice operators (left) and photon operators (right).</p>
 <div class="math">
 \[\begin{array}{cccc}
         \texttt{basis}/\texttt{opstr}   &amp;   \texttt{&quot;I&quot;}   &amp;   \texttt{&quot;+&quot;}   &amp;   \texttt{&quot;-&quot;}  &amp;   \texttt{&quot;n&quot;}   &amp;   \texttt{&quot;z&quot;}   &amp;   \texttt{&quot;x&quot;}   &amp;   \texttt{&quot;y&quot;}  \newline     
         \texttt{spin_basis_1d} &amp;   \hat{1}        &amp;   \hat\sigma^+       &amp;   \hat\sigma^-      &amp;         -         &amp;   \hat\sigma^z       &amp;   (\hat\sigma^x)     &amp;   (\hat\sigma^y)  \  \newline
         \texttt{boson_basis_1d}&amp;   \hat{1}        &amp;   \hat b^\dagger      &amp;       \hat b          &amp; \hat b^\dagger b     &amp;  \hat b^\dagger\hat b - \frac{\mathrm{sps}-1}{2}       &amp;   -       &amp;   -  \newline
-        \texttt{fermion_basis_1d}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}       &amp;   -       &amp;   -  \newline
+        \texttt{spinless_fermion_basis_1d}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}       &amp;   -       &amp;   -  \newline
 \end{array}\]</div>
 <p class="rubric">Examples</p>
 <p>For the conserving basis, one can specify the total number of quanta using the the <cite>Ntot</cite> keyword argument:</p>
@@ -90,6 +90,75 @@ states using the <cite>Nph</cite> argument:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p_basis</span> <span class="o">=</span> <span class="n">photon_basis</span><span class="p">(</span><span class="n">basis_class</span><span class="p">,</span><span class="o">*</span><span class="n">basis_args</span><span class="p">,</span><span class="n">Nph</span><span class="o">=...</span><span class="p">,</span><span class="o">**</span><span class="n">symmetry_blocks</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The code snippet below shows how to use the <cite>photon_basis</cite> class to construct the Jaynes-Cummings Hamiltonian.
+As an initial state, we choose a coherent state in the photon sector and the ground state of the two-level system (atom).</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">photon_basis</span> <span class="c1"># Hilbert space bases</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonian and observables</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.photon</span> <span class="kn">import</span> <span class="n">coherent_state</span> <span class="c1"># HO coherent state</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="c1">##### define model parameters #####</span>
+<span class="n">Nph_tot</span><span class="o">=</span><span class="mi">60</span> <span class="c1"># maximum photon occupation </span>
+<span class="n">Nph</span><span class="o">=</span><span class="n">Nph_tot</span><span class="o">/</span><span class="mi">2</span> <span class="c1"># mean number of photons in initial coherent state</span>
+<span class="n">Omega</span><span class="o">=</span><span class="mf">3.5</span> <span class="c1"># drive frequency</span>
+<span class="n">A</span><span class="o">=</span><span class="mf">0.8</span> <span class="c1"># spin-photon coupling strength (drive amplitude)</span>
+<span class="n">Delta</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># difference between atom energy levels</span>
+<span class="c1">#</span>
+<span class="c1">##### set up photon-atom Hamiltonian #####</span>
+<span class="c1"># define operator site-coupling lists</span>
+<span class="n">ph_energy</span><span class="o">=</span><span class="p">[[</span><span class="n">Omega</span><span class="p">]]</span> <span class="c1"># photon energy</span>
+<span class="n">at_energy</span><span class="o">=</span><span class="p">[[</span><span class="n">Delta</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># atom energy</span>
+<span class="n">absorb</span><span class="o">=</span><span class="p">[[</span><span class="n">A</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nph</span><span class="p">)),</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># absorption term	</span>
+<span class="n">emit</span><span class="o">=</span><span class="p">[[</span><span class="n">A</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nph</span><span class="p">)),</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># emission term</span>
+<span class="c1"># define static and dynamics lists</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;|n&quot;</span><span class="p">,</span><span class="n">ph_energy</span><span class="p">],[</span><span class="s2">&quot;x|-&quot;</span><span class="p">,</span><span class="n">absorb</span><span class="p">],[</span><span class="s2">&quot;x|+&quot;</span><span class="p">,</span><span class="n">emit</span><span class="p">],[</span><span class="s2">&quot;z|&quot;</span><span class="p">,</span><span class="n">at_energy</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1"># compute atom-photon basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">photon_basis</span><span class="p">(</span><span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">L</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">Nph</span><span class="o">=</span><span class="n">Nph_tot</span><span class="p">)</span>
+<span class="c1"># compute atom-photon Hamiltonian H</span>
+<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### define initial state #####</span>
+<span class="c1"># define atom ground state</span>
+<span class="n">psi_at_i</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span> <span class="c1"># spin-down eigenstate of \sigma^z</span>
+<span class="c1"># define photon coherent state with mean photon number Nph</span>
+<span class="n">psi_ph_i</span><span class="o">=</span><span class="n">coherent_state</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nph</span><span class="p">),</span><span class="n">Nph_tot</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># compute atom-photon initial state as a tensor product</span>
+<span class="n">psi_i</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">psi_at_i</span><span class="p">,</span><span class="n">psi_ph_i</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 <p class="rubric">Attributes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -104,46 +173,46 @@ states using the <cite>Nph</cite> argument:</p>
 <td>int: number of states in the Hilbert space.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.basis_left" title="quspin.basis.photon_basis.basis_left"><code class="xref py py-obj docutils literal"><span class="pre">basis_left</span></code></a></td>
-<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: First basis constructor our of the list to be tensored.</td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: first basis constructor out of the <cite>basis</cite> objects list to be tensored.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.basis_right" title="quspin.basis.photon_basis.basis_right"><code class="xref py py-obj docutils literal"><span class="pre">basis_right</span></code></a></td>
-<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: All others basis constructors except for the first one of the list to be tensored.</td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.blocks" title="quspin.basis.photon_basis.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
 <td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.chain_N" title="quspin.basis.photon_basis.chain_N"><code class="xref py py-obj docutils literal"><span class="pre">chain_N</span></code></a></td>
-<td>int: Number of sites on lattice.</td>
+<td>int: number of sites on lattice.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.chain_Ns" title="quspin.basis.photon_basis.chain_Ns"><code class="xref py py-obj docutils literal"><span class="pre">chain_Ns</span></code></a></td>
-<td>int: Number of states in the photon Hilbert space only.</td>
+<td>int: number of states in the photon Hilbert space only.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.operators" title="quspin.basis.photon_basis.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
 <td>set: set of availible operator strings.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_N" title="quspin.basis.photon_basis.particle_N"><code class="xref py py-obj docutils literal"><span class="pre">particle_N</span></code></a></td>
-<td>nt: Number of sites on lattice.</td>
+<td>nt: number of sites on lattice.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_Ns" title="quspin.basis.photon_basis.particle_Ns"><code class="xref py py-obj docutils literal"><span class="pre">particle_Ns</span></code></a></td>
-<td>int: Number of states in the lattice Hilbert space only.</td>
+<td>int: number of states in the lattice Hilbert space only.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_basis" title="quspin.basis.photon_basis.particle_basis"><code class="xref py py-obj docutils literal"><span class="pre">particle_basis</span></code></a></td>
 <td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_sps" title="quspin.basis.photon_basis.particle_sps"><code class="xref py py-obj docutils literal"><span class="pre">particle_sps</span></code></a></td>
-<td>int: Number of lattice states per site.</td>
+<td>int: number of lattice states per site.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.photon_Ns" title="quspin.basis.photon_basis.photon_Ns"><code class="xref py py-obj docutils literal"><span class="pre">photon_Ns</span></code></a></td>
-<td>int: Number of states in the photon Hilbert space only.</td>
+<td>int: number of states in the photon Hilbert space only.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.photon_basis" title="quspin.basis.photon_basis.photon_basis"><code class="xref py py-obj docutils literal"><span class="pre">photon_basis</span></code></a></td>
 <td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: lattice basis.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.photon_sps" title="quspin.basis.photon_basis.photon_sps"><code class="xref py py-obj docutils literal"><span class="pre">photon_sps</span></code></a></td>
-<td>int: Number of photon states per site.</td>
+<td>int: number of photon states per site.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.sps" title="quspin.basis.photon_basis.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
-<td>int: number of local degrees of freedom.</td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
 </tr>
 </tbody>
 </table>
@@ -170,7 +239,7 @@ states using the <cite>Nph</cite> argument:</p>
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.expanded_form" title="quspin.basis.photon_basis.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “y” and “x” into operator combinations of “+” and “-“.</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.get_proj" title="quspin.basis.photon_basis.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;Nph,&nbsp;full_part])</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -302,13 +371,13 @@ the lattice site position. For instance:
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.basis_left">
 <code class="descname">basis_left</code><a class="headerlink" href="#quspin.basis.photon_basis.basis_left" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: First basis constructor our of the list to be tensored.</p>
+<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: first basis constructor out of the <cite>basis</cite> objects list to be tensored.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.basis_right">
 <code class="descname">basis_right</code><a class="headerlink" href="#quspin.basis.photon_basis.basis_right" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: All others basis constructors except for the first one of the list to be tensored.</p>
+<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -320,13 +389,13 @@ the lattice site position. For instance:
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.chain_N">
 <code class="descname">chain_N</code><a class="headerlink" href="#quspin.basis.photon_basis.chain_N" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: Number of sites on lattice.</p>
+<dd><p>int: number of sites on lattice.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.chain_Ns">
 <code class="descname">chain_Ns</code><a class="headerlink" href="#quspin.basis.photon_basis.chain_Ns" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: Number of states in the photon Hilbert space only.</p>
+<dd><p>int: number of states in the photon Hilbert space only.</p>
 </dd></dl>
 
 <dl class="method">
@@ -491,7 +560,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <p class="rubric">Notes</p>
 <p>Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;photons&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -500,7 +569,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.photon_basis.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.photon_basis.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “y” and “x” into operator combinations of “+” and “-“.</p>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -540,6 +609,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -677,13 +752,17 @@ by <cite>index()</cite>.</p>
 </div></blockquote>
 <p><strong>opstr</strong> : str</p>
 <blockquote>
-<div><p>Operator string in the lattice basis format. For instance:
-&gt;&gt;&gt; opstr = “zz”</p>
+<div><p>Operator string in the lattice basis format. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>indx</strong> : list(int)</p>
 <blockquote>
-<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:
-&gt;&gt;&gt; indx = [2,3]</p>
+<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>J</strong> : scalar</p>
 <blockquote>
@@ -691,26 +770,26 @@ by <cite>index()</cite>.</p>
 </div></blockquote>
 <p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
-<div><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
+<div><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </div></blockquote>
 <p><strong>transposed</strong> : bool, optional</p>
 <blockquote>
-<div><p>if True this function will act with the trasposed operator.</p>
+<div><p>if <cite>True</cite> this function will act with the trasposed operator.</p>
 </div></blockquote>
 <p><strong>conjugated</strong> : bool, optional</p>
 <blockquote>
-<div><p>if True this function will act with the conjugated operator.</p>
+<div><p>if <cite>True</cite> this function will act with the conjugated operator.</p>
 </div></blockquote>
 <p><strong>v_out</strong> : array_like</p>
 <blockquote>
-<div><p>output array, must be the same shape as <cite>v_in</cite> aand matching type of the output.</p>
+<div><p>output array, must be the same shape as <cite>v_in</cite> and must match the type of the output.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy.ndarray</p>
 <blockquote class="last">
 <div><ul class="simple">
-<li>if v_out is not None, this function modifies v_out inplace and returns it.</li>
+<li>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</li>
 </ul>
 </div></blockquote>
 </td>
@@ -801,13 +880,13 @@ it is a square array. Default is <cite>False</cite>.</p>
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.particle_N">
 <code class="descname">particle_N</code><a class="headerlink" href="#quspin.basis.photon_basis.particle_N" title="Permalink to this definition">¶</a></dt>
-<dd><p>nt: Number of sites on lattice.</p>
+<dd><p>nt: number of sites on lattice.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.particle_Ns">
 <code class="descname">particle_Ns</code><a class="headerlink" href="#quspin.basis.photon_basis.particle_Ns" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: Number of states in the lattice Hilbert space only.</p>
+<dd><p>int: number of states in the lattice Hilbert space only.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -819,13 +898,13 @@ it is a square array. Default is <cite>False</cite>.</p>
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.particle_sps">
 <code class="descname">particle_sps</code><a class="headerlink" href="#quspin.basis.photon_basis.particle_sps" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: Number of lattice states per site.</p>
+<dd><p>int: number of lattice states per site.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.photon_Ns">
 <code class="descname">photon_Ns</code><a class="headerlink" href="#quspin.basis.photon_basis.photon_Ns" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: Number of states in the photon Hilbert space only.</p>
+<dd><p>int: number of states in the photon Hilbert space only.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -837,13 +916,13 @@ it is a square array. Default is <cite>False</cite>.</p>
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.photon_sps">
 <code class="descname">photon_sps</code><a class="headerlink" href="#quspin.basis.photon_basis.photon_sps" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: Number of photon states per site.</p>
+<dd><p>int: number of photon states per site.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.sps">
 <code class="descname">sps</code><a class="headerlink" href="#quspin.basis.photon_basis.sps" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: number of local degrees of freedom.</p>
+<dd><p>int: number of states per site (i.e. the local degrees of freedom).</p>
 </dd></dl>
 
 </dd></dl>

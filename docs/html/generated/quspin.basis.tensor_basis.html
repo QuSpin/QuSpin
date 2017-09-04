@@ -59,22 +59,95 @@ object which can be then used, e.g., to create the Hamiltonian over the tensor p
 <div class="math">
 \[\mathcal{H}=\mathcal{H}_1\otimes\mathcal{H}_2\]</div>
 <p class="rubric">Notes</p>
-<p>The <cite>tensor_basis</cite> operator strings are separated by a pipe symbol, ‘|’. The index array has
+<p>The <cite>tensor_basis</cite> operator strings are separated by a pipe symbol, ‘|’. However, the index array has
 NO pipe symbol.</p>
+<p>The <cite>tensor_basis</cite> class does not allow one to make use of symmetries, save for particle conservation.</p>
 <p class="rubric">Examples</p>
-<p>The following lines show to to create the tensor basis out of two spin-1/2 basis objects.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis1</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">basis2</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t_basis</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="p">(</span><span class="n">basis1</span><span class="p">,</span><span class="n">basis2</span><span class="p">)</span>
+<p>The following code shows how to construct the Fermi-Hubbard Hamiltonian by tensoring two 
+<cite>spinless_fermion_basis_1d</cite> objects. This model can also be set up using the <cite>spinful_fermion_basis_1d</cite> class),
+which also allows the implementation of symmetries.</p>
+<p>Notice that the operator strings for constructing Hamiltonians with a <cite>tensor_basis</cite> object are separated by 
+a pipe symbol, ‘|’, while the index array has no splitting pipe character.</p>
+<p>The code snippet below initiates the class, and is required to run the example codes for the function methods.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="c1"># operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">tensor_basis</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert spaces</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
+<span class="c1">#</span>
+<span class="c1">##### setting parameters for simulation</span>
+<span class="c1"># physical parameters</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># system size</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">L</span><span class="o">//</span><span class="mi">2</span> <span class="c1"># number of particles</span>
+<span class="n">N_up</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="mi">2</span> <span class="o">+</span> <span class="n">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="c1"># number of fermions with spin up</span>
+<span class="n">N_down</span> <span class="o">=</span> <span class="n">N</span><span class="o">//</span><span class="mi">2</span> <span class="c1"># number of fermions with spin down</span>
+<span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># hopping strength</span>
+<span class="n">U</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="c1"># interaction strength</span>
+<span class="c1">#</span>
+<span class="c1">###### create the basis</span>
+<span class="c1"># build the two bases to tensor together to spinful fermions</span>
+<span class="n">basis_up</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_up</span><span class="p">)</span> <span class="c1"># up basis</span>
+<span class="n">basis_down</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_down</span><span class="p">)</span> <span class="c1"># down basis</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="p">(</span><span class="n">basis_up</span><span class="p">,</span><span class="n">basis_down</span><span class="p">)</span> <span class="c1"># spinful fermions</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### create model</span>
+<span class="c1"># define site-coupling lists</span>
+<span class="n">hop_right</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="c1"># hopping to the right OBC</span>
+<span class="n">hop_left</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="c1"># hopping to the left OBC</span>
+<span class="n">int_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># onsite interaction</span>
+<span class="c1"># create static lists</span>
+<span class="n">static</span> <span class="o">=</span> <span class="p">[</span>	
+		  <span class="p">[</span><span class="s2">&quot;+-|&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span> <span class="c1"># up hop left</span>
+		  <span class="p">[</span><span class="s2">&quot;-+|&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span> <span class="c1"># up hop right</span>
+		  <span class="p">[</span><span class="s2">&quot;|+-&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span> <span class="c1"># down hop left</span>
+		  <span class="p">[</span><span class="s2">&quot;|-+&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span> <span class="c1"># down hop right</span>
+		  <span class="p">[</span><span class="s2">&quot;n|n&quot;</span><span class="p">,</span> <span class="n">int_list</span><span class="p">],</span> <span class="c1"># onsite interaction</span>
+		 <span class="p">]</span>
+<span class="c1">#</span>
+<span class="c1">###### setting up operators	</span>
+<span class="c1"># set up hamiltonian dictionary and observable (imbalance I)</span>
+<span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 </pre></div>
-</div>
-<p>The operator strings for constructing Hamiltonians with a <cite>tensor_basis</cite> object are separated by 
-a pipe symbol, ‘|’, while the index array has no splitting pipe character. For instance, the operator 
-<span class="math">\(\sigma^z_1\otimes\sigma^z_5\)</span> can be constructed using</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># index array used for the site-coupling list: no pipe symbol needed</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;z|z&quot;</span> <span class="c1"># operator string used in the opeator string list: pipe symbol separates two subspaces</span>
-</pre></div>
-</div>
+</td></tr></table></div>
 <p class="rubric">Attributes</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -89,10 +162,10 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character. F
 <td>int: number of states in the Hilbert space.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.basis_left" title="quspin.basis.tensor_basis.basis_left"><code class="xref py py-obj docutils literal"><span class="pre">basis_left</span></code></a></td>
-<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: First basis constructor our of the list to be tensored.</td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: first basis constructor out of the <cite>basis</cite> objects list to be tensored.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.basis_right" title="quspin.basis.tensor_basis.basis_right"><code class="xref py py-obj docutils literal"><span class="pre">basis_right</span></code></a></td>
-<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: All others basis constructors except for the first one of the list to be tensored.</td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.blocks" title="quspin.basis.tensor_basis.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
 <td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
@@ -101,7 +174,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character. F
 <td>set: set of availible operator strings.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.sps" title="quspin.basis.tensor_basis.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
-<td>int: number of local degrees of freedom.</td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
 </tr>
 </tbody>
 </table>
@@ -113,7 +186,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character. F
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.Op" title="quspin.basis.tensor_basis.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in the tensor basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in the tensor basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.check_hermitian" title="quspin.basis.tensor_basis.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for hermiticity of the combined operator.</td>
@@ -128,7 +201,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character. F
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.expanded_form" title="quspin.basis.tensor_basis.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “y” and “x” into operator combinations of “+” and “-“.</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.get_proj" title="quspin.basis.tensor_basis.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;full_left,&nbsp;full_right])</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -180,7 +253,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character. F
 <dl class="method">
 <dt id="quspin.basis.tensor_basis.Op">
 <code class="descname">Op</code><span class="sig-paren">(</span><em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/basis/tensor.html#tensor_basis.Op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.tensor_basis.Op" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs operator from a site-coupling list and anoperator string in the tensor basis.</p>
+<dd><p>Constructs operator from a site-coupling list and an operator string in the tensor basis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -245,13 +318,13 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character. F
 <dl class="attribute">
 <dt id="quspin.basis.tensor_basis.basis_left">
 <code class="descname">basis_left</code><a class="headerlink" href="#quspin.basis.tensor_basis.basis_left" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: First basis constructor our of the list to be tensored.</p>
+<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: first basis constructor out of the <cite>basis</cite> objects list to be tensored.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="quspin.basis.tensor_basis.basis_right">
 <code class="descname">basis_right</code><a class="headerlink" href="#quspin.basis.tensor_basis.basis_right" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: All others basis constructors except for the first one of the list to be tensored.</p>
+<dd><p><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -439,7 +512,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.tensor_basis.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.tensor_basis.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “y” and “x” into operator combinations of “+” and “-“.</p>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -479,6 +552,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -614,13 +693,17 @@ by <cite>index()</cite>.</p>
 </div></blockquote>
 <p><strong>opstr</strong> : str</p>
 <blockquote>
-<div><p>Operator string in the lattice basis format. For instance:
-&gt;&gt;&gt; opstr = “zz”</p>
+<div><p>Operator string in the lattice basis format. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>indx</strong> : list(int)</p>
 <blockquote>
-<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:
-&gt;&gt;&gt; indx = [2,3]</p>
+<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>J</strong> : scalar</p>
 <blockquote>
@@ -628,26 +711,26 @@ by <cite>index()</cite>.</p>
 </div></blockquote>
 <p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
-<div><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
+<div><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </div></blockquote>
 <p><strong>transposed</strong> : bool, optional</p>
 <blockquote>
-<div><p>if True this function will act with the trasposed operator.</p>
+<div><p>if <cite>True</cite> this function will act with the trasposed operator.</p>
 </div></blockquote>
 <p><strong>conjugated</strong> : bool, optional</p>
 <blockquote>
-<div><p>if True this function will act with the conjugated operator.</p>
+<div><p>if <cite>True</cite> this function will act with the conjugated operator.</p>
 </div></blockquote>
 <p><strong>v_out</strong> : array_like</p>
 <blockquote>
-<div><p>output array, must be the same shape as <cite>v_in</cite> aand matching type of the output.</p>
+<div><p>output array, must be the same shape as <cite>v_in</cite> and must match the type of the output.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy.ndarray</p>
 <blockquote class="last">
 <div><ul class="simple">
-<li>if v_out is not None, this function modifies v_out inplace and returns it.</li>
+<li>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</li>
 </ul>
 </div></blockquote>
 </td>
@@ -746,7 +829,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 <dl class="attribute">
 <dt id="quspin.basis.tensor_basis.sps">
 <code class="descname">sps</code><a class="headerlink" href="#quspin.basis.tensor_basis.sps" title="Permalink to this definition">¶</a></dt>
-<dd><p>int: number of local degrees of freedom.</p>
+<dd><p>int: number of states per site (i.e. the local degrees of freedom).</p>
 </dd></dl>
 
 </dd></dl>

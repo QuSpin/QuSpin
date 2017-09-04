@@ -84,12 +84,12 @@ class photon_basis(tensor_basis):
 		couples a lattice particle to a single photon mode.
 
 		There are two types of `photon_basis` objects that one can create:
-			* conserving basis: lattice particle + photon numbers conserved separately. This object is constructed
+			* conserving basis: lattice particle basis and photon number conserved separately. This object is constructed
 				using the `tensor_basis` class.
-			* non-conserving basis: only sum of lattice particles and photons conserved.
+			* non-conserving basis: only total sum of lattice particles and photons conserved.
 
-		The operator strings for the photon and lattice sectors are the same as for the harmonic oscillator basis
-		lattice bases, respectively. The `photon_basis` operator string uses the pipe character '|' to distinguish
+		The operator strings for the photon and lattice sectors are the same as for the lattice bases, respectively.
+		The `photon_basis` operator string uses the pipe character '|' to distinguish
 		between lattice operators (left) and photon operators (right).
 
 		.. math::
@@ -97,7 +97,7 @@ class photon_basis(tensor_basis):
 				\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
 				\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &         -         &   \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
 				\\texttt{boson_basis_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &   -       &   -  \\newline
-				\\texttt{fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   -       &   -  \\newline
+				\\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   -       &   -  \\newline
 			\\end{array}
 
 		Examples
@@ -110,6 +110,14 @@ class photon_basis(tensor_basis):
 		states using the `Nph` argument:
 
 		>>> p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
+
+		The code snippet below shows how to use the `photon_basis` class to construct the Jaynes-Cummings Hamiltonian.
+		As an initial state, we choose a coherent state in the photon sector and the ground state of the two-level system (atom).
+
+		.. literalinclude:: ../../doc_examples/photon_basis-example.py
+			:linenos:
+			:language: python
+			:lines: 7-
 
 		"""
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
@@ -173,17 +181,17 @@ class photon_basis(tensor_basis):
 
 	@property
 	def particle_Ns(self):
-		"""int: Number of states in the lattice Hilbert space only."""
+		"""int: number of states in the lattice Hilbert space only."""
 		return self._basis_left.Ns
 
 	@property
 	def particle_N(self):
-		"""nt: Number of sites on lattice."""
+		"""nt: number of sites on lattice."""
 		return self._basis_left.N
 
 	@property
 	def particle_sps(self):
-		"""int: Number of lattice states per site."""
+		"""int: number of lattice states per site."""
 		return self._basis_left.sps
 
 	@property
@@ -193,22 +201,22 @@ class photon_basis(tensor_basis):
 
 	@property
 	def photon_Ns(self):
-		"""int: Number of states in the photon Hilbert space only."""
+		"""int: number of states in the photon Hilbert space only."""
 		return self._basis_right.Ns
 
 	@property
 	def photon_sps(self):
-		"""int: Number of photon states per site."""
+		"""int: number of photon states per site."""
 		return self._basis_right.sps
 
 	@property
 	def chain_Ns(self):
-		"""int: Number of states in the photon Hilbert space only."""
+		"""int: number of states in the photon Hilbert space only."""
 		return self._basis_left.Ns
 
 	@property
 	def chain_N(self):
-		"""int: Number of sites on lattice."""
+		"""int: number of sites on lattice."""
 		return self._basis_left.N
 
 	def Op(self,opstr,indx,J,dtype):
@@ -571,7 +579,7 @@ class photon_basis(tensor_basis):
 		Examples
 		--------
 
-		>>> ent_entropy(state,sub_sys_A="left",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>> ent_entropy(state,sub_sys_A="photons",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True)
 
 		"""
