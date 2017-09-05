@@ -2,8 +2,10 @@
 cdef NP_INT32_t bit_count(basis_type I, int l, int L):
     cdef NP_INT32_t out = 0
     cdef int i
-    for i in range(L-l-1,L-1,1):
-        out += ((I >> i) & 1) 
+
+    for i in range(0,l,1):
+        out += (I & 1) 
+        I >>= 1
 
     return out
 
@@ -15,11 +17,16 @@ cdef inline basis_type shift(basis_type I,int shift,int period,NP_INT8_t * sign,
     return ((I << l) & pars[2]) | (I >> (period - l))
 
 
-def py_shift(basis_type[:] x,int d,int length, NP_INT8_t[:] signs, basis_type[:] pars):
+def py_shift(basis_type[:] x,int d,int length, basis_type[:] pars, NP_INT8_t[:] signs=None):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
-    for i in range(Ns):
-        x[i] = shift(x[i],d,length,&signs[i],pars)
+    cdef NP_INT8_t temp = 0
+    if signs is not None:
+        for i in range(Ns):
+            x[i] = shift(x[i],d,length,&signs[i],pars)
+    else:
+        for i in range(Ns):
+            x[i] = shift(x[i],d,length,&temp,pars)
 
 
 cdef basis_type fliplr(basis_type I, int length,NP_INT8_t * sign, basis_type[:] pars):
@@ -39,11 +46,16 @@ cdef basis_type fliplr(basis_type I, int length,NP_INT8_t * sign, basis_type[:] 
 
 
 
-def py_fliplr(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
+def py_fliplr(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] signs=None):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
-    for i in range(Ns):
-        x[i] = fliplr(x[i],length,&signs[i],pars)
+    cdef NP_INT8_t temp=0
+    if signs is not None:
+        for i in range(Ns):
+            x[i] = fliplr(x[i],length,&signs[i],pars)
+    else:
+        for i in range(Ns):
+            x[i] = fliplr(x[i],length,&temp,pars)	
 
 
 
@@ -55,11 +67,16 @@ cdef inline basis_type flip_all(basis_type I, int length,NP_INT8_t * sign,basis_
     return I^pars[2]
 
 
-def py_flip_all(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
+def py_flip_all(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] signs = None):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
-    for i in range(Ns):
-        x[i] = flip_all(x[i],length,&signs[i],pars)
+    cdef NP_INT8_t temp = 0
+    if signs is not None:
+        for i in range(Ns):
+            x[i] = flip_all(x[i],length,&signs[i],pars)
+    else:
+        for i in range(Ns):
+            x[i] = flip_all(x[i],length,&temp,pars)    	
 
 
 
@@ -70,12 +87,16 @@ cdef inline basis_type flip_sublat_A(basis_type I, int length,NP_INT8_t * sign,b
     return I^pars[3]
 
 
-def py_flip_sublat_A(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
+def py_flip_sublat_A(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] signs = None):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
-    for i in range(Ns):
-        x[i] = flip_sublat_A(x[i],length,&signs[i],pars)
-
+    cdef NP_INT8_t temp = 0
+    if signs is not None:
+        for i in range(Ns):
+            x[i] = flip_sublat_A(x[i],length,&signs[i],pars)
+    else:
+        for i in range(Ns):
+            x[i] = flip_sublat_A(x[i],length,&temp,pars)
 
 
 
@@ -86,11 +107,16 @@ cdef inline basis_type flip_sublat_B(basis_type I, int length,NP_INT8_t * sign,b
 
 
 
-def py_flip_sublat_B(basis_type[:] x,int length, NP_INT8_t[:] signs, basis_type[:] pars):
+def py_flip_sublat_B(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] signs=None):
     cdef npy_intp i 
     cdef npy_intp Ns = x.shape[0]
-    for i in range(Ns):
-        x[i] = flip_sublat_B(x[i],length,&signs[i],pars)
+    cdef NP_INT8_t temp = 0
+    if signs is not None:
+        for i in range(Ns):
+            x[i] = flip_sublat_B(x[i],length,&signs[i],pars)
+    else:
+        for i in range(Ns):
+            x[i] = flip_sublat_B(x[i],length,&temp,pars)    	
 
 
 
