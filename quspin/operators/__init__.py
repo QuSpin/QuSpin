@@ -3,7 +3,7 @@
 Operators module (:mod:`quspin.operators`)
 ==========================================
 
-classes and function for doing Quantum Operations
+Classes and functions for constructing and manipulating quantum operators, and implementing Schroedinger time evolution.
 
 classes
 --------

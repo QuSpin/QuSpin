@@ -70,7 +70,9 @@
 <span class="sd">			\\texttt{spin_basis_1d} &amp;   \\hat{1}        &amp;   \\hat\\sigma^+       &amp;   \\hat\\sigma^-      &amp;     \\hat\\sigma^z       &amp;   (\\hat\\sigma^x)     &amp;   (\\hat\\sigma^y)  \\  \\newline</span>
 <span class="sd">		\\end{array}</span>
 
-<span class="sd">	where the &quot;x&quot; ad &quot;y&quot; operator strings are supported only for spin-1/2 systems, and are NOT available for higher spins. </span>
+<span class="sd">	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see</span>
+<span class="sd">	the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support</span>
+<span class="sd">	the operator strings &quot;x&quot; and &quot;y&quot;. </span>
 
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>

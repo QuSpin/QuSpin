@@ -99,10 +99,12 @@
 
 <span class="sd">		Examples</span>
 <span class="sd">		--------</span>
-
-<span class="sd">		&gt;&gt;&gt; s_1 = &quot;&quot;.join(&quot;1&quot; for i in range(2)) + &quot;&quot;.join(&quot;0&quot; for i in range(2))</span>
-<span class="sd">		&gt;&gt;&gt; s_2 = &quot;&quot;.join(&quot;1&quot; for i in range(4))</span>
-<span class="sd">		&gt;&gt;&gt; print( basis.index(s_1), basis.index(s_2) )</span>
+<span class="sd">		</span>
+<span class="sd">		&gt;&gt;&gt; i0 = index(&quot;111000&quot;) # pick state from basis set</span>
+<span class="sd">		&gt;&gt;&gt; print(basis)</span>
+<span class="sd">		&gt;&gt;&gt; print(i0)</span>
+<span class="sd">		&gt;&gt;&gt; psi = np.zeros(basis.Ns,dtype=np.float64)</span>
+<span class="sd">		&gt;&gt;&gt; psi[i0] = 1.0 # define state corresponding to the string &quot;111000&quot;</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>

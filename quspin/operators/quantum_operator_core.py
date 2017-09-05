@@ -325,14 +325,72 @@ class quantum_operator(object):
 
 	### state manipulation/observable routines
 
-	def matvec(self,V):
-		return self.dot(V)
+	def matvec(self,x):
+		"""Matrix-vector multiplication.
 
-	def rmatvec(self,V):
-		return self.H.dot(V)
+		Performs the operation y=A*x where A is an MxN linear operator and x is a column vector or 1-d array.
 
-	def matmat(self,V):
-		return self.dot(V)
+		Notes
+		-----
+		This matvec wraps the user-specified matvec routine or overridden _matvec method to ensure that y has the correct shape and type.
+	
+		Parameters
+		----------
+		x : {matrix, ndarray}
+			An array with shape (N,) or (N,1).
+
+		Returns
+		-------
+		y : {matrix, ndarray}
+			A matrix or ndarray with shape (M,) or (M,1) depending on the type and shape of the x argument.
+
+		"""
+
+		return self.dot(x)
+
+	def rmatvec(self,x):
+		"""Adjoint matrix-vector multiplication.
+
+		Performs the operation y = A^H * x where A is an MxN linear operator and x is a column vector or 1-d array.
+
+		Notes
+		-----
+		This rmatvec wraps the user-specified rmatvec routine or overridden _rmatvec method to ensure that y has the correct shape and type.
+
+		Parameters
+		----------
+		x : {matrix, ndarray}
+			An array with shape (M,) or (M,1).
+		
+		Returns
+		-------
+		y : {matrix, ndarray}
+			A matrix or ndarray with shape (N,) or (N,1) depending on the type and shape of the x argument.
+
+		"""
+		return self.H.dot(x)
+
+	def matmat(self,X):
+		"""Matrix-matrix multiplication.
+
+		Performs the operation y=A*X where A is an MxN linear operator and X dense N*K matrix or ndarray.
+
+		Notes
+		-----
+		This matmat wraps any user-specified matmat routine or overridden _matmat method to ensure that y has the correct type.
+
+		Parameters
+		----------
+		X : {matrix, ndarray}
+			An array with shape (N,K).
+
+		Returns
+		-------
+		Y : {matrix, ndarray}
+			A matrix or ndarray with shape (M,K) depending on the type of the X argument.
+
+		"""
+		return self.dot(X)
 
 	def dot(self,V,pars={},check=True):
 		"""Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.

@@ -57,7 +57,7 @@
 <dl class="class">
 <dt id="quspin.tools.expm_multiply_parallel">
 <em class="property">class </em><code class="descclassname">quspin.tools.</code><code class="descname">expm_multiply_parallel</code><span class="sig-paren">(</span><em>A</em>, <em>a=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.expm_multiply_parallel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements <cite>scipy.expm_multiply</cite> for <em>openmp</em>.</p>
+<dd><p>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</p>
 <p class="rubric">Notes</p>
 <p>This is a wrapper over custom c++ code.</p>
 <p class="rubric">Examples</p>
@@ -135,7 +135,7 @@ The code snippet below initiates the class, and is required to run the example c
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.expm_multiply_parallel.dot" title="quspin.tools.expm_multiply_parallel.dot"><code class="xref py py-obj docutils literal"><span class="pre">dot</span></code></a>(v[,&nbsp;work,&nbsp;overwrite_v])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.expm_multiply_parallel.dot" title="quspin.tools.expm_multiply_parallel.dot"><code class="xref py py-obj docutils literal"><span class="pre">dot</span></code></a>(v[,&nbsp;work_array,&nbsp;overwrite_v])</td>
 <td>Calculates the action of <span class="math">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math">\(v\)</span>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.tools.expm_multiply_parallel.set_a" title="quspin.tools.expm_multiply_parallel.set_a"><code class="xref py py-obj docutils literal"><span class="pre">set_a</span></code></a>(a)</td>
@@ -179,7 +179,7 @@ The code snippet below initiates the class, and is required to run the example c
 
 <dl class="method">
 <dt id="quspin.tools.expm_multiply_parallel.dot">
-<code class="descname">dot</code><span class="sig-paren">(</span><em>v</em>, <em>work=None</em>, <em>overwrite_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">dot</code><span class="sig-paren">(</span><em>v</em>, <em>work_array=None</em>, <em>overwrite_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the action of <span class="math">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math">\(v\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -189,9 +189,9 @@ The code snippet below initiates the class, and is required to run the example c
 <blockquote>
 <div><p>array to apply <span class="math">\(\mathrm{e}^{aA}\)</span> on.</p>
 </div></blockquote>
-<p><strong>work</strong> : contiguous numpy.ndarray, optional</p>
+<p><strong>work_array</strong> : contiguous numpy.ndarray, optional</p>
 <blockquote>
-<div><p>array of <cite>shape = (2*len(v),)</cite> which is used as work space for the underlying c-code. This saves extra memory allocation for function operations.</p>
+<div><p>array of <cite>shape = (2*len(v),)</cite> which is used as work_array space for the underlying c-code. This saves extra memory allocation for function operations.</p>
 </div></blockquote>
 <p><strong>overwrite_v</strong> : bool</p>
 <blockquote>

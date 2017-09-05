@@ -376,14 +376,72 @@
 
 	<span class="c1">### state manipulation/observable routines</span>
 
-	<span class="k">def</span> <span class="nf">matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<div class="viewcode-block" id="quantum_operator.matvec"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matvec">[docs]</a>	<span class="k">def</span> <span class="nf">matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication.</span>
 
-	<span class="k">def</span> <span class="nf">rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="sd">		Performs the operation y=A*x where A is an MxN linear operator and x is a column vector or 1-d array.</span>
 
-	<span class="k">def</span> <span class="nf">matmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This matvec wraps the user-specified matvec routine or overridden _matvec method to ensure that y has the correct shape and type.</span>
+<span class="sd">	</span>
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		x : {matrix, ndarray}</span>
+<span class="sd">			An array with shape (N,) or (N,1).</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		-------</span>
+<span class="sd">		y : {matrix, ndarray}</span>
+<span class="sd">			A matrix or ndarray with shape (M,) or (M,1) depending on the type and shape of the x argument.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.rmatvec"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.rmatvec">[docs]</a>	<span class="k">def</span> <span class="nf">rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Adjoint matrix-vector multiplication.</span>
+
+<span class="sd">		Performs the operation y = A^H * x where A is an MxN linear operator and x is a column vector or 1-d array.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This rmatvec wraps the user-specified rmatvec routine or overridden _rmatvec method to ensure that y has the correct shape and type.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		x : {matrix, ndarray}</span>
+<span class="sd">			An array with shape (M,) or (M,1).</span>
+<span class="sd">		</span>
+<span class="sd">		Returns</span>
+<span class="sd">		-------</span>
+<span class="sd">		y : {matrix, ndarray}</span>
+<span class="sd">			A matrix or ndarray with shape (N,) or (N,1) depending on the type and shape of the x argument.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.matmat"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matmat">[docs]</a>	<span class="k">def</span> <span class="nf">matmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Matrix-matrix multiplication.</span>
+
+<span class="sd">		Performs the operation y=A*X where A is an MxN linear operator and X dense N*K matrix or ndarray.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This matmat wraps any user-specified matmat routine or overridden _matmat method to ensure that y has the correct type.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		X : {matrix, ndarray}</span>
+<span class="sd">			An array with shape (N,K).</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		-------</span>
+<span class="sd">		Y : {matrix, ndarray}</span>
+<span class="sd">			A matrix or ndarray with shape (M,K) depending on the type of the X argument.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="quantum_operator.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.</span>

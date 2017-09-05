@@ -55,7 +55,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
 <div class="viewcode-block" id="expm_multiply_parallel"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel">[docs]</a><span class="k">class</span> <span class="nc">expm_multiply_parallel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Implements `scipy.expm_multiply` for *openmp*.</span>
+	<span class="sd">&quot;&quot;&quot;Implements `scipy.sparse.linalg.expm_multiply()` for *openmp*.</span>
 
 <span class="sd">	Notes</span>
 <span class="sd">	-----</span>
@@ -136,7 +136,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting &#39;a&#39; to be scalar.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="expm_multiply_parallel.dot"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel.dot"><a class="viewcode-back" href="../../../../generated/quspin.tools.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :math:`v`. </span>
 
 <span class="sd">		Examples</span>
@@ -151,8 +151,8 @@
 <span class="sd">		-----------</span>
 <span class="sd">		v : contiguous numpy.ndarray</span>
 <span class="sd">			array to apply :math:`\\mathrm{e}^{aA}` on.</span>
-<span class="sd">		work : contiguous numpy.ndarray, optional</span>
-<span class="sd">			array of `shape = (2*len(v),)` which is used as work space for the underlying c-code. This saves extra memory allocation for function operations.</span>
+<span class="sd">		work_array : contiguous numpy.ndarray, optional</span>
+<span class="sd">			array of `shape = (2*len(v),)` which is used as work_array space for the underlying c-code. This saves extra memory allocation for function operations.</span>
 <span class="sd">		overwrite_v : bool</span>
 <span class="sd">			if set to `True`, the data in `v` is overwritten by the function. This saves extra memory allocation for the results.</span>
 
@@ -175,17 +175,17 @@
 		<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dimension mismatch </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
-		<span class="k">if</span> <span class="n">work</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">work</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">work_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">work_array</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">work</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">work</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">work</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],):</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;work array must be an array of shape (2*v.shape[0],) with same dtype as v.&quot;</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">work</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;work array must be the same dtype as i_nput vector v.&quot;</span><span class="p">)</span>
+			<span class="n">work_array</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">work_array</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">work_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;work_array array must be an array of shape (2*v.shape[0],) with same dtype as v.&quot;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">work_array</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;work_array array must be the same dtype as i_nput vector v.&quot;</span><span class="p">)</span>
 
 		<span class="n">_wrapper_expm_multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work_array</span><span class="p">)</span>
 
 		<span class="k">return</span> <span class="n">v</span></div>
 

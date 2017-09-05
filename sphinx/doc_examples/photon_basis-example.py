@@ -27,6 +27,7 @@ static=[["|n",ph_energy],["x|-",absorb],["x|+",emit],["z|",at_energy]]
 dynamic=[]
 # compute atom-photon basis
 basis=photon_basis(spin_basis_1d,L=1,Nph=Nph_tot)
+print(basis)
 # compute atom-photon Hamiltonian H
 H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
 #
