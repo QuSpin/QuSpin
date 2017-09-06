@@ -41,13 +41,4 @@ ctypedef fused matrix_type:
 ctypedef double complex scalar_type
 
 
-ctypedef basis_type (*bitop)(basis_type, int,NP_INT8_t *, basis_type[:])
-ctypedef basis_type (*shifter)(basis_type, int, int,NP_INT8_t *, basis_type[:])
 ctypedef basis_type (*ns_type)(basis_type, basis_type[:])
-ctypedef int (*op_type)(npy_intp, basis_type[:], str, NP_INT32_t*,scalar_type,
-                        basis_type[:], matrix_type*,basis_type[:])
-
-
-
-
-

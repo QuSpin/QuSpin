@@ -1,7 +1,8 @@
 
 
-cdef int op_template(op_type op_func, basis_type[:] op_pars, npy_intp Ns, basis_type[:] basis,
+cdef int op_template(basis_type[:] op_pars, npy_intp Ns, basis_type[:] basis,
                      str opstr, NP_INT32_t *indx, scalar_type J, basis_type[:] row, basis_type[:] col, matrix_type *ME):
+
     cdef npy_intp i
     cdef int error
 
@@ -18,7 +19,7 @@ cdef int op_template(op_type op_func, basis_type[:] op_pars, npy_intp Ns, basis_
 
 
 
-cdef int n_op_template(op_type op_func,basis_type[:] op_pars, npy_intp Ns, basis_type[:] basis,
+cdef int n_op_template(basis_type[:] op_pars, npy_intp Ns, basis_type[:] basis,
             str opstr, NP_INT32_t *indx, scalar_type J, basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef npy_intp i
     cdef basis_type s
@@ -48,7 +49,7 @@ cdef int n_op_template(op_type op_func,basis_type[:] op_pars, npy_intp Ns, basis
 
 
 
-cdef int p_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,basis_type[:] ref_pars,int L,int pblock, npy_intp Ns,
+cdef int p_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int pblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
 
@@ -58,7 +59,7 @@ cdef int p_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,basis_
     cdef int q
     cdef double n
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -69,7 +70,8 @@ cdef int p_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,basis_
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_P_template(fliplr,row[i],L,&sign,&q,ref_pars)
+        sign = 1
+        s = RefState_P_template(row[i],L,&sign,&q,ref_pars)
         s = findzstate(basis,Ns,s,&found)
         
         if not found:
@@ -79,14 +81,14 @@ cdef int p_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,basis_
         row[i] = s
         n =  N[s]
         n /= N[i]
-        ME[i] *= (pblock**q)*sqrt(n)
+        ME[i] *= sign*(pblock**q)*sqrt(n)
 
     return error
 
 
 
 
-cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop flip_all,basis_type[:] ref_pars,int L,int pzblock, npy_intp Ns,
+cdef int pz_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int pzblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -94,7 +96,7 @@ cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop
     cdef int error,qg
     cdef double n
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
 
@@ -105,7 +107,8 @@ cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_PZ_template(fliplr,flip_all,row[i],L,&sign,&qg,ref_pars)
+        sign = 1
+        s = RefState_PZ_template(row[i],L,&sign,&qg,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -116,7 +119,7 @@ cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop
         n =  N[s]
         n /= N[i]
 
-        ME[i] *= (pzblock**qg)*sqrt(n)
+        ME[i] *= sign*(pzblock**qg)*sqrt(n)
 
     return error
 
@@ -130,7 +133,7 @@ cdef int pz_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop
 
 
 
-cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bitop flip_all,basis_type[:] ref_pars,int L,int pblock,int zblock, npy_intp Ns,
+cdef int p_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int pblock,int zblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -139,7 +142,7 @@ cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bito
     cdef int R[2]
     cdef double n
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     R[0] = 0
     R[1] = 0
@@ -153,7 +156,8 @@ cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bito
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_P_Z_template(fliplr,flip_all,row[i],L,&sign,R,ref_pars)
+        sign = 1
+        s = RefState_P_Z_template(row[i],L,&sign,R,ref_pars)
 
         q = R[0]
         g = R[1]
@@ -167,7 +171,7 @@ cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bito
         n =  N[s]
         n /= N[i]
 
-        ME[i] *= sqrt(n)*(pblock**q)*(zblock**g)
+        ME[i] *= sign*sqrt(n)*(pblock**q)*(zblock**g)
 
     return error
 
@@ -192,7 +196,7 @@ cdef int p_z_op_template(op_type op_func,basis_type[:] op_pars,bitop fliplr,bito
 
 
 
-cdef int t_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,basis_type[:] ref_pars,int L,int kblock,int a, npy_intp Ns,
+cdef int t_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int a, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -200,7 +204,7 @@ cdef int t_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,basis
     cdef int error,l
     cdef double n,k
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     k = (2.0*_np.pi*kblock*a)/L
     l = 0
@@ -216,7 +220,8 @@ cdef int t_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,basis
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_template(shift,row[i],L,a,&sign,&l,ref_pars)
+        sign = 1
+        s = RefState_T_template(row[i],L,a,&sign,&l,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -230,9 +235,9 @@ cdef int t_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,basis
         ME[i] *= n
 
         if (matrix_type is float or matrix_type is double):
-            ME[i] *= (-1.0)**(l*2*a*kblock/L)
+            ME[i] *= sign*(-1.0)**(l*2*a*kblock/L)
         else:
-            ME[i] *= (cos(k*l) - 1.0j * sin(k*l))
+            ME[i] *= sign*(cos(k*l) - 1.0j * sin(k*l))
 
             
 
@@ -293,7 +298,7 @@ cdef double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, double
 
 
 
-cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop fliplr,basis_type[:] ref_pars,int L,int kblock,int pblock,int a, npy_intp Ns,
+cdef int t_p_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int pblock,int a, npy_intp Ns,
                         N_type *N, N_type *m, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -302,7 +307,7 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
     cdef int error,l,q
     cdef int R[2]
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     R[0] = 0
     R[1] = 0
@@ -322,7 +327,8 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         for i in range(Ns):
-            s = RefState_T_P_template(shift,fliplr,row[i],L,a,&sign,R,ref_pars)
+            sign = 1
+            s = RefState_T_P_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -334,18 +340,19 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
                 continue
 
             row[i] = ss
-            ME[i] *= MatrixElement_T_P(L,pblock,kblock,a,l,k,q,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_P(L,pblock,kblock,a,l,k,q,N[i],N[ss],m[i],m[ss])
 
 
     else:
         for i in range(Ns):
+            sign = 1
             if (i > 0) and (basis[i] == basis[i-1]): continue
             if (i < (Ns - 1)) and (basis[i] == basis[i+1]):
                 o = 2
             else:
                 o = 1
 
-            s = RefState_T_P_template(shift,fliplr,row[i],L,a,&sign,R,ref_pars)
+            s = RefState_T_P_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -362,7 +369,7 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
 
                 for j in range(i,i+o,1):
                     row[j] = j
-                    ME[j] *= MatrixElement_T_P(L,pblock,kblock,a,l,k,q,N[j],N[j],m[j],m[j])
+                    ME[j] *= sign*MatrixElement_T_P(L,pblock,kblock,a,l,k,q,N[j],N[j],m[j],m[j])
 
             else: # off diagonal ME
 
@@ -380,7 +387,7 @@ cdef int t_p_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
                     for b in range(p):
                         j = i + c + Ns*b
                         row[j] = ss + b
-                        ME[j] = me[c]*MatrixElement_T_P(L,pblock,kblock,a,l,k,q,N[i+c],N[ss+b],m[i+c],m[ss+b])
+                        ME[j] = sign*me[c]*MatrixElement_T_P(L,pblock,kblock,a,l,k,q,N[i+c],N[ss+b],m[i+c],m[ss+b])
         
         
     return error
@@ -469,7 +476,7 @@ cdef double MatrixElement_T_P_Z(int L,int pblock, int zblock, int kblock, int a,
 
 
 
-cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop fliplr,bitop flip_all,basis_type[:] ref_pars,int L,int kblock,int pblock,int zblock,int a,
+cdef int t_p_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int pblock,int zblock,int a,
                         npy_intp Ns, N_type *N, M_type *m, basis_type[:] basis, str opstr, NP_INT32_t *indx,
                         scalar_type J, basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -478,7 +485,7 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
     cdef int error,l,q,g
     cdef int R[3]
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     cdef double k = (2.0*_np.pi*kblock*a)/L
 
@@ -499,7 +506,8 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         for i in range(Ns):
-            s = RefState_T_P_Z_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
+            sign = 1
+            s = RefState_T_P_Z_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -513,17 +521,18 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
                 continue
 
             row[i] = ss
-            ME[i] *= MatrixElement_T_P_Z(L,pblock,zblock,kblock,a,l,k,q,g,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_P_Z(L,pblock,zblock,kblock,a,l,k,q,g,N[i],N[ss],m[i],m[ss])
 
     else:
         for i in range(Ns):
+            sign = 1
             if (i > 0) and (basis[i] == basis[i-1]): continue
             if (i < (Ns - 1)) and (basis[i] == basis[i+1]):
                 o = 2
             else:
                 o = 1
 
-            s = RefState_T_P_Z_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
+            s = RefState_T_P_Z_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             q = R[1]
@@ -541,7 +550,7 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
 
                 for j in range(i,i+o,1):
                     row[j] = j
-                    ME[j] *= MatrixElement_T_P_Z(L,pblock,zblock,kblock,a,l,k,q,g,N[j],N[j],m[j],m[j])
+                    ME[j] *= sign*MatrixElement_T_P_Z(L,pblock,zblock,kblock,a,l,k,q,g,N[j],N[j],m[j],m[j])
 
             else: # off diagonal ME
 
@@ -559,7 +568,7 @@ cdef int t_p_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,b
                     for b in range(p):
                         j = i + c + Ns*b
                         row[j] = ss + b
-                        ME[j] = me[c]*MatrixElement_T_P_Z(L,pblock,zblock,kblock,a,l,k,q,g,N[i+c],N[ss+b],m[i+c],m[ss+b])
+                        ME[j] = sign*me[c]*MatrixElement_T_P_Z(L,pblock,zblock,kblock,a,l,k,q,g,N[i+c],N[ss+b],m[i+c],m[ss+b])
         
         
     return error
@@ -623,7 +632,7 @@ cdef double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l, doub
 
 
 
-cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop fliplr,bitop flip_all,basis_type[:] ref_pars,int L,int kblock,int pzblock,int a,
+cdef int t_pz_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int pzblock,int a,
                         npy_intp Ns, N_type *N, N_type *m, basis_type[:] basis, str opstr, NP_INT32_t *indx,
                         scalar_type J, basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -632,7 +641,7 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
     cdef int error,l,qg
     cdef int R[2]
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     cdef double k = (2.0*_np.pi*kblock*a)/L
 
@@ -652,7 +661,8 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         for i in range(Ns):
-            s = RefState_T_PZ_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
+            sign = 1
+            s = RefState_T_PZ_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             qg = R[1]
@@ -665,18 +675,19 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
                 continue
 
             row[i] = ss
-            ME[i] *= MatrixElement_T_PZ(L,pzblock,kblock,a,l,k,qg,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_PZ(L,pzblock,kblock,a,l,k,qg,N[i],N[ss],m[i],m[ss])
 
 
     else:
         for i in range(Ns):
+            sign = 1
             if (i > 0) and (basis[i] == basis[i-1]): continue
             if (i < (Ns - 1)) and (basis[i] == basis[i+1]):
                 o = 2
             else:
                 o = 1
 
-            s = RefState_T_PZ_template(shift,fliplr,flip_all,row[i],L,a,&sign,R,ref_pars)
+            s = RefState_T_PZ_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
             qg = R[1]
@@ -693,7 +704,7 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
 
                 for j in range(i,i+o,1):
                     row[j] = j
-                    ME[j] *= MatrixElement_T_PZ(L,pzblock,kblock,a,l,k,qg,N[j],N[j],m[j],m[j])
+                    ME[j] *= sign*MatrixElement_T_PZ(L,pzblock,kblock,a,l,k,qg,N[j],N[j],m[j],m[j])
 
             else: # off diagonal ME
 
@@ -711,7 +722,7 @@ cdef int t_pz_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
                     for b in range(p):
                         j = i + c + Ns*b
                         row[j] = ss + b
-                        ME[j] = me[c]*MatrixElement_T_PZ(L,pzblock,kblock,a,l,k,qg,N[i+c],N[ss+b],m[i+c],m[ss+b])
+                        ME[j] = sign*me[c]*MatrixElement_T_PZ(L,pzblock,kblock,a,l,k,qg,N[i+c],N[ss+b],m[i+c],m[ss+b])
         
         
     return error
@@ -750,7 +761,7 @@ cdef double complex MatrixElement_T_ZA(int L,int zAblock, int kblock, int a, int
 
 
 
-cdef int t_zA_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop flip_sublat_A,basis_type[:] ref_pars,int L,int kblock,int zAblock,int a, npy_intp Ns,
+cdef int t_zA_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int zAblock,int a, npy_intp Ns,
                         N_type *N, N_type *m, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -760,7 +771,7 @@ cdef int t_zA_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     R[0] = 0
     R[1] = 0
@@ -777,7 +788,8 @@ cdef int t_zA_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_ZA_template(shift,flip_sublat_A,row[i],L,a,&sign,R,ref_pars)
+        sign = 1
+        s = RefState_T_ZA_template(row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         gA = R[1]
@@ -794,9 +806,9 @@ cdef int t_zA_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
 
         if (matrix_type is float or matrix_type is double):
             me = MatrixElement_T_ZA(L,zAblock,kblock,a,l,k,gA,N[i],N[ss],m[i],m[ss])
-            ME[i] *= me.real
+            ME[i] *= sign*me.real
         else:
-            ME[i] *= MatrixElement_T_ZA(L,zAblock,kblock,a,l,k,gA,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_ZA(L,zAblock,kblock,a,l,k,gA,N[i],N[ss],m[i],m[ss])
 
         
     return error
@@ -862,7 +874,7 @@ cdef double complex MatrixElement_T_ZA_ZB(int L,int zAblock,int zBblock, int kbl
 
 
 
-cdef int t_zA_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type[:] ref_pars,
+cdef int t_zA_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,
                         int L,int kblock,int zAblock,int zBblock,int a, npy_intp Ns, N_type *N, M_type *m,
                         basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
@@ -873,7 +885,7 @@ cdef int t_zA_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     R[0] = 0
     R[1] = 0
@@ -891,7 +903,8 @@ cdef int t_zA_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_ZA_ZB_template(shift,flip_sublat_A,flip_sublat_B,flip_all,row[i],L,a,&sign,R,ref_pars)
+        sign = 1
+        s = RefState_T_ZA_ZB_template(row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         gA = R[1]
@@ -907,9 +920,9 @@ cdef int t_zA_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift
 
         if (matrix_type is float or matrix_type is double):
             me = MatrixElement_T_ZA_ZB(L,zAblock,zBblock,kblock,a,l,k,gA,gB,N[i],N[ss],m[i],m[ss])
-            ME[i] *= me.real
+            ME[i] *= sign*me.real
         else:
-            ME[i] *= MatrixElement_T_ZA_ZB(L,zAblock,zBblock,kblock,a,l,k,gA,gB,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_ZA_ZB(L,zAblock,zBblock,kblock,a,l,k,gA,gB,N[i],N[ss],m[i],m[ss])
 
 
     return error
@@ -949,7 +962,7 @@ cdef double complex MatrixElement_T_ZB(int L,int zBblock, int kblock, int a, int
 
 
 
-cdef int t_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop flip_sublat_B,basis_type[:] ref_pars,int L,int kblock,int zBblock,int a, npy_intp Ns,
+cdef int t_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int zBblock,int a, npy_intp Ns,
                         N_type *N, N_type *m, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -959,7 +972,7 @@ cdef int t_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     R[0] = 0
     R[1] = 0
@@ -976,7 +989,8 @@ cdef int t_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_ZB_template(shift,flip_sublat_B,row[i],L,a,&sign,R,ref_pars)
+        sign = 1
+        s = RefState_T_ZB_template(row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         gB = R[1]
@@ -991,9 +1005,9 @@ cdef int t_zB_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bi
 
         if (matrix_type is float or matrix_type is double):
             me = MatrixElement_T_ZB(L,zBblock,kblock,a,l,k,gB,N[i],N[ss],m[i],m[ss])
-            ME[i] *= me.real
+            ME[i] *= sign*me.real
         else:
-            ME[i] *= MatrixElement_T_ZB(L,zBblock,kblock,a,l,k,gB,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_ZB(L,zBblock,kblock,a,l,k,gB,N[i],N[ss],m[i],m[ss])
 
 
     return error
@@ -1029,7 +1043,7 @@ cdef double complex MatrixElement_T_Z(int L,int zblock, int kblock, int a, int l
 
 
 
-cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bitop flip_all,basis_type[:] ref_pars,int L,int kblock,int zblock,int a, npy_intp Ns,
+cdef int t_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kblock,int zblock,int a, npy_intp Ns,
                         N_type *N, N_type *m, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -1039,7 +1053,7 @@ cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
     cdef double k = (2.0*_np.pi*kblock*a)/L
     cdef double complex me
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
 
     R[0] = 0
     R[1] = 0
@@ -1056,7 +1070,8 @@ cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_T_Z_template(shift,flip_all,row[i],L,a,&sign,R,ref_pars)
+        sign = 1
+        s = RefState_T_Z_template(row[i],L,a,&sign,R,ref_pars)
 
         l = R[0]
         g = R[1]
@@ -1071,9 +1086,9 @@ cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
 
         if (matrix_type is float or matrix_type is double):
             me = MatrixElement_T_Z(L,zblock,kblock,a,l,k,g,N[i],N[ss],m[i],m[ss])
-            ME[i] *= me.real
+            ME[i] *= sign*me.real
         else:
-            ME[i] *= MatrixElement_T_Z(L,zblock,kblock,a,l,k,g,N[i],N[ss],m[i],m[ss])
+            ME[i] *= sign*MatrixElement_T_Z(L,zblock,kblock,a,l,k,g,N[i],N[ss],m[i],m[ss])
             
 
     return error
@@ -1085,7 +1100,7 @@ cdef int t_z_op_template(op_type op_func,basis_type[:] op_pars,shifter shift,bit
 
 
 
-cdef int zA_op_template(op_type op_func, basis_type[:] op_pars,bitop flip_sublat_A,basis_type[:] ref_pars,int L,int zAblock, npy_intp Ns,
+cdef int zA_op_template( basis_type[:] op_pars,basis_type[:] ref_pars,int L,int zAblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
@@ -1104,7 +1119,8 @@ cdef int zA_op_template(op_type op_func, basis_type[:] op_pars,bitop flip_sublat
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_ZA_template(flip_sublat_A,row[i],L,&sign,&gA,ref_pars)
+        sign = 1
+        s = RefState_ZA_template(row[i],L,&sign,&gA,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -1114,7 +1130,7 @@ cdef int zA_op_template(op_type op_func, basis_type[:] op_pars,bitop flip_sublat
         row[i] = s
         n =  N[s]
         n /= N[i]
-        ME[i] *= (zAblock)**gA*sqrt(n)
+        ME[i] *= sign*(zAblock)**gA*sqrt(n)
 
 
     return error
@@ -1125,7 +1141,7 @@ cdef int zA_op_template(op_type op_func, basis_type[:] op_pars,bitop flip_sublat
 
 
 
-cdef int zA_zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_sublat_A,bitop flip_sublat_B,bitop flip_all,basis_type[:] ref_pars,
+cdef int zA_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,
                         int L,int zAblock,int zBblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
@@ -1134,7 +1150,7 @@ cdef int zA_zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_subl
     cdef int error,gA,gB
     cdef int R[2]
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
     cdef double n
 
     R[0] = 0
@@ -1149,7 +1165,8 @@ cdef int zA_zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_subl
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_ZA_ZB_template(flip_sublat_A,flip_sublat_B,flip_all,row[i],L,&sign,R,ref_pars)
+        sign = 1
+        s = RefState_ZA_ZB_template(row[i],L,&sign,R,ref_pars)
 
         gA = R[0]
         gB = R[1]
@@ -1163,20 +1180,20 @@ cdef int zA_zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_subl
         row[i] = s
         n =  N[s]
         n /= N[i]
-        ME[i] *= (zAblock**gA)*(zBblock**gB)*sqrt(n)
+        ME[i] *= sign*(zAblock**gA)*(zBblock**gB)*sqrt(n)
 
     return error
 
 
 
-cdef int zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_sublat_B,basis_type[:] ref_pars,int L,int zBblock, npy_intp Ns,
+cdef int zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int zBblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
     cdef npy_intp ss,i
     cdef int error,gB
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
     cdef double n
 
     error = op_func(Ns,basis,opstr,indx,J,row,ME,op_pars)
@@ -1188,7 +1205,8 @@ cdef int zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_sublat_
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_ZB_template(flip_sublat_B,row[i],L,&sign,&gB,ref_pars)
+        sign = 1
+        s = RefState_ZB_template(row[i],L,&sign,&gB,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -1198,21 +1216,21 @@ cdef int zB_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_sublat_
         row[i] = s
         n =  N[s]
         n /= N[i]
-        ME[i] *= (zBblock)**gB*sqrt(n)
+        ME[i] *= sign*(zBblock)**gB*sqrt(n)
 
 
     return error
 
 
 
-cdef int z_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_all,basis_type[:] ref_pars,int L,int zblock, npy_intp Ns,
+cdef int z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int zblock, npy_intp Ns,
                         N_type *N, basis_type[:] basis, str opstr, NP_INT32_t *indx, scalar_type J,
                         basis_type[:] row, basis_type[:] col, matrix_type *ME):
     cdef basis_type s
     cdef npy_intp i
     cdef int error,g
     cdef bool found
-    cdef NP_INT8_t sign
+    cdef NP_INT8_t sign=1
     cdef double n
 
 
@@ -1225,7 +1243,8 @@ cdef int z_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_all,basi
         col[i] = i
 
     for i in range(Ns):
-        s = RefState_Z_template(flip_all,row[i],L,&sign,&g,ref_pars)
+        sign = 1
+        s = RefState_Z_template(row[i],L,&sign,&g,ref_pars)
         s = findzstate(basis,Ns,s,&found)
 
         if not found:
@@ -1235,7 +1254,7 @@ cdef int z_op_template(op_type op_func,basis_type[:] op_pars,bitop flip_all,basi
         row[i] = s
         n =  N[s]
         n /= N[i]
-        ME[i] *= (zblock)**g*sqrt(n)
+        ME[i] *= sign*(zblock)**g*sqrt(n)
 
 
     return error
