@@ -21,7 +21,7 @@ the operator strings "x" and "y".
 
 .. currentmodule:: quspin.basis
 
-1-dimensional symmetries
+one-dimensional symmetries
 ---------------------------
 
 .. autosummary::

@@ -9,7 +9,7 @@ import numpy as _np
 class boson_basis_1d(basis_1d):
 	"""Constructs basis for boson operators in a specified 1-d symmetry sector.
 
-	The supposrted operator strings for `boson_basis_1d` are:
+	The supported operator strings for `boson_basis_1d` are:
 
 	.. math::
 		\\begin{array}{cccc}

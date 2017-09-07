@@ -11,7 +11,7 @@ except NameError:
 class spin_basis_1d(basis_1d):
 	"""Constructs basis for spin operators in a specified 1-d symmetry sector.
 
-	The supposrted operator strings for `spin_basis_1d` are:
+	The supported operator strings for `spin_basis_1d` are:
 
 	.. math::
 		\\begin{array}{cccc}

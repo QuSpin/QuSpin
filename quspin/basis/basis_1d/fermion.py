@@ -8,7 +8,7 @@ import numpy as _np
 class spinless_fermion_basis_1d(basis_1d):
 	"""Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.
 
-	The supposrted operator strings for `spinless_fermion_basis_1d` are:
+	The supported operator strings for `spinless_fermion_basis_1d` are:
 
 	.. math::
 			\\begin{array}{cccc}
