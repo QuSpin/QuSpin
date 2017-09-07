@@ -62,19 +62,19 @@
 <div class="viewcode-block" id="spin_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general">[docs]</a><span class="k">class</span> <span class="nc">spin_basis_general</span><span class="p">(</span><span class="n">hcb_basis_general</span><span class="p">,</span><span class="n">higher_spin_basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for spin operators for USER-DEFINED symmetries.</span>
 
-<span class="sd">	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:mathrm:`Q^{m_Q}=1`) has</span>
-<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
-<span class="sd">	These integers :math:`q` are used to label the symmetry blocks.</span>
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
+<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
+<span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
 
-<span class="sd">	For instnace, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation,</span>
+<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
 <span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
-<span class="sd">	The supposrted operator strings for `spin_basis_1d` are:</span>
+<span class="sd">	The supported operator strings for `spin_basis_general` are:</span>
 
 <span class="sd">	.. math::</span>
 <span class="sd">		\\begin{array}{cccc}</span>
 <span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;     \\texttt{&quot;z&quot;}   &amp;   \\texttt{&quot;x&quot;}   &amp;   \\texttt{&quot;y&quot;}  \\newline	</span>
-<span class="sd">			\\texttt{spin_basis_1d} &amp;   \\hat{1}        &amp;   \\hat\\sigma^+       &amp;   \\hat\\sigma^-      &amp;     \\hat\\sigma^z       &amp;   (\\hat\\sigma^x)     &amp;   (\\hat\\sigma^y)  \\  \\newline</span>
+<span class="sd">			\\texttt{spin_basis_general} &amp;   \\hat{1}        &amp;   \\hat\\sigma^+       &amp;   \\hat\\sigma^-      &amp;     \\hat\\sigma^z       &amp;   (\\hat\\sigma^x)     &amp;   (\\hat\\sigma^y)  \\  \\newline</span>
 <span class="sd">		\\end{array}</span>
 
 <span class="sd">	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see</span>
@@ -122,8 +122,8 @@
 <span class="sd">			&gt;&gt;&gt; basis(...,kxblock=(Q,q),...)</span>
 
 <span class="sd">			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The</span>
-<span class="sd">			values are tuples where the first entry contains the symmetry transformation :mathrm:`Q` acting on the</span>
-<span class="sd">			lattice sites (see class example), and the second entry is an integer :mathrm:`q` to label the symmetry</span>
+<span class="sd">			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the</span>
+<span class="sd">			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry</span>
 <span class="sd">			sector.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>

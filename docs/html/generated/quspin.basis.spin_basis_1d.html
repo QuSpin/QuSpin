@@ -58,7 +58,7 @@
 <dt id="quspin.basis.spin_basis_1d">
 <em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spin_basis_1d</code><span class="sig-paren">(</span><em>L</em>, <em>Nup=None</em>, <em>m=None</em>, <em>S=‘1/2’</em>, <em>pauli=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/basis/basis_1d/spin.html#spin_basis_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spin_basis_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for spin operators in a specified 1-d symmetry sector.</p>
-<p>The supposrted operator strings for <cite>spin_basis_1d</cite> are:</p>
+<p>The supported operator strings for <cite>spin_basis_1d</cite> are:</p>
 <div class="math">
 \[\begin{array}{cccc}
         \texttt{basis}/\texttt{opstr}   &amp;   \texttt{&quot;I&quot;}   &amp;   \texttt{&quot;+&quot;}   &amp;   \texttt{&quot;-&quot;}  &amp;     \texttt{&quot;z&quot;}   &amp;   \texttt{&quot;x&quot;}   &amp;   \texttt{&quot;y&quot;}  \newline      
@@ -275,13 +275,17 @@ more particle sectors.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>opstr</strong> : str</p>
 <blockquote>
-<div><p>Operator string in the lattice basis format. For instance:
-&gt;&gt;&gt; opstr = “zz”</p>
+<div><p>Operator string in the lattice basis format. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>indx</strong> : list(int)</p>
 <blockquote>
-<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:
-&gt;&gt;&gt; indx = [2,3]</p>
+<div><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
 </div></blockquote>
 <p><strong>J</strong> : scalar</p>
 <blockquote>

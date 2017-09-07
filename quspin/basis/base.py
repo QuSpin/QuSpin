@@ -176,9 +176,11 @@ class basis(object):
 		-----------
 		opstr : str
 			Operator string in the lattice basis format. For instance:
+
 			>>> opstr = "zz"
 		indx : list(int)
 			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			
 			>>> indx = [2,3]
 		J : scalar
 			Coupling strength.

@@ -5,7 +5,7 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian, exp_op # operators
-from quspin.basis import boson_basis_general # spin basis constructor
+from quspin.basis import spinless_fermion_basis_general # spin basis constructor
 import numpy as np # general math functions
 #
 ###### define model parameters ######
@@ -26,15 +26,16 @@ P_x = x + Lx*(Ly-y-1) # reflection about x-axis
 P_y = (Lx-x-1) + Lx*y # reflection about y-axis
 #
 ###### setting up bases ######
-basis_2d = boson_basis_general(N_2d,sps=3,kxblock=(T_x,0),kyblock=(T_y,0),pxblock=(P_x,0),pyblock=(P_y,0))
+basis_2d=spinless_fermion_basis_general(N_2d,kxblock=(T_x,0),kyblock=(T_y,0),pxblock=(P_x,0),pyblock=(P_y,0))
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists
-hopping=[[-J,i,T_x[i]] for i in range(N_2d)]+[[-J,i,T_y[i]] for i in range(N_2d)]
-potential=[[-mu-U/2.0,i] for i in range(N_2d)]
-interaction=[[U/2.0,i,i] for i in range(N_2d)]
+hopping_left=[[-J,i,T_x[i]] for i in range(N_2d)]+[[-J,i,T_y[i]] for i in range(N_2d)]
+hopping_right=[[+J,i,T_x[i]] for i in range(N_2d)]+[[+J,i,T_y[i]] for i in range(N_2d)]
+potential=[[-mu,i] for i in range(N_2d)]
+interaction=[[U/2.0,i,T_x[i]] for i in range(N_2d)]+[[U,i,T_y[i]] for i in range(N_2d)]
 #
-static=[["+-",hopping],["-+",hopping],["n",potential],["nn",interaction]]
+static=[["+-",hopping_left],["-+",hopping_right],["n",potential],["nn",interaction]]
 # build hamiltonian
 H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64)
 # diagonalise H

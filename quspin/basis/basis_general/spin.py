@@ -15,7 +15,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
-	For instnace, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
 	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
 	The supported operator strings for `spin_basis_general` are:
@@ -23,7 +23,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	.. math::
 		\\begin{array}{cccc}
 			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &     \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
-			\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
+			\\texttt{spin_basis_general} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
 		\\end{array}
 
 	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
