@@ -5,7 +5,7 @@ Basis module (:mod:`quspin.basis`)
 
 Basis classes for quantum many-body systems.
 
-The following table shows the available operator strings for the different basis:
+The following table shows the available operator strings for the different bases:
 
 .. math::
    \\begin{array}{cccc}
