@@ -19,21 +19,21 @@ ctypedef _np.uint8_t NP_UINT8_t
 
 ctypedef fused basis_type:
     NP_UINT32_t
-    NP_UINT64_t
-    object
+    # NP_UINT64_t
+    # object
 
 ctypedef fused N_type:
     NP_INT8_t
-    NP_INT32_t
+    # NP_INT32_t
 
 ctypedef fused M_type:
     NP_INT16_t
-    NP_INT32_t
+    # NP_INT32_t
 
 ctypedef fused matrix_type:
-    float
-    double
-    float complex
+    #float
+    #double
+    #float complex
     double complex
 
 

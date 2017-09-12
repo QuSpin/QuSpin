@@ -105,9 +105,9 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
                                             int L,int pblock,int kblock,int a, 
                                             N_type *N,N_type *m,basis_type[:] basis):
     cdef npy_uintp Ns
-    cdef int r_temp,r,mp
+    cdef int r_temp,r,mp,sign
     cdef int sigma,sigma_i,sigma_f,v
-    cdef int R[2]
+    cdef int R[3]
     cdef npy_uintp i
     cdef double k = (2.0*_np.pi*kblock*a)/L
 
@@ -122,22 +122,24 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
 
     R[0] = 0
     R[1] = 0
+    R[2] = 0
 
     for i in range(MAX):
         CheckState_T_P_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mp = R[1]
+        sign = R[2]
         if r > 0:
             if mp != -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
                     r_temp = r
-                    if 1 + sigma*pblock*cos(mp*k) == 0:
+                    if 1 + sign*sigma*pblock*cos(mp*k) == 0:
                         r_temp = -1
-                    if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
+                    if (sigma == -1) and (1 - sign*sigma*pblock*cos(mp*k) != 0):
                         r_temp = -1
     
                     if r_temp > 0:
-                        m[Ns] = mp
+                        m[Ns] = mp + (L+1) * ((sign+1)//2)
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
@@ -259,8 +261,8 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
     cdef npy_uintp Ns
     cdef npy_uintp i
     cdef int sigma,sigma_i,sigma_f
-    cdef int r_temp,r,mpz
-    cdef int R[2]
+    cdef int r_temp,r,mpz,sign
+    cdef int R[3]
     cdef int j
     
     k = 2.0*_np.pi*kblock*a/L
@@ -275,22 +277,24 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
     Ns = 0
     R[0] = 0
     R[1] = 0
+    R[2] = 0
     for i in range(MAX):
         CheckState_T_PZ_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mpz = R[1]
+        sign = R[2]
         if r > 0:
             if mpz != -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
                     r_temp = r
-                    if 1 + sigma*pzblock*cos(mpz*k) == 0:
+                    if 1 + sign*sigma*pzblock*cos(mpz*k) == 0:
                         r_temp = -1
-                    if (sigma == -1) and (1 - sigma*pzblock*cos(mpz*k) != 0):
+                    if (sigma == -1) and (1 - sign*sigma*pzblock*cos(mpz*k) != 0):
                         r_temp = -1
     
                     if r_temp > 0:
-                        m[Ns] = mpz
-                        N[Ns] = (sigma*r)                
+                        m[Ns] = mpz + (L+1) * ((sign+1)//2)
+                        N[Ns] = (sigma*r)
                         basis[Ns] = s
                         Ns += 1
             else:
@@ -419,8 +423,8 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
     cdef double k 
     cdef npy_uintp Ns
     cdef npy_uintp i
-    cdef int mz,r
-    cdef int R[2]
+    cdef int mz,r,sign
+    cdef int R[3]
     cdef int j
     
 
@@ -430,22 +434,25 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
     Ns = 0
     R[0] = 0
     R[1] = 0
+    R[2] = 0
 
     for i in range(MAX):
         CheckState_T_Z_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mz = R[1]
+        sign = R[2]
+
+        if mz != -1:
+            if 1 + sign*zblock*cos(k*mz) == 0:
+                r = -1
+        else:
+            sign = -1          
 
         if r > 0:
-            if mz != -1:
-                if 1 + zblock*cos(k*mz) == 0:
-                    r = -1                
-
-            if r > 0:
-                m[Ns] = mz
-                N[Ns] = r            
-                basis[Ns] = s
-                Ns += 1    
+            m[Ns] = mz + ((sign+1)//2) * (L+1)
+            N[Ns] = r
+            basis[Ns] = s
+            Ns += 1    
         
         s = next_state(s,ns_pars)
 

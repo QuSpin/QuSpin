@@ -9,18 +9,23 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
     cdef int j,error,sign,i_op
     cdef int L = op_pars[1]
     cdef int N_indx = len(opstr)
-    cdef bool a
+    cdef bool a,fermionic_op
     cdef scalar_type M_E
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
     cdef basis_type one = 1
 
     cdef char I = "I" # identity (do nothing)
     cdef char n = "n" # hcb/fermionic number operator
+    cdef char x = "x"
+    cdef char y = "y"
     cdef char z = "z" # S^z spin operator, or particle-hole symmetric n operator
     cdef char p = "+" # S^+ or creation operator
     cdef char m = "-" # S^- or annihilation operator
 
+
+    fermionic_op = op_pars[0]
     error = 0
+    sign = 1
 
     for i in range(Ns): #loop over basis
         M_E = 1.0
@@ -33,24 +38,31 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
             a = ( r >> i_op ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
 
             # calculate fermionic ME sign if the chain is fermionic
-            if bit_count(r,i_op,L) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
-                sign=1
-            else:
-                sign=-1
+            if fermionic_op:
+                if bit_count(r,i_op,L) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
+                    sign=1
+                else:
+                    sign=-1
 
 
             if c_opstr[j] == I:
                 continue
             elif c_opstr[j] == z:
                 M_E *= (0.5 if a else -0.5)
+            elif c_opstr[j] == x:
+                M_E *= 0.5
+                r ^= b
+            elif c_opstr[j] == y:
+                M_E *= (0.5j if a else -0.5j)
+                r ^= b
             elif c_opstr[j] == n:
                 M_E *= (1.0 if a else 0.0)
             elif c_opstr[j] == p:
                 M_E *= sign*(0.0 if a else 1.0)
-                r = r ^ b
+                r ^= b
             elif c_opstr[j] == m:
                 M_E *= sign*(1.0 if a else 0.0)
-                r = r ^ b
+                r ^= b
             else:
                 error = 1
                 return error

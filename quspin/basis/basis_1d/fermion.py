@@ -80,12 +80,17 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		pblock = blocks.get("pblock")
 		zblock = blocks.get("cblock")
+		pzblock = blocks.get("pcblock")
 		zAblock = blocks.get("cAblock")
 		zBblock = blocks.get("cBblock")
 
 		if type(zblock) is int:
 			del blocks["cblock"]
 			blocks["zblock"] = zblock
+
+		if type(pzblock) is int:
+			del blocks["pcblock"]
+			blocks["pzblock"] = pzblock
 
 		if type(zAblock) is int:
 			del blocks["cAblock"]

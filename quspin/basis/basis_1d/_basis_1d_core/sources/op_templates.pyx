@@ -248,48 +248,50 @@ cdef int t_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kb
 
 
 
-cdef double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, double k, int q,int Nr,int Nc,int mr,int mc):
-    cdef double nr,nc
+cdef double MatrixElement_T_P(int L,int pblock, int kblock, int a, int l, double k, int q,int Nc,int Nr,int mc,int mr):
+    cdef double nc,nr
     cdef double ME
-    cdef int sr,sc
-
-    if Nr > 0:
-        sr = 1
-    else:
-        sr = -1
+    cdef int sr,sc,fr,fc,mmr,mmc
 
     if Nc > 0:
         sc = 1
     else:
         sc = -1
 
-
-    if mr >= 0:
-        nr = (1 + sr*pblock*cos(k*mr))/Nr
+    if Nr > 0:
+        sr = 1
     else:
-        nr = 1.0/Nr
-    nr *= sr
+        sr = -1
+
+    mmc = mc % (L+1)
+    mmr = mr % (L+1)
+    fc =  2*(mc//(L+1)) - 1
+    fr =  2*(mr//(L+1)) - 1
 
     if mc >= 0:
-        nc = (1 + sc*pblock*cos(k*mc))/Nc
+        nc = (1 + fc*sc*pblock*cos(k*mmc))/Nc
     else:
         nc = 1.0/Nc
     nc *= sc
 
+    if mr >= 0:
+        nr = (1 + fr*sr*pblock*cos(k*mmr))/Nr
+    else:
+        nr = 1.0/Nr
+    nr *= sr
 
-    ME=sqrt(nc/nr)*(sr*pblock)**q
+    ME=sqrt(nr/nc)*(sc*pblock)**q
 
     if sr == sc :
-        if mc < 0:
+        if mr < 0:
             ME *= cos(k*l)
         else:
-            ME *= (cos(k*l)+sr*pblock*cos((l-mc)*k))/(1+sr*pblock*cos(k*mc))
+            ME *= (cos(k*l)+fr*sc*pblock*cos((l-mmr)*k))/(1+fr*sc*pblock*cos(k*mmr))
     else:
-        if mc < 0:
-            ME *= -sr*sin(k*l)
+        if mr < 0:
+            ME *= -sc*sin(k*l)
         else:
-            ME *= (-sr*sin(k*l)+pblock*sin((l-mc)*k))/(1-sr*pblock*cos(k*mc))        
-
+            ME *= (-sc*sin(k*l)+fr*pblock*sin((l-mmr)*k))/(1-fr*sc*pblock*cos(k*mmr))        
 
     return ME
 
@@ -345,13 +347,14 @@ cdef int t_p_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int 
 
     else:
         for i in range(Ns):
-            sign = 1
+
             if (i > 0) and (basis[i] == basis[i-1]): continue
             if (i < (Ns - 1)) and (basis[i] == basis[i+1]):
                 o = 2
             else:
                 o = 1
 
+            sign = 1
             s = RefState_T_P_template(row[i],L,a,&sign,R,ref_pars)
 
             l = R[0]
@@ -579,55 +582,52 @@ cdef int t_p_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,in
 
 
 
-cdef double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l, double k, int qg,int Nr,int Nc,int mr,int mc):
-    cdef double nr,nc
+cdef double MatrixElement_T_PZ(int L,int pzblock, int kblock, int a, int l, double k, int q,int Nc,int Nr,int mc,int mr):
+    cdef double nc,nr
     cdef double ME
-    cdef int sr,sc
-
-
-
-    if Nr > 0:
-        sr = 1
-    else:
-        sr = -1
+    cdef int sr,sc,fr,fc,mmr,mmc
 
     if Nc > 0:
         sc = 1
     else:
         sc = -1
 
-
-
-
-    if mr >= 0:
-        nr = (1 + sr*pzblock*cos(k*mr))/Nr
+    if Nr > 0:
+        sr = 1
     else:
-        nr = 1.0/Nr
-    nr *= sr
+        sr = -1
+
+    mmc = mc % (L+1)
+    mmr = mr % (L+1)
+    fc =  2*(mc//(L+1)) - 1
+    fr =  2*(mr//(L+1)) - 1
 
     if mc >= 0:
-        nc = (1 + sc*pzblock*cos(k*mc))/Nc
+        nc = (1 + fc*sc*pzblock*cos(k*mmc))/Nc
     else:
         nc = 1.0/Nc
     nc *= sc
 
-    ME=sqrt(nc/nr)*(sr*pzblock)**qg
+    if mr >= 0:
+        nr = (1 + fr*sr*pzblock*cos(k*mmr))/Nr
+    else:
+        nr = 1.0/Nr
+    nr *= sr
+
+    ME=sqrt(nr/nc)*(sc*pzblock)**q
 
     if sr == sc :
-        if mc < 0:
+        if mr < 0:
             ME *= cos(k*l)
         else:
-            ME *= (cos(k*l)+sr*pzblock*cos((l-mc)*k))/(1+sr*pzblock*cos(k*mc))
+            ME *= (cos(k*l)+fr*sc*pzblock*cos((l-mmr)*k))/(1+fr*sc*pzblock*cos(k*mmr))
     else:
-        if mc < 0:
-            ME *= -sr*sin(k*l)
+        if mr < 0:
+            ME *= -sc*sin(k*l)
         else:
-            ME *= (-sr*sin(k*l)+pzblock*sin((l-mc)*k))/(1-sr*pzblock*cos(k*mc))        
-
+            ME *= (-sc*sin(k*l)+fr*pzblock*sin((l-mmr)*k))/(1-fr*sc*pzblock*cos(k*mmr))        
 
     return ME
-
-
 
 
 
@@ -1016,29 +1016,34 @@ cdef int t_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int
 
 
 
-cdef double complex MatrixElement_T_Z(int L,int zblock, int kblock, int a, int l, double k, int g,int Nr,int Nc,int mr,int mc):
+cdef double complex MatrixElement_T_Z(int L,int zblock, int kblock, int a, int l, double k, int g,int Nc,int Nr,int mc,int mr):
     cdef double nr,nc
     cdef double complex ME
+    cdef int sr,sc,mmr,mmc
     
-
-    if mr >=0:
-        nr = (1 + zblock*cos(k*mr))/Nr
-    else:
-        nr = 1.0/Nr
-
     if mc >= 0:
-        nc = (1 + zblock*cos(k*mc))/Nc
+        mmc = mc % (L+1)
+        sc = 2*(mc//(L+1))-1
+        nc = (1 + sc*zblock*cos(k*mmc))/Nc
     else:
         nc = 1.0/Nc
 
+    if mr >=0:
+        mmr = mr % (L+1)
+        sr = 2*(mr//(L+1))-1
+        nr = (1 + sr*zblock*cos(k*mmr))/Nr
+    else:
+        nr = 1.0/Nr
 
-    ME=sqrt(nc/nr)*(zblock**g)
+    ME=sqrt(nr/nc)*(zblock**g)
+
 
     if ((2*a*kblock) % L) == 0:
         ME *= (-1)**(2*l*a*kblock/L)
     else:
         ME *= (cos(k*l) - 1.0j * sin(k*l))
 
+    # print ME,zblock,g,l
     return ME
 
 
@@ -1254,7 +1259,7 @@ cdef int z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int zb
         row[i] = s
         n =  N[s]
         n /= N[i]
-        ME[i] *= sign*(zblock)**g*sqrt(n)
+        ME[i] *= sign*(zblock if g else 1)*sqrt(n)
 
 
     return error
