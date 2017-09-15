@@ -443,10 +443,10 @@ class hamiltonian(object):
 
 						self._basis=_default_basis(N,**basis_kwargs)
 
-					elif not _isbasis(basis):
+					elif not _isbasis(self._basis):
 						raise TypeError('expecting instance of basis class for argument: basis')
 
-					shape = (basis.Ns,basis.Ns)
+					shape = (self._basis.Ns,self._basis.Ns)
 
 				else:
 					self._basis=basis_kwargs.get('basis')	
