@@ -8,7 +8,7 @@ class site_info_square(site_info_2d):
 		site_info_2d.__init__(self,Lx,Ly)
 
 		self._X = self.sites%Lx
-		self._Y = self.sites/Lx
+		self._Y = self.sites//Lx
 
 	@property
 	def X(self):
