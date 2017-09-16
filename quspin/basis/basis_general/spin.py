@@ -9,7 +9,43 @@ except NameError:
 
 
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
-	"""Spin basis class for spin operators in a specified lattice symmetry sector.
+	"""Constructs basis for spin operators for USER-DEFINED symmetries.
+
+	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
+	These integers :math:`q` are used to define the symmetry blocks.
+
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
+	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+
+	The supported operator strings for `spin_basis_general` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &     \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
+			\\texttt{spin_basis_general} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
+		\\end{array}
+
+	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
+	the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support
+	the operator strings "x" and "y". 
+
+	Examples
+	--------
+
+	The code snipped below shows how to construct the two-dimensional transverse-field Ising model.
+	
+	.. math::
+		H = J \\sum_{\\langle ij\\rangle} \\sigma^z_{i}\\sigma^z_j+ g\\sum_j\\sigma^x_j 
+
+	Moreover,
+	it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In partcular,
+	we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion.
+
+	.. literalinclude:: ../../doc_examples/spin_basis_general-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
 
 	"""
 	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,**blocks):
@@ -30,7 +66,15 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		pauli: bool, optional
 			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
 		**blocks: optional
-			keyword arguments which pass the symmetry generator arrays. 
+			keyword arguments which pass the symmetry generator arrays. For instance:
+
+			>>> basis(...,kxblock=(Q,q),...)
+
+			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The
+			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the
+			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry
+			sector.
+
 		"""
 		self._S = S
 		self._pauli = pauli

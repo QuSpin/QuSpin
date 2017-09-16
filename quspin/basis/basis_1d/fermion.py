@@ -8,7 +8,7 @@ import numpy as _np
 class spinless_fermion_basis_1d(basis_1d):
 	"""Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.
 
-	The supposrted operator strings for `spinless_fermion_basis_1d` are:
+	The supported operator strings for `spinless_fermion_basis_1d` are:
 
 	.. math::
 			\\begin{array}{cccc}
@@ -19,7 +19,7 @@ class spinless_fermion_basis_1d(basis_1d):
 	Examples
 	--------
 
-	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the femrion Hamiltonian 
+	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
 
 	.. math::
 		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j

@@ -43,17 +43,17 @@ class quantum_LinearOperator(LinearOperator):
 		:lines: 7-
 
 	"""
-	def __init__(self,operator_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+	def __init__(self,static_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_LinearOperator` object.
 		
 		Parameters
 		-----------
 
-		operator_list : list
+		static_list : list
 			Contains list of objects to calculate the static part of a `quantum_LinearOperator` operator. Same as
 			the `static` argument of the `quantum_operator` class. The format goes like:
 
-			>>> operator_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
+			>>> static_list=[[opstr_1,[indx_11,...,indx_1m]],matrix_2,...]
 
 		N : int, optional 
 			number of sites to create the default spin basis with.
@@ -75,8 +75,8 @@ class quantum_LinearOperator(LinearOperator):
 
 		"""
 
-		if type(operator_list) in [list,tuple]:
-			for ele in operator_list:
+		if type(static_list) in [list,tuple]:
+			for ele in static_list:
 				if not _check_static(ele):
 					raise ValueError("quantum_LinearOperator only supports operator string representations.")
 		else: 
@@ -106,22 +106,22 @@ class quantum_LinearOperator(LinearOperator):
 
 
 		if check_herm:
-			self.basis.check_hermitian(operator_list, [])
+			self.basis.check_hermitian(static_list, [])
 
 		if check_symm:
-			self.basis.check_symm(operator_list,[])
+			self.basis.check_symm(static_list,[])
 
 		if check_pcon:
-			self.basis.check_pcon(operator_list,[])
+			self.basis.check_pcon(static_list,[])
 
 		if diagonal is not None:
 			self.set_diagonal(diagonal)
 		else:
 			self._diagonal = None
 
-		self._operator_list = []
+		self._static_list = []
 
-		for opstr,bonds in operator_list:
+		for opstr,bonds in static_list:
 			offdiag_bonds = []
 			for bond in bonds:
 				indx = list(bond[1:])
@@ -153,7 +153,7 @@ class quantum_LinearOperator(LinearOperator):
 					
 
 			if offdiag_bonds:
-				self._operator_list.append([opstr,offdiag_bonds])
+				self._static_list.append([opstr,offdiag_bonds])
 
 
 
@@ -176,9 +176,9 @@ class quantum_LinearOperator(LinearOperator):
 		return self._ndim
 
 	@property
-	def operator_list(self):
+	def static_list(self):
 		"""list: operator list used to create this object."""
-		return self._operator_list
+		return self._static_list
 
 	@property
 	def get_shape(self):
@@ -286,7 +286,7 @@ class quantum_LinearOperator(LinearOperator):
 		if self.diagonal is not None:
 			_np.multiply(other.T,self.diagonal,out=new_other.T)
 
-		for opstr, bonds in self.operator_list:
+		for opstr, bonds in self.static_list:
 			for bond in bonds:
 				J = bond[0]*self._scale
 				indx = _np.asarray(bond[1:])
@@ -425,7 +425,7 @@ class quantum_LinearOperator(LinearOperator):
 
 	def copy(self):
 		"""Returns a deep copy of `quantum_LinearOperator` object."""
-		return quantum_LinearOperator(self._operator_list,basis=self._basis,
+		return quantum_LinearOperator(self._static_list,basis=self._basis,
 							diagonal=self._diagonal,dtype=self._dtype,
 							check_symm=False,check_herm=False,check_pcon=False)
 
@@ -562,7 +562,7 @@ class quantum_LinearOperator(LinearOperator):
 
 	def _mul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		static = self.__mul__(other._operator_list)
+		static = self.__mul__(other._static_list)
 		dynamic = [[self.__mul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
 		return hamiltonian([static],dynamic,
 							basis=self._basis,dtype=result_dtype,copy=False)
@@ -577,7 +577,7 @@ class quantum_LinearOperator(LinearOperator):
 			new_other = _sp.csr_matrix(other.shape,dtype=result_dtype)
 
 
-		for opstr, bonds in self.operator_list:
+		for opstr, bonds in self.static_list:
 			for bond in bonds:
 				J = bond[0]
 				indx = _np.asarray(bond[1:])
@@ -595,7 +595,7 @@ class quantum_LinearOperator(LinearOperator):
 
 	def _rmul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		static = self.__rmul__(other._operator_list)
+		static = self.__rmul__(other._static_list)
 		dynamic = [[self.__rmul__(Hd),func] for func,Hd in iteritems(other.dynamic)]
 		return hamiltonian([static],dynamic,
 							basis=self._basis,dtype=result_dtype,copy=False)

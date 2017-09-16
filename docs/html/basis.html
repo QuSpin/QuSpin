@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quspin.basis.spin_basis_1d" href="generated/quspin.basis.spin_basis_1d.html" />
-    <link rel="prev" title="Examples" href="Examples.html" /> 
+    <link rel="prev" title="Welcome to the official QuSpin documentation website!" href="index.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -44,7 +44,7 @@
           <a href="generated/quspin.basis.spin_basis_1d.html" title="quspin.basis.spin_basis_1d"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="Examples.html" title="Examples"
+          <a href="index.html" title="Welcome to the official QuSpin documentation website!"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
@@ -57,8 +57,20 @@
             
   <span class="target" id="module-quspin.basis"></span><div class="section" id="basis-module-quspin-basis">
 <h1>Basis module (<a class="reference internal" href="#module-quspin.basis" title="quspin.basis"><code class="xref py py-mod docutils literal"><span class="pre">quspin.basis</span></code></a>)<a class="headerlink" href="#basis-module-quspin-basis" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="dimensional-symmetries">
-<h2>1-dimensional symmetries<a class="headerlink" href="#dimensional-symmetries" title="Permalink to this headline">¶</a></h2>
+<p>Basis classes for quantum many-body systems.</p>
+<p>The following table shows the available operator strings for the different bases:</p>
+<div class="math">
+\[\begin{array}{cccc}
+   \texttt{basis}/\texttt{opstr}   &amp;   \texttt{&quot;I&quot;}   &amp;   \texttt{&quot;+&quot;}   &amp;   \texttt{&quot;-&quot;}  &amp;   \texttt{&quot;n&quot;}   &amp;   \texttt{&quot;z&quot;}   &amp;   \texttt{&quot;x&quot;}   &amp;   \texttt{&quot;y&quot;}  \newline  
+   \texttt{spin_basis_*} &amp;   \hat{1}        &amp;   \hat S^+(\hat\sigma^+)       &amp;   \hat S^-(\hat\sigma^-)      &amp;         -         &amp;   \hat S^z(\hat\sigma^z)       &amp;   (\hat\sigma^x)     &amp;   (\hat\sigma^y)  \  \newline
+   \texttt{boson_basis_*}&amp;   \hat{1}        &amp;   \hat b^\dagger      &amp;       \hat b          &amp; \hat b^\dagger b     &amp;  \hat b^\dagger\hat b - \frac{\mathrm{sps}-1}{2}       &amp;   -       &amp;   -  \newline
+   \texttt{*_fermion_basis_*}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}       &amp;   -       &amp;   -  \newline
+\end{array}\]</div>
+<p><strong>Note:</strong> The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
+the argument <cite>pauli</cite> of the <cite>spin_basis</cite> class. Higher spins can only be defined using the spin operators, and do NOT support
+the operator strings “x” and “y”.</p>
+<div class="section" id="one-dimensional-symmetries">
+<h2>one-dimensional symmetries<a class="headerlink" href="#one-dimensional-symmetries" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -86,16 +98,16 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general" title="quspin.basis.spin_basis_general"><code class="xref py py-obj docutils literal"><span class="pre">spin_basis_general</span></code></a>(N[,&nbsp;Nup,&nbsp;m,&nbsp;S,&nbsp;pauli])</td>
-<td>Spin basis class for spin operators in a specified lattice symmetry sector.</td>
+<td>Constructs basis for spin operators for USER-DEFINED symmetries.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general" title="quspin.basis.boson_basis_general"><code class="xref py py-obj docutils literal"><span class="pre">boson_basis_general</span></code></a>(N[,&nbsp;Nb,&nbsp;nb,&nbsp;sps,&nbsp;_Np])</td>
-<td>boson basis class for constructing a general set of lattice symmetires.</td>
+<td>Constructs basis for boson operators for USER-DEFINED symmetries.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.spinless_fermion_basis_general.html#quspin.basis.spinless_fermion_basis_general" title="quspin.basis.spinless_fermion_basis_general"><code class="xref py py-obj docutils literal"><span class="pre">spinless_fermion_basis_general</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;_Np])</td>
-<td>Spinless fermion basis class for constructing a general set of lattice symmetires.</td>
+<td>Constructs basis for spinLESS fermion operators for USER-DEFINED symmetries.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general" title="quspin.basis.spinful_fermion_basis_general"><code class="xref py py-obj docutils literal"><span class="pre">spinful_fermion_basis_general</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;_Np])</td>
-<td>Spinful fermion basis class for constructing a general set of lattice symmetires.</td>
+<td>Constructs basis for spinFULL fermion operators for USER-DEFINED symmetries.</td>
 </tr>
 </tbody>
 </table>
@@ -128,7 +140,7 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a><ul>
-<li><a class="reference internal" href="#dimensional-symmetries">1-dimensional symmetries</a></li>
+<li><a class="reference internal" href="#one-dimensional-symmetries">one-dimensional symmetries</a></li>
 <li><a class="reference internal" href="#general-lattice-symmetries">general lattice symmetries</a></li>
 <li><a class="reference internal" href="#misc">misc</a></li>
 </ul>
@@ -136,8 +148,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="Examples.html"
-                        title="previous chapter">Examples</a></p>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to the official QuSpin documentation website!</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/quspin.basis.spin_basis_1d.html"
                         title="next chapter">quspin.basis.spin_basis_1d</a></p>
@@ -175,7 +187,7 @@
           <a href="generated/quspin.basis.spin_basis_1d.html" title="quspin.basis.spin_basis_1d"
              >next</a> |</li>
         <li class="right" >
-          <a href="Examples.html" title="Examples"
+          <a href="index.html" title="Welcome to the official QuSpin documentation website!"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>

@@ -62,7 +62,7 @@
 <div class="viewcode-block" id="spin_basis_1d"><a class="viewcode-back" href="../../../../generated/quspin.basis.spin_basis_1d.html#quspin.basis.spin_basis_1d">[docs]</a><span class="k">class</span> <span class="nc">spin_basis_1d</span><span class="p">(</span><span class="n">basis_1d</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for spin operators in a specified 1-d symmetry sector.</span>
 
-<span class="sd">	The supposrted operator strings for `spin_basis_1d` are:</span>
+<span class="sd">	The supported operator strings for `spin_basis_1d` are:</span>
 
 <span class="sd">	.. math::</span>
 <span class="sd">		\\begin{array}{cccc}</span>
@@ -70,7 +70,9 @@
 <span class="sd">			\\texttt{spin_basis_1d} &amp;   \\hat{1}        &amp;   \\hat\\sigma^+       &amp;   \\hat\\sigma^-      &amp;     \\hat\\sigma^z       &amp;   (\\hat\\sigma^x)     &amp;   (\\hat\\sigma^y)  \\  \\newline</span>
 <span class="sd">		\\end{array}</span>
 
-<span class="sd">	where the &quot;x&quot; ad &quot;y&quot; operator strings are supported only for spin-1/2 systems, and are NOT available for higher spins. </span>
+<span class="sd">	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see</span>
+<span class="sd">	the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support</span>
+<span class="sd">	the operator strings &quot;x&quot; and &quot;y&quot;. </span>
 
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>

@@ -1,6 +1,6 @@
 rm failed.txt
 
-for filename in *test.py
+for filename in *example.py
 do
 	python $filename
 	if [ $? -ne 0 ]; then

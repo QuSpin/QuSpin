@@ -48,10 +48,12 @@ class lattice_basis(basis):
 
 		Examples
 		--------
-
-		>>> s_1 = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
-		>>> s_2 = "".join("1" for i in range(4))
-		>>> print( basis.index(s_1), basis.index(s_2) )
+		
+		>>> i0 = index("111000") # pick state from basis set
+		>>> print(basis)
+		>>> print(i0)
+		>>> psi = np.zeros(basis.Ns,dtype=np.float64)
+		>>> psi[i0] = 1.0 # define state corresponding to the string "111000"
 
 		"""
 		if type(s) is int:

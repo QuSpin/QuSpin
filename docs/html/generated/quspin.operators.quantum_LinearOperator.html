@@ -52,7 +52,7 @@
 <h1>quspin.operators.quantum_LinearOperator<a class="headerlink" href="#quspin-operators-quantum-linearoperator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.operators.quantum_LinearOperator">
-<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_LinearOperator</code><span class="sig-paren">(</span><em>operator_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_LinearOperator</code><span class="sig-paren">(</span><em>static_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a quantum operator directly onto a state, without constructing the operator matrix.</p>
 <p>The <cite>quantum_LinearOperator</cite> class uses the <cite>basis.Op()</cite> function to calculate the matrix vector product on the 
 fly, greatly reducing the amount of memory needed for a calculation at the cost of speed.</p>
@@ -161,11 +161,11 @@ fly, greatly reducing the amount of memory needed for a calculation at the cost 
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.ndim" title="quspin.operators.quantum_LinearOperator.ndim"><code class="xref py py-obj docutils literal"><span class="pre">ndim</span></code></a></td>
 <td>int: number of dimensions, always equal to 2.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.operator_list" title="quspin.operators.quantum_LinearOperator.operator_list"><code class="xref py py-obj docutils literal"><span class="pre">operator_list</span></code></a></td>
-<td>list: operator list used to create this object.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.shape" title="quspin.operators.quantum_LinearOperator.shape"><code class="xref py py-obj docutils literal"><span class="pre">shape</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.shape" title="quspin.operators.quantum_LinearOperator.shape"><code class="xref py py-obj docutils literal"><span class="pre">shape</span></code></a></td>
 <td>tuple: shape of linear operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.static_list" title="quspin.operators.quantum_LinearOperator.static_list"><code class="xref py py-obj docutils literal"><span class="pre">static_list</span></code></a></td>
+<td>list: operator list used to create this object.</td>
 </tr>
 </tbody>
 </table>
@@ -222,17 +222,17 @@ fly, greatly reducing the amount of memory needed for a calculation at the cost 
 </table>
 <dl class="method">
 <dt id="quspin.operators.quantum_LinearOperator.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>operator_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>quantum_LinearOperator</cite> object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>operator_list</strong> : list</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>static_list</strong> : list</p>
 <blockquote>
 <div><p>Contains list of objects to calculate the static part of a <cite>quantum_LinearOperator</cite> operator. Same as
 the <cite>static</cite> argument of the <cite>quantum_operator</cite> class. The format goes like:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">operator_list</span><span class="o">=</span><span class="p">[[</span><span class="n">opstr_1</span><span class="p">,[</span><span class="n">indx_11</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="n">indx_1m</span><span class="p">]],</span><span class="n">matrix_2</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static_list</span><span class="o">=</span><span class="p">[[</span><span class="n">opstr_1</span><span class="p">,[</span><span class="n">indx_11</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="n">indx_1m</span><span class="p">]],</span><span class="n">matrix_2</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -552,12 +552,6 @@ _matvec method to ensure that y has the correct shape and type.</p>
 <dd><p>int: number of dimensions, always equal to 2.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="quspin.operators.quantum_LinearOperator.operator_list">
-<code class="descname">operator_list</code><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.operator_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>list: operator list used to create this object.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="quspin.operators.quantum_LinearOperator.rdot">
 <code class="descname">rdot</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator.rdot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.rdot" title="Permalink to this definition">¶</a></dt>
@@ -641,6 +635,12 @@ _rmatvec method to ensure that y has the correct shape and type.</p>
 <dt id="quspin.operators.quantum_LinearOperator.shape">
 <code class="descname">shape</code><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>tuple: shape of linear operator.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.quantum_LinearOperator.static_list">
+<code class="descname">static_list</code><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.static_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>list: operator list used to create this object.</p>
 </dd></dl>
 
 <dl class="method">

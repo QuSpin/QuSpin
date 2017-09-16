@@ -4,7 +4,7 @@ import scipy.sparse as _sp
 import numpy as _np
 
 class expm_multiply_parallel(object):
-	"""Implements `scipy.expm_multiply` for *openmp*.
+	"""Implements `scipy.sparse.linalg.expm_multiply()` for *openmp*.
 
 	Notes
 	-----
@@ -85,7 +85,7 @@ class expm_multiply_parallel(object):
 		else:
 			raise ValueError("expecting 'a' to be scalar.")
 
-	def dot(self,v,work=None,overwrite_v=False):
+	def dot(self,v,work_array=None,overwrite_v=False):
 		"""Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :math:`v`. 
 
 		Examples
@@ -100,8 +100,8 @@ class expm_multiply_parallel(object):
 		-----------
 		v : contiguous numpy.ndarray
 			array to apply :math:`\\mathrm{e}^{aA}` on.
-		work : contiguous numpy.ndarray, optional
-			array of `shape = (2*len(v),)` which is used as work space for the underlying c-code. This saves extra memory allocation for function operations.
+		work_array : contiguous numpy.ndarray, optional
+			array of `shape = (2*len(v),)` which is used as work_array space for the underlying c-code. This saves extra memory allocation for function operations.
 		overwrite_v : bool
 			if set to `True`, the data in `v` is overwritten by the function. This saves extra memory allocation for the results.
 
@@ -124,17 +124,17 @@ class expm_multiply_parallel(object):
 		if v.shape[0] != self._A.shape[1]:
 			raise ValueError("dimension mismatch {}, {}".format(self._A.shape,v.shape))
 
-		if work is None:
-			work = _np.zeros((2*self._A.shape[0],),dtype=v.dtype)
+		if work_array is None:
+			work_array = _np.zeros((2*self._A.shape[0],),dtype=v.dtype)
 		else:
-			work = _np.ascontiguousarray(work)
-			if work.shape != (2*self._A.shape[0],):
-				raise ValueError("work array must be an array of shape (2*v.shape[0],) with same dtype as v.")
-			if work.dtype != v.dtype:
-				raise ValueError("work array must be the same dtype as i_nput vector v.")
+			work_array = _np.ascontiguousarray(work_array)
+			if work_array.shape != (2*self._A.shape[0],):
+				raise ValueError("work_array array must be an array of shape (2*v.shape[0],) with same dtype as v.")
+			if work_array.dtype != v.dtype:
+				raise ValueError("work_array array must be the same dtype as i_nput vector v.")
 
 		_wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
-					self._m_star,self._s,self._a,self._tol,self._mu,v,work)
+					self._m_star,self._s,self._a,self._tol,self._mu,v,work_array)
 
 		return v
 

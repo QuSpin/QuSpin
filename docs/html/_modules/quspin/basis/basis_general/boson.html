@@ -97,11 +97,71 @@
 
 <span class="c1"># general basis for hardcore bosons/spin-1/2</span>
 <div class="viewcode-block" id="boson_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general">[docs]</a><span class="k">class</span> <span class="nc">boson_basis_general</span><span class="p">(</span><span class="n">hcb_basis_general</span><span class="p">,</span><span class="n">basis_general</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;boson basis class for constructing a general set of lattice symmetires. </span>
+	<span class="sd">&quot;&quot;&quot;Constructs basis for boson operators for USER-DEFINED symmetries.</span>
+
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
+<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
+<span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
+
+<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
+<span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
+
+<span class="sd">	The supported operator strings for `boson_basis_general` are:</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		\\begin{array}{cccc}</span>
+<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}     \\newline	</span>
+<span class="sd">			\\texttt{boson_basis_general}&amp;   \\hat{1}        &amp;   \\hat b^\\dagger      &amp;       \\hat b          &amp; \\hat b^\\dagger b     &amp;  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline</span>
+<span class="sd">		\\end{array}</span>
+
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+<span class="sd">	* if `Nb` or `nb` are specified, by default `sps` is set to the number of bosons on the lattice.</span>
+<span class="sd">	* if `sps` is specified, while `Nb` or `nb` are not, all particle sectors are filled up to the maximumal </span>
+<span class="sd">		occupation. </span>
+<span class="sd">	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space </span>
+<span class="sd">		restrited by `sps`.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The code snipped below shows how to construct the two-dimensional Bose-Hubbard model.</span>
+<span class="sd">	</span>
+<span class="sd">	.. math::</span>
+<span class="sd">		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)</span>
+
+<span class="sd">	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In partcular,</span>
+<span class="sd">	we do translation invariance and parity (reflection) (along each lattice direction).</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/boson_basis_general-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="boson_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="boson_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Intializes the `boson_basis_general` object (basis for bosonic operators).</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		N: int</span>
+<span class="sd">			Number of sites.</span>
+<span class="sd">		Nb: {int,list}, optional</span>
+<span class="sd">			Number of bosons in chain. Can be integer or list to specify one or more particle sectors.</span>
+<span class="sd">		nb: float, optional</span>
+<span class="sd">			Density of bosons in chain (bosons per site).</span>
+<span class="sd">		sps: int, optional</span>
+<span class="sd">			Number of states per site (including zero bosons), or on-site Hilbert space dimension.</span>
+<span class="sd">		**blocks: optional</span>
+<span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
+
+<span class="sd">			&gt;&gt;&gt; basis(...,kxblock=(Q,q),...)</span>
+
+<span class="sd">			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The</span>
+<span class="sd">			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the</span>
+<span class="sd">			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry</span>
+<span class="sd">			sector.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="n">sps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -129,11 +189,11 @@
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">sps</span>
 
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-			<span class="n">general_hcb_basis</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
+			<span class="n">general_hcb_basis</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+			<span class="n">basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">False</span>
 			<span class="n">count_particles</span> <span class="o">=</span> <span class="kc">False</span>
 			<span class="k">if</span> <span class="n">_Np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Nb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

@@ -4,7 +4,7 @@ Tools module (:mod:`quspin.tools`)
 ==================================
 .. currentmodule:: quspin.tools
 
-classes and tools to aid in calculations with QuSpin. 
+Classes and functions to manipulate quantum states.
 
 
 .. currentmodule:: quspin.tools

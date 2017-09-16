@@ -124,7 +124,8 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 30
 31
 32
-33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">photon_basis</span> <span class="c1"># Hilbert space bases</span>
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">photon_basis</span> <span class="c1"># Hilbert space bases</span>
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonian and observables</span>
 <span class="kn">from</span> <span class="nn">quspin.basis.photon</span> <span class="kn">import</span> <span class="n">coherent_state</span> <span class="c1"># HO coherent state</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
@@ -147,6 +148,7 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 <span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
 <span class="c1"># compute atom-photon basis</span>
 <span class="n">basis</span><span class="o">=</span><span class="n">photon_basis</span><span class="p">(</span><span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">L</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">Nph</span><span class="o">=</span><span class="n">Nph_tot</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 <span class="c1"># compute atom-photon Hamiltonian H</span>
 <span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
 <span class="c1">#</span>

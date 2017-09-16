@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-import exp_op_core
+from . import exp_op_core
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
@@ -443,10 +443,10 @@ class hamiltonian(object):
 
 						self._basis=_default_basis(N,**basis_kwargs)
 
-					elif not _isbasis(basis):
+					elif not _isbasis(self._basis):
 						raise TypeError('expecting instance of basis class for argument: basis')
 
-					shape = (basis.Ns,basis.Ns)
+					shape = (self._basis.Ns,self._basis.Ns)
 
 				else:
 					self._basis=basis_kwargs.get('basis')	

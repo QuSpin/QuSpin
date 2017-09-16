@@ -46,11 +46,71 @@ def get_basis_type(N, Np, sps, **blocks):
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
-	"""boson basis class for constructing a general set of lattice symmetires. 
+	"""Constructs basis for boson operators for USER-DEFINED symmetries.
+
+	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
+	These integers :math:`q` are used to define the symmetry blocks.
+
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
+	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+
+	The supported operator strings for `boson_basis_general` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}     \\newline	
+			\\texttt{boson_basis_general}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+		\\end{array}
+
+	Notes
+	-----
+	* if `Nb` or `nb` are specified, by default `sps` is set to the number of bosons on the lattice.
+	* if `sps` is specified, while `Nb` or `nb` are not, all particle sectors are filled up to the maximumal 
+		occupation. 
+	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
+		restrited by `sps`.
+
+	Examples
+	--------
+
+	The code snipped below shows how to construct the two-dimensional Bose-Hubbard model.
+	
+	.. math::
+		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
+
+	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In partcular,
+	we do translation invariance and parity (reflection) (along each lattice direction).
+
+	.. literalinclude:: ../../doc_examples/boson_basis_general-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 
 	"""
-	def __init__(self,N,Nb=None,nb=None,sps=None,_Np=None,**kwargs):
-		"""
+	def __init__(self,N,Nb=None,nb=None,sps=None,_Np=None,**blocks):
+		"""Intializes the `boson_basis_general` object (basis for bosonic operators).
+
+		Parameters
+		-----------
+		N: int
+			Number of sites.
+		Nb: {int,list}, optional
+			Number of bosons in chain. Can be integer or list to specify one or more particle sectors.
+		nb: float, optional
+			Density of bosons in chain (bosons per site).
+		sps: int, optional
+			Number of states per site (including zero bosons), or on-site Hilbert space dimension.
+		**blocks: optional
+			keyword arguments which pass the symmetry generator arrays. For instance:
+
+			>>> basis(...,kxblock=(Q,q),...)
+
+			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The
+			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the
+			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry
+			sector.
 
 		"""
 		if sps is None:
@@ -78,11 +138,11 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._sps = sps
 
+		self._allowed_ops=set(["I","n","+","-"])
 		if self._sps == 2:
-			general_hcb_basis.__init__(self,N,Nb=Nb,_Np=_Np,**kwargs)
-			self._allowed_ops=set(["I","n","+","-"])
+			general_hcb_basis.__init__(self,N,Nb=Nb,_Np=_Np,**blocks)
 		else:
-			basis_general.__init__(self,N,**kwargs)
+			basis_general.__init__(self,N,**blocks)
 			self._check_pcon = False
 			count_particles = False
 			if _Np is not None and Nb is None:

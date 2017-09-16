@@ -51,7 +51,7 @@ i0 = basis.index("111000") # pick state from basis set
 psi = np.zeros(basis.Ns,dtype=np.float64)
 psi[i0] = 1.0
 # print info about setup
-state_str = "".join(str(int((basis[i0]//basis.sps**i)%basis.sps)) for i in range(L))
+state_str = "".join(str(int((basis[i0]//basis.sps**(L-i-1))%basis.sps)) for i in range(L))
 print("total H-space size: {}, initial state: |{}>".format(basis.Ns,state_str))
 #
 ##### compute all momentum blocks

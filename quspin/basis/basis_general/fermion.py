@@ -8,10 +8,51 @@ from scipy.misc import comb
 
 # general basis for hardcore bosons/spin-1/2
 class spinful_fermion_basis_general(basis_general):
-	"""Spinful fermion basis class for constructing a general set of lattice symmetires. 
+	"""Constructs basis for spinFULL fermion operators for USER-DEFINED symmetries.
+
+	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
+	These integers :math:`q` are used to define the symmetry blocks.
+
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
+	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+
+	The supported operator strings for `spinfull_fermion_basis_general` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
+			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+		\\end{array}
+
+	Examples
+	--------
 
 	"""
 	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
+		"""Intializes the `spinfull_fermion_basis_general` object (basis for fermionic operators).
+
+		Parameters
+		-----------
+		L: int
+			Length of chain/number of sites.
+		Nf: {int,list}, optional
+			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
+		nf: float, optional
+			Density of fermions in chain (fermions per site).
+		**blocks: optional
+			keyword arguments which pass the symmetry generator arrays. For instance:
+
+			>>> basis(...,kxblock=(Q,q),...)
+
+			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The
+			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the
+			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry
+			sector.
+
+		"""
+
+
 		# Nf = [(Nup,Ndown),...]
 		# Nup is left side of basis sites 0 - N-1
 		# Ndown is right side of basis sites N - 2*N-1
@@ -220,11 +261,65 @@ class spinful_fermion_basis_general(basis_general):
 
 # general basis for hardcore bosons/spin-1/2
 class spinless_fermion_basis_general(basis_general):
-	"""Spinless fermion basis class for constructing a general set of lattice symmetires. 
+	"""Constructs basis for spinLESS fermion operators for USER-DEFINED symmetries.
+
+	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
+	These integers :math:`q` are used to define the symmetry blocks.
+
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
+	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+
+	The supported operator strings for `spinless_fermion_basis_general` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
+			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+		\\end{array}
+
+	Examples
+	--------
+
+	The code snippet below shows how to use the `spinless_fermion_basis_general` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
+
+	.. math::
+		H=-J\\sum_{\\langle ij\\rangle} c^\\dagger_{i}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U \\sum_{\\langle ij\\rangle} n_{i} n_j
+
+	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In partcular,
+	we do translation invariance and parity (reflection) (along each lattice direction).
+
+	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_general-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 
 	"""
+	
 
 	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
+		"""Intializes the `spinless_fermion_basis_general` object (basis for fermionic operators).
+
+		Parameters
+		-----------
+		L: int
+			Length of chain/number of sites.
+		Nf: {int,list}, optional
+			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
+		nf: float, optional
+			Density of fermions in chain (fermions per site).
+		**blocks: optional
+			keyword arguments which pass the symmetry generator arrays. For instance:
+
+			>>> basis(...,kxblock=(Q,q),...)
+
+			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The
+			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the
+			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry
+			sector.
+
+		"""
 
 		if Nf is not None and nf is not None:
 			raise ValueError("cannot use 'nf' and 'Nf' simultaineously.")
