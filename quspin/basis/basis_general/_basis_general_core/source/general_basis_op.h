@@ -77,9 +77,10 @@ int general_op(general_basis_core<I> *B,
 		std::complex<double> m = A;
 		int local_err = B->op(r,m,n_op,opstr,indx);
 
+
 		if(local_err == 0){
-			
-			I rr = B->ref_state(r,g,gg);
+			int sign = 1;
+			I rr = B->ref_state(r,g,gg,sign);
 			// B->print(r);
 			// std::cout << std::setw(5);
 			// B->print(rr);
@@ -93,7 +94,7 @@ int general_op(general_basis_core<I> *B,
 					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
 					m *= std::exp(std::complex<double>(0,-q));
 				}
-				m *= std::sqrt(double(n[j])/double(n[i]));
+				m *= sign * std::sqrt(double(n[j])/double(n[i]));
 				local_err = check_imag(m,&M[i]);
 				col[i]=i;
 				row[i]=j;

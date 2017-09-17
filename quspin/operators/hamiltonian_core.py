@@ -3,8 +3,6 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from . import exp_op_core
-
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
 from ._make_hamiltonian import test_function
@@ -770,13 +768,15 @@ class hamiltonian(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
+		from .exp_op_core import isexp_op
+
 		if self.Ns <= 0:
 			return _np.asarray([])
 
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
-		if exp_op_core.isexp_op(V):
+		if isexp_op(V):
 			raise TypeError("Can't take expectation value of exp_op")
 
 		
@@ -1073,7 +1073,8 @@ class hamiltonian(object):
 		"""
 
 		if generator:
-			return exp_op_core.exp_op(other,**exp_op_kwargs).sandwich(self)
+			from .exp_op_core import exp_op
+			return exp_op(other,**exp_op_kwargs).sandwich(self)
 		else:
 			return self.project_to(other)
 

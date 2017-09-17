@@ -8,22 +8,22 @@
 
 
 template<class T>
-bool inline update_out_dense(std::complex<double> c, npy_intp n_vec,const std::complex<T> *in, std::complex<T> *out){
+bool inline update_out_dense(std::complex<double> c, int sign, npy_intp n_vec,const std::complex<T> *in, std::complex<T> *out){
 	for(npy_intp i=0;i<n_vec;i++){
-		out[i] += std::complex<T>(c) * in[i];
+		out[i] += T(sign) * std::complex<T>(c) * in[i];
 	}
 	return true;
 }
 
 template<class T>
-bool inline update_out_dense(std::complex<double> c, npy_intp n_vec,const T *in, T *out){
+bool inline update_out_dense(std::complex<double> c, int sign, npy_intp n_vec,const T *in, T *out){
 	if(std::abs(c.imag())>1.1e-15){
 		return false;
 	}
 	else{
 		T re = c.real();
 		for(npy_intp i=0;i<n_vec;i++){
-			out[i] += re * in[i];
+			out[i] += T(sign) * re * in[i];
 		}
 		return true;
 	}
@@ -33,6 +33,7 @@ bool inline update_out_dense(std::complex<double> c, npy_intp n_vec,const T *in,
 template<class I,class T>
 bool get_vec_rep(general_basis_core<I> *B,
 									 I s,
+								   int &sign,
 							 const int nt,
 							 const npy_intp n_vec,
 							 const npy_intp Ns_full,
@@ -44,7 +45,7 @@ bool get_vec_rep(general_basis_core<I> *B,
 	bool err = true;
 	if(nt<=0){
 		const npy_intp full = (Ns_full - s - 1)*n_vec;
-		err = update_out_dense(c,n_vec,in,&out[full]);		
+		err = update_out_dense(c,sign,n_vec,in,&out[full]);		
 		return err;
 	}
 	int per = B->pers[depth];
@@ -53,18 +54,18 @@ bool get_vec_rep(general_basis_core<I> *B,
 
 	if(depth < nt-1){
 		for(int j=0;j<per && err;j++){
-			err = get_vec_rep(B,s,nt,n_vec,Ns_full,in,c,out,depth+1);
+			err = get_vec_rep(B,s,sign,nt,n_vec,Ns_full,in,c,out,depth+1);
 			c *= cc;
-			s = B->map_state(s,depth);
+			s = B->map_state(s,depth,sign);
 		}
 		return err;
 	}
 	else{
 		for(int j=0;j<per && err;j++){
 			const npy_intp full = (Ns_full - s - 1)*n_vec;
-			err = update_out_dense(c,n_vec,in,&out[full]);
+			err = update_out_dense(c,sign,n_vec,in,&out[full]);
 			c *= cc;
-			s = B->map_state(s,depth);
+			s = B->map_state(s,depth,sign);
 		}
 		return err;
 	}
@@ -88,8 +89,9 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 		if(!err)
 			continue;
 
-		std::complex<double> c = 1.0/std::sqrt(double(n[k]));	
-		bool local_err = get_vec_rep(B,basis[k],nt,n_vec,Ns_full,&in[k*n_vec],c,out,0);
+		std::complex<double> c = 1.0/std::sqrt(double(n[k]));
+		int sign = 1;
+		bool local_err = get_vec_rep(B,basis[k],sign,nt,n_vec,Ns_full,&in[k*n_vec],c,out,0);
 		if(!local_err){
 			#pragma omp critical
 			err = local_err;
