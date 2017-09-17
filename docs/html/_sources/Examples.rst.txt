@@ -6,7 +6,7 @@ For a detailed information on how to use the package, check out these papers:
 
 
 The following Python scripts demonstrate the basic functionality of QuSpin:
-	* Exact Diagonalisation of Spin Hamiltonians
+	* :ref:`example0-label`
 	* Adiabatic Control of Parameters in Many-Body Localised Phases
 	* Heating in Periodically Driven Spin Chains
 	* Quantised Light-Atom Interactions in the Semi-classical Limit: Recovering the Periodically Driven Atom
