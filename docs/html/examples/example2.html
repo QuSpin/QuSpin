@@ -1,0 +1,376 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Heating in Periodically Driven Spin Chains &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="heating-in-periodically-driven-spin-chains">
+<span id="example2-label"></span><h1>Heating in Periodically Driven Spin Chains<a class="headerlink" href="#heating-in-periodically-driven-spin-chains" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" href="../_downloads/example2.py" download=""><code class="xref download docutils literal"><span class="pre">download</span></code></a></p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##################################################################################</span>
+<span class="c1">#                            example 1                                           #</span>
+<span class="c1">#     In this example we show how to use some of QuSpin&#39;s tools for studying     #</span>
+<span class="c1">#     Floquet systems by way of studying the heating in a periodically driven    #</span>
+<span class="c1">#     spin chain. We also show how to construct more complicated many-spin       #</span>
+<span class="c1">#     operators using QuSpin&#39;s interface.                                        #</span>
+<span class="c1">##################################################################################</span>
+
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span><span class="p">,</span> <span class="n">diag_ensemble</span> <span class="c1"># t_dep measurements</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet</span><span class="p">,</span> <span class="n">Floquet_t_vec</span> <span class="c1"># Floquet Hamiltonian</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="c1">##### define model parameters #####</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">14</span> <span class="c1"># system size</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin interaction</span>
+<span class="n">g</span><span class="o">=</span><span class="mf">0.809</span> <span class="c1"># transverse field</span>
+<span class="n">h</span><span class="o">=</span><span class="mf">0.9045</span> <span class="c1"># parallel field</span>
+<span class="n">Omega</span><span class="o">=</span><span class="mf">4.5</span> <span class="c1"># drive frequency</span>
+<span class="c1">#</span>
+<span class="c1">##### set up alternating Hamiltonians #####</span>
+<span class="c1"># define time-reversal symmetric periodic step drive</span>
+<span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Omega</span><span class="p">):</span>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">Omega</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
+<span class="n">drive_args</span><span class="o">=</span><span class="p">[</span><span class="n">Omega</span><span class="p">]</span>
+<span class="c1"># compute basis in the 0-total momentum and +1-parity sector</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># define PBC site-coupling lists for operators</span>
+<span class="n">x_field_pos</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">x_field_neg</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">z_field</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">J_nn</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="c1"># static and dynamic lists</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_nn</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">],[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field_pos</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_nn</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">],</span>
+		 <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">],[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field_neg</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">]]</span>
+<span class="c1"># compute Hamiltonians</span>
+<span class="n">H</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### set up second-order van Vleck Floquet Hamiltonian #####</span>
+<span class="c1"># zeroth-order term</span>
+<span class="n">Heff_0</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1"># second-order term: site-coupling lists</span>
+<span class="n">Heff2_term_1</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">Heff2_term_2</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="o">*</span><span class="n">g</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">Heff2_term_3</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="o">*</span><span class="n">g</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">Heff2_term_4</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">Heff2_term_5</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.5</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">g</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>		  <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="c1"># define static list</span>
+<span class="n">Heff_static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zxz&quot;</span><span class="p">,</span><span class="n">Heff2_term_1</span><span class="p">],</span>
+			 <span class="p">[</span><span class="s2">&quot;xz&quot;</span><span class="p">,</span><span class="n">Heff2_term_2</span><span class="p">],[</span><span class="s2">&quot;zx&quot;</span><span class="p">,</span><span class="n">Heff2_term_2</span><span class="p">],</span>
+			 <span class="p">[</span><span class="s2">&quot;yy&quot;</span><span class="p">,</span><span class="n">Heff2_term_3</span><span class="p">],[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">Heff2_term_2</span><span class="p">],</span>
+			 <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">Heff2_term_4</span><span class="p">],</span>
+			 <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">Heff2_term_5</span><span class="p">]</span>							<span class="p">]</span> 
+<span class="c1"># compute van Vleck Hamiltonian</span>
+<span class="n">Heff_2</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">Heff_static</span><span class="p">,[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">Heff_2</span><span class="o">*=-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mf">12.0</span><span class="o">*</span><span class="n">Omega</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># zeroth + second order van Vleck Floquet Hamiltonian</span>
+<span class="n">Heff_02</span><span class="o">=</span><span class="n">Heff_0</span><span class="o">+</span><span class="n">Heff_2</span>
+<span class="c1">#</span>
+<span class="c1">##### set up second-order van Vleck Kick operator #####</span>
+<span class="n">Keff2_term_1</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="o">*</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">Keff2_term_2</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="o">*</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="c1"># define static list</span>
+<span class="n">Keff_static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zy&quot;</span><span class="p">,</span><span class="n">Keff2_term_1</span><span class="p">],[</span><span class="s2">&quot;yz&quot;</span><span class="p">,</span><span class="n">Keff2_term_1</span><span class="p">],[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="n">Keff2_term_2</span><span class="p">]]</span>
+<span class="n">Keff_02</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">Keff_static</span><span class="p">,[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">Keff_02</span><span class="o">*=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mf">8.0</span><span class="o">*</span><span class="n">Omega</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### rotate Heff to stroboscopic basis #####</span>
+<span class="c1"># e^{-1j*Keff_02} Heff_02 e^{+1j*Keff_02}</span>
+<span class="n">HF_02</span> <span class="o">=</span> <span class="n">Heff_02</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">Keff_02</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">1j</span><span class="p">)</span> 
+<span class="c1">#</span>
+<span class="c1">##### define time vector of stroboscopic times with 100 cycles #####</span>
+<span class="n">t</span><span class="o">=</span><span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">len_T</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># t.vals=times, t.i=init. time, t.T=drive period</span>
+<span class="c1">#</span>
+<span class="c1">##### calculate exact Floquet eigensystem #####</span>
+<span class="n">t_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">3.0</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span> <span class="c1"># times to evaluate H</span>
+<span class="n">dt_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span> <span class="c1"># time step durations to apply H for</span>
+<span class="n">Floq</span><span class="o">=</span><span class="n">Floquet</span><span class="p">({</span><span class="s1">&#39;H&#39;</span><span class="p">:</span><span class="n">H</span><span class="p">,</span><span class="s1">&#39;t_list&#39;</span><span class="p">:</span><span class="n">t_list</span><span class="p">,</span><span class="s1">&#39;dt_list&#39;</span><span class="p">:</span><span class="n">dt_list</span><span class="p">},</span><span class="n">VF</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># call Floquet class</span>
+<span class="n">VF</span><span class="o">=</span><span class="n">Floq</span><span class="o">.</span><span class="n">VF</span> <span class="c1"># read off Floquet states</span>
+<span class="n">EF</span><span class="o">=</span><span class="n">Floq</span><span class="o">.</span><span class="n">EF</span> <span class="c1"># read off quasienergies</span>
+<span class="c1">#</span>
+<span class="c1">##### calculate initial state (GS of HF_02) and its energy</span>
+<span class="n">EF_02</span><span class="p">,</span> <span class="n">psi_i</span> <span class="o">=</span> <span class="n">HF_02</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mf">1E4</span><span class="p">)</span>
+<span class="n">psi_i</span> <span class="o">=</span> <span class="n">psi_i</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+<span class="c1">#</span>
+<span class="c1">##### time-dependent measurements</span>
+<span class="c1"># calculate measurements</span>
+<span class="n">Sent_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;basis&quot;</span><span class="p">:</span><span class="n">basis</span><span class="p">,</span><span class="s2">&quot;chain_subsys&quot;</span><span class="p">:[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)]}</span>
+<span class="c1">#meas = obs_vs_time((psi_i,EF,VF),t.vals,{&quot;E_time&quot;:HF_02/L},Sent_args=Sent_args)</span>
+<span class="c1">#&quot;&quot;&quot;</span>
+<span class="c1"># alternative way by solving Schroedinger&#39;s eqn</span>
+<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">)</span>
+<span class="n">meas</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,{</span><span class="s2">&quot;E_time&quot;</span><span class="p">:</span><span class="n">HF_02</span><span class="o">/</span><span class="n">L</span><span class="p">},</span><span class="n">Sent_args</span><span class="o">=</span><span class="n">Sent_args</span><span class="p">)</span>
+<span class="c1">#&quot;&quot;&quot;</span>
+<span class="c1"># read off measurements</span>
+<span class="n">Energy_t</span> <span class="o">=</span> <span class="n">meas</span><span class="p">[</span><span class="s2">&quot;E_time&quot;</span><span class="p">]</span>
+<span class="n">Entropy_t</span> <span class="o">=</span> <span class="n">meas</span><span class="p">[</span><span class="s2">&quot;Sent_time&quot;</span><span class="p">][</span><span class="s2">&quot;Sent&quot;</span><span class="p">]</span>
+<span class="c1">#</span>
+<span class="c1">##### calculate diagonal ensemble measurements</span>
+<span class="n">DE_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Obs&quot;</span><span class="p">:</span><span class="n">HF_02</span><span class="p">,</span><span class="s2">&quot;Sd_Renyi&quot;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span><span class="s2">&quot;Srdm_Renyi&quot;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span><span class="s2">&quot;Srdm_args&quot;</span><span class="p">:</span><span class="n">Sent_args</span><span class="p">}</span>
+<span class="n">DE</span> <span class="o">=</span> <span class="n">diag_ensemble</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">psi_i</span><span class="p">,</span><span class="n">EF</span><span class="p">,</span><span class="n">VF</span><span class="p">,</span><span class="o">**</span><span class="n">DE_args</span><span class="p">)</span>
+<span class="n">Ed</span> <span class="o">=</span> <span class="n">DE</span><span class="p">[</span><span class="s2">&quot;Obs_pure&quot;</span><span class="p">]</span>
+<span class="n">Sd</span> <span class="o">=</span> <span class="n">DE</span><span class="p">[</span><span class="s2">&quot;Sd_pure&quot;</span><span class="p">]</span>
+<span class="n">Srdm</span><span class="o">=</span><span class="n">DE</span><span class="p">[</span><span class="s2">&quot;Srdm_pure&quot;</span><span class="p">]</span>
+<span class="c1">#</span>
+<span class="c1">##### plot results #####</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pylab</span>
+<span class="c1"># define legend labels</span>
+<span class="n">str_E_t</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">mathcal{E}(lT)$&quot;</span>
+<span class="n">str_Sent_t</span> <span class="o">=</span> <span class="s2">&quot;$s_\mathrm{ent}(lT)$&quot;</span>
+<span class="n">str_Ed</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline{\mathcal{E}}$&quot;</span>
+<span class="n">str_Srdm</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline{s}_\mathrm{rdm}$&quot;</span>
+<span class="n">str_Sd</span> <span class="o">=</span> <span class="s2">&quot;$s_d^F$&quot;</span>
+<span class="c1"># plot infinite-time data</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Ed</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span><span class="s2">&quot;b--&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_Ed</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Srdm</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span><span class="s2">&quot;r--&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_Srdm</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Sd</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span><span class="s2">&quot;g--&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_Sd</span><span class="p">)</span>
+<span class="c1"># plot time-dependent data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Energy_t</span><span class="p">,</span><span class="s2">&quot;b-o&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_E_t</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Entropy_t</span><span class="p">,</span><span class="s2">&quot;r-s&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_Sent_t</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="c1"># label axes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">#\ </span><span class="se">\\</span><span class="s2">mathrm{periods}</span><span class="se">\\</span><span class="s2"> l$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="c1"># set y axis limits</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.7</span><span class="p">])</span>
+<span class="c1"># display legend</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="c1"># update axis font size</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="c1"># turn on grid</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1"># save figure</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example2.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="c1"># show plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/example2.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>
