@@ -5,7 +5,7 @@ from ..basis import isbasis as _isbasis
 
 from ._make_hamiltonian import make_static
 
-import hamiltonian_core
+from . import hamiltonian_core
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla

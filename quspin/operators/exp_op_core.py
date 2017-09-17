@@ -1,7 +1,6 @@
 from __future__ import print_function, division
 
-import hamiltonian_core
-import quantum_operator_core 
+from . import hamiltonian_core,quantum_operator_core 
 
 # need linear algebra packages
 import scipy

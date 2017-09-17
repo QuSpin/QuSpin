@@ -120,7 +120,7 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 					printing["Nup"]=Nup
 					printing["S"]=S
 
-					err_msg="testing: {opstr:5} {indx:10}  S={S:3} Nup={Nup:5} kblock={kblock:5} pblock={pblock:5} zblock={zblock:5}".format(**printing)
+					err_msg="testing: {opstr:} {indx:}  S={S:} Nup={Nup:} kblock={kblock:} pblock={pblock:} zblock={zblock:}".format(**printing)
 
 					check_ME(basis_1d,gen_basis,opstr,indx,np.complex128,err_msg)
 

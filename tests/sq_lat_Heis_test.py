@@ -16,6 +16,8 @@ tr = square_lattice_trans(Lx,Ly)
 
 Z = [-(i+1) for i in range(N)]
 
+print(tr.T_x)
+
 basis = spin_basis_general(Lx*Ly,Nup=N//2,pauli=True,kx=(tr.T_x,0),ky=(tr.T_y,0),py=(tr.P_y,0),px=(tr.P_x,0),zb=(Z,0))
 basis_full = spin_basis_general(Lx*Ly,Nup=N//2,pauli=True)
 
