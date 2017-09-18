@@ -18,8 +18,12 @@ def cython_files():
 
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 
-
-	cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+	cython_src = [
+					os.path.join(package_dir,"hcp_basis.pyx"),
+					os.path.join(package_dir,"hcp_ops.pyx"),
+					os.path.join(package_dir,"boson_basis.pyx"),
+					os.path.join(package_dir,"boson_ops.pyx"),
+				]
 	if USE_CYTHON:
 		cythonize(cython_src,language="c++")
 

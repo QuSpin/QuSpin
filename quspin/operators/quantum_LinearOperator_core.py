@@ -230,55 +230,55 @@ class quantum_LinearOperator(LinearOperator):
 
 	### state manipulation/observable routines
 
-	def dot(self,other):
-		"""Matrix-vector multiplication of `quantum_LinearOperator` operator, with state `V`.
+	# def dot(self,other):
+	# 	"""Matrix-vector multiplication of `quantum_LinearOperator` operator, with state `V`.
 
-		.. math::
-			H|V\\rangle
+	# 	.. math::
+	# 		H|V\\rangle
 
-		Parameters
-		-----------
-		other : numpy.ndarray
-			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
+	# 	Parameters
+	# 	-----------
+	# 	other : numpy.ndarray
+	# 		Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
 
-		Returns
-		--------
-		numpy.ndarray
-			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
+	# 	Returns
+	# 	--------
+	# 	numpy.ndarray
+	# 		Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
-		Examples
-		---------
-		>>> B = H.dot(A,check=True)
+	# 	Examples
+	# 	---------
+	# 	>>> B = H.dot(A,check=True)
 
-		corresponds to :math:`B = HA`. 
+	# 	corresponds to :math:`B = HA`. 
 	
-		"""
-		return self.__mul__(other)
+	# 	"""
+	# 	return self.__mul__(other)
 
-	def rdot(self,other):
-		"""Vector-matrix multiplication of `quantum_LinearOperator` operator, with state `V`.
+	# def rdot(self,other):
+	# 	"""Vector-matrix multiplication of `quantum_LinearOperator` operator, with state `V`.
 
-		.. math::
-			\\langle V|H
+	# 	.. math::
+	# 		\\langle V|H
 
-		Parameters
-		-----------
-		other : numpy.ndarray
-			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
+	# 	Parameters
+	# 	-----------
+	# 	other : numpy.ndarray
+	# 		Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
 
-		Returns
-		--------
-		numpy.ndarray
-			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
+	# 	Returns
+	# 	--------
+	# 	numpy.ndarray
+	# 		Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
-		Examples
-		---------
-		>>> B = H.dot(A,check=True)
+	# 	Examples
+	# 	---------
+	# 	>>> B = H.dot(A,check=True)
 
-		corresponds to :math:`B = AH`. 
+	# 	corresponds to :math:`B = AH`. 
 	
-		"""
-		return self.__rmul__(other)
+	# 	"""
+	# 	return self.__rmul__(other)
 
 	def _matvec(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
@@ -290,8 +290,8 @@ class quantum_LinearOperator(LinearOperator):
 			for bond in bonds:
 				J = bond[0]*self._scale
 				indx = _np.asarray(bond[1:])
-				self.basis.inplace_Op(other,new_other,opstr, indx, J, self._dtype,
-										self._conjugated,self._transposed,)
+				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
+									self._conjugated,self._transposed,v_out=new_other)
 		return new_other
 
 	def _rmatvec(self,other):
@@ -442,6 +442,8 @@ class quantum_LinearOperator(LinearOperator):
 			dense = False
 		elif ishamiltonian(other):
 			return self._add_hamiltonian(other)
+		elif isinstance(other,LinearOperator):
+			return LinearOperator.__add__(self,other)
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
@@ -469,6 +471,8 @@ class quantum_LinearOperator(LinearOperator):
 			dense = False
 		elif ishamiltonian(other):
 			return self._sub_hamiltonian(other)
+		elif isinstance(other,LinearOperator):
+			return LinearOperator.__sub__(self,other)
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
@@ -502,13 +506,16 @@ class quantum_LinearOperator(LinearOperator):
 			dense = False
 		elif ishamiltonian(other):
 			return self._mul_hamiltonian(other)
-		elif _np.isscalar(other):
+		elif isinstance(other,LinearOperator):
+			return LinearOperator.__mul__(self,other)
+		elif _np.asarray(other).ndim == 0:
 			return self._mul_scalar(other)
 		else:
 			dense = True
 			other = _np.asanyarray(other)
-		if self._shape[1] != other.shape[0]:
-			raise ValueError("dimension mismatch with shapes {0} and {1}".format(self._shape,other.shape))
+
+		if self.get_shape[1] != other.shape[0]:
+			raise ValueError("dimension mismatch with shapes {} and {}".format(self._shape,other.shape))
 
 		if dense:
 			if other.ndim == 1:
@@ -527,6 +534,8 @@ class quantum_LinearOperator(LinearOperator):
 			dense = False
 		elif ishamiltonian(other):
 			return self._rmul_hamiltonian(other)
+		elif isinstance(other,LinearOperator):
+			return LinearOperator.__rmul__(self,other)
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:
