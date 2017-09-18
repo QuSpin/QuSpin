@@ -5,7 +5,7 @@ import scipy.sparse as _sp
 
 @cython.boundscheck(False)
 cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int nt, int nnt,
-						dtype[:] c, index_type[:] row, index_type[:] col,object P):
+						int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,object P):
 	cdef int per = B.pers[nt-nnt]
 	cdef npy_intp Ns_full = P.shape[0]
 	cdef npy_intp Ns = P.shape[1]
@@ -23,18 +23,18 @@ cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int
 				if abs(cc.imag)>1.1e-15:
 					raise TypeError("attemping to use real type for complex elements.")
 
-				P = get_proj_helper_64(B,basis,nt,nnt-1,c,row,col,P)
+				P = get_proj_helper_64(B,basis,nt,nnt-1,sign,c,row,col,P)
 				with nogil:
 					for i in range(Ns):
 						c[i] *= cc.real
 			else:
-				P = get_proj_helper_64(B,basis,nt,nnt-1,c,row,col,P)
+				P = get_proj_helper_64(B,basis,nt,nnt-1,sign,c,row,col,P)
 				with nogil:
 					for i in range(Ns):
 						c[i] *= cc
 
 			with nogil:
-				B.map_state(&basis[0],Ns,nt-nnt)
+				B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 
 		return P
 
@@ -46,26 +46,28 @@ cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int
 
 				with nogil:
 					for i in range(Ns):
+						c[i] *= sign[i]
 						row[i] = Ns_full-basis[i]-1
 
 				P = P + _sp.csr_matrix((c,(row,col)),shape=P.shape)
 
 				with nogil:
 					for i in range(Ns):
-						c[i] *= cc.real
+						c[i] *= sign[i] * cc.real
 
 			else:
 				with nogil:
 					for i in range(Ns):
+						c[i] *= sign[i]
 						row[i] = Ns_full-basis[i]-1
 
 				P = P + _sp.csr_matrix((c,(row,col)),shape=P.shape)
 				with nogil:
 					for i in range(Ns):
-						c[i] *= cc
+						c[i] *= sign[i] * cc
 
 			with nogil:
-				B.map_state(&basis[0],Ns,nt-nnt)
+				B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 
 
 		return P
@@ -75,7 +77,7 @@ cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int
 
 @cython.boundscheck(False)
 cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int nt, int nnt,
-						dtype[:] c, index_type[:] row, index_type[:] col,object P):
+						int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,object P):
 	cdef int per = B.pers[nt-nnt]
 	cdef npy_intp Ns_full = P.shape[0]
 	cdef npy_intp Ns = P.shape[1]
@@ -93,18 +95,18 @@ cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int
 				if abs(cc.imag)>1.1e-15:
 					raise TypeError("attemping to use real type for complex elements.")
 
-				P = get_proj_helper_32(B,basis,nt,nnt-1,c,row,col,P)
+				P = get_proj_helper_32(B,basis,nt,nnt-1,sign,c,row,col,P)
 				with nogil:
 					for i in range(Ns):
 						c[i] *= cc.real
 			else:
-				P = get_proj_helper_32(B,basis,nt,nnt-1,c,row,col,P)
+				P = get_proj_helper_32(B,basis,nt,nnt-1,sign,c,row,col,P)
 				with nogil:
 					for i in range(Ns):
 						c[i] *= cc
 
 			with nogil:
-				B.map_state(&basis[0],Ns,nt-nnt)
+				B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 
 		return P
 
@@ -116,26 +118,28 @@ cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int
 
 				with nogil:
 					for i in range(Ns):
+						c[i] *= sign[i]
 						row[i] = Ns_full-basis[i]-1
 
 				P = P + _sp.csr_matrix((c,(row,col)),shape=P.shape)
 
 				with nogil:
 					for i in range(Ns):
-						c[i] *= cc.real
+						c[i] *= sign[i] * cc.real
 
 			else:
 				with nogil:
 					for i in range(Ns):
+						c[i] *= sign[i]
 						row[i] = Ns_full-basis[i]-1
 
 				P = P + _sp.csr_matrix((c,(row,col)),shape=P.shape)
 				with nogil:
 					for i in range(Ns):
-						c[i] *= cc
+						c[i] *= sign[i] * cc
 
 			with nogil:
-				B.map_state(&basis[0],Ns,nt-nnt)
+				B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 			
 		return P
 
@@ -180,7 +184,7 @@ cdef class general_basis_core_wrap_32:
 			raise TypeError("attemping to use real type for complex elements.")
 
 	@cython.boundscheck(False)
-	def get_proj(self, uint32_t[:] basis, object Ptype, dtype[:] c, index_type[:] row, index_type[:] col):
+	def get_proj(self, uint32_t[:] basis, object Ptype,int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col):
 		cdef npy_intp Ns = basis.shape[0]
 		cdef npy_intp Ns_full = (self._sps**self._N)
 
@@ -188,7 +192,7 @@ cdef class general_basis_core_wrap_32:
 		if Ns == 0:
 			return P
 
-		return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,c,row,col,P)
+		return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
 
 cdef class general_basis_core_wrap_64:
@@ -229,7 +233,7 @@ cdef class general_basis_core_wrap_64:
 			raise TypeError("attemping to use real type for complex elements.")
 
 	@cython.boundscheck(False)
-	def get_proj(self, uint64_t[:] basis, object Ptype, dtype[:] c, index_type[:] row, index_type[:] col):
+	def get_proj(self, uint64_t[:] basis, object Ptype, int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col):
 		cdef npy_intp Ns = basis.shape[0]
 		cdef npy_intp Ns_full = (self._sps**self._N)
 
@@ -237,6 +241,6 @@ cdef class general_basis_core_wrap_64:
 		if Ns == 0:
 			return P
 
-		return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,c,row,col,P)
+		return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
 

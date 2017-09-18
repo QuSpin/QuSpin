@@ -39,7 +39,7 @@ class hcb_basis_core : public general_basis_core<I>
 			
 		}
 
-		void map_state(I s[],npy_intp M,int n_map){
+		void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
 			if(general_basis_core<I>::nt<=0){
 				return;
 			}
@@ -48,6 +48,7 @@ class hcb_basis_core : public general_basis_core<I>
 			#pragma omp for schedule(static,1)
 			for(npy_intp i=0;i<M;i++){
 				s[i] = hcb_map_bits(s[i],map,n);
+				sign[i] *= 1;
 			}
 		}
 
