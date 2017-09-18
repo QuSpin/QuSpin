@@ -7,7 +7,7 @@ cdef extern from "general_basis_core.h":
 	cdef cppclass general_basis_core[I]:
 		const int pers[]
 		const int qs[]
-		void map_state(I[],npy_intp,int) nogil
+		void map_state(I[],npy_intp,int,signed char[]) nogil
 
 cdef extern from "make_general_basis.h":
 	npy_intp make_basis[I,J](general_basis_core[I]*,npy_intp,npy_intp,I[], J[]) nogil

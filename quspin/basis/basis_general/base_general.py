@@ -139,13 +139,14 @@ class basis_general(lattice_basis):
 
 		"""
 		c = _np.ones_like(self._basis,dtype=dtype)
+		sign = _np.ones_like(self._basis,dtype=_np.int8)
 		c[:] = self._n[:]
 		_np.sqrt(c,out=c)
 		_np.power(c,-1,out=c)
 		index_type = _np.min_scalar_type(-(self._sps**self._N))
 		col = _np.arange(self._Ns,dtype=index_type)
 		row = _np.arange(self._Ns,dtype=index_type)
-		return self._core.get_proj(self._basis,dtype,c,row,col)
+		return self._core.get_proj(self._basis,dtype,sign,c,row,col)
 
 	def get_vec(self,v0,sparse=True):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
