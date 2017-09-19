@@ -18,6 +18,14 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
 	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
+	User-defined symmetries with the `..._basis_general` class can be programmed as follows. Suppose we have a system of 
+	a total of 6 sites, enumerated by :math:`0,1,2,3,3,4,5`. There are two types of operations one cna do on the lattice sites:
+		* exchangng the labels of two sites: :math:`1 \\leftrightarrow 4`
+		* population inversion on a given site: :math:`s\\leftrightarrow\\-(s+1)`
+
+	These two operations already comprise a variety of symemtries, icluding translation, parity (reflection) and 
+	spin inversion. For a more detailed explanation, see the example below.
+
 	The supported operator strings for `spin_basis_general` are:
 
 	.. math::
