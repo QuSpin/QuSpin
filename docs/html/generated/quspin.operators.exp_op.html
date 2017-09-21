@@ -35,7 +35,11 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../operators.html" accesskey="U">Operators module (<code class="docutils literal"><span class="pre">quspin.operators</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,6 +50,645 @@
             
   <div class="section" id="quspin-operators-exp-op">
 <h1>quspin.operators.exp_op<a class="headerlink" href="#quspin-operators-exp-op" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="quspin.operators.exp_op">
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">exp_op</code><span class="sig-paren">(</span><em>O</em>, <em>a=1.0</em>, <em>start=None</em>, <em>stop=None</em>, <em>num=None</em>, <em>endpoint=None</em>, <em>iterate=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs matrix exponentials of quantum operators.</p>
+<p>The <cite>exp_op</cite> class does not calculate the actual matrix exponential but instead computes the action of the 
+matrix exponential through its Taylor series. This is slower but for sparse arrays it is more memory efficient.
+All of the functions make use of the <cite>expm_multiply</cite> function in Scipy’s sparse library.</p>
+<p>This class also allows the option to specify a grid of points on a line in the complex plane via the 
+optional arguments. If this is specified, then an array <cite>grid</cite> is created via the function 
+<cite>numpy.linspace</cite>, and the exponential is evaluated for all points on te grid: <cite>exp(a*grid[i]*O)</cite>.</p>
+<p class="rubric">Notes</p>
+<p>To calculate the matrix exponential itself, use the function method <cite>exp_op.get_mat()</cite>.</p>
+<p>For a fast computations, look up the <cite>tools.expm_multiply_parallel</cite> function.</p>
+<p class="rubric">Examples</p>
+<p>The Example below shows how to compute the time-evolvution of a state under a constant Hamiltonian.
+This is done using the matrix exponential to define the evolution operator and then applying it directly 
+onto the initial state.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">exp_op</span> <span class="c1"># Hamiltonians, operators and exp_op</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="c1">##### define model parameters #####</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">4</span> <span class="c1"># system size</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin interaction</span>
+<span class="n">g</span><span class="o">=</span><span class="mf">0.809</span> <span class="c1"># transverse field</span>
+<span class="n">h</span><span class="o">=</span><span class="mf">0.9045</span> <span class="c1"># parallel field</span>
+<span class="c1">#</span>
+<span class="c1">##### construct basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
+<span class="c1"># define PBC site-coupling lists for operators</span>
+<span class="n">x_field</span><span class="o">=</span><span class="p">[[</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">z_field</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">J_nn</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="c1"># static and dynamic lists</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_nn</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">],[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1">###### construct Hamiltonian</span>
+<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">###### compute evolution operator as matrix exponential</span>
+<span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">N_t</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mi">21</span> <span class="c1"># time vector parameters</span>
+<span class="c1"># define evolution operator</span>
+<span class="n">U</span><span class="o">=</span><span class="n">exp_op</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">N_t</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># compute domain wall initial state</span>
+<span class="n">dw_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">i_0</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">dw_str</span><span class="p">)</span> <span class="c1"># find index of product state in basis</span>
+<span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span> <span class="c1"># allocate space for state</span>
+<span class="n">psi</span><span class="p">[</span><span class="n">i_0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># set MB state to be the given product state</span>
+<span class="c1">#</span>
+<span class="c1">##### calculate time-evolved state by successive application of matrix exponential</span>
+<span class="n">psi_t</span><span class="o">=</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="c1"># create generator object to apply matrix exponential on initial the state</span>
+<span class="k">print</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span> 
+<span class="k">for</span> <span class="n">psi_i</span> <span class="ow">in</span> <span class="n">psi_t</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s2">&quot;evolved state:&quot;</span><span class="p">,</span> <span class="n">psi_i</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.H" title="quspin.operators.exp_op.H"><code class="xref py py-obj docutils literal"><span class="pre">H</span></code></a></td>
+<td><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes and conjugates the matrix exponential.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.Ns" title="quspin.operators.exp_op.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.O" title="quspin.operators.exp_op.O"><code class="xref py py-obj docutils literal"><span class="pre">O</span></code></a></td>
+<td>obj: Returns the operator to be exponentiated.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.T" title="quspin.operators.exp_op.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
+<td><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes the matrix exponential.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.a" title="quspin.operators.exp_op.a"><code class="xref py py-obj docutils literal"><span class="pre">a</span></code></a></td>
+<td><cite>numpy.dtype</cite>: constant (c-number) multiplying the operator to be exponentiated: <cite>exp(a*O)</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.get_shape" title="quspin.operators.exp_op.get_shape"><code class="xref py py-obj docutils literal"><span class="pre">get_shape</span></code></a></td>
+<td>tuple: shape of the <cite>hamiltonian</cite> object, always equal to <cite>(Ns,Ns)</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.grid" title="quspin.operators.exp_op.grid"><code class="xref py py-obj docutils literal"><span class="pre">grid</span></code></a></td>
+<td>numpy.array: grid containing equidistant points to evaluate the matrix exponential at.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.iterate" title="quspin.operators.exp_op.iterate"><code class="xref py py-obj docutils literal"><span class="pre">iterate</span></code></a></td>
+<td>bool: shows if iterate option is on/off.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.ndim" title="quspin.operators.exp_op.ndim"><code class="xref py py-obj docutils literal"><span class="pre">ndim</span></code></a></td>
+<td>int: number of dimensions, always equal to 2.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.step" title="quspin.operators.exp_op.step"><code class="xref py py-obj docutils literal"><span class="pre">step</span></code></a></td>
+<td>float: step size between equidistant grid points.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.conj" title="quspin.operators.exp_op.conj"><code class="xref py py-obj docutils literal"><span class="pre">conj</span></code></a>()</td>
+<td>Conjugates <cite>exp_op</cite> operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.copy" title="quspin.operators.exp_op.copy"><code class="xref py py-obj docutils literal"><span class="pre">copy</span></code></a>()</td>
+<td>Returns a deep copy of <cite>exp_op</cite> object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.dot" title="quspin.operators.exp_op.dot"><code class="xref py py-obj docutils literal"><span class="pre">dot</span></code></a>(other[,&nbsp;shift])</td>
+<td>Left-multiply matrix exponential by an operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.getH" title="quspin.operators.exp_op.getH"><code class="xref py py-obj docutils literal"><span class="pre">getH</span></code></a>([copy])</td>
+<td>Calculates hermitian conjugate of <cite>exp_op</cite> operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.get_mat" title="quspin.operators.exp_op.get_mat"><code class="xref py py-obj docutils literal"><span class="pre">get_mat</span></code></a>([dense])</td>
+<td>Calculates matrix corresponding to matrix exponential object: <cite>exp(a*O)</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.rdot" title="quspin.operators.exp_op.rdot"><code class="xref py py-obj docutils literal"><span class="pre">rdot</span></code></a>(other[,&nbsp;shift])</td>
+<td>Right-multiply matrix exponential by an operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.sandwich" title="quspin.operators.exp_op.sandwich"><code class="xref py py-obj docutils literal"><span class="pre">sandwich</span></code></a>(other[,&nbsp;shift])</td>
+<td>Sandwich operator between matrix exponentials.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.set_a" title="quspin.operators.exp_op.set_a"><code class="xref py py-obj docutils literal"><span class="pre">set_a</span></code></a>(new_a)</td>
+<td>Resets attribute <cite>a</cite> to multiply the operator in <cite>exp(a*O)</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.set_grid" title="quspin.operators.exp_op.set_grid"><code class="xref py py-obj docutils literal"><span class="pre">set_grid</span></code></a>(start,&nbsp;stop[,&nbsp;num,&nbsp;endpoint])</td>
+<td>Resets attribute <cite>grid</cite> to evaluate the operator for every <cite>i</cite> in <cite>exp(a*O*grid[i])</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.set_iterate" title="quspin.operators.exp_op.set_iterate"><code class="xref py py-obj docutils literal"><span class="pre">set_iterate</span></code></a>(Value)</td>
+<td>Resets <cite>iterate</cite> attribute.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.transpose" title="quspin.operators.exp_op.transpose"><code class="xref py py-obj docutils literal"><span class="pre">transpose</span></code></a>([copy])</td>
+<td>Transposes <cite>exp_op</cite> operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.unset_grid" title="quspin.operators.exp_op.unset_grid"><code class="xref py py-obj docutils literal"><span class="pre">unset_grid</span></code></a>()</td>
+<td>Resets grid parameters to their default values.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="quspin.operators.exp_op.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>O</em>, <em>a=1.0</em>, <em>start=None</em>, <em>stop=None</em>, <em>num=None</em>, <em>endpoint=None</em>, <em>iterate=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises the <cite>exp_op</cite> object (matrix exponential of the operator <cite>O</cite>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>O</strong> : obj</p>
+<blockquote>
+<div><p><cite>numpy.ndarray</cite>, <cite>scipy.spmatrix</cite>, <cite>hamiltonian</cite>, <cite>quantum_operator</cite> object: the operator to compute the matrix exponential of.</p>
+</div></blockquote>
+<p><strong>a</strong> : <cite>numpy.dtype</cite>, optional</p>
+<blockquote>
+<div><p>Prefactor to go in front of the operator in the exponential: <cite>exp(a*O)</cite>. Can be a complex number.
+Default is <cite>a = 1.0</cite>.</p>
+</div></blockquote>
+<p><strong>start</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Specifies the starting point for a grid of points to evaluate the matrix exponential at.</p>
+</div></blockquote>
+<p><strong>stop</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Specifies the end point of for a grid of points to evaluate the matrix exponential at.</p>
+</div></blockquote>
+<p><strong>num</strong> : int, optional</p>
+<blockquote>
+<div><p>Specifies the number of grid points between start and stop. Default is <cite>num = 50</cite>.</p>
+</div></blockquote>
+<p><strong>endpoint</strong> : bool, optional</p>
+<blockquote>
+<div><p>Wehether or not the value <cite>stop</cite> is included in the set of grid points. Note that this changes 
+the grid step size.</p>
+</div></blockquote>
+<p><strong>iterate</strong> : bool, optional</p>
+<blockquote class="last">
+<div><p>If set to <cite>True</cite> class methods return generators which will iterate over the <cite>grid</cite> points.</p>
+<p>If set to <cite>False</cite>, a list of all the evaluated points is produced. This is more memory efficient 
+but at the sacrifice of speed.</p>
+<p>Default is <cite>False</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.H">
+<code class="descname">H</code><a class="headerlink" href="#quspin.operators.exp_op.H" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes and conjugates the matrix exponential.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.Ns">
+<code class="descname">Ns</code><a class="headerlink" href="#quspin.operators.exp_op.Ns" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.O">
+<code class="descname">O</code><a class="headerlink" href="#quspin.operators.exp_op.O" title="Permalink to this definition">¶</a></dt>
+<dd><p>obj: Returns the operator to be exponentiated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.T">
+<code class="descname">T</code><a class="headerlink" href="#quspin.operators.exp_op.T" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes the matrix exponential.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.a">
+<code class="descname">a</code><a class="headerlink" href="#quspin.operators.exp_op.a" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>numpy.dtype</cite>: constant (c-number) multiplying the operator to be exponentiated: <cite>exp(a*O)</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.conj">
+<code class="descname">conj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.conj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.conj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conjugates <cite>exp_op</cite> operator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="xref py py-obj docutils literal"><span class="pre">exo_op</span></code></p>
+<blockquote class="last">
+<div><p><span class="math">\(\exp(a\mathcal{O})_{ij}\mapsto \exp(a\mathcal{O})_{ij}^*\)</span></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function does NOT transpose the exponentiated operator.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO_conj</span> <span class="o">=</span> <span class="n">expO</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deep copy of <cite>exp_op</cite> object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.dot">
+<code class="descname">dot</code><span class="sig-paren">(</span><em>other</em>, <em>shift=None</em>, <em>**call_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Left-multiply matrix exponential by an operator.</p>
+<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator which multiplies
+it from the left be <span class="math">\(A\)</span>. Then this funcion implements:</p>
+<div class="math">
+\[A\exp(\mathcal{O})\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : obj</p>
+<blockquote>
+<div><p>The operator <span class="math">\(A\)</span> which multiplies from the left the matrix exponential <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
+</div></blockquote>
+<p><strong>time</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Time to evaluate the operator to be exponentiated. Default is <cite>time=0.0</cite>.</p>
+</div></blockquote>
+<p><strong>shift</strong> : scalar</p>
+<blockquote>
+<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - shift\mathrm{Id})\)</span>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
+<blockquote class="last">
+<div><p>matrix exponential multiplied by <cite>other</cite> from the left.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">get_mat</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.getH">
+<code class="descname">getH</code><span class="sig-paren">(</span><em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.getH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.getH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates hermitian conjugate of <cite>exp_op</cite> operator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>copy</strong> : bool, optional</p>
+<blockquote>
+<div><p>Whether to return a deep copy of the original object. Default is <cite>copy = False</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference internal" href="#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal"><span class="pre">exp_op</span></code></a></p>
+<blockquote class="last">
+<div><p><span class="math">\(\exp(a\mathcal{O})_{ij}\mapsto \exp(a\mathcal{O})_{ij}^*\)</span></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO_herm</span> <span class="o">=</span> <span class="n">expO</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.get_mat">
+<code class="descname">get_mat</code><span class="sig-paren">(</span><em>dense=False</em>, <em>**call_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.get_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.get_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates matrix corresponding to matrix exponential object: <cite>exp(a*O)</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>time</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Time to evaluate the operator to be exponentiated. Default is <cite>time=0.0</cite>.</p>
+</div></blockquote>
+<p><strong>dense</strong> : bool</p>
+<blockquote>
+<div><p>Whether or not to return a dense or a sparse array. Detault is <cite>dense = False</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
+<blockquote class="last">
+<div><p>Can be either one of</p>
+<ul class="simple">
+<li><cite>numpy.ndarray</cite>: dense array if <cite>dense = True</cite>.</li>
+<li><cite>scipy.sparse.csc</cite>: sparse array if <cite>dense = False</cite>.</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">get_mat</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">get_mat</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">dense</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.get_shape">
+<code class="descname">get_shape</code><a class="headerlink" href="#quspin.operators.exp_op.get_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>tuple: shape of the <cite>hamiltonian</cite> object, always equal to <cite>(Ns,Ns)</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.grid">
+<code class="descname">grid</code><a class="headerlink" href="#quspin.operators.exp_op.grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>numpy.array: grid containing equidistant points to evaluate the matrix exponential at.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.iterate">
+<code class="descname">iterate</code><a class="headerlink" href="#quspin.operators.exp_op.iterate" title="Permalink to this definition">¶</a></dt>
+<dd><p>bool: shows if iterate option is on/off.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.ndim">
+<code class="descname">ndim</code><a class="headerlink" href="#quspin.operators.exp_op.ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: number of dimensions, always equal to 2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.rdot">
+<code class="descname">rdot</code><span class="sig-paren">(</span><em>other</em>, <em>shift=None</em>, <em>**call_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.rdot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.rdot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-multiply matrix exponential by an operator.</p>
+<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator which multiplies
+it from the right be <span class="math">\(B\)</span>. Then this funcion implements:</p>
+<div class="math">
+\[\exp(\mathcal{O})B\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : obj</p>
+<blockquote>
+<div><p>The operator <span class="math">\(B\)</span> which multiplies from the right the matrix exponential <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
+</div></blockquote>
+<p><strong>time</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Time to evaluate the operator to be exponentiated. Default is <cite>time=0.0</cite>.</p>
+</div></blockquote>
+<p><strong>shift</strong> : scalar</p>
+<blockquote>
+<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - shift\mathrm{Id})\)</span>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
+<blockquote class="last">
+<div><p>matrix exponential multiplied by <cite>other</cite> from the right.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">2</span><span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">get_mat</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">rdot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.sandwich">
+<code class="descname">sandwich</code><span class="sig-paren">(</span><em>other</em>, <em>shift=None</em>, <em>**call_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.sandwich"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.sandwich" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sandwich operator between matrix exponentials.</p>
+<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator to be sandwiched be
+<span class="math">\(C\)</span>. Then this funcion implements:</p>
+<div class="math">
+\[\exp(\mathcal{O})^\dagger C \exp(\mathcal{O})\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : obj</p>
+<blockquote>
+<div><p>The operator <span class="math">\(C\)</span> to be sandwiched by the matrix exponentials <span class="math">\(\exp(\mathcal{O})^\dagger\)</span>
+and <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
+</div></blockquote>
+<p><strong>time</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Time to evaluate the operator to be exponentiated. Default is <cite>time=0.0</cite>.</p>
+</div></blockquote>
+<p><strong>shift</strong> : scalar</p>
+<blockquote>
+<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - shift\mathrm{Id})\)</span>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
+<blockquote class="last">
+<div><p>operator <cite>other</cite> sandwiched between matrix exponential <cite>exp_op</cite> and its hermitian conjugate.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The matrix exponential to multiply <span class="math">\(C\)</span> from the left is hermitian conjugated.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="o">.</span><span class="n">H</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">sandwich</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.set_a">
+<code class="descname">set_a</code><span class="sig-paren">(</span><em>new_a</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.set_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.set_a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets attribute <cite>a</cite> to multiply the operator in <cite>exp(a*O)</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_a</strong> : <cite>numpy.dtype</cite></p>
+<blockquote class="last">
+<div><p>New value for <cite>a</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span><span class="o">.</span><span class="n">set_a</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.set_grid">
+<code class="descname">set_grid</code><span class="sig-paren">(</span><em>start</em>, <em>stop</em>, <em>num=None</em>, <em>endpoint=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.set_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.set_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets attribute <cite>grid</cite> to evaluate the operator for every <cite>i</cite> in <cite>exp(a*O*grid[i])</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>start</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Specifies the new starting point for a grid of points to evaluate the matrix exponential at.</p>
+</div></blockquote>
+<p><strong>stop</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Specifies the new end point of for a grid of points to evaluate the matrix exponential at.</p>
+</div></blockquote>
+<p><strong>num</strong> : int, optional</p>
+<blockquote>
+<div><p>Specifies the new number of grid points between start and stop. Default is <cite>num = 50</cite>.</p>
+</div></blockquote>
+<p><strong>endpoint</strong> : bool, optional</p>
+<blockquote class="last">
+<div><p>Wehether or not the value <cite>stop</cite> is included in the set of grid points. Note that this changes 
+the grid step size.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">601</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.set_iterate">
+<code class="descname">set_iterate</code><span class="sig-paren">(</span><em>Value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.set_iterate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.set_iterate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets <cite>iterate</cite> attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Value</strong> : bool</p>
+<blockquote class="last">
+<div><p>New value for <cite>iterate</cite> attribute.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">iterate</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span><span class="o">.</span><span class="n">set_a</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">iterate</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.operators.exp_op.step">
+<code class="descname">step</code><a class="headerlink" href="#quspin.operators.exp_op.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>float: step size between equidistant grid points.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.transpose">
+<code class="descname">transpose</code><span class="sig-paren">(</span><em>copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transposes <cite>exp_op</cite> operator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference internal" href="#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal"><span class="pre">exp_op</span></code></a></p>
+<blockquote class="last">
+<div><p><span class="math">\(\exp(a\mathcal{O})_{ij}\mapsto \exp(a\mathcal{O})_{ji}\)</span></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function does NOT conjugate the exponentiated operator.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO_tran</span> <span class="o">=</span> <span class="n">expO</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.operators.exp_op.unset_grid">
+<code class="descname">unset_grid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.unset_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.unset_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets grid parameters to their default values.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">601</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span><span class="o">.</span><span class="n">unset_grid</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -81,7 +724,11 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../operators.html" >Operators module (<code class="docutils literal"><span class="pre">quspin.operators</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

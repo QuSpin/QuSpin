@@ -49,7 +49,7 @@ def check_m(Lmax):
 				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype,norm(Em-E) ) )
 
 
-def check_z(L,dtype,Nf=None):
+def check_c(L,dtype,Nf=None):
 
 	h=[[2.0*random()-1.0,i] for i in range(L)]
 	J1=[[2.0*random()-1.0,i,(i+1)%L] for i in range(L-1)]
@@ -83,7 +83,7 @@ def check_z(L,dtype,Nf=None):
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf, norm(Ez-E)))
 
-def check_zA(L,dtype):
+def check_cA(L,dtype):
 
 	h=[[2.0*random()-1.0,i] for i in range(L)]
 	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
@@ -111,7 +111,7 @@ def check_zA(L,dtype):
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed zA symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
 
-def check_zB(L,dtype):
+def check_cB(L,dtype):
 	
 	h=[[2.0*random()-1.0,i] for i in range(L)]
 	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
@@ -140,7 +140,7 @@ def check_zB(L,dtype):
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
 
-def check_zA_zB(L,dtype):
+def check_cA_cB(L,dtype):
 	
 	h=[[2.0*random()-1.0,i] for i in range(L)]
 	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
@@ -215,7 +215,7 @@ def check_p(L,dtype,Nf=None):
 
 
 
-def check_pz(L,dtype,Nf=None):
+def check_pc(L,dtype,Nf=None):
 	L_2=int(L/2)
 	hr=[(i+0.1)**2/float(L**2) for i in range(L_2)]
 	hi=[-(i+0.1)**2/float(L**2) for i in range(L_2)]
@@ -250,7 +250,7 @@ def check_pz(L,dtype,Nf=None):
 
 
 
-def check_p_z(L,dtype,Nf=None):
+def check_p_c(L,dtype,Nf=None):
 	h=[[1.0,i] for i in range(L)]
 	J=[[1.0,i,(i+1)%L] for i in range(L-1)]
 	J_p=[[1.0,i,(i+1)%L] for i in range(L-1)]
@@ -296,25 +296,25 @@ def check_obc(Lmax):
 
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
-			check_z(L,dtype,Nf=int(L/2))
-			check_z(L,dtype)
+			check_c(L,dtype,Nf=int(L/2))
+			check_c(L,dtype)
 	
-	# for dtype in dtypes:
-	# 	for L in range(2,Lmax+1,2):
-	# 		check_zA(L,dtype)
+	for dtype in dtypes:
+	 	for L in range(2,Lmax+1,2):
+	 		check_cA(L,dtype)
 	
-	# for dtype in dtypes:
-	# 	for L in range(2,Lmax+1,2):
-	# 		check_zB(L,dtype)
-	
-	# for dtype in dtypes:
-	# 	for L in range(2,Lmax+1,2):
-	# 		check_zA_zB(L,dtype)
+	for dtype in dtypes:
+	 	for L in range(2,Lmax+1,2):
+	 		check_cB(L,dtype)
 	
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
-			check_pz(L,dtype,Nf=int(L/2))
-			check_pz(L,dtype)
+	 		check_cA_cB(L,dtype)
+	
+	for dtype in dtypes:
+		for L in range(2,Lmax+1,2):
+			check_pc(L,dtype,Nf=int(L/2))
+			check_pc(L,dtype)
 
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
@@ -323,11 +323,8 @@ def check_obc(Lmax):
 
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
-			check_p_z(L,dtype,Nf=int(L/2))
-			check_p_z(L,dtype) 
-
-
-
+			check_p_c(L,dtype,Nf=int(L/2))
+			check_p_c(L,dtype) 
 
 
 
@@ -369,7 +366,7 @@ def check_t(L,dtype,Nf=None):
 		raise Exception( "test failed t symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf,norm(Et-E)) )
 
 
-def check_t_z(L,dtype,Nf=None):
+def check_t_c(L,dtype,Nf=None):
 	hx=random()
 	J=random()
 	h=[[hx,i] for i in range(L)]
@@ -409,7 +406,7 @@ def check_t_z(L,dtype,Nf=None):
 			raise Exception( "test failed t z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf,norm(Ek-Ekz)) )
 
 
-def check_t_zA(L,dtype,a=2):
+def check_t_cA(L,dtype,a=2):
 	hx=random()
 	J=random()
 	h=[[hx,i] for i in range(L)]
@@ -441,7 +438,7 @@ def check_t_zA(L,dtype,a=2):
 			raise Exception( "test failed t zA symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
 
 
-def check_t_zB(L,dtype,a=2):
+def check_t_cB(L,dtype,a=2):
 	hx=random()
 	J=random()
 	h=[[hx,i] for i in range(L)]
@@ -473,7 +470,7 @@ def check_t_zB(L,dtype,a=2):
 			raise Exception( "test failed t zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
 
 
-def check_t_zA_zB(L,dtype,a=2):
+def check_t_cA_cB(L,dtype,a=2):
 	hx=random()
 	J=random()
 	h=[[hx,i] for i in range(L)]
@@ -645,7 +642,7 @@ def check_t_p(L,dtype,Nf=None):
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek2)) )
 
 
-def check_t_pz(L,dtype,Nf=None):
+def check_t_pc(L,dtype,Nf=None):
 	hx=random()*0.0
 	hz=random()*0.0
 	J=random()
@@ -776,7 +773,7 @@ def check_t_pz(L,dtype,Nf=None):
 				raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek2)) )
 
 
-def check_t_p_z(L,dtype,Nf=None):
+def check_t_p_c(L,dtype,Nf=None):
 	hx=random()
 	J=random()
 	h=[[hx,i] for i in range(L)]
@@ -848,20 +845,20 @@ def check_pbc(Lmax):
 	
 	for dtype in (np.complex64,np.complex128):
 		for L in range(2,Lmax+1,2):
-			check_t_z(L,dtype,Nf=int(L/2))
-			check_t_z(L,dtype)
+			check_t_c(L,dtype,Nf=int(L/2))
+			check_t_c(L,dtype)
 	
 	for dtype in (np.complex64,np.complex128):
 		for L in range(2,Lmax+1,2):
-			check_t_zA(L,dtype)
+			check_t_cA(L,dtype)
 	
 	for dtype in (np.complex64,np.complex128):
 		for L in range(2,Lmax+1,2):
-			check_t_zB(L,dtype)
+			check_t_cB(L,dtype)
 	
 	for dtype in (np.complex64,np.complex128):
 		for L in range(2,Lmax+1,2):
-			check_t_zA_zB(L,dtype)
+			check_t_cA_cB(L,dtype)
 	
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,1):
@@ -871,13 +868,13 @@ def check_pbc(Lmax):
 	
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
-			check_t_pz(L,dtype,Nf=int(L/2))
-			check_t_pz(L,dtype)
+			check_t_pc(L,dtype,Nf=int(L/2))
+			check_t_pc(L,dtype)
 
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
-			check_t_p_z(L,dtype,Nf=int(L/2))
-			check_t_p_z(L,dtype) 
+			check_t_p_c(L,dtype,Nf=int(L/2))
+			check_t_p_c(L,dtype) 
 
 
 		
@@ -885,6 +882,8 @@ def check_pbc(Lmax):
 check_m(4)
 check_obc(8)
 check_pbc(8)
+
+
 
 
 

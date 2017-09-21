@@ -1099,7 +1099,7 @@ def mean_level_spacing(E):
 ##### below are the routines for arbitary user-defimed time evolution.
 
 def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
-	"""Implements (imaginary) time evolution for a custom user-defined first-order ODE.
+	"""Implements (imaginary) time evolution for a user-defined first-order ODE.
 
 	The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured 
 	ODE solver in python, without any relation to other QuSpin objects.
