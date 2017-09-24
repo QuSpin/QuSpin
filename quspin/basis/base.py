@@ -210,7 +210,7 @@ class basis(object):
 		return self._Op(opstr,indx,J,dtype)
 
 	def expanded_form(self,static=[],dynamic=[]):
-		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-".
+		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
 
 		Parameters
 		-----------
@@ -621,6 +621,7 @@ class basis(object):
 		return self._sort_local_list(op_list_exp)
 
 	def _consolidate_local_lists(self,static_list,dynamic_list):
+		eps = 10 * _np.finfo(_np.float64).eps
 
 		static_dict={}
 		for opstr,indx,J,ii in static_list:
@@ -636,7 +637,7 @@ class basis(object):
 		static_list = []
 		for opstr,opstr_dict in static_dict.items():
 			for indx,(J,ii) in opstr_dict.items():
-				if J != 0:
+				if _np.abs(J) > eps:
 					static_list.append((opstr,indx,J,ii))
 
 
@@ -655,7 +656,7 @@ class basis(object):
 		dynamic_list = []
 		for opstr,opstr_dict in dynamic_dict.items():
 			for indx,(J,f,f_args,ii) in opstr_dict.items():
-				if J != 0:
+				if _np.abs(J) > eps:
 					dynamic_list.append((opstr,indx,J,f,f_args,ii))
 
 

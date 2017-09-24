@@ -9,6 +9,7 @@ from ._functions import function
 
 
 def _consolidate_bonds(bonds):
+	eps = _np.finfo(_np.float64).eps
 	l = len(bonds)
 	i=0
 	while(i < l):
@@ -19,11 +20,18 @@ def _consolidate_bonds(bonds):
 					bonds[i][0] += bonds[j][0]
 					del bonds[j]
 					if j < i: i -= 1
-					if bonds[i][0] == 0:
-						del bonds[i]
-
 					l = len(bonds)
 			j += 1
+		i += 1
+
+
+	i=0
+	while(i < l):
+		if abs(bonds[i][0]) < 10 * eps:
+			del bonds[i]
+			l = len(bonds)
+			continue
+
 		i += 1
 					
 

@@ -5,6 +5,8 @@ from .hamiltonian_core import _check_static
 from .hamiltonian_core import supported_dtypes
 from .hamiltonian_core import hamiltonian
 
+from ._make_hamiltonian import _consolidate_static
+
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
@@ -87,6 +89,7 @@ class quantum_LinearOperator(LinearOperator):
 		else:
 			self._dtype=dtype
 
+
 		if N==[]:
 			raise ValueError("second argument of `quantum_LinearOperator()` canNOT be an empty list.")
 		elif type(N) is int and basis is None:
@@ -121,6 +124,7 @@ class quantum_LinearOperator(LinearOperator):
 
 		self._static_list = []
 
+		_consolidate_static(static_list)
 		for opstr,bonds in static_list:
 			offdiag_bonds = []
 			for bond in bonds:
