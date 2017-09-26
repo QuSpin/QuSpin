@@ -5,6 +5,8 @@ from .hamiltonian_core import _check_static
 from .hamiltonian_core import supported_dtypes
 from .hamiltonian_core import hamiltonian
 
+from ._make_hamiltonian import _consolidate_static
+
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
@@ -87,6 +89,7 @@ class quantum_LinearOperator(LinearOperator):
 		else:
 			self._dtype=dtype
 
+
 		if N==[]:
 			raise ValueError("second argument of `quantum_LinearOperator()` canNOT be an empty list.")
 		elif type(N) is int and basis is None:
@@ -119,41 +122,38 @@ class quantum_LinearOperator(LinearOperator):
 		else:
 			self._diagonal = None
 
+
+
+		static_list = _consolidate_static(static_list)
 		self._static_list = []
+		for opstr,indx,J in static_list:
+			ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
+			if (row==col).all():
+				if self._diagonal is None:
+					self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
 
-		for opstr,bonds in static_list:
-			offdiag_bonds = []
-			for bond in bonds:
-				indx = list(bond[1:])
-				J = complex(bond[0])
-				ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
-				if (row==col).all():
-					if self._diagonal is None:
-						self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
-
-					if self._unique_me:
-						if row.shape[0] == self.Ns:
-							self._diagonal += ME.real
-						else:
-							self._diagonal[row] += ME[row].real
+				if self._unique_me:
+					if row.shape[0] == self.Ns:
+						self._diagonal += ME.real
 					else:
-						while len(row) > 0:
-							# if there are multiply matrix elements per row as there are for some
-							# symmetries availible then do the indexing for unique elements then
-							# delete them from the list and then repeat until all elements have been 
-							# taken care of. This is less memory efficient but works well for when
-							# there are a few number of matrix elements per row. 
-							row_unique,args = _np.unique(row,return_index=True)
-
-							self._diagonal[row_unique] += ME[args].real
-							row = _np.delete(row,args)
-							ME = _np.delete(ME,args)					
+						self._diagonal[row] += ME[row].real
 				else:
-					offdiag_bonds.append(bond)
-					
+					while len(row) > 0:
+						# if there are multiply matrix elements per row as there are for some
+						# symmetries availible then do the indexing for unique elements then
+						# delete them from the list and then repeat until all elements have been 
+						# taken care of. This is less memory efficient but works well for when
+						# there are a few number of matrix elements per row. 
+						row_unique,args = _np.unique(row,return_index=True)
 
-			if offdiag_bonds:
-				self._static_list.append([opstr,offdiag_bonds])
+						self._diagonal[row_unique] += ME[args].real
+						row = _np.delete(row,args)
+						ME = _np.delete(ME,args)					
+			else:
+				self._static_list.append((opstr,indx,J))
+				
+
+
 
 
 
@@ -286,12 +286,9 @@ class quantum_LinearOperator(LinearOperator):
 		if self.diagonal is not None:
 			_np.multiply(other.T,self.diagonal,out=new_other.T)
 
-		for opstr, bonds in self.static_list:
-			for bond in bonds:
-				J = bond[0]*self._scale
-				indx = _np.asarray(bond[1:])
-				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
-									self._conjugated,self._transposed,v_out=new_other)
+		for opstr,indx,J in self.static_list:
+			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
+								self._conjugated,self._transposed,v_out=new_other)
 		return new_other
 
 	def _rmatvec(self,other):
@@ -577,19 +574,16 @@ class quantum_LinearOperator(LinearOperator):
 			new_other = _sp.csr_matrix(other.shape,dtype=result_dtype)
 
 
-		for opstr, bonds in self.static_list:
-			for bond in bonds:
-				J = bond[0]
-				indx = _np.asarray(bond[1:])
-				if not self._transposed:
-					ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
-				else:
-					ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
+		for opstr,indx,J in self.static_list:
+			if not self._transposed:
+				ME, row, col = self.basis.Op(opstr, indx, J, self._dtype)
+			else:
+				ME, col, row = self.basis.Op(opstr, indx, J, self._dtype)
 
-				if self._conjugated:
-					ME = ME.conj()
+			if self._conjugated:
+				ME = ME.conj()
 
-				new_other = new_other + _sp.csr_matrix((ME,(row,col)),shape=self._shape).dot(other)
+			new_other = new_other + _sp.csr_matrix((ME,(row,col)),shape=self._shape).dot(other)
 
 		return new_other
 

@@ -8,7 +8,7 @@
 template<class I>
 I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	I ss = 0;
-	int pos_list[N];
+	int pos_list[64];
 	int np = 0;
 	bool f_count = 0;
 
@@ -89,10 +89,13 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 			for(int j=n_op-1;j>-1;j--){
 				int ind = general_basis_core<I>::N-indx[j]-1;
 				int N_c = indx[j];
-				int f_count = 0;
+				I f_count = 0;
 				I rr = r >> ind;
-				for(int i=0;i<N_c;i++){f_count^=(rr&1);rr>>=1;}
-				m *= (f_count?-1:1);
+				for(int i=0;i<N_c;i++){
+					f_count ^= (rr&1);
+					rr>>=1;
+				}
+				m *= std::complex<double>(f_count?-1:1);
 				I b = (one << ind);
 				bool a = bool((r >> ind)&one);
 				char op = opstr[j];

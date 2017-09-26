@@ -11,7 +11,7 @@
 template<class I>
 I inline spinful_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	I ss = 0;
-	int pos_list[2*N];
+	int pos_list[64];
 	int np = 0;
 	bool f_count = 0;
 
