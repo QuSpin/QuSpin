@@ -103,7 +103,7 @@ cdef npy_uintp make_t_basis_template(ns_type next_state, basis_type[:] ns_pars,
 cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                             npy_uintp MAX,basis_type s,
                                             int L,int pblock,int kblock,int a, 
-                                            N_type *N,N_type *m,basis_type[:] basis):
+                                            N_type *N,M1_type *m,basis_type[:] basis):
     cdef npy_uintp Ns
     cdef int r_temp,r,mp,sign
     cdef int sigma,sigma_i,sigma_f,v
@@ -139,13 +139,13 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
                         r_temp = -1
     
                     if r_temp > 0:
-                        m[Ns] = mp + (L+1) * ((sign+1)//2)
+                        m[Ns] = mp + 1 + (L+1) * ((sign+1)//2)
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
             else:
                 for sigma in range(sigma_i,sigma_f+1,2):
-                    m[Ns] = -1
+                    m[Ns] = 0
                     N[Ns] = (sigma*r)                
                     basis[Ns] = s
                     Ns += 1
@@ -162,11 +162,11 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
 cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                                 npy_uintp MAX,basis_type s,
                                                 int L, int pblock, int zblock, int kblock, int a,
-                                                N_type *N, M_type *m, basis_type[:] basis):
+                                                N_type *N, M2_type *m, basis_type[:] basis):
     cdef double k = 2.0*_np.pi*kblock*a/L
     cdef npy_uintp Ns=0
     cdef npy_uintp i
-    cdef int r,r_temp,mp,mz,mpz
+    cdef int r,r_temp,mp,mz,mpz,sign1,sign2
     cdef int sigma,sigma_i,sigma_f
     cdef int R[4]
 
@@ -190,10 +190,14 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
         mp = R[1]
         mz = R[2]
         mpz = R[3]
+        sign1 = 1
+        sign2 = 1
+        sign1 = ((sign1+1)//2)
+        sign2 = ((sign2+1)//2)
         if r>0:
             if mp == -1 and mz == -1 and mpz == -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
-                    m[Ns] = ((L+1)**2)
+                    m[Ns] = 0 # c = 0
                     N[Ns] = (sigma*r)                
                     basis[Ns] = s
                     Ns += 1
@@ -205,7 +209,8 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
                     if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
                         r_temp = -1
                     if r_temp > 0:
-                        m[Ns] = (mp + 2*(L+1)**2)
+
+                        m[Ns] = mp + (1+sign1)*(L+1)**2 # c = 1 or 2 for + or - sign
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
@@ -215,7 +220,7 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
                     if 1 + zblock*cos(k*mz) == 0:
                         r_temp = -1
                     if r_temp > 0:        
-                        m[Ns] = (mz*(L+1) + 3*(L+1)**2)
+                        m[Ns] = mz*(L+1) + (3+sign1)*(L+1)**2 # c = 3 or 4 for + or - sign
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
@@ -227,7 +232,7 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
                     if (sigma == -1) and (1 - sigma*pblock*zblock*cos(mpz*k) != 0):
                         r_temp = -1
                     if r_temp>0:
-                        m[Ns] = (mpz + 4*(L+1)**2)
+                        m[Ns] = mpz + (5+sign1)*(L+1)**2 # c = 5 or 6 for + or - sign
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
@@ -239,7 +244,7 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
                     if (sigma == -1) and ( (1 - sigma*pblock*cos(mp*k) != 0) or (1 - zblock*cos(mz*k) != 0) ):
                         r_temp = -1
                     if r_temp>0:
-                        m[Ns] = (mp + (L+1)*mz + 5*(L+1)**2)
+                        m[Ns] = mp + (L+1)*mz + (7+sign1+2*sign2)*(L+1)**2
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
@@ -255,7 +260,7 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
 cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                             npy_uintp MAX,basis_type s,
                                             int L,int pzblock,int kblock,int a,
-                                            N_type *N,N_type *m,basis_type[:] basis):
+                                            N_type *N,M1_type *m,basis_type[:] basis):
     cdef double k 
     
     cdef npy_uintp Ns
@@ -293,13 +298,13 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
                         r_temp = -1
     
                     if r_temp > 0:
-                        m[Ns] = mpz + (L+1) * ((sign+1)//2)
+                        m[Ns] = mpz + 1 + (L+1) * ((sign+1)//2)
                         N[Ns] = (sigma*r)
                         basis[Ns] = s
                         Ns += 1
             else:
                 for sigma in range(sigma_i,sigma_f+1,2):
-                    m[Ns] = -1
+                    m[Ns] = 0
                     N[Ns] = (sigma*r)                
                     basis[Ns] = s
                     Ns += 1
@@ -316,7 +321,7 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
 cdef npy_uintp make_t_zA_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                                 npy_uintp MAX,basis_type s,
                                                 int L,int zAblock,int kblock,int a,
-                                                N_type *N, N_type *m, basis_type[:] basis): 
+                                                N_type *N, M1_type *m, basis_type[:] basis): 
     cdef double k 
     cdef npy_uintp i
     cdef npy_uintp Ns
@@ -340,7 +345,7 @@ cdef npy_uintp make_t_zA_basis_template(ns_type next_state, basis_type[:] ns_par
                     r = -1                
 
             if r > 0:
-                m[Ns] = mzA
+                m[Ns] = mzA + 1
                 N[Ns] = r            
                 basis[Ns] = s
                 Ns += 1    
@@ -358,7 +363,7 @@ cdef npy_uintp make_t_zA_basis_template(ns_type next_state, basis_type[:] ns_par
 cdef npy_uintp make_t_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                             npy_uintp MAX,basis_type s,
                                             int L,int zAblock,int zBblock,int kblock,int a,
-                                            N_type *N,M_type *m,basis_type[:] basis): 
+                                            N_type *N,M2_type *m,basis_type[:] basis): 
     cdef double k 
     cdef npy_uintp Ns
     cdef int mzA,mzB,mz,r
@@ -419,7 +424,7 @@ cdef npy_uintp make_t_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_
 cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                             npy_uintp MAX,basis_type s,
                                             int L,int zblock,int kblock,int a,
-                                            N_type *N,N_type *m,basis_type[:] basis): 
+                                            N_type *N,M1_type *m,basis_type[:] basis): 
     cdef double k 
     cdef npy_uintp Ns
     cdef npy_uintp i
@@ -449,7 +454,7 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
             sign = -1          
 
         if r > 0:
-            m[Ns] = mz + ((sign+1)//2) * (L+1)
+            m[Ns] = mz + 1 + ((sign+1)//2) * (L+1)
             N[Ns] = r
             basis[Ns] = s
             Ns += 1    
@@ -466,7 +471,7 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
 cdef npy_uintp make_t_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                             npy_uintp MAX,basis_type s,
                                             int L,int zBblock,int kblock,int a,
-                                            N_type *N, N_type *m,basis_type[:] basis): 
+                                            N_type *N, M1_type *m,basis_type[:] basis): 
     cdef double k 
     cdef npy_uintp Ns
     cdef npy_uintp i
@@ -491,7 +496,7 @@ cdef npy_uintp make_t_zB_basis_template(ns_type next_state, basis_type[:] ns_par
                     r = -1                
 
             if r > 0:
-                m[Ns] = mzB
+                m[Ns] = mzB + 1
                 N[Ns] = r            
                 basis[Ns] = s
                 Ns += 1    

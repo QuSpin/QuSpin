@@ -137,7 +137,7 @@ def t_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_p_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                N_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M1_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
@@ -148,7 +148,7 @@ def t_p_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_p_z_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                M_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M2_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pblock = blocks["pblock"]
@@ -160,7 +160,7 @@ def t_p_z_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_pz_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                N_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M1_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int pzblock = blocks["pzblock"]
@@ -171,7 +171,7 @@ def t_pz_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_z_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                N_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M1_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zblock = blocks["zblock"]
@@ -182,7 +182,7 @@ def t_z_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_zA_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                N_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M1_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zAblock = blocks["zAblock"]
@@ -193,7 +193,7 @@ def t_zA_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_zB_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                N_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M1_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zBblock = blocks["zBblock"]
@@ -204,7 +204,7 @@ def t_zB_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
 
 def t_zA_zB_op(basis_type[:] row, basis_type[:] col, matrix_type[:] ME,
                 str opstr, NP_INT32_t[:] indx, scalar_type J, N_type[:] N,
-                M_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
+                M2_type[:] M, basis_type[:] basis, int L, basis_type[:] pars,**blocks):
     cdef npy_intp Ns = basis.shape[0]
     cdef int kblock = blocks["kblock"]
     cdef int zAblock = blocks["zAblock"]

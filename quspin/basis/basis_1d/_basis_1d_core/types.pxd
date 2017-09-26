@@ -26,9 +26,13 @@ ctypedef fused N_type:
     NP_INT8_t
     NP_INT32_t
 
-ctypedef fused M_type:
-    NP_INT16_t
-    NP_INT32_t
+ctypedef fused M1_type:
+    NP_UINT8_t
+    NP_UINT32_t
+
+ctypedef fused M2_type:
+    NP_UINT16_t
+    NP_UINT32_t
 
 ctypedef fused matrix_type:
     float

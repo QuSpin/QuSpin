@@ -48,7 +48,7 @@ class general_basis_core{
 
 
 template<class I>
-bool check_state_core(general_basis_core<I> *B,I t,int &sign,const I s,const int nt,const int depth){
+bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int nt,const int depth){
 	if(nt<=0){
 		return true;
 	}
@@ -85,7 +85,7 @@ bool check_state_core(general_basis_core<I> *B,I t,int &sign,const I s,const int
 }
 
 template<class I>
-double get_norm_core(general_basis_core<I> *B,I s1,int &sign1,I s2,int &sign2,const int nt,const int depth){
+double get_norm_core(general_basis_core<I> *B,I s1,int sign1,I s2,int sign2,const int nt,const int depth){
 	if(nt<=0){
 		return 1;
 	}

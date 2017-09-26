@@ -225,10 +225,10 @@ class basis_1d(lattice_basis):
 				# if object is basis type then most likely this is for single particle stuff in which case the 
 				# normalizations need to be large ~ 1000 or more which won't fit in int8/int16.
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:
 				N=_np.empty(basis.shape,dtype=_np.int8) # normalisation*sigma
-				M=_np.empty(basis.shape,dtype=_np.int16) # m = mp + (L+1)mz + (L+1)^2c; Anders' paper
+				M=_np.empty(basis.shape,dtype=_np.uint16) # m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 
 			if (type(Np) is int):
 				# arguments get overwritten by ops.-_basis 
@@ -260,10 +260,10 @@ class basis_1d(lattice_basis):
 
 			if self._basis_type == _np.object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:
 				N=_np.empty(basis.shape,dtype=_np.int8)
-				M=_np.empty(basis.shape,dtype=_np.int16)
+				M=_np.empty(basis.shape,dtype=_np.uint16)
 
 			if (type(Np) is int):
 				Ns = basis_module.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,N,M,basis)
@@ -292,10 +292,10 @@ class basis_1d(lattice_basis):
 
 			if self._basis_type == _np.object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
 				N=_np.empty(basis.shape,dtype=_np.int8)
-				M=_np.empty(basis.shape,dtype=_np.int8) #mpz
+				M=_np.empty(basis.shape,dtype=_np.uint8) #mpz
 
 			if (type(Np) is int):
 				Ns = basis_module.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,N,M,basis)
@@ -324,10 +324,10 @@ class basis_1d(lattice_basis):
 
 			if self._basis_type == _np.object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
 				N=_np.empty(basis.shape,dtype=_np.int8)
-				M=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.uint8)
 
 			if (type(Np) is int):
 				Ns = basis_module.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,N,M,basis)
@@ -342,7 +342,6 @@ class basis_1d(lattice_basis):
 				self._N = _np.resize(N,(0,))
 				self._M = _np.resize(M,(0,))
 				self._basis = _np.resize(basis,(0,))
-				
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
@@ -354,10 +353,10 @@ class basis_1d(lattice_basis):
 
 			if self._basis_type == _np.object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:
 				N=_np.empty(basis.shape,dtype=_np.int8)
-				M=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.uint8)
 
 			if (type(Np) is int):
 				Ns = basis_module.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,N,M,basis)
@@ -385,10 +384,10 @@ class basis_1d(lattice_basis):
 
 			if self._basis_type == _np.object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
 				N=_np.empty(basis.shape,dtype=_np.int8)
-				M=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.uint8)
 
 			if (type(Np) is int):
 				Ns = basis_module.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,N,M,basis)
@@ -415,10 +414,10 @@ class basis_1d(lattice_basis):
 
 			if self._basis_type == _np.object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
-				M=_np.empty(basis.shape,dtype=_np.int32)
+				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
 				N=_np.empty(basis.shape,dtype=_np.int8)
-				M=_np.empty(basis.shape,dtype=_np.int8)
+				M=_np.empty(basis.shape,dtype=_np.uint8)
 
 			if (type(Np) is int):
 				Ns = basis_module.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,N,M,basis)
@@ -433,7 +432,7 @@ class basis_1d(lattice_basis):
 				self._N = _np.resize(N,(0,))
 				self._M = _np.resize(M,(0,))
 				self._basis = _np.resize(basis,(0,))
-				
+			
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
@@ -938,7 +937,6 @@ class basis_1d(lattice_basis):
 		return _get_proj_sparse(self._bitops,self._pars,self._basis,basis_pcon,norms,ind_neg,ind_pos,dtype,shape,C,self._L,**self._blocks_1d)
 
 	def _get_norms(self,dtype):
-		
 		a = self._blocks_1d.get("a")
 		kblock = self._blocks_1d.get("kblock")
 		pblock = self._blocks_1d.get("pblock")
@@ -951,28 +949,47 @@ class basis_1d(lattice_basis):
 			c = _np.empty(self._M.shape,dtype=_np.int8)
 			nn = array(c)
 			mm = array(c)
+			sign = array(c)
+
+			_np.sign(self._N,out=sign)			
+			
 			_np.floor_divide(self._M,(self._L+1)**2,out=c)
 			_np.floor_divide(self._M,self._L+1,out=nn)
 			_np.mod(nn,self._L+1,out=nn)
 			_np.mod(self._M,self._L+1,out=mm)
+			
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
 				norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			else:
 				norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
-			norm *= _np.sign(self._N)
+
+				
+			norm *= sign
 			norm /= self._N
-			# c = 2
-			mask = (c == 2)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
-			# c = 3
-			mask = (c == 3)
+
+			mask = c == 1
+			norm[mask] *= (1.0 - sign[mask]*pblock*_np.cos(self._k*mm[mask]))
+			_np.equal(c,2,out=mask)
+			norm[mask] *= (1.0 + sign[mask]*pblock*_np.cos(self._k*mm[mask]))
+			_np.equal(c,3,out=mask)
+			norm[mask] *= (1.0 - zblock*_np.cos(self._k*nn[mask]))	
+			_np.equal(c,4,out=mask)
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
-			# c = 4
-			mask = (c == 4)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*mm[mask]))	
-			# c = 5
-			mask = (c == 5)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*mm[mask]))
+			_np.equal(c,5,out=mask)
+			norm[mask] *= (1.0 - sign[mask]*pzblock*_np.cos(self._k*mm[mask]))	
+			_np.equal(c,6,out=mask)
+			norm[mask] *= (1.0 + sign[mask]*pzblock*_np.cos(self._k*mm[mask]))	
+			_np.equal(c,7,out=mask)
+			norm[mask] *= (1.0 - sign[mask]*pblock*_np.cos(self._k*mm[mask]))
+			norm[mask] *= (1.0 - zblock*_np.cos(self._k*nn[mask]))	
+			_np.equal(c,8,out=mask)
+			norm[mask] *= (1.0 + sign[mask]*pblock*_np.cos(self._k*mm[mask]))
+			norm[mask] *= (1.0 - zblock*_np.cos(self._k*nn[mask]))	
+			_np.equal(c,9,out=mask)
+			norm[mask] *= (1.0 - sign[mask]*pblock*_np.cos(self._k*mm[mask]))
+			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
+			_np.equal(c,10,out=mask)
+			norm[mask] *= (1.0 + sign[mask]*pblock*_np.cos(self._k*mm[mask]))
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*nn[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
@@ -982,14 +999,11 @@ class basis_1d(lattice_basis):
 			_np.mod(self._M,self._L+1,mm)
 			norm = _np.full(self._basis.shape,4*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
-			# c = 2
 			mask = (c == 2)
 			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*mm[mask]))
-			# c = 3
-			mask = (c == 3)
+			_np.equal(c,3,out=mask)
 			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*mm[mask]))	
-			# c = 4
-			mask = (c == 4)
+			_np.equal(c,4,out=mask)
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*mm[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(pblock) is int):
@@ -999,9 +1013,22 @@ class basis_1d(lattice_basis):
 				norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
 			norm *= _np.sign(self._N)
 			norm /= self._N
-			# m >= 0 
-			mask = (self._M >= 0)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pblock*_np.cos(self._k*self._M[mask]))
+			try:
+				m = self._M.astype(_np.min_scalar_type(-1*self._M[0]))
+			except IndexError:
+				m = self._M.astype(_np.int8)
+			_np.mod(m,self._L+1,out=m)
+			m -= 1
+			mask = (m >= 0)
+
+			sign = _np.empty(mask.sum(),dtype=_np.int8)
+			_np.floor_divide(self._M[mask],(self._L+1),out=sign)
+			sign *= 2
+			sign -= 1
+			sign *= self._N[mask]
+			_np.sign(sign,out=sign)
+
+			norm[mask] *= (1.0 + sign*pblock*_np.cos(self._k*m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(pzblock) is int):
 			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
@@ -1010,30 +1037,51 @@ class basis_1d(lattice_basis):
 				norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
 			norm *= _np.sign(self._N)
 			norm /= self._N
-			# m >= 0 
-			mask = (self._M >= 0)
-			norm[mask] *= (1.0 + _np.sign(self._N[mask])*pzblock*_np.cos(self._k*self._M[mask]))
+			m = self._M.astype(_np.int8)
+			_np.mod(m,self._L+1,out=m)
+			m -= 1
+			mask = (m >= 0)
+
+			sign = _np.empty(mask.sum(),dtype=_np.int8)
+			_np.floor_divide(self._M[mask],(self._L+1),out=sign)
+			sign *= 2
+			sign -= 1
+			sign *= self._N[mask]
+			_np.sign(sign,out=sign)
+
+			norm[mask] *= (1.0 + sign*pzblock*_np.cos(self._k*m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
-			# m >= 0 
-			mask = (self._M >= 0)
-			norm[mask] *= (1.0 + zblock*_np.cos(self._k*self._M[mask]))
+			
+			m = self._M.astype(_np.int8)
+			_np.mod(m,self._L+1,out=m)
+			m -= 1
+			mask = (m >= 0)
+
+			sign = _np.empty(mask.sum(),dtype=_np.int8)
+			_np.floor_divide(self._M[mask],(self._L+1),out=sign)
+			sign *= 2
+			sign -= 1
+
+			norm[mask] *= (1.0 + sign*zblock*_np.cos(self._k*m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zAblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
-			# m >= 0 
-			mask = (self._M >= 0)
-			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*self._M[mask]))
+			mask = (self._M > 0)
+			m = _np.empty(self._M.shape,dtype=_np.int8)
+			_np.subtract(self._M,1,out=m)
+			norm[mask] *= (1.0 + zAblock*_np.cos(self._k*m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(zBblock) is int):
 			norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			norm /= self._N
-			# m >= 0 
-			mask = (self._M >= 0)
-			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*self._M[mask]))
+			mask = (self._M > 0)
+			m = _np.empty(self._M.shape,dtype=_np.int8)
+			_np.subtract(self._M,1,out=m)
+			norm[mask] *= (1.0 + zBblock*_np.cos(self._k*m[mask]))
 			del mask
 		elif (type(pblock) is int) and (type(zblock) is int):
 			norm = array(self._N,dtype=dtype)
@@ -1145,7 +1193,8 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 	pzblock = blocks.get("pzblock")
 
 
-	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
+	c = _np.zeros(basis_in.shape,dtype=v0.dtype)
+	sign = _np.ones(basis_in.shape[0],dtype=_np.int8)	
 	v = _np.zeros(shape,dtype=v0.dtype)
 
 	if type(kblock) is int:
@@ -1160,40 +1209,61 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
 		vc = (v0.T*c).T
+		vc_tran = vc.transpose()
 		v[basis_in[ind_pos]] += vc[ind_pos]
 		v[basis_in[ind_neg]] += vc[ind_neg]
 
 		if type(zAblock) is int:
-			ops.py_flip_sublat_A(basis_in,L,pars)
-			v[basis_in[ind_pos]] += vc[ind_pos]*zAblock
-			v[basis_in[ind_neg]] += vc[ind_neg]*zAblock
-			ops.py_flip_sublat_A(basis_in,L,pars)
+			ops.py_flip_sublat_A(basis_in,L,pars,sign)
+			vc *= zAblock
+			vc_tran *= sign
+			v[basis_in[ind_pos]] += vc[ind_pos]
+			v[basis_in[ind_neg]] += vc[ind_neg]
+			vc *= zAblock
+			vc_tran *= sign
+			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 		
 		if type(zBblock) is int:
-			ops.py_flip_sublat_B(basis_in,L,pars)
-			v[basis_in[ind_pos]] += vc[ind_pos]*zBblock
-			v[basis_in[ind_neg]] += vc[ind_neg]*zBblock
-			ops.py_flip_sublat_B(basis_in,L,pars)
+			ops.py_flip_sublat_B(basis_in,L,pars,sign)
+			vc *= zBblock
+			vc_tran *= sign
+			v[basis_in[ind_pos]] += vc[ind_pos]
+			v[basis_in[ind_neg]] += vc[ind_neg]
+			vc *= zBblock
+			vc_tran *= sign
+			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 		
 		if type(zblock) is int:
-			ops.py_flip_all(basis_in,L,pars)
-			v[basis_in[ind_pos]] += vc[ind_pos]*zblock
-			v[basis_in[ind_neg]] += vc[ind_neg]*zblock
-			ops.py_flip_all(basis_in,L,pars)
+			ops.py_flip_all(basis_in,L,pars,sign)
+			vc *= zblock
+			vc_tran *= sign
+			v[basis_in[ind_pos]] += vc[ind_pos]
+			v[basis_in[ind_neg]] += vc[ind_neg]
+			vc *= zblock
+			vc_tran *= sign
+			ops.py_flip_all(basis_in,L,pars,sign)
 
 		if type(pblock) is int:
-			ops.py_fliplr(basis_in,L,pars)
-			v[basis_in[ind_pos]] += vc[ind_pos]*pblock
-			v[basis_in[ind_neg]] += vc[ind_neg]*pblock
-			ops.py_fliplr(basis_in,L,pars)
+			ops.py_fliplr(basis_in,L,pars,sign)
+			vc *= pblock
+			vc_tran *= sign
+			v[basis_in[ind_pos]] += vc[ind_pos]
+			v[basis_in[ind_neg]] += vc[ind_neg]
+			vc *= pblock
+			vc_tran *= sign
+			ops.py_fliplr(basis_in,L,pars,sign)
 
 		if type(pzblock) is int:
-			ops.py_fliplr(basis_in,L,pars)
-			ops.py_flip_all(basis_in,L,pars)
-			v[basis_in[ind_pos]] += vc[ind_pos]*pzblock
-			v[basis_in[ind_neg]] += vc[ind_neg]*pzblock
-			ops.py_fliplr(basis_in,L,pars)
-			ops.py_flip_all(basis_in,L,pars)
+			ops.py_fliplr(basis_in,L,pars,sign)
+			ops.py_flip_all(basis_in,L,pars,sign)
+			vc *= pzblock
+			vc_tran *= sign
+			v[basis_in[ind_pos]] += vc[ind_pos]
+			v[basis_in[ind_neg]] += vc[ind_neg]
+			vc *= pzblock
+			vc_tran *= sign
+			ops.py_fliplr(basis_in,L,pars,sign)
+			ops.py_flip_all(basis_in,L,pars,sign)
 		
 		ops.py_shift(basis_in,a,L,pars)
 	
@@ -1232,6 +1302,7 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 
 
 	c = _np.zeros(basis_in.shape,dtype=v0.dtype)	
+	sign = _np.ones(basis_in.shape,dtype=_np.int8)
 	v = _sp.csr_matrix(shape,dtype=v0.dtype)
 
 	if type(kblock) is int:
@@ -1241,74 +1312,98 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		a = L
 
 
-
 	Ns_full = shape[0]
 	basis_in = Ns_full - basis_in - 1
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
-
 		vc = (v0.T*c).T
-		data_pos = vc[ind_pos].flatten()
-		data_neg = vc[ind_neg].flatten()
-		v = v + _sp.csr_matrix((data_pos,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-		v = v + _sp.csr_matrix((data_neg,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+		data_pos = vc[ind_pos].copy()
+		data_neg = vc[ind_neg].copy()
+		# view which passes into sparse matrix constructor
+		data_pos_flat = data_pos.reshape((-1,))
+		data_neg_flat = data_neg.reshape((-1,))
+		# view which us used to multiply by sign
+		data_pos_tran = data_pos.transpose()
+		data_neg_tran = data_neg.transpose()
+		v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
+		v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
-			ops.py_flip_sublat_A(basis_in,L,pars)
+			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 			data_pos *= zAblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= zAblock
-			v = v + _sp.csr_matrix((data_pos,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_neg_tran *= sign[ind_neg]
+			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= zAblock
-			ops.py_flip_sublat_A(basis_in,L,pars)
+			data_neg_tran *= sign[ind_neg]
+			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 
 		if type(zBblock) is int:
-			ops.py_flip_sublat_B(basis_in,L,pars)
+			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 			data_pos *= zBblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= zBblock
-			v = v + _sp.csr_matrix((data_pos,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_neg_tran *= sign[ind_neg]
+			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= zBblock
-			ops.py_flip_sublat_B(basis_in,L,pars)
+			data_neg_tran *= sign[ind_neg]
+			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 
 		if type(zblock) is int:
-			ops.py_flip_all(basis_in,L,pars)
+			ops.py_flip_all(basis_in,L,pars,sign)
 			data_pos *= zblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= zblock
-			v = v + _sp.csr_matrix((data_pos,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_neg_tran *= sign[ind_neg]
+			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= zblock
-			ops.py_flip_all(basis_in,L,pars)
+			data_neg_tran *= sign[ind_neg]
+			ops.py_flip_all(basis_in,L,pars,sign)
 
 		if type(pblock) is int:
-			ops.py_fliplr(basis_in,L,pars)
+			ops.py_fliplr(basis_in,L,pars,sign)
 			data_pos *= pblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= pblock
-			v = v + _sp.csr_matrix((data_pos,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_neg_tran *= sign[ind_neg]
+			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= pblock
-			ops.py_fliplr(basis_in,L,pars)
+			data_neg_tran *= sign[ind_neg]
+			ops.py_fliplr(basis_in,L,pars,sign)
 
 		if type(pzblock) is int:
-			ops.py_flip_all(basis_in,L,pars)
-			ops.py_fliplr(basis_in,L,pars)
+			ops.py_flip_all(basis_in,L,pars,sign)
+			ops.py_fliplr(basis_in,L,pars,sign)
 			data_pos *= pzblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= pzblock
-			v = v + _sp.csr_matrix((data_pos,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			data_neg_tran *= sign[ind_neg]
+			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
+			data_pos_tran *= sign[ind_pos]
 			data_neg *= pzblock
-			ops.py_fliplr(basis_in,L,pars)
-			ops.py_flip_all(basis_in,L,pars)
+			data_neg_tran *= sign[ind_neg]
+			ops.py_fliplr(basis_in,L,pars,sign)
+			ops.py_flip_all(basis_in,L,pars,sign)
 
 		v.sum_duplicates()
 		v.eliminate_zeros()
-		ops.py_shift(basis_in,a,L,pars)
+		ops.py_shift(basis_in,a,L,pars,sign)
 
 	return v
 
@@ -1329,8 +1424,10 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 		k = 0.0
 		a = L
 
-	c = _np.zeros(basis_in.shape,dtype=dtype)	
+	c = _np.zeros(basis_in.shape,dtype=dtype)
+	sign = _np.ones(basis_in.shape,dtype=_np.int8)
 	v = _sp.csr_matrix(shape,dtype=dtype)
+
 	if basis_pcon is None:
 		def get_index(ind):
 			return shape[0] - basis_in[ind] - 1
@@ -1348,68 +1445,88 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 		v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 
 		if type(zAblock) is int:
-			ops.py_flip_sublat_A(basis_in,L,pars)
+			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 			data_pos *= zAblock
+			data_pos *= sign[ind_pos]
 			data_neg *= zAblock
+			data_neg *= sign[ind_neg]
 			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
 			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
+			data_pos *= sign[ind_pos]
 			data_neg *= zAblock
-			ops.py_flip_sublat_A(basis_in,L,pars)
+			data_neg *= sign[ind_neg]
+			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 
 		if type(zBblock) is int:
-			ops.py_flip_sublat_B(basis_in,L,pars)
+			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 			data_pos *= zBblock
+			data_pos *= sign[ind_pos]
 			data_neg *= zBblock
+			data_neg *= sign[ind_neg]
 			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
 			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
+			data_pos *= sign[ind_pos]
 			data_neg *= zBblock
-			ops.py_flip_sublat_B(basis_in,L,pars)
+			data_neg *= sign[ind_neg]
+			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 
 		if type(zblock) is int:
-			ops.py_flip_all(basis_in,L,pars)
+			ops.py_flip_all(basis_in,L,pars,sign)
 			data_pos *= zblock
+			data_pos *= sign[ind_pos]
 			data_neg *= zblock
+			data_neg *= sign[ind_neg]
 			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
 			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
+			data_pos *= sign[ind_pos]
 			data_neg *= zblock
-			ops.py_flip_all(basis_in,L,pars)
+			data_neg *= sign[ind_neg]
+			ops.py_flip_all(basis_in,L,pars,sign)
 
 		if type(pblock) is int:
-			ops.py_fliplr(basis_in,L,pars)
+			ops.py_fliplr(basis_in,L,pars,sign)
 			data_pos *= pblock
+			data_pos *= sign[ind_pos]
 			data_neg *= pblock
+			data_neg *= sign[ind_neg]
 			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
 			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
+			data_pos *= sign[ind_pos]
 			data_neg *= pblock
-			ops.py_fliplr(basis_in,L,pars)
+			data_neg *= sign[ind_neg]
+			ops.py_fliplr(basis_in,L,pars,sign)
 
 		if type(pzblock) is int:
-			ops.py_fliplr(basis_in,L,pars)
-			ops.py_flip_all(basis_in,L,pars)
+			ops.py_fliplr(basis_in,L,pars,sign)
+			ops.py_flip_all(basis_in,L,pars,sign)
 			data_pos *= pzblock
+			data_pos *= sign[ind_pos]
 			data_neg *= pzblock
+			data_neg *= sign[ind_neg]
 			index = get_index(ind_pos)
 			v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
 			index = get_index(ind_neg)
 			v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
+			data_pos *= sign[ind_pos]
 			data_neg *= pzblock
-			ops.py_fliplr(basis_in,L,pars)
-			ops.py_flip_all(basis_in,L,pars)
+			data_neg *= sign[ind_neg]
+			ops.py_fliplr(basis_in,L,pars,sign)
+			ops.py_flip_all(basis_in,L,pars,sign)
 
-		ops.py_shift(basis_in,a,L,pars)
+		ops.py_shift(basis_in,a,L,pars,sign)
 
 
 	return v
