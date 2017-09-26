@@ -83,96 +83,6 @@ def check_c(L,dtype,Nf=None):
 	if norm(Ez-E) > Ns*eps(dtype):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf, norm(Ez-E)))
 
-def check_cA(L,dtype):
-
-	h=[[2.0*random()-1.0,i] for i in range(L)]
-	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
-	J2_p=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
-	J2_m=[[-J2_p[i][0],i,(i+2)%L] for i in range(L-1)]
-	static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
-	
-	basis=spinless_fermion_basis_1d(L=L)
-	H=hamiltonian(static,[],dtype=dtype,basis=basis)
-	Ns=H.Ns
-	E=H.eigvalsh()
-
-	basis1=spinless_fermion_basis_1d(L=L,cAblock=1)
-	H1=hamiltonian(static,[],dtype=dtype,basis=basis1)
-	basis2=spinless_fermion_basis_1d(L=L,cAblock=-1)
-	H2=hamiltonian(static,[],dtype=dtype,basis=basis2)
-
-	E1=H1.eigvalsh()
-	E2=H2.eigvalsh()
-	
-	Ez=np.concatenate((E1,E2))
-	Ez.sort()
-
-
-	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed zA symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
-
-def check_cB(L,dtype):
-	
-	h=[[2.0*random()-1.0,i] for i in range(L)]
-	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
-	J2_p=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
-	J2_m=[[-J2_p[i][0],i,(i+2)%L] for i in range(L-1)]
-
-	static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
-
-	basis=spinless_fermion_basis_1d(L=L)
-	H=hamiltonian(static,[],dtype=dtype,basis=basis)
-	Ns=H.Ns
-	E=H.eigvalsh()
-
-	basis1=spinless_fermion_basis_1d(L=L,cBblock=1)
-	H1=hamiltonian(static,[],dtype=dtype,basis=basis1)
-	basis2=spinless_fermion_basis_1d(L=L,cBblock=-1)
-	H2=hamiltonian(static,[],dtype=dtype,basis=basis2)
-
-	E1=H1.eigvalsh()
-	E2=H2.eigvalsh()
-	
-	Ez=np.concatenate((E1,E2))
-	Ez.sort()
-
-
-	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
-
-def check_cA_cB(L,dtype):
-	
-	h=[[2.0*random()-1.0,i] for i in range(L)]
-	J1=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
-	J2_p=[[2.0*random()-1.0,i,(i+2)%L] for i in range(L-1)]
-	J2_m=[[-J2_p[i][0],i,(i+2)%L] for i in range(L-1)]
-	
-	static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
-
-	basis=spinless_fermion_basis_1d(L=L)
-	H=hamiltonian(static,[],dtype=dtype,basis=basis)
-	Ns=H.Ns
-	E=H.eigvalsh()
-
-	basis1=spinless_fermion_basis_1d(L=L,cAblock=+1,cBblock=+1)
-	H1=hamiltonian(static,[],dtype=dtype,basis=basis1)
-	basis2=spinless_fermion_basis_1d(L=L,cAblock=+1,cBblock=-1)
-	H2=hamiltonian(static,[],dtype=dtype,basis=basis2)
-	basis3=spinless_fermion_basis_1d(L=L,cAblock=-1,cBblock=+1)
-	H3=hamiltonian(static,[],dtype=dtype,basis=basis3)
-	basis4=spinless_fermion_basis_1d(L=L,cAblock=-1,cBblock=-1)
-	H4=hamiltonian(static,[],dtype=dtype,basis=basis4)	
-	E1=H1.eigvalsh()
-	E2=H2.eigvalsh()
-	E3=H3.eigvalsh()
-	E4=H4.eigvalsh()
-
-	Ez=np.concatenate((E1,E2,E3,E4))
-	Ez.sort()
-
-	if norm(Ez-E) > Ns*eps(dtype):
-		raise Exception( "test failed zA zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype), norm(Ez-E)))
-
 
 def check_p(L,dtype,Nf=None):
 	L_2=int(L/2)
@@ -186,13 +96,14 @@ def check_p(L,dtype,Nf=None):
 	J_p=[[1.0,i,(i+1)%L] for i in range(L-1)]
 	J_m=[[-1.0,i,(i+1)%L] for i in range(L-1)]
 
-	J_pp=[[np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # PBC
-	J_mm=[[-np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # PBC
+	J_pp=[[np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # OBC
+	J_mm=[[-np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # OBC
 
 	if type(Nf) is int:
-		static=[["+-",J_p],["-+",J_m],["z",h],["zz",J]]
+		static=[["+-",J_p],["-+",J_m],["n",h],["nn",J]]
 	else:
-		static=[["+-",J_p],["-+",J_m],["z",h],["++",J_pp],["--",J_mm]]
+		static=[["++",J_pp],["--",J_mm]]
+		#static=[["+-",J_p],["-+",J_m],["z",h],["++",J_pp],["--",J_mm]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -223,7 +134,7 @@ def check_pc(L,dtype,Nf=None):
 	hi.extend(hr)
 	h=[[hi[i],i] for i in range(L)]
 	J=[[1.0,i,(i+1)%L] for i in range(L-1)]
-	J_p=[[1.0,i,(i+1)%L] for i in range(L-1)]
+	J_p=[[+1.0,i,(i+1)%L] for i in range(L-1)]
 	J_n=[[-1.0,i,(i+1)%L] for i in range(L-1)]
 
 	static=[["zz",J],["+-",J_n],["-+",J_p],["z",h]]
@@ -244,9 +155,8 @@ def check_pc(L,dtype,Nf=None):
 	Epz=np.concatenate((E1,E2))
 	Epz.sort()
 
-
 	if norm(Epz-E) > Ns*eps(dtype):
-		raise Exception( "test failed pz symmetry at L={0:3d} with dtype {1} and Nf={2:2d} {3}".format(L,np.dtype(dtype),Nf,norm(Epz-E)) )
+		raise Exception( "test failed pc symmetry at L={0:3d} with dtype {1} and Nf={2:2d} {3}".format(L,np.dtype(dtype),Nf,norm(Epz-E)) )
 
 
 
@@ -300,23 +210,6 @@ def check_obc(Lmax):
 			check_c(L,dtype)
 	
 	for dtype in dtypes:
-	 	for L in range(2,Lmax+1,2):
-	 		check_cA(L,dtype)
-	
-	for dtype in dtypes:
-	 	for L in range(2,Lmax+1,2):
-	 		check_cB(L,dtype)
-	
-	for dtype in dtypes:
-		for L in range(2,Lmax+1,2):
-	 		check_cA_cB(L,dtype)
-	
-	for dtype in dtypes:
-		for L in range(2,Lmax+1,2):
-			check_pc(L,dtype,Nf=int(L/2))
-			check_pc(L,dtype)
-
-	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
 			check_p(L,dtype,Nf=int(L/2))
 			check_p(L,dtype)
@@ -324,7 +217,12 @@ def check_obc(Lmax):
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,2):
 			check_p_c(L,dtype,Nf=int(L/2))
-			check_p_c(L,dtype) 
+			check_p_c(L,dtype)
+
+	for dtype in dtypes:
+		for L in range(2,Lmax+1,2):
+			check_pc(L,dtype,Nf=int(L/2))
+			check_pc(L,dtype) 
 
 
 
@@ -404,110 +302,6 @@ def check_t_c(L,dtype,Nf=None):
 
 		if norm(Ek-Ekz) > Ns*eps(dtype):
 			raise Exception( "test failed t z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf,norm(Ek-Ekz)) )
-
-
-def check_t_cA(L,dtype,a=2):
-	hx=random()
-	J=random()
-	h=[[hx,i] for i in range(L)]
-	J1=[[J,i,(i+1)%L] for i in range(L)]
-	J1_p=[[+J,i,(i+1)%L] for i in range(L)]
-	J1_m=[[-J,i,(i+1)%L] for i in range(L)]
-	
-	static=[["+-",J1_p],["-+",J1_m],["z",h],["zz",J1]]
-
-	L_2=int(L/a)
-
-	for kblock in range(-L_2+2,L_2+2):
-
-		basisk=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a)
-		Hk=hamiltonian(static,[],dtype=dtype,basis=basisk)
-		Ns=Hk.Ns
-		Ek=Hk.eigvalsh()
-
-		basisk1=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cAblock=+1)
-		Hk1=hamiltonian(static,[],dtype=dtype,basis=basisk1)
-		basisk2=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cAblock=-1)
-		Hk2=hamiltonian(static,[],dtype=dtype,basis=basisk2)	
-		Ek1=Hk1.eigvalsh()
-		Ek2=Hk2.eigvalsh()
-		Ekz=np.append(Ek1,Ek2)
-		Ekz.sort()
-
-		if norm(Ek-Ekz) > Ns*eps(dtype):
-			raise Exception( "test failed t zA symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
-
-
-def check_t_cB(L,dtype,a=2):
-	hx=random()
-	J=random()
-	h=[[hx,i] for i in range(L)]
-	J1=[[J,i,(i+1)%L] for i in range(L)]
-	J1_p=[[+J,i,(i+1)%L] for i in range(L)]
-	J1_m=[[-J,i,(i+1)%L] for i in range(L)]
-	
-	static=[["+-",J1_p],["-+",J1_m],["z",h],["zz",J1]]
-
-	L_2=int(L/a)
-
-	for kblock in range(-L_2+2,L_2+2):
-
-		basisk=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a)
-		Hk=hamiltonian(static,[],dtype=dtype,basis=basisk)
-		Ns=Hk.Ns
-		Ek=Hk.eigvalsh()
-
-		basisk1=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cBblock=+1)
-		Hk1=hamiltonian(static,[],dtype=dtype,basis=basisk1)
-		basisk2=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cBblock=-1)
-		Hk2=hamiltonian(static,[],dtype=dtype,basis=basisk2)	
-		Ek1=Hk1.eigvalsh()
-		Ek2=Hk2.eigvalsh()
-		Ekz=np.append(Ek1,Ek2)
-		Ekz.sort()
-
-		if norm(Ek-Ekz) > Ns*eps(dtype):
-			raise Exception( "test failed t zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
-
-
-def check_t_cA_cB(L,dtype,a=2):
-	hx=random()
-	J=random()
-	h=[[hx,i] for i in range(L)]
-	J1=[[J,i,(i+1)%L] for i in range(L)]
-	J1_p=[[+J,i,(i+1)%L] for i in range(L)]
-	J1_m=[[-J,i,(i+1)%L] for i in range(L)]
-	
-	static=[["+-",J1_p],["-+",J1_m],["z",h],["zz",J1]]
-	
-	L_2=int(L/a)
-
-	for kblock in range(0,L_2):
-
-		basisk=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a)
-		Hk=hamiltonian(static,[],dtype=dtype,basis=basisk)
-		Ns=Hk.Ns
-		Ek=Hk.eigvalsh()
-
-		basisk1=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cAblock=+1,cBblock=+1)
-		Hk1=hamiltonian(static,[],dtype=dtype,basis=basisk1)
-		basisk2=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cAblock=+1,cBblock=-1)
-		Hk2=hamiltonian(static,[],dtype=dtype,basis=basisk2)
-		basisk3=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cAblock=-1,cBblock=+1)
-		Hk3=hamiltonian(static,[],dtype=dtype,basis=basisk3)
-		basisk4=spinless_fermion_basis_1d(L=L,kblock=kblock,a=a,cAblock=-1,cBblock=-1)
-		Hk4=hamiltonian(static,[],dtype=dtype,basis=basisk4)
-
-		Ek1=Hk1.eigvalsh()
-		Ek2=Hk2.eigvalsh()
-		Ek3=Hk3.eigvalsh()
-		Ek4=Hk4.eigvalsh()
-		Ekz=np.concatenate((Ek1,Ek2,Ek3,Ek4))
-		Ekz.sort()
-
-
-		if norm(Ek-Ekz) > Ns*eps(dtype):
-			raise Exception( "test failed t zA zB symmetry at L={0:3d} with dtype {1} and {2}".format(L,np.dtype(dtype),norm(Ek-Ekz)) )
 
 def check_t_p(L,dtype,Nf=None):
 	hx=random()
@@ -617,7 +411,7 @@ def check_t_p(L,dtype,Nf=None):
 		Ekp.sort()
 
 		if norm(Ek-Ekp) > Ns*eps(dtype):
-				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,int(L/2),np.dtype(dtype),Nf,norm(Ek-Ekp)) )
+				raise Exception( "test failed t pc symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,int(L/2),np.dtype(dtype),Nf,norm(Ek-Ekp)) )
 
 	else:
 		for kblock in range(1,L_2+1):
@@ -708,7 +502,7 @@ def check_t_pc(L,dtype,Nf=None):
 
 
 	if norm(Ek-Ekp) > Ns*eps(dtype):
-			raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,0,np.dtype(dtype),Nf,norm(Ek-Ekp)) )
+			raise Exception( "test failed t pc symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,0,np.dtype(dtype),Nf,norm(Ek-Ekp)) )
 
 	if((L/a)%2 == 0):
 		for kblock in range(1,L_2):
@@ -749,7 +543,7 @@ def check_t_pc(L,dtype,Nf=None):
 		Ekp.sort()
 
 		if norm(Ek-Ekp) > Ns*eps(dtype):
-				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,int(L/2),np.dtype(dtype),Nf,norm(Ek-Ekp)) )
+				raise Exception( "test failed t pc symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,int(L/2),np.dtype(dtype),Nf,norm(Ek-Ekp)) )
 	else:
 		for kblock in range(1,L_2+1):
 
@@ -847,18 +641,6 @@ def check_pbc(Lmax):
 		for L in range(2,Lmax+1,2):
 			check_t_c(L,dtype,Nf=int(L/2))
 			check_t_c(L,dtype)
-	
-	for dtype in (np.complex64,np.complex128):
-		for L in range(2,Lmax+1,2):
-			check_t_cA(L,dtype)
-	
-	for dtype in (np.complex64,np.complex128):
-		for L in range(2,Lmax+1,2):
-			check_t_cB(L,dtype)
-	
-	for dtype in (np.complex64,np.complex128):
-		for L in range(2,Lmax+1,2):
-			check_t_cA_cB(L,dtype)
 	
 	for dtype in dtypes:
 		for L in range(2,Lmax+1,1):

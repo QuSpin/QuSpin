@@ -1210,7 +1210,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		at each time in `times`. Default is `False`.
 	stack_state : bool, optional
 		If `f` is written to take care of real and imaginary parts separately (see Examples), this flag 
-		will return a signgle complex-valued solution instead of the real and imaginary parts separately.
+		will return a single complex-valued solution instead of the real and imaginary parts separately.
 		Default is `False`.
 	verbose : bool, optional
 		If set to `True`, prints normalisation of state at teach time in `times`.
@@ -1247,6 +1247,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
 		v0[:shape0[0]] = v1.real
 		v0[shape0[0]:] = v1.imag
+
 		solver = ode(f) # y_f = f(t,y,*args)
 	elif real:
 		solver = ode(f) # y_f = f(t,y,*args)
