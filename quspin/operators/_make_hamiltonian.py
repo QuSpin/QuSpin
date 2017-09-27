@@ -38,18 +38,21 @@ def _consolidate_static(static_list):
 
 
 def _consolidate_dynamic(dynamic_list):
+	eps = 10 * _np.finfo(_np.float64).eps
+	
 	dynamic_dict={}
 	for opstr,bonds,f,f_args in dynamic_list:
+		f_args = tuple(f_args)
 		if (opstr,f,f_args) not in dynamic_dict:
 			dynamic_dict[(opstr,f,f_args)] = {}
 
 		for bond in bonds:
 			J = bond[0]
 			indx = tuple(bond[1:])
-			if indx in static_dict[opstr]:
-				static_dict[(opstr,f,f_args)][indx] += J
+			if indx in dynamic_dict[(opstr,f,f_args)]:
+				dynamic_dict[(opstr,f,f_args)][indx] += J
 			else:
-				static_dict[(opstr,f,f_args)][indx] = J
+				dynamic_dict[(opstr,f,f_args)][indx] = J
 
 
 	dynamic_list = []

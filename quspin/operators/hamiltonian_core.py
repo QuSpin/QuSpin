@@ -967,12 +967,14 @@ class hamiltonian(object):
 		correponds to :math:`V^\\dagger H V`.
 
 		"""
+		from .exp_op_core import isexp_op
+
 
 		if ishamiltonian(proj):
 			new = self._rmul_hamiltonian(proj.getH())
 			return new._imul_hamiltonian(proj)
 
-		elif exp_op_core.isexp_op(proj):
+		elif isexp_op(proj):
 			return proj.sandwich(self)
 
 		elif _sp.issparse(proj):
