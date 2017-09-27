@@ -73,7 +73,7 @@ class hcb_basis_core : public general_basis_core<I>
 		}
 
 		double get_norm(I s){
-			return get_norm_core<I>(this,s,1,s,1,general_basis_core<I>::nt,0);
+			return get_norm_core<I>(this,s,1,0.0,0.0,s,general_basis_core<I>::nt,0);
 		}
 
 		I inline next_state_pcon(I s){

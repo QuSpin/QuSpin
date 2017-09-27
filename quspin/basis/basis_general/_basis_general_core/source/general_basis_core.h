@@ -53,19 +53,18 @@ bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int 
 		return true;
 	}
 	const int per = B->pers[depth];
-	const int q = B->qs[depth];
 	bool keep = true;
 	if(depth<nt-1){
 		for(int i=1;i<per+1 && keep ;i++){
-			keep = keep && check_state_core(B,t,sign,s,nt,depth+1);
+			if(!check_state_core(B,t,sign,s,nt,depth+1))
+				return false;
+
 			t = B->map_state(t,depth,sign);
 			if(t < s){
 				return false;
 			}
-			else if(t==s){
-				if(q%(per/i) && per>2) return false;
-				break;
-			}
+			else if (t == s){break;}
+
 		}
 		return keep;
 	}
@@ -75,47 +74,79 @@ bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int 
 			if(t < s){
 				return false;
 			}
-			else if(t==s){
-				if(q%(per/i) && per>2) return false;
-				break;
-			}
+			else if (t == s){break;}
 		}
 		return true;
 	}
 }
 
 template<class I>
-double get_norm_core(general_basis_core<I> *B,I s1,int sign1,I s2,int sign2,const int nt,const int depth){
+double get_norm_core(general_basis_core<I> *B,I t,int sign, double k, double norm, const I s,const int nt,const int depth){
 	if(nt<=0){
 		return 1;
 	}
 	const int per = B->pers[depth];
 	const double q = (2.0*M_PI*B->qs[depth])/per;
-	double norm = 0;
 
 	if(depth<nt-1){
 		for(int i=0;i<per;i++){
-			for(int j=0;j<per;j++){
-				norm += std::cos(q*(i-j))*get_norm_core(B,s1,sign1,s2,sign2,nt,depth+1);
-				s2 = B->map_state(s2,depth,sign2);
-			}
-			s1 = B->map_state(s1,depth,sign1);
+			norm = get_norm_core(B,t,sign,k,norm,s,nt,depth+1);
+			k += q;
+			t = B->map_state(t,depth,sign);
 		}
-		return norm;
 	}
 	else{
 		for(int i=0;i<per;i++){
-			for(int j=0;j<per;j++){
-				if(s1==s2){
-					norm += sign2 * sign1 * std::cos(q*(i-j));
-				}
-				s2 = B->map_state(s2,depth,sign2);
+			if(t==s){
+				norm += sign * std::cos(k);
 			}
-			s1 = B->map_state(s1,depth,sign1);
+			k += q;
+			t = B->map_state(t,depth,sign);
 		}
-		return norm;
 	}
+
+	if(depth==0){
+		// finally multiply by product of all the periods.
+		for(int i=0;i<nt;i++){
+			norm *= B->pers[i];
+		}
+	}
+
+	return norm;
 }
+
+// template<class I>
+// double get_norm_core(general_basis_core<I> *B,I s1,int sign1,I s2,int sign2,const int nt,const int depth){
+// 	if(nt<=0){
+// 		return 1;
+// 	}
+// 	const int per = B->pers[depth];
+// 	const double q = (2.0*M_PI*B->qs[depth])/per;
+// 	double norm = 0;
+
+// 	if(depth<nt-1){
+// 		for(int i=0;i<per;i++){
+// 			for(int j=0;j<per;j++){
+// 				norm += std::cos(q*(i-j))*get_norm_core(B,s1,sign1,s2,sign2,nt,depth+1);
+// 				s2 = B->map_state(s2,depth,sign2);
+// 			}
+// 			s1 = B->map_state(s1,depth,sign1);
+// 		}
+// 		return norm;
+// 	}
+// 	else{
+// 		for(int i=0;i<per;i++){
+// 			for(int j=0;j<per;j++){
+// 				if(s1==s2){
+// 					norm += sign2 * sign1 * std::cos(q*(i-j));
+// 				}
+// 				s2 = B->map_state(s2,depth,sign2);
+// 			}
+// 			s1 = B->map_state(s1,depth,sign1);
+// 		}
+// 		return norm;
+// 	}
+// }
 
 template<class I>
 I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,const int nt,const int depth){
