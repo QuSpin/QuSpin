@@ -41,14 +41,16 @@ T csr_trace(const I n_row,
 
 template<typename T>
 T inline my_max(T norm,T x){
-	return fmax(norm,x*x);
+	T a = x*x;
+	return (a<norm?norm:a);
 }
 
 template<typename T>
 T inline my_max(T norm,std::complex<T> x){
 	T re = x.real();
 	T im = x.imag();
-	return fmax(norm,re*re+im*im);
+	T a = re*re+im*im;
+	return (a<norm?norm:a);
 }
 
 
