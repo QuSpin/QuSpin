@@ -113,13 +113,13 @@ void _expm_multiply(const I n_row,
 		}
 		for(int i=0;i<s;i++){
 
+			T2 c1_thread = inf_norm_chunk(B1,n_row,nthread,threadn);
+
 			#pragma omp single
 			{
 				c1 = 0;
 				flag = false;
 			}
-
-			T2 c1_thread = inf_norm_chunk(B1,n_row,nthread,threadn);
 
 			#pragma omp critical
 			{
@@ -144,14 +144,14 @@ void _expm_multiply(const I n_row,
 					B1[k] = B2[k];
 				}
 
+				T2 c2_thread = inf_norm_chunk(B2,n_row,nthread,threadn);
+				T2 c3_thread = inf_norm_chunk(F,n_row,nthread,threadn);
+
 				#pragma omp single
 				{
 					c2 = 0;
 					c3 = 0;
 				}
-
-				T2 c2_thread = inf_norm_chunk(B2,n_row,nthread,threadn);
-				T2 c3_thread = inf_norm_chunk(F,n_row,nthread,threadn);
 
 				#pragma omp critical
 				{
