@@ -22,11 +22,9 @@ def configuration(parent_package='', top_path=None):
         extra_compile_args = []
         extra_link_args = []
         if sys.platform == "win32":
-            pass
             extra_compile_args=["/openmp"]
             extra_link_args=["/openmp"]
         else:
-            pass
             extra_compile_args = ["-fopenmp"]
             extra_link_args = ["-fopenmp"]
  
