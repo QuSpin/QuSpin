@@ -55,8 +55,7 @@ for Nup in range(N+1):
 E_pcon = np.hstack(E_pcon)
 E_pcon.sort()
 
-np.testing.assert_allclose(E_pcon,E_full,atol=1e-14)
-
+np.testing.assert_allclose(E_pcon,E_full,atol=1e-13)
 
 for Nup in Nup_list:
 	E_full_block = E_symm[(Nup,None,None)]
@@ -67,38 +66,5 @@ for Nup in Nup_list:
 
 	E_block = np.hstack(E_block)
 	E_block.sort()
-	np.testing.assert_allclose(E_full_block,E_block,atol=1e-14)
+	np.testing.assert_allclose(E_full_block,E_block,atol=1e-13)
 	print("passed Nup={} sector".format(Nup))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
