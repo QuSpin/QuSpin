@@ -1014,20 +1014,18 @@ class basis_1d(lattice_basis):
 			norm *= _np.sign(self._N)
 			norm /= self._N
 			try:
-				m = self._M.astype(_np.min_scalar_type(-1*self._M[0]))
+				m = self._M.astype(_np.min_scalar_type(-1*(self._M[0]+1)))
 			except IndexError:
 				m = self._M.astype(_np.int8)
 			_np.mod(m,self._L+1,out=m)
 			m -= 1
 			mask = (m >= 0)
-
 			sign = _np.empty(mask.sum(),dtype=_np.int8)
 			_np.floor_divide(self._M[mask],(self._L+1),out=sign)
 			sign *= 2
 			sign -= 1
 			sign *= self._N[mask]
 			_np.sign(sign,out=sign)
-
 			norm[mask] *= (1.0 + sign*pblock*_np.cos(self._k*m[mask]))
 			del mask
 		elif (type(kblock) is int) and (type(pzblock) is int):

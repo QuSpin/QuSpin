@@ -97,7 +97,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 
 	"""
-	def __init__(self,N,Nb=None,nb=None,sps=None,_Np=None,**blocks):
+	def __init__(self,N,Nb=None,nb=None,sps=None,Ns_block_est=None,**blocks):
 		"""Intializes the `boson_basis_general` object (basis for bosonic operators).
 
 		Parameters
@@ -110,6 +110,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			Density of bosons in chain (bosons per site).
 		sps: int, optional
 			Number of states per site (including zero bosons), or on-site Hilbert space dimension.
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -121,6 +123,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			sector.
 
 		"""
+		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
+
 		if sps is None:
 
 			if Nb is not None:
@@ -186,7 +192,14 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				basis_type = get_basis_type(N,max(Nb),self._sps)
 
 			if len(self._pers)>0:
-				Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+				if Ns_block_est is None:
+					Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*sps,1000)
+				else:
+					if type(Ns_block_est) is not int:
+						raise TypeError("Ns_block_est must be integer value.")
+					if Ns_block_est <= 0:
+						raise ValueError("Ns_block_est must be an integer > 0")						
+					Ns = Ns_block_est
 
 			if basis_type==_np.uint32:
 				basis = _np.zeros(Ns,dtype=_np.uint32)
@@ -203,7 +216,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 				self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
 				if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 				basis,ind = _np.unique(basis,return_index=True)
 				if self.Ns != basis.shape[0]:
@@ -216,7 +229,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			else:
 				self._Ns = self._core.make_basis(basis,n,Np=Nb)
 				if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 				basis,ind = _np.unique(basis,return_index=True)
 				if self.Ns != basis.shape[0]:

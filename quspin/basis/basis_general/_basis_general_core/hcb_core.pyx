@@ -30,28 +30,44 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
 		cdef int Ns_1 = 0
 		cdef int Ns_2 = 0
+		cdef int Ns_3 = 0
 		cdef uint8_t np = 0
 		cdef npy_intp i = 0
+		cdef mem_MAX = basis.shape[0]
 
 		if Np is None:
-			Ns_1 = self.make_basis_full(basis,n)
+			Ns_2 = self.make_basis_full(basis,n)
 		elif type(Np) is int:
-			Ns_1 = self.make_basis_pcon(Np,basis,n)
+			Ns_2 = self.make_basis_pcon(Np,basis,n)
 		else:
 			Np_iter = iter(Np)
 			if count is None:
 				for np in Np_iter:
-					Ns_1 += self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])
+					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_2 += Ns_1
+
+					if Ns_2 > mem_MAX:
+						return -1
 			else:
 
 				for np in Np_iter:
-					Ns_2 = Ns_1 + self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])
-					for i in range(Ns_1,Ns_2,1):
-						count[i] = np
+					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_3 = Ns_2 + Ns_1
+						for i in range(Ns_2,Ns_3,1):
+							count[i] = np
 
-					Ns_1 = Ns_2
+						Ns_2 = Ns_3
 
-		return Ns_1
+					if Ns_2 > mem_MAX:
+						return -1
+
+		return Ns_2
 
 
 	@cython.boundscheck(False)
@@ -83,25 +99,48 @@ cdef class hcb_basis_core_wrap_64(general_basis_core_wrap_64):
 		self._sps = 2
 		self._basis_core = new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
 
-	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,object count=None):
+	@cython.boundscheck(False)
+	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
 		cdef int Ns_1 = 0
 		cdef int Ns_2 = 0
-		cdef int np
+		cdef int Ns_3 = 0
+		cdef uint8_t np = 0
+		cdef npy_intp i = 0
+		cdef mem_MAX = basis.shape[0]
+
 		if Np is None:
-			Ns_1 = self.make_basis_full(basis,n)
+			Ns_2 = self.make_basis_full(basis,n)
 		elif type(Np) is int:
-			Ns_1 = self.make_basis_pcon(Np,basis,n)
+			Ns_2 = self.make_basis_pcon(Np,basis,n)
 		else:
 			Np_iter = iter(Np)
-			for obj in Np_iter:
-				np = obj
-				Ns_2 = Ns_1 + self.make_basis_pcon(np,basis[Ns_1:],n[Ns_1:])
-				if count is not None:
-					count[Ns_1:Ns_2]=Np
+			if count is None:
+				for np in Np_iter:
+					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_2 += Ns_1
 
-				Ns_1 = Ns_2
+					if Ns_2 > mem_MAX:
+						return -1
+			else:
 
-		return Ns_1
+				for np in Np_iter:
+					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_3 = Ns_2 + Ns_1
+						for i in range(Ns_2,Ns_3,1):
+							count[i] = np
+
+						Ns_2 = Ns_3
+
+					if Ns_2 > mem_MAX:
+						return -1
+
+		return Ns_2
 
 
 

@@ -56,7 +56,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,**blocks):
+	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,Ns_block_est=None,**blocks):
 		"""Intializes the `spin_basis_general` object (basis for spin operators).
 
 		Parameters
@@ -73,6 +73,8 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			"1/2","1","3/2",...,"9999/2","5000".
 		pauli: bool, optional
 			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -89,6 +91,8 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		sps,S = S_dict[S]
 
 		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
 
 		if Nup is not None and m is not None:
 			raise ValueError("Cannot use Nup and m at the same time")
@@ -99,9 +103,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			Nup = int((m+S)*N)
 
 		if sps==2:
-			hcb_basis_general.__init__(self,N,Nb=Nup,_Np=_Np,**blocks)
+			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,_Np=_Np,**blocks)
 		else:
-			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,_Np=_Np,**blocks)
+			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,**blocks)
 
 	def _Op(self,opstr,indx,J,dtype):
 		

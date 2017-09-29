@@ -15,8 +15,6 @@ cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int
 	cdef double norm
 	cdef npy_intp i,j
 
-
-
 	if nnt > 1:
 		for j in range(per):
 			if dtype is float or dtype is double:
@@ -86,7 +84,6 @@ cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int
 	cdef double complex cc = cos(q)-1j*sin(q)
 	cdef double norm
 	cdef npy_intp i,j
-
 
 
 	if nnt > 1:
@@ -192,7 +189,16 @@ cdef class general_basis_core_wrap_32:
 		if Ns == 0:
 			return P
 
-		return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
+		if self._nt <= 0:
+			with nogil:
+				for i in range(Ns):
+					row[i] = Ns_full-basis[i]-1	
+
+			P = P + _sp.csr_matrix((c,(row,col)),shape=P.shape)
+
+			return P
+		else:
+			return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
 
 cdef class general_basis_core_wrap_64:
@@ -241,6 +247,15 @@ cdef class general_basis_core_wrap_64:
 		if Ns == 0:
 			return P
 
-		return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
+		if self._nt <= 0:
+			with nogil:
+				for i in range(Ns):
+					row[i] = Ns_full-basis[i]-1	
+
+			P = P + _sp.csr_matrix((c,(row,col)),shape=P.shape)
+
+			return P
+		else:
+			return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
 
