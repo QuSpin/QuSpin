@@ -141,7 +141,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
 
-			self._sps = Nb+1
+			self._sps = max(Nb+1,2)
 		else:
 			if Nb is not None:
 				if nb is not None:
@@ -154,7 +154,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 		self._allowed_ops=set(["I","n","+","-"])
 		if self._sps == 2:
-			general_hcb_basis.__init__(self,N,Nb=Nb,_Np=_Np,**blocks)
+			hcb_basis_general.__init__(self,N,Nb=Nb,_Np=_Np,**blocks)
 		else:
 			basis_general.__init__(self,N,**blocks)
 			self._check_pcon = False

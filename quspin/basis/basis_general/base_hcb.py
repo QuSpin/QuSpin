@@ -90,7 +90,7 @@ class hcb_basis_general(basis_general):
 
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
-		self._allowed_ops=set(["I","x","y","z","+","-"])
+		self._allowed_ops=set(["I","x","y","z","+","-","n"])
 
 
 
