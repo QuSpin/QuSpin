@@ -54,7 +54,7 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]
-	zblocks = [0,1]
+	zblocks = [None,0,1]
 
 	if S=="1/2":
 		ops = ["x","y","z","+","-","I"]
@@ -124,10 +124,10 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 
 					check_ME(basis_1d,gen_basis,opstr,indx,np.complex128,err_msg)
 
-print("testing S=1/2")
-test_gen_basis_hcb(3,S="1/2")
-print("testing S=1")
-test_gen_basis_hcb(3,S="1")
+# print("testing S=1/2")
+# test_gen_basis_hcb(3,S="1/2")
+# print("testing S=1")
+# test_gen_basis_hcb(3,S="1")
 print("testing S=3/2")
 test_gen_basis_hcb(3,S="3/2")
 print("testing S=2")

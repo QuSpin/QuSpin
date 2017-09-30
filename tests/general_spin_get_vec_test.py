@@ -20,7 +20,7 @@ def check_gen_basis_hcb(S="1/2"):
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]
-	zblocks = [0,1]
+	zblocks = [None,0,1]
 
 	sps,s=S_dict[S]
 

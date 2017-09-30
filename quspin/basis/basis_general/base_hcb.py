@@ -42,13 +42,14 @@ class hcb_basis_general(basis_general):
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 					
 				Ns = Ns_block_est
 
+		Ns = max(Ns,1000)
 
 		if N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
