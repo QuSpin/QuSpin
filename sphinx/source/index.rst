@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the official QuSpin documentation website!
-=====================================================
+Welcome to the Official QuSpin Documentation!
+=============================================
 
 QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems and (imaginary) time evolution following arbitrary user-specified driving protocols.
 

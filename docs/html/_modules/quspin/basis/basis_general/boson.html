@@ -148,7 +148,7 @@
 
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="boson_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+<div class="viewcode-block" id="boson_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `boson_basis_general` object (basis for bosonic operators).</span>
 
 <span class="sd">		Parameters</span>
@@ -161,6 +161,8 @@
 <span class="sd">			Density of bosons in chain (bosons per site).</span>
 <span class="sd">		sps: int, optional</span>
 <span class="sd">			Number of states per site (including zero bosons), or on-site Hilbert space dimension.</span>
+<span class="sd">		Ns_block_est: int, optional</span>
+<span class="sd">			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. </span>
 <span class="sd">		**blocks: optional</span>
 <span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
 
@@ -172,6 +174,10 @@
 <span class="sd">			sector.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">_Np</span> <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_Np&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">_Np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;_Np&quot;</span><span class="p">)</span>
+
 		<span class="k">if</span> <span class="n">sps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
 			<span class="k">if</span> <span class="n">Nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -186,7 +192,7 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting value for &#39;Nb&#39;,&#39;nb&#39; or &#39;sps&#39;&quot;</span><span class="p">)</span>
 
-			<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">Nb</span><span class="o">+</span><span class="mi">1</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Nb</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">Nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -199,7 +205,7 @@
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-			<span class="n">general_hcb_basis</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">False</span>
@@ -237,7 +243,14 @@
 				<span class="n">basis_type</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">Nb</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-				<span class="n">Ns</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="n">Ns</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="n">sps</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be integer value.&quot;</span><span class="p">)</span>
+					<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be an integer &gt; 0&quot;</span><span class="p">)</span>						
+					<span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_block_est</span>
 
 			<span class="k">if</span> <span class="n">basis_type</span><span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span>
 				<span class="n">basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
@@ -254,7 +267,7 @@
 				<span class="n">Np_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">make_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="n">Np_list</span><span class="p">)</span>
 				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.&quot;</span><span class="p">)</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;</span><span class="p">)</span>
 
 				<span class="n">basis</span><span class="p">,</span><span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -267,7 +280,7 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">make_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nb</span><span class="p">)</span>
 				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.&quot;</span><span class="p">)</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;</span><span class="p">)</span>
 
 				<span class="n">basis</span><span class="p">,</span><span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>

@@ -160,12 +160,12 @@ class exp_op(object):
 	
 	@property
 	def H(self):
-		""":obj:`hamiltonian`: transposes and conjugates the matrix exponential."""
+		""":obj:`exp_op`: transposes and conjugates the matrix exponential."""
 		return self.getH(copy = False)
 
 	@property
 	def T(self):
-		""":obj:`hamiltonian`: transposes the matrix exponential."""
+		""":obj:`exp_op`: transposes the matrix exponential."""
 		return self.transpose(copy = False)
 	
 	@property
@@ -424,28 +424,28 @@ class exp_op(object):
 			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
 
 	def dot(self, other,shift=None,**call_kwargs):
-		"""Left-multiply matrix exponential by an operator.
+		"""Left-multiply operator by matrix exponential.
 
-		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies
-		it from the left be :math:`A`. Then this funcion implements:
+		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.
+		Then this funcion implements:
 
 		.. math::
-			A\\exp(\\mathcal{O})
+			\\exp(\\mathcal{O}) A
 
 		Parameters
 		-----------
 		other : obj
-			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
+			The operator :math:`A` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
-			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
+			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.
 		shift : scalar
-			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
+			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
 
 
 		Returns
 		--------
 		obj
-			matrix exponential multiplied by `other` from the left.
+			matrix exponential multiplied by `other` from the right.
 
 		Examples
 		---------
@@ -510,33 +510,39 @@ class exp_op(object):
 						return _expm_multiply(M, other, start=self._start, stop=self._stop, num=self._num, endpoint=self._endpoint).T
 
 	def rdot(self, other,shift=None,**call_kwargs):
-		"""Right-multiply matrix exponential by an operator.
+		"""Right-multiply an operator by matrix exponential.
 
-		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies
-		it from the right be :math:`B`. Then this funcion implements:
+		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.
+		Then this funcion implements:
 
 		.. math::
-			\\exp(\\mathcal{O})B
+			A \\exp(\\mathcal{O})
+
+		Notes
+		-----
+		For `hamiltonian` objects `A`, this function is the same as `A.dot(expO)`.
 
 		Parameters
 		-----------
 		other : obj
-			The operator :math:`B` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
+			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
 		time : scalar, optional
-			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
+			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.
 		shift : scalar
-			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
- 
+			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
+
+
 		Returns
 		--------
 		obj
-			matrix exponential multiplied by `other` from the right.
+			matrix exponential multiplied by `other` from the left.
 
 		Examples
 		---------
 		>>> expO = exp_op(O)
-		>>> B = exp_op(O,a=-2j).get_mat()
-		>>> print(expO.rdot(B))
+		>>> A = exp_op(O,a=2j).get_mat()
+		>>> print(expO.rdot(A))
+		>>> print(A.dot(expO))
 		
 		"""
 
@@ -558,7 +564,10 @@ class exp_op(object):
 		if other.ndim not in [1, 2]:
 			raise ValueError("Expecting a 1 or 2 dimensional array for 'other'")
 
-		if shape[1] != self.get_shape[0]:
+		if other.ndim == 2:
+			if shape[1] != self.get_shape[0]:
+				raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
+		elif shape[0] != self.get_shape[0]:
 			raise ValueError("Dimension mismatch between expO: {0} and other: {1}".format(self._O.get_shape, other.shape))
 
 		if shift is not None:
@@ -617,7 +626,7 @@ class exp_op(object):
 		time : scalar, optional
 			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
 		shift : scalar
-			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.
+			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
  
 		Returns
 		--------

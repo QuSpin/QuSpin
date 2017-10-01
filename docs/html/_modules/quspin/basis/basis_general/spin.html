@@ -107,7 +107,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="spin_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">S</span><span class="o">=</span><span class="s2">&quot;1/2&quot;</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+<div class="viewcode-block" id="spin_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">S</span><span class="o">=</span><span class="s2">&quot;1/2&quot;</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `spin_basis_general` object (basis for spin operators).</span>
 
 <span class="sd">		Parameters</span>
@@ -124,6 +124,8 @@
 <span class="sd">			&quot;1/2&quot;,&quot;1&quot;,&quot;3/2&quot;,...,&quot;9999/2&quot;,&quot;5000&quot;.</span>
 <span class="sd">		pauli: bool, optional</span>
 <span class="sd">			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.</span>
+<span class="sd">		Ns_block_est: int, optional</span>
+<span class="sd">			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. </span>
 <span class="sd">		**blocks: optional</span>
 <span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
 
@@ -140,6 +142,8 @@
 		<span class="n">sps</span><span class="p">,</span><span class="n">S</span> <span class="o">=</span> <span class="n">S_dict</span><span class="p">[</span><span class="n">S</span><span class="p">]</span>
 
 		<span class="n">_Np</span> <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_Np&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">_Np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;_Np&quot;</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">Nup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot use Nup and m at the same time&quot;</span><span class="p">)</span>
@@ -150,9 +154,9 @@
 			<span class="n">Nup</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">m</span><span class="o">+</span><span class="n">S</span><span class="p">)</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">sps</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
-			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="n">Ns_block_est</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">higher_spin_basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="n">sps</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
+			<span class="n">higher_spin_basis_general</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="n">sps</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="n">Ns_block_est</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
 
 	<span class="k">def</span> <span class="nf">_Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
 		

@@ -211,12 +211,12 @@
 	
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes and conjugates the matrix exponential.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`exp_op`: transposes and conjugates the matrix exponential.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes the matrix exponential.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`exp_op`: transposes the matrix exponential.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 	
 	<span class="nd">@property</span>
@@ -475,28 +475,28 @@
 			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">tocsc</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="exp_op.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Left-multiply matrix exponential by an operator.</span>
+		<span class="sd">&quot;&quot;&quot;Left-multiply operator by matrix exponential.</span>
 
-<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies</span>
-<span class="sd">		it from the left be :math:`A`. Then this funcion implements:</span>
+<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
+<span class="sd">		Then this funcion implements:</span>
 
 <span class="sd">		.. math::</span>
-<span class="sd">			A\\exp(\\mathcal{O})</span>
+<span class="sd">			\\exp(\\mathcal{O}) A</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
 <span class="sd">		other : obj</span>
-<span class="sd">			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
+<span class="sd">			The operator :math:`A` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
 <span class="sd">		time : scalar, optional</span>
-<span class="sd">			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.</span>
+<span class="sd">			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.</span>
 <span class="sd">		shift : scalar</span>
-<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.</span>
+<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
 
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		obj</span>
-<span class="sd">			matrix exponential multiplied by `other` from the left.</span>
+<span class="sd">			matrix exponential multiplied by `other` from the right.</span>
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
@@ -561,33 +561,39 @@
 						<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
 
 <div class="viewcode-block" id="exp_op.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Right-multiply matrix exponential by an operator.</span>
+		<span class="sd">&quot;&quot;&quot;Right-multiply an operator by matrix exponential.</span>
 
-<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator which multiplies</span>
-<span class="sd">		it from the right be :math:`B`. Then this funcion implements:</span>
+<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
+<span class="sd">		Then this funcion implements:</span>
 
 <span class="sd">		.. math::</span>
-<span class="sd">			\\exp(\\mathcal{O})B</span>
+<span class="sd">			A \\exp(\\mathcal{O})</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		For `hamiltonian` objects `A`, this function is the same as `A.dot(expO)`.</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
 <span class="sd">		other : obj</span>
-<span class="sd">			The operator :math:`B` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
+<span class="sd">			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
 <span class="sd">		time : scalar, optional</span>
-<span class="sd">			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.</span>
+<span class="sd">			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.</span>
 <span class="sd">		shift : scalar</span>
-<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.</span>
-<span class="sd"> </span>
+<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
+
+
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		obj</span>
-<span class="sd">			matrix exponential multiplied by `other` from the right.</span>
+<span class="sd">			matrix exponential multiplied by `other` from the left.</span>
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
 <span class="sd">		&gt;&gt;&gt; expO = exp_op(O)</span>
-<span class="sd">		&gt;&gt;&gt; B = exp_op(O,a=-2j).get_mat()</span>
-<span class="sd">		&gt;&gt;&gt; print(expO.rdot(B))</span>
+<span class="sd">		&gt;&gt;&gt; A = exp_op(O,a=2j).get_mat()</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.rdot(A))</span>
+<span class="sd">		&gt;&gt;&gt; print(A.dot(expO))</span>
 <span class="sd">		</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
@@ -609,7 +615,10 @@
 		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a 1 or 2 dimensional array for &#39;other&#39;&quot;</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch between expO: </span><span class="si">{0}</span><span class="s2"> and other: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+		<span class="k">elif</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch between expO: </span><span class="si">{0}</span><span class="s2"> and other: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
 		<span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -668,7 +677,7 @@
 <span class="sd">		time : scalar, optional</span>
 <span class="sd">			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.</span>
 <span class="sd">		shift : scalar</span>
-<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - shift\\mathrm{Id})`.</span>
+<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
 <span class="sd"> </span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
