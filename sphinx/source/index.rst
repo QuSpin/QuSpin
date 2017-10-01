@@ -39,6 +39,10 @@ QuSpin Example Scripts
     
     Examples
 
+Report a Bug
+======================
+
+To report a bug in QuSpin, please `open up a new issue <https://github.com/weinbe58/QuSpin/issues>`_ on GitHub.
 
 
 

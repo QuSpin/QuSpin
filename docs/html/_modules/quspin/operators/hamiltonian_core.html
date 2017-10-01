@@ -1018,12 +1018,14 @@
 <span class="sd">		correponds to :math:`V^\\dagger H V`.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
+		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="k">import</span> <span class="n">isexp_op</span>
+
 
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
 			<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmul_hamiltonian</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">getH</span><span class="p">())</span>
 			<span class="k">return</span> <span class="n">new</span><span class="o">.</span><span class="n">_imul_hamiltonian</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">exp_op_core</span><span class="o">.</span><span class="n">isexp_op</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
+		<span class="k">elif</span> <span class="n">isexp_op</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
 			<span class="k">return</span> <span class="n">proj</span><span class="o">.</span><span class="n">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>

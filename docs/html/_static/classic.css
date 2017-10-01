@@ -118,7 +118,7 @@ div.sphinxsidebar input {
 /* -- hyperlink styles ------------------------------------------------------ */
 
 a {
-    color: #355f7c;
+    color: blue;
     text-decoration: none;
 }
 
@@ -131,6 +131,21 @@ a:hover {
     text-decoration: underline;
 }
 
+
+a.external {
+   text-decoration: none;
+   border-bottom: 1px dashed blue;
+}
+
+a.external:hover {
+   text-decoration: none;
+   border-bottom: none;
+}
+
+a.external:visited {
+    text-decoration: none;
+    border-bottom: 1px dashed #355f7c;
+}
 
 
 /* -- body styles ----------------------------------------------------------- */

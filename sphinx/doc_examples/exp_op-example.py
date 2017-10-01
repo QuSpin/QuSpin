@@ -39,7 +39,7 @@ psi = np.zeros(basis.Ns) # allocate space for state
 psi[i_0] = 1.0 # set MB state to be the given product state
 #
 ##### calculate time-evolved state by successive application of matrix exponential
-psi_t=U.dot(psi) # create generator object to apply matrix exponential on initial the state
+psi_t=U.dot(psi) # create generator object to apply matrix exponential on the initial state
 print(psi_t) 
 for psi_i in psi_t:
 	print("evolved state:", psi_i)
