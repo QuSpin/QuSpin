@@ -37,7 +37,7 @@ class spinful_fermion_basis_general(basis_general):
 	--------
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**kwargs):
 		"""Intializes the `spinfull_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -48,6 +48,8 @@ class spinful_fermion_basis_general(basis_general):
 			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
 		nf: float, optional
 			Density of fermions in chain (fermions per site).
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -61,9 +63,14 @@ class spinful_fermion_basis_general(basis_general):
 		"""
 
 
+
 		# Nf = [(Nup,Ndown),...]
 		# Nup is left side of basis sites 0 - N-1
 		# Ndown is right side of basis sites N - 2*N-1
+
+		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
 
 		if Nf is not None and nf is not None:
 			raise ValueError("cannot use 'nf' and 'Nf' simultaineously.")
@@ -141,7 +148,15 @@ class spinful_fermion_basis_general(basis_general):
 
 
 		if len(self._pers)>0:
-			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+			if Ns_block_est is None:
+				Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+			else:
+				if type(Ns_block_est) is not int:
+					raise TypeError("Ns_block_est must be integer value.")
+				if Ns_block_est <= 0:
+					raise ValueError("Ns_block_est must be an integer > 0")
+										
+				Ns = Ns_block_est
 
 		if N<=16:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
@@ -314,7 +329,7 @@ class spinless_fermion_basis_general(basis_general):
 	"""
 	
 
-	def __init__(self,N,Nf=None,nf=None,_Np=None,**kwargs):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**kwargs):
 		"""Intializes the `spinless_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -325,6 +340,8 @@ class spinless_fermion_basis_general(basis_general):
 			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
 		nf: float, optional
 			Density of fermions in chain (fermions per site).
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 	
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -336,6 +353,10 @@ class spinless_fermion_basis_general(basis_general):
 			sector.
 
 		"""
+
+		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
 
 		if Nf is not None and nf is not None:
 			raise ValueError("cannot use 'nf' and 'Nf' simultaineously.")
@@ -376,7 +397,15 @@ class spinless_fermion_basis_general(basis_general):
 				Ns += comb(N,Nf,exact=True)
 
 		if len(self._pers)>0:
-			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+			if Ns_block_est is None:
+				Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+			else:
+				if type(Ns_block_est) is not int:
+					raise TypeError("Ns_block_est must be integer value.")
+				if Ns_block_est <= 0:
+					raise ValueError("Ns_block_est must be an integer > 0")
+					
+				Ns = Ns_block_est
 
 
 		if N<=32:
@@ -395,7 +424,7 @@ class spinless_fermion_basis_general(basis_general):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 			self._Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
 			if self._Ns < 0:
-				raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:
@@ -408,7 +437,7 @@ class spinless_fermion_basis_general(basis_general):
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nf)
 			if self._Ns < 0:
-				raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:
