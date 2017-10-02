@@ -50,14 +50,6 @@ class spinless_fermion_basis_1d(basis_1d):
 
 				**pblock** (*int*) - specifies parity block.
 
-				**cblock** (*int*) - specifies particle-hole symmetry block.
-
-				**pcblock** (*int*) - specifies parity followed by particle-hole symmetry block.
-
-				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A.
-
-				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B.
-
 		"""
 
 		input_keys = set(blocks.keys())
