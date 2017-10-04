@@ -12,7 +12,8 @@ from numpy.linalg import norm
 from numpy.random import random,seed
 
 seed()
-dtypes=[np.float32,np.float64,np.complex64,np.complex128]
+# dtypes=[np.float32,np.float64,np.complex64,np.complex128]
+dtypes=[np.complex128]
 
 
 def eps(dtype):
@@ -62,7 +63,7 @@ def check_c(L,dtype,Nf=None):
 	if type(Nf) is int:
 		static=[["+-",J2_p],["-+",J2_m],["zz",J1]]
 	else:
-		static=[["+-",J2_p],["-+",J2_m],["++",J_pp],["--",J_mm]]
+		static=[["+-",J2_p],["-+",J2_m],["zz",J1],["++",J_pp],["--",J_mm]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -99,11 +100,7 @@ def check_p(L,dtype,Nf=None):
 	J_pp=[[np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # OBC
 	J_mm=[[-np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # OBC
 
-	if type(Nf) is int:
-		static=[["+-",J_p],["-+",J_m],["n",h],["nn",J]]
-	else:
-		static=[["++",J_pp],["--",J_mm]]
-		#static=[["+-",J_p],["-+",J_m],["z",h],["++",J_pp],["--",J_mm]]
+	static=[["+-",J_p],["-+",J_m],["n",h],["nn",J]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -161,17 +158,11 @@ def check_pc(L,dtype,Nf=None):
 
 
 def check_p_c(L,dtype,Nf=None):
-	h=[[1.0,i] for i in range(L)]
 	J=[[1.0,i,(i+1)%L] for i in range(L-1)]
 	J_p=[[1.0,i,(i+1)%L] for i in range(L-1)]
 	J_m=[[-1.0,i,(i+1)%L] for i in range(L-1)]
-	J_pp=[[np.sqrt(2),i,(i+1)%L] for i in range(L-1)] # PBC
-	J_mm=[[-J_pp[i][0],i,(i+1)%L] for i in range(L-1)] # PBC
 
-	if type(Nf) is int:
-		static=[["+-",J_p],["-+",J_m],["z",h],["zz",J]]
-	else:
-		static=[["+-",J_p],["-+",J_m],["++",J_pp],["--",J_mm]]
+	static=[["+-",J_p],["-+",J_m],["zz",J]]
 
 	basis=spinless_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis)
@@ -197,7 +188,7 @@ def check_p_c(L,dtype,Nf=None):
 	Epz.sort()
 
 	if norm(Epz-E) > Ns*eps(dtype):
-		raise Exception( "test failed p z symmetry at L={0:3d} with dtype {1} and Nf {2:2d} {3}".format(L,np.dtype(dtype),Nf,norm(Epz-E)) )
+		raise Exception( "test failed p z symmetry at L={0:} with dtype {1} and Nf {2:} {3}".format(L,np.dtype(dtype),Nf,norm(Epz-E)) )
 
 
 

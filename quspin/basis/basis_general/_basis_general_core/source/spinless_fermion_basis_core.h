@@ -14,11 +14,11 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 
 	for(int i=0;i<N;i++){
 		int j = map[i];
-		int n = (s&1);
-		if(n){pos_list[np]=( j<0 ? -(j+1) : j); ++np;}
+		bool n = (s&1);
+		if(n){pos_list[np]=( j<0 ? N + j : N-j-1); ++np;}
 		ss ^= ( j<0 ? (n^1)<<(-(j+1)) : n<<j );
 
-		f_count ^= (n & (i&1));
+		f_count ^= (n && (i&1)) && (j<0);
 
 		s >>= 1;
 	}
@@ -29,7 +29,7 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 		for (int i = 1; i < np; i++) {
 			int moveMe = pos_list[i];
 			int j = i;
-			while (j > 0 && moveMe < pos_list[j - 1]) {
+			while (j > 0 && moveMe > pos_list[j - 1]) {
 				//Move element
 				pos_list[j] = pos_list[j - 1];
 				--j;

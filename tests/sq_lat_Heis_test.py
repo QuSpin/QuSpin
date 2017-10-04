@@ -8,53 +8,68 @@ from quspin.basis import spin_basis_general
 from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian
 import numpy as np
+from itertools import product
 
 
 
 
-def test(S):
-	Lx = 3
-	Ly = 3
+def test(S,Lx,Ly):
 
 	N = Lx*Ly
 
+	nmax = int(eval("("+S+")*2"))
+	sps = nmax+1
 	tr = square_lattice_trans(Lx,Ly)
 
-	nmax = int(eval("("+S+")*2"))
 
 	basis_dict = {}
-	Nup_list=range(nmax*N+1)
+	Nups=range(nmax*N+1)
 
-	for Nup in Nup_list:
-		basis_dict[(Nup,None,None)] = spin_basis_general(N,Nup=Nup)
-		for kx in range(Lx):
-			for ky in range(Ly):
-				basis_dict[(Nup,kx,ky)] = spin_basis_general(N,Nup=Nup,kxblock=(tr.T_x,kx),kyblock=(tr.T_y,ky))
-				# print basis_dict[(Nup,kx,ky)]._n
+	for Nup in Nups:
+		basis_blocks=[]
+		pcon_basis = spin_basis_general(N,Nup=Nup,S=S)
+		Ns_block = 0
+		for blocks in tr.allowed_blocks_spin_inversion_iter(Nup,sps):
+			basis =  spin_basis_general(N,Nup=Nup,S=S,**blocks)
+			Ns_block += basis.Ns
+			basis_blocks.append(basis)
+
+		try:
+			assert(Ns_block == pcon_basis.Ns)
+		except AssertionError:
+			print(Ns_block,pcon_basis.Ns)
+			raise AssertionError("reduced blocks don't sum to particle sector.")
+
+
+		basis_dict[Nup] = (pcon_basis,basis_blocks)
 
 	J = [[1.0,i,tr.T_x[i]] for i in range(N)]
 	J.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
 
-	static = [["zz",J],["xx",J],["yy",J]]
+	static = [["zz",J],["+-",J],["-+",J]]
 
 	E_symm = {}
 
-	for key,basis in basis_dict.items():
-		H = hamiltonian(static,[],basis=basis,dtype=np.complex128)
-		E_symm[key] = H.eigvalsh()
+	for Nb,(pcon_basis,basis_blocks) in basis_dict.items():
+		H_pcon = hamiltonian(static,[],basis=pcon_basis,dtype=np.float64)
+		if H_pcon.Ns>0:
+			E_pcon = np.linalg.eigvalsh(H_pcon.todense())
+		else:
+			E_pcon = np.array([])
 
-	for Nup in Nup_list:
-		E_full_block = E_symm[(Nup,None,None)]
 		E_block = []
-		for kx in range(Lx):
-			for ky in range(Ly):
-				E_block.append(E_symm[(Nup,kx,ky)])
+		for basis in basis_blocks:
+			H = hamiltonian(static,[],basis=basis,dtype=np.complex128)
+			if H.Ns>0:
+				E_block.append(np.linalg.eigvalsh(H.todense()))
 
 		E_block = np.hstack(E_block)
 		E_block.sort()
-		np.testing.assert_allclose(E_full_block,E_block,atol=1e-13)
-		print("passed Nup={} sector".format(Nup))
+		np.testing.assert_allclose(E_pcon,E_block,atol=1e-13)
+		print("passed Nb={} sector".format(Nb))
 
+test("1/2",3,3)
+test("1",3,3)
+test("1/2",3,2)
+test("1",3,2)
 
-test("1/2")
-test("1")

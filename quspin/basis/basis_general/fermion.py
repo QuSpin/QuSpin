@@ -37,7 +37,7 @@ class spinful_fermion_basis_general(basis_general):
 	--------
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**kwargs):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**blocks):
 		"""Intializes the `spinfull_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -77,7 +77,7 @@ class spinful_fermion_basis_general(basis_general):
 		if Nf is None and nf is not None:
 			Nf = (int(nf[0]*N),int(nf[1]*N))
 
-		basis_general.__init__(self,2*N,**kwargs)
+		basis_general.__init__(self,2*N,**blocks)
 		self._check_pcon = False
 		count_particles = False
 		if _Np is not None and Nf is None:
@@ -149,7 +149,7 @@ class spinful_fermion_basis_general(basis_general):
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*3
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
@@ -331,7 +331,7 @@ class spinless_fermion_basis_general(basis_general):
 	"""
 	
 
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**kwargs):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**blocks):
 		"""Intializes the `spinless_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -365,7 +365,7 @@ class spinless_fermion_basis_general(basis_general):
 		if Nf is None and nf is not None:
 			Nf = int(nf*N)
 
-		basis_general.__init__(self,N,**kwargs)
+		basis_general.__init__(self,N,**blocks)
 		self._check_pcon = False
 		count_particles = False
 		if _Np is not None and Nf is None:
@@ -400,7 +400,7 @@ class spinless_fermion_basis_general(basis_general):
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*3
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
