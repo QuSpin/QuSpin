@@ -62,7 +62,7 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","pblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -77,36 +77,6 @@ class spinless_fermion_basis_1d(basis_1d):
 			blocks.pop("_Np")
 
 		self._blocks = blocks
-
-		pblock = blocks.get("pblock")
-		zblock = blocks.get("cblock")
-		pzblock = blocks.get("pcblock")
-		zAblock = blocks.get("cAblock")
-		zBblock = blocks.get("cBblock")
-
-		if type(zblock) is int:
-			del blocks["cblock"]
-			blocks["zblock"] = zblock
-
-		if type(pzblock) is int:
-			del blocks["pcblock"]
-			blocks["pzblock"] = pzblock
-
-		if type(zAblock) is int:
-			del blocks["cAblock"]
-			blocks["zAblock"] = zAblock
-
-		if type(zBblock) is int:
-			del blocks["cBblock"]
-			blocks["zBblock"] = zBblock
-
-		if (type(pblock) is int) and (type(zblock) is int):
-			blocks["pzblock"] = pblock*zblock
-			self._blocks["pcblock"] = pblock*zblock
-
-		if (type(zAblock) is int) and (type(zBblock) is int):
-			blocks["zblock"] = zAblock*zBblock
-			self._blocks["cblock"] = zAblock*zBblock
 
 		if Nf is not None and nf is not None:
 			raise ValueError("Cannot Nf and nf simultaineously.")
@@ -130,7 +100,7 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
-		self._check_symm=None
+		# self._check_symm=None
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
