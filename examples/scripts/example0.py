@@ -22,9 +22,9 @@ basis = spin_basis_1d(L,pauli=False,Nup=L//2,pblock=1) # and positive parity sec
 # define operators with OBC using site-coupling lists
 J_zz = [[Jzz_0,i,i+1] for i in range(L-1)] # OBC
 J_xy = [[Jxy/2.0,i,i+1] for i in range(L-1)] # OBC
-h_z=[[hz,i] for i in range(L-1)]
+h_z=[[hz,i] for i in range(L)]
 # static and dynamic lists
-static = [["+-",J_xy],["-+",J_xy],["zz",J_zz]]
+static = [["+-",J_xy],["-+",J_xy],["zz",J_zz],["z",h_z]]
 dynamic=[]
 # compute the time-dependent Heisenberg Hamiltonian
 H_XXZ = hamiltonian(static,dynamic,basis=basis,dtype=np.float64)

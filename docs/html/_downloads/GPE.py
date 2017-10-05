@@ -1,8 +1,8 @@
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space boson basis
-from quspin.tools.measurements import evolve # nonlinear evolution 
+from quspin.tools.measurements import evolve
 import numpy as np # generic math functions
-import matplotlib.pyplot as plt # plotting library
+import matplotlib.pyplot as plt # plot library
 #
 ##### define model parameters #####
 L=300 # system size
@@ -38,7 +38,9 @@ basis = boson_basis_1d(L,Nb=1,sps=2)
 Hsp=hamiltonian(static,dynamic,basis=basis,dtype=np.float64)
 E,V=Hsp.eigsh(time=0.0,k=1,which='SA')
 #
+#########################################################
 ##### imaginary-time evolution to compute GS of GPE #####
+################################################### ######
 def GPE_imag_time(tau,phi,Hsp,U):
 	"""
 	This function solves the real-valued GPE in imaginary time:
@@ -74,7 +76,9 @@ for i,psi0 in enumerate(psi_tau):
 	plt.clf() # clear figure
 plt.close()
 #
-##### real-time evolution of GPE #####
+#########################################################
+############## real-time evolution of GPE ###############
+#########################################################
 def GPE(time,psi):
 	"""
 	This function solves the complex-valued time-dependent GPE:
@@ -103,6 +107,34 @@ for i,psi in enumerate(psi_t):
 	plt.plot(sites, abs(psi)**2, color='b',marker='o',label='$|\\psi_j(t)|^2$')
 	plt.plot(sites, kappa_trap,'--',color='g',label='$\\mathrm{trap}$')
 	plt.ylim([-0.01,max(abs(psi0)**2)+0.01])
+	plt.xlabel('$\\mathrm{lattice\\ sites}$',fontsize=14)
+	plt.title('$Jt=%0.2f,\\ E(t)-E_\\mathrm{GS}=%0.4fJ$'%(t[i],E-E_GS),fontsize=14)
+	plt.legend(loc='upper right',fontsize=14)
+	plt.draw() # draw frame
+	plt.pause(0.00005) # pause frame
+	plt.clf() # clear figure
+plt.close()
+#
+#######################################################################################
+##### quantum real time evolution from GS of GPE with single-particle Hamiltonian #####
+#######################################################################################
+# define real time vector
+t=np.linspace(0.0,2*t_ramp,101)
+# time-evolve state according to linear Hamiltonian Hsp (no need to define a GPE)
+psi_sp_t = Hsp.evolve(psi0,t[0],t,iterate=True,atol=1E-12,rtol=1E-12)
+#
+# display state evolution
+for i,psi in enumerate(psi_sp_t):
+	# compute energy
+	E=Hsp.matrix_ele(psi,psi,time=t[i]).real
+	# compute trap
+	kappa_trap=ramp(t[i],kappa_trap_i,kappa_trap_f,t_ramp)*(sites)**2
+	# plot wave function
+	plt.plot(sites, abs(psi0)**2, color='r',marker='s',alpha=0.2
+								,label='$|\\psi_{\\mathrm{GS},j}|^2$')
+	plt.plot(sites, abs(psi)**2, color='b',marker='o',label='$|U(t,0)|\\psi_{\\mathrm{GS},j}\\rangle|^2$')
+	plt.plot(sites, kappa_trap,'--',color='g',label='$\\mathrm{trap}$')
+	plt.ylim([-0.01,2*max(abs(phi0)**2)+0.01])
 	plt.xlabel('$\\mathrm{lattice\\ sites}$',fontsize=14)
 	plt.title('$Jt=%0.2f,\\ E(t)-E_\\mathrm{GS}=%0.4fJ$'%(t[i],E-E_GS),fontsize=14)
 	plt.legend(loc='upper right',fontsize=14)
