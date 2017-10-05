@@ -220,10 +220,6 @@
 <div><p><strong>a</strong> (<em>int</em>) - specifies unit cell size for translation.</p>
 <p><strong>kblock</strong> (<em>int</em>) - specifies momentum block.</p>
 <p><strong>pblock</strong> (<em>int</em>) - specifies parity block.</p>
-<p><strong>cblock</strong> (<em>int</em>) - specifies particle-hole symmetry block.</p>
-<p><strong>pcblock</strong> (<em>int</em>) - specifies parity followed by particle-hole symmetry block.</p>
-<p><strong>cAblock</strong> (<em>int</em>) - specifies particle-hole symmetry block for sublattice A.</p>
-<p><strong>cBblock</strong> (<em>int</em>) - specifies particle-hole symmetry block for sublattice B.</p>
 </div></blockquote>
 </div></blockquote>
 </td>
@@ -501,7 +497,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_1d.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_1d.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

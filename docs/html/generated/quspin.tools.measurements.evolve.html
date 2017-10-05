@@ -61,7 +61,7 @@
 <dl class="function">
 <dt id="quspin.tools.measurements.evolve">
 <code class="descclassname">quspin.tools.measurements.</code><code class="descname">evolve</code><span class="sig-paren">(</span><em>v0</em>, <em>t0</em>, <em>times</em>, <em>f</em>, <em>solver_name=’dop853’</em>, <em>real=False</em>, <em>stack_state=False</em>, <em>verbose=False</em>, <em>imag_time=False</em>, <em>iterate=False</em>, <em>f_params=()</em>, <em>**solver_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/tools/measurements.html#evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.evolve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements (imaginary) time evolution for a custom user-defined first-order ODE.</p>
+<dd><p>Implements (imaginary) time evolution for a user-defined first-order ODE.</p>
 <p>The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured 
 ODE solver in python, without any relation to other QuSpin objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -115,7 +115,7 @@ at each time in <cite>times</cite>. Default is <cite>False</cite>.</p>
 <p><strong>stack_state</strong> : bool, optional</p>
 <blockquote>
 <div><p>If <cite>f</cite> is written to take care of real and imaginary parts separately (see Examples), this flag 
-will return a signgle complex-valued solution instead of the real and imaginary parts separately.
+will return a single complex-valued solution instead of the real and imaginary parts separately.
 Default is <cite>False</cite>.</p>
 </div></blockquote>
 <p><strong>verbose</strong> : bool, optional</p>
@@ -196,7 +196,7 @@ the strength of the harmonic trap, and <span class="math">\(U\)</span> – the m
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">evolve</span> <span class="c1"># ODE evolve tool</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span> <span class="c1"># stroboscopic time vector</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># loop over elements of dictionary</span>
 <span class="c1">#</span>
 <span class="n">L</span><span class="o">=</span><span class="mi">50</span> <span class="c1"># number of lattice sites</span>
 <span class="n">i_CM</span> <span class="o">=</span> <span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.5</span> <span class="c1"># centre of chain</span>

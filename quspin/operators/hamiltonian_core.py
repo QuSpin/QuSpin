@@ -555,7 +555,7 @@ class hamiltonian(object):
 		Parameters
 		-----------
 		V : numpy.ndarray
-			Vector (quantums tate) to multiply the `hamiltonian` operator with.
+			Vector (quantums state) to multiply the `hamiltonian` operator with.
 		time : obj, optional
 			Can be either one of the following:
 
@@ -586,9 +586,11 @@ class hamiltonian(object):
 	
 		"""
 
+		
 		if ishamiltonian(V):
 			return self * V
-
+		elif V.__class__.__name__=='exp_op':
+			return V.rdot(self,time=time)
 
 		if _np.array(time).ndim > 0:
 			if V.ndim > 3:

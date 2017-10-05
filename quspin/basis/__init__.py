@@ -43,8 +43,8 @@ general lattice symmetries
    spinful_fermion_basis_general
 
 
-misc
-----
+combining basis classes
+-----------------------
 
 .. autosummary::
    :toctree: generated/

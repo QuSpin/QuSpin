@@ -140,7 +140,7 @@ onto the initial state.</p>
 <span class="n">psi</span><span class="p">[</span><span class="n">i_0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># set MB state to be the given product state</span>
 <span class="c1">#</span>
 <span class="c1">##### calculate time-evolved state by successive application of matrix exponential</span>
-<span class="n">psi_t</span><span class="o">=</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="c1"># create generator object to apply matrix exponential on initial the state</span>
+<span class="n">psi_t</span><span class="o">=</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="c1"># create generator object to apply matrix exponential on the initial state</span>
 <span class="k">print</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span> 
 <span class="k">for</span> <span class="n">psi_i</span> <span class="ow">in</span> <span class="n">psi_t</span><span class="p">:</span>
 	<span class="k">print</span><span class="p">(</span><span class="s2">&quot;evolved state:&quot;</span><span class="p">,</span> <span class="n">psi_i</span><span class="p">)</span>
@@ -154,7 +154,7 @@ onto the initial state.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.H" title="quspin.operators.exp_op.H"><code class="xref py py-obj docutils literal"><span class="pre">H</span></code></a></td>
-<td><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes and conjugates the matrix exponential.</td>
+<td><a class="reference internal" href="#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal"><span class="pre">exp_op</span></code></a>: transposes and conjugates the matrix exponential.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.Ns" title="quspin.operators.exp_op.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
 <td>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</td>
@@ -163,7 +163,7 @@ onto the initial state.</p>
 <td>obj: Returns the operator to be exponentiated.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.T" title="quspin.operators.exp_op.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
-<td><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes the matrix exponential.</td>
+<td><a class="reference internal" href="#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal"><span class="pre">exp_op</span></code></a>: transposes the matrix exponential.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.a" title="quspin.operators.exp_op.a"><code class="xref py py-obj docutils literal"><span class="pre">a</span></code></a></td>
 <td><cite>numpy.dtype</cite>: constant (c-number) multiplying the operator to be exponentiated: <cite>exp(a*O)</cite>.</td>
@@ -199,7 +199,7 @@ onto the initial state.</p>
 <td>Returns a deep copy of <cite>exp_op</cite> object.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.dot" title="quspin.operators.exp_op.dot"><code class="xref py py-obj docutils literal"><span class="pre">dot</span></code></a>(other[,&nbsp;shift])</td>
-<td>Left-multiply matrix exponential by an operator.</td>
+<td>Left-multiply operator by matrix exponential.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.getH" title="quspin.operators.exp_op.getH"><code class="xref py py-obj docutils literal"><span class="pre">getH</span></code></a>([copy])</td>
 <td>Calculates hermitian conjugate of <cite>exp_op</cite> operator.</td>
@@ -208,7 +208,7 @@ onto the initial state.</p>
 <td>Calculates matrix corresponding to matrix exponential object: <cite>exp(a*O)</cite>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.exp_op.rdot" title="quspin.operators.exp_op.rdot"><code class="xref py py-obj docutils literal"><span class="pre">rdot</span></code></a>(other[,&nbsp;shift])</td>
-<td>Right-multiply matrix exponential by an operator.</td>
+<td>Right-multiply an operator by matrix exponential.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.exp_op.sandwich" title="quspin.operators.exp_op.sandwich"><code class="xref py py-obj docutils literal"><span class="pre">sandwich</span></code></a>(other[,&nbsp;shift])</td>
 <td>Sandwich operator between matrix exponentials.</td>
@@ -280,7 +280,7 @@ but at the sacrifice of speed.</p>
 <dl class="attribute">
 <dt id="quspin.operators.exp_op.H">
 <code class="descname">H</code><a class="headerlink" href="#quspin.operators.exp_op.H" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes and conjugates the matrix exponential.</p>
+<dd><p><a class="reference internal" href="#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal"><span class="pre">exp_op</span></code></a>: transposes and conjugates the matrix exponential.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -298,7 +298,7 @@ but at the sacrifice of speed.</p>
 <dl class="attribute">
 <dt id="quspin.operators.exp_op.T">
 <code class="descname">T</code><a class="headerlink" href="#quspin.operators.exp_op.T" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes the matrix exponential.</p>
+<dd><p><a class="reference internal" href="#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal"><span class="pre">exp_op</span></code></a>: transposes the matrix exponential.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -340,32 +340,32 @@ but at the sacrifice of speed.</p>
 <dl class="method">
 <dt id="quspin.operators.exp_op.dot">
 <code class="descname">dot</code><span class="sig-paren">(</span><em>other</em>, <em>shift=None</em>, <em>**call_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.dot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Left-multiply matrix exponential by an operator.</p>
-<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator which multiplies
-it from the left be <span class="math">\(A\)</span>. Then this funcion implements:</p>
+<dd><p>Left-multiply operator by matrix exponential.</p>
+<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator be <span class="math">\(A\)</span>.
+Then this funcion implements:</p>
 <div class="math">
-\[A\exp(\mathcal{O})\]</div>
+\[\exp(\mathcal{O}) A\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : obj</p>
 <blockquote>
-<div><p>The operator <span class="math">\(A\)</span> which multiplies from the left the matrix exponential <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
+<div><p>The operator <span class="math">\(A\)</span> which multiplies from the right the matrix exponential <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
 </div></blockquote>
 <p><strong>time</strong> : scalar, optional</p>
 <blockquote>
-<div><p>Time to evaluate the operator to be exponentiated. Default is <cite>time=0.0</cite>.</p>
+<div><p>Time to evaluate the operator to be exponentiated at. Default is <cite>time=0.0</cite>.</p>
 </div></blockquote>
 <p><strong>shift</strong> : scalar</p>
 <blockquote>
-<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - shift\mathrm{Id})\)</span>.</p>
+<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - \mathrm{shift}\times\mathrm{Id})\)</span>.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
 <blockquote class="last">
-<div><p>matrix exponential multiplied by <cite>other</cite> from the left.</p>
+<div><p>matrix exponential multiplied by <cite>other</cite> from the right.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -472,41 +472,44 @@ it from the left be <span class="math">\(A\)</span>. Then this funcion implement
 <dl class="method">
 <dt id="quspin.operators.exp_op.rdot">
 <code class="descname">rdot</code><span class="sig-paren">(</span><em>other</em>, <em>shift=None</em>, <em>**call_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/exp_op_core.html#exp_op.rdot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.exp_op.rdot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Right-multiply matrix exponential by an operator.</p>
-<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator which multiplies
-it from the right be <span class="math">\(B\)</span>. Then this funcion implements:</p>
+<dd><p>Right-multiply an operator by matrix exponential.</p>
+<p>Let the matrix exponential object be <span class="math">\(\exp(\mathcal{O})\)</span> and let the operator be <span class="math">\(A\)</span>.
+Then this funcion implements:</p>
 <div class="math">
-\[\exp(\mathcal{O})B\]</div>
+\[A \exp(\mathcal{O})\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>other</strong> : obj</p>
 <blockquote>
-<div><p>The operator <span class="math">\(B\)</span> which multiplies from the right the matrix exponential <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
+<div><p>The operator <span class="math">\(A\)</span> which multiplies from the left the matrix exponential <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
 </div></blockquote>
 <p><strong>time</strong> : scalar, optional</p>
 <blockquote>
-<div><p>Time to evaluate the operator to be exponentiated. Default is <cite>time=0.0</cite>.</p>
+<div><p>Time to evaluate the operator to be exponentiated at. Default is <cite>time=0.0</cite>.</p>
 </div></blockquote>
 <p><strong>shift</strong> : scalar</p>
 <blockquote>
-<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - shift\mathrm{Id})\)</span>.</p>
+<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times the identity matrix: <span class="math">\(\exp(\mathcal{O} - \mathrm{shift}\times\mathrm{Id})\)</span>.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
 <blockquote class="last">
-<div><p>matrix exponential multiplied by <cite>other</cite> from the right.</p>
+<div><p>matrix exponential multiplied by <cite>other</cite> from the left.</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>For <cite>hamiltonian</cite> objects <cite>A</cite>, this function is the same as <cite>A.dot(expO)</cite>.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expO</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">2</span><span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">get_mat</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">rdot</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">get_mat</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">expO</span><span class="o">.</span><span class="n">rdot</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">expO</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -534,7 +537,7 @@ and <span class="math">\(\exp(\mathcal{O})\)</span>.</p>
 </div></blockquote>
 <p><strong>shift</strong> : scalar</p>
 <blockquote>
-<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - shift\mathrm{Id})\)</span>.</p>
+<div><p>Shifts operator to be exponentiated by a constant <cite>shift</cite> times te identity matrix: <span class="math">\(\exp(\mathcal{O} - \mathrm{shift}\times\mathrm{Id})\)</span>.</p>
 </div></blockquote>
 </td>
 </tr>
