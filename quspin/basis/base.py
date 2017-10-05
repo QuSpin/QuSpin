@@ -54,7 +54,7 @@ class basis(object):
 
 	@property
 	def operators(self):
-		"""set: set of availible operator strings."""
+		"""set: set of available operator strings."""
 		return self._operators
 
 	@property
@@ -322,7 +322,7 @@ class basis(object):
 		print("Hermiticity check passed!")
 
 	def check_symm(self,static,dynamic):
-		"""Checks operator string lists for the required symemtries of the combined operator.
+		"""Checks operator string lists for the required symmetries of the combined operator.
 
 		Parameters
 		-----------
