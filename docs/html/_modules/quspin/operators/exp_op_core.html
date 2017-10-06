@@ -68,7 +68,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;exp_op&quot;</span><span class="p">,</span><span class="s2">&quot;isexp_op&quot;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="exp_op"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op">[docs]</a><span class="k">class</span> <span class="nc">exp_op</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">exp_op</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs matrix exponentials of quantum operators.</span>
 
 <span class="sd">	The `exp_op` class does not calculate the actual matrix exponential but instead computes the action of the </span>
@@ -98,7 +98,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="exp_op.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Initialises the `exp_op` object (matrix exponential of the operator `O`).</span>
 
 <span class="sd">		Parameters</span>
@@ -195,13 +195,13 @@
 		<span class="k">elif</span> <span class="n">quantum_operator_core</span><span class="o">.</span><span class="n">isquantum_operator</span><span class="p">(</span><span class="n">O</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">O</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">O</span><span class="p">)</span> <span class="ow">or</span> <span class="n">O</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">O</span><span class="p">)</span> <span class="ow">or</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">hamiltonian</span><span class="p">([</span><span class="n">O</span><span class="p">],</span> <span class="p">[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">hamiltonian</span><span class="p">([</span><span class="n">O</span><span class="p">],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 	
-		<span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="mi">2</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="mi">2</span>
 
 
 	<span class="nd">@property</span>
@@ -257,7 +257,7 @@
 
 
 
-<div class="viewcode-block" id="exp_op.transpose"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.transpose">[docs]</a>	<span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Transposes `exp_op` operator.</span>
 
 <span class="sd">		Notes</span>
@@ -279,9 +279,9 @@
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-			<span class="k">return</span> <span class="bp">self</span></div>
+			<span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="exp_op.conj"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.conj">[docs]</a>	<span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Conjugates `exp_op` operator.</span>
 
 <span class="sd">		Notes</span>
@@ -301,9 +301,9 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
-		<span class="k">return</span> <span class="bp">self</span></div>
+		<span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="exp_op.getH"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.getH">[docs]</a>	<span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates hermitian conjugate of `exp_op` operator.</span>
 
 <span class="sd">		Parameters</span>
@@ -327,15 +327,15 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
-			<span class="k">return</span> <span class="bp">self</span></div>
+			<span class="k">return</span> <span class="bp">self</span>
 
 
-<div class="viewcode-block" id="exp_op.copy"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.copy">[docs]</a>	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns a deep copy of `exp_op` object.&quot;&quot;&quot;</span>
-		<span class="k">return</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+		<span class="k">return</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="exp_op.set_a"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_a">[docs]</a>	<span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_a</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_a</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Resets attribute `a` to multiply the operator in `exp(a*O)`.</span>
 <span class="sd">		</span>
 <span class="sd">		Parameters</span>
@@ -353,9 +353,9 @@
 <span class="sd">		&quot;&quot;&quot;</span> 
 		<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">new_a</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;a&#39; must be set to scalar value.&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="n">new_a</span><span class="p">)</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="n">new_a</span><span class="p">)</span>
 
-<div class="viewcode-block" id="exp_op.set_grid"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_grid">[docs]</a>	<span class="k">def</span> <span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Resets attribute `grid` to evaluate the operator for every `i` in `exp(a*O*grid[i])`.</span>
 <span class="sd">		</span>
 <span class="sd">		Parameters</span>
@@ -397,9 +397,9 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">=</span><span class="n">stop</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="o">=</span><span class="n">num</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="o">=</span><span class="n">endpoint</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="n">num</span><span class="p">,</span> <span class="n">endpoint</span> <span class="o">=</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">retstep</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="n">num</span><span class="p">,</span> <span class="n">endpoint</span> <span class="o">=</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">retstep</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="exp_op.unset_grid"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.unset_grid">[docs]</a>	<span class="k">def</span> <span class="nf">unset_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">unset_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Resets grid parameters to their default values.</span>
 
 <span class="sd">		Examples</span>
@@ -415,9 +415,9 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">=</span><span class="kc">None</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="o">=</span><span class="kc">None</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="o">=</span><span class="kc">None</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="exp_op.set_iterate"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_iterate">[docs]</a>	<span class="k">def</span> <span class="nf">set_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Value</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">set_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Value</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Resets `iterate` attribute.</span>
 
 <span class="sd">		Parameters</span>
@@ -441,10 +441,10 @@
 			<span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span> <span class="ow">is</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;grid must be set in order to set iterate to be True.&quot;</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span> <span class="o">=</span> <span class="n">Value</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span> <span class="o">=</span> <span class="n">Value</span>
 		
 
-<div class="viewcode-block" id="exp_op.get_mat"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.get_mat">[docs]</a>	<span class="k">def</span> <span class="nf">get_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">get_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.</span>
 
 <span class="sd">		Parameters</span>
@@ -472,9 +472,9 @@
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">is_dense</span> <span class="ow">or</span> <span class="n">dense</span><span class="p">:</span>
 			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">tocsc</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span></div>
+			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">tocsc</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span>
 
-<div class="viewcode-block" id="exp_op.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Left-multiply operator by matrix exponential.</span>
 
 <span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
@@ -515,7 +515,7 @@
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
 			<span class="n">is_sp</span> <span class="o">=</span> <span class="kc">True</span>
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -558,9 +558,9 @@
 						<span class="n">mats</span> <span class="o">=</span> <span class="n">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
 						<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 					<span class="k">else</span><span class="p">:</span>
-						<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
+						<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
-<div class="viewcode-block" id="exp_op.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Right-multiply an operator by matrix exponential.</span>
 
 <span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
@@ -606,7 +606,7 @@
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
 			<span class="n">is_sp</span> <span class="o">=</span> <span class="kc">True</span>
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -654,9 +654,9 @@
 						<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 							<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 						<span class="k">else</span><span class="p">:</span>
-							<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span></div>
+							<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span>
 
-<div class="viewcode-block" id="exp_op.sandwich"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.sandwich">[docs]</a>	<span class="k">def</span> <span class="nf">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Sandwich operator between matrix exponentials.</span>
 
 <span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator to be sandwiched be</span>
@@ -697,7 +697,7 @@
 			<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -738,7 +738,7 @@
 					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mat_iter</span><span class="p">])</span>
 				<span class="k">else</span><span class="p">:</span>
 					<span class="n">mat_iter</span> <span class="o">=</span> <span class="n">_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mat_iter</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span></div></div>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mat_iter</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 
 
 <span class="c1">### helper functions</span>

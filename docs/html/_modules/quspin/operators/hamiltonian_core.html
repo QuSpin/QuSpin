@@ -204,7 +204,7 @@
 	<span class="k">return</span> <span class="n">hamiltonian</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="hamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian">[docs]</a><span class="k">class</span> <span class="nc">hamiltonian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">hamiltonian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs quantum operators.</span>
 
 <span class="sd">	The `hamiltonian` class wraps most of the functionalty of the QuSpin package. This object allows the user to construct </span>
@@ -237,7 +237,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="hamiltonian.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static_list</span><span class="p">,</span><span class="n">dynamic_list</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">basis_kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static_list</span><span class="p">,</span><span class="n">dynamic_list</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">basis_kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `hamtilonian` object (any quantum operator).</span>
 
 <span class="sd">		Parameters</span>
@@ -403,7 +403,7 @@
 					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
 						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 
 					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
@@ -412,7 +412,7 @@
 					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
 						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 
 					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
@@ -451,14 +451,14 @@
 
 					<span class="n">O</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 					
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
 
 					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 
 
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
 
@@ -512,7 +512,7 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span> <span class="o">=</span> <span class="p">{}</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -582,17 +582,17 @@
 		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
 
-<div class="viewcode-block" id="hamiltonian.check_is_dense"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.check_is_dense">[docs]</a>	<span class="k">def</span> <span class="nf">check_is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">check_is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot; updates attribute `_.is_dense`.&quot;&quot;&quot;</span>
 		<span class="n">is_sparse</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">Hd</span> <span class="ow">in</span> <span class="n">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">is_sparse</span> <span class="o">*=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Hd</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_sparse</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_sparse</span>
 
 	<span class="c1">### state manipulation/observable routines</span>
 
-<div class="viewcode-block" id="hamiltonian.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication of `hamiltonian` operator at time `time`, with state `V`.</span>
 
 <span class="sd">		.. math::</span>
@@ -640,7 +640,7 @@
 		
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">V</span>
-		<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="o">==</span><span class="s1">&#39;exp_op&#39;</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;exp_op&#39;</span><span class="p">:</span>
 			<span class="k">return</span> <span class="n">V</span><span class="o">.</span><span class="n">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -690,7 +690,7 @@
 
 				<span class="k">return</span> <span class="n">V_dot</span>
 
-			<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 		
@@ -708,7 +708,7 @@
 					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 				<span class="k">return</span> <span class="n">V_dot</span>
 
-			<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+			<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 
@@ -728,9 +728,9 @@
 				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 
-			<span class="k">return</span> <span class="n">V_dot</span></div>
+			<span class="k">return</span> <span class="n">V_dot</span>
 
-<div class="viewcode-block" id="hamiltonian.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.</span>
 
 <span class="sd">		.. math::</span>
@@ -778,9 +778,9 @@
 		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
 			<span class="n">V_transpose</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
-		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
+		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
-<div class="viewcode-block" id="hamiltonian.expt_value"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.expt_value">[docs]</a>	<span class="k">def</span> <span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.</span>
 
 <span class="sd">		.. math::</span>
@@ -858,9 +858,9 @@
 				<span class="k">elif</span> <span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># multiple pure states</span>
 					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_dot</span><span class="p">)</span>
 				<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
-					<span class="k">return</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span></div>
+					<span class="k">return</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
 			
-<div class="viewcode-block" id="hamiltonian.matrix_ele"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.matrix_ele">[docs]</a>	<span class="k">def</span> <span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Vl</span><span class="p">,</span><span class="n">Vr</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Vl</span><span class="p">,</span><span class="n">Vr</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.</span>
 
 <span class="sd">		.. math::</span>
@@ -917,7 +917,7 @@
 		<span class="k">if</span> <span class="n">Vr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vr to have ndim &lt; 3&#39;</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
@@ -934,7 +934,7 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vl to have ndim &lt; 3&#39;</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">Vl</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">Vl</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
@@ -972,11 +972,11 @@
 
 				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vl to have ndim &lt; 3&#39;</span><span class="p">)</span></div>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vl to have ndim &lt; 3&#39;</span><span class="p">)</span>
 	
 	<span class="c1">### transformation routines</span>
 
-<div class="viewcode-block" id="hamiltonian.project_to"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.project_to">[docs]</a>	<span class="k">def</span> <span class="nf">project_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">proj</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">project_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">proj</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Projects/Transforms `hamiltonian` operator with projector/operator `proj`.</span>
 
 <span class="sd">		Let us call the projector/transformation :math:`V`. Then, the function computes</span>
@@ -1041,7 +1041,7 @@
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-		<span class="k">elif</span> <span class="n">proj</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">proj</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 
@@ -1050,7 +1050,7 @@
 			<span class="k">return</span> <span class="n">new</span><span class="o">.</span><span class="n">_imul_dense</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
 
 
-		<span class="k">elif</span> <span class="n">proj</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">proj</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 
@@ -1066,9 +1066,9 @@
 
 			<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmul_dense</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
 			<span class="n">new</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-			<span class="k">return</span> <span class="n">new</span><span class="o">.</span><span class="n">_imul_dense</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span></div>
+			<span class="k">return</span> <span class="n">new</span><span class="o">.</span><span class="n">_imul_dense</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hamiltonian.rotate_by"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.rotate_by">[docs]</a>	<span class="k">def</span> <span class="nf">rotate_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">exp_op_kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">rotate_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">exp_op_kwargs</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Rotates/Transforms `hamiltonian` object by an operator `other`.</span>
 
 <span class="sd">		Let us denote the transformation by :math:`V`. With `generator=False`, `other` corresponds to the</span>
@@ -1131,11 +1131,11 @@
 			<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="k">import</span> <span class="n">exp_op</span>
 			<span class="k">return</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="o">**</span><span class="n">exp_op_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 	<span class="c1">### Diagonalisation routines</span>
 
-<div class="viewcode-block" id="hamiltonian.eigsh"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.eigsh">[docs]</a>	<span class="k">def</span> <span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Computes SOME eigenvalues of hermitian `hamiltonian` operator using SPARSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.</span>
@@ -1172,9 +1172,9 @@
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
 			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([]),</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[]])</span>
 
-		<span class="k">return</span> <span class="n">_sla</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">),</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">)</span></div>
+		<span class="k">return</span> <span class="n">_sla</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">),</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hamiltonian.eigh"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.eigh">[docs]</a>	<span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">eigh_args</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">eigh_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Computes COMPLETE eigensystem of hermitian `hamiltonian` operator using DENSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for all eigenvalues and eigenvectors. It calls </span>
@@ -1216,9 +1216,9 @@
 		<span class="n">H_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>		
 		<span class="c1"># calculate eigh</span>
 		<span class="n">E</span><span class="p">,</span><span class="n">H_dense</span> <span class="o">=</span> <span class="n">_la</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">H_dense</span><span class="p">,</span><span class="o">**</span><span class="n">eigh_args</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">H_dense</span></div>
+		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">H_dense</span>
 
-<div class="viewcode-block" id="hamiltonian.eigvalsh"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.eigvalsh">[docs]</a>	<span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Computes ALL eigenvalues of hermitian `hamiltonian` operator using DENSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for all eigenvalues. It calls </span>
@@ -1256,7 +1256,7 @@
 		<span class="n">H_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
 		<span class="n">eigvalsh_args</span><span class="p">[</span><span class="s2">&quot;overwrite_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="n">E</span> <span class="o">=</span> <span class="n">_la</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">H_dense</span><span class="p">,</span><span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">E</span></div>
+		<span class="k">return</span> <span class="n">E</span>
 
 	<span class="c1">### Schroedinger evolution routines</span>
 
@@ -1392,7 +1392,7 @@
 
 		<span class="k">return</span> <span class="n">V_dot</span>
 
-<div class="viewcode-block" id="hamiltonian.evolve"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">eom</span><span class="o">=</span><span class="s2">&quot;SE&quot;</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">eom</span><span class="o">=</span><span class="s2">&quot;SE&quot;</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Implements (imaginary) time evolution generated by the `hamiltonian` object.</span>
 
 <span class="sd">		The functions handles evolution generated by both time-dependent and time-independent Hamiltonians. </span>
@@ -1525,9 +1525,9 @@
 			<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nsteps&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
 			<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rtol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">9</span>
+				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
 			<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">9</span>
+				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
 
 				
 		<span class="n">solver</span><span class="o">.</span><span class="n">set_integrator</span><span class="p">(</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
@@ -1539,7 +1539,7 @@
 			<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
 				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span></div>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
 	
 	<span class="k">def</span> <span class="nf">_evolve_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
 		<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
@@ -1616,7 +1616,7 @@
 
 	<span class="c1">### routines to change object type	</span>
 
-<div class="viewcode-block" id="hamiltonian.aslinearoperator"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.aslinearoperator">[docs]</a>	<span class="k">def</span> <span class="nf">aslinearoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">aslinearoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.linalg.LinearOperator`.</span>
 
 <span class="sd">		Casts the `hamiltonian` object as a</span>
@@ -1642,9 +1642,9 @@
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;time must be scalar!&quot;</span><span class="p">)</span>
 		<span class="n">matvec</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_hamiltonian_dot</span><span class="p">,</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">)</span>
 		<span class="n">rmatvec</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_hamiltonian_dot</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">,</span><span class="n">time</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">_sla</span><span class="o">.</span><span class="n">LinearOperator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">matvec</span><span class="p">,</span><span class="n">rmatvec</span><span class="o">=</span><span class="n">rmatvec</span><span class="p">,</span><span class="n">matmat</span><span class="o">=</span><span class="n">matvec</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>		</div>
+		<span class="k">return</span> <span class="n">_sla</span><span class="o">.</span><span class="n">LinearOperator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">matvec</span><span class="p">,</span><span class="n">rmatvec</span><span class="o">=</span><span class="n">rmatvec</span><span class="p">,</span><span class="n">matmat</span><span class="o">=</span><span class="n">matvec</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>		
 
-<div class="viewcode-block" id="hamiltonian.tocsr"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.tocsr">[docs]</a>	<span class="k">def</span> <span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csr_matrix`.</span>
 
 <span class="sd">		Casts the `hamiltonian` object as a</span>
@@ -1680,9 +1680,9 @@
 				<span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">Hd</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
 
-		<span class="k">return</span> <span class="n">H</span></div>
+		<span class="k">return</span> <span class="n">H</span>
 
-<div class="viewcode-block" id="hamiltonian.tocsc"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.tocsc">[docs]</a>	<span class="k">def</span> <span class="nf">tocsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">tocsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csc_matrix`.</span>
 
 <span class="sd">		Casts the `hamiltonian` object as a</span>
@@ -1715,9 +1715,9 @@
 				<span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">Hd</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
 
-		<span class="k">return</span> <span class="n">H</span></div>
+		<span class="k">return</span> <span class="n">H</span>
 	
-<div class="viewcode-block" id="hamiltonian.todense"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.todense">[docs]</a>	<span class="k">def</span> <span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a dense array.</span>
 
 <span class="sd">		This function can overflow memory if not used carefully!</span>
@@ -1767,9 +1767,9 @@
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">out</span> <span class="o">+=</span> <span class="n">Hd</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 		
-		<span class="k">return</span> <span class="n">out</span></div>
+		<span class="k">return</span> <span class="n">out</span>
 
-<div class="viewcode-block" id="hamiltonian.toarray"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.toarray">[docs]</a>	<span class="k">def</span> <span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a dense array.</span>
 
 <span class="sd">		This function can overflow memory if not used carefully!</span>
@@ -1810,9 +1810,9 @@
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">out</span> <span class="o">+=</span> <span class="n">Hd</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 		
-		<span class="k">return</span> <span class="n">out</span></div>
+		<span class="k">return</span> <span class="n">out</span>
 
-<div class="viewcode-block" id="hamiltonian.as_dense_format"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.as_dense_format">[docs]</a>	<span class="k">def</span> <span class="nf">as_dense_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">as_dense_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Casts `hamiltonian` operator to DENSE format.</span>
 
 <span class="sd">		Parameters</span>
@@ -1841,9 +1841,9 @@
 		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[([</span><span class="n">M</span><span class="o">.</span><span class="n">todense</span><span class="p">(),</span><span class="n">func</span><span class="p">]</span> <span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">M</span><span class="p">,</span><span class="n">func</span><span class="p">])</span>
 						<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 
-		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">new_static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span></div>
+		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">new_static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hamiltonian.as_sparse_format"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.as_sparse_format">[docs]</a>	<span class="k">def</span> <span class="nf">as_sparse_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">as_sparse_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Casts `hamiltonian` operator to SPARSE format.</span>
 
 <span class="sd">		Parameters</span>
@@ -1879,11 +1879,11 @@
 						<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">sparse_constuctor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)],</span><span class="n">dynamic</span><span class="p">,</span>
-						<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span></div>
+						<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
 	<span class="c1">### algebra operations</span>
 
-<div class="viewcode-block" id="hamiltonian.transpose"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.transpose">[docs]</a>	<span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Transposes `hamiltonian` operator.</span>
 
 <span class="sd">		Notes</span>
@@ -1904,9 +1904,9 @@
 		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span>
-						<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span></div>
+						<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hamiltonian.conjugate"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.conjugate">[docs]</a>	<span class="k">def</span> <span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Conjugates `hamiltonian` operator.</span>
 
 <span class="sd">		Notes</span>
@@ -1926,13 +1926,13 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="n">M</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">func</span><span class="o">.</span><span class="n">conj</span><span class="p">()]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">conj</span><span class="p">()],</span><span class="n">dynamic</span><span class="p">,</span>
-							<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>		</div>
+							<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>		
 
-<div class="viewcode-block" id="hamiltonian.conj"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.conj">[docs]</a>	<span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Same functionality as :func:`conjugate`.&quot;&quot;&quot;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span></div>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
 
-<div class="viewcode-block" id="hamiltonian.getH"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.getH">[docs]</a>	<span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates hermitian conjugate of `hamiltonian` operator.</span>
 
 <span class="sd">		Parameters</span>
@@ -1951,11 +1951,11 @@
 <span class="sd">		&gt;&gt;&gt; H_herm = H.getH()</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>	</div>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>	
 
 	<span class="c1">### lin-alg operations</span>
 
-<div class="viewcode-block" id="hamiltonian.diagonal"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.diagonal">[docs]</a>	<span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates diagonal of `hamiltonian` operator at time `time`.</span>
 
 <span class="sd">		Parameters</span>
@@ -1983,9 +1983,9 @@
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">diagonal</span> <span class="o">+=</span> <span class="n">Hd</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
-		<span class="k">return</span> <span class="n">diagonal</span></div>
+		<span class="k">return</span> <span class="n">diagonal</span>
 
-<div class="viewcode-block" id="hamiltonian.trace"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.trace">[docs]</a>	<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates trace of `hamiltonian` operator at time `time`.</span>
 
 <span class="sd">		Parameters</span>
@@ -2013,9 +2013,9 @@
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">trace</span> <span class="o">+=</span> <span class="n">Hd</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
-		<span class="k">return</span> <span class="n">trace</span></div>
+		<span class="k">return</span> <span class="n">trace</span>
 	
-<div class="viewcode-block" id="hamiltonian.astype"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.astype">[docs]</a>	<span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Changes data type of `hamiltonian` object.</span>
 
 <span class="sd">		Parameters</span>
@@ -2041,13 +2041,13 @@
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support type: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
 
 		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="n">M</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
-		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
+		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hamiltonian.copy"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.copy">[docs]</a>	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns a deep or shallow copy of `hamiltonian` object.&quot;&quot;&quot;</span>
 		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="n">M</span><span class="p">,</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span>
-					<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">deep</span><span class="p">)</span></div>
+					<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">deep</span><span class="p">)</span>
 
 	<span class="c1">###################</span>
 	<span class="c1"># special methods #</span>
@@ -2080,10 +2080,10 @@
 		<span class="k">return</span> <span class="n">ME</span>
 
 	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;static mat: </span><span class="se">\n</span><span class="si">{0}</span><span class="se">\n\n\n</span><span class="s2">dynamic:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">__str__</span><span class="p">())</span>
+		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;static mat: </span><span class="se">\n</span><span class="si">{0}</span><span class="se">\n\n\n</span><span class="s2">dynamic:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">func</span><span class="p">,</span><span class="n">Hd</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">)):</span>
-			<span class="n">h_str</span> <span class="o">=</span> <span class="n">Hd</span><span class="o">.</span><span class="n">__str__</span><span class="p">()</span>
-			<span class="n">func_str</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__str__</span><span class="p">()</span>
+			<span class="n">h_str</span> <span class="o">=</span> <span class="n">Hd</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+			<span class="n">func_str</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
 			
 			<span class="n">string</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">) func: </span><span class="si">{2}</span><span class="s2">, mat: </span><span class="se">\n</span><span class="si">{1}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">h_str</span><span class="p">,</span><span class="n">func_str</span><span class="p">))</span>
 
@@ -2153,11 +2153,11 @@
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2179,11 +2179,11 @@
 
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmul_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmul_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2205,11 +2205,11 @@
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>	
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imul_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>	
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imul_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2231,10 +2231,10 @@
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">NotImplemented</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 		<span class="k">else</span><span class="p">:</span>
@@ -2253,10 +2253,10 @@
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imul_scalar</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">NotImplemented</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 		<span class="k">else</span><span class="p">:</span>
@@ -2277,11 +2277,11 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support addition by nonzero scalar&#39;</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2291,7 +2291,7 @@
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span> <span class="c1"># other + self</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span> <span class="c1"># self += other</span>
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
@@ -2308,7 +2308,7 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support addition by nonzero scalar&#39;</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>	
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iadd_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2332,7 +2332,7 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support subtraction by nonzero scalar&#39;</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2343,7 +2343,7 @@
 
 	<span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span> <span class="c1"># other - self</span>
 		<span class="c1"># NOTE: because we use signed types this is possble</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">__neg__</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="fm">__neg__</span><span class="p">()</span>
 
 	<span class="k">def</span> <span class="nf">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span> <span class="c1"># self -= other</span>
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
@@ -2360,7 +2360,7 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support subtraction by nonzero scalar&#39;</span><span class="p">)</span>
 
-		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>	
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isub_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
@@ -2555,24 +2555,24 @@
 	<span class="k">def</span> <span class="nf">_mul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
 			<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-			<span class="k">return</span> <span class="n">new</span><span class="o">.</span><span class="n">__imul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">new</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">_rmul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
 			<span class="n">new</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> <span class="c1">#lazy implementation</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> <span class="c1">#lazy implementation</span>
 		<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">_imul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
@@ -2627,11 +2627,11 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span> <span class="o">=</span> <span class="n">new_dynamic_ops</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__imul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__imul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
 
 	<span class="c1">#####################</span>
 	<span class="c1"># sparse operations #</span>
@@ -3059,11 +3059,11 @@
 
 		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">NotImplemented</span></div>
+				<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 
 <div class="viewcode-block" id="ishamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.ishamiltonian.html#quspin.operators.ishamiltonian">[docs]</a><span class="k">def</span> <span class="nf">ishamiltonian</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>

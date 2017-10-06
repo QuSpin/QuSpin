@@ -192,10 +192,10 @@ using <cite>evo_dict</cite> variable, case ii (see below).</p>
 <blockquote>
 <div><p>Dictionary which passes the different types of protocols to calculate the Floquet unitary. 
 Depending on the protocol type, it contains the following keys:</p>
-<ol class="lowerroman">
+<ol class="lowerroman simple">
 <li><dl class="first docutils">
 <dt>Periodic continuous protocol from a <cite>hamiltonian</cite> object.</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><cite>H</cite> : hamiltonian object to generate the time evolution.</li>
 <li><cite>T</cite> : period of the protocol.</li>
 <li><cite>rtol</cite> : (optional) relative tolerance for the ODE solver. (default = 1E-9)</li>
@@ -206,7 +206,7 @@ Depending on the protocol type, it contains the following keys:</p>
 </li>
 <li><dl class="first docutils">
 <dt>Periodic step protocol from a <cite>hamiltonian</cite> object. </dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><cite>H</cite> : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. <span class="math">\(\sign(\cos(\Omega t))\)</span>.</li>
 <li><cite>t_list</cite> : list of times to evaluate the hamiltonian at for each step.</li>
 <li><cite>dt_list</cite> : list of time step durations for each step of the evolution.</li>
@@ -216,7 +216,7 @@ Depending on the protocol type, it contains the following keys:</p>
 </li>
 <li><dl class="first docutils">
 <dt>Periodic step protocol from a list of hamiltonians. </dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><cite>H_list</cite> : list of matrices to evolve with.</li>
 <li><cite>dt_list</cite> : list of time step durations. Must be the same size as <cite>H_list</cite>.</li>
 </ul>

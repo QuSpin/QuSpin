@@ -270,7 +270,7 @@
 <span class="sd">			array_like object containing the new diagonal.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="n">diagonal</span><span class="o">.</span><span class="n">__class__</span> <span class="o">!=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">diagonal</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">!=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 			<span class="n">diagonal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">diagonal</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">diagonal</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;diagonal must be 1-d array.&quot;</span><span class="p">)</span>
@@ -481,17 +481,17 @@
 		<span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{0}</span><span class="s2">x</span><span class="si">{1}</span><span class="s2"> quspin quantum_LinearOperator of type &#39;</span><span class="si">{2}</span><span class="s2">&#39;&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_hamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">LinearOperator</span><span class="p">):</span>
-			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -510,17 +510,17 @@
 		<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 	<span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_hamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">LinearOperator</span><span class="p">):</span>
-			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -539,7 +539,7 @@
 		<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 	<span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+		<span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
 
 	<span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
@@ -548,14 +548,14 @@
 			<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 	<span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_hamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">LinearOperator</span><span class="p">):</span>
-			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -576,14 +576,14 @@
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_sparse</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="n">dense</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmul_hamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">LinearOperator</span><span class="p">):</span>
-			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">LinearOperator</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mul_scalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -610,8 +610,8 @@
 
 	<span class="k">def</span> <span class="nf">_mul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-		<span class="n">static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static_list</span><span class="p">)</span>
-		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">Hd</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
+		<span class="n">static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static_list</span><span class="p">)</span>
+		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">Hd</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span>
 							<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -640,8 +640,8 @@
 
 	<span class="k">def</span> <span class="nf">_rmul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-		<span class="n">static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static_list</span><span class="p">)</span>
-		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">Hd</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
+		<span class="n">static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static_list</span><span class="p">)</span>
+		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">Hd</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span>
 							<span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -670,9 +670,9 @@
 
 		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">return</span> <span class="bp">NotImplemented</span></div>
 

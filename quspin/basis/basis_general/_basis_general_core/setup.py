@@ -52,17 +52,17 @@ def configuration(parent_package='', top_path=None):
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
-        spinless_fermion_src = os.path.join(package_dir,"spinless_fermion_core.cpp") 
-        config.add_extension('spinless_fermion_core',sources=spinless_fermion_src,include_dirs=[numpy.get_include(),include_dirs],
-                                extra_compile_args=extra_compile_args,
-                                extra_link_args=extra_link_args,
-                                language="c++")
+        # spinless_fermion_src = os.path.join(package_dir,"spinless_fermion_core.cpp") 
+        # config.add_extension('spinless_fermion_core',sources=spinless_fermion_src,include_dirs=[numpy.get_include(),include_dirs],
+        #                         extra_compile_args=extra_compile_args,
+        #                         extra_link_args=extra_link_args,
+        #                         language="c++")
 
-        spinful_fermion_src = os.path.join(package_dir,"spinful_fermion_core.cpp") 
-        config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,include_dirs=[numpy.get_include(),include_dirs],
-                                extra_compile_args=extra_compile_args,
-                                extra_link_args=extra_link_args,
-                                language="c++")
+        # spinful_fermion_src = os.path.join(package_dir,"spinful_fermion_core.cpp") 
+        # config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,include_dirs=[numpy.get_include(),include_dirs],
+        #                         extra_compile_args=extra_compile_args,
+        #                         extra_link_args=extra_link_args,
+        #                         language="c++")
 
         return config
 
