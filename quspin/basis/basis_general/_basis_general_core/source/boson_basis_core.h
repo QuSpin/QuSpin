@@ -46,7 +46,7 @@ class boson_basis_core : public general_basis_core<I>
 
 		~boson_basis_core() {}
 
-		I map_state(I s,int n_map){
+		I map_state(I s,int n_map,int &sign){
 			if(general_basis_core<I>::nt<=0){
 				return s;
 			}
@@ -55,7 +55,7 @@ class boson_basis_core : public general_basis_core<I>
 			
 		}
 
-		void map_state(I s[],npy_intp P,int n_map){
+		void map_state(I s[],npy_intp P,int n_map,signed char sign[]){
 			if(general_basis_core<I>::nt<=0){
 				return;
 			}
@@ -64,6 +64,7 @@ class boson_basis_core : public general_basis_core<I>
 			#pragma omp for schedule(static,1)
 			for(npy_intp i=0;i<P;i++){
 				s[i] = boson_map_bits(s[i],map,M,sps,n);
+				sign[i] *= 1;
 			}
 		}
 
@@ -76,19 +77,20 @@ class boson_basis_core : public general_basis_core<I>
 		}
 
 		bool check_state(I s){
-			return check_state_core<I>(this,s,s,general_basis_core<I>::nt,0);
+			int sign = 1;
+			return check_state_core<I>(this,s,sign,s,general_basis_core<I>::nt,0);
 		}
 
-		I ref_state(I s,int g[],int gg[]){
+		I ref_state(I s,int g[],int gg[],int &sign){
 			for(int i=0;i<general_basis_core<I>::nt;i++){
 				g[i] = 0;
 				gg[i] = 0;
 			}
-			return ref_state_core<I>(this,s,s,g,gg,general_basis_core<I>::nt,0);
+			return ref_state_core<I>(this,s,s,g,gg,sign,general_basis_core<I>::nt,0);
 		}
 
 		double get_norm(I s){
-			return get_norm_core<I>(this,s,s,general_basis_core<I>::nt,0);
+			return get_norm_core<I>(this,s,1,0.0,0.0,s,general_basis_core<I>::nt,0);
 		}
 
 		I inline next_state_pcon(I s){

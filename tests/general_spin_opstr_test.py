@@ -54,7 +54,7 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]
-	zblocks = [0,1]
+	zblocks = [None,0,1]
 
 	if S=="1/2":
 		ops = ["x","y","z","+","-","I"]
@@ -100,7 +100,7 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 
 		basis_1d = spin_basis_1d(L,Nup=Nup,**basis_blocks)
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
-		n = basis_1d.get_norms(np.float64)**2
+		n = basis_1d._get_norms(np.float64)**2
 
 		if basis_1d.Ns != gen_basis.Ns:
 			print(basis_1d)
@@ -120,14 +120,14 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 					printing["Nup"]=Nup
 					printing["S"]=S
 
-					err_msg="testing: {opstr:5} {indx:10}  S={S:3} Nup={Nup:5} kblock={kblock:5} pblock={pblock:5} zblock={zblock:5}".format(**printing)
+					err_msg="testing: {opstr:} {indx:}  S={S:} Nup={Nup:} kblock={kblock:} pblock={pblock:} zblock={zblock:}".format(**printing)
 
 					check_ME(basis_1d,gen_basis,opstr,indx,np.complex128,err_msg)
 
-print("testing S=1/2")
-test_gen_basis_hcb(3,S="1/2")
-print("testing S=1")
-test_gen_basis_hcb(3,S="1")
+# print("testing S=1/2")
+# test_gen_basis_hcb(3,S="1/2")
+# print("testing S=1")
+# test_gen_basis_hcb(3,S="1")
 print("testing S=3/2")
 test_gen_basis_hcb(3,S="3/2")
 print("testing S=2")

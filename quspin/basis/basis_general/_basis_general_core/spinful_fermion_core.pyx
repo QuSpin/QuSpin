@@ -28,10 +28,12 @@ cdef class spinful_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
 
 	@cython.boundscheck(False)
 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
-		cdef int Ns_1 = 0
-		cdef int Ns_2 = 0
+		cdef long Ns_1 = 0
+		cdef long Ns_2 = 0
+		cdef long Ns_3 = 0
 		cdef int np_1,np_2
 		cdef npy_intp i = 0
+		cdef mem_MAX = basis.shape[0]
 
 
 		if Np is None:
@@ -42,16 +44,30 @@ cdef class spinful_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
 		elif type(Np) is list:
 			if count is None:
 				for np_1,np_2 in Np:
-					Ns_1 += self.make_basis_pcon(np_1,np_2,basis[Ns_1:],n[Ns_1:])
+					Ns_1 = self.make_basis_pcon(np_1,np_2,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_2 += Ns_1
+
+					if Ns_2 > mem_MAX:
+						return -1
 			else:
 				for np_1,np_2 in Np:
-					Ns_2 = Ns_1 + self.make_basis_pcon(np_1,np_2,basis[Ns_1:],n[Ns_1:])
-					for i in range(Ns_1,Ns_2,1):
-						count[i] = np_1+np_2
+					Ns_1 = self.make_basis_pcon(np_1,np_2,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_3 = Ns_2 + Ns_1
+						for i in range(Ns_2,Ns_3,1):
+							count[i] = np_1+np_2
 
-					Ns_1 = Ns_2
+						Ns_2 = Ns_3
 
-		return Ns_1
+					if Ns_2 > mem_MAX:
+						return -1
+
+		return Ns_2
 
 
 	@cython.boundscheck(False)
@@ -88,11 +104,14 @@ cdef class spinful_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
 			self._basis_core = new spinful_fermion_basis_core[uint64_t](N)
 
 
-	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,object count=None):
-		cdef int Ns_1 = 0
-		cdef int Ns_2 = 0
+	@cython.boundscheck(False)
+	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
+		cdef long Ns_1 = 0
+		cdef long Ns_2 = 0
+		cdef long Ns_3 = 0
 		cdef int np_1,np_2
 		cdef npy_intp i = 0
+		cdef mem_MAX = basis.shape[0]
 
 
 		if Np is None:
@@ -103,16 +122,30 @@ cdef class spinful_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
 		elif type(Np) is list:
 			if count is None:
 				for np_1,np_2 in Np:
-					Ns_1 += self.make_basis_pcon(np_1,np_2,basis[Ns_1:],n[Ns_1:])
+					Ns_1 = self.make_basis_pcon(np_1,np_2,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_2 += Ns_1
+
+					if Ns_2 > mem_MAX:
+						return -1
 			else:
 				for np_1,np_2 in Np:
-					Ns_2 = Ns_1 + self.make_basis_pcon(np_1,np_2,basis[Ns_1:],n[Ns_1:])
-					for i in range(Ns_1,Ns_2,1):
-						count[i] = np_1+np_2
+					Ns_1 = self.make_basis_pcon(np_1,np_2,basis[Ns_2:],n[Ns_2:])
+					if Ns_1 < 0:
+						return Ns_1
+					else:
+						Ns_3 = Ns_2 + Ns_1
+						for i in range(Ns_2,Ns_3,1):
+							count[i] = np_1+np_2
 
-					Ns_1 = Ns_2
+						Ns_2 = Ns_3
 
-		return Ns_1
+					if Ns_2 > mem_MAX:
+						return -1
+
+		return Ns_2
 
 
 	@cython.boundscheck(False)

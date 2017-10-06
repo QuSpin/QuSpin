@@ -13,18 +13,28 @@ _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 __all__ = ["photon_basis","ho_basis"]
 
 def coherent_state(a,n,dtype=_np.float64):
-	"""
-	This function creates a harmonic oscillator coherent state.
+	"""Creates a harmonic oscillator (HO) coherent state.
 
-	RETURNS: numpy array with harmonic oscilaltor coherent state.
+	Parameters
+	-----------
+	a : float
+		Expectation value of annihilation operator :math:`\\langla a\\rangle` or, equivalently 
+		square root of the mean particle number.
+	n : int
+		Cut-off on the number of HO eigenstates kept in the definition of the coherent state.
+	dtype : 'type'
+		Data type (e.g. numpy.float64) to construct the coherent state with. Default is `np.float64`.
 
-	--- arguments ---
+	Returns
+	--------
+	numpy.ndarray
+		Harmonic oscilaltor coherent state.
 
-	a: (required) expectation value of annihilation operator, i.e. sqrt(mean particle number)
+	Examples
+	--------
 
-	n: (required) cut-off on the number of states kept in the definition of the coherent state
+	>>> coherent_state(a,n,dtype=np.float64)
 
-	dtype: (optional) data type. Default is set to numpy.float64
 	"""
 
 	s1 = _np.full((n,),-_np.abs(a)**2/2.0,dtype=dtype)
@@ -37,8 +47,27 @@ def coherent_state(a,n,dtype=_np.float64):
 	return _np.exp(state)
 
 def photon_Hspace_dim(N,Ntot,Nph):
-	"""
-	This function calculates the dimension of the total spin-photon Hilbert space.
+	"""Calculates the dimension of the total spin-photon Hilbert space.
+
+	Parameters
+	-----------
+	N : int
+		Number of lattice particles.
+	Ntot : int
+		Total number of lattice particles and photons.
+	Nph : int
+		Number of photons.
+
+	Returns
+	--------
+	int
+		Dimension of the total spin-photon Hilbert space.
+
+	Examples
+	--------
+
+	>>> Ns = photon_Hspace_dim(N,Ntot,Nph)
+
 	"""
 	if Ntot is None and Nph is not None: # no total particle # conservation
 		return 2**N*(Nph+1)
@@ -49,11 +78,72 @@ def photon_Hspace_dim(N,Ntot,Nph):
 
 
 class photon_basis(tensor_basis):
+	"""Constructs basis in photon-particle Hilbert space.
+
+		The `photon_basis` is child class of `tensor_basis` which allows the user to define a basis which 
+		couples a lattice particle to a single photon mode.
+
+		There are two types of `photon_basis` objects that one can create:
+			* conserving basis: lattice particle basis and photon number conserved separately. This object is constructed
+				using the `tensor_basis` class.
+			* non-conserving basis: only total sum of lattice particles and photons conserved.
+
+		The operator strings for the photon and lattice sectors are the same as for the lattice bases, respectively.
+		The `photon_basis` operator string uses the pipe character '|' to distinguish
+		between lattice operators (left) and photon operators (right).
+
+		.. math::
+			\\begin{array}{cccc}
+				\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
+				\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &         -         &   \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
+				\\texttt{boson_basis_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &   -       &   -  \\newline
+				\\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   -       &   -  \\newline
+			\\end{array}
+
+		Examples
+		---------
+		For the conserving basis, one can specify the total number of quanta using the the `Ntot` keyword argument:
+
+		>>> p_basis = photon_basis(basis_class,*basis_args,Ntot=...,**symmetry_blocks)
+
+		For the non-conserving basis, one must specify the total number of photon (a.k.a. harmonic oscillator)
+		states using the `Nph` argument:
+
+		>>> p_basis = photon_basis(basis_class,*basis_args,Nph=...,**symmetry_blocks)
+
+		The code snippet below shows how to use the `photon_basis` class to construct the Jaynes-Cummings Hamiltonian.
+		As an initial state, we choose a coherent state in the photon sector and the ground state of the two-level system (atom).
+
+		.. literalinclude:: ../../doc_examples/photon_basis-example.py
+			:linenos:
+			:language: python
+			:lines: 7-
+
+		"""
 	def __init__(self,basis_constructor,*constructor_args,**blocks):
+		"""Initialises the `photon_basis` object.
+
+		Parameters
+		-----------
+		basis_constructor : :obj:`basis`
+			`basis` constructor for the lattice part of the `photon_basis`.
+		constructor_args : :obj:
+			Required arguments required by the specific `basis_constructor`.
+		blocks : :obj:
+			Optional keyword arguments for `basis_constructor` which include (but are not limited to):
+
+				**Nph** (*int*) - specify the dimension of photon (HO) Hilbert space.
+
+				**Ntot** (*int*) - specify total number of particles (photons + lattice).	
+
+				**anyblock** (*int*) - specify any lattice symmetry blocks
+
+		"""
+
 		Ntot = blocks.get("Ntot")
 		Nph = blocks.get("Nph")
-		self.Nph = Nph
-		self.Ntot = Ntot
+		self._Nph = Nph
+		self._Ntot = Ntot
 		if Ntot is not None: blocks.pop("Ntot")
 		if Nph is not None: blocks.pop("Nph")
 
@@ -78,48 +168,95 @@ class photon_basis(tensor_basis):
 			self._n = Ntot - self._basis_left._Np_list 
 			self._blocks = self._basis_left._blocks
 			self._Ns = self._basis_left._Ns
-			self._unique_me = self._basis_left.unique_me
+			self._unique_me = self._basis_left._unique_me
 			self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
 
-	@property
-	def Ns(self):
-		if self._check_pcon:
-			return self.particle_Ns
-		else:
-			return self._basis_left.Ns*self._basis_right.Ns
+		self._sps = self._basis_left.sps
+
 
 	@property
 	def particle_basis(self):
+		""":obj:`basis`: lattice basis."""
 		return self._basis_left
 
 	@property
 	def particle_Ns(self):
+		"""int: number of states in the lattice Hilbert space only."""
 		return self._basis_left.Ns
 
 	@property
 	def particle_N(self):
-		return self._basis_left.N
-
-	@property
-	def chain_Ns(self):
-		return self._basis_left.Ns
-
-	@property
-	def chain_N(self):
+		"""nt: number of sites on lattice."""
 		return self._basis_left.N
 
 	@property
 	def particle_sps(self):
+		"""int: number of lattice states per site."""
 		return self._basis_left.sps
 
 	@property
-	def sps(self):
-		return self._basis_left.sps
+	def photon_basis(self):
+		""":obj:`basis`: lattice basis."""
+		return self._basis_right
 
-	def __name__(self):
-		return "<type 'qspin.basis.photon_basis'>"
+	@property
+	def photon_Ns(self):
+		"""int: number of states in the photon Hilbert space only."""
+		return self._basis_right.Ns
+
+	@property
+	def photon_sps(self):
+		"""int: number of photon states per site."""
+		return self._basis_right.sps
+
+	@property
+	def chain_Ns(self):
+		"""int: number of states in the photon Hilbert space only."""
+		return self._basis_left.Ns
+
+	@property
+	def chain_N(self):
+		"""int: number of sites on lattice."""
+		return self._basis_left.N
 
 	def Op(self,opstr,indx,J,dtype):
+		"""Constructs operator from a site-coupling list and anoperator string in the photon basis.
+
+		Parameters
+		-----------
+		opstr : str
+			Operator string in the photon basis format. Photon operators stand on the right. For instance:
+			>>> opstr = "x|n"
+		indx : list(int)
+			List of integers to designate the sites the photon basis operator is defined on. The `photon_basis`
+			assumes that the single photon couples globally to the lattice, hence the `indx` requires only
+			the lattice site position. For instance:
+			>>> indx = [5]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+
+		Returns
+		--------
+		tuple
+			`(ME,row,col)`, where
+				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
+				* numpy.ndarray(int): `row`: row indices of matrix representing the operator in the photon basis,
+					such that `row[i]` is the row index of `ME[i]`.
+				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the photon basis,
+					such that `col[i]` is the column index of `ME[i]`.
+			
+		Examples
+		--------
+
+		>>> J = 1.41
+		>>> indx = [5]
+		>>> opstr = "x|n"
+		>>> dtype = np.float64
+		>>> ME, row, col = Op(opstr,indx,J,dtype)
+
+		"""
 		if self._Ns <= 0:
 			return [],[],[]
 
@@ -167,7 +304,42 @@ class photon_basis(tensor_basis):
 
 			return ME, row, col	
 
+
+
 	def get_vec(self,v0,sparse=True,Nph=None,full_part=True):
+		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Supports parallelisation to multiple states listed in the columns.
+
+		Parameters
+		-----------
+		v0 : numpy.ndarray
+			Contains in its columns the states in the symmetry-reduced basis.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		Nph : int, optional
+			Nuber of photons. Required for conserving `photon` basis.
+		full_part : bool, optional
+			Whether or not to transform the state to the full state in the lattice `basis` in the case
+			of a conserving `photon_basis`. Default is `True`.
+
+		Returns
+		--------
+		numpy.ndarray
+			Array containing the state `v0` in the full basis.
+
+		Examples
+		--------
+
+		>>> v_full = get_vec(v0)
+		>>> print(v_full.shape, v0.shape)
+
+		"""
 		if not self._check_pcon:
 			return tensor_basis.get_vec(self,v0,sparse=sparse,full_left=full_part)
 		else:
@@ -175,13 +347,13 @@ class photon_basis(tensor_basis):
 				v0 = _np.asanyarray(v0)
 
 			if Nph is None:
-				Nph = self.Ntot
+				Nph = self._Ntot
 
 			if not type(Nph) is int:
 				raise TypeError("Nph must be integer")
 
-			if Nph < self.Ntot:
-				raise ValueError("Nph must be larger or equal to {0}".format(self.Ntot))
+			if Nph < self._Ntot:
+				raise ValueError("Nph must be larger or equal to {0}".format(self._Ntot))
 		
 			if v0.ndim == 1:
 				if v0.shape[0] != self._Ns:
@@ -204,56 +376,91 @@ class photon_basis(tensor_basis):
 				raise ValueError("excpecting v0 to have ndim at most 2")
 
 	def get_proj(self,dtype,Nph=None,full_part=True):
+		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		in a straightforward manner.
+
+		Parameters
+		-----------
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the projector with.
+		Nph : int, optional
+			Nuber of photons. Required for conserving `photon` basis.
+		full_part : bool, optional
+			Whether or not to transform the state to the full state in the lattice `basis` in the case
+			of a conserving `photon_basis`. Default is `True`.
+
+		Returns
+		--------
+		numpy.ndarray
+			Transformation/projector between the symmetry-reduced and the full basis.
+
+		Examples
+		--------
+
+		>>> P = get_proj(np.float64)
+		>>> print(P.shape)
+
+		"""
 		if not self._check_pcon:
 			return tensor_basis.get_proj(self,dtype,full_left=full_part)	
 		else:
 			if Nph is None:
-				Nph = self.Ntot
+				Nph = self._Ntot
 
 			if not type(Nph) is int:
 				raise TypeError("Nph must be integer")
 
-			if Nph < self.Ntot:
-				raise ValueError("Nph must be larger or equal to {0}".format(self.Ntot))
+			if Nph < self._Ntot:
+				raise ValueError("Nph must be larger or equal to {0}".format(self._Ntot))
 
 			return _conserved_get_proj(self,dtype,Nph,full_part)
 
+
 	def partial_trace(self,state,sub_sys_A="particles",return_rdm=None,enforce_pure=False,sparse=False):
+		"""Calculates reduced density matrix, through a partial trace of a quantum state in `photon_basis`.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : str, optional
+			Subsystem to calculate the density matrix of. Can be either one of:
+
+				* "particles": refers to lattice subsystem (Default).
+				* "photons": refers to photon subsystem.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+
+		Returns
+		--------
+		numpy.ndarray
+			Density matrix associated with `state`. Depends on optional arguments.
+
+
+		Examples
+		--------
+
+		>>> partial_trace(state,sub_sys_A=None,return_rdm="A",enforce_pure=False,sparse=False)
+
 		"""
-		This function calculates the reduced density matrix (DM), performing a partial trace 
-		of a quantum state.
 
-		RETURNS: reduced DM
-
-		--- arguments ---
-
-		state: (required) the state of the quantum system. Can be a:
-
-				-- pure state (default) [numpy array of shape (Ns,)].
-
-				-- density matrix [numpy array of shape (Ns,Ns)].
-
-				-- collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
-
-		sub_sys_A: (optional) flag to define the subsystem retained after the partial trace is taken.
-
-				-- 'particles': (default) subsystem is the chain
-
-				-- 'photons': str, subsystem is the photons
-
-				-- 'both': str, DM corresponding to both photons and particles are returned.
-
-		state_type: (optional) flag to determine if 'state' is a collection of pure states or
-						a density matrix
-
-				-- 'pure': (default) (a collection of) pure state(s)
-
-				-- 'mixed': mixed state (i.e. a density matrix)
-
-		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
-
-		"""
 		if sub_sys_A is None:
 			sub_sys_A = "particles"
 
@@ -310,47 +517,73 @@ class photon_basis(tensor_basis):
 		return tensor_basis.partial_trace(self,proj_state,sub_sys_A=tensor_dict[sub_sys_A],return_rdm=return_rdm,enforce_pure=enforce_pure,sparse=sparse)
 
 	def ent_entropy(self,state,sub_sys_A="particles",return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
+
+		Notes
+		-----
+		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : str, optional
+			Subsystem to calculate the density matrix of. Can be either one of:
+
+				* "particles": refers to lattice subsystem (Default).
+				* "photons": refers to photon subsystem.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+		return_rdm_EVs : bool, optional 
+			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,
+			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+			the spectrum of `rdm_A` is returned by default. Default is `False`.
+		alpha : float, optional
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+
+			.. math::
+				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
+		sparse_diag : bool, optional
+			When `sparse=True`, this flag enforces the use of
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_
+			to calculate the eigenvaues of the reduced DM.
+		maxiter : int, optional
+			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+		
+
+		Returns
+		--------
+		dict
+			Dictionary with following keys, depending on input parameters:
+				* "Sent_A": entanglement entropy of subsystem A (default).
+				* "Sent_B": entanglement entropy of subsystem B.
+				* "p_A": singular values of reduced DM of subsystem A (default).
+				* "p_B": singular values of reduced DM of subsystem B.
+				* "rdm_A": reduced DM of subsystem A.
+				* "rdm_B": reduced DM of subsystem B.
+
+		Examples
+		--------
+
+		>>> ent_entropy(state,sub_sys_A="photons",return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>>				sparse=False,alpha=1.0,sparse_diag=True)
+
 		"""
-		This function calculates the entanglement entropy of the photon and chain subsystems, and 
-		the corresponding reduced density matrix.
 
-		RETURNS: dictionary with keys:
-
-		'Sent': entanglement entropy.
-		'rdm_particles': (optional) reduced density matrix of subsystem A
-		'rdm_photons': (optional) reduced density matrix of subsystem B
-
-		--- arguments ---
-
-		state: (required) the state of the quantum system. Can be a:
-
-				-- pure state (default) [numpy array of shape (Ns,)].
-
-				-- density matrix [numpy array of shape (Ns,Ns)].
-
-				-- collection of states [dictionary {'V_states':V_states}] containing the states
-					in the columns of V_states [shape (Ns,Nvecs)]
-
-		return_rdm: (optional) flag to return the reduced density matrix. Default is 'None'.
-
-				-- 'particles': str, returns reduced DM of photon 
-
-				-- 'photons': str, returns reduced DM of chain
-
-				-- 'both': str, returns reduced DM of both photon and chain
-
-		state_type: (optional) flag to determine if 'state' is a collection of pure states or
-						a density matrix
-
-				-- 'pure': (default) (a collection of) pure state(s)
-
-				-- 'mixed': mixed state (i.e. a density matrix)
-
-		sparse: (optional) flag to enable usage of sparse linear algebra algorithms.
-
-		alpha: (optional) Renyi alpha parameter. Default is '1.0'.
-
-		"""
 		if self._check_pcon: # project to full photon basis
 			if _sp.issparse(state) or sparse:
 				proj_state=self.get_vec(state,sparse=True,full_part=False)
@@ -388,6 +621,12 @@ class photon_basis(tensor_basis):
 		else:
 			raise ValueError("sub_sys_A '{}' not recognized".format(return_rdm))
 
+
+	##### private methods of the photon class
+
+	def __name__(self):
+		return "<type 'qspin.basis.photon_basis'>"
+
 	def _get__str__(self):
 		if not self._check_pcon:
 			return tensor_basis._get__str__(self)
@@ -397,7 +636,7 @@ class photon_basis(tensor_basis):
 				return "reference states: \n\t not availible"
 
 			n_digits = len(str(self.Ns))+1
-			n_space = len(str(self.Ntot))
+			n_space = len(str(self._Ntot))
 			str_list_1 = self._basis_left._get__str__()
 			temp = "\t{0:"+str(n_digits)+"d}.  "
 			str_list=[]
@@ -416,6 +655,32 @@ class photon_basis(tensor_basis):
 				str_list.extend(str_list_2)	
 
 			return str_list	
+
+	def _check_symm(self,static,dynamic):
+		# pick out operators which have charactors to the left of the '|' charactor. 
+		# otherwise this is operator must be
+		new_static = []
+		for opstr,bonds in static:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_static.append([opstr,bonds])
+
+
+		new_dynamic = []
+		for opstr,bonds,f,f_args in dynamic:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' character in: {0}".format(opstr))
+
+			opstr1,opstr2=opstr.split("|")
+
+			if opstr1:
+				new_dynamic.append([opstr,bonds,f,f_args])
+		
+		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
 
 	def _sort_opstr(self,op):
 		op = list(op)
@@ -456,32 +721,6 @@ class photon_basis(tensor_basis):
 		op[1] = op1[1] + op2[1]
 		
 		return tuple(op)
-
-	def _check_symm(self,static,dynamic):
-		# pick out operators which have charactors to the left of the '|' charactor. 
-		# otherwise this is operator must be
-		new_static = []
-		for opstr,bonds in static:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' character in: {0}".format(opstr))
-
-			opstr1,opstr2=opstr.split("|")
-
-			if opstr1:
-				new_static.append([opstr,bonds])
-
-
-		new_dynamic = []
-		for opstr,bonds,f,f_args in dynamic:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' character in: {0}".format(opstr))
-
-			opstr1,opstr2=opstr.split("|")
-
-			if opstr1:
-				new_dynamic.append([opstr,bonds,f,f_args])
-		
-		return self._basis_left._check_symm(new_static,new_dynamic,photon_basis=self)
 
 	def _get_local_lists(self,static,dynamic): #overwrite the default get_local_lists from base.
 		static_list = []
@@ -534,7 +773,7 @@ class photon_basis(tensor_basis):
 				J = complex(bond[0])
 				dynamic_list.append((opstr,tuple(indx),J,f,f_args))
 
-		return tensor_basis.sort_local_list(self,static_list),tensor_basis.sort_local_list(self,dynamic_list)
+		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
 
 
 def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
@@ -584,7 +823,6 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 
 	return v0_full
 
-
 def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
@@ -622,6 +860,7 @@ def _conserved_get_proj(p_basis,dtype,Nph,full_part):
 
 
 	return proj_1_full
+
 
 # helper class which calcualates ho matrix elements
 class ho_basis(basis):
@@ -684,6 +923,20 @@ class ho_basis(basis):
 
 	def _sort_opstr(self,op):
 		return tuple(op)
+
+	def _get__str__(self):
+		def get_state(b):
+			return ("|{0:"+str(len(str(self.Ns)))+"}>").format(b)
+
+		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+
+		return tuple(str_list)
 
 
 	def _hc_opstr(self,op):

@@ -20,7 +20,7 @@ def check_gen_basis_hcb(S="1/2"):
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]
-	zblocks = [0,1]
+	zblocks = [None,0,1]
 
 	sps,s=S_dict[S]
 
@@ -60,7 +60,7 @@ def check_gen_basis_hcb(S="1/2"):
 			basis_blocks["kblock"] = None
 			gen_blocks["kblock"] = None
 
-		print("checking S={S:3} Nup={Nup:6} kblock={kblock:6} pblock={pblock:6} zblock={zblock:6}".format(Nup=Nup,**basis_blocks))
+		print("checking S={S:} Nup={Nup:} kblock={kblock:} pblock={pblock:} zblock={zblock:}".format(Nup=Nup,**basis_blocks))
 
 		basis_1d = spin_basis_1d(L,Nup=Nup,**basis_blocks)
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)

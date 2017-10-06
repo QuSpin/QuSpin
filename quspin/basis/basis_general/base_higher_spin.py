@@ -6,9 +6,9 @@ from scipy.misc import comb
 
 
 
-# general basis for hardcore bosons/spin-1/2
+# general basis for higher spin representations
 class higher_spin_basis_general(basis_general):
-	def __init__(self,N,Nup=None,sps=None,_Np=None,**kwargs):
+	def __init__(self,N,Nup=None,sps=None,Ns_block_est=None,_Np=None,**kwargs):
 		basis_general.__init__(self,N,**kwargs)
 		self._check_pcon = False
 		count_particles = False
@@ -50,8 +50,19 @@ class higher_spin_basis_general(basis_general):
 
 			basis_type = get_basis_type(N,max(iter(Nup)),sps)
 
+
 		if len(self._pers)>0:
-			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+			if Ns_block_est is None:
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*sps
+			else:
+				if type(Ns_block_est) is not int:
+					raise TypeError("Ns_block_est must be integer value.")
+				if Ns_block_est <= 0:
+					raise ValueError("Ns_block_est must be an integer > 0")
+
+				Ns = Ns_block_est
+
+		Ns = max(Ns,1000)
 
 		if basis_type==_np.uint32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
@@ -65,11 +76,12 @@ class higher_spin_basis_general(basis_general):
 			raise ValueError("states can't be represented as 64-bit unsigned integer")
 
 		self._sps=sps
+
 		if count_particles and (Nup is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 			self._Ns = self._core.make_basis(basis,n,Np=Nup,count=Np_list)
 			if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:
@@ -82,7 +94,7 @@ class higher_spin_basis_general(basis_general):
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nup)
 			if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:

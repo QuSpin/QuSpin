@@ -1,0 +1,1043 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quspin.tools.block_tools &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for quspin.tools.block_tools</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1"># QuSpin modules</span>
+<span class="kn">from</span> <span class="nn">..operators</span> <span class="k">import</span> <span class="n">hamiltonian</span> <span class="k">as</span> <span class="n">_hamiltonian</span>
+<span class="kn">from</span> <span class="nn">..operators</span> <span class="k">import</span> <span class="n">ishamiltonian</span> <span class="k">as</span> <span class="n">_ishamiltonian</span>
+<span class="c1"># numpy modules</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span> <span class="c1"># generic math functions</span>
+<span class="c1"># _scipy modules</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">_scipy</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">expm_multiply</span> <span class="k">as</span> <span class="n">_expm_multiply</span>
+<span class="c1"># multi-processing modules</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span> <span class="k">as</span> <span class="n">_Process</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Queue</span> <span class="k">as</span> <span class="n">_Queue</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Event</span> <span class="k">as</span> <span class="n">_Event</span>
+
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="k">import</span> <span class="n">Parallel</span> <span class="k">as</span> <span class="n">_Parallel</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="k">import</span> <span class="n">delayed</span> <span class="k">as</span> <span class="n">_delayed</span>
+<span class="c1"># six for python 2.* and 3.* dictionary compatibility</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span> <span class="k">as</span> <span class="n">_iteritems</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">itervalues</span> <span class="k">as</span> <span class="n">_itervalues</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">izip</span> <span class="k">as</span> <span class="n">_izip</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+	<span class="n">_izip</span> <span class="o">=</span> <span class="nb">zip</span>
+
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;block_diag_hamiltonian&quot;</span><span class="p">,</span><span class="s2">&quot;block_ops&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="block_diag_hamiltonian"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_diag_hamiltonian.html#quspin.tools.block_tools.block_diag_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">block_diag_hamiltonian</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis_con</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">basis_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">get_proj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Block-diagonalises a Hamiltonian obeying a symmetry.</span>
+
+<span class="sd">	The symmetry blocks are created via the argument &#39;blocks&#39;.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The example below demonstrates how to to use the `block_diag_hamiltonian()` function to block-diagonalise</span>
+<span class="sd">	the single-particle Hamiltonian</span>
+<span class="sd">	</span>
+<span class="sd">	.. math::</span>
+<span class="sd">		H=\\sum_j (J+(-1)^j\\delta J)b^\\dagger_{j+1} b_j + \\mathrm{h.c.} + \\Delta(-1)^j b^\\dagger_j b_j</span>
+
+<span class="sd">	with respect to translation symemtry. The Fourier transform is computed along the way.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/block_diag_hamiltonian-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	blocks : list/tuple/iterator</span>
+<span class="sd">		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries.</span>
+<span class="sd">	static : list</span>
+<span class="sd">		Static operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.</span>
+<span class="sd">	dynamic : list</span>
+<span class="sd">		Dynamic operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.</span>
+<span class="sd">	basis_con : :obj:`basis` </span>
+<span class="sd">		Basis constructor used to build the basis objects to create the block diagonal Hamiltonians.</span>
+<span class="sd">	basis_args : tuple </span>
+<span class="sd">		This argument is passed as the first argument for `basis_con`.</span>
+<span class="sd">		Contains all required arguments for the basis. </span>
+<span class="sd">	dtype : &#39;type&#39;</span>
+<span class="sd">		The data type (e.g. numpy.float64) to construct the Hamiltonian with.</span>
+<span class="sd">	get_proj : bool, optional</span>
+<span class="sd">		Flag which tells the function to calculate and return the projector to the </span>
+<span class="sd">		symmetry-block subpace requested. Default is &#39;True&#39;.</span>
+<span class="sd">	basis_kwargs : dict, optional</span>
+<span class="sd">		Dictionary of keyword arguments to add when calling `basis` constructor.</span>
+<span class="sd">	get_proj_kwargs : dict, optional </span>
+<span class="sd">		Dictionary of keyword arguments for `basis.get_proj()` and `basis.get_vec()`.</span>
+<span class="sd">	check_symm : bool, optional </span>
+<span class="sd">		Enable/Disable symmetry check of the operators for the first Hamiltonian constructed.</span>
+<span class="sd">	check_herm : bool, optional</span>
+<span class="sd">		Enable/Disable hermiticity check of the operators for the first Hamiltonian constructed.</span>
+<span class="sd">	check_pcon : bool, optional</span>
+<span class="sd">		Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	--------</span>
+<span class="sd">	tuple</span>
+<span class="sd">		P : scipy.sparse.csr </span>
+<span class="sd">			Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).</span>
+
+<span class="sd">		H : `obj`</span>
+<span class="sd">			`hamiltonian` object in block diagonal form.</span>
+
+<span class="sd">	Raises</span>
+<span class="sd">	------</span>
+<span class="sd">	ValueError</span>
+<span class="sd">		If `blocks` is not a list of `hamiltonian` objects or a list of dictionaries containing </span>
+<span class="sd">		the symmetry sectors.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">H_list</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">P_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="n">blocks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">block</span><span class="p">,</span><span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">]):</span>
+		<span class="p">[</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">basis_kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">))]</span>
+		<span class="n">dynamic_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">tup</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="nb">tuple</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">dynamic</span><span class="p">]</span>
+		<span class="n">dynamic_list</span> <span class="o">=</span> <span class="p">[([],</span><span class="n">f</span><span class="p">,</span><span class="n">f_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">f_args</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">dynamic_list</span><span class="p">)]</span>
+		<span class="n">static_mats</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+			<span class="n">b</span> <span class="o">=</span> <span class="n">basis_con</span><span class="p">(</span><span class="o">*</span><span class="n">basis_args</span><span class="p">,</span><span class="o">**</span><span class="n">block</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">get_proj</span><span class="p">:</span>
+				<span class="n">P</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="n">get_proj_kwargs</span><span class="p">)</span>
+				<span class="n">P_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+
+			<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="n">check_symm</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="n">check_herm</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="n">check_pcon</span><span class="p">)</span>
+			<span class="n">check_symm</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="n">check_herm</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="n">check_pcon</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="n">static_mats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">tocoo</span><span class="p">())</span>
+			<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_itervalues</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)):</span>
+				<span class="n">dynamic_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">tocoo</span><span class="p">())</span>
+
+		<span class="n">static</span> <span class="o">=</span> <span class="p">[</span><span class="n">_sp</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">static_mats</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)]</span>
+		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">mats</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">f_args</span> <span class="ow">in</span> <span class="n">dynamic_list</span><span class="p">:</span>
+			<span class="n">mats</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">mats</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+			<span class="n">dynamic</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">mats</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">f_args</span><span class="p">])</span>
+
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;blocks must be list of dictionaries containing symmetry sectors.&quot;</span><span class="p">)</span>
+
+
+
+	<span class="k">if</span> <span class="n">get_proj</span><span class="p">:</span>
+		<span class="n">P</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">P_list</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">P</span><span class="p">,</span><span class="n">_hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_worker</span><span class="p">(</span><span class="n">gen_func</span><span class="p">,</span><span class="n">args_list</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">e</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Worker function which loops over one of more generators provided by `gen_func` and returns the result </span>
+<span class="sd">	via queue `q`. </span>
+
+<span class="sd">	Waits for signal from `e` before continuing. </span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">gens</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">:</span>
+		<span class="n">gens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_func</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">))</span>
+
+	<span class="n">generator</span> <span class="o">=</span> <span class="n">_izip</span><span class="p">(</span><span class="o">*</span><span class="n">gens</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+		<span class="n">e</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+		<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+		<span class="n">e</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+	<span class="n">q</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+ 
+<span class="k">def</span> <span class="nf">_generate_parallel</span><span class="p">(</span><span class="n">n_process</span><span class="p">,</span><span class="n">n_iter</span><span class="p">,</span><span class="n">gen_func</span><span class="p">,</span><span class="n">args_list</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Generator which spawns processes to run generators, then uses a queue for each process to retrieve </span>
+<span class="sd">	the results which it then yields.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">n_items</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args_list</span><span class="p">)</span>
+
+	<span class="c1"># calculate how to distribute generators over processes.</span>
+	<span class="k">if</span> <span class="n">n_items</span> <span class="o">&lt;=</span> <span class="n">n_process</span> <span class="ow">and</span> <span class="n">n_process</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">n_process</span> <span class="o">=</span> <span class="n">n_items</span>
+		<span class="n">n_pp</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="n">n_left</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="k">elif</span> <span class="n">n_items</span> <span class="o">&gt;</span> <span class="n">n_process</span> <span class="ow">and</span> <span class="n">n_process</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">n_pp</span> <span class="o">=</span> <span class="n">n_items</span><span class="o">//</span><span class="n">n_process</span>
+		<span class="n">n_left</span> <span class="o">=</span> <span class="n">n_pp</span> <span class="o">+</span> <span class="n">n_items</span><span class="o">%</span><span class="n">n_process</span>		
+
+	<span class="c1"># if one process specified just do the generator without sub processes.</span>
+	<span class="k">if</span> <span class="n">n_process</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="n">gens</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">:</span>
+			<span class="n">gens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_func</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">))</span>
+
+		<span class="n">generator</span> <span class="o">=</span> <span class="n">_izip</span><span class="p">(</span><span class="o">*</span><span class="n">gens</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+			<span class="k">yield</span> <span class="n">s</span>
+
+		<span class="k">return</span> 
+	<span class="c1"># split up argument list </span>
+	<span class="n">sub_lists</span> <span class="o">=</span> <span class="p">[</span><span class="n">args_list</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n_left</span><span class="p">]]</span>
+	<span class="n">sub_lists</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span> <span class="n">args_list</span><span class="p">[</span><span class="n">n_left</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="n">n_pp</span><span class="p">:</span><span class="n">n_left</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n_pp</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_process</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+
+	<span class="c1"># create lists of queues, events, and processes.</span>
+	<span class="n">es</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">qs</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">ps</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_process</span><span class="p">):</span>
+		<span class="n">e</span> <span class="o">=</span> <span class="n">_Event</span><span class="p">()</span>
+		<span class="n">q</span> <span class="o">=</span> <span class="n">_Queue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">p</span> <span class="o">=</span> <span class="n">_Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_worker</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">gen_func</span><span class="p">,</span><span class="n">sub_lists</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">q</span><span class="p">,</span><span class="n">e</span><span class="p">))</span>
+		<span class="n">p</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="n">es</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+		<span class="n">qs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+		<span class="n">ps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+
+	<span class="c1"># start processes</span>
+	<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">:</span>
+		<span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+	<span class="c1"># for number of iterations</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="c1"># retrieve results for each sub-process and let the process know to continue calculation.</span>
+		<span class="k">for</span> <span class="n">q</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="n">_izip</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span><span class="n">es</span><span class="p">):</span>
+			<span class="n">s</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+			<span class="n">e</span><span class="o">.</span><span class="n">set</span><span class="p">()</span> <span class="c1"># free process to do next calculation</span>
+
+		<span class="c1"># yield all results</span>
+		<span class="k">yield</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+	<span class="c1"># end processes</span>
+	<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">:</span>
+		<span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">_evolve_gen</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Generating function for evolution with `H.evolve`.&quot;&quot;&quot;</span>
+	<span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
+		<span class="k">yield</span> <span class="n">psi</span>
+
+<span class="k">def</span> <span class="nf">_expm_gen</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Generating function for evolution via `_expm_multiply`.&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">H</span> <span class="o">*=</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">psi</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
+		<span class="n">H</span> <span class="o">/=</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">psi</span>
+
+	<span class="n">H</span> <span class="o">*=</span> <span class="n">dt</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">psi</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">psi</span>
+	<span class="n">H</span> <span class="o">/=</span> <span class="n">dt</span>
+
+
+
+<span class="k">def</span> <span class="nf">_block_evolve_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;using `_generate_parallel` to get block evolution yields state in full H-space.&quot;&quot;&quot;</span>
+	<span class="n">args_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">psi_blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">H_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">))]</span>
+
+	<span class="k">for</span> <span class="n">psi_blocks</span> <span class="ow">in</span> <span class="n">_generate_parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),</span><span class="n">_evolve_gen</span><span class="p">,</span><span class="n">args_list</span><span class="p">):</span>
+		<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">P</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_block_expm_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;using `_generate_parallel` to get block evolution yields state in full H-space.&quot;&quot;&quot;</span>
+	<span class="n">times</span><span class="p">,</span><span class="n">dt</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">,</span><span class="n">retstep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">args_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">psi_blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">H_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">times</span><span class="p">,</span><span class="n">dt</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">))]</span>
+	<span class="k">for</span> <span class="n">psi_blocks</span> <span class="ow">in</span> <span class="n">_generate_parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),</span><span class="n">_expm_gen</span><span class="p">,</span><span class="n">args_list</span><span class="p">):</span>
+		<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">P</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>	
+
+<span class="k">def</span> <span class="nf">_block_evolve_helper</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;helper functions for doing evolution not with iterator.&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="block_ops"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops">[docs]</a><span class="k">class</span> <span class="nc">block_ops</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Splits up the dynamics of a state over various symmetry sectors.</span>
+
+<span class="sd">	Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does. </span>
+<span class="sd">	Moreover, we provide a multiprocessing option which allows the user to split up the dynamics </span>
+<span class="sd">	over multiple processing cores.</span>
+
+<span class="sd">	Can be used to calculate nonequal time correlators in symmetry-reduced sectors.</span>
+
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+
+<span class="sd">	The `block_ops` object is initialised only after calling the function methods of the class to save memory.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following sequence of examples uses the Bose-Hubbard model</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		H=-J\\sum_j b^\\dagger_{j+1}b_j + \\mathrm{h.c.} + \\frac{U}{2}\\sum_j n_j(n_j-1)</span>
+
+<span class="sd">	to show how to use the `block_ops` class to evolve a Fock state, which explicitly breaks</span>
+<span class="sd">	translational invariance, by decomposing it in all momentum blocks, time-evolving the projections, and putting</span>
+<span class="sd">	the state back together in the Fock basis in the end. We use the time-evolved state to measure the local density operator :math:`n_j`.</span>
+
+<span class="sd">	The code snippets for the time evolution can be found in the examples for the function methods of the class.</span>
+<span class="sd">	The code snippet below initiates the class, and is required to run the example codes for the function methods.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-55</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="block_ops.__init__"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis_con</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">basis_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">save_previous_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">compute_all_blocks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Instantiates the `block_ops` class.</span>
+<span class="sd">		</span>
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		blocks : list/tuple/iterator</span>
+<span class="sd">			Contains the symmetry blocks to construct the Hamiltonian with, </span>
+<span class="sd">			as dictionaries or `hamiltonian` objects.	</span>
+<span class="sd">		static : list</span>
+<span class="sd">			Static operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.</span>
+<span class="sd">		dynamic : list</span>
+<span class="sd">			Dynamic operator list used to construct the block Hamiltonians. Follows `hamiltonian` format.</span>
+<span class="sd">		basis_con : :obj:`basis` </span>
+<span class="sd">			Basis constructor used to build the basis objects to create the block diagonal Hamiltonians.</span>
+<span class="sd">		basis_args : tuple </span>
+<span class="sd">			This argument is passed as the first argument for `basis_con`.</span>
+<span class="sd">			Contains all required arguments for the basis. </span>
+<span class="sd">		dtype : &#39;type&#39;</span>
+<span class="sd">			The data type (e.g. numpy.float64) to construct the Hamiltonian with.</span>
+<span class="sd">		basis_kwargs : dict, optional</span>
+<span class="sd">			Dictionary of keyword arguments to add when calling `basis` constructor.</span>
+<span class="sd">		get_proj_kwargs : dict, optional </span>
+<span class="sd">			Dictionary of keyword arguments for `basis.get_proj()` and `basis.get_vec()`.</span>
+<span class="sd">		save_previous_data : bool, optional</span>
+<span class="sd">			To do time evolution the `block_ops` class constructs Hamiltonians, which can take time. </span>
+<span class="sd">			Set this flag to `True`, and the class will save previously calculated Hamiltonians, so</span>
+<span class="sd">			next time one needs to do evolution in that block, the code does NOT have to calculate it again.</span>
+<span class="sd">			Default is `True`.</span>
+<span class="sd">		compute_all_blocks : bool, optional </span>
+<span class="sd">			Flag which tells the `block_ops` class to compute all symmetry blocks at initialization.</span>
+<span class="sd">			Default is `False`.</span>
+
+<span class="sd">			This option sets `save_previous_data = True` automatically. </span>
+<span class="sd">		check_symm : bool, optional </span>
+<span class="sd">			Enable/Disable symmetry check of the operators for the first Hamiltonian constructed.</span>
+<span class="sd">		check_herm : bool, optional</span>
+<span class="sd">			Enable/Disable hermiticity check of the operators for the first Hamiltonian constructed.</span>
+<span class="sd">		check_pcon : bool, optional</span>
+<span class="sd">			Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="o">=</span><span class="n">dtype</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_save</span> <span class="o">=</span> <span class="n">save_previous_data</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">static</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span> <span class="o">=</span> <span class="n">dynamic</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;check_symm&quot;</span><span class="p">:</span><span class="n">check_symm</span><span class="p">,</span><span class="s2">&quot;check_herm&quot;</span><span class="p">:</span><span class="n">check_herm</span><span class="p">,</span><span class="s2">&quot;check_pcon&quot;</span><span class="p">:</span><span class="n">check_pcon</span><span class="p">}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_no_checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;check_symm&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s2">&quot;check_herm&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s2">&quot;check_pcon&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_kwargs</span> <span class="o">=</span> <span class="n">get_proj_kwargs</span>
+
+
+		<span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+			<span class="n">block</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">basis_kwargs</span><span class="p">)</span>
+			<span class="n">b</span> <span class="o">=</span> <span class="n">basis_con</span><span class="p">(</span><span class="o">*</span><span class="n">basis_args</span><span class="p">,</span><span class="o">**</span><span class="n">block</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&gt;</span>  <span class="mi">0</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">block</span><span class="p">)]</span><span class="o">=</span><span class="n">b</span>
+
+		<span class="k">if</span> <span class="n">compute_all_blocks</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="o">=</span><span class="kc">True</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">compute_all_blocks</span><span class="p">()</span></div>
+
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;type: numpy data type to store the block hamiltonians in.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">save_previous_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;bool: reflects state of optimal argument `save_previous_data`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">H_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;dict: dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks,</span>
+<span class="sd">		e.g. `str(block)` where `block` is a block dictionary variable.</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">P_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;dict: dictionary which contains the block projectors under keys labelled by the symmetry blocks,</span>
+<span class="sd">		e.g. `str(block)` where `block` is a block dictionary variable.</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">basis_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;dict: dictionary which contains the `basis` objects under keys labelled by the symmetry blocks,</span>
+<span class="sd">		e.g. `str(block)` where `block` is a block dictionary variable.</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">static</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;list: contains the static operators used to construct the symmetry-block Hamiltonians.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;list: contains the dynamic operators used to construct the symmetry-block Hamiltonians.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="block_ops.update_blocks"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.update_blocks">[docs]</a>	<span class="k">def</span> <span class="nf">update_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="n">basis_con</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">compute_all_blocks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Allows to update the `blocks` variable of the class.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		blocks : list/tuple/iterator</span>
+<span class="sd">			Contains the new symmetry blocks to be added to the `basis_dict` attribute of the class, </span>
+<span class="sd">			as dictionaries or `hamiltonian` objects.</span>
+<span class="sd">		basis_con : :obj:`basis` </span>
+<span class="sd">			Basis constructor used to build the basis objects to create the new block diagonal Hamiltonians.	</span>
+<span class="sd">		basis_args : tuple </span>
+<span class="sd">			This argument is passed as the first argument for `basis_con`.</span>
+<span class="sd">			Contains all required arguments for the basis.</span>
+<span class="sd">		compute_all_blocks : bool, optional </span>
+<span class="sd">			Flag which tells the `block_ops` class to compute all symmetry blocks at initialization.</span>
+<span class="sd">			Default is `False`.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">blocks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+				<span class="n">b</span> <span class="o">=</span> <span class="n">basis_con</span><span class="p">(</span><span class="o">*</span><span class="n">basis_args</span><span class="p">,</span><span class="o">**</span><span class="n">block</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&gt;</span>  <span class="mi">0</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">block</span><span class="p">)]</span><span class="o">=</span><span class="n">b</span>	
+
+		<span class="k">if</span> <span class="n">compute_all_blocks</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">compute_all_blocks</span><span class="p">()</span>	</div>
+
+
+<div class="viewcode-block" id="block_ops.compute_all_blocks"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.compute_all_blocks">[docs]</a>	<span class="k">def</span> <span class="nf">compute_all_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Sets `compute_all_blocks = True`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		The example below builds on the code snippet shown in the description of the `block_ops` class.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 57-58</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">_iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="p">):</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_kwargs</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">:</span>
+					<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="o">=</span><span class="kc">True</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_no_checks</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span></div>
+
+
+<div class="viewcode-block" id="block_ops.evolve"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Creates symmetry blocks of the Hamiltonian and then uses them to run `hamiltonian.evolve()` in parallel.</span>
+<span class="sd">		</span>
+<span class="sd">		**Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.**</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		The example below builds on the code snippet shown in the description of the `block_ops` class.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 69-</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		psi_0 : numpy.ndarray, list, tuple</span>
+<span class="sd">			Quantum state which defined on the full Hilbert space of the problem. </span>
+<span class="sd">			Does not need to obey and sort of symmetry.</span>
+<span class="sd">		t0 : float</span>
+<span class="sd">			Inistial time to start the evolution at.</span>
+<span class="sd">		times : numpy.ndarray, list</span>
+<span class="sd">			Contains the times to compute the solution at. Must be some an iterable object.</span>
+<span class="sd">		iterate : bool, optional</span>
+<span class="sd">			Flag to return generator when set to `True`. Otherwise the output is an array of states. </span>
+<span class="sd">			Default is &#39;False&#39;.</span>
+<span class="sd">		n_jobs : int, optional </span>
+<span class="sd">			Number of processes requested for the computation time evolution dynamics. </span>
+
+<span class="sd">			NOTE: one of those processes is used to gather results. For best performance, all blocks </span>
+<span class="sd">			should be approximately the same size and `n_jobs-1` must be a common devisor of the number of</span>
+<span class="sd">			blocks, such that there is roughly an equal workload for each process. Otherwise the computation </span>
+<span class="sd">			will be as slow as the slowest process.</span>
+<span class="sd">		block_diag : bool, optional </span>
+<span class="sd">			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtry blocks</span>
+<span class="sd">			into a list and then loops over it to do time evolution. When set to `False`, it puts all</span>
+<span class="sd">			blocks in a single giant sparse block diagonal matrix. Default is `False`.</span>
+
+<span class="sd">			This flag is useful if there are a lot of smaller-sized blocks.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			if `iterate = True`, returns generator which generates the time dependent state in the </span>
+<span class="sd">			full H-space basis.</span>
+
+<span class="sd">			if `iterate = False`, returns `numpy.ndarray` which has the time-dependent states in the </span>
+<span class="sd">			full H-space basis in the rows.</span>
+<span class="sd">		</span>
+<span class="sd">		Raises</span>
+<span class="sd">		------</span>
+<span class="sd">		ValueError</span>
+<span class="sd">			Variable `imag_time=True` option on `hamiltonian.evolve()` method not supported.</span>
+<span class="sd">		ValueError</span>
+<span class="sd">			`iterate=True` requires `times` to be an array or a list.</span>
+<span class="sd">		RuntimeError</span>
+<span class="sd">			Terminates when initial state has no projection onto the specified symmetry blocks.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;imaginary time not supported for block evolution.&quot;</span><span class="p">)</span>
+		<span class="n">P</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">H_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">psi_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">_iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="p">):</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_kwargs</span><span class="p">)</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">psi_0</span><span class="p">):</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span>
+
+			<span class="n">psi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+			
+			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
+				<span class="n">psi_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+				<span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">tocoo</span><span class="p">())</span>
+
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">:</span>
+						<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">)</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="o">=</span><span class="kc">True</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_no_checks</span><span class="p">)</span>
+
+					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span>
+
+					<span class="n">H_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">H_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+
+		<span class="k">if</span> <span class="n">block_diag</span> <span class="ow">and</span> <span class="n">H_list</span><span class="p">:</span>
+			<span class="n">N_H</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">)</span>
+			<span class="n">n_pp</span> <span class="o">=</span> <span class="n">N_H</span><span class="o">//</span><span class="n">n_jobs</span>
+			<span class="n">n_left</span> <span class="o">=</span> <span class="n">n_pp</span> <span class="o">+</span> <span class="n">N_H</span><span class="o">%</span><span class="n">n_jobs</span>	
+
+			<span class="n">H_list_prime</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="n">psi_blocks_prime</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">if</span> <span class="n">n_left</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">H_list_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block_diag_hamiltonian</span><span class="p">(</span><span class="n">H_list</span><span class="p">[:</span><span class="n">n_left</span><span class="p">],</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">get_proj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_no_checks</span><span class="p">))</span>
+				<span class="n">psi_list_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">[:</span><span class="n">n_left</span><span class="p">]))</span>
+
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+				<span class="n">i1</span> <span class="o">=</span> <span class="n">n_left</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="n">n_pp</span>
+				<span class="n">i2</span> <span class="o">=</span> <span class="n">n_left</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n_pp</span>
+				<span class="n">H_list_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block_diag_hamiltonian</span><span class="p">(</span><span class="n">H_list</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">i2</span><span class="p">],</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">get_proj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_no_checks</span><span class="p">))</span>
+				<span class="n">psi_list_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">i2</span><span class="p">]))</span>
+
+			<span class="n">H_list</span> <span class="o">=</span> <span class="n">H_list_prime</span>
+			<span class="n">psi_blocks</span> <span class="o">=</span> <span class="n">psi_blocks_prime</span>				
+
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">P</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If iterate=True times must be a list/array.&quot;</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">_block_evolve_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_Parallel</span><span class="p">(</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span><span class="p">)(</span><span class="n">_delayed</span><span class="p">(</span><span class="n">_block_evolve_helper</span><span class="p">)(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">psi</span><span class="p">,</span><span class="n">H</span> <span class="ow">in</span> <span class="n">_izip</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">))</span>
+				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>
+				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">psi_t</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;initial state has no projection on to specified blocks.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="block_ops.expm"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.expm">[docs]</a>	<span class="k">def</span> <span class="nf">expm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">H_time_eval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Creates symmetry blocks of the Hamiltonian and then uses them to run `_expm_multiply()` in parallel.</span>
+<span class="sd">		</span>
+<span class="sd">		**Arguments NOT described below can be found in the documentation for the `exp_op` class.**</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		The example below builds on the code snippet shown in the description of the `block_ops` class.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/block_ops-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 60-67</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		psi_0 : numpy.ndarray, list, tuple</span>
+<span class="sd">			Quantum state which defined on the full Hilbert space of the problem. </span>
+<span class="sd">			Does not need to obey and sort of symmetry.</span>
+<span class="sd">		t0 : float</span>
+<span class="sd">			Inistial time to start the evolution at.</span>
+<span class="sd">		H_time_eval : numpy.ndarray, list</span>
+<span class="sd">			Times to evaluate the Hamiltonians at when doing the matrix exponentiation. </span>
+<span class="sd">		iterate : bool, optional</span>
+<span class="sd">			Flag to return generator when set to `True`. Otherwise the output is an array of states. </span>
+<span class="sd">			Default is &#39;False&#39;.</span>
+<span class="sd">		n_jobs : int, optional </span>
+<span class="sd">			Number of processes requested for the computation time evolution dynamics. </span>
+
+<span class="sd">			NOTE: one of those processes is used to gather results. For best performance, all blocks </span>
+<span class="sd">			should be approximately the same size and `n_jobs-1` must be a common devisor of the number of</span>
+<span class="sd">			blocks, such that there is roughly an equal workload for each process. Otherwise the computation </span>
+<span class="sd">			will be as slow as the slowest process.</span>
+<span class="sd">		block_diag : bool, optional </span>
+<span class="sd">			When set to `True`, this flag puts the Hamiltonian matrices for the separate symemtri blocks</span>
+<span class="sd">			into a list and then loops over it to do time evolution. When set to `False`, it puts all</span>
+<span class="sd">			blocks in a single giant sparse block diagonal matrix. Default is `False`.</span>
+
+<span class="sd">			This flag is useful if there are a lot of smaller-sized blocks.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			if `iterate = True`, returns generator which generates the time dependent state in the </span>
+<span class="sd">			full H-space basis.</span>
+
+<span class="sd">			if `iterate = False`, returns `numpy.ndarray` which has the time-dependent states in the </span>
+<span class="sd">			full H-space basis in the rows.</span>
+
+<span class="sd">		Raises</span>
+<span class="sd">		------</span>
+<span class="sd">		ValueError</span>
+<span class="sd">			Various `ValueError`s of `exp_op` class.</span>
+<span class="sd">		RuntimeError</span>
+<span class="sd">			Terminates when initial state has no projection onto the specified symmetry blocks.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>  <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;iterate&#39; can only be True with time discretization. must specify &#39;start&#39; and &#39;stop&#39; points.&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting integer for &#39;num&#39;.&quot;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">num</span> <span class="o">=</span> <span class="mi">50</span>
+
+			<span class="k">if</span> <span class="n">endpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting bool for &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span> 
+				<span class="n">endpoint</span> <span class="o">=</span> <span class="kc">True</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>  <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected argument &#39;num&#39;.&quot;</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">endpoint</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected argument &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>  <span class="ow">and</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">stop</span><span class="p">)):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting scalar values for &#39;start&#39; and &#39;stop&#39;&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">stop</span><span class="p">)):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting real values for &#39;start&#39; and &#39;stop&#39;&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting integer for &#39;num&#39;.&quot;</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">num</span> <span class="o">=</span> <span class="mi">50</span>
+
+				<span class="k">if</span> <span class="n">endpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting bool for &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span> 
+					<span class="n">endpoint</span> <span class="o">=</span> <span class="kc">True</span>
+		
+		<span class="n">P</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">H_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">psi_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">_iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dict</span><span class="p">):</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_kwargs</span><span class="p">)</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_P_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">psi_0</span><span class="p">):</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span>
+
+			<span class="n">psi</span> <span class="o">=</span> <span class="n">psi</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
+				<span class="n">psi_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+				<span class="n">P</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">tocoo</span><span class="p">())</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">:</span>
+						<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">)</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="o">=</span><span class="kc">True</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">H</span> <span class="o">=</span> <span class="n">_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_no_checks</span><span class="p">)</span>
+
+					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span>
+					<span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="p">(</span><span class="n">H_time_eval</span><span class="p">)</span><span class="o">*</span><span class="n">a</span>
+
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="p">[</span><span class="n">key</span><span class="p">](</span><span class="n">H_time_eval</span><span class="p">)</span><span class="o">*</span><span class="n">a</span>
+
+
+				<span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="n">H</span> <span class="o">+=</span> <span class="n">a</span><span class="o">*</span><span class="n">shift</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+				<span class="n">H_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">block_diag</span> <span class="ow">and</span> <span class="n">H_list</span><span class="p">:</span>
+			<span class="n">N_H</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">)</span>
+			<span class="n">n_pp</span> <span class="o">=</span> <span class="n">N_H</span><span class="o">//</span><span class="n">n_jobs</span>
+			<span class="n">n_left</span> <span class="o">=</span> <span class="n">n_pp</span> <span class="o">+</span> <span class="n">N_H</span><span class="o">%</span><span class="n">n_jobs</span>	
+
+			<span class="n">H_list_prime</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="n">psi_blocks_prime</span> <span class="o">=</span> <span class="p">[]</span>
+
+			<span class="n">psi_block</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">[:</span><span class="n">n_left</span><span class="p">])</span>
+			<span class="n">H_block</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">H_list</span><span class="p">[:</span><span class="n">n_left</span><span class="p">],</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+
+			<span class="n">H_list_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">H_block</span><span class="p">)</span>
+			<span class="n">psi_blocks_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psi_block</span><span class="p">)</span>
+
+
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+				<span class="n">i1</span> <span class="o">=</span> <span class="n">n_left</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="n">n_pp</span>
+				<span class="n">i2</span> <span class="o">=</span> <span class="n">n_left</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n_pp</span>
+				<span class="n">psi_block</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">i2</span><span class="p">])</span>
+				<span class="n">H_block</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">H_list</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">i2</span><span class="p">],</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+
+				<span class="n">H_list_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">H_block</span><span class="p">)</span>
+				<span class="n">psi_blocks_prime</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psi_block</span><span class="p">)</span>
+
+			<span class="n">H_list</span> <span class="o">=</span> <span class="n">H_list_prime</span>
+			<span class="n">psi_blocks</span> <span class="o">=</span> <span class="n">psi_blocks_prime</span>				
+
+
+		<span class="n">H_is_complex</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">([</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">H</span> <span class="ow">in</span> <span class="n">H_list</span><span class="p">])</span>
+
+		<span class="k">if</span> <span class="n">H_list</span><span class="p">:</span>
+			<span class="n">P</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_block_expm_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">ver</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_scipy</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
+				<span class="k">if</span> <span class="n">H_is_complex</span> <span class="ow">and</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ver</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">19</span><span class="p">:</span>
+					<span class="n">mats</span> <span class="o">=</span> <span class="n">_block_expm_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_Parallel</span><span class="p">(</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span><span class="p">)(</span><span class="n">_delayed</span><span class="p">(</span><span class="n">_expm_multiply</span><span class="p">)(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">)</span> <span class="k">for</span> <span class="n">psi</span><span class="p">,</span><span class="n">H</span> <span class="ow">in</span> <span class="n">_izip</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">))</span>
+					<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+					<span class="n">psi_t</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">psi_t</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;initial state has no projection on to specified blocks.&quot;</span><span class="p">)</span></div></div>
+
+
+
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd"># TO DO</span>
+
+<span class="sd">=======</span>
+
+<span class="sd">class block_diag_ensemble(object):</span>
+<span class="sd">	def __init__(self,blocks,static,dynamic,basis_con,basis_args,dtype,get_proj_kwargs={},save_previous_data=True,compute_all_blocks=False,check_symm=True,check_herm=True,check_pcon=True):</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+<span class="sd">		This class is used to split the dynamics of a state up over various symmetry sectors if the initial state does </span>
+<span class="sd">		not obey the symmetry but the hamiltonian does. Moreover we provide a multiprocessing option which allows the </span>
+<span class="sd">		user to split the dynamics up over multiple cores.</span>
+
+<span class="sd">		---arguments---</span>
+
+<span class="sd">		* blocks: (required) list/tuple/iterator which contains the blocks the user would like to put into the hamiltonian as dictionaries.</span>
+
+<span class="sd">		* static: (required) the static operator list which is used to construct the block hamiltonians. follows hamiltonian format.</span>
+
+<span class="sd">		* dynamic: (required) the dynamic operator list which is used to construct the block hamiltonians. follows hamiltonian format.</span>
+
+<span class="sd">		* basis_con: (required) the basis constructor used to construct the basis objects which will create the block diagonal hamiltonians.</span>
+
+<span class="sd">		* basis_args: (required) tuple which gets passed as the first argument for basis_con, contains required arguments. </span>
+
+<span class="sd">		* check_symm: (optional) flag to check symmetry </span>
+
+<span class="sd">		* dtype: (required) the data type to construct the hamiltonian with.</span>
+
+<span class="sd">		* save_previous_data: (optional) when doing the evolution this class has to construct the hamiltonians. this takes</span>
+<span class="sd">		some time and so by setting this to true, the class will keep previously calculated hamiltonians so that next time</span>
+<span class="sd">		it needs to do evolution in that block it doesn&#39;t have to calculate it again.</span>
+
+<span class="sd">		* compute_all_blocks: (optional) flag which tells the class to just compute all hamiltonian blocks at initialization.</span>
+<span class="sd">		This option also sets save_previous_data to True by default. </span>
+
+<span class="sd">		* check_symm: (optional) flag which tells the function to check the symmetry of the operators for the first hamiltonian constructed.</span>
+
+<span class="sd">		* check_herm: (optional) same for check_symm but for hermiticity.</span>
+
+<span class="sd">		* check_pcon: (optional) same for check_symm but for particle conservation. </span>
+
+<span class="sd">		--- block_ops attributes ---: &#39;_. &#39; below stands for &#39;object. &#39;</span>
+
+<span class="sd">		_.dtype: the numpy data type the block hamiltonians are stored with</span>
+
+<span class="sd">		_.save_previous_data: flag which tells the user if data is being saved. </span>
+
+<span class="sd">		_.H_dict: dictionary which contains the block hamiltonians under key str(block) wher block is the block dictionary.</span>
+
+<span class="sd">		_.P_dict: dictionary which contains the block projectors under the same keys as H_dict.</span>
+
+<span class="sd">		_.basis_dict: dictionary which contains the basis objects under the same keys ad H_dict. </span>
+
+<span class="sd">		_.static: list of the static operators used to construct block hamiltonians</span>
+
+<span class="sd">		_.dynamic: list of dynamic operators use to construct block hamiltonians</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+<span class="sd">		self._basis_dict = {}</span>
+<span class="sd">		self._H_dict = {}</span>
+<span class="sd">		self._P_dict = {}</span>
+<span class="sd">		self._V_dict = {}</span>
+<span class="sd">		self._E_dict = {}</span>
+<span class="sd">		self._dtype=dtype</span>
+<span class="sd">		self._save = save_previous_data</span>
+<span class="sd">		self._static = static</span>
+<span class="sd">		self._dynamic = dynamic</span>
+<span class="sd">		self._checks = {&quot;check_symm&quot;:check_symm,&quot;check_herm&quot;:check_herm,&quot;check_pcon&quot;:check_pcon}</span>
+<span class="sd">		self._no_checks = {&quot;check_symm&quot;:False,&quot;check_herm&quot;:False,&quot;check_pcon&quot;:False}</span>
+<span class="sd">		self._checked = False</span>
+<span class="sd">		self._get_proj_kwargs = get_proj_kwargs</span>
+
+
+<span class="sd">		blocks = list(blocks)</span>
+<span class="sd">		for block in blocks:</span>
+<span class="sd">			b = basis_con(*basis_args,**block)</span>
+<span class="sd">			if b.Ns &gt;  0:</span>
+<span class="sd">				self._basis_dict[str(block)]=b</span>
+
+<span class="sd">		if compute_all_blocks:</span>
+<span class="sd">			self._save=True</span>
+<span class="sd">			self.compute_all_blocks()</span>
+
+
+<span class="sd">	@property</span>
+<span class="sd">	def dtype(self):</span>
+<span class="sd">		return self._dtype</span>
+
+<span class="sd">	@property</span>
+<span class="sd">	def save_previous_data(self):</span>
+<span class="sd">		return self._save</span>
+
+<span class="sd">	@property</span>
+<span class="sd">	def H_dict(self):</span>
+<span class="sd">		return self._H_dict</span>
+
+<span class="sd">	@property</span>
+<span class="sd">	def P_dict(self):</span>
+<span class="sd">		return self._P_dict</span>
+
+<span class="sd">	@property</span>
+<span class="sd">	def basis_dict(self):</span>
+<span class="sd">		return self._basis_dict</span>
+
+<span class="sd">	@property</span>
+<span class="sd">	def static(self):</span>
+<span class="sd">		return list(self._static)</span>
+
+<span class="sd">	@property</span>
+<span class="sd">	def dynamic(self):</span>
+<span class="sd">		return list(self._dynamic)</span>
+
+<span class="sd">					</span>
+<span class="sd">	def update_blocks(self,blocks,basis_con,basis_args,compute_all_blocks=False):</span>
+<span class="sd">		blocks = list(blocks)</span>
+<span class="sd">		for block in blocks:</span>
+<span class="sd">			if str(block) not in self._basis_dict.keys():</span>
+<span class="sd">				b = basis_con(*basis_args,**block)</span>
+
+<span class="sd">				if b.Ns &gt;  0:</span>
+<span class="sd">					self._basis_dict[str(block)]=b	</span>
+
+<span class="sd">		if compute_all_blocks:</span>
+<span class="sd">			self.compute_all_blocks()	</span>
+
+
+<span class="sd">	def compute_all_blocks(self):</span>
+<span class="sd">		for key,b in _iteritems(self._basis_dict):</span>
+<span class="sd">			if self._P_dict.get(key) is None:</span>
+<span class="sd">				p = b.get_proj(self.dtype,**self._get_proj_kwargs)</span>
+<span class="sd">				self._P_dict[key] = p</span>
+
+<span class="sd">			if self._H_dict.get(key) is None:</span>
+<span class="sd">				if not self._checked:</span>
+<span class="sd">					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)</span>
+<span class="sd">					self._checked=True</span>
+<span class="sd">				else:</span>
+<span class="sd">					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)</span>
+<span class="sd">				self._H_dict[key] = H</span>
+
+
+<span class="sd">	def diag_ensemble(istate,**diag_ensemble_kwargs):</span>
+<span class="sd">		pass</span>
+
+<span class="sd">=======</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

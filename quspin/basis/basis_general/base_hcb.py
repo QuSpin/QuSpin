@@ -5,7 +5,7 @@ from scipy.misc import comb
 
 # general basis for hardcore bosons/spin-1/2
 class hcb_basis_general(basis_general):
-	def __init__(self,N,Nb=None,_Np=None,**kwargs):
+	def __init__(self,N,Nb=None,Ns_block_est=None,_Np=None,**kwargs):
 		basis_general.__init__(self,N,**kwargs)
 		self._check_pcon = False
 		count_particles = False
@@ -41,8 +41,15 @@ class hcb_basis_general(basis_general):
 				Ns += comb(N,b,exact=True)
 
 		if len(self._pers)>0:
-			Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+			if Ns_block_est is None:
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
+			else:
+				if type(Ns_block_est) is not int:
+					raise TypeError("Ns_block_est must be integer value.")
+					
+				Ns = Ns_block_est
 
+		Ns = max(Ns,1000)
 
 		if N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
@@ -60,7 +67,7 @@ class hcb_basis_general(basis_general):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 			self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
 			if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:
@@ -73,7 +80,7 @@ class hcb_basis_general(basis_general):
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nb)
 			if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:
@@ -84,7 +91,7 @@ class hcb_basis_general(basis_general):
 
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
-		self._allowed_ops=set(["I","x","y","z","+","-"])
+		self._allowed_ops=set(["I","x","y","z","+","-","n"])
 
 
 

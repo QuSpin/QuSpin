@@ -78,22 +78,16 @@ int general_op(general_basis_core<I> *B,
 		int local_err = B->op(r,m,n_op,opstr,indx);
 
 		if(local_err == 0){
-			
-			I rr = B->ref_state(r,g,gg);
-			// B->print(r);
-			// std::cout << std::setw(5);
-			// B->print(rr);
-			// std::cout << std::setw(5);
-			// for(int ee=0;ee<nt;ee++){std::cout << g[ee] << std::setw(5);}
-			// std::cout << std::endl;
-		
+			int sign = 1;
+			I rr = B->ref_state(r,g,gg,sign);
 			K j = binary_search(Ns,basis,rr);
+
 			if(j >= 0){
 				for(int k=0;k<nt;k++){
 					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
 					m *= std::exp(std::complex<double>(0,-q));
 				}
-				m *= std::sqrt(double(n[j])/double(n[i]));
+				m *= sign * std::sqrt(double(n[j])/double(n[i]));
 				local_err = check_imag(m,&M[i]);
 				col[i]=i;
 				row[i]=j;

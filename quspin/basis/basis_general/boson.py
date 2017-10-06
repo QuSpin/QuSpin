@@ -46,7 +46,87 @@ def get_basis_type(N, Np, sps, **blocks):
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
-	def __init__(self,N,Nb=None,nb=None,sps=None,_Np=None,**kwargs):
+	"""Constructs basis for boson operators for USER-DEFINED symmetries.
+
+	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
+	These integers :math:`q` are used to define the symmetry blocks.
+
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
+	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+
+	User-defined symmetries with the `..._basis_general` class can be programmed as follows. Suppose we have a system of
+	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
+		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j`
+		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`
+
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
+	spin inversion. For a specific example, see below.
+
+	The supported operator strings for `boson_basis_general` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}     \\newline	
+			\\texttt{boson_basis_general}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+		\\end{array}
+
+	Notes
+	-----
+	* if `Nb` or `nb` are specified, by default `sps` is set to the number of bosons on the lattice.
+	* if `sps` is specified, while `Nb` or `nb` are not, all particle sectors are filled up to the maximumal 
+		occupation. 
+	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
+		restrited by `sps`.
+
+	Examples
+	--------
+
+	The code snipped below shows how to construct the two-dimensional Bose-Hubbard model.
+	
+	.. math::
+		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
+
+	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In partcular,
+	we do translation invariance and parity (reflection) (along each lattice direction).
+
+	.. literalinclude:: ../../doc_examples/boson_basis_general-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+
+	"""
+	def __init__(self,N,Nb=None,nb=None,sps=None,Ns_block_est=None,**blocks):
+		"""Intializes the `boson_basis_general` object (basis for bosonic operators).
+
+		Parameters
+		-----------
+		N: int
+			Number of sites.
+		Nb: {int,list}, optional
+			Number of bosons in chain. Can be integer or list to specify one or more particle sectors.
+		nb: float, optional
+			Density of bosons in chain (bosons per site).
+		sps: int, optional
+			Number of states per site (including zero bosons), or on-site Hilbert space dimension.
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
+		**blocks: optional
+			keyword arguments which pass the symmetry generator arrays. For instance:
+
+			>>> basis(...,kxblock=(Q,q),...)
+
+			The keys of the symmetry sector, e.g. `kxblock`, can be chosen arbitrarily by the user. The
+			values are tuples where the first entry contains the symmetry transformation :math:`Q` acting on the
+			lattice sites (see class example), and the second entry is an integer :math:`q` to label the symmetry
+			sector.
+
+		"""
+		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
+
 		if sps is None:
 
 			if Nb is not None:
@@ -61,7 +141,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
 
-			self._sps = Nb+1
+			self._sps = max(Nb+1,2)
 		else:
 			if Nb is not None:
 				if nb is not None:
@@ -72,11 +152,11 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._sps = sps
 
+		self._allowed_ops=set(["I","n","+","-"])
 		if self._sps == 2:
-			general_hcb_basis.__init__(self,N,Nb=Nb,_Np=_Np,**kwargs)
-			self._allowed_ops=set(["I","n","+","-"])
+			hcb_basis_general.__init__(self,N,Nb=Nb,_Np=_Np,**blocks)
 		else:
-			basis_general.__init__(self,N,**kwargs)
+			basis_general.__init__(self,N,**blocks)
 			self._check_pcon = False
 			count_particles = False
 			if _Np is not None and Nb is None:
@@ -112,7 +192,16 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				basis_type = get_basis_type(N,max(Nb),self._sps)
 
 			if len(self._pers)>0:
-				Ns = max(int(float(Ns)/_np.multiply.reduce(self._pers))*2,1000)
+				if Ns_block_est is None:
+					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*sps
+				else:
+					if type(Ns_block_est) is not int:
+						raise TypeError("Ns_block_est must be integer value.")
+					if Ns_block_est <= 0:
+						raise ValueError("Ns_block_est must be an integer > 0")						
+					Ns = Ns_block_est
+
+			Ns = max(Ns,1000)
 
 			if basis_type==_np.uint32:
 				basis = _np.zeros(Ns,dtype=_np.uint32)
@@ -129,7 +218,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 				self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
 				if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 				basis,ind = _np.unique(basis,return_index=True)
 				if self.Ns != basis.shape[0]:
@@ -142,7 +231,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			else:
 				self._Ns = self._core.make_basis(basis,n,Np=Nb)
 				if self._Ns < 0:
-					raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 				basis,ind = _np.unique(basis,return_index=True)
 				if self.Ns != basis.shape[0]:

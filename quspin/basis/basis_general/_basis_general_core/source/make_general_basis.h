@@ -21,9 +21,11 @@ npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I bas
 			if(ii>=mem_MAX){
 				#pragma omp critical
 				unsuff_mem = true;
+				break;
 			}
 			if(B->check_state(s)){
 				J nn = B->get_norm(s);
+				// std::cout << B->get_norm(s) << "   " << nn << std::endl;
 				if(nn>0){
 					basis[ii] = s;
 					n[ii] = nn;
@@ -61,9 +63,11 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 			if(ii>=mem_MAX){
 				#pragma omp critical
 				unsuff_mem = true;
+				break;
 			}
 			if(B->check_state(s)){
 				J nn = B->get_norm(s);
+				// std::cout << B->get_norm(s) << "   " << nn << std::endl;
 				if(nn>0){
 					basis[ii] = s;
 					n[ii] = nn;

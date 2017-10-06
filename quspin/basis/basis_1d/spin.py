@@ -1,5 +1,5 @@
-from ._constructors import hcp_basis,hcp_ops
-from ._constructors import boson_basis,boson_ops
+from ._basis_1d_core import hcp_basis,hcp_ops
+from ._basis_1d_core import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -9,9 +9,71 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 class spin_basis_1d(basis_1d):
-	def __init__(self,L,Nup=None,m=None,_Np=None,S="1/2",pauli=True,**blocks):
+	"""Constructs basis for spin operators in a specified 1-d symmetry sector.
+
+	The supported operator strings for `spin_basis_1d` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &     \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
+			\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
+		\\end{array}
+
+	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
+	the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support
+	the operator strings "x" and "y". 
+
+	Examples
+	--------
+
+	The code snippet below shows how to use the `spin_boson_1d` class to construct the basis in the zero momentum sector of positive parity for the spin Hamiltonian.
+
+	.. math::
+		H(t) = \\sum_j J\\sigma^z_{j+1}\\sigma^z_j + h\\sigma^z_j + g\\cos\\Omega t\\sigma^x_j 
+
+	.. literalinclude:: ../../doc_examples/spin_basis_1d-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	"""	
+	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=True,**blocks):
+		"""Intializes the `spin_basis_1d` object (basis for spin operators).
+
+		Parameters
+		-----------
+		L: int
+			Length of chain/number of sites.
+		Nup: {int,list}, optional
+			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
+			more particle sectors.
+		m: float, optional
+			Density of spin up in chain (spin up per site).
+		S: str, optional
+			Size of local spin degrees of freedom. Can be any (half-)integer from:
+			"1/2","1","3/2",...,"9999/2","5000".
+		pauli: bool, optional
+			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
+		**blocks: optional
+			extra keyword arguements which include:
+
+				**a** (*int*) - specifies unit cell size for translation.
+
+				**kblock** (*int*) - specifies momentum block.
+
+				**pblock** (*int*) - specifies parity block.
+
+				**zblock** (*int*) - specifies spin inversion symmetry block.
+
+				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block.
+
+				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A.
+
+				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B.
+
+		"""
 		input_keys = set(blocks.keys())
-		expected_keys = set(["kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","zblock","zAblock","zBblock","pblock","pzblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -20,6 +82,11 @@ class spin_basis_1d(basis_1d):
 
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
+
+		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
+
 
 		self._blocks = blocks
 		
@@ -77,18 +144,14 @@ class spin_basis_1d(basis_1d):
 			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
 
 
-	def Op(self,opstr,indx,J,dtype):
-		ME,row,col = basis_1d.Op(self,opstr,indx,J,dtype)
+	def _Op(self,opstr,indx,J,dtype):
+		ME,row,col = basis_1d._Op(self,opstr,indx,J,dtype)
 		if self._pauli:
 			n_ops = len(opstr.replace("I",""))
 			ME *= (1<<n_ops)
 
 		return ME,row,col
 
-
-	@property
-	def blocks(self):
-		return dict(self._blocks)
 
 	def __type__(self):
 		return "<type 'qspin.basis.spin_basis_1d'>"
@@ -118,12 +181,10 @@ class spin_basis_1d(basis_1d):
 			op[1] = tuple(op2)
 		return tuple(op)
 
-
-
 	def _non_zero(self,op):
 		opstr = _np.array(list(op[0]))
 		indx = _np.array(op[1])
-		if _np.any(indx):
+		if _np.any(indx>=0):
 			indx_p = indx[opstr == "+"].tolist()
 			p = not any(indx_p.count(x) > 1 for x in indx_p)
 			indx_p = indx[opstr == "-"].tolist()
@@ -132,8 +193,6 @@ class spin_basis_1d(basis_1d):
 		else:
 			return True
 		
-
-
 	def _hc_opstr(self,op):
 		op = list(op)
 		# take h.c. + <--> - , reverse operator order , and conjugate coupling
@@ -145,7 +204,6 @@ class spin_basis_1d(basis_1d):
 		op[1] = tuple(op[1])
 		op[2] = op[2].conjugate()
 		return self._sort_opstr(op) # return the sorted op.
-
 
 	def _expand_opstr(self,op,num):
 		opstr = str(op[0])

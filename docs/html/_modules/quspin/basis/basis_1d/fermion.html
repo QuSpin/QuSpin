@@ -1,0 +1,257 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for quspin.basis.basis_1d.fermion</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">._basis_1d_core</span> <span class="k">import</span> <span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span>
+<span class="kn">from</span> <span class="nn">.base_1d</span> <span class="k">import</span> <span class="n">basis_1d</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">basis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+
+
+
+<div class="viewcode-block" id="spinless_fermion_basis_1d"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d">[docs]</a><span class="k">class</span> <span class="nc">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">basis_1d</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.</span>
+
+<span class="sd">	The supported operator strings for `spinless_fermion_basis_1d` are:</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">			\\begin{array}{cccc}</span>
+<span class="sd">				\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    \\newline	</span>
+<span class="sd">				\\texttt{spinless_fermion_basis_1d}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline</span>
+<span class="sd">			\\end{array}</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian </span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+<div class="viewcode-block" id="spinless_fermion_basis_1d.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Intializes the `fermion_basis_1d` object (basis for fermionic operators).</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		L: int</span>
+<span class="sd">			Length of chain/number of sites.</span>
+<span class="sd">		Nf: {int,list}, optional</span>
+<span class="sd">			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.</span>
+<span class="sd">		nf: float, optional</span>
+<span class="sd">			Density of fermions in chain (fermions per site).</span>
+<span class="sd">		**blocks: optional</span>
+<span class="sd">			extra keyword arguments which include:</span>
+
+<span class="sd">				**a** (*int*) - specifies unit cell size for translation.</span>
+
+<span class="sd">				**kblock** (*int*) - specifies momentum block.</span>
+
+<span class="sd">				**pblock** (*int*) - specifies parity block.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">input_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+		<span class="n">expected_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;_Np&quot;</span><span class="p">,</span><span class="s2">&quot;kblock&quot;</span><span class="p">,</span><span class="s2">&quot;pblock&quot;</span><span class="p">,</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="s2">&quot;count_particles&quot;</span><span class="p">,</span><span class="s2">&quot;check_z_symm&quot;</span><span class="p">,</span><span class="s2">&quot;L&quot;</span><span class="p">])</span>
+		<span class="n">wrong_keys</span> <span class="o">=</span> <span class="n">input_keys</span> <span class="o">-</span> <span class="n">expected_keys</span> 
+		<span class="k">if</span> <span class="n">wrong_keys</span><span class="p">:</span>
+			<span class="n">temp</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wrong_keys</span><span class="p">])</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;unexpected optional argument(s): &quot;</span><span class="o">+</span><span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">wrong_keys</span><span class="p">))</span>
+
+
+		<span class="k">if</span> <span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># by default a = 1</span>
+			<span class="n">blocks</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+		<span class="n">_Np</span> <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_Np&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">_Np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;_Np&quot;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="n">blocks</span>
+
+		<span class="k">if</span> <span class="n">Nf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot Nf and nf simultaineously.&quot;</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">Nf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">nf</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">nf</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;nf must be between 0 and 1&quot;</span><span class="p">)</span>
+			<span class="n">Nf</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nf</span><span class="o">*</span><span class="n">L</span><span class="p">)</span>
+
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="mi">2</span>
+		<span class="n">Imax</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">L</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+		<span class="n">stag_A</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+		<span class="n">stag_B</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Imax</span><span class="p">,</span><span class="n">stag_A</span><span class="p">,</span><span class="n">stag_B</span><span class="p">])</span> <span class="c1"># sign to be calculated</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for ferion_basis_1d:&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
+		<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nf</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
+		<span class="c1"># self._check_symm=None</span>
+
+	<span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.fermion_basis_1d&#39;&gt;&quot;</span>
+
+	<span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s2">&quot;&lt; instance of &#39;qspin.basis.fermion_basis_1d&#39; with </span><span class="si">{0}</span><span class="s2"> states &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.fermion_basis_1d&#39;&gt;&quot;</span>
+
+
+	<span class="c1"># functions called in base class:</span>
+
+	<span class="k">def</span> <span class="nf">_sort_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;|&#39; character found in op: </span><span class="si">{0}</span><span class="s2">,</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of operators in opstr: </span><span class="si">{0}</span><span class="s2"> not equal to length of indx </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">zipstr</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+		<span class="k">if</span> <span class="n">zipstr</span><span class="p">:</span>
+			<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">zipstr</span><span class="p">)</span>
+			<span class="n">swapped</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="n">anticommutes</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="k">while</span> <span class="n">swapped</span><span class="p">:</span>
+				<span class="n">swapped</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+					<span class="k">if</span> <span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+						<span class="n">temp</span> <span class="o">=</span> <span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+						<span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+						<span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
+						<span class="n">swapped</span> <span class="o">=</span> <span class="kc">True</span>
+
+						<span class="k">if</span> <span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">zipstr</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">]:</span>
+							<span class="n">anticommutes</span> <span class="o">+=</span> <span class="mi">1</span>
+
+			<span class="n">op1</span><span class="p">,</span><span class="n">op2</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">zipstr</span><span class="p">)</span>
+			<span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">op1</span><span class="p">)</span>
+			<span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op2</span><span class="p">)</span>
+			<span class="n">op</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">anticommutes</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_non_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
+		<span class="n">opstr</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">indx</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">indx</span><span class="p">):</span>
+			<span class="n">indx_p</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">opstr</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">p</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">indx_p</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">indx_p</span><span class="p">)</span>
+			<span class="n">indx_p</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">opstr</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">m</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">indx_p</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">indx_p</span><span class="p">)</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">p</span> <span class="ow">and</span> <span class="n">m</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">True</span>
+		
+	<span class="k">def</span> <span class="nf">_hc_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="c1"># take h.c. + &lt;--&gt; - , reverse operator order , and conjugate coupling</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;%&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">))</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_opstr</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="c1"># return the sorted op.</span>
+
+	<span class="k">def</span> <span class="nf">_expand_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+		<span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">)]</span>	</div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

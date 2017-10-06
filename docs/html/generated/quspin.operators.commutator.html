@@ -1,0 +1,193 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quspin.operators.commutator &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.operators.anti_commutator" href="quspin.operators.anti_commutator.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.operators.anti_commutator.html" title="quspin.operators.anti_commutator"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../operators.html" accesskey="U">Operators module (<code class="docutils literal"><span class="pre">quspin.operators</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quspin-operators-commutator">
+<h1>quspin.operators.commutator<a class="headerlink" href="#quspin-operators-commutator" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="quspin.operators.commutator">
+<code class="descclassname">quspin.operators.</code><code class="descname">commutator</code><span class="sig-paren">(</span><em>H1</em>, <em>H2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quspin/operators/hamiltonian_core.html#commutator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.commutator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the commutator of two Hamiltonians <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span>.</p>
+<div class="math">
+\[[H_1,H_2] = H_1 H_2 - H_2 H_1\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>H1</strong> : obj</p>
+<blockquote>
+<div><p><cite>numpy.ndarray</cite> or <cite>hamiltonian</cite> class object to define the Hamiltonian operator as a matrix.</p>
+</div></blockquote>
+<p><strong>H2</strong> : obj</p>
+<blockquote>
+<div><p><cite>numpy.ndarray</cite> or <cite>hamiltonian</cite> class object to define the Hamiltonian operator as a matrix.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">obj</p>
+<blockquote class="last">
+<div><p>Commutator: <span class="math">\([H_1,H_2] = H_1 H_2 - H_2 H_1\)</span></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>The following script shows how to compute the commutator of two <cite>hamiltonian</cite> objects.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">commutator</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">diag_ensemble</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">12</span> <span class="c1"># syste size</span>
+<span class="c1"># coupling strenghts</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin-spin coupling</span>
+<span class="n">h</span><span class="o">=</span><span class="mf">0.8945</span> <span class="c1"># x-field strength</span>
+<span class="n">g</span><span class="o">=</span><span class="mf">0.945</span> <span class="c1"># z-field strength</span>
+<span class="c1"># create site-coupling lists</span>
+<span class="n">J_zz</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">x_field</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="n">z_field</span><span class="o">=</span><span class="p">[[</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="c1"># create static and dynamic lists</span>
+<span class="n">static_1</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">]]</span>
+<span class="n">static_2</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_zz</span><span class="p">],[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1"># create spin-1/2 basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># set up Hamiltonian</span>
+<span class="n">H1</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_1</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">H2</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_2</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1">###### calculate commutator</span>
+<span class="n">comm</span><span class="o">=</span><span class="n">commutator</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span><span class="n">H2</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quspin.operators.anti_commutator.html"
+                        title="next chapter">quspin.operators.anti_commutator</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/generated/quspin.operators.commutator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.operators.anti_commutator.html" title="quspin.operators.anti_commutator"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../operators.html" >Operators module (<code class="docutils literal"><span class="pre">quspin.operators</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

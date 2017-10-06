@@ -58,7 +58,7 @@ for S in spins:
 			opstr,ops = zip(*list(p))
 			opstr = "".join(opstr)
 			static = [[opstr,[J]]]
-			static,_ = basis._expanded_form(static,[])
+			static,_ = basis.expanded_form(static,[])
 			quspin_op = hamiltonian(static,[],basis=basis,check_symm=False,check_herm=False)
 			op = reduce(np.kron,ops)
 			np.testing.assert_allclose(quspin_op.toarray(),op,atol=1e-14,err_msg="failed test for S={} operator {}".format(S,opstr))
