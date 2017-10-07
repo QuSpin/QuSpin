@@ -25,6 +25,9 @@ This script tests the Floquet class.
 dtypes={"float32":np.float32,"float64":np.float64,"complex64":np.complex64,"complex128":np.complex128}
 atols={"float32":1E-4,"float64":1E-13,"complex64":1E-4,"complex128":1E-13}
 
+def drive(t,Omega):
+	return np.sign(np.cos(Omega*t))
+
 def test():
 	for _r in range(10): # 10 random realisations
 
@@ -37,8 +40,7 @@ def test():
 		#
 		##### set up alternating Hamiltonians #####
 		# define time-reversal symmetric periodic step drive
-		def drive(t,Omega):
-			return np.sign(np.cos(Omega*t))
+
 		drive_args=[Omega]
 		# compute basis in the 0-total momentum and +1-parity sector
 		basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)

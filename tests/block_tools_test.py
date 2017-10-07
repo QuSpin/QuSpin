@@ -14,6 +14,10 @@ except ImportError:
 	izip = zip
 
 np.set_printoptions(linewidth=100000,precision=2)
+
+def f(t):
+	return np.sin(t)*t
+
 def test():
 	L=5
 
@@ -43,9 +47,6 @@ def test():
 		E = H.eigvalsh(time=t)
 		E_blocks = H.eigvalsh(time=t)
 		np.testing.assert_allclose(E,E_blocks)
-
-	def f(t):
-		return np.sin(t)*t
 
 	static = [["zz",J]]
 	dynamic = [["x",h,f,[]]]
