@@ -49,7 +49,7 @@ def check_ME(b1,b2,opstr,indx,dtype,err_msg):
 			print(col2)
 			raise Exception
 
-def test_gen_basis_hcb(l_max,S="1/2"):
+def test_gen_basis_spin(l_max,S="1/2"):
 	L=6
 	kblocks = [None]
 	kblocks.extend(range(L))
@@ -124,11 +124,11 @@ def test_gen_basis_hcb(l_max,S="1/2"):
 
 					check_ME(basis_1d,gen_basis,opstr,indx,np.complex128,err_msg)
 
-# print("testing S=1/2")
-# test_gen_basis_hcb(3,S="1/2")
-# print("testing S=1")
-# test_gen_basis_hcb(3,S="1")
+print("testing S=1/2")
+test_gen_basis_spin(3,S="1/2")
+print("testing S=1")
+test_gen_basis_spin(3,S="1")
 print("testing S=3/2")
-test_gen_basis_hcb(3,S="3/2")
+test_gen_basis_spin(3,S="3/2")
 print("testing S=2")
-test_gen_basis_hcb(3,S="2")
+test_gen_basis_spin(3,S="2")
