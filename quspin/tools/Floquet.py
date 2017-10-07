@@ -491,6 +491,15 @@ class Floquet_t_vec(object):
 	def __getitem__(self,s):
 		return self._vals.__getitem__(s)
 
+	def __mul__(self,other):
+		return self._vals*other
+
+	def __div__(self,other):
+		return self._vals/other
+
+	def __truediv__(self,other):
+		return self._vals/other
+
 	def __len__(self):
 		return self._vals.__len__()
 
