@@ -56,4 +56,4 @@ To safely update a manually installed version of QuSpin, one must first manually
 
 The complete QuSpin documentation can be found under
 
-//http:...
+[http://weinbe58.github.io/QuSpin/](http://weinbe58.github.io/QuSpin/)
