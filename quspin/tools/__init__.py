@@ -6,8 +6,10 @@ Tools module (:mod:`quspin.tools`)
 
 Classes and functions to manipulate quantum states.
 
+misc
+----
 
-.. currentmodule:: quspin.tools
+.. currentmodule:: quspin.tools.misc
 
 .. autosummary::
    :toctree: generated/
@@ -60,4 +62,4 @@ measurements
 from . import Floquet
 from . import block_tools
 from . import measurements
-from ._expm_multiply_parallel_core import expm_multiply_parallel
+from . import misc

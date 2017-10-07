@@ -1,0 +1,2 @@
+from ._expm_multiply_parallel_core import expm_multiply_parallel
+
