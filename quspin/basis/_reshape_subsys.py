@@ -61,7 +61,6 @@ def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	"""
 	extra_dims = psi.shape[:-1]
 	n_dims = len(extra_dims)
-
 	sub_sys_B = set(range(L))-set(sub_sys_A)
 
 	sub_sys_A = tuple(sub_sys_A)

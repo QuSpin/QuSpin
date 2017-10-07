@@ -40,7 +40,6 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 	b = spin_basis_1d(L,Nup=Nup,kblock=kblock,pblock=pblock,zblock=zblock,pzblock=pzblock,a=a)
 	
 	Ns = b.Ns
-	
 
 	static = [
 						['xx',J(L,jb,2)],
@@ -83,7 +82,7 @@ def getvec(L,Nup=None,kblock=None,pblock=None,zblock=None,pzblock=None,a=1,spars
 		v = v.todense()
 
 
-	if H2.get_shape[0] != 0:
+	if v.shape[1] != 0:
 		H1 = H1.todense()
 		H2 = H2.todense()
 		H2 = v0.T.conj() * (H2 * v0)
@@ -125,7 +124,7 @@ def getvec_zA_zB(L,kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
 	if sp.issparse(v_zA_zB):
 		v_zA_zB = v_zA_zB.todense()
 
-	if v_zA_zB.shape[0] != 0:
+	if v_zA_zB.shape[1] != 0:
 		H1 = H1.todense()
 		H2_zA_zB = H2_zA_zB.todense()
 		H2_zA_zB = v0_zA_zB.T.conj() * (H2_zA_zB * v0_zA_zB)

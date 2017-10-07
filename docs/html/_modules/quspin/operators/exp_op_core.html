@@ -1,0 +1,904 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quspin.operators.exp_op_core &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for quspin.operators.exp_op_core</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">hamiltonian_core</span><span class="p">,</span><span class="n">quantum_operator_core</span> 
+
+<span class="c1"># need linear algebra packages</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">expm_multiply</span> <span class="k">as</span> <span class="n">_expm_multiply</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span> <span class="c1"># recursively copies all data into new object</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span> <span class="k">as</span> <span class="n">_shallowcopy</span>
+
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;exp_op&quot;</span><span class="p">,</span><span class="s2">&quot;isexp_op&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="exp_op"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op">[docs]</a><span class="k">class</span> <span class="nc">exp_op</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Constructs matrix exponentials of quantum operators.</span>
+
+<span class="sd">	The `exp_op` class does not calculate the actual matrix exponential but instead computes the action of the </span>
+<span class="sd">	matrix exponential through its Taylor series. This is slower but for sparse arrays it is more memory efficient.</span>
+<span class="sd">	All of the functions make use of the `expm_multiply` function in Scipy&#39;s sparse library.</span>
+
+<span class="sd">	This class also allows the option to specify a grid of points on a line in the complex plane via the </span>
+<span class="sd">	optional arguments. If this is specified, then an array `grid` is created via the function </span>
+<span class="sd">	`numpy.linspace`, and the exponential is evaluated for all points on te grid: `exp(a*grid[i]*O)`.</span>
+
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+<span class="sd">	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.</span>
+
+<span class="sd">	For a fast computations, look up the `tools.expm_multiply_parallel` function.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	---------</span>
+
+<span class="sd">	The Example below shows how to compute the time-evolvution of a state under a constant Hamiltonian.</span>
+<span class="sd">	This is done using the matrix exponential to define the evolution operator and then applying it directly </span>
+<span class="sd">	onto the initial state.</span>
+
+<span class="sd">	.. literalinclude:: ../../doc_examples/exp_op-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="exp_op.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Initialises the `exp_op` object (matrix exponential of the operator `O`).</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		O : obj</span>
+<span class="sd">			`numpy.ndarray`, `scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.</span>
+<span class="sd">		a : `numpy.dtype`, optional</span>
+<span class="sd">			Prefactor to go in front of the operator in the exponential: `exp(a*O)`. Can be a complex number.</span>
+<span class="sd">			Default is `a = 1.0`.</span>
+<span class="sd">		start : scalar, optional</span>
+<span class="sd">			Specifies the starting point for a grid of points to evaluate the matrix exponential at.</span>
+<span class="sd">		stop : scalar, optional</span>
+<span class="sd">			Specifies the end point of for a grid of points to evaluate the matrix exponential at.</span>
+<span class="sd">		num : int, optional</span>
+<span class="sd">			Specifies the number of grid points between start and stop. Default is `num = 50`.</span>
+<span class="sd">		endpoint : bool, optional</span>
+<span class="sd">			Wehether or not the value `stop` is included in the set of grid points. Note that this changes </span>
+<span class="sd">			the grid step size.</span>
+<span class="sd">		iterate : bool, optional</span>
+<span class="sd">			If set to `True` class methods return generators which will iterate over the `grid` points. </span>
+
+<span class="sd">			If set to `False`, a list of all the evaluated points is produced. This is more memory efficient </span>
+<span class="sd">			but at the sacrifice of speed.</span>
+
+<span class="sd">			Default is `False`.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;expecting scalar argument for a&#39;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">start</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_stop</span> <span class="o">=</span> <span class="n">stop</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="n">num</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span> <span class="o">=</span> <span class="n">iterate</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;iterate&#39; can only be True with time discretization. must specify &#39;start&#39; and &#39;stop&#39; points.&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting integer for &#39;num&#39;.&quot;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">num</span> <span class="o">=</span> <span class="mi">50</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="n">num</span>
+
+			<span class="k">if</span> <span class="n">endpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting bool for &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span> 
+				<span class="n">endpoint</span> <span class="o">=</span> <span class="kc">True</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">retstep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected argument &#39;num&#39;.&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected argument &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+
+				<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="kc">None</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="kc">None</span>
+			<span class="k">else</span><span class="p">:</span>
+
+				<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">stop</span><span class="p">)):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting scalar values for &#39;start&#39; and &#39;stop&#39;&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">stop</span><span class="p">)):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting real values for &#39;start&#39; and &#39;stop&#39;&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting integer for &#39;num&#39;.&quot;</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">num</span> <span class="o">=</span> <span class="mi">50</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="n">num</span>
+
+				<span class="k">if</span> <span class="n">endpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting bool for &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span> 
+					<span class="n">endpoint</span> <span class="o">=</span> <span class="kc">True</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
+
+				<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">retstep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+		<span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">ishamiltonian</span><span class="p">(</span><span class="n">O</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">O</span>
+		<span class="k">elif</span> <span class="n">quantum_operator_core</span><span class="o">.</span><span class="n">isquantum_operator</span><span class="p">(</span><span class="n">O</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">O</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">O</span><span class="p">)</span> <span class="ow">or</span> <span class="n">O</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">]:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">hamiltonian</span><span class="p">([</span><span class="n">O</span><span class="p">],</span> <span class="p">[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">hamiltonian</span><span class="p">([</span><span class="n">O</span><span class="p">],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+	
+		<span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;int: number of dimensions, always equal to 2. &quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`exp_op`: transposes and conjugates the matrix exponential.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`exp_op`: transposes the matrix exponential.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">O</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;obj: Returns the operator to be exponentiated.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_O</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated: `exp(a*O)`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">get_shape</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states in the (symmetry-reduced) Hilbert space spanned by `basis`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">Ns</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;numpy.array: grid containing equidistant points to evaluate the matrix exponential at.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;float: step size between equidistant grid points.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;bool: shows if iterate option is on/off.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span>
+
+
+
+
+<div class="viewcode-block" id="exp_op.transpose"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.transpose">[docs]</a>	<span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Transposes `exp_op` operator.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This function does NOT conjugate the exponentiated operator.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`exp_op`</span>
+<span class="sd">			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ji}`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; expO_tran = expO.transpose()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+			<span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="exp_op.conj"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.conj">[docs]</a>	<span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Conjugates `exp_op` operator.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This function does NOT transpose the exponentiated operator.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`exo_op`</span>
+<span class="sd">			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; expO_conj = expO.conj()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="exp_op.getH"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.getH">[docs]</a>	<span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates hermitian conjugate of `exp_op` operator.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		copy : bool, optional</span>
+<span class="sd">			Whether to return a deep copy of the original object. Default is `copy = False`.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`exp_op`</span>
+<span class="sd">			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; expO_herm = expO.getH()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_O</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+			<span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="exp_op.copy"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.copy">[docs]</a>	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Returns a deep copy of `exp_op` object.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="exp_op.set_a"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_a">[docs]</a>	<span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_a</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Resets attribute `a` to multiply the operator in `exp(a*O)`.</span>
+<span class="sd">		</span>
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		new_a : `numpy.dtype`</span>
+<span class="sd">			New value for `a`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O,a=1.0)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.a)</span>
+<span class="sd">		&gt;&gt;&gt; expO.set_a(2.0)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.a)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span> 
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">new_a</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;a&#39; must be set to scalar value.&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="n">new_a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="exp_op.set_grid"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_grid">[docs]</a>	<span class="k">def</span> <span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Resets attribute `grid` to evaluate the operator for every `i` in `exp(a*O*grid[i])`.</span>
+<span class="sd">		</span>
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		start : scalar, optional</span>
+<span class="sd">			Specifies the new starting point for a grid of points to evaluate the matrix exponential at.</span>
+<span class="sd">		stop : scalar, optional</span>
+<span class="sd">			Specifies the new end point of for a grid of points to evaluate the matrix exponential at.</span>
+<span class="sd">		num : int, optional</span>
+<span class="sd">			Specifies the new number of grid points between start and stop. Default is `num = 50`.</span>
+<span class="sd">		endpoint : bool, optional</span>
+<span class="sd">			Wehether or not the value `stop` is included in the set of grid points. Note that this changes </span>
+<span class="sd">			the grid step size.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.grid)</span>
+<span class="sd">		&gt;&gt;&gt; expO.set_grid(start=2.0,stop=4.0,num=200,endpoint=False)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.grid)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">stop</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting scalar values for &#39;start&#39; and &#39;stop&#39;&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">stop</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting real values for &#39;start&#39; and &#39;stop&#39;&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting integer for &#39;num&#39;.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting bool for &#39;endpoint&#39;.&quot;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">=</span><span class="n">start</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">=</span><span class="n">stop</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="o">=</span><span class="n">num</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="o">=</span><span class="n">endpoint</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="n">num</span><span class="p">,</span> <span class="n">endpoint</span> <span class="o">=</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">retstep</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="exp_op.unset_grid"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.unset_grid">[docs]</a>	<span class="k">def</span> <span class="nf">unset_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Resets grid parameters to their default values.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.grid)</span>
+<span class="sd">		&gt;&gt;&gt; expO.unset_grid()</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.grid)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="o">=</span><span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="o">=</span><span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">=</span><span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="o">=</span><span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="o">=</span><span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="exp_op.set_iterate"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_iterate">[docs]</a>	<span class="k">def</span> <span class="nf">set_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Value</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Resets `iterate` attribute.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		Value : bool</span>
+<span class="sd">			New value for `iterate` attribute.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O,iterate=True)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.iterate)</span>
+<span class="sd">		&gt;&gt;&gt; expO.set_a(False)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.iterate)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;iterate option must be true or false.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">Value</span><span class="p">:</span>
+			<span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span> <span class="ow">is</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;grid must be set in order to set iterate to be True.&quot;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span> <span class="o">=</span> <span class="n">Value</span></div>
+		
+
+<div class="viewcode-block" id="exp_op.get_mat"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.get_mat">[docs]</a>	<span class="k">def</span> <span class="nf">get_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		time : scalar, optional</span>
+<span class="sd">			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.</span>
+<span class="sd">		dense : bool</span>
+<span class="sd">			Whether or not to return a dense or a sparse array. Detault is `dense = False`.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			Can be either one of</span>
+
+<span class="sd">			* `numpy.ndarray`: dense array if `dense = True`.</span>
+<span class="sd">			* `scipy.sparse.csc`: sparse array if `dense = False`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.get_mat(time=0.0))</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.get_mat(time=0.0,dense=True))</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">is_dense</span> <span class="ow">or</span> <span class="n">dense</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">tocsc</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="exp_op.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Left-multiply operator by matrix exponential.</span>
+
+<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
+<span class="sd">		Then this funcion implements:</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\exp(\\mathcal{O}) A</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		other : obj</span>
+<span class="sd">			The operator :math:`A` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
+<span class="sd">		time : scalar, optional</span>
+<span class="sd">			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.</span>
+<span class="sd">		shift : scalar</span>
+<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
+
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			matrix exponential multiplied by `other` from the right.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O)</span>
+<span class="sd">		&gt;&gt;&gt; A = exp_op(O,a=2j).get_mat()</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.dot(A))</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">is_sp</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">False</span>
+
+		<span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_shape</span>
+			<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+			<span class="n">is_sp</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a 1 or 2 dimensional array for &#39;other&#39;&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch between expO: </span><span class="si">{0}</span><span class="s2"> and other: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">shift</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">is_ham</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_hamiltonian_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">is_ham</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">is_sp</span><span class="p">:</span>
+					<span class="n">mats</span> <span class="o">=</span> <span class="n">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span>
+				<span class="k">elif</span> <span class="n">is_ham</span><span class="p">:</span>
+					<span class="n">mats</span> <span class="o">=</span> <span class="n">_hamiltonian_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">ver</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
+
+					<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span> <span class="ow">and</span> <span class="n">ver</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">19</span><span class="p">:</span>
+						<span class="n">mats</span> <span class="o">=</span> <span class="n">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+						<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
+
+<div class="viewcode-block" id="exp_op.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Right-multiply an operator by matrix exponential.</span>
+
+<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
+<span class="sd">		Then this funcion implements:</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			A \\exp(\\mathcal{O})</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		For `hamiltonian` objects `A`, this function is the same as `A.dot(expO)`.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		other : obj</span>
+<span class="sd">			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
+<span class="sd">		time : scalar, optional</span>
+<span class="sd">			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.</span>
+<span class="sd">		shift : scalar</span>
+<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
+
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			matrix exponential multiplied by `other` from the left.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O)</span>
+<span class="sd">		&gt;&gt;&gt; A = exp_op(O,a=2j).get_mat()</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.rdot(A))</span>
+<span class="sd">		&gt;&gt;&gt; print(A.dot(expO))</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">is_sp</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">False</span>
+
+		<span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_shape</span>
+			<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+			<span class="n">is_sp</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a 1 or 2 dimensional array for &#39;other&#39;&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch between expO: </span><span class="si">{0}</span><span class="s2"> and other: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+		<span class="k">elif</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch between expO: </span><span class="si">{0}</span><span class="s2"> and other: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_O</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">shift</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">)))</span><span class="o">.</span><span class="n">T</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">is_ham</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_hamiltonian_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+				<span class="k">if</span> <span class="n">is_ham</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">is_sp</span><span class="p">:</span>
+					<span class="n">mats</span> <span class="o">=</span> <span class="n">_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span>
+				<span class="k">elif</span> <span class="n">is_ham</span><span class="p">:</span>
+					<span class="n">mats</span> <span class="o">=</span> <span class="n">_hamiltonian_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">ver</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
+					<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span> <span class="ow">and</span> <span class="n">ver</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">19</span><span class="p">:</span>
+						<span class="n">mats</span> <span class="o">=</span> <span class="n">_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+						<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mats</span><span class="p">])</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+							<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+						<span class="k">else</span><span class="p">:</span>
+							<span class="k">return</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="exp_op.sandwich"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.sandwich">[docs]</a>	<span class="k">def</span> <span class="nf">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span><span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Sandwich operator between matrix exponentials.</span>
+
+<span class="sd">		Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator to be sandwiched be</span>
+<span class="sd">		:math:`C`. Then this funcion implements:</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\exp(\\mathcal{O})^\\dagger C \\exp(\\mathcal{O})</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		The matrix exponential to multiply :math:`C` from the left is hermitian conjugated.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		other : obj</span>
+<span class="sd">			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`</span>
+<span class="sd">			and :math:`\\exp(\\mathcal{O})`.</span>
+<span class="sd">		time : scalar, optional</span>
+<span class="sd">			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.</span>
+<span class="sd">		shift : scalar</span>
+<span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
+<span class="sd"> </span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			operator `other` sandwiched between matrix exponential `exp_op` and its hermitian conjugate.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; expO = exp_op(O,a=1j)</span>
+<span class="sd">		&gt;&gt;&gt; A = exp_op(O.H)</span>
+<span class="sd">		&gt;&gt;&gt; print(expO.sandwich(A))</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_shape</span>
+			<span class="n">is_ham</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+		<span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+			<span class="n">shape</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span>
+
+		<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a 2 dimensional array for &#39;other&#39;&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting square array for &#39;other&#39;&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch between expO: </span><span class="si">{0}</span><span class="s2"> and other: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="n">shift</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+			
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span><span class="p">:</span>
+
+			<span class="k">if</span> <span class="n">is_ham</span><span class="p">:</span>
+				<span class="n">mat_iter</span> <span class="o">=</span> <span class="n">_hamiltonian_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">mat_iter</span> <span class="o">=</span> <span class="n">_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+
+			<span class="k">return</span> <span class="n">mat_iter</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+				<span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+				<span class="n">other</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">rdot</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">other</span>
+
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">is_ham</span><span class="p">:</span>
+					<span class="n">mat_iter</span> <span class="o">=</span> <span class="n">_hamiltonian_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mat_iter</span><span class="p">])</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">mat_iter</span> <span class="o">=</span> <span class="n">_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">mat</span> <span class="k">for</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">mat_iter</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span></div></div>
+
+
+<span class="c1">### helper functions</span>
+<span class="k">def</span> <span class="nf">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">M</span> <span class="o">/=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+	<span class="n">M</span> <span class="o">*=</span> <span class="n">step</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">M</span> <span class="o">/=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+	<span class="n">M</span> <span class="o">*=</span> <span class="n">step</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+		<span class="n">M</span> <span class="o">/=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+	<span class="n">M</span> <span class="o">*=</span> <span class="n">step</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+
+		<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+	<span class="n">new</span> <span class="o">=</span> <span class="n">_shallowcopy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+	<span class="n">new</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+	<span class="n">new</span><span class="o">.</span><span class="n">_dynamic</span> <span class="o">=</span> <span class="p">{</span><span class="n">func</span><span class="p">:</span><span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">Hd</span><span class="p">)</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">)}</span>
+
+	<span class="k">return</span> <span class="n">new</span>
+
+<span class="k">def</span> <span class="nf">_hamiltonian_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">M</span> <span class="o">/=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">other</span>
+
+	<span class="n">M</span> <span class="o">*=</span> <span class="n">step</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">other</span>
+
+<span class="k">def</span> <span class="nf">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+	<span class="n">new</span> <span class="o">=</span> <span class="n">_shallowcopy</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+	<span class="n">new</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
+	<span class="n">new</span><span class="o">.</span><span class="n">_dynamic</span> <span class="o">=</span> <span class="p">{</span><span class="n">func</span><span class="p">:</span><span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">Hd</span><span class="p">)</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">)}</span>
+
+	<span class="k">return</span> <span class="n">new</span>
+
+<span class="k">def</span> <span class="nf">_hamiltonian_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">M</span> <span class="o">/=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="n">M</span> <span class="o">*=</span> <span class="n">step</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_hamiltonian_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+		<span class="n">M</span> <span class="o">/=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+	<span class="n">M</span> <span class="o">*=</span> <span class="n">step</span>
+	<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+		<span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+		<span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+
+
+
+<div class="viewcode-block" id="isexp_op"><a class="viewcode-back" href="../../../generated/quspin.operators.isexp_op.html#quspin.operators.isexp_op">[docs]</a><span class="k">def</span> <span class="nf">isexp_op</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Checks if instance is object of `exp_op` class.</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	obj : </span>
+<span class="sd">		Arbitraty python object.</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	--------</span>
+<span class="sd">	bool</span>
+<span class="sd">		Can be either of the following:</span>
+
+<span class="sd">		* `True`: `obj` is an instance of `exp_op` class.</span>
+<span class="sd">		* `False`: `obj` is NOT an instance of`exp_op` class.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">exp_op</span><span class="p">)</span></div>
+
+	
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

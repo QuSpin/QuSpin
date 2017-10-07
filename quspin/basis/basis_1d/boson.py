@@ -1,5 +1,5 @@
-from ._constructors import hcp_basis,hcp_ops
-from ._constructors import boson_basis,boson_ops
+from ._basis_1d_core import hcp_basis,hcp_ops
+from ._basis_1d_core import boson_basis,boson_ops
 from .base_1d import basis_1d
 import numpy as _np
 
@@ -7,10 +7,75 @@ import numpy as _np
 
 
 class boson_basis_1d(basis_1d):
-	def __init__(self,L,Nb=None,nb=None,sps=None,_Np=None,**blocks):
+	"""Constructs basis for boson operators in a specified 1-d symmetry sector.
+
+	The supported operator strings for `boson_basis_1d` are:
+
+	.. math::
+		\\begin{array}{cccc}
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}     \\newline	
+			\\texttt{boson_basis_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+		\\end{array}
+
+	Notes
+	-----
+	* if `Nb` or `nb` are specified, by default `sps` is set to the number of bosons on the lattice.
+	* if `sps` is specified, while `Nb` or `nb` are not, all particle sectors are filled up to the maximumal 
+		occupation. 
+	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
+		restrited by `sps`.
+
+	Examples
+	--------
+
+	The code snippet below shows how to use the `boson_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the bosonic Hamiltonian 
+
+	.. math::
+		H(t)=-J\\sum_j b^\\dagger_{j+1}b_j + \\mathrm{h.c.} -\\mu\\sum_j n_j + U\\sum_j n_j n_j + g\\cos\\Omega t\\sum_j (b^\\dagger_j + b_j)
+
+	.. literalinclude:: ../../doc_examples/boson_basis_1d-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	"""
+	def __init__(self,L,Nb=None,nb=None,sps=None,**blocks):
+		"""Intializes the `boson_basis_1d` object (basis for bosonic operators).
+
+		Parameters
+		-----------
+		L: int
+			Length of chain/number of sites.
+		Nb: {int,list}, optional
+			Number of bosons in chain. Can be integer or list to specify one or more particle sectors.
+		nb: float, optional
+			Density of bosons in chain (bosons per site).
+		sps: int, optional
+			Number of states per site (including zero bosons), or on-site Hilbert space dimension.
+		**blocks: optional
+			Extra keyword arguments which include:
+
+				**a** (*int*) - specifies unit cell size for translation.
+
+				**kblock** (*int*) - specifies momentum block.
+
+				**pblock** (*int*) - specifies parity block.
+
+			and the following which only work for hardcore bosons (`sps=2`):
+
+				**pcblock** (*int*) - specifies parity followed by particle-hole symmetry block.
+
+				**cblock** (*int*) - specifies particle-hole symmetry block.
+
+				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A.
+
+				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B.
+
+		"""
+
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -46,12 +111,19 @@ class boson_basis_1d(basis_1d):
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
 
+		_Np = blocks.get("_Np")
+		if _Np is not None:
+			blocks.pop("_Np")
+
 		self._blocks = blocks
 		
 		pblock = blocks.get("pblock")
 		zblock = blocks.get("cblock")
 		zAblock = blocks.get("cAblock")
 		zBblock = blocks.get("cBblock")
+
+		if sps > 2 and any(type(block) is int for block in [zblock,zAblock,zBblock]):
+			raise ValueError("particle hole symmetry doesn't exist with sps > 2.")
 
 		if type(zblock) is int:
 			del blocks["cblock"]
@@ -74,7 +146,10 @@ class boson_basis_1d(basis_1d):
 			self._blocks["cblock"] = zAblock*zBblock
 
 		if self._sps <= 2:
-			pars = _np.array([0,L]) # set sign to not be calculated
+			Imax = (1<<L)-1
+			stag_A = sum(1<<i for i in range(0,L,2))
+			stag_B = sum(1<<i for i in range(1,L,2))
+			pars = _np.array([0,L,Imax,stag_A,stag_B]) # set sign to not be calculated
 			self._operators = ("availible operators for boson_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
@@ -96,11 +171,6 @@ class boson_basis_1d(basis_1d):
 
 			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
-
-
-	@property
-	def blocks(self):
-		return dict(self._blocks)
 
 	def __type__(self):
 		return "<type 'qspin.basis.boson_basis_1d'>"
