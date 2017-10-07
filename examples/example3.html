@@ -1,0 +1,333 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quantised Light-Atom Interactions in the Semi-classical Limit: Recovering the Periodically Driven Atom &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quantised-light-atom-interactions-in-the-semi-classical-limit-recovering-the-periodically-driven-atom">
+<span id="example3-label"></span><h1>Quantised Light-Atom Interactions in the Semi-classical Limit: Recovering the Periodically Driven Atom<a class="headerlink" href="#quantised-light-atom-interactions-in-the-semi-classical-limit-recovering-the-periodically-driven-atom" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" href="../downloads/example3.py" download=""><code class="xref download docutils literal"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p>For a detailed discussion of the code below, see <a class="reference external" href="https://arxiv.org/abs/1610.03042">arXiv:1610.03042</a>.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">########################################################################################</span>
+<span class="c1">#                                   example 3                                          #</span>
+<span class="c1">#    In this example we show how to use the photon_basis class to study spin chains    #</span>
+<span class="c1">#    coupled to a single photon mode. To demonstrate this we simulate a single spin    #</span>
+<span class="c1">#    and show how the semi-classical limit emerges in the limit that the number of     #</span>
+<span class="c1">#    photons goes to infinity.                                                         #</span>
+<span class="c1">########################################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">photon_basis</span> <span class="c1"># Hilbert space bases</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonian and observables</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># t_dep measurements</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet</span><span class="p">,</span><span class="n">Floquet_t_vec</span> <span class="c1"># Floquet Hamiltonian</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.photon</span> <span class="kn">import</span> <span class="n">coherent_state</span> <span class="c1"># HO coherent state</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="c1">##### define model parameters #####</span>
+<span class="n">Nph_tot</span><span class="o">=</span><span class="mi">60</span> <span class="c1"># maximum photon occupation </span>
+<span class="n">Nph</span><span class="o">=</span><span class="n">Nph_tot</span><span class="o">/</span><span class="mi">2</span> <span class="c1"># mean number of photons in initial coherent state</span>
+<span class="n">Omega</span><span class="o">=</span><span class="mf">3.5</span> <span class="c1"># drive frequency</span>
+<span class="n">A</span><span class="o">=</span><span class="mf">0.8</span> <span class="c1"># spin-photon coupling strength (drive amplitude)</span>
+<span class="n">Delta</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># difference between atom energy levels</span>
+<span class="c1">#</span>
+<span class="c1">##### set up photon-atom Hamiltonian #####</span>
+<span class="c1"># define operator site-coupling lists</span>
+<span class="n">ph_energy</span><span class="o">=</span><span class="p">[[</span><span class="n">Omega</span><span class="p">]]</span> <span class="c1"># photon energy</span>
+<span class="n">at_energy</span><span class="o">=</span><span class="p">[[</span><span class="n">Delta</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># atom energy</span>
+<span class="n">absorb</span><span class="o">=</span><span class="p">[[</span><span class="n">A</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nph</span><span class="p">)),</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># absorption term	</span>
+<span class="n">emit</span><span class="o">=</span><span class="p">[[</span><span class="n">A</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nph</span><span class="p">)),</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># emission term</span>
+<span class="c1"># define static and dynamics lists</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;|n&quot;</span><span class="p">,</span><span class="n">ph_energy</span><span class="p">],[</span><span class="s2">&quot;x|-&quot;</span><span class="p">,</span><span class="n">absorb</span><span class="p">],[</span><span class="s2">&quot;x|+&quot;</span><span class="p">,</span><span class="n">emit</span><span class="p">],[</span><span class="s2">&quot;z|&quot;</span><span class="p">,</span><span class="n">at_energy</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1"># compute atom-photon basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">photon_basis</span><span class="p">(</span><span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">L</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">Nph</span><span class="o">=</span><span class="n">Nph_tot</span><span class="p">)</span>
+<span class="c1"># compute atom-photon Hamiltonian H</span>
+<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### set up semi-classical Hamiltonian #####</span>
+<span class="c1"># define operators</span>
+<span class="n">dipole_op</span><span class="o">=</span><span class="p">[[</span><span class="n">A</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span>
+<span class="c1"># define periodic drive and its parameters</span>
+<span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Omega</span><span class="p">):</span>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">Omega</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+<span class="n">drive_args</span><span class="o">=</span><span class="p">[</span><span class="n">Omega</span><span class="p">]</span>
+<span class="c1"># define semi-classical static and dynamic lists</span>
+<span class="n">static_sc</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">at_energy</span><span class="p">]]</span>
+<span class="n">dynamic_sc</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">dipole_op</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">]]</span>
+<span class="c1"># compute semi-classical basis</span>
+<span class="n">basis_sc</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># compute semi-classical Hamiltonian H_{sc}(t)</span>
+<span class="n">H_sc</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_sc</span><span class="p">,</span><span class="n">dynamic_sc</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_sc</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### define initial state #####</span>
+<span class="c1"># define atom ground state</span>
+<span class="n">psi_at_i</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span> <span class="c1"># spin-down eigenstate of \sigma^z</span>
+<span class="c1"># define photon coherent state with mean photon number Nph</span>
+<span class="n">psi_ph_i</span><span class="o">=</span><span class="n">coherent_state</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Nph</span><span class="p">),</span><span class="n">Nph_tot</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># compute atom-photon initial state as a tensor product</span>
+<span class="n">psi_i</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">psi_at_i</span><span class="p">,</span><span class="n">psi_ph_i</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### calculate time evolution #####</span>
+<span class="c1"># define time vector over 30 driving cycles with 100 points per period</span>
+<span class="n">t</span><span class="o">=</span><span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span> <span class="c1"># t.i = initial time, t.T = driving period</span>
+<span class="c1"># evolve atom-photon state with Hamiltonian H</span>
+<span class="n">psi_t</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">)</span> 
+<span class="c1"># evolve atom GS with semi-classical Hamiltonian H_sc</span>
+<span class="n">psi_sc_t</span><span class="o">=</span><span class="n">H_sc</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_at_i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### define observables #####</span>
+<span class="c1"># define observables parameters</span>
+<span class="n">obs_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;basis&quot;</span><span class="p">:</span><span class="n">basis</span><span class="p">,</span><span class="s2">&quot;check_herm&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span><span class="s2">&quot;check_symm&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">}</span>
+<span class="n">obs_args_sc</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;basis&quot;</span><span class="p">:</span><span class="n">basis_sc</span><span class="p">,</span><span class="s2">&quot;check_herm&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span><span class="s2">&quot;check_symm&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">}</span>
+<span class="c1"># in atom-photon Hilbert space</span>
+<span class="n">n</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;|n&quot;</span><span class="p">,</span> <span class="p">[[</span><span class="mf">1.0</span>  <span class="p">]]</span> <span class="p">]],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">obs_args</span><span class="p">)</span>
+<span class="n">sz</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;z|&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="p">]],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">obs_args</span><span class="p">)</span>
+<span class="n">sy</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;y|&quot;</span><span class="p">,</span>	<span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="p">]],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="o">**</span><span class="n">obs_args</span><span class="p">)</span>
+<span class="c1"># in the semi-classical Hilbert space</span>
+<span class="n">sz_sc</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;z&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="p">]],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">obs_args_sc</span><span class="p">)</span>
+<span class="n">sy_sc</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span> <span class="p">]],[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="o">**</span><span class="n">obs_args_sc</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### calculate expectation values #####</span>
+<span class="c1"># in atom-photon Hilbert space</span>
+<span class="n">Obs_t</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,{</span><span class="s2">&quot;n&quot;</span><span class="p">:</span><span class="n">n</span><span class="p">,</span><span class="s2">&quot;sz&quot;</span><span class="p">:</span><span class="n">sz</span><span class="p">,</span><span class="s2">&quot;sy&quot;</span><span class="p">:</span><span class="n">sy</span><span class="p">})</span>
+<span class="n">O_n</span><span class="p">,</span> <span class="n">O_sz</span><span class="p">,</span> <span class="n">O_sy</span> <span class="o">=</span> <span class="n">Obs_t</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="n">Obs_t</span><span class="p">[</span><span class="s2">&quot;sz&quot;</span><span class="p">],</span> <span class="n">Obs_t</span><span class="p">[</span><span class="s2">&quot;sy&quot;</span><span class="p">]</span>
+<span class="c1"># in the semi-classical Hilbert space</span>
+<span class="n">Obs_sc_t</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_sc_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,{</span><span class="s2">&quot;sz_sc&quot;</span><span class="p">:</span><span class="n">sz_sc</span><span class="p">,</span><span class="s2">&quot;sy_sc&quot;</span><span class="p">:</span><span class="n">sy_sc</span><span class="p">})</span>
+<span class="n">O_sz_sc</span><span class="p">,</span> <span class="n">O_sy_sc</span> <span class="o">=</span> <span class="n">Obs_sc_t</span><span class="p">[</span><span class="s2">&quot;sz_sc&quot;</span><span class="p">],</span> <span class="n">Obs_sc_t</span><span class="p">[</span><span class="s2">&quot;sy_sc&quot;</span><span class="p">]</span>
+<span class="c1">##### plot results #####</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pylab</span>
+<span class="c1"># define legend labels</span>
+<span class="n">str_n</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">langle n</span><span class="se">\\</span><span class="s2">rangle,$&quot;</span>
+<span class="n">str_z</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">langle</span><span class="se">\\</span><span class="s2">sigma^z</span><span class="se">\\</span><span class="s2">rangle,$&quot;</span>
+<span class="n">str_x</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">langle</span><span class="se">\\</span><span class="s2">sigma^x</span><span class="se">\\</span><span class="s2">rangle,$&quot;</span>
+<span class="n">str_z_sc</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">langle</span><span class="se">\\</span><span class="s2">sigma^z</span><span class="se">\\</span><span class="s2">rangle_</span><span class="se">\\</span><span class="s2">mathrm{sc},$&quot;</span>
+<span class="n">str_x_sc</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">langle</span><span class="se">\\</span><span class="s2">sigma^x</span><span class="se">\\</span><span class="s2">rangle_</span><span class="se">\\</span><span class="s2">mathrm{sc}$&quot;</span>
+<span class="c1"># plot spin-photon data</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">O_n</span><span class="o">/</span><span class="n">Nph</span><span class="p">,</span><span class="s2">&quot;k&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_n</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">O_sz</span><span class="p">,</span><span class="s2">&quot;c&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_z</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">O_sy</span><span class="p">,</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_x</span><span class="p">)</span>
+<span class="c1"># plot semi-classical data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">O_sz_sc</span><span class="p">,</span><span class="s2">&quot;b.&quot;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_z_sc</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">O_sy_sc</span><span class="p">,</span><span class="s2">&quot;r.&quot;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_x_sc</span><span class="p">)</span>
+<span class="c1"># label axes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t/T$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="c1"># set y axis limits</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">1.4</span><span class="p">])</span>
+<span class="c1"># display legend horizontally</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">columnspacing</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span><span class="n">numpoints</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="c1"># update axis font size</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="c1"># turn on grid</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1"># save figure</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example3.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="c1"># show plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example3.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,320 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="Examples.html" />
+    <link rel="prev" title="quspin.tools.measurements.evolve" href="generated/quspin.tools.measurements.evolve.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="generated/quspin.tools.measurements.evolve.html" title="quspin.tools.measurements.evolve"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>QuSpin is currently being supported for Python 2.7 and Python 3.5 which are a prerequisite. We recommend the use of the free package manager <a class="reference external" href="https://www.continuum.io/downloads">Anaconda</a> which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use <a class="reference external" href="http://conda.pydata.org/miniconda.html">miniconda</a>.</p>
+<div class="section" id="mac-os-x-linux">
+<h2>Mac OS X/Linux<a class="headerlink" href="#mac-os-x-linux" title="Permalink to this headline">¶</a></h2>
+<p>To install Anaconda/miniconda all one has to do is execute the installation script with administrative privilege. To do this, open up the terminal and go to the folder containing the downloaded installation file and execute the following command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ sudo bash &lt;installation_file&gt;
+</pre></div>
+</div>
+<p>You will be prompted to enter your password. Follow the prompts of the installation. We recommend that you allow the installer to prepend the installation directory to your PATH variable which will make sure this installation of Python will be called when executing a Python script in the terminal. If this is not done then you will have to do this manually in your bash profile file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s2">&quot;path_to/anaconda/bin:$PATH&quot;</span>
+</pre></div>
+</div>
+<p><strong>Installing via Anaconda</strong></p>
+<p>Once you have Anaconda/miniconda installed, all you have to do to install QuSpin is to execute the following command into the terminal:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ conda install -c weinbe58 quspin
+</pre></div>
+</div>
+<p>If asked to install new packages just say <cite>yes</cite>. To keep the code up-to-date, just run this command regularly.</p>
+<p><strong>Installing Manually</strong></p>
+<p>Installing the package manually is not recommended unless the above method failed. Note that you must have the Python packages NumPy, SciPy, and Joblib installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from <a class="reference external" href="https://github.com/weinbe58/qspin/tree/master">github</a> and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and execute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ python setup.py install --record install_file.txt
+</pre></div>
+</div>
+<p>This will compile the source code and copy it to the installation directory of Python recording the installation location to <cite>install_file.txt</cite>. To update the code, you must first completely remove the current version installed and then install the new code. The <cite>install_file.txt</cite> can be used to remove the package by running:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cat install_file.txt | xargs rm -rf.
+</pre></div>
+</div>
+</div>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>To install Anaconda/miniconda on Windows, download the installer and execute it to install the program. Once Anaconda/miniconda is installed open the conda terminal and do one of the following to install the package:</p>
+<p><strong>Installing via Anaconda</strong></p>
+<p>Once you have Anaconda/miniconda installed all you have to do to install QuSpin is to execute the following command into the terminal:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">weinbe58</span> <span class="n">quspin</span>
+</pre></div>
+</div>
+<p>If asked to install new packages just say <cite>yes</cite>. To update the code just run this command regularly.</p>
+<p><strong>Installing Manually</strong></p>
+<p>Installing the package manually is not recommended unless the above method failed. Note that you must have NumPy, SciPy, and Joblib installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from <a class="reference external" href="https://github.com/weinbe58/qspin/tree/master">github</a> and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and then execute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">record</span> <span class="n">install_file</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>This will compile the source code and copy it to the installation directory of Python and record the installation location to <cite>install_file.txt</cite>. To update the code you must first completely remove the current version installed and then install the new code.</p>
+</div>
+</div>
+<div class="section" id="basic-use-of-command-line-to-run-python">
+<h1>Basic Use of Command Line to Run Python<a class="headerlink" href="#basic-use-of-command-line-to-run-python" title="Permalink to this headline">¶</a></h1>
+<p>Let us review how to use the command line for Windows and OS X/Linux to navigate your computer’s folders/directories and run the Python scripts.</p>
+<div class="section" id="id2">
+<h2>Mac OS X/Linux<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Some basic commands:</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>change directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ cd &lt; path_to_directory &gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>list files in current directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ ls
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>list files in another directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ ls &lt; path_to_directory &gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>make new directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ mkdir &lt;path&gt;/&lt; directory_name &gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy file:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ cp &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>move file or change file name:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ mv &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>remove file:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span>$ rm &lt; path_to_file &gt;/&lt; file_name &gt;
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>Unix also has an auto complete feature if one hits the TAB key. It will complete a word or stop when it matches more than one file/folder name. The current directory is denoted by “.” and the directory above is “..”.</p>
+</div>
+<div class="section" id="id3">
+<h2>Windows<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Some basic commands:</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>change directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>list files in current directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>list files in another directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>make new directory:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">directory_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>copy file:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>move file or change file name:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>remove file:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">erase</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>Windows also has a auto complete feature using the TAB key but instead of stopping when there multiple files/folders with the same name, it will complete it with the first file alphabetically. The current directory is denoted by “.” and the directory above is “..”.</p>
+</div>
+<div class="section" id="execute-python-script-any-operating-system">
+<h2>Execute Python Script (any operating system)<a class="headerlink" href="#execute-python-script-any-operating-system" title="Permalink to this headline">¶</a></h2>
+<p>To execute a Python script all one has to do is open up a terminal and navigate to the directory which contains the Python script. Python can be recognised by the extension <cite>.py</cite>. To execute the script just use the following command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">script</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>It’s that simple!</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#mac-os-x-linux">Mac OS X/Linux</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#basic-use-of-command-line-to-run-python">Basic Use of Command Line to Run Python</a><ul>
+<li><a class="reference internal" href="#id2">Mac OS X/Linux</a></li>
+<li><a class="reference internal" href="#id3">Windows</a></li>
+<li><a class="reference internal" href="#execute-python-script-any-operating-system">Execute Python Script (any operating system)</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="generated/quspin.tools.measurements.evolve.html"
+                        title="previous chapter">quspin.tools.measurements.evolve</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Examples.html"
+                        title="next chapter">Examples</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="sources/Installation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="generated/quspin.tools.measurements.evolve.html" title="quspin.tools.measurements.evolve"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

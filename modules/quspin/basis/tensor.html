@@ -1,0 +1,1246 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>quspin.basis.tensor &#8212; QuSpin 0.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../static/jquery.js"></script>
+    <script type="text/javascript" src="../../../static/underscore.js"></script>
+    <script type="text/javascript" src="../../../static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for quspin.basis.tensor</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">basis</span><span class="p">,</span><span class="n">MAXPRINT</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">_sp</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">_sla</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">_la</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">eigsh</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">eigvalsh</span><span class="p">,</span><span class="n">svd</span>
+<span class="kn">from</span> <span class="nn">._reshape_subsys</span> <span class="k">import</span> <span class="n">_tensor_reshape_pure</span><span class="p">,</span><span class="n">_tensor_partial_trace_pure</span>
+<span class="kn">from</span> <span class="nn">._reshape_subsys</span> <span class="k">import</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">,</span><span class="n">_tensor_partial_trace_sparse_pure</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="n">_dtypes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;f&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="s2">&quot;d&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="s2">&quot;F&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span><span class="s2">&quot;D&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">}</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tensor_basis&quot;</span><span class="p">]</span>
+
+<span class="c1"># gives the basis for the kronecker/Tensor product of two basis: |basis_left&gt; (x) |basis_right&gt;</span>
+<div class="viewcode-block" id="tensor_basis"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis">[docs]</a><span class="k">class</span> <span class="nc">tensor_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Constructs basis in tensor product Hilbert space.</span>
+
+<span class="sd">		The `tensor_basis` class combines two basis objects `basis1` and `basis2` together into a new basis </span>
+<span class="sd">		object which can be then used, e.g., to create the Hamiltonian over the tensor product Hilbert space:</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\mathcal{H}=\\mathcal{H}_1\\otimes\\mathcal{H}_2</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+
+<span class="sd">		The `tensor_basis` operator strings are separated by a pipe symbol, &#39;|&#39;. However, the index array has</span>
+<span class="sd">		NO pipe symbol.</span>
+
+<span class="sd">		The `tensor_basis` class does not allow one to make use of symmetries, save for particle conservation.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		The following code shows how to construct the Fermi-Hubbard Hamiltonian by tensoring two </span>
+<span class="sd">		`spinless_fermion_basis_1d` objects. This model can also be set up using the `spinful_fermion_basis_1d` class),</span>
+<span class="sd">		which also allows the implementation of symmetries.</span>
+
+<span class="sd">		Notice that the operator strings for constructing Hamiltonians with a `tensor_basis` object are separated by </span>
+<span class="sd">		a pipe symbol, &#39;|&#39;, while the index array has no splitting pipe character.</span>
+<span class="sd">		 </span>
+<span class="sd">		The code snippet below initiates the class, and is required to run the example codes for the function methods.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/tensor_basis-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 7-</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="tensor_basis.__init__"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">basis_list</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Initialises the `tensor_basis` object (basis for tensor product Hilbert spaces).</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		basis_list : list(:obj:`basis`)</span>
+<span class="sd">			List of `basis` objects to tensor together. Required minimum number is two.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;basis_list must have more than one basis.&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basis_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">basis</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;basis_list must contain instances of basis class&quot;</span><span class="p">)</span>
+
+		<span class="c1"># if not isinstance(basis_left,basis):</span>
+		<span class="c1"># 	raise ValueError(&quot;basis_left must be instance of basis class&quot;)</span>
+		<span class="c1"># if not isinstance(basis_right,basis):</span>
+		<span class="c1"># 	raise ValueError(&quot;basis_right must be instance of basis class&quot;)</span>
+		<span class="c1"># if isinstance(basis_left,tensor_basis): </span>
+		<span class="c1"># 	raise TypeError(&quot;Can only create tensor basis with non-tensor type basis&quot;)</span>
+		<span class="c1"># if isinstance(basis_right,tensor_basis): </span>
+		<span class="c1"># 	raise TypeError(&quot;Can only create tensor basis with non-tensor type basis&quot;)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">=</span><span class="n">basis_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">=</span><span class="n">basis_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">=</span><span class="n">tensor_basis</span><span class="p">(</span><span class="o">*</span><span class="n">basis_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_blocks</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_unique_me</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_unique_me</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_operators</span> <span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_operators</span></div>
+
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">basis_left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`basis`: first basis constructor out of the `basis` objects list to be tensored.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">basis_right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`basis`: all others basis constructors except for the first one of the `basis` objects list to be tensored.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span>
+
+
+
+<div class="viewcode-block" id="tensor_basis.Op"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.Op">[docs]</a>	<span class="k">def</span> <span class="nf">Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Constructs operator from a site-coupling list and an operator string in the tensor basis.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		opstr : str</span>
+<span class="sd">			Operator string in the tensor basis format. For instance:</span>
+<span class="sd">			&gt;&gt;&gt; opstr = &quot;z|z&quot;</span>
+<span class="sd">		indx : list(int)</span>
+<span class="sd">			List of integers to designate the sites the tensor basis operator is defined on. For instance:</span>
+<span class="sd">			&gt;&gt;&gt; indx = [1,5]</span>
+<span class="sd">		J : scalar</span>
+<span class="sd">			Coupling strength.</span>
+<span class="sd">		dtype : &#39;type&#39;</span>
+<span class="sd">			Data type (e.g. numpy.float64) to construct the operator with.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		tuple</span>
+<span class="sd">			`(ME,row,col)`, where</span>
+<span class="sd">				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.</span>
+<span class="sd">				* numpy.ndarray(int): `row`: row indices of matrix representing the operator in the tensor basis,</span>
+<span class="sd">					such that `row[i]` is the row index of `ME[i]`.</span>
+<span class="sd">				* numpy.ndarray(int): `col`: column index of matrix representing the operator in the tensor basis,</span>
+<span class="sd">					such that `col[i]` is the column index of `ME[i]`.</span>
+<span class="sd">			</span>
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		&gt;&gt;&gt; J = 1.41</span>
+<span class="sd">		&gt;&gt;&gt; indx = [1,5]</span>
+<span class="sd">		&gt;&gt;&gt; opstr = &quot;z|z&quot;</span>
+<span class="sd">		&gt;&gt;&gt; dtype = np.float64</span>
+<span class="sd">		&gt;&gt;&gt; ME, row, col = Op(opstr,indx,J,dtype)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="c1"># if opstr.count(&quot;|&quot;) &gt; 1: </span>
+		<span class="c1"># 	raise ValueError(&quot;only one &#39;|&#39; charactor allowed in: {0}, {1}&quot;.format(opstr,indx))</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">-</span><span class="n">opstr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;not enough indices for opstr in: </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">))</span>
+
+		<span class="n">i</span> <span class="o">=</span> <span class="n">opstr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+		<span class="n">indx_left</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">indx_right</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+		<span class="n">opstr_left</span><span class="p">,</span><span class="n">opstr_right</span><span class="o">=</span><span class="n">opstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:</span>
+			<span class="n">ME_left</span><span class="p">,</span><span class="n">row_left</span><span class="p">,</span><span class="n">col_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr_left</span><span class="p">,</span><span class="n">indx_left</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="n">ME_right</span><span class="p">,</span><span class="n">row_right</span><span class="p">,</span><span class="n">col_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr_right</span><span class="p">,</span><span class="n">indx_right</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">ME_left</span><span class="p">,</span><span class="n">row_left</span><span class="p">,</span><span class="n">col_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr_left</span><span class="p">,</span><span class="n">indx_left</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="n">ME_right</span><span class="p">,</span><span class="n">row_right</span><span class="p">,</span><span class="n">col_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr_right</span><span class="p">,</span><span class="n">indx_right</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+			
+
+		<span class="n">n1</span> <span class="o">=</span> <span class="n">row_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">n2</span> <span class="o">=</span> <span class="n">row_right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+		<span class="k">if</span> <span class="n">n1</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">row_left</span> <span class="o">=</span> <span class="n">row_left</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+			<span class="n">row_left</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+			<span class="n">row</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">row_left</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">row_right</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))</span>
+			<span class="n">row</span> <span class="o">+=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">row_left</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">row_right</span><span class="p">)</span>
+
+			<span class="k">del</span> <span class="n">row_left</span><span class="p">,</span><span class="n">row_right</span>
+
+			<span class="n">col_left</span> <span class="o">=</span> <span class="n">col_left</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+			<span class="n">col_left</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+			<span class="n">col</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">col_left</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">col_right</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))</span>
+			<span class="n">col</span> <span class="o">+=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">col_left</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">col_right</span><span class="p">)</span>
+
+			<span class="k">del</span> <span class="n">col_left</span><span class="p">,</span><span class="n">col_right</span>
+
+			<span class="n">ME</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">ME_left</span><span class="p">,</span><span class="n">ME_right</span><span class="p">)</span>
+
+			<span class="k">del</span> <span class="n">ME_left</span><span class="p">,</span><span class="n">ME_right</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">row</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+			<span class="n">col</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+			<span class="n">ME</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+
+		<span class="k">return</span> <span class="n">ME</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span></div>
+
+<div class="viewcode-block" id="tensor_basis.index"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.index">[docs]</a>	<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">states</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Finds the index of user-defined Fock state in tensor basis.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Particularly useful for defining initial Fock states through a unit vector in the direction specified</span>
+<span class="sd">		by `index()`. </span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		states : list(str)</span>
+<span class="sd">			List of strings which separately define the Fock state in each of the `basis` used to construct </span>
+<span class="sd">			the `tensor_basis` object. </span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		int</span>
+<span class="sd">			Position of tensor Fock state in the `tensor_basis`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		&gt;&gt;&gt; s_1 = &quot;&quot;.join(&quot;1&quot; for i in range(2)) + &quot;&quot;.join(&quot;0&quot; for i in range(2))</span>
+<span class="sd">		&gt;&gt;&gt; s_2 = &quot;&quot;.join(&quot;1&quot; for i in range(4))</span>
+<span class="sd">		&gt;&gt;&gt; print( basis.index(s_1,s_2) )</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;states must be list of atleast 2 elements long&quot;</span><span class="p">)</span>
+		<span class="n">s_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_left</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="n">s_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_right</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="o">*</span><span class="n">states</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+		<span class="k">return</span> <span class="n">s_right</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_right</span><span class="o">.</span><span class="n">Ns</span><span class="o">*</span><span class="n">s_left</span></div>
+
+
+<div class="viewcode-block" id="tensor_basis.get_vec"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.get_vec">[docs]</a>	<span class="k">def</span> <span class="nf">get_vec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis</span>
+<span class="sd">		in a straightforward manner.</span>
+
+<span class="sd">		Supports parallelisation to multiple states listed in the columns.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		v0 : numpy.ndarray</span>
+<span class="sd">			Contains in its columns the states in the symmetry-reduced basis.</span>
+<span class="sd">		sparse : bool, optional</span>
+<span class="sd">			Whether or not the output should be in sparse format. Default is `True`.</span>
+<span class="sd">		full_left : bool, optional</span>
+<span class="sd">			Whether or not to transform the state to the full state in `basis_left`. Default is `True`.</span>
+<span class="sd">		full_right : bool, optional</span>
+<span class="sd">			Whether or not to transform the state to the full state in `basis_right`. Default is `True`.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Array containing the state `v0` in the full basis.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		&gt;&gt;&gt; v_full = get_vec(v0)</span>
+<span class="sd">		&gt;&gt;&gt; print(v_full.shape, v0.shape)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="s2">&quot;shape&quot;</span><span class="p">):</span>
+			<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;v0 has incompatible dimensions with basis&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+			<span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_combine_get_vecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_combine_get_vecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+		<span class="k">elif</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">v0</span><span class="p">):</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="n">full_right</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+
+			<span class="k">return</span> <span class="n">_combine_get_vecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;excpecting v0 to have ndim at most 2&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="tensor_basis.get_proj"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.get_proj">[docs]</a>	<span class="k">def</span> <span class="nf">get_proj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis</span>
+<span class="sd">		in a straightforward manner.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		dtype : &#39;type&#39;</span>
+<span class="sd">			Data type (e.g. numpy.float64) to construct the projector with.</span>
+<span class="sd">		full_left : bool, optional</span>
+<span class="sd">			Whether or not to transform the state to the full state in `basis_left`. Default is `True`.</span>
+<span class="sd">		full_right : bool, optional</span>
+<span class="sd">			Whether or not to transform the state to the full state in `basis_right`. Default is `True`.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Transformation/projector between the symmetry-reduced and the full basis.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		&gt;&gt;&gt; P = get_proj(np.float64)</span>
+<span class="sd">		&gt;&gt;&gt; print(P.shape)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
+			<span class="n">proj1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">proj1</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
+			<span class="n">proj2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">proj2</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+
+		<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">proj1</span><span class="p">,</span><span class="n">proj2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tensor_basis.partial_trace"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.partial_trace">[docs]</a>	<span class="k">def</span> <span class="nf">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates reduced density matrix, through a partial trace of a quantum state in `tensor_basis`.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		state : obj</span>
+<span class="sd">			State of the quantum system. Can be either one of:</span>
+
+<span class="sd">				* numpy.ndarray [shape (Ns,)]: pure state (default).</span>
+<span class="sd">				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</span>
+<span class="sd">				* dict(&#39;V_states&#39;,V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.</span>
+<span class="sd">		sub_sys_A : str, optional</span>
+<span class="sd">			Subsystem to calculate the density matrix of. Can be either one of:</span>
+
+<span class="sd">				* &quot;left&quot;: refers to `basis_left` (Default).</span>
+<span class="sd">				* &quot;right&quot;: refers to `basis_right`.</span>
+<span class="sd">				* &quot;both&quot;: for initial mixed states the Renyi entropy of subsystem A and its complement</span>
+<span class="sd">					B need not be the same. This option automatically sets `return_rdm=both`.</span>
+<span class="sd">					</span>
+<span class="sd">		return_rdm : str, optional</span>
+<span class="sd">			Toggles returning the reduced DM. Can be tierh one of:</span>
+
+<span class="sd">				* &quot;A&quot;: returns reduced DM of subsystem A.</span>
+<span class="sd">				* &quot;B&quot;: returns reduced DM of subsystem B.</span>
+<span class="sd">				* &quot;both&quot;: returns reduced DM of both A and B subsystems.</span>
+<span class="sd">		enforce_pure : bool, optional</span>
+<span class="sd">			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if</span>
+<span class="sd">			it is a square array. Default is `False`.</span>
+<span class="sd">		sparse : bool, optional</span>
+<span class="sd">			Whether or not to return a sparse DM. Default is `False`.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Density matrix associated with `state`. Depends on optional arguments.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		&gt;&gt;&gt; partial_trace(state,sub_sys_A=None,return_rdm=&quot;A&quot;,enforce_pure=False,sparse=False)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+
+		<span class="k">if</span> <span class="n">return_rdm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">,</span><span class="s2">&quot;both&quot;</span><span class="p">,</span><span class="kc">None</span><span class="p">]):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;return_rdm must be: &#39;A&#39;,&#39;B&#39;,&#39;both&#39; or None&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="s2">&quot;right&quot;</span><span class="p">,</span><span class="s2">&quot;both&quot;</span><span class="p">,</span><span class="kc">None</span><span class="p">]):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sub_sys_A must be &#39;left&#39; or &#39;right&#39; or &#39;both&#39;.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="s2">&quot;shape&quot;</span><span class="p">):</span>
+			<span class="n">state</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+			<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> <span class="c1"># avoids artificial higher-dim reps of ndarray</span>
+
+		<span class="n">Ns_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="n">Ns_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="n">tensor_Ns</span> <span class="o">=</span>  <span class="n">Ns_left</span><span class="o">*</span><span class="n">Ns_right</span>
+
+		<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tensor_Ns</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state shape </span><span class="si">{0}</span><span class="s2"> not compatible with Ns=</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">tensor_Ns</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="ow">or</span> <span class="n">sparse</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+				<span class="n">state</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+			<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">T</span>
+			<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="c1"># sparse_pure partial trace</span>
+				<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_sparse_pure</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+					<span class="c1"># vectorize sparse_pure partial trace </span>
+					<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+					<span class="k">try</span><span class="p">:</span>
+						<span class="n">state_gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">_tensor_partial_trace_sparse_pure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getrow</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+					<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+						<span class="n">state_gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">_tensor_partial_trace_sparse_pure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">getrow</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+					<span class="n">left</span><span class="p">,</span><span class="n">right</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">state_gen</span><span class="p">)</span>
+
+					<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">left</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+
+					<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">rdm</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">rdm</span> <span class="ow">in</span> <span class="n">rdm_A</span><span class="p">):</span>
+						<span class="n">rdm_A</span> <span class="o">=</span> <span class="kc">None</span>
+
+					<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">rdm</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">rdm</span> <span class="ow">in</span> <span class="n">rdm_B</span><span class="p">):</span>
+						<span class="n">rdm_B</span> <span class="o">=</span> <span class="kc">None</span>
+				<span class="k">else</span><span class="p">:</span> 
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a dense array for mixed states.&quot;</span><span class="p">)</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+				<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_pure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+
+			<span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span> 
+				<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+					<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_pure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+
+				<span class="k">else</span><span class="p">:</span> 
+					<span class="n">shape0</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span>
+					<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,)</span><span class="o">+</span><span class="n">shape0</span><span class="p">)</span>					
+
+					<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+
+			<span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span> <span class="c1">#3D DM </span>
+				<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state must have ndim &lt; 4&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">return_rdm</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">rdm_A</span>
+		<span class="k">elif</span> <span class="n">return_rdm</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">rdm_B</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span></div>
+
+<div class="viewcode-block" id="tensor_basis.ent_entropy"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.ent_entropy">[docs]</a>	<span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		state : obj</span>
+<span class="sd">			State of the quantum system. Can be either one of:</span>
+
+<span class="sd">				* numpy.ndarray [shape (Ns,)]: pure state (default).</span>
+<span class="sd">				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</span>
+<span class="sd">				* dict(&#39;V_states&#39;,V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.</span>
+<span class="sd">		sub_sys_A : str, optional</span>
+<span class="sd">			Subsystem to calculate the density matrix of. Can be either one of:</span>
+
+<span class="sd">				* &quot;left&quot;: refers to `basis_left` (Default).</span>
+<span class="sd">				* &quot;right&quot;: refers to `basis_right`.</span>
+<span class="sd">				* &quot;both&quot;: for initial mixed states the Renyi entropy of subsystem A and its complement</span>
+<span class="sd">					B need not be the same. This option automatically sets `return_rdm=both`.</span>
+<span class="sd">		return_rdm : str, optional</span>
+<span class="sd">			Toggles returning the reduced DM. Can be tierh one of:</span>
+
+<span class="sd">				* &quot;A&quot;: returns reduced DM of subsystem A.</span>
+<span class="sd">				* &quot;B&quot;: returns reduced DM of subsystem B.</span>
+<span class="sd">				* &quot;both&quot;: returns reduced DM of both A and B subsystems.</span>
+<span class="sd">		enforce_pure : bool, optional</span>
+<span class="sd">			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if</span>
+<span class="sd">			it is a square array. Default is `False`.</span>
+<span class="sd">		sparse : bool, optional</span>
+<span class="sd">			Whether or not to return a sparse DM. Default is `False`.</span>
+<span class="sd">		return_rdm_EVs : bool, optional </span>
+<span class="sd">			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,</span>
+<span class="sd">			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, </span>
+<span class="sd">			the spectrum of `rdm_A` is returned by default. Default is `False`.</span>
+<span class="sd">		alpha : float, optional</span>
+<span class="sd">			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:</span>
+
+<span class="sd">			.. math::</span>
+<span class="sd">				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha</span>
+<span class="sd">		sparse_diag : bool, optional</span>
+<span class="sd">			When `sparse=True`, this flag enforces the use of</span>
+<span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_</span>
+<span class="sd">			to calculate the eigenvaues of the reduced DM.</span>
+<span class="sd">		maxiter : int, optional</span>
+<span class="sd">			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for </span>
+<span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		dict</span>
+<span class="sd">			Dictionary with following keys, depending on input parameters:</span>
+<span class="sd">				* &quot;Sent_A&quot;: entanglement entropy of subsystem A (default).</span>
+<span class="sd">				* &quot;Sent_B&quot;: entanglement entropy of subsystem B.</span>
+<span class="sd">				* &quot;p_A&quot;: singular values of reduced DM of subsystem A (default).</span>
+<span class="sd">				* &quot;p_B&quot;: singular values of reduced DM of subsystem B.</span>
+<span class="sd">				* &quot;rdm_A&quot;: reduced DM of subsystem A.</span>
+<span class="sd">				* &quot;rdm_B&quot;: reduced DM of subsystem B.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		--------</span>
+
+<span class="sd">		&gt;&gt;&gt; ent_entropy(state,sub_sys_A=&quot;left&quot;,return_rdm=&quot;A&quot;,enforce_pure=False,return_rdm_EVs=False,</span>
+<span class="sd">		&gt;&gt;&gt;				sparse=False,alpha=1.0,sparse_diag=True)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+
+		<span class="k">if</span> <span class="n">return_rdm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="s2">&quot;B&quot;</span><span class="p">,</span><span class="s2">&quot;both&quot;</span><span class="p">,</span><span class="kc">None</span><span class="p">]):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;return_rdm must be: &#39;A&#39;,&#39;B&#39;,&#39;both&#39; or None&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="s2">&quot;right&quot;</span><span class="p">,</span><span class="s2">&quot;both&quot;</span><span class="p">]):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sub_sys_A must be &#39;left&#39; or &#39;right&#39; or &#39;both&#39;.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="s2">&quot;shape&quot;</span><span class="p">):</span>
+			<span class="n">state</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+			<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> <span class="c1"># avoids artificial higher-dim reps of ndarray</span>
+
+		<span class="n">tensor_Ns</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+
+		<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tensor_Ns</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state shape </span><span class="si">{0}</span><span class="s2"> not compatible with Ns=</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">tensor_Ns</span><span class="p">))</span>
+
+		<span class="n">pure</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># set pure state parameter to True</span>
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="ow">or</span> <span class="n">sparse</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+					<span class="n">state</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">state</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="n">p</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_pure_sparse</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="n">sparse_diag</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+					<span class="n">p</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_pure_sparse</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span> 
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a dense array for mixed states.&quot;</span><span class="p">)</span>
+					
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+				<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+				<span class="n">p</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_pure</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+			
+			<span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+
+				<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+					<span class="n">p</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_pure</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span> <span class="c1"># 2D mixed</span>
+					<span class="n">pure</span><span class="o">=</span><span class="kc">False</span>
+					<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">					# check if DM&#39;s are positive definite</span>
+<span class="sd">					try:</span>
+<span class="sd">						_np.linalg.cholesky(state)</span>
+<span class="sd">					except:</span>
+<span class="sd">						raise ValueError(&quot;LinAlgError: (collection of) DM(s) not positive definite&quot;)</span>
+<span class="sd">					# check oif trace of DM is unity</span>
+<span class="sd">					if _np.any( abs(_np.trace(state) - 1.0 &gt; 1E3*_np.finfo(state.dtype).eps)  ):</span>
+<span class="sd">						raise ValueError(&quot;Expecting eigenvalues of DM to sum to unity!&quot;)</span>
+<span class="sd">					&quot;&quot;&quot;</span>
+					<span class="n">shape0</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span>
+					<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+					<span class="n">p_A</span><span class="p">,</span> <span class="n">p_B</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+				
+			<span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span> <span class="c1">#3D DM </span>
+				<span class="n">pure</span><span class="o">=</span><span class="kc">False</span>
+
+				<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">				# check if DM&#39;s are positive definite</span>
+<span class="sd">				try:</span>
+<span class="sd">					_np.linalg.cholesky(state)</span>
+<span class="sd">				except:</span>
+<span class="sd">					raise ValueError(&quot;LinAlgError: (collection of) DM(s) not positive definite&quot;)</span>
+
+<span class="sd">				# check oif trace of DM is unity</span>
+<span class="sd">				if _np.any( abs(_np.trace(state, axis1=1,axis2=2) - 1.0 &gt; 1E3*_np.finfo(state.dtype).eps)  ):</span>
+<span class="sd">					raise ValueError(&quot;Expecting eigenvalues of DM to sum to unity!&quot;)</span>
+<span class="sd">				&quot;&quot;&quot;</span>
+				<span class="n">p_A</span><span class="p">,</span> <span class="n">p_B</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
+
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state must have ndim &lt; 4&quot;</span><span class="p">)</span>
+
+		
+		<span class="k">if</span> <span class="n">pure</span><span class="p">:</span>
+			<span class="n">p_A</span><span class="p">,</span> <span class="n">p_B</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">p</span>
+
+		<span class="n">Sent_A</span><span class="p">,</span> <span class="n">Sent_B</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+		<span class="k">if</span> <span class="n">alpha</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">p_A</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">Sent_A</span> <span class="o">=</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">p_A</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_A</span><span class="p">),</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">p_B</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">Sent_B</span> <span class="o">=</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">p_B</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_B</span><span class="p">),</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">alpha</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">p_A</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">Sent_A</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">p_A</span><span class="p">,</span><span class="n">alpha</span><span class="p">),</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">alpha</span><span class="p">))</span>
+			<span class="k">if</span> <span class="n">p_B</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">Sent_B</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">p_B</span><span class="p">,</span><span class="n">alpha</span><span class="p">),</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">alpha</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;alpha &gt;= 0&quot;</span><span class="p">)</span>
+
+		<span class="c1"># initiate variables</span>
+		<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sent_A&quot;</span><span class="p">]</span>
+		
+		<span class="k">if</span> <span class="n">return_rdm_EVs</span><span class="p">:</span>
+			<span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;p_A&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">return_rdm</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+			<span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;rdm_A&quot;</span><span class="p">)</span>
+			
+		<span class="k">elif</span> <span class="n">return_rdm</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+			<span class="n">variables</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;Sent_B&quot;</span><span class="p">,</span><span class="s2">&quot;rdm_B&quot;</span><span class="p">])</span>
+			<span class="k">if</span> <span class="n">return_rdm_EVs</span><span class="p">:</span>
+				<span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;p_B&quot;</span><span class="p">)</span>
+			
+		<span class="k">elif</span> <span class="n">return_rdm</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+			<span class="n">variables</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;rdm_A&quot;</span><span class="p">,</span><span class="s2">&quot;Sent_B&quot;</span><span class="p">,</span><span class="s2">&quot;rdm_B&quot;</span><span class="p">])</span>
+			<span class="k">if</span> <span class="n">return_rdm_EVs</span><span class="p">:</span>
+				<span class="n">variables</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;p_A&quot;</span><span class="p">,</span><span class="s2">&quot;p_B&quot;</span><span class="p">])</span>
+	
+
+		<span class="c1"># store variables to dictionar</span>
+		<span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">sparse</span> <span class="ow">and</span> <span class="s1">&#39;rdm&#39;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+					<span class="n">return_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span> <span class="c1"># don&#39;t squeeze sparse matrix</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">return_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">return_dict</span></div>
+
+
+	<span class="c1">##### private methods</span>
+
+	<span class="k">def</span> <span class="nf">_p_pure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		
+		<span class="c1"># put states in rows</span>
+		<span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">T</span>
+		<span class="c1"># reshape state according to sub_sys_A</span>
+		<span class="n">Ns_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="n">Ns_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="n">v</span><span class="o">=</span><span class="n">_tensor_reshape_pure</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">)</span>
+
+
+		<span class="n">rdm_A</span><span class="o">=</span><span class="kc">None</span>
+		<span class="n">rdm_B</span><span class="o">=</span><span class="kc">None</span>
+
+		<span class="c1"># perform SVD	</span>
+		<span class="k">if</span> <span class="n">return_rdm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">lmbda</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">compute_uv</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> 
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">U</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;A&#39;</span><span class="p">:</span>
+				<span class="n">rdm_A</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;...ij,...j,...kj-&gt;...ik&#39;</span><span class="p">,</span><span class="n">U</span><span class="p">,</span><span class="n">lmbda</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">U</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="p">)</span>
+			<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;B&#39;</span><span class="p">:</span>
+				<span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;...ji,...j,...jk-&gt;...ik&#39;</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">lmbda</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">V</span> <span class="p">)</span>
+			<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;both&#39;</span><span class="p">:</span>
+				<span class="n">rdm_A</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;...ij,...j,...kj-&gt;...ik&#39;</span><span class="p">,</span><span class="n">U</span><span class="p">,</span><span class="n">lmbda</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">U</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="p">)</span>
+				<span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;...ji,...j,...jk-&gt;...ik&#39;</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">lmbda</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">V</span> <span class="p">)</span>
+
+		<span class="k">return</span> <span class="p">(</span><span class="n">lmbda</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">lmbda</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span>
+
+	<span class="k">def</span> <span class="nf">_p_pure_sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+		<span class="n">partial_trace_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+			<span class="n">Ns_A</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
+			<span class="n">Ns_B</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">Ns_A</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+			<span class="n">Ns_B</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
+						
+
+		<span class="n">rdm_A</span><span class="o">=</span><span class="kc">None</span>
+		<span class="n">rdm_B</span><span class="o">=</span><span class="kc">None</span>
+
+		<span class="k">if</span> <span class="n">return_rdm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">Ns_A</span> <span class="o">&lt;=</span> <span class="n">Ns_B</span><span class="p">:</span>
+				<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+				<span class="n">rdm</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+				<span class="n">rdm</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+
+		<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;A&#39;</span> <span class="ow">and</span> <span class="n">Ns_A</span> <span class="o">&lt;=</span> <span class="n">Ns_B</span><span class="p">:</span>
+			<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+			<span class="n">rdm_A</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+			<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_A</span>
+
+		<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;B&#39;</span> <span class="ow">and</span> <span class="n">Ns_B</span> <span class="o">&lt;=</span> <span class="n">Ns_A</span><span class="p">:</span>
+			<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+			<span class="n">rdm_B</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+			<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_B</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span>
+			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">Ns_A</span> <span class="o">&lt;=</span> <span class="n">Ns_B</span><span class="p">:</span>
+				<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_A</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_B</span>
+
+		<span class="k">if</span> <span class="n">sparse_diag</span> <span class="ow">and</span> <span class="n">rdm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">16</span><span class="p">:</span>
+
+			<span class="k">def</span> <span class="nf">get_p_patchy</span><span class="p">(</span><span class="n">rdm</span><span class="p">):</span>
+				<span class="n">n</span> <span class="o">=</span> <span class="n">rdm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+				<span class="n">p_LM</span> <span class="o">=</span> <span class="n">eigsh</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="n">n</span><span class="o">%</span><span class="mi">2</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;LM&quot;</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">,</span><span class="n">return_eigenvectors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># get upper half</span>
+				<span class="n">p_SM</span> <span class="o">=</span> <span class="n">eigsh</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SM&quot;</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">,</span><span class="n">return_eigenvectors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># get lower half</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">p_LM</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">p_SM</span><span class="p">))</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">p_LM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+				<span class="k">return</span> <span class="n">p</span>
+
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">rdm</span><span class="p">):</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">get_p_patchy</span><span class="p">(</span><span class="n">rdm</span><span class="p">)</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">p_gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">get_p_patchy</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span> <span class="k">for</span> <span class="n">dm</span> <span class="ow">in</span> <span class="n">rdm</span><span class="p">[:])</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">p_gen</span><span class="p">)</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">rdm</span><span class="p">):</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">eigvalsh</span><span class="p">(</span><span class="n">rdm</span><span class="o">.</span><span class="n">todense</span><span class="p">())[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rdm</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">p_gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">todense</span><span class="p">())[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span> <span class="k">for</span> <span class="n">dm</span> <span class="ow">in</span> <span class="n">rdm</span><span class="p">[:])</span>
+				<span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">p_gen</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">p</span><span class="p">,</span><span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span>
+	
+	<span class="k">def</span> <span class="nf">_p_mixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This function calculates the eigenvalues of the reduced density matrix.</span>
+<span class="sd">		It will first calculate the partial trace of the full density matrix and</span>
+<span class="sd">		then diagonalizes it to get the eigenvalues. It will automatically choose</span>
+<span class="sd">		the subsystem with the smaller hilbert space to do the diagonalization in order</span>
+<span class="sd">		to reduce the calculation time but will only return the desired reduced density</span>
+<span class="sd">		matrix. </span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+
+		<span class="n">Ns_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="n">Ns_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+
+		<span class="n">rdm_A</span><span class="p">,</span><span class="n">p_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span>
+		<span class="n">rdm_B</span><span class="p">,</span><span class="n">p_B</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span>
+		
+		<span class="k">if</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;both&#39;</span><span class="p">:</span>
+			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+			
+			<span class="n">p_A</span> <span class="o">=</span> <span class="n">eigvalsh</span><span class="p">(</span><span class="n">rdm_A</span><span class="p">)</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rdm_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+			<span class="n">p_B</span> <span class="o">=</span> <span class="n">eigvalsh</span><span class="p">(</span><span class="n">rdm_B</span><span class="p">)</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rdm_B</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+		<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;A&#39;</span><span class="p">:</span>
+			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+			<span class="n">p_A</span> <span class="o">=</span> <span class="n">eigvalsh</span><span class="p">(</span><span class="n">rdm_A</span><span class="p">)</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rdm_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+			
+		<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;B&#39;</span><span class="p">:</span>
+			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+			<span class="n">p_B</span> <span class="o">=</span> <span class="n">eigvalsh</span><span class="p">(</span><span class="n">rdm_B</span><span class="p">)</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rdm_B</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+			<span class="n">p_A</span> <span class="o">=</span> <span class="n">eigvalsh</span><span class="p">(</span><span class="n">rdm_A</span><span class="p">)</span> <span class="o">+</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">rdm_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+			
+		<span class="k">return</span> <span class="n">p_A</span><span class="p">,</span> <span class="n">p_B</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span>
+
+	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.tensor_basis&#39;&gt;&quot;</span>
+
+	<span class="k">def</span> <span class="nf">_sort_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">opstr</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">indx</span>  <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="n">opstr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;missing &#39;|&#39; charactor in: </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">))</span>
+	
+		<span class="c1"># if opstr.count(&quot;|&quot;) &gt; 1: </span>
+		<span class="c1"># 	raise ValueError(&quot;only one &#39;|&#39; charactor allowed in: {0}, {1}&quot;.format(opstr,indx))</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">-</span><span class="n">opstr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of indices doesn&#39;t match opstr in: </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">))</span>
+
+		<span class="n">i</span> <span class="o">=</span> <span class="n">opstr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+		<span class="n">indx_left</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">indx_right</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+		<span class="n">opstr_left</span><span class="p">,</span><span class="n">opstr_right</span><span class="o">=</span><span class="n">opstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="n">op1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_left</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">indx_left</span><span class="p">)</span>
+
+		<span class="n">op2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_right</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">indx_right</span><span class="p">)</span>
+		
+		<span class="n">op1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_sort_opstr</span><span class="p">(</span><span class="n">op1</span><span class="p">)</span>
+		<span class="n">op2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_sort_opstr</span><span class="p">(</span><span class="n">op2</span><span class="p">)</span>
+
+		<span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">op1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">op1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">op2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_hc_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">opstr</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">indx</span>  <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	
+		<span class="c1"># if opstr.count(&quot;|&quot;) &gt; 1: </span>
+		<span class="c1"># 	raise ValueError(&quot;only one &#39;|&#39; charactor allowed in: {0}, {1}&quot;.format(opstr,indx))</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">-</span><span class="n">opstr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of indices doesn&#39;t match opstr in: </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">))</span>
+
+		<span class="n">i</span> <span class="o">=</span> <span class="n">opstr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+		<span class="n">indx_left</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">indx_right</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+		<span class="n">opstr_left</span><span class="p">,</span><span class="n">opstr_right</span><span class="o">=</span><span class="n">opstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="n">op1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_left</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">indx_left</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+		<span class="n">op2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_right</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">indx_right</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+		
+		<span class="n">op1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_hc_opstr</span><span class="p">(</span><span class="n">op1</span><span class="p">)</span>
+		<span class="n">op2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_hc_opstr</span><span class="p">(</span><span class="n">op2</span><span class="p">)</span>
+
+		<span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">op1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">op1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">op2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="n">op</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">op1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">op2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">_non_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">opstr</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">indx</span>  <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	
+		<span class="c1"># if opstr.count(&quot;|&quot;) &gt; 1: </span>
+		<span class="c1"># 	raise ValueError(&quot;only one &#39;|&#39; charactor allowed in: {0}, {1}&quot;.format(opstr,indx))</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">-</span><span class="n">opstr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of indices doesn&#39;t match opstr in: </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">))</span>
+
+		<span class="n">i</span> <span class="o">=</span> <span class="n">opstr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+		<span class="n">indx_left</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">indx_right</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+		<span class="n">opstr_left</span><span class="p">,</span><span class="n">opstr_right</span><span class="o">=</span><span class="n">opstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="n">op1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_left</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">indx_left</span>
+
+		<span class="n">op2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_right</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">indx_right</span>
+
+		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_non_zero</span><span class="p">(</span><span class="n">op1</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_non_zero</span><span class="p">(</span><span class="n">op2</span><span class="p">))</span>
+
+	<span class="k">def</span> <span class="nf">_expand_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+		<span class="n">op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">opstr</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">indx</span>  <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	
+		<span class="c1"># if opstr.count(&quot;|&quot;) &gt; 1: </span>
+		<span class="c1"># 	raise ValueError(&quot;only one &#39;|&#39; charactor allowed in: {0}, {1}&quot;.format(opstr,indx))</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opstr</span><span class="p">)</span><span class="o">-</span><span class="n">opstr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of indices doesn&#39;t match opstr in: </span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">))</span>
+
+		<span class="n">i</span> <span class="o">=</span> <span class="n">opstr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+		<span class="n">indx_left</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">indx_right</span> <span class="o">=</span> <span class="n">indx</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+		<span class="n">opstr_left</span><span class="p">,</span><span class="n">opstr_right</span><span class="o">=</span><span class="n">opstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="n">op1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_left</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">indx_left</span>
+		<span class="n">op1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+		<span class="n">op2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_right</span>
+		<span class="n">op2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">indx_right</span>
+
+		<span class="n">op1_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_expand_opstr</span><span class="p">(</span><span class="n">op1</span><span class="p">,</span><span class="n">num</span><span class="p">)</span>
+		<span class="n">op2_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_expand_opstr</span><span class="p">(</span><span class="n">op2</span><span class="p">,</span><span class="n">num</span><span class="p">)</span>
+
+		<span class="n">op_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">new_op1</span> <span class="ow">in</span> <span class="n">op1_list</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">new_op2</span> <span class="ow">in</span> <span class="n">op2_list</span><span class="p">:</span>
+				<span class="n">new_op</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_op1</span><span class="p">)</span>
+				<span class="n">new_op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">new_op1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">new_op2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+				<span class="n">new_op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_op2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+				<span class="n">new_op</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="n">new_op2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+
+				<span class="n">op_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">new_op</span><span class="p">))</span>
+
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op_list</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_get__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="p">,</span><span class="s2">&quot;_get__str__&quot;</span><span class="p">):</span>
+			<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;basis class </span><span class="si">{0}</span><span class="s2"> missing _get__str__ function, can not print out basis representatives.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="p">)),</span><span class="ne">UserWarning</span><span class="p">,</span><span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+			<span class="k">return</span> <span class="s2">&quot;reference states: </span><span class="se">\n\t</span><span class="s2"> not availible&quot;</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="p">,</span><span class="s2">&quot;_get__str__&quot;</span><span class="p">):</span>
+			<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;basis class </span><span class="si">{0}</span><span class="s2"> missing _get__str__ function, can not print out basis representatives.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="p">)),</span><span class="ne">UserWarning</span><span class="p">,</span><span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+			<span class="k">return</span> <span class="s2">&quot;reference states: </span><span class="se">\n\t</span><span class="s2"> not availible&quot;</span>
+
+		<span class="n">n_digits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)))</span>
+
+		<span class="n">str_list_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">_get__str__</span><span class="p">()</span>
+		<span class="n">str_list_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">_get__str__</span><span class="p">()</span>
+		<span class="n">Ns2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+		<span class="n">temp</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">{0:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_digits</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}.  &quot;</span>
+		<span class="n">str_list</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">basis_left</span> <span class="ow">in</span> <span class="n">str_list_1</span><span class="p">:</span>
+			<span class="n">basis_left</span><span class="p">,</span><span class="n">s1</span> <span class="o">=</span> <span class="n">basis_left</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.  &quot;</span><span class="p">)</span>
+			<span class="n">i1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">basis_left</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">basis_right</span> <span class="ow">in</span> <span class="n">str_list_2</span><span class="p">:</span>
+				<span class="n">basis_right</span><span class="p">,</span><span class="n">s2</span> <span class="o">=</span> <span class="n">basis_right</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.  &quot;</span><span class="p">)</span>
+				<span class="n">i2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">basis_right</span><span class="p">)</span>
+				<span class="n">str_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">temp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i2</span><span class="o">+</span><span class="n">Ns2</span><span class="o">*</span><span class="n">i1</span><span class="p">))</span><span class="o">+</span><span class="n">s1</span><span class="o">+</span><span class="n">s2</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&gt;</span> <span class="n">MAXPRINT</span><span class="p">:</span>
+			<span class="n">half</span> <span class="o">=</span> <span class="n">MAXPRINT</span><span class="o">//</span><span class="mi">2</span>
+			<span class="n">str_list_1</span> <span class="o">=</span> <span class="n">str_list</span><span class="p">[:</span><span class="n">half</span><span class="p">]</span>
+			<span class="n">str_list_2</span> <span class="o">=</span> <span class="n">str_list</span><span class="p">[</span><span class="o">-</span><span class="n">half</span><span class="p">:]</span>
+
+			<span class="n">str_list</span> <span class="o">=</span> <span class="n">str_list_1</span>
+			<span class="n">str_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">str_list_2</span><span class="p">)</span>	
+
+		<span class="k">return</span> <span class="n">str_list</span>		</div>
+
+
+<span class="k">def</span> <span class="nf">_combine_get_vecs</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">):</span>
+	<span class="n">Ns1</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
+	<span class="n">Ns2</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+
+	<span class="n">Nvecs</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+	<span class="n">Ns</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">Ns1</span><span class="p">,</span><span class="n">Ns2</span><span class="p">)</span>
+
+	<span class="c1"># reshape vector to matrix to rewrite vector as an outer product.</span>
+	<span class="n">v0</span><span class="o">=</span><span class="n">v0</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">Nvecs</span><span class="p">,</span><span class="n">Ns1</span><span class="p">,</span><span class="n">Ns2</span><span class="p">))</span>
+	<span class="c1"># take singular value decomposition to get which decomposes the matrix into separate parts.</span>
+	<span class="c1"># the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector </span>
+
+	<span class="n">V1</span><span class="p">,</span><span class="n">S</span><span class="p">,</span><span class="n">V2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">T</span>
+	<span class="n">V1</span> <span class="o">=</span> <span class="n">V1</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+	<span class="n">V2</span> <span class="o">=</span> <span class="n">V2</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+	<span class="c1"># combining all the vectors together with the tensor product as opposed to the outer product</span>
+	<span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+		<span class="c1"># take the vectors and convert them to their full hilbert space</span>
+		<span class="n">v1</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			
+		<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="n">temp1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+		<span class="n">temp2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+
+		<span class="n">v1</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">temp2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+		<span class="n">v2</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">temp1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+
+		<span class="n">s</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+		<span class="n">v0</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+		
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">S</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+			<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
+				<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				
+			<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">temp2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>  
+			<span class="n">v2</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">temp1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+
+			<span class="n">s</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+			<span class="n">v</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span> <span class="o">+</span> <span class="n">v</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># take the vectors and convert them to their full hilbert space</span>
+		<span class="n">v1</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+			
+		<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+		<span class="n">temp1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+		<span class="n">temp2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+
+		<span class="n">v1</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">temp2</span><span class="p">)</span>
+		<span class="n">v2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">temp1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+		<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+		<span class="n">v0</span> <span class="o">*=</span> <span class="n">S</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">S</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+			<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
+				<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+				
+			<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+			<span class="n">v1</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">temp2</span><span class="p">)</span>
+			<span class="n">v2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">temp1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+			<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+			<span class="n">v0</span> <span class="o">+=</span> <span class="n">s</span><span class="o">*</span><span class="n">v</span>
+
+
+
+	<span class="k">return</span> <span class="n">v0</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">def _combine_get_vec(basis,v0,sparse,full_left,full_right):</span>
+<span class="sd">	Ns1=basis._basis_left.Ns</span>
+<span class="sd">	Ns2=basis._basis_right.Ns</span>
+
+<span class="sd">	Ns = min(Ns1,Ns2)</span>
+
+<span class="sd">	# reshape vector to matrix to rewrite vector as an outer product.</span>
+<span class="sd">	v0=_np.reshape(v0,(Ns1,Ns2))</span>
+<span class="sd">	# take singular value decomposition to get which decomposes the matrix into separate parts.</span>
+<span class="sd">	# the outer/tensor product of the cols of V1 and V2 are the product states which make up the original vector </span>
+
+<span class="sd">	if sparse:</span>
+<span class="sd">		V1,S,V2=_sla.svds(v0,k=Ns-1,which=&#39;SM&#39;,maxiter=1E10)</span>
+<span class="sd">		V12,[S2],V22=_sla.svds(v0,k=1,which=&#39;LM&#39;,maxiter=1E10)</span>
+
+<span class="sd">		S.resize((Ns,))</span>
+<span class="sd">		S[-1] = S2</span>
+<span class="sd">		V1.resize((Ns1,Ns))</span>
+<span class="sd">		V1[:,-1] = V12[:,0]</span>
+<span class="sd">		V2.resize((Ns,Ns2))</span>
+<span class="sd">		V2[-1,:] = V22[0,:]</span>
+<span class="sd">	else:</span>
+<span class="sd">		V1,S,V2=_la.svd(v0)</span>
+<span class="sd">		</span>
+<span class="sd">	# svd returns V2.H so take the hc to reverse that</span>
+<span class="sd">	V2=V2.T.conj()</span>
+<span class="sd">	eps = _np.finfo(S.dtype).eps</span>
+<span class="sd">	# for any values of s which are 0, remove those vectors because they do not contribute.</span>
+<span class="sd">	mask=(S &gt;= 10*eps)</span>
+<span class="sd">	V1=V1[:,mask]</span>
+<span class="sd">	V2=V2[:,mask]</span>
+<span class="sd">	S=S[mask]</span>
+
+
+<span class="sd">	# Next thing to do is take those vectors and convert them to their full hilbert space</span>
+<span class="sd">	if full_left:</span>
+<span class="sd">		V1=basis._basis_left.get_vec(V1,sparse)</span>
+
+<span class="sd">	if full_right:</span>
+<span class="sd">		V2=basis._basis_right.get_vec(V2,sparse)</span>
+
+
+<span class="sd">	# calculate the dimension total hilbert space with no symmetries</span>
+<span class="sd">	Ns=V2.shape[0]*V1.shape[0]		</span>
+
+
+<span class="sd">	if sparse:</span>
+<span class="sd">		v0=_sp.csr_matrix((Ns,1),dtype=V2.dtype)</span>
+<span class="sd">		# combining all the vectors together with the tensor product as opposed to the outer product</span>
+<span class="sd">		for i,s in enumerate(S):</span>
+<span class="sd">			v1=V1.getcol(i)</span>
+<span class="sd">			v2=V2.getcol(i)</span>
+<span class="sd">			v=_sp.kron(v1,v2)</span>
+<span class="sd">			v0 = v0 + s*v</span>
+<span class="sd">		n=_np.sqrt(v0.multiply(v0.conj()).sum())</span>
+<span class="sd">	#	v0=v0/n</span>
+<span class="sd">		v0=v0.astype(V1.dtype)</span>
+<span class="sd">		</span>
+<span class="sd">		</span>
+<span class="sd">	else:</span>
+<span class="sd">		v0=_np.zeros((Ns,),dtype=V2.dtype)</span>
+<span class="sd">		for i,s in enumerate(S):</span>
+<span class="sd">			v1=V1[:,i]</span>
+<span class="sd">			v2=V2[:,i]</span>
+<span class="sd">			v=_np.kron(v1,v2)</span>
+<span class="sd">			v0 += s*v</span>
+<span class="sd">		v0 /= _la.norm(v0)</span>
+
+
+<span class="sd">	return v0</span>
+
+
+<span class="sd">def _combine_get_vecs(basis,V0,sparse,full_left,full_right):</span>
+<span class="sd">	v0_list=[]</span>
+<span class="sd">	V0=V0.T</span>
+<span class="sd">	for v0 in V0:</span>
+<span class="sd">		v0_list.append(_combine_get_vec(basis,v0,sparse,full_left,full_right))</span>
+
+<span class="sd">	if sparse:</span>
+<span class="sd">		V0=_sp.hstack(v0_list)</span>
+<span class="sd">	else:</span>
+<span class="sd">		V0=_np.hstack(v0_list)</span>
+
+<span class="sd">	return V0</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>
