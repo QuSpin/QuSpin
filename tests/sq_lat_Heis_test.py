@@ -17,7 +17,7 @@ def test(S,Lx,Ly):
 
 	N = Lx*Ly
 
-	nmax = int(eval("("+S+")*2"))
+	nmax = int(eval("2*"+S))
 	sps = nmax+1
 	tr = square_lattice_trans(Lx,Ly)
 
