@@ -268,6 +268,7 @@ class photon_basis(tensor_basis):
 
 		if not self._check_pcon:
 			n = len(opstr.replace("|","")) - len(indx)
+			indx = list(indx)
 			indx.extend([0 for i in range(n)])
 
 			return tensor_basis.Op(self,opstr,indx,J,dtype)

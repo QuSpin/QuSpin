@@ -38,7 +38,7 @@ print(expH.a)
 _,psi=H.eigsh(k=1,which='SA') # compute GS of H
 psi=psi.squeeze()
 # construct c++ work array for speed
-work_array=np.zeros((2*len(psi),), dtype=np.complex64)
+work_array=np.zeros((2*len(psi),), dtype=psi.dtype)
 print(H.expt_value(psi)) # measure energy of state |psi>
 expH.dot(psi,work_array=work_array,overwrite_v=True) # compute action of matrix exponential on a state
 print(H.expt_value(psi)) # measure energy of state exp(aH)|psi>

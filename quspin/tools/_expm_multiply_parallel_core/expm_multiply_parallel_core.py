@@ -35,7 +35,11 @@ class expm_multiply_parallel(object):
 			scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.
 			
 		"""
-		self._a = a
+		if _np.array(a).ndim == 0:
+			self._a = a
+		else:
+			raise ValueError("a must be scalar value.")
+
 		self._A = _sp.csr_matrix(A,copy=False)
 
 		if A.shape[0] != A.shape[1]:
@@ -79,7 +83,6 @@ class expm_multiply_parallel(object):
 		"""
 
 		if _np.array(a).ndim == 0:
-
 			self._a = a
 			self._calculate_partition()
 		else:
@@ -121,8 +124,16 @@ class expm_multiply_parallel(object):
 		if v.ndim != 1:
 			raise ValueError
 
+		a_dtype = _np.array(self._a).dtype
+		v_dtype = _np.result_type(self._A.dtype,a_dtype,v.dtype)
+
+		if v_dtype != v.dtype:
+			v = v.astype(v_dtype)
+
 		if v.shape[0] != self._A.shape[1]:
 			raise ValueError("dimension mismatch {}, {}".format(self._A.shape,v.shape))
+
+		
 
 		if work_array is None:
 			work_array = _np.zeros((2*self._A.shape[0],),dtype=v.dtype)
@@ -130,8 +141,8 @@ class expm_multiply_parallel(object):
 			work_array = _np.ascontiguousarray(work_array)
 			if work_array.shape != (2*self._A.shape[0],):
 				raise ValueError("work_array array must be an array of shape (2*v.shape[0],) with same dtype as v.")
-			if work_array.dtype != v.dtype:
-				raise ValueError("work_array array must be the same dtype as i_nput vector v.")
+			if work_array.dtype != v_dtype:
+				work_array = work_array.astype(v_dtype)
 
 		_wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
 					self._m_star,self._s,self._a,self._tol,self._mu,v,work_array)
