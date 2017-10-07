@@ -59,7 +59,7 @@ class lattice_basis(basis):
 		if type(s) is int:
 			pass
 		elif type(s) is str:
-			s = long(s,self.sps)
+			s = int(s,self.sps)
 		else:
 			raise ValueError("s must be integer or state")
 

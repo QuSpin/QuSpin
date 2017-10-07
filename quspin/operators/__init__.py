@@ -6,7 +6,8 @@ Operators module (:mod:`quspin.operators`)
 Classes and functions for constructing and manipulating quantum operators, and implementing Schroedinger time evolution.
 
 Many-body operators in QuSpin are defined by a string of letters representing the operator types, 
-together with a list which holds the indices for the sites that each operator acts at on the lattice. 
+together with a list which holds the indices for the sites that each operator acts at on, in the lattice. 
+
 For example, in a spin-1/2 system we can represent any multi-spin operator as:
 
 .. math::
@@ -17,7 +18,7 @@ For example, in a spin-1/2 system we can represent any multi-spin operator as:
 
 where :math:`\\mu_i` can be "I", z", "+", "-", "x" or "y".
 Here, :math:`\\sigma_{i_n}^{\\mu_n}` is the Pauli spin operator acting on lattice site :math:`i_n`.
-This representation provides a way to conveniently define any multi-body spin-1/2 operator. 
+This representation provides a way to conveniently define any multi-body spin-1/2 operator, and generalises to bosons and fermions in a natural way. 
 
 To construct operators for different particle spieces, check out the `basis` constructor classes for the supported operator strings.
 
