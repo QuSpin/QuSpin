@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = QuSpin
 SOURCEDIR     = source
-BUILDDIR      = ../docs
+BUILDDIR      = ../../QuSpin_docs
 
 # Put it first so that "make" without argument is like "make help".
 help:
