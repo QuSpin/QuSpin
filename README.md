@@ -7,7 +7,7 @@ QuSpin wraps Scipy, Numpy, and custom Cython libraries together to offer state-o
 For an ***indepth introduction*** to the package, check out our papers:
 * https://scipost.org/10.21468/SciPostPhys.2.1.003
 
-The complete Documentation for QuSpin can be found at https://
+The complete Documentation for QuSpin can be found at [http://weinbe58.github.io/QuSpin/](http://weinbe58.github.io/QuSpin/)
 
 ***Examples*** with python scripts which show how to run QuSpin can be downloaded [here](./examples/). There is also a number of jupyter notebooks that accompany them.
 
