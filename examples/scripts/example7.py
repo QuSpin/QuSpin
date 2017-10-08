@@ -73,7 +73,7 @@ sub_sys_A = range(0,N,2) # bottom side of ladder
 gen = (basis.ent_entropy(psi,sub_sys_A=sub_sys_A)["Sent_A"]/L for psi in psi_t.T[:])
 ent_t = np.fromiter(gen,dtype=np.float64,count=num)
 # plotting static figures
-"""
+#"""
 fig, ax = plt.subplots(nrows=5,ncols=1)
 im=[]
 im_ind = []
@@ -88,16 +88,16 @@ plt.savefig("boson_density.pdf")
 plt.figure()
 plt.plot(times,ent_t,lw=2)
 plt.plot(times[im_ind],ent_t[im_ind],marker="o",linestyle="",color="red")
-plt.xlabel("$t/J$",fontsize=20)
+plt.xlabel("$Jt$",fontsize=20)
 plt.ylabel("$s_\mathrm{ent}(t)$",fontsize=20)
 plt.grid()
 plt.savefig("boson_entropy.pdf")
 plt.show()
-"""
+#"""
 # setting up two plots to animate side by side
 fig, (ax1,ax2) = plt.subplots(1,2)
 fig.set_size_inches(10, 5)
-ax1.set_xlabel(r"$t/J$",fontsize=18)
+ax1.set_xlabel(r"$Jt$",fontsize=18)
 ax1.set_ylabel(r"$s_\mathrm{ent}$",fontsize=18)
 ax1.grid()
 line1, = ax1.plot(times, ent_t, lw=2)
@@ -109,6 +109,7 @@ def run(i): # function to update frame
 	line1.set_data(times[:i],ent_t[:i])
 	im.set_data(n_t[i])
 	return im, line1
+# CAUTION: these are many animations
 ani = animation.FuncAnimation(fig, run, range(num),interval=50)
 plt.show()
 #

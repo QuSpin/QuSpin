@@ -11764,7 +11764,7 @@ where $J$ is the hopping matrix element, $\kappa_i$ is the harmonic trap 'freque
 $$ i\partial_t\vec{\psi}(t) = H_\mathrm{sp}\vec{\psi}(t) + U \vec{\psi}^*(t)\circ \vec{\psi}(t)\circ \vec{\psi}(t)$$
 where $H_\mathrm{sp}$ is a single-particle Hailtonian which contains the hopping term and the armonic potential, and the simbol $\circ$ defines element-wise multiplication: $(\vec\psi\circ\vec\phi)_j = \psi_j\phi_j$.</p>
 <p>We start by constructing the single-particle Hamiltonian $H_\mathrm{sp}$. For the sake of saving code, it would be advantageous to view this Hamiltonian as the $t=0$ limit of a more-generic time-dependent Hamiltonian $H_\mathrm{sp}(t)$, which is defined by</p>
-$$ H_\mathrm{sp}(t) = -J\sum_{j=0}^{L-2} (a^\dagger_{j+1}a_j + \mathrm{h.c.} + \frac{1}{2}\kappa_\mathrm{trap}(t)\sum_{j=0}^{L-1}n_j $$$$\kappa_\mathrm{trap}(t)=(\kappa_f-\kappa_i)t/t_\mathrm{ramp}+ \kappa_i $$<p>In the limit $t=0$, we have $\kappa_\mathrm{trap}(0) = \kappa_i $.</p>
+$$ H_\mathrm{sp}(t) = -J\sum_{j=0}^{L-2} (a^\dagger_{j+1}a_j + \mathrm{h.c.}) + \frac{1}{2}\kappa_\mathrm{trap}(t)\sum_{j=0}^{L-1}(j-j_0)^2n_j $$$$\kappa_\mathrm{trap}(t)=(\kappa_f-\kappa_i)t/t_\mathrm{ramp}+ \kappa_i $$<p>In the limit $t=0$, we have $\kappa_\mathrm{trap}(0) = \kappa_i $.</p>
 <p>First, we load the required libraries and define the model parameters</p>
 
 </div>
@@ -11772,13 +11772,14 @@ $$ H_\mathrm{sp}(t) = -J\sum_{j=0}^{L-2} (a^\dagger_{j+1}a_j + \mathrm{h.c.} + \
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span> <span class="c1"># Hilbert space boson basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">evolve</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># loop over elements of dictionary</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="c1">#</span>
 <span class="c1">##### define model parameters #####</span>
@@ -11821,7 +11822,7 @@ $$ H_\mathrm{sp}(t) = -J\sum_{j=0}^{L-2} (a^\dagger_{j+1}a_j + \mathrm{h.c.} + \
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">##### construct single-particle Hamiltonian #####</span>
@@ -11879,7 +11880,7 @@ $$\vec{\psi}_\mathrm{GS} = \lim_{\tau\to\infty}\vec\varphi(\tau)$$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#########################################################</span>
@@ -11904,10 +11905,94 @@ $$\vec{\psi}_\mathrm{GS} = \lim_{\tau\to\infty}\vec\varphi(\tau)$$</p>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">psi0</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_tau</span><span class="p">):</span>
     <span class="c1"># compute energy</span>
     <span class="n">E_GS</span><span class="o">=</span><span class="p">(</span><span class="n">Hsp</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">psi0</span><span class="p">,</span><span class="n">psi0</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">U</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">real</span>
-    <span class="c1">#print(&#39;$J\\tau=%0.2f,\\ E_\\mathrm{GS}(\\tau)=%0.4fJ$&#39;%(tau[i],E_GS) )</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;$J</span><span class="se">\\</span><span class="s1">tau=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E_</span><span class="se">\\</span><span class="s1">mathrm{GS}(</span><span class="se">\\</span><span class="s1">tau)=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E_GS</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>$J\tau=0.00,\ E_\mathrm{GS}(\tau)=2095.4510J$
+$J\tau=0.50,\ E_\mathrm{GS}(\tau)=864.1360J$
+$J\tau=1.00,\ E_\mathrm{GS}(\tau)=551.3869J$
+$J\tau=1.50,\ E_\mathrm{GS}(\tau)=395.5782J$
+$J\tau=2.00,\ E_\mathrm{GS}(\tau)=298.5153J$
+$J\tau=2.50,\ E_\mathrm{GS}(\tau)=231.0927J$
+$J\tau=3.00,\ E_\mathrm{GS}(\tau)=181.1400J$
+$J\tau=3.50,\ E_\mathrm{GS}(\tau)=142.5232J$
+$J\tau=4.00,\ E_\mathrm{GS}(\tau)=111.7613J$
+$J\tau=4.50,\ E_\mathrm{GS}(\tau)=86.7082J$
+$J\tau=5.00,\ E_\mathrm{GS}(\tau)=65.9578J$
+$J\tau=5.50,\ E_\mathrm{GS}(\tau)=48.5440J$
+$J\tau=6.00,\ E_\mathrm{GS}(\tau)=33.7774J$
+$J\tau=6.50,\ E_\mathrm{GS}(\tau)=21.1510J$
+$J\tau=7.00,\ E_\mathrm{GS}(\tau)=10.2816J$
+$J\tau=7.50,\ E_\mathrm{GS}(\tau)=0.8739J$
+$J\tau=8.00,\ E_\mathrm{GS}(\tau)=-7.3046J$
+$J\tau=8.50,\ E_\mathrm{GS}(\tau)=-14.4398J$
+$J\tau=9.00,\ E_\mathrm{GS}(\tau)=-20.6824J$
+$J\tau=9.50,\ E_\mathrm{GS}(\tau)=-26.1563J$
+$J\tau=10.00,\ E_\mathrm{GS}(\tau)=-30.9646J$
+$J\tau=10.50,\ E_\mathrm{GS}(\tau)=-35.1936J$
+$J\tau=11.00,\ E_\mathrm{GS}(\tau)=-38.9168J$
+$J\tau=11.50,\ E_\mathrm{GS}(\tau)=-42.1966J$
+$J\tau=12.00,\ E_\mathrm{GS}(\tau)=-45.0870J$
+$J\tau=12.50,\ E_\mathrm{GS}(\tau)=-47.6346J$
+$J\tau=13.00,\ E_\mathrm{GS}(\tau)=-49.8799J$
+$J\tau=13.50,\ E_\mathrm{GS}(\tau)=-51.8583J$
+$J\tau=14.00,\ E_\mathrm{GS}(\tau)=-53.6010J$
+$J\tau=14.50,\ E_\mathrm{GS}(\tau)=-55.1354J$
+$J\tau=15.00,\ E_\mathrm{GS}(\tau)=-56.4856J$
+$J\tau=15.50,\ E_\mathrm{GS}(\tau)=-57.6729J$
+$J\tau=16.00,\ E_\mathrm{GS}(\tau)=-58.7163J$
+$J\tau=16.50,\ E_\mathrm{GS}(\tau)=-59.6325J$
+$J\tau=17.00,\ E_\mathrm{GS}(\tau)=-60.4365J$
+$J\tau=17.50,\ E_\mathrm{GS}(\tau)=-61.1414J$
+$J\tau=18.00,\ E_\mathrm{GS}(\tau)=-61.7590J$
+$J\tau=18.50,\ E_\mathrm{GS}(\tau)=-62.2996J$
+$J\tau=19.00,\ E_\mathrm{GS}(\tau)=-62.7724J$
+$J\tau=19.50,\ E_\mathrm{GS}(\tau)=-63.1857J$
+$J\tau=20.00,\ E_\mathrm{GS}(\tau)=-63.5467J$
+$J\tau=20.50,\ E_\mathrm{GS}(\tau)=-63.8617J$
+$J\tau=21.00,\ E_\mathrm{GS}(\tau)=-64.1365J$
+$J\tau=21.50,\ E_\mathrm{GS}(\tau)=-64.3760J$
+$J\tau=22.00,\ E_\mathrm{GS}(\tau)=-64.5846J$
+$J\tau=22.50,\ E_\mathrm{GS}(\tau)=-64.7663J$
+$J\tau=23.00,\ E_\mathrm{GS}(\tau)=-64.9244J$
+$J\tau=23.50,\ E_\mathrm{GS}(\tau)=-65.0620J$
+$J\tau=24.00,\ E_\mathrm{GS}(\tau)=-65.1816J$
+$J\tau=24.50,\ E_\mathrm{GS}(\tau)=-65.2856J$
+$J\tau=25.00,\ E_\mathrm{GS}(\tau)=-65.3761J$
+$J\tau=25.50,\ E_\mathrm{GS}(\tau)=-65.4547J$
+$J\tau=26.00,\ E_\mathrm{GS}(\tau)=-65.5230J$
+$J\tau=26.50,\ E_\mathrm{GS}(\tau)=-65.5824J$
+$J\tau=27.00,\ E_\mathrm{GS}(\tau)=-65.6340J$
+$J\tau=27.50,\ E_\mathrm{GS}(\tau)=-65.6788J$
+$J\tau=28.00,\ E_\mathrm{GS}(\tau)=-65.7178J$
+$J\tau=28.50,\ E_\mathrm{GS}(\tau)=-65.7517J$
+$J\tau=29.00,\ E_\mathrm{GS}(\tau)=-65.7812J$
+$J\tau=29.50,\ E_\mathrm{GS}(\tau)=-65.8069J$
+$J\tau=30.00,\ E_\mathrm{GS}(\tau)=-65.8292J$
+$J\tau=30.50,\ E_\mathrm{GS}(\tau)=-65.8486J$
+$J\tau=31.00,\ E_\mathrm{GS}(\tau)=-65.8655J$
+$J\tau=31.50,\ E_\mathrm{GS}(\tau)=-65.8803J$
+$J\tau=32.00,\ E_\mathrm{GS}(\tau)=-65.8931J$
+$J\tau=32.50,\ E_\mathrm{GS}(\tau)=-65.9043J$
+$J\tau=33.00,\ E_\mathrm{GS}(\tau)=-65.9141J$
+$J\tau=33.50,\ E_\mathrm{GS}(\tau)=-65.9226J$
+$J\tau=34.00,\ E_\mathrm{GS}(\tau)=-65.9300J$
+$J\tau=34.50,\ E_\mathrm{GS}(\tau)=-65.9365J$
+$J\tau=35.00,\ E_\mathrm{GS}(\tau)=-65.9421J$
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11925,7 +12010,7 @@ $$\vec{\psi}_\mathrm{GS} = \lim_{\tau\to\infty}\vec\varphi(\tau)$$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#########################################################</span>
@@ -11939,8 +12024,8 @@ $$\vec{\psi}_\mathrm{GS} = \lim_{\tau\to\infty}\vec\varphi(\tau)$$</p>
     <span class="c1"># solve static part of GPE</span>
     <span class="n">psi_dot</span> <span class="o">=</span> <span class="n">Hsp</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">U</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">psi</span>
     <span class="c1"># solve dynamic part of GPE</span>
-    <span class="k">for</span> <span class="n">Hd</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">f_args</span> <span class="ow">in</span> <span class="n">Hsp</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-        <span class="n">psi_dot</span> <span class="o">+=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="o">*</span><span class="n">f_args</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">Hsp</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
+		<span class="n">psi_dot</span> <span class="o">+=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1j</span><span class="o">*</span><span class="n">psi_dot</span>
 <span class="c1"># define real time vector</span>
 <span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t_ramp</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
@@ -11951,10 +12036,124 @@ $$\vec{\psi}_\mathrm{GS} = \lim_{\tau\to\infty}\vec\varphi(\tau)$$</p>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">psi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_t</span><span class="p">):</span>
     <span class="c1"># compute energy</span>
     <span class="n">E</span><span class="o">=</span><span class="p">(</span><span class="n">Hsp</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">U</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">real</span>
-    <span class="c1">#print(&#39;$Jt=%0.2f,\\ E(t)-E_\\mathrm{GS}=%0.4fJ$&#39;%(t[i],E-E_GS) )</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;$Jt=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E(t)-E_</span><span class="se">\\</span><span class="s1">mathrm{GS}=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E</span><span class="o">-</span><span class="n">E_GS</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>$Jt=0.00,\ E(t)-E_\mathrm{GS}=0.0000J$
+$Jt=0.40,\ E(t)-E_\mathrm{GS}=-1.2925J$
+$Jt=0.80,\ E(t)-E_\mathrm{GS}=-2.5853J$
+$Jt=1.20,\ E(t)-E_\mathrm{GS}=-3.8787J$
+$Jt=1.60,\ E(t)-E_\mathrm{GS}=-5.1731J$
+$Jt=2.00,\ E(t)-E_\mathrm{GS}=-6.4687J$
+$Jt=2.40,\ E(t)-E_\mathrm{GS}=-7.7658J$
+$Jt=2.80,\ E(t)-E_\mathrm{GS}=-9.0649J$
+$Jt=3.20,\ E(t)-E_\mathrm{GS}=-10.3663J$
+$Jt=3.60,\ E(t)-E_\mathrm{GS}=-11.6702J$
+$Jt=4.00,\ E(t)-E_\mathrm{GS}=-12.9771J$
+$Jt=4.40,\ E(t)-E_\mathrm{GS}=-14.2872J$
+$Jt=4.80,\ E(t)-E_\mathrm{GS}=-15.6011J$
+$Jt=5.20,\ E(t)-E_\mathrm{GS}=-16.9190J$
+$Jt=5.60,\ E(t)-E_\mathrm{GS}=-18.2412J$
+$Jt=6.00,\ E(t)-E_\mathrm{GS}=-19.5683J$
+$Jt=6.40,\ E(t)-E_\mathrm{GS}=-20.9005J$
+$Jt=6.80,\ E(t)-E_\mathrm{GS}=-22.2383J$
+$Jt=7.20,\ E(t)-E_\mathrm{GS}=-23.5820J$
+$Jt=7.60,\ E(t)-E_\mathrm{GS}=-24.9320J$
+$Jt=8.00,\ E(t)-E_\mathrm{GS}=-26.2887J$
+$Jt=8.40,\ E(t)-E_\mathrm{GS}=-27.6525J$
+$Jt=8.80,\ E(t)-E_\mathrm{GS}=-29.0238J$
+$Jt=9.20,\ E(t)-E_\mathrm{GS}=-30.4030J$
+$Jt=9.60,\ E(t)-E_\mathrm{GS}=-31.7905J$
+$Jt=10.00,\ E(t)-E_\mathrm{GS}=-33.1868J$
+$Jt=10.40,\ E(t)-E_\mathrm{GS}=-34.5921J$
+$Jt=10.80,\ E(t)-E_\mathrm{GS}=-36.0070J$
+$Jt=11.20,\ E(t)-E_\mathrm{GS}=-37.4318J$
+$Jt=11.60,\ E(t)-E_\mathrm{GS}=-38.8670J$
+$Jt=12.00,\ E(t)-E_\mathrm{GS}=-40.3129J$
+$Jt=12.40,\ E(t)-E_\mathrm{GS}=-41.7701J$
+$Jt=12.80,\ E(t)-E_\mathrm{GS}=-43.2388J$
+$Jt=13.20,\ E(t)-E_\mathrm{GS}=-44.7195J$
+$Jt=13.60,\ E(t)-E_\mathrm{GS}=-46.2127J$
+$Jt=14.00,\ E(t)-E_\mathrm{GS}=-47.7187J$
+$Jt=14.40,\ E(t)-E_\mathrm{GS}=-49.2380J$
+$Jt=14.80,\ E(t)-E_\mathrm{GS}=-50.7710J$
+$Jt=15.20,\ E(t)-E_\mathrm{GS}=-52.3181J$
+$Jt=15.60,\ E(t)-E_\mathrm{GS}=-53.8798J$
+$Jt=16.00,\ E(t)-E_\mathrm{GS}=-55.4565J$
+$Jt=16.40,\ E(t)-E_\mathrm{GS}=-57.0485J$
+$Jt=16.80,\ E(t)-E_\mathrm{GS}=-58.6563J$
+$Jt=17.20,\ E(t)-E_\mathrm{GS}=-60.2804J$
+$Jt=17.60,\ E(t)-E_\mathrm{GS}=-61.9211J$
+$Jt=18.00,\ E(t)-E_\mathrm{GS}=-63.5790J$
+$Jt=18.40,\ E(t)-E_\mathrm{GS}=-65.2543J$
+$Jt=18.80,\ E(t)-E_\mathrm{GS}=-66.9476J$
+$Jt=19.20,\ E(t)-E_\mathrm{GS}=-68.6592J$
+$Jt=19.60,\ E(t)-E_\mathrm{GS}=-70.3897J$
+$Jt=20.00,\ E(t)-E_\mathrm{GS}=-72.1394J$
+$Jt=20.40,\ E(t)-E_\mathrm{GS}=-73.9087J$
+$Jt=20.80,\ E(t)-E_\mathrm{GS}=-75.6981J$
+$Jt=21.20,\ E(t)-E_\mathrm{GS}=-77.5080J$
+$Jt=21.60,\ E(t)-E_\mathrm{GS}=-79.3389J$
+$Jt=22.00,\ E(t)-E_\mathrm{GS}=-81.1912J$
+$Jt=22.40,\ E(t)-E_\mathrm{GS}=-83.0652J$
+$Jt=22.80,\ E(t)-E_\mathrm{GS}=-84.9615J$
+$Jt=23.20,\ E(t)-E_\mathrm{GS}=-86.8804J$
+$Jt=23.60,\ E(t)-E_\mathrm{GS}=-88.8225J$
+$Jt=24.00,\ E(t)-E_\mathrm{GS}=-90.7881J$
+$Jt=24.40,\ E(t)-E_\mathrm{GS}=-92.7777J$
+$Jt=24.80,\ E(t)-E_\mathrm{GS}=-94.7917J$
+$Jt=25.20,\ E(t)-E_\mathrm{GS}=-96.8306J$
+$Jt=25.60,\ E(t)-E_\mathrm{GS}=-98.8948J$
+$Jt=26.00,\ E(t)-E_\mathrm{GS}=-100.9848J$
+$Jt=26.40,\ E(t)-E_\mathrm{GS}=-103.1010J$
+$Jt=26.80,\ E(t)-E_\mathrm{GS}=-105.2438J$
+$Jt=27.20,\ E(t)-E_\mathrm{GS}=-107.4137J$
+$Jt=27.60,\ E(t)-E_\mathrm{GS}=-109.6112J$
+$Jt=28.00,\ E(t)-E_\mathrm{GS}=-111.8367J$
+$Jt=28.40,\ E(t)-E_\mathrm{GS}=-114.0906J$
+$Jt=28.80,\ E(t)-E_\mathrm{GS}=-116.3736J$
+$Jt=29.20,\ E(t)-E_\mathrm{GS}=-118.6859J$
+$Jt=29.60,\ E(t)-E_\mathrm{GS}=-121.0281J$
+$Jt=30.00,\ E(t)-E_\mathrm{GS}=-123.4007J$
+$Jt=30.40,\ E(t)-E_\mathrm{GS}=-125.8042J$
+$Jt=30.80,\ E(t)-E_\mathrm{GS}=-128.2389J$
+$Jt=31.20,\ E(t)-E_\mathrm{GS}=-130.7055J$
+$Jt=31.60,\ E(t)-E_\mathrm{GS}=-133.2044J$
+$Jt=32.00,\ E(t)-E_\mathrm{GS}=-135.7361J$
+$Jt=32.40,\ E(t)-E_\mathrm{GS}=-138.3011J$
+$Jt=32.80,\ E(t)-E_\mathrm{GS}=-140.9000J$
+$Jt=33.20,\ E(t)-E_\mathrm{GS}=-143.5332J$
+$Jt=33.60,\ E(t)-E_\mathrm{GS}=-146.2012J$
+$Jt=34.00,\ E(t)-E_\mathrm{GS}=-148.9047J$
+$Jt=34.40,\ E(t)-E_\mathrm{GS}=-151.6441J$
+$Jt=34.80,\ E(t)-E_\mathrm{GS}=-154.4199J$
+$Jt=35.20,\ E(t)-E_\mathrm{GS}=-157.2328J$
+$Jt=35.60,\ E(t)-E_\mathrm{GS}=-160.0833J$
+$Jt=36.00,\ E(t)-E_\mathrm{GS}=-162.9719J$
+$Jt=36.40,\ E(t)-E_\mathrm{GS}=-165.8992J$
+$Jt=36.80,\ E(t)-E_\mathrm{GS}=-168.8659J$
+$Jt=37.20,\ E(t)-E_\mathrm{GS}=-171.8725J$
+$Jt=37.60,\ E(t)-E_\mathrm{GS}=-174.9195J$
+$Jt=38.00,\ E(t)-E_\mathrm{GS}=-178.0077J$
+$Jt=38.40,\ E(t)-E_\mathrm{GS}=-181.1377J$
+$Jt=38.80,\ E(t)-E_\mathrm{GS}=-184.3099J$
+$Jt=39.20,\ E(t)-E_\mathrm{GS}=-187.5253J$
+$Jt=39.60,\ E(t)-E_\mathrm{GS}=-190.7842J$
+$Jt=40.00,\ E(t)-E_\mathrm{GS}=-194.0875J$
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11974,7 +12173,7 @@ $$ i\partial_t\vec{\psi}(t) = H_\mathrm{sp}(t)\vec{\psi}(t),\ \ \ \vec \psi(0) =
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#######################################################################################</span>
@@ -11989,10 +12188,124 @@ $$ i\partial_t\vec{\psi}(t) = H_\mathrm{sp}(t)\vec{\psi}(t),\ \ \ \vec \psi(0) =
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">psi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_sp_t</span><span class="p">):</span>
     <span class="c1"># compute energy</span>
     <span class="n">E</span><span class="o">=</span><span class="n">Hsp</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">real</span>
-    <span class="c1">#print(&#39;$Jt=%0.2f,\\ E(t)-E_\\mathrm{GS}=%0.4fJ$&#39;%(t[i],E-E_GS) )</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;$Jt=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E(t)-E_</span><span class="se">\\</span><span class="s1">mathrm{GS}=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E</span><span class="o">-</span><span class="n">E_GS</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>$Jt=0.00,\ E(t)-E_\mathrm{GS}=-390.2907J$
+$Jt=0.80,\ E(t)-E_\mathrm{GS}=-392.8745J$
+$Jt=1.60,\ E(t)-E_\mathrm{GS}=-395.4518J$
+$Jt=2.40,\ E(t)-E_\mathrm{GS}=-398.0162J$
+$Jt=3.20,\ E(t)-E_\mathrm{GS}=-400.5615J$
+$Jt=4.00,\ E(t)-E_\mathrm{GS}=-403.0818J$
+$Jt=4.80,\ E(t)-E_\mathrm{GS}=-405.5714J$
+$Jt=5.60,\ E(t)-E_\mathrm{GS}=-408.0248J$
+$Jt=6.40,\ E(t)-E_\mathrm{GS}=-410.4371J$
+$Jt=7.20,\ E(t)-E_\mathrm{GS}=-412.8033J$
+$Jt=8.00,\ E(t)-E_\mathrm{GS}=-415.1192J$
+$Jt=8.80,\ E(t)-E_\mathrm{GS}=-417.3806J$
+$Jt=9.60,\ E(t)-E_\mathrm{GS}=-419.5838J$
+$Jt=10.40,\ E(t)-E_\mathrm{GS}=-421.7255J$
+$Jt=11.20,\ E(t)-E_\mathrm{GS}=-423.8026J$
+$Jt=12.00,\ E(t)-E_\mathrm{GS}=-425.8125J$
+$Jt=12.80,\ E(t)-E_\mathrm{GS}=-427.7530J$
+$Jt=13.60,\ E(t)-E_\mathrm{GS}=-429.6222J$
+$Jt=14.40,\ E(t)-E_\mathrm{GS}=-431.4184J$
+$Jt=15.20,\ E(t)-E_\mathrm{GS}=-433.1405J$
+$Jt=16.00,\ E(t)-E_\mathrm{GS}=-434.7875J$
+$Jt=16.80,\ E(t)-E_\mathrm{GS}=-436.3588J$
+$Jt=17.60,\ E(t)-E_\mathrm{GS}=-437.8541J$
+$Jt=18.40,\ E(t)-E_\mathrm{GS}=-439.2735J$
+$Jt=19.20,\ E(t)-E_\mathrm{GS}=-440.6170J$
+$Jt=20.00,\ E(t)-E_\mathrm{GS}=-441.8854J$
+$Jt=20.80,\ E(t)-E_\mathrm{GS}=-443.0792J$
+$Jt=21.60,\ E(t)-E_\mathrm{GS}=-444.1996J$
+$Jt=22.40,\ E(t)-E_\mathrm{GS}=-445.2477J$
+$Jt=23.20,\ E(t)-E_\mathrm{GS}=-446.2249J$
+$Jt=24.00,\ E(t)-E_\mathrm{GS}=-447.1328J$
+$Jt=24.80,\ E(t)-E_\mathrm{GS}=-447.9732J$
+$Jt=25.60,\ E(t)-E_\mathrm{GS}=-448.7480J$
+$Jt=26.40,\ E(t)-E_\mathrm{GS}=-449.4592J$
+$Jt=27.20,\ E(t)-E_\mathrm{GS}=-450.1091J$
+$Jt=28.00,\ E(t)-E_\mathrm{GS}=-450.6999J$
+$Jt=28.80,\ E(t)-E_\mathrm{GS}=-451.2343J$
+$Jt=29.60,\ E(t)-E_\mathrm{GS}=-451.7145J$
+$Jt=30.40,\ E(t)-E_\mathrm{GS}=-452.1435J$
+$Jt=31.20,\ E(t)-E_\mathrm{GS}=-452.5237J$
+$Jt=32.00,\ E(t)-E_\mathrm{GS}=-452.8580J$
+$Jt=32.80,\ E(t)-E_\mathrm{GS}=-453.1494J$
+$Jt=33.60,\ E(t)-E_\mathrm{GS}=-453.4006J$
+$Jt=34.40,\ E(t)-E_\mathrm{GS}=-453.6146J$
+$Jt=35.20,\ E(t)-E_\mathrm{GS}=-453.7945J$
+$Jt=36.00,\ E(t)-E_\mathrm{GS}=-453.9432J$
+$Jt=36.80,\ E(t)-E_\mathrm{GS}=-454.0639J$
+$Jt=37.60,\ E(t)-E_\mathrm{GS}=-454.1595J$
+$Jt=38.40,\ E(t)-E_\mathrm{GS}=-454.2333J$
+$Jt=39.20,\ E(t)-E_\mathrm{GS}=-454.2883J$
+$Jt=40.00,\ E(t)-E_\mathrm{GS}=-454.3277J$
+$Jt=40.80,\ E(t)-E_\mathrm{GS}=-454.3546J$
+$Jt=41.60,\ E(t)-E_\mathrm{GS}=-454.3721J$
+$Jt=42.40,\ E(t)-E_\mathrm{GS}=-454.3835J$
+$Jt=43.20,\ E(t)-E_\mathrm{GS}=-454.3917J$
+$Jt=44.00,\ E(t)-E_\mathrm{GS}=-454.4001J$
+$Jt=44.80,\ E(t)-E_\mathrm{GS}=-454.4117J$
+$Jt=45.60,\ E(t)-E_\mathrm{GS}=-454.4297J$
+$Jt=46.40,\ E(t)-E_\mathrm{GS}=-454.4573J$
+$Jt=47.20,\ E(t)-E_\mathrm{GS}=-454.4975J$
+$Jt=48.00,\ E(t)-E_\mathrm{GS}=-454.5536J$
+$Jt=48.80,\ E(t)-E_\mathrm{GS}=-454.6287J$
+$Jt=49.60,\ E(t)-E_\mathrm{GS}=-454.7259J$
+$Jt=50.40,\ E(t)-E_\mathrm{GS}=-454.8486J$
+$Jt=51.20,\ E(t)-E_\mathrm{GS}=-454.9998J$
+$Jt=52.00,\ E(t)-E_\mathrm{GS}=-455.1828J$
+$Jt=52.80,\ E(t)-E_\mathrm{GS}=-455.4008J$
+$Jt=53.60,\ E(t)-E_\mathrm{GS}=-455.6571J$
+$Jt=54.40,\ E(t)-E_\mathrm{GS}=-455.9550J$
+$Jt=55.20,\ E(t)-E_\mathrm{GS}=-456.2978J$
+$Jt=56.00,\ E(t)-E_\mathrm{GS}=-456.6890J$
+$Jt=56.80,\ E(t)-E_\mathrm{GS}=-457.1320J$
+$Jt=57.60,\ E(t)-E_\mathrm{GS}=-457.6303J$
+$Jt=58.40,\ E(t)-E_\mathrm{GS}=-458.1876J$
+$Jt=59.20,\ E(t)-E_\mathrm{GS}=-458.8074J$
+$Jt=60.00,\ E(t)-E_\mathrm{GS}=-459.4936J$
+$Jt=60.80,\ E(t)-E_\mathrm{GS}=-460.2500J$
+$Jt=61.60,\ E(t)-E_\mathrm{GS}=-461.0805J$
+$Jt=62.40,\ E(t)-E_\mathrm{GS}=-461.9894J$
+$Jt=63.20,\ E(t)-E_\mathrm{GS}=-462.9809J$
+$Jt=64.00,\ E(t)-E_\mathrm{GS}=-464.0592J$
+$Jt=64.80,\ E(t)-E_\mathrm{GS}=-465.2290J$
+$Jt=65.60,\ E(t)-E_\mathrm{GS}=-466.4950J$
+$Jt=66.40,\ E(t)-E_\mathrm{GS}=-467.8620J$
+$Jt=67.20,\ E(t)-E_\mathrm{GS}=-469.3351J$
+$Jt=68.00,\ E(t)-E_\mathrm{GS}=-470.9197J$
+$Jt=68.80,\ E(t)-E_\mathrm{GS}=-472.6213J$
+$Jt=69.60,\ E(t)-E_\mathrm{GS}=-474.4455J$
+$Jt=70.40,\ E(t)-E_\mathrm{GS}=-476.3984J$
+$Jt=71.20,\ E(t)-E_\mathrm{GS}=-478.4863J$
+$Jt=72.00,\ E(t)-E_\mathrm{GS}=-480.7156J$
+$Jt=72.80,\ E(t)-E_\mathrm{GS}=-483.0931J$
+$Jt=73.60,\ E(t)-E_\mathrm{GS}=-485.6260J$
+$Jt=74.40,\ E(t)-E_\mathrm{GS}=-488.3216J$
+$Jt=75.20,\ E(t)-E_\mathrm{GS}=-491.1876J$
+$Jt=76.00,\ E(t)-E_\mathrm{GS}=-494.2320J$
+$Jt=76.80,\ E(t)-E_\mathrm{GS}=-497.4629J$
+$Jt=77.60,\ E(t)-E_\mathrm{GS}=-500.8891J$
+$Jt=78.40,\ E(t)-E_\mathrm{GS}=-504.5194J$
+$Jt=79.20,\ E(t)-E_\mathrm{GS}=-508.3629J$
+$Jt=80.00,\ E(t)-E_\mathrm{GS}=-512.4291J$
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

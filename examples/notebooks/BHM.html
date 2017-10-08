@@ -11813,16 +11813,83 @@ where $J$ is the hopping matrix element, $\mu$ -- the chemical potential, and $U
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">##### construct Bose-Hubbard Hamiltonian #####</span>
 <span class="c1"># define boson basis with 3 states per site L bosons in the lattice</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="p">)</span> <span class="c1"># full boson basis</span>
-<span class="c1">#print(basis)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>reference states: 
+           0.  |6 0 0 0 0 0&gt;
+           1.  |5 1 0 0 0 0&gt;
+           2.  |4 2 0 0 0 0&gt;
+           3.  |3 3 0 0 0 0&gt;
+           4.  |2 4 0 0 0 0&gt;
+           5.  |1 5 0 0 0 0&gt;
+           6.  |0 6 0 0 0 0&gt;
+           7.  |5 0 1 0 0 0&gt;
+           8.  |4 1 1 0 0 0&gt;
+           9.  |3 2 1 0 0 0&gt;
+          10.  |2 3 1 0 0 0&gt;
+          11.  |1 4 1 0 0 0&gt;
+          12.  |0 5 1 0 0 0&gt;
+          13.  |4 0 2 0 0 0&gt;
+          14.  |3 1 2 0 0 0&gt;
+          15.  |2 2 2 0 0 0&gt;
+          16.  |1 3 2 0 0 0&gt;
+          17.  |0 4 2 0 0 0&gt;
+          18.  |3 0 3 0 0 0&gt;
+          19.  |2 1 3 0 0 0&gt;
+          20.  |1 2 3 0 0 0&gt;
+          21.  |0 3 3 0 0 0&gt;
+          22.  |2 0 4 0 0 0&gt;
+          23.  |1 1 4 0 0 0&gt;
+          24.  |0 2 4 0 0 0&gt;
+             :
+         437.  |0 1 0 0 2 3&gt;
+         438.  |0 0 1 0 2 3&gt;
+         439.  |0 0 0 1 2 3&gt;
+         440.  |0 0 0 0 3 3&gt;
+         441.  |2 0 0 0 0 4&gt;
+         442.  |1 1 0 0 0 4&gt;
+         443.  |0 2 0 0 0 4&gt;
+         444.  |1 0 1 0 0 4&gt;
+         445.  |0 1 1 0 0 4&gt;
+         446.  |0 0 2 0 0 4&gt;
+         447.  |1 0 0 1 0 4&gt;
+         448.  |0 1 0 1 0 4&gt;
+         449.  |0 0 1 1 0 4&gt;
+         450.  |0 0 0 2 0 4&gt;
+         451.  |1 0 0 0 1 4&gt;
+         452.  |0 1 0 0 1 4&gt;
+         453.  |0 0 1 0 1 4&gt;
+         454.  |0 0 0 1 1 4&gt;
+         455.  |0 0 0 0 2 4&gt;
+         456.  |1 0 0 0 0 5&gt;
+         457.  |0 1 0 0 0 5&gt;
+         458.  |0 0 1 0 0 5&gt;
+         459.  |0 0 0 1 0 5&gt;
+         460.  |0 0 0 0 1 5&gt;
+         461.  |0 0 0 0 0 6&gt;
+see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11839,14 +11906,81 @@ where $J$ is the hopping matrix element, $\mu$ -- the chemical potential, and $U
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># particle-conserving basis, 3 states per site</span>
-<span class="c1">#print(basis)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>reference states: 
+           0.  |2 2 2 0 0 0&gt;
+           1.  |2 2 1 1 0 0&gt;
+           2.  |2 1 2 1 0 0&gt;
+           3.  |1 2 2 1 0 0&gt;
+           4.  |2 2 0 2 0 0&gt;
+           5.  |2 1 1 2 0 0&gt;
+           6.  |1 2 1 2 0 0&gt;
+           7.  |2 0 2 2 0 0&gt;
+           8.  |1 1 2 2 0 0&gt;
+           9.  |0 2 2 2 0 0&gt;
+          10.  |2 2 1 0 1 0&gt;
+          11.  |2 1 2 0 1 0&gt;
+          12.  |1 2 2 0 1 0&gt;
+          13.  |2 2 0 1 1 0&gt;
+          14.  |2 1 1 1 1 0&gt;
+          15.  |1 2 1 1 1 0&gt;
+          16.  |2 0 2 1 1 0&gt;
+          17.  |1 1 2 1 1 0&gt;
+          18.  |0 2 2 1 1 0&gt;
+          19.  |2 1 0 2 1 0&gt;
+          20.  |1 2 0 2 1 0&gt;
+          21.  |2 0 1 2 1 0&gt;
+          22.  |1 1 1 2 1 0&gt;
+          23.  |0 2 1 2 1 0&gt;
+          24.  |1 0 2 2 1 0&gt;
+             :
+         116.  |1 2 0 0 1 2&gt;
+         117.  |2 0 1 0 1 2&gt;
+         118.  |1 1 1 0 1 2&gt;
+         119.  |0 2 1 0 1 2&gt;
+         120.  |1 0 2 0 1 2&gt;
+         121.  |0 1 2 0 1 2&gt;
+         122.  |2 0 0 1 1 2&gt;
+         123.  |1 1 0 1 1 2&gt;
+         124.  |0 2 0 1 1 2&gt;
+         125.  |1 0 1 1 1 2&gt;
+         126.  |0 1 1 1 1 2&gt;
+         127.  |0 0 2 1 1 2&gt;
+         128.  |1 0 0 2 1 2&gt;
+         129.  |0 1 0 2 1 2&gt;
+         130.  |0 0 1 2 1 2&gt;
+         131.  |2 0 0 0 2 2&gt;
+         132.  |1 1 0 0 2 2&gt;
+         133.  |0 2 0 0 2 2&gt;
+         134.  |1 0 1 0 2 2&gt;
+         135.  |0 1 1 0 2 2&gt;
+         136.  |0 0 2 0 2 2&gt;
+         137.  |1 0 0 1 2 2&gt;
+         138.  |0 1 0 1 2 2&gt;
+         139.  |0 0 1 1 2 2&gt;
+         140.  |0 0 0 2 2 2&gt;
+see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11865,14 +11999,52 @@ where $J$ is the hopping matrix element, $\mu$ -- the chemical potential, and $U
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># ... and zero momentum sector</span>
-<span class="c1">#print(basis)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># ... and zero momentum sector</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>reference states: 
+          0.  |2 2 2 0 0 0&gt;
+          1.  |2 2 1 1 0 0&gt;
+          2.  |2 1 2 1 0 0&gt;
+          3.  |1 2 2 1 0 0&gt;
+          4.  |2 2 0 2 0 0&gt;
+          5.  |2 1 1 2 0 0&gt;
+          6.  |1 2 1 2 0 0&gt;
+          7.  |2 0 2 2 0 0&gt;
+          8.  |1 1 2 2 0 0&gt;
+          9.  |2 2 1 0 1 0&gt;
+         10.  |2 1 2 0 1 0&gt;
+         11.  |1 2 2 0 1 0&gt;
+         12.  |2 2 0 1 1 0&gt;
+         13.  |2 1 1 1 1 0&gt;
+         14.  |1 2 1 1 1 0&gt;
+         15.  |2 0 2 1 1 0&gt;
+         16.  |1 1 2 1 1 0&gt;
+         17.  |1 2 0 2 1 0&gt;
+         18.  |2 0 1 2 1 0&gt;
+         19.  |1 1 1 2 1 0&gt;
+         20.  |1 1 2 0 2 0&gt;
+         21.  |1 1 1 1 2 0&gt;
+see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11889,14 +12061,48 @@ where $J$ is the hopping matrix element, $\mu$ -- the chemical potential, and $U
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># ... + zero momentum and positive parity</span>
-<span class="c1">#print(basis)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>reference states: 
+          0.  |2 2 2 0 0 0&gt;
+          1.  |2 2 1 1 0 0&gt;
+          2.  |2 1 2 1 0 0&gt;
+          3.  |1 2 2 1 0 0&gt;
+          4.  |2 2 0 2 0 0&gt;
+          5.  |2 1 1 2 0 0&gt;
+          6.  |2 2 1 0 1 0&gt;
+          7.  |2 1 2 0 1 0&gt;
+          8.  |2 2 0 1 1 0&gt;
+          9.  |2 1 1 1 1 0&gt;
+         10.  |1 2 1 1 1 0&gt;
+         11.  |2 0 2 1 1 0&gt;
+         12.  |1 1 2 1 1 0&gt;
+         13.  |2 1 0 2 1 0&gt;
+         14.  |1 2 0 2 1 0&gt;
+         15.  |2 0 1 2 1 0&gt;
+         16.  |2 0 2 0 2 0&gt;
+         17.  |1 1 1 1 1 1&gt;
+see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11920,7 +12126,7 @@ $$H= -J\sum_{j=0}^{L-1}(b^\dagger_{j+1}b_j + \mathrm{h.c.})-\left(\mu+\frac{U}{2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># define site-coupling lists</span>
@@ -11928,12 +12134,26 @@ $$H= -J\sum_{j=0}^{L-1}(b^\dagger_{j+1}b_j + \mathrm{h.c.})-\left(\mu+\frac{U}{2
 <span class="n">interact</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.5</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># U/2 \sum_j n_j n_j</span>
 <span class="n">pot</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">mu</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># -(\mu + U/2) \sum_j j_n</span>
 
-<span class="c1">#print(hop)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">hop</span><span class="p">)</span>
 <span class="c1">#print(interact)</span>
 <span class="c1">#print(pot)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[-1.0, 0, 1], [-1.0, 1, 2], [-1.0, 2, 3], [-1.0, 3, 4], [-1.0, 4, 5], [-1.0, 5, 0]]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11950,15 +12170,31 @@ $$H= -J\sum_{j=0}^{L-1}(b^\dagger_{j+1}b_j + \mathrm{h.c.})-\left(\mu+\frac{U}{2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># define static and dynamic lists</span>
 <span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;+-&#39;</span><span class="p">,</span><span class="n">hop</span><span class="p">],[</span><span class="s1">&#39;-+&#39;</span><span class="p">,</span><span class="n">hop</span><span class="p">],[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span><span class="n">pot</span><span class="p">],[</span><span class="s1">&#39;nn&#39;</span><span class="p">,</span><span class="n">interact</span><span class="p">]]</span>
 <span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">static</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[&#39;+-&#39;, [[-1.0, 0, 1], [-1.0, 1, 2], [-1.0, 2, 3], [-1.0, 3, 4], [-1.0, 4, 5], [-1.0, 5, 0]]], [&#39;-+&#39;, [[-1.0, 0, 1], [-1.0, 1, 2], [-1.0, 2, 3], [-1.0, 3, 4], [-1.0, 4, 5], [-1.0, 5, 0]]], [&#39;n&#39;, [[-0.70710678118654757, 0], [-0.70710678118654757, 1], [-0.70710678118654757, 2], [-0.70710678118654757, 3], [-0.70710678118654757, 4], [-0.70710678118654757, 5]]], [&#39;nn&#39;, [[0.70710678118654757, 0, 0], [0.70710678118654757, 1, 1], [0.70710678118654757, 2, 2], [0.70710678118654757, 3, 3], [0.70710678118654757, 4, 4], [0.70710678118654757, 5, 5]]]]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11975,11 +12211,13 @@ $$H= -J\sum_{j=0}^{L-1}(b^\dagger_{j+1}b_j + \mathrm{h.c.})-\left(\mu+\frac{U}{2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># build Hamiltonian</span>
 <span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
 </pre></div>
 
 </div>
@@ -11995,6 +12233,96 @@ $$H= -J\sum_{j=0}^{L-1}(b^\dagger_{j+1}b_j + \mathrm{h.c.})-\left(\mu+\frac{U}{2
 <pre>Hermiticity check passed!
 Symmetry checks passed!
 Particle conservation check passed!
+[[  4.24264069e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [ -2.00000000e+00   2.82842712e+00  -2.00000000e+00   0.00000000e+00
+   -1.41421356e+00   0.00000000e+00  -1.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+   -2.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00  -2.00000000e+00   2.82842712e+00  -2.82842712e+00
+    0.00000000e+00  -2.82842712e+00   0.00000000e+00  -1.41421356e+00
+    0.00000000e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00  -2.82842712e+00   2.82842712e+00
+    0.00000000e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00  -1.41421356e+00   0.00000000e+00   0.00000000e+00
+    4.24264069e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+   -2.00000000e+00   0.00000000e+00   0.00000000e+00  -1.41421356e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00  -2.82842712e+00   0.00000000e+00
+   -2.00000000e+00   2.82842712e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00  -1.00000000e+00   0.00000000e+00  -1.41421356e+00
+    0.00000000e+00   0.00000000e+00   2.82842712e+00  -2.82842712e+00
+   -1.41421356e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00  -2.82842712e+00   2.82842712e+00
+    0.00000000e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+   -2.00000000e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    2.82842712e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -2.00000000e+00   0.00000000e+00  -2.00000000e+00
+   -2.00000000e+00   1.41421356e+00  -3.00000000e+00  -2.82842712e+00
+    0.00000000e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -4.89897949e+00]
+ [  0.00000000e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00  -1.41421356e+00   0.00000000e+00
+    0.00000000e+00  -3.00000000e+00   1.41421356e+00   0.00000000e+00
+   -4.24264069e+00   0.00000000e+00  -2.00000000e+00  -2.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+   -1.41421356e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -2.82842712e+00   0.00000000e+00   2.82842712e+00
+   -2.00000000e+00   0.00000000e+00  -1.41421356e+00  -2.82842712e+00
+   -3.46410162e+00   0.00000000e+00]
+ [  0.00000000e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00  -4.24264069e+00  -2.00000000e+00
+    1.41421356e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -2.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   2.82842712e+00  -4.00000000e+00  -2.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00  -2.00000000e+00  -1.41421356e+00
+    0.00000000e+00  -4.00000000e+00   2.82842712e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00  -2.00000000e+00  -2.82842712e+00
+    0.00000000e+00  -2.00000000e+00   0.00000000e+00   2.82842712e+00
+    0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00  -3.46410162e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    4.24264069e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -4.89897949e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+    0.00000000e+00  -6.66133815e-16]]
 </pre>
 </div>
 </div>
@@ -12016,18 +12344,80 @@ Particle conservation check passed!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[47]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># calculate eigensystem</span>
 <span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
 <span class="n">E_GS</span><span class="p">,</span><span class="n">V_GS</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;SA&#39;</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mf">1E10</span><span class="p">)</span> <span class="c1"># only GS</span>
-<span class="c1">#print(&quot;eigenenergies:&quot;, E)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;eigenenergies:&quot;</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
 <span class="c1">#print(&quot;GS energy is %0.3f&quot; %(E_GS[0]))</span>
 <span class="c1"># calculate entanglement entropy per site of GS</span>
 <span class="n">subsystem</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span> <span class="c1"># sites contained in subsystem</span>
-<span class="n">Sent</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="n">subsystem</span><span class="p">)[</span><span class="s1">&#39;Sent&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">L</span>
-<span class="c1">#print(&quot;GS entanglement per site is %0.3f&quot; %(Sent))</span>
+<span class="n">Sent</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">V</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="n">subsystem</span><span class="p">)[</span><span class="s1">&#39;Sent_A&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">L</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;GS entanglement per site is </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">Sent</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(&#39;eigenenergies:&#39;, array([ -7.99770126,  -3.371967  ,  -2.69891138,  -0.92278606,
+        -0.4865458 ,   0.25457733,   1.01974122,   1.55460719,
+         2.72081364,   3.00993842,   4.55888621,   4.92864042,
+         5.48809307,   5.89976351,   6.52449767,   6.96579982,
+         8.54322063,  12.0925935 ]))
+GS entanglement per site is 0.204
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">psi_k</span><span class="o">=</span><span class="n">V</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">psi_Fock</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">psi_k</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">psi_k</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">psi_Fock</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>((18,), (729, 1))
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span> 
 </pre></div>
 
 </div>

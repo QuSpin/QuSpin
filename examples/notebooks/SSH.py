@@ -1,5 +1,5 @@
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import fermion_basis_1d # Hilbert space fermion basis
+from quspin.basis import spinless_fermion_basis_1d # Hilbert space fermion basis
 from quspin.tools.block_tools import block_diag_hamiltonian # block diagonalisation
 import numpy as np # generic math functions
 #
@@ -11,7 +11,7 @@ Delta=0.5 # staggered potential
 #
 ##### construct single-particle Hamiltonian #####
 # define basis
-basis=fermion_basis_1d(L,Nf=1)
+basis=spinless_fermion_basis_1d(L,Nf=1)
 print(basis)
 # define site-coupling lists
 hop_pm=[[-J-deltaJ*(-1)**i,i,(i+1)%L] for i in range(L)] # PBC
@@ -31,7 +31,7 @@ E,V=H.eigh()
 blocks=[dict(Nf=1,kblock=i,a=2) for i in range(L//2)] # only L//2 distinct momenta
 basis_args = (L,)
 # construct block-diagonal Hamiltonian
-FT,Hblock = block_diag_hamiltonian(blocks,static,dynamic,fermion_basis_1d,
+FT,Hblock = block_diag_hamiltonian(blocks,static,dynamic,spinless_fermion_basis_1d,
 						basis_args,np.complex128,get_proj_kwargs=dict(pcon=True))
 print(np.around(Hblock.toarray(),2))
 # diagonalise momentum-space Hamiltonian
