@@ -35,9 +35,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -163,8 +160,8 @@
 111
 112
 113</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">exp_op</span><span class="p">,</span><span class="n">ops_dict</span> <span class="c1"># operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">tensor_basis</span><span class="p">,</span><span class="n">fermion_basis_1d</span> <span class="c1"># Hilbert spaces</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">exp_op</span><span class="p">,</span><span class="n">quantum_operator</span> <span class="c1"># operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">tensor_basis</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert spaces</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">uniform</span><span class="p">,</span><span class="n">choice</span> <span class="c1"># tools for doing random sampling</span>
@@ -189,8 +186,8 @@
 <span class="c1">#</span>
 <span class="c1">###### create the basis</span>
 <span class="c1"># build the two bases to tensor together to spinful fermions</span>
-<span class="n">basis_up</span> <span class="o">=</span> <span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_up</span><span class="p">)</span> <span class="c1"># up basis</span>
-<span class="n">basis_down</span> <span class="o">=</span> <span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_down</span><span class="p">)</span> <span class="c1"># down basis</span>
+<span class="n">basis_up</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_up</span><span class="p">)</span> <span class="c1"># up basis</span>
+<span class="n">basis_down</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_down</span><span class="p">)</span> <span class="c1"># down basis</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="p">(</span><span class="n">basis_up</span><span class="p">,</span><span class="n">basis_down</span><span class="p">)</span> <span class="c1"># spinful fermions</span>
 <span class="c1">#</span>
 <span class="c1">##### create model</span>
@@ -209,7 +206,7 @@
 			<span class="p">[</span><span class="s2">&quot;n|n&quot;</span><span class="p">,</span> <span class="n">int_list</span><span class="p">],</span> <span class="c1"># onsite interaction</span>
 			<span class="p">]</span>
 <span class="n">imbalance_list</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;n|&quot;</span><span class="p">,</span><span class="n">sublat_list</span><span class="p">],[</span><span class="s2">&quot;|n&quot;</span><span class="p">,</span><span class="n">sublat_list</span><span class="p">]]</span>
-<span class="c1"># create operator dictionary for ops_dict class</span>
+<span class="c1"># create operator dictionary for quantum_operator class</span>
 <span class="c1"># add key for Hubbard hamiltonian</span>
 <span class="n">operator_dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">operator_list_0</span><span class="p">)</span>
 <span class="c1"># add keys for local potential in each site</span>
@@ -220,7 +217,7 @@
 <span class="c1">###### setting up operators	</span>
 <span class="c1"># set up hamiltonian dictionary and observable (imbalance I)</span>
 <span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">H_dict</span> <span class="o">=</span> <span class="n">ops_dict</span><span class="p">(</span><span class="n">operator_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
+<span class="n">H_dict</span> <span class="o">=</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">operator_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 <span class="n">I</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">imbalance_list</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 <span class="c1"># strings which represent the initial state</span>
 <span class="n">s_up</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;1000&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_up</span><span class="p">))</span>
@@ -267,7 +264,7 @@
 	<span class="c1">##### plotting results</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">I_avg</span><span class="p">,</span><span class="n">I_error</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;w={:.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
 <span class="c1"># configuring plots</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t/J$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$Jt$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$\mathcal{I}$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
@@ -312,9 +309,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
     </div>

@@ -1,8 +1,10 @@
+from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space boson basis
 from quspin.tools.measurements import evolve # nonlinear evolution 
 import numpy as np # generic math functions
 import matplotlib.pyplot as plt # plotting library
+from six import iteritems # loop over elements of dictionary
 #
 ##### define model parameters #####
 L=300 # system size
@@ -83,8 +85,8 @@ def GPE(time,psi):
 	# solve static part of GPE
 	psi_dot = Hsp.static.dot(psi) + U*np.abs(psi)**2*psi
 	# solve dynamic part of GPE
-	for Hd,f,f_args in Hsp.dynamic:
-		psi_dot += f(time,*f_args)*Hd.dot(psi)
+	for f,Hd in iteritems(Hsp.dynamic):
+		psi_dot += f(time)*Hd.dot(psi)
 	return -1j*psi_dot
 # define real time vector
 t=np.linspace(0.0,t_ramp,101)

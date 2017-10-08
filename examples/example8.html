@@ -35,9 +35,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -161,11 +158,15 @@
 109
 110
 111
-112</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+112
+113
+114</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span> <span class="c1"># Hilbert space boson basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">evolve</span> <span class="c1"># nonlinear evolution </span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># loop over elements of dictionary</span>
 <span class="c1">#</span>
 <span class="c1">##### define model parameters #####</span>
 <span class="n">L</span><span class="o">=</span><span class="mi">300</span> <span class="c1"># system size</span>
@@ -246,8 +247,8 @@
 	<span class="c1"># solve static part of GPE</span>
 	<span class="n">psi_dot</span> <span class="o">=</span> <span class="n">Hsp</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">+</span> <span class="n">U</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">psi</span>
 	<span class="c1"># solve dynamic part of GPE</span>
-	<span class="k">for</span> <span class="n">Hd</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">f_args</span> <span class="ow">in</span> <span class="n">Hsp</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
-		<span class="n">psi_dot</span> <span class="o">+=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="o">*</span><span class="n">f_args</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">Hsp</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
+		<span class="n">psi_dot</span> <span class="o">+=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
 	<span class="k">return</span> <span class="o">-</span><span class="mi">1j</span><span class="o">*</span><span class="n">psi_dot</span>
 <span class="c1"># define real time vector</span>
 <span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t_ramp</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
@@ -310,9 +311,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
     </div>

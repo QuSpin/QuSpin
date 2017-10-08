@@ -35,9 +35,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -123,7 +120,7 @@
 71
 72
 73</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span> <span class="n">fermion_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span> <span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
 <span class="c1">#</span>
@@ -159,7 +156,7 @@
 		<span class="n">J_pp</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
 		<span class="n">J_mm</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
 		<span class="c1"># construct fermion basis in the odd particle number subsector</span>
-		<span class="n">basis_fermion</span> <span class="o">=</span> <span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+		<span class="n">basis_fermion</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 	<span class="k">elif</span> <span class="n">PBC</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># anti-periodic BC: even particle number subspace only</span>
 		<span class="c1"># define bulk site coupling lists</span>
 		<span class="n">J_pm</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
@@ -172,7 +169,7 @@
 		<span class="n">J_pp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># APBC</span>
 		<span class="n">J_mm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># APBC</span>
 		<span class="c1"># construct fermion basis in the even particle number subsector</span>
-		<span class="n">basis_fermion</span> <span class="o">=</span> <span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+		<span class="n">basis_fermion</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 	<span class="c1"># define fermionic static and dynamic lists</span>
 	<span class="n">static_fermion</span> <span class="o">=</span><span class="p">[[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">J_pm</span><span class="p">],[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">J_mp</span><span class="p">],[</span><span class="s2">&quot;++&quot;</span><span class="p">,</span><span class="n">J_pp</span><span class="p">],[</span><span class="s2">&quot;--&quot;</span><span class="p">,</span><span class="n">J_mm</span><span class="p">],[</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">h_pot</span><span class="p">]]</span>
 	<span class="n">dynamic_fermion</span><span class="o">=</span><span class="p">[]</span>
@@ -232,9 +229,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li> 
       </ul>
     </div>

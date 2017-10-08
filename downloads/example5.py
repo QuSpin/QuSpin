@@ -1,5 +1,5 @@
 from quspin.operators import hamiltonian,exp_op # Hamiltonians and operators
-from quspin.basis import fermion_basis_1d # Hilbert space fermion basis
+from quspin.basis import spinless_fermion_basis_1d # Hilbert space fermion basis
 from quspin.tools.block_tools import block_diag_hamiltonian # block diagonalisation
 import numpy as np # generic math functions
 import matplotlib.pyplot as plt # plotting library
@@ -22,7 +22,7 @@ stagg_pot=[[Delta*(-1)**i,i] for i in range(L)]
 static=[["+-",hop_pm],["-+",hop_mp],['n',stagg_pot]]
 dynamic=[]
 # define basis
-basis=fermion_basis_1d(L,Nf=1)
+basis=spinless_fermion_basis_1d(L,Nf=1)
 # build real-space Hamiltonian
 H=hamiltonian(static,dynamic,basis=basis,dtype=np.float64)
 # diagonalise real-space Hamiltonian
@@ -32,7 +32,7 @@ E,V=H.eigh()
 blocks=[dict(Nf=1,kblock=i,a=2) for i in range(L//2)] # only L//2 distinct momenta
 basis_args = (L,)
 # construct block-diagonal Hamiltonian
-FT,Hblock = block_diag_hamiltonian(blocks,static,dynamic,fermion_basis_1d,
+FT,Hblock = block_diag_hamiltonian(blocks,static,dynamic,spinless_fermion_basis_1d,
 						basis_args,np.complex128,get_proj_kwargs=dict(pcon=True))
 # diagonalise momentum-space Hamiltonian
 Eblock,Vblock=Hblock.eigh()
