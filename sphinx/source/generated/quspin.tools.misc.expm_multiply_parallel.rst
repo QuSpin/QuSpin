@@ -9,8 +9,23 @@ quspin\.tools\.misc\.expm\_multiply\_parallel
    .. automethod:: __init__
 
    
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~expm_multiply_parallel.__init__
+      ~expm_multiply_parallel.dot
+      ~expm_multiply_parallel.set_a
+   
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~expm_multiply_parallel.A
+      ~expm_multiply_parallel.a
    
    
