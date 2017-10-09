@@ -647,7 +647,7 @@ class quantum_operator(object):
 		"""Computes SOME eigenvalues of hermitian `quantum_operator` quantum_operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
+		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.
 
 		Notes
 		-----
@@ -660,7 +660,7 @@ class quantum_operator(object):
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to inity.
 		eigsh_args : 
-			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
 			
 		Returns
 		--------
@@ -681,7 +681,7 @@ class quantum_operator(object):
 		"""Computes COMPLETE eigensystem of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues and eigenvectors. It calls 
-		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_, 
+		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
 		Notes
@@ -695,7 +695,7 @@ class quantum_operator(object):
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to inity.
 		eigh_args : 
-			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_.
+			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html>`_.
 			
 		Returns
 		--------
@@ -722,7 +722,7 @@ class quantum_operator(object):
 		"""Computes ALL eigenvalues of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues. It calls 
-		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_, 
+		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
 		Notes
@@ -736,7 +736,7 @@ class quantum_operator(object):
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to inity.
 		eigvalsh_args : 
-			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_.
+			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh>`_.
 			
 		Returns
 		--------
@@ -765,7 +765,7 @@ class quantum_operator(object):
 		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csr_matrix`.
 
 		Casts the `quantum_operator` object as a
-		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/>`_
+		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html>`_
 		object.
 
 		Parameters
@@ -799,7 +799,7 @@ class quantum_operator(object):
 		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csc_matrix`.
 
 		Casts the `quantum_operator` object as a
-		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/>`_
+		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html>`_
 		object.
 
 		Parameters
@@ -911,7 +911,7 @@ class quantum_operator(object):
 		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.linalg.Linearquantum_operator`.
 
 		Casts the `quantum_operator` object as a
-		`scipy.sparse.linalg.Linearquantum_operator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html/>`_
+		`scipy.sparse.linalg.Linearquantum_operator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html>`_
 		object.
 
 		Parameters

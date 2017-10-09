@@ -195,7 +195,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	.. math::
 		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}
 
-	See eg. `arXiv:1509.06411 <https://arxiv.org/abs/1509.06411/>`_ for the physical definition of Diagonal Ensemble.
+	See eg. `arXiv:1509.06411 <https://arxiv.org/abs/1509.06411>`_ for the physical definition of Diagonal Ensemble.
 	
 	**Note: All expectation values depend statistically on the symmetry block used via the available number of 
 	states, due to the generic system-size dependence!**
@@ -1048,7 +1048,7 @@ def mean_level_spacing(E):
 	"""Calculates the mean-level spacing of an energy spectrum.
 
 	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in 
-	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf/>`_ for more details.
+	`arXiv:1212.5611 <https://arxiv.org/pdf/1212.5611.pdf>`_ for more details.
 
 	For Wigner-Dyson statistics, we have :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.53`, while
 	for Poisson statistics: :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.38`.
@@ -1200,9 +1200,9 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	solver_name : str, optional
 		Scipy solver integrator name. Default is `dop853`. 
 
-		See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_ for other options.
+		See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_ for other options.
 	solver_args : dict, optional
-		Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_ arguments.	
+		Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_ arguments.	
 	real : bool, optional 
 		Flag to determine if `f` is real or complex-valued. Default is `False`.
 	imag_time : bool, optional
