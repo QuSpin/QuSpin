@@ -1202,21 +1202,23 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 		a = L
 	
 	Ns_full = shape[0]
-	basis_in = Ns_full - basis_in - 1
+	v_rev = v[::-1] # access array in reverse order. 
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)	
 		vc = (v0.T*c).T
 		vc_tran = vc.transpose()
-		v[basis_in[ind_pos]] += vc[ind_pos]
-		v[basis_in[ind_neg]] += vc[ind_neg]
+		vc_tran *= sign
+		v_rev[basis_in[ind_pos]] += vc[ind_pos]
+		v_rev[basis_in[ind_neg]] += vc[ind_neg]
+		vc_tran *= sign
 
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 			vc *= zAblock
 			vc_tran *= sign
-			v[basis_in[ind_pos]] += vc[ind_pos]
-			v[basis_in[ind_neg]] += vc[ind_neg]
+			v_rev[basis_in[ind_pos]] += vc[ind_pos]
+			v_rev[basis_in[ind_neg]] += vc[ind_neg]
 			vc *= zAblock
 			vc_tran *= sign
 			ops.py_flip_sublat_A(basis_in,L,pars,sign)
@@ -1225,8 +1227,8 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 			vc *= zBblock
 			vc_tran *= sign
-			v[basis_in[ind_pos]] += vc[ind_pos]
-			v[basis_in[ind_neg]] += vc[ind_neg]
+			v_rev[basis_in[ind_pos]] += vc[ind_pos]
+			v_rev[basis_in[ind_neg]] += vc[ind_neg]
 			vc *= zBblock
 			vc_tran *= sign
 			ops.py_flip_sublat_B(basis_in,L,pars,sign)
@@ -1235,8 +1237,8 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 			ops.py_flip_all(basis_in,L,pars,sign)
 			vc *= zblock
 			vc_tran *= sign
-			v[basis_in[ind_pos]] += vc[ind_pos]
-			v[basis_in[ind_neg]] += vc[ind_neg]
+			v_rev[basis_in[ind_pos]] += vc[ind_pos]
+			v_rev[basis_in[ind_neg]] += vc[ind_neg]
 			vc *= zblock
 			vc_tran *= sign
 			ops.py_flip_all(basis_in,L,pars,sign)
@@ -1245,8 +1247,8 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 			ops.py_fliplr(basis_in,L,pars,sign)
 			vc *= pblock
 			vc_tran *= sign
-			v[basis_in[ind_pos]] += vc[ind_pos]
-			v[basis_in[ind_neg]] += vc[ind_neg]
+			v_rev[basis_in[ind_pos]] += vc[ind_pos]
+			v_rev[basis_in[ind_neg]] += vc[ind_neg]
 			vc *= pblock
 			vc_tran *= sign
 			ops.py_fliplr(basis_in,L,pars,sign)
@@ -1256,14 +1258,14 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 			ops.py_flip_all(basis_in,L,pars,sign)
 			vc *= pzblock
 			vc_tran *= sign
-			v[basis_in[ind_pos]] += vc[ind_pos]
-			v[basis_in[ind_neg]] += vc[ind_neg]
+			v_rev[basis_in[ind_pos]] += vc[ind_pos]
+			v_rev[basis_in[ind_neg]] += vc[ind_neg]
 			vc *= pzblock
 			vc_tran *= sign
 			ops.py_fliplr(basis_in,L,pars,sign)
 			ops.py_flip_all(basis_in,L,pars,sign)
 		
-		ops.py_shift(basis_in,a,L,pars)
+		ops.py_shift(basis_in,a,L,pars,sign)
 	
 	return v
 
@@ -1311,7 +1313,7 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 
 
 	Ns_full = shape[0]
-	basis_in = Ns_full - basis_in - 1
+	index = _np.zeros_like(basis_in)
 
 	for r in range(0,L//a):
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
@@ -1324,65 +1326,81 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 		# view which us used to multiply by sign
 		data_pos_tran = data_pos.transpose()
 		data_neg_tran = data_neg.transpose()
-		v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-		v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+		
+		data_pos_tran *= sign[ind_pos]
+		data_neg_tran *= sign[ind_neg]
+		index[:] = Ns_full - 1
+		index -= basis_in
+		v = v + _sp.csr_matrix((data_pos_flat,(index[row_pos],col_pos)),shape,dtype=v.dtype)
+		v = v + _sp.csr_matrix((data_neg_flat,(index[row_neg],col_neg)),shape,dtype=v.dtype)
+		data_pos_tran *= sign[ind_pos]
+		data_neg_tran *= sign[ind_neg]
 
+		index[:] = Ns_full - 1
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 			data_pos *= zAblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= zAblock
 			data_neg_tran *= sign[ind_neg]
-			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			index -= basis_in
+			v = v + _sp.csr_matrix((data_pos_flat,(index[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(index[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zAblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= zAblock
 			data_neg_tran *= sign[ind_neg]
 			ops.py_flip_sublat_A(basis_in,L,pars,sign)
 
+		index[:] = Ns_full - 1
 		if type(zBblock) is int:
 			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 			data_pos *= zBblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= zBblock
 			data_neg_tran *= sign[ind_neg]
-			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			index -= basis_in
+			v = v + _sp.csr_matrix((data_pos_flat,(index[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(index[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zBblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= zBblock
 			data_neg_tran *= sign[ind_neg]
 			ops.py_flip_sublat_B(basis_in,L,pars,sign)
 
+		index[:] = Ns_full - 1
 		if type(zblock) is int:
 			ops.py_flip_all(basis_in,L,pars,sign)
 			data_pos *= zblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= zblock
 			data_neg_tran *= sign[ind_neg]
-			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			index -= basis_in
+			v = v + _sp.csr_matrix((data_pos_flat,(index[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(index[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= zblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= zblock
 			data_neg_tran *= sign[ind_neg]
 			ops.py_flip_all(basis_in,L,pars,sign)
 
+		index[:] = Ns_full - 1
 		if type(pblock) is int:
 			ops.py_fliplr(basis_in,L,pars,sign)
 			data_pos *= pblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= pblock
 			data_neg_tran *= sign[ind_neg]
-			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			index -= basis_in
+			v = v + _sp.csr_matrix((data_pos_flat,(index[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(index[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= pblock
 			data_neg_tran *= sign[ind_neg]
 			ops.py_fliplr(basis_in,L,pars,sign)
 
+		index[:] = Ns_full - 1
 		if type(pzblock) is int:
 			ops.py_flip_all(basis_in,L,pars,sign)
 			ops.py_fliplr(basis_in,L,pars,sign)
@@ -1390,8 +1408,9 @@ def _get_vec_sparse(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**block
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= pzblock
 			data_neg_tran *= sign[ind_neg]
-			v = v + _sp.csr_matrix((data_pos_flat,(basis_in[row_pos],col_pos)),shape,dtype=v.dtype)
-			v = v + _sp.csr_matrix((data_neg_flat,(basis_in[row_neg],col_neg)),shape,dtype=v.dtype)
+			index -= basis_in
+			v = v + _sp.csr_matrix((data_pos_flat,(index[row_pos],col_pos)),shape,dtype=v.dtype)
+			v = v + _sp.csr_matrix((data_neg_flat,(index[row_neg],col_neg)),shape,dtype=v.dtype)
 			data_pos *= pzblock
 			data_pos_tran *= sign[ind_pos]
 			data_neg *= pzblock
@@ -1437,10 +1456,16 @@ def _get_proj_sparse(ops,pars,basis_in,basis_pcon,norms,ind_neg,ind_pos,dtype,sh
 		C(r,k,c,norms,dtype,ind_neg,ind_pos)
 		data_pos = c[ind_pos]
 		data_neg = c[ind_neg]
+
+		data_pos *= sign[ind_pos]
+		data_neg *= sign[ind_neg]
 		index = get_index(ind_pos)
 		v = v + _sp.csr_matrix((data_pos,(index,ind_pos)),shape,dtype=v.dtype)
 		index = get_index(ind_neg)
 		v = v + _sp.csr_matrix((data_neg,(index,ind_neg)),shape,dtype=v.dtype)
+		data_pos *= sign[ind_pos]
+		data_neg *= sign[ind_neg]
+
 
 		if type(zAblock) is int:
 			ops.py_flip_sublat_A(basis_in,L,pars,sign)

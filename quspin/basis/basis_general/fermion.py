@@ -149,7 +149,7 @@ class spinful_fermion_basis_general(basis_general):
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*3
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
@@ -159,7 +159,6 @@ class spinful_fermion_basis_general(basis_general):
 				Ns = Ns_block_est
 
 		Ns = max(Ns,1000)
-
 		if N<=16:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=_np.uint16)
@@ -400,7 +399,7 @@ class spinless_fermion_basis_general(basis_general):
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*3
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
