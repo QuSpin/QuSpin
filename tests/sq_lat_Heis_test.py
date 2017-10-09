@@ -9,9 +9,10 @@ from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian
 import numpy as np
 from itertools import product
+import os
 
 
-
+os.environ["OMP_NUM_THREADS"]="1"
 
 def test(S,Lx,Ly):
 
@@ -37,12 +38,12 @@ def test(S,Lx,Ly):
 		try:
 			assert(Ns_block == pcon_basis.Ns)
 		except AssertionError:
-			print(Ns_block,pcon_basis.Ns)
+			print(Nup,Ns_block,pcon_basis.Ns)
 			raise AssertionError("reduced blocks don't sum to particle sector.")
 
 
 		basis_dict[Nup] = (pcon_basis,basis_blocks)
-
+	
 	J = [[1.0,i,tr.T_x[i]] for i in range(N)]
 	J.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
 

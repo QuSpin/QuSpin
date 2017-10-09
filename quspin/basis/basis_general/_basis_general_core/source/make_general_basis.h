@@ -24,9 +24,10 @@ npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I bas
 				break;
 			}
 			if(B->check_state(s)){
-				J nn = B->get_norm(s);
+				double norm = B->get_norm(s);
+				J nn = norm;
 				// std::cout << B->get_norm(s) << "   " << nn << std::endl;
-				if(nn>0){
+				if(nn>0 && norm>0){
 					basis[ii] = s;
 					n[ii] = nn;
 					ii+=n_th;
@@ -66,9 +67,10 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 				break;
 			}
 			if(B->check_state(s)){
-				J nn = B->get_norm(s);
+				double norm = B->get_norm(s);
+				J nn = norm;
 				// std::cout << B->get_norm(s) << "   " << nn << std::endl;
-				if(nn>0){
+				if(nn>0 && norm>0){
 					basis[ii] = s;
 					n[ii] = nn;
 					ii+=n_th;
