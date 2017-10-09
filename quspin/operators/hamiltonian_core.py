@@ -1088,7 +1088,7 @@ class hamiltonian(object):
 		"""Computes SOME eigenvalues of hermitian `hamiltonian` operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_, which is a wrapper for ARPACK.
+		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.
 
 		Notes
 		-----
@@ -1100,7 +1100,7 @@ class hamiltonian(object):
 		time : float
 			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
 		eigsh_args : 
-			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
 			
 		Returns
 		--------
@@ -1127,7 +1127,7 @@ class hamiltonian(object):
 		"""Computes COMPLETE eigensystem of hermitian `hamiltonian` operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues and eigenvectors. It calls 
-		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_, 
+		`numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
 		Notes
@@ -1140,7 +1140,7 @@ class hamiltonian(object):
 		time : float
 			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
 		eigh_args : 
-			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/>`_.
+			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html>`_.
 			
 		Returns
 		--------
@@ -1171,7 +1171,7 @@ class hamiltonian(object):
 		"""Computes ALL eigenvalues of hermitian `hamiltonian` operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues. It calls 
-		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_, 
+		`numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
 		Notes
@@ -1184,7 +1184,7 @@ class hamiltonian(object):
 		time : float
 			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
 		eigvalsh_args : 
-			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/>`_.
+			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh>`_.
 			
 		Returns
 		--------
@@ -1378,9 +1378,9 @@ class hamiltonian(object):
 		solver_name : str, optional
 			Scipy solver integrator name. Default is `dop853`. 
 
-			See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_ for other options.
+			See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_ for other options.
 		solver_args : dict, optional
-			Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/>`_.	
+			Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_.	
 		H_real : bool, optional 
 			Flag to determine if `f` is real or complex-valued. Default is `False`.
 		imag_time : bool, optional
@@ -1569,7 +1569,7 @@ class hamiltonian(object):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.linalg.LinearOperator`.
 
 		Casts the `hamiltonian` object as a
-		`scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/>`_
+		`scipy.sparse.linalg.LinearOperator <https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html>`_
 		object.
 
 		Parameters
@@ -1597,7 +1597,7 @@ class hamiltonian(object):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csr_matrix`.
 
 		Casts the `hamiltonian` object as a
-		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/>`_
+		`scipy.sparse.csr_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html>`_
 		object.
 
 		Parameters
@@ -1635,7 +1635,7 @@ class hamiltonian(object):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csc_matrix`.
 
 		Casts the `hamiltonian` object as a
-		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/>`_
+		`scipy.sparse.csc_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html>`_
 		object.
 
 		Parameters

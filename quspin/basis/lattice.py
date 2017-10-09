@@ -266,11 +266,11 @@ class lattice_basis(basis):
 				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha
 		sparse_diag : bool, optional
 			When `sparse=True`, this flag enforces the use of
-			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
 			to calculate the eigenvaues of the reduced DM.
 		maxiter : int, optional
 			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
-			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/>`_.
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
 
 		Returns
 		--------
