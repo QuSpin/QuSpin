@@ -20,7 +20,7 @@ T csr_trace(const I n_row,
 {
 
     T trace = 0;
-    const I N = std::min(n_row, n_col);
+    const I N = (n_row<n_col?n_col:n_row);
 
     for(I i = 0; i < N; i++){
         const I row_start = Ap[i];
