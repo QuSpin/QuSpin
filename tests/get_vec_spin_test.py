@@ -60,30 +60,30 @@ def getvec_spin(L,H1,static,S="1/2",Nup=None,kblock=None,pblock=None,zblock=None
 	err_msg = "get_vec() symmetries failed for L={0} {1}".format(b.N,b.blocks)
 	np.testing.assert_allclose(H1,H2,atol=1e-10,err_msg=err_msg)
 	
-def getvec_spin_zA_zB(L,H1,static,S="1/2",kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
+def getvec_spin(L,H1,static,S="1/2",kblock=None,zAblock=None,zBblock=None,a=2,sparse=True):
 	jb=[[i,1.0] for i in range(L)]
 	dtype=np.complex128
 
-	b_zA_zB = spin_basis_1d(L,S=S,kblock=kblock,zAblock=zAblock,zBblock=zBblock,a=a)
+	b = spin_basis_1d(L,S=S,kblock=kblock,zAblock=zAblock,zBblock=zBblock,a=a)
 	
-	Ns_zA_zB = b_zA_zB.Ns
+	Ns = b.Ns
 
-	if Ns_zA_zB == 0:
+	if Ns == 0:
 		return 
 
-	H2_zA_zB = hamiltonian(static_zA_zB,[],N=L,basis=b_zA_zB,dtype=dtype)
+	H2 = hamiltonian(static,[],N=L,basis=b,dtype=dtype)
 	
 
-	E_zA_zB,v0_zA_zB=H2_zA_zB.eigh()
-	v_zA_zB = b_zA_zB.get_vec(v0_zA_zB,sparse=sparse)
+	E,v0=H2.eigh()
+	v = b.get_vec(v0,sparse=sparse)
 
-	if sp.issparse(v_zA_zB):
-		v_zA_zB = v_zA_zB.todense()
+	if sp.issparse(v):
+		v = v.todense()
 
-	H2_zA_zB = H2_zA_zB.todense()
-	H2_zA_zB = v0_zA_zB.T.conj() * (H2_zA_zB * v0_zA_zB)
-	H1 = v_zA_zB.T.conj() * ( H1 * v_zA_zB)
-	err_msg = "get_vec_zA_zB() symmetries failed for L={0} {1}".format(b.N,b.blocks)
+	H2 = H2.todense()
+	H2 = v0.T.conj() * (H2 * v0)
+	H1 = v.T.conj() * ( H1 * v)
+	err_msg = "get_vec() symmetries failed for L={0} {1}".format(b.N,b.blocks)
 	np.testing.assert_allclose(H1,H2,atol=1e-10,err_msg=err_msg)
 
 
@@ -120,7 +120,7 @@ def check_getvec_spin(L,S="1/2",a=1,sparse=True):
 	b_full = spin_basis_1d(L)
 
 	if S != "1/2":
-		static,_ = basis.expanded_form(static,[])
+		static,_ = b_full.expanded_form(static,[])
 
 
 	H1 = hamiltonian(static,[],basis=b_full,dtype=dtype).todense()
@@ -181,10 +181,10 @@ def check_getvec_spin(L,S="1/2",a=1,sparse=True):
 			for k in range(-L//a,L//a):
 				getvec_spin(L,H1,static,S=S,kblock=k,Nup=Nup,zblock=j,a=a,sparse=sparse)
 
-def check_getvec_spin_zA_zB(L,S="1/2",a=2,sparse=True):
+def check_getvec_spin(L,S="1/2",a=2,sparse=True):
 	jb=[[i,1.0] for i in range(L)]
 	dtype=np.complex128
-	static_zA_zB = [	['xx',J(L,jb,2)],
+	static = [	['xx',J(L,jb,2)],
 						['zz',Jnn(L,jb,2)],
 						['zxz',J(L,jb,3)],
 						['zxzx',J(L,jb,4)],
@@ -197,32 +197,32 @@ def check_getvec_spin_zA_zB(L,S="1/2",a=2,sparse=True):
 						['z-z+',J(L,jb,4)],
 					]
 
-	b_full = spin_basis_1d(L)
+	b_full = spin_basis_1d(L,S=S)
 
 	if S != "1/2":
-		static,_ = basis.expanded_form(static,[])
+		static,_ = b_full.expanded_form(static,[])
 
-	H1 = hamiltonian(static_zA_zB,[],basis=b_full,dtype=dtype).todense()
+	H1 = hamiltonian(static,[],basis=b_full,dtype=dtype).todense()
 
 
 	for k in range(-L//a,L//a):
-		getvec_spin_zA_zB(L,H1,static,S=S,kblock=k,a=a,sparse=sparse)
+		getvec_spin(L,H1,static,S=S,kblock=k,a=a,sparse=sparse)
 	
 	for j in range(-1,2,2):
-		getvec_spin_zA_zB(L,H1,static,S=S,zAblock=j,a=a,sparse=sparse)
+		getvec_spin(L,H1,static,S=S,zAblock=j,a=a,sparse=sparse)
 		for k in range(-L//a,L//a):
-			getvec_spin_zA_zB(L,H1,static,S=S,kblock=k,zAblock=j,a=a,sparse=sparse)
+			getvec_spin(L,H1,static,S=S,kblock=k,zAblock=j,a=a,sparse=sparse)
 	
 	for j in range(-1,2,2):
-		getvec_spin_zA_zB(L,H1,static,S=S,zBblock=j,a=a,sparse=sparse)
+		getvec_spin(L,H1,static,S=S,zBblock=j,a=a,sparse=sparse)
 		for k in range(-L//a,L//a):
-			getvec_spin_zA_zB(L,H1,static,S=S,kblock=k,zBblock=j,a=a,sparse=sparse)
+			getvec_spin(L,H1,static,S=S,kblock=k,zBblock=j,a=a,sparse=sparse)
 
 	for i in range(-1,2,2):
 		for j in range(-1,2,2):
-			getvec_spin_zA_zB(L,H1,static,S=S,zAblock=i,zBblock=j,a=a,sparse=sparse)
+			getvec_spin(L,H1,static,S=S,zAblock=i,zBblock=j,a=a,sparse=sparse)
 			for k in range(-L//a,L//a):
-				getvec_spin_zA_zB(L,H1,static,S=S,kblock=k,zAblock=i,zBblock=j,a=a,sparse=sparse)
+				getvec_spin(L,H1,static,S=S,kblock=k,zAblock=i,zBblock=j,a=a,sparse=sparse)
 	
 
 
@@ -230,13 +230,13 @@ def check_getvec_spin_zA_zB(L,S="1/2",a=2,sparse=True):
 
 check_getvec_spin(6,S="1/2",sparse=True)
 check_getvec_spin(6,S="1/2",sparse=False)
-check_getvec_spin_zA_zB(6,S="1/2",sparse=True)
-check_getvec_spin_zA_zB(6,S="1/2",sparse=False)
+check_getvec_spin(6,S="1/2",sparse=True)
+check_getvec_spin(6,S="1/2",sparse=False)
 
 check_getvec_spin(6,S="1",sparse=True)
 check_getvec_spin(6,S="1",sparse=False)
-check_getvec_spin_zA_zB(6,S="1",sparse=True)
-check_getvec_spin_zA_zB(6,S="1",sparse=False)
+check_getvec_spin(6,S="1",sparse=True)
+check_getvec_spin(6,S="1",sparse=False)
 
 
 
