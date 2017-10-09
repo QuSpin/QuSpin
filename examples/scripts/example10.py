@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import tensor_basis,fermion_basis_1d,boson_basis_1d # bases
+from quspin.basis import tensor_basis,spinless_fermion_basis_1d,boson_basis_1d # bases
 from quspin.tools.measurements import obs_vs_time # calculating dynamics
 from quspin.tools.Floquet import Floquet_t_vec # period-spaced time vector
 import numpy as np # general math functions
@@ -23,7 +23,7 @@ drive_args=[Omega]
 ###### create the basis
 # build the two bases to tensor together to a bose-fermi mixture
 basis_b=boson_basis_1d(L,Nb=Nb,sps=3) # boson basis
-basis_f=fermion_basis_1d(L,Nf=Nf) # fermion basis
+basis_f=spinless_fermion_basis_1d(L,Nf=Nf) # fermion basis
 basis=tensor_basis(basis_b,basis_f) # BFM
 #
 ##### create model
@@ -63,7 +63,7 @@ s_b = "".join("1" for i in range(Nb))
 i_0 = basis.index(s_b,s_f) # find index of product state in basis
 psi_0 = np.zeros(basis.Ns) # allocate space for state
 psi_0[i_0] = 1.0 # set MB state to be the given product state
-print("H-space size: {:d}, initial state: |{:s}>(x)|{:s}>".format(basis.Ns,s_b,s_f))
+print("H-space size: {:d}, initial state: |{:s}>|{:s}>".format(basis.Ns,s_b,s_f))
 #
 ###### time evolve initial state and measure entanglement between species
 t=Floquet_t_vec(Omega,10,len_T=10) # t.vals=times, t.i=initial time, t.T=drive period
@@ -76,7 +76,7 @@ Entropy_t = meas["Sent_time"]["Sent_A"]
 #
 ######
 # configuring plots
-plt.plot(t.vals/t.T, Entropy_t)
+plt.plot(t/t.T, Entropy_t)
 plt.xlabel("$\\mathrm{driving\\ cycle}$",fontsize=18)
 plt.ylabel('$S_\\mathrm{ent}(t)$',fontsize=18)
 plt.grid(True)

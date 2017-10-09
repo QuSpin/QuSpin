@@ -1,6 +1,6 @@
 from __future__ import print_function, division
-from quspin.operators import hamiltonian,exp_op,ops_dict # operators
-from quspin.basis import tensor_basis,fermion_basis_1d # Hilbert spaces
+from quspin.operators import hamiltonian,exp_op,quantum_operator # operators
+from quspin.basis import tensor_basis,spinless_fermion_basis_1d # Hilbert spaces
 from quspin.tools.measurements import obs_vs_time # calculating dynamics
 import numpy as np # general math functions
 from numpy.random import uniform,choice # tools for doing random sampling
@@ -25,8 +25,8 @@ t = np.linspace(start,stop,num=num,endpoint=True)
 #
 ###### create the basis
 # build the two bases to tensor together to spinful fermions
-basis_up = fermion_basis_1d(L,Nf=N_up) # up basis
-basis_down = fermion_basis_1d(L,Nf=N_down) # down basis
+basis_up = spinless_fermion_basis_1d(L,Nf=N_up) # up basis
+basis_down = spinless_fermion_basis_1d(L,Nf=N_down) # down basis
 basis = tensor_basis(basis_up,basis_down) # spinful fermions
 #
 ##### create model
@@ -45,7 +45,7 @@ operator_list_0 = [
 			["n|n", int_list], # onsite interaction
 			]
 imbalance_list = [["n|",sublat_list],["|n",sublat_list]]
-# create operator dictionary for ops_dict class
+# create operator dictionary for quantum_operator class
 # add key for Hubbard hamiltonian
 operator_dict=dict(H0=operator_list_0)
 # add keys for local potential in each site
@@ -56,7 +56,7 @@ for i in range(L):
 ###### setting up operators	
 # set up hamiltonian dictionary and observable (imbalance I)
 no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
-H_dict = ops_dict(operator_dict,basis=basis,**no_checks)
+H_dict = quantum_operator(operator_dict,basis=basis,**no_checks)
 I = hamiltonian(imbalance_list,[],basis=basis,**no_checks)
 # strings which represent the initial state
 s_up = "".join("1000" for i in range(N_up))
@@ -103,7 +103,7 @@ for w in w_list:
 	##### plotting results
 	plt.errorbar(t,I_avg,I_error,marker=".",label="w={:.2f}".format(w))
 # configuring plots
-plt.xlabel("$t/J$",fontsize=18)
+plt.xlabel("$Jt$",fontsize=18)
 plt.ylabel("$\mathcal{I}$",fontsize=18)
 plt.grid(True)
 plt.tick_params(labelsize=16)

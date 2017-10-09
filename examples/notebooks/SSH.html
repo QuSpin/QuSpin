@@ -11765,7 +11765,7 @@ where $J$ is the uniform component of the hopping, $\delta J$ -- the bond dimeri
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">fermion_basis_1d</span> <span class="c1"># Hilbert space fermion basis</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert space fermion basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.block_tools</span> <span class="kn">import</span> <span class="n">block_diag_hamiltonian</span> <span class="c1"># block diagonalisation</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="c1">#</span>
@@ -11786,7 +11786,7 @@ where $J$ is the uniform component of the hopping, $\delta J$ -- the bond dimeri
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Next, we construct the fermion basis using the constructor <code>fermion_basis_1d</code>. Since we are interested in a free model, it suffices to consider a single particle <code>Nf=1</code>.</p>
+<p>Next, we construct the fermion basis using the constructor <code>spinless_fermion_basis_1d</code>. Since we are interested in a free model, it suffices to consider a single particle <code>Nf=1</code>.</p>
 
 </div>
 </div>
@@ -11798,7 +11798,7 @@ where $J$ is the uniform component of the hopping, $\delta J$ -- the bond dimeri
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">##### construct single-particle Hamiltonian #####</span>
 <span class="c1"># define basis</span>
-<span class="n">basis</span><span class="o">=</span><span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 
@@ -11813,12 +11813,14 @@ where $J$ is the uniform component of the hopping, $\delta J$ -- the bond dimeri
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>reference states: 
-	0.  |1 0 0 0 0 0&gt;
-	1.  |0 1 0 0 0 0&gt;
-	2.  |0 0 1 0 0 0&gt;
-	3.  |0 0 0 1 0 0&gt;
-	4.  |0 0 0 0 1 0&gt;
-	5.  |0 0 0 0 0 1&gt;
+         0.  |1 0 0 0 0 0&gt;
+         1.  |0 1 0 0 0 0&gt;
+         2.  |0 0 1 0 0 0&gt;
+         3.  |0 0 0 1 0 0&gt;
+         4.  |0 0 0 0 1 0&gt;
+         5.  |0 0 0 0 0 1&gt;
+see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.
+
 </pre>
 </div>
 </div>
@@ -11840,7 +11842,7 @@ where $J$ is the uniform component of the hopping, $\delta J$ -- the bond dimeri
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># define site-coupling lists</span>
@@ -11869,7 +11871,6 @@ where $J$ is the uniform component of the hopping, $\delta J$ -- the bond dimeri
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Hermiticity check passed!
-Symmetry checks passed!
 Particle conservation check passed!
 FH Hamiltonian is real space is:
 [[ 0.5 -1.1  0.   0.   0.  -0.9]
@@ -11878,6 +11879,13 @@ FH Hamiltonian is real space is:
  [ 0.   0.  -1.1 -0.5 -0.9  0. ]
  [ 0.   0.   0.  -0.9  0.5 -1.1]
  [-0.9  0.   0.   0.  -1.1 -0.5]]
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/mbukov/anaconda2/lib/python2.7/site-packages/ipykernel/__main__.py:9: UserWarning: Test for symmetries not implemented for &lt;class &#39;quspin.basis.basis_1d.fermion.fermion_basis_1d&#39;&gt;, to turn off this warning set check_symm=False in hamiltonian
 </pre>
 </div>
 </div>
@@ -11910,7 +11918,7 @@ b_k
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># define basis blocks and arguments</span>
@@ -11935,11 +11943,11 @@ b_k
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># construct block-diagonal Hamiltonian</span>
-<span class="n">FT</span><span class="p">,</span><span class="n">Hblock</span> <span class="o">=</span> <span class="n">block_diag_hamiltonian</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">fermion_basis_1d</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="n">FT</span><span class="p">,</span><span class="n">Hblock</span> <span class="o">=</span> <span class="n">block_diag_hamiltonian</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span><span class="p">,</span><span class="n">basis_args</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
                                    <span class="n">get_proj_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pcon</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 <span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">Hblock</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span><span class="mi">2</span><span class="p">))</span>
 <span class="c1"># diagonalise momentum-space Hamiltonian</span>
@@ -11957,7 +11965,6 @@ b_k
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Hermiticity check passed!
-Symmetry checks passed!
 Particle conservation check passed!
 [[ 0.50+0.j   -2.00+0.j    0.00+0.j    0.00+0.j    0.00+0.j    0.00+0.j  ]
  [-2.00+0.j   -0.50+0.j    0.00+0.j    0.00+0.j    0.00+0.j    0.00+0.j  ]
@@ -11965,6 +11972,14 @@ Particle conservation check passed!
  [ 0.00+0.j    0.00+0.j   -0.65-0.78j -0.50+0.j    0.00+0.j    0.00+0.j  ]
  [ 0.00+0.j    0.00+0.j    0.00+0.j    0.00+0.j    0.50+0.j   -0.65-0.78j]
  [ 0.00+0.j    0.00+0.j    0.00+0.j    0.00+0.j   -0.65+0.78j -0.50+0.j  ]]
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/mbukov/anaconda2/lib/python2.7/site-packages/quspin/tools/block_tools.py:79: UserWarning: Test for symmetries not implemented for &lt;class &#39;quspin.basis.basis_1d.fermion.fermion_basis_1d&#39;&gt;, to turn off this warning set check_symm=False in hamiltonian
+  H = _hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
 </pre>
 </div>
 </div>
@@ -11985,11 +12000,12 @@ Particle conservation check passed!
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">##### plot spectra</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">E</span><span class="o">/</span><span class="n">L</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;real space&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Hblock</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">Eblock</span><span class="o">/</span><span class="n">L</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;momentum space&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;state number&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>

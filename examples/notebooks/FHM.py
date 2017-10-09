@@ -1,5 +1,5 @@
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import fermion_basis_1d, tensor_basis # Hilbert space fermion and tensor bases
+from quspin.basis import spinless_fermion_basis_1d, tensor_basis # Hilbert space fermion and tensor bases
 import numpy as np # generic math functions
 ##### define model parameters #####
 L=4 # system size
@@ -10,8 +10,8 @@ mu=0.0 # chemical potential
 # define boson basis with 3 states per site L bosons in the lattice
 N_up = L//2 + L % 2 # number of fermions with spin up
 N_down = L//2 # number of fermions with spin down
-basis_up=fermion_basis_1d(L,Nf=N_up)
-basis_down=fermion_basis_1d(L,Nf=N_down)
+basis_up=spinless_fermion_basis_1d(L,Nf=N_up)
+basis_down=spinless_fermion_basis_1d(L,Nf=N_down)
 basis = tensor_basis(basis_up,basis_down) # spinful fermions
 print(basis)
 # define site-coupling lists

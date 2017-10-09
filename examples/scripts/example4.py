@@ -1,5 +1,5 @@
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import spin_basis_1d, fermion_basis_1d # Hilbert space spin basis
+from quspin.basis import spin_basis_1d, spinless_fermion_basis_1d # Hilbert space spin basis
 import numpy as np # generic math functions
 import matplotlib.pyplot as plt # plotting library
 #
@@ -35,7 +35,7 @@ for zblock,PBC in zip([-1,1],[1,-1]):
 		J_pp=[[-J,i,(i+1)%L] for i in range(L)] # PBC
 		J_mm=[[+J,i,(i+1)%L] for i in range(L)] # PBC
 		# construct fermion basis in the odd particle number subsector
-		basis_fermion = fermion_basis_1d(L=L,Nf=range(1,L+1,2))
+		basis_fermion = spinless_fermion_basis_1d(L=L,Nf=range(1,L+1,2))
 	elif PBC==-1: # anti-periodic BC: even particle number subspace only
 		# define bulk site coupling lists
 		J_pm=[[-J,i,i+1] for i in range(L-1)]
@@ -48,7 +48,7 @@ for zblock,PBC in zip([-1,1],[1,-1]):
 		J_pp.append([+J,L-1,0]) # APBC
 		J_mm.append([-J,L-1,0]) # APBC
 		# construct fermion basis in the even particle number subsector
-		basis_fermion = fermion_basis_1d(L=L,Nf=range(0,L+1,2))
+		basis_fermion = spinless_fermion_basis_1d(L=L,Nf=range(0,L+1,2))
 	# define fermionic static and dynamic lists
 	static_fermion =[["+-",J_pm],["-+",J_mp],["++",J_pp],["--",J_mm],['z',h_pot]]
 	dynamic_fermion=[]

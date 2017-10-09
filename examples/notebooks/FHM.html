@@ -11761,11 +11761,11 @@ where $J$ is the hopping matrix element, $\mu$: the chemical potential, and $U$ 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">fermion_basis_1d</span><span class="p">,</span> <span class="n">tensor_basis</span> <span class="c1"># Hilbert space fermion and tensor bases</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">,</span> <span class="n">tensor_basis</span> <span class="c1"># Hilbert space fermion and tensor bases</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="c1">##### define model parameters #####</span>
 <span class="n">L</span><span class="o">=</span><span class="mi">4</span> <span class="c1"># system size</span>
@@ -11792,19 +11792,71 @@ where $J$ is the hopping matrix element, $\mu$: the chemical potential, and $U$ 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># define boson basis with 3 states per site L bosons in the lattice</span>
 <span class="n">N_up</span> <span class="o">=</span> <span class="n">L</span><span class="o">//</span><span class="mi">2</span> <span class="o">+</span> <span class="n">L</span> <span class="o">%</span> <span class="mi">2</span> <span class="c1"># number of fermions with spin up</span>
 <span class="n">N_down</span> <span class="o">=</span> <span class="n">L</span><span class="o">//</span><span class="mi">2</span> <span class="c1"># number of fermions with spin down</span>
-<span class="n">basis_up</span><span class="o">=</span><span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_up</span><span class="p">)</span>
-<span class="n">basis_down</span><span class="o">=</span><span class="n">fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_down</span><span class="p">)</span>
+<span class="n">basis_up</span><span class="o">=</span><span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_up</span><span class="p">)</span>
+<span class="n">basis_down</span><span class="o">=</span><span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_down</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="p">(</span><span class="n">basis_up</span><span class="p">,</span><span class="n">basis_down</span><span class="p">)</span> <span class="c1"># spinful fermions</span>
-<span class="c1">#print(basis)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>reference states: 
+	 0.  |1 1 0 0&gt;|1 1 0 0&gt;
+	 1.  |1 1 0 0&gt;|1 0 1 0&gt;
+	 2.  |1 1 0 0&gt;|0 1 1 0&gt;
+	 3.  |1 1 0 0&gt;|1 0 0 1&gt;
+	 4.  |1 1 0 0&gt;|0 1 0 1&gt;
+	 5.  |1 1 0 0&gt;|0 0 1 1&gt;
+	 6.  |1 0 1 0&gt;|1 1 0 0&gt;
+	 7.  |1 0 1 0&gt;|1 0 1 0&gt;
+	 8.  |1 0 1 0&gt;|0 1 1 0&gt;
+	 9.  |1 0 1 0&gt;|1 0 0 1&gt;
+	10.  |1 0 1 0&gt;|0 1 0 1&gt;
+	11.  |1 0 1 0&gt;|0 0 1 1&gt;
+	12.  |0 1 1 0&gt;|1 1 0 0&gt;
+	13.  |0 1 1 0&gt;|1 0 1 0&gt;
+	14.  |0 1 1 0&gt;|0 1 1 0&gt;
+	15.  |0 1 1 0&gt;|1 0 0 1&gt;
+	16.  |0 1 1 0&gt;|0 1 0 1&gt;
+	17.  |0 1 1 0&gt;|0 0 1 1&gt;
+	18.  |1 0 0 1&gt;|1 1 0 0&gt;
+	19.  |1 0 0 1&gt;|1 0 1 0&gt;
+	20.  |1 0 0 1&gt;|0 1 1 0&gt;
+	21.  |1 0 0 1&gt;|1 0 0 1&gt;
+	22.  |1 0 0 1&gt;|0 1 0 1&gt;
+	23.  |1 0 0 1&gt;|0 0 1 1&gt;
+	24.  |0 1 0 1&gt;|1 1 0 0&gt;
+	25.  |0 1 0 1&gt;|1 0 1 0&gt;
+	26.  |0 1 0 1&gt;|0 1 1 0&gt;
+	27.  |0 1 0 1&gt;|1 0 0 1&gt;
+	28.  |0 1 0 1&gt;|0 1 0 1&gt;
+	29.  |0 1 0 1&gt;|0 0 1 1&gt;
+	30.  |0 0 1 1&gt;|1 1 0 0&gt;
+	31.  |0 0 1 1&gt;|1 0 1 0&gt;
+	32.  |0 0 1 1&gt;|0 1 1 0&gt;
+	33.  |0 0 1 1&gt;|1 0 0 1&gt;
+	34.  |0 0 1 1&gt;|0 1 0 1&gt;
+	35.  |0 0 1 1&gt;|0 0 1 1&gt;
+see review arXiv:1101.3281 for more details about reference states for symmetry reduced blocks.
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -11815,7 +11867,7 @@ where $J$ is the hopping matrix element, $\mu$: the chemical potential, and $U$ 
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Defining the site-coupling lists is the same as before (mind the signs in the fermion hopping operator, though!).</p>
-<p>The <code>tensor_basis</code> accepts extended operator strings. The idea is that within the subspace of each basis, we use the operator strings belonging to the corresponding underlying basis (for <code>fermion_basis_1d</code>, the allowed operators are <code>"+"</code>, <code>"-"</code>, <code>"n"</code>, and <code>"I"</code>). We then use a <code>...|...</code> to separate the operators that act on spin-up (left) and spin-down (right).</p>
+<p>The <code>tensor_basis</code> accepts extended operator strings. The idea is that within the subspace of each basis, we use the operator strings belonging to the corresponding underlying basis (for <code>spinless_fermion_basis_1d</code>, the allowed operators are <code>"+"</code>, <code>"-"</code>, <code>"n"</code>, and <code>"I"</code>). We then use a <code>...|...</code> to separate the operators that act on spin-up (left) and spin-down (right).</p>
 <p>For instance, the hopping operators $c_{j,\uparrow}c^\dagger_{j+1,\uparrow}$ and $c_{j,\downarrow}c^\dagger_{j+1,\downarrow}$ are represented as <code>'-+|I'</code> and <code>'I|-+'</code>, repsectively, where <code>'I'</code> stands for the identity (and can be dropped, see below). On the other hand, the spin-flip hopping process $c_{j,\uparrow}c^\dagger_{j+1,\downarrow}$ would mix the spin-up and spin-down sectors and would take the form <code>'-|+'</code>.</p>
 
 </div>
@@ -11823,7 +11875,7 @@ where $J$ is the hopping matrix element, $\mu$: the chemical potential, and $U$ 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># define site-coupling lists</span>
