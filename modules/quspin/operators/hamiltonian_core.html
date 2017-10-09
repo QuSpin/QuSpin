@@ -1139,7 +1139,7 @@
 		<span class="sd">&quot;&quot;&quot;Computes SOME eigenvalues of hermitian `hamiltonian` operator using SPARSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.</span>
-<span class="sd">		It calls `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_, which is a wrapper for ARPACK.</span>
+<span class="sd">		It calls `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_, which is a wrapper for ARPACK.</span>
 
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
@@ -1151,7 +1151,7 @@
 <span class="sd">		time : float</span>
 <span class="sd">			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.</span>
 <span class="sd">		eigsh_args : </span>
-<span class="sd">			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_.</span>
+<span class="sd">			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_.</span>
 <span class="sd">			</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -1178,7 +1178,7 @@
 		<span class="sd">&quot;&quot;&quot;Computes COMPLETE eigensystem of hermitian `hamiltonian` operator using DENSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for all eigenvalues and eigenvectors. It calls </span>
-<span class="sd">		`numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/&gt;`_, </span>
+<span class="sd">		`numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html&gt;`_, </span>
 <span class="sd">		and uses wrapped LAPACK functions which are contained in the module py_lapack.</span>
 
 <span class="sd">		Notes</span>
@@ -1191,7 +1191,7 @@
 <span class="sd">		time : float</span>
 <span class="sd">			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.</span>
 <span class="sd">		eigh_args : </span>
-<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/&gt;`_.</span>
+<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html&gt;`_.</span>
 <span class="sd">			</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -1222,7 +1222,7 @@
 		<span class="sd">&quot;&quot;&quot;Computes ALL eigenvalues of hermitian `hamiltonian` operator using DENSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for all eigenvalues. It calls </span>
-<span class="sd">		`numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/&gt;`_, </span>
+<span class="sd">		`numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh&gt;`_, </span>
 <span class="sd">		and uses wrapped LAPACK functions which are contained in the module py_lapack.</span>
 
 <span class="sd">		Notes</span>
@@ -1235,7 +1235,7 @@
 <span class="sd">		time : float</span>
 <span class="sd">			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.</span>
 <span class="sd">		eigvalsh_args : </span>
-<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/&gt;`_.</span>
+<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh&gt;`_.</span>
 <span class="sd">			</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -1429,9 +1429,9 @@
 <span class="sd">		solver_name : str, optional</span>
 <span class="sd">			Scipy solver integrator name. Default is `dop853`. </span>
 
-<span class="sd">			See `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_ for other options.</span>
+<span class="sd">			See `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html&gt;`_ for other options.</span>
 <span class="sd">		solver_args : dict, optional</span>
-<span class="sd">			Dictionary with additional `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_.	</span>
+<span class="sd">			Dictionary with additional `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html&gt;`_.	</span>
 <span class="sd">		H_real : bool, optional </span>
 <span class="sd">			Flag to determine if `f` is real or complex-valued. Default is `False`.</span>
 <span class="sd">		imag_time : bool, optional</span>
@@ -1620,7 +1620,7 @@
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.linalg.LinearOperator`.</span>
 
 <span class="sd">		Casts the `hamiltonian` object as a</span>
-<span class="sd">		`scipy.sparse.linalg.LinearOperator &lt;https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/&gt;`_</span>
+<span class="sd">		`scipy.sparse.linalg.LinearOperator &lt;https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html&gt;`_</span>
 <span class="sd">		object.</span>
 
 <span class="sd">		Parameters</span>
@@ -1648,7 +1648,7 @@
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csr_matrix`.</span>
 
 <span class="sd">		Casts the `hamiltonian` object as a</span>
-<span class="sd">		`scipy.sparse.csr_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/&gt;`_</span>
+<span class="sd">		`scipy.sparse.csr_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html&gt;`_</span>
 <span class="sd">		object.</span>
 
 <span class="sd">		Parameters</span>
@@ -1686,7 +1686,7 @@
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csc_matrix`.</span>
 
 <span class="sd">		Casts the `hamiltonian` object as a</span>
-<span class="sd">		`scipy.sparse.csc_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/&gt;`_</span>
+<span class="sd">		`scipy.sparse.csc_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html&gt;`_</span>
 <span class="sd">		object.</span>
 
 <span class="sd">		Parameters</span>

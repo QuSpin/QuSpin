@@ -698,7 +698,7 @@
 		<span class="sd">&quot;&quot;&quot;Computes SOME eigenvalues of hermitian `quantum_operator` quantum_operator using SPARSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.</span>
-<span class="sd">		It calls `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_, which is a wrapper for ARPACK.</span>
+<span class="sd">		It calls `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_, which is a wrapper for ARPACK.</span>
 
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
@@ -711,7 +711,7 @@
 <span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
 <span class="sd">			are assumed to be set to inity.</span>
 <span class="sd">		eigsh_args : </span>
-<span class="sd">			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_.</span>
+<span class="sd">			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_.</span>
 <span class="sd">			</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -732,7 +732,7 @@
 		<span class="sd">&quot;&quot;&quot;Computes COMPLETE eigensystem of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for all eigenvalues and eigenvectors. It calls </span>
-<span class="sd">		`numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/&gt;`_, </span>
+<span class="sd">		`numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html&gt;`_, </span>
 <span class="sd">		and uses wrapped LAPACK functions which are contained in the module py_lapack.</span>
 
 <span class="sd">		Notes</span>
@@ -746,7 +746,7 @@
 <span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
 <span class="sd">			are assumed to be set to inity.</span>
 <span class="sd">		eigh_args : </span>
-<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/&gt;`_.</span>
+<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html&gt;`_.</span>
 <span class="sd">			</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -773,7 +773,7 @@
 		<span class="sd">&quot;&quot;&quot;Computes ALL eigenvalues of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.</span>
 
 <span class="sd">		This function method solves for all eigenvalues. It calls </span>
-<span class="sd">		`numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/&gt;`_, </span>
+<span class="sd">		`numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh&gt;`_, </span>
 <span class="sd">		and uses wrapped LAPACK functions which are contained in the module py_lapack.</span>
 
 <span class="sd">		Notes</span>
@@ -787,7 +787,7 @@
 <span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
 <span class="sd">			are assumed to be set to inity.</span>
 <span class="sd">		eigvalsh_args : </span>
-<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/&gt;`_.</span>
+<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh&gt;`_.</span>
 <span class="sd">			</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -816,7 +816,7 @@
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csr_matrix`.</span>
 
 <span class="sd">		Casts the `quantum_operator` object as a</span>
-<span class="sd">		`scipy.sparse.csr_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/&gt;`_</span>
+<span class="sd">		`scipy.sparse.csr_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html&gt;`_</span>
 <span class="sd">		object.</span>
 
 <span class="sd">		Parameters</span>
@@ -850,7 +850,7 @@
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csc_matrix`.</span>
 
 <span class="sd">		Casts the `quantum_operator` object as a</span>
-<span class="sd">		`scipy.sparse.csc_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/&gt;`_</span>
+<span class="sd">		`scipy.sparse.csc_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html&gt;`_</span>
 <span class="sd">		object.</span>
 
 <span class="sd">		Parameters</span>
@@ -962,7 +962,7 @@
 		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.linalg.Linearquantum_operator`.</span>
 
 <span class="sd">		Casts the `quantum_operator` object as a</span>
-<span class="sd">		`scipy.sparse.linalg.Linearquantum_operator &lt;https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html/&gt;`_</span>
+<span class="sd">		`scipy.sparse.linalg.Linearquantum_operator &lt;https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html&gt;`_</span>
 <span class="sd">		object.</span>
 
 <span class="sd">		Parameters</span>

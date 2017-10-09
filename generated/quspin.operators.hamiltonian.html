@@ -419,7 +419,7 @@ to create the operator.</p>
 <code class="descname">aslinearoperator</code><span class="sig-paren">(</span><em>time=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.aslinearoperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.aslinearoperator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.linalg.LinearOperator</cite>.</p>
 <p>Casts the <cite>hamiltonian</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html/">scipy.sparse.linalg.LinearOperator</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html">scipy.sparse.linalg.LinearOperator</a>
 object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -634,7 +634,7 @@ the drive couples.</p>
 <code class="descname">eigh</code><span class="sig-paren">(</span><em>time=0</em>, <em>**eigh_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes COMPLETE eigensystem of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</p>
 <p>This function method solves for all eigenvalues and eigenvectors. It calls 
-<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/">numpy.linalg.eigh</a>, 
+<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>, 
 and uses wrapped LAPACK functions which are contained in the module py_lapack.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -646,7 +646,7 @@ and uses wrapped LAPACK functions which are contained in the module py_lapack.</
 </div></blockquote>
 <p><strong>eigh_args :</strong></p>
 <blockquote>
-<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/">numpy.linalg.eigh</a>.</p>
+<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -672,7 +672,7 @@ to reassure themselves of the hermiticity properties before use.</p>
 <code class="descname">eigsh</code><span class="sig-paren">(</span><em>time=0.0</em>, <em>**eigsh_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigsh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes SOME eigenvalues of hermitian <cite>hamiltonian</cite> operator using SPARSE hermitian methods.</p>
 <p>This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh</a>, which is a wrapper for ARPACK.</p>
+It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>, which is a wrapper for ARPACK.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -683,7 +683,7 @@ It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/re
 </div></blockquote>
 <p><strong>eigsh_args :</strong></p>
 <blockquote>
-<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh</a>.</p>
+<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -709,7 +709,7 @@ to reassure themselves of the hermiticity properties before use.</p>
 <code class="descname">eigvalsh</code><span class="sig-paren">(</span><em>time=0</em>, <em>**eigvalsh_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigvalsh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigvalsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes ALL eigenvalues of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</p>
 <p>This function method solves for all eigenvalues. It calls 
-<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/">numpy.linalg.eigvalsh</a>, 
+<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh">numpy.linalg.eigvalsh</a>, 
 and uses wrapped LAPACK functions which are contained in the module py_lapack.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -721,7 +721,7 @@ and uses wrapped LAPACK functions which are contained in the module py_lapack.</
 </div></blockquote>
 <p><strong>eigvalsh_args :</strong></p>
 <blockquote>
-<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/">numpy.linalg.eigvalsh</a>.</p>
+<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh">numpy.linalg.eigvalsh</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -790,11 +790,11 @@ to reassure themselves of the hermiticity properties before use.</p>
 <p><strong>solver_name</strong> : str, optional</p>
 <blockquote>
 <div><p>Scipy solver integrator name. Default is <cite>dop853</cite>.</p>
-<p>See <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/">scipy integrator (solver)</a> for other options.</p>
+<p>See <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> for other options.</p>
 </div></blockquote>
 <p><strong>solver_args</strong> : dict, optional</p>
 <blockquote>
-<div><p>Dictionary with additional <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/">scipy integrator (solver)</a>.</p>
+<div><p>Dictionary with additional <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a>.</p>
 </div></blockquote>
 <p><strong>H_real</strong> : bool, optional</p>
 <blockquote>
@@ -1233,7 +1233,7 @@ transformation <span class="math">\(V\)</span>, and this function implements</p>
 <code class="descname">tocsc</code><span class="sig-paren">(</span><em>time=0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.tocsc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.tocsc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.csc_matrix</cite>.</p>
 <p>Casts the <cite>hamiltonian</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/">scipy.sparse.csc_matrix</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html">scipy.sparse.csc_matrix</a>
 object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1261,7 +1261,7 @@ object.</p>
 <code class="descname">tocsr</code><span class="sig-paren">(</span><em>time=0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.tocsr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.tocsr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.csr_matrix</cite>.</p>
 <p>Casts the <cite>hamiltonian</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/">scipy.sparse.csr_matrix</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html">scipy.sparse.csr_matrix</a>
 object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
