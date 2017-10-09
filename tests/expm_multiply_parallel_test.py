@@ -4,7 +4,7 @@ import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
-from quspin.tools import expm_multiply_parallel
+from quspin.tools.misc import expm_multiply_parallel
 from scipy.sparse.linalg import expm_multiply
 from scipy.sparse import random,identity
 import numpy as np

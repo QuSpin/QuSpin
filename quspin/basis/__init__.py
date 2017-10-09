@@ -39,8 +39,8 @@ general lattice symmetries
 
    spin_basis_general
    boson_basis_general
-.. spinless_fermion_basis_general
-.. spinful_fermion_basis_general
+   spinless_fermion_basis_general
+   spinful_fermion_basis_general
 
 
 combining basis classes

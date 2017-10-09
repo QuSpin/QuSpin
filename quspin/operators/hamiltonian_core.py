@@ -3002,9 +3002,14 @@ class hamiltonian(object):
 		return self.copy()
 
 	def __numpy_ufunc__(self, func, method, pos, inputs, **kwargs):
-		# """Method for compatibility with NumPy's ufuncs and dot
+		# """Method for compatibility with NumPy <= 1.11 ufuncs and dot
 		# functions.
 		# """
+		out = kwargs.get("out")
+
+		if out is not None:
+			raise ValueError("quspin hamiltonian class does not support 'out' for numpy.multiply or numpy.dot.")
+
 
 		if (func == np.dot) or (func == np.multiply):
 			if pos == 0:
@@ -3013,6 +3018,23 @@ class hamiltonian(object):
 				return self.__rmul__(inputs[0])
 			else:
 				return NotImplemented
+
+	def __array_ufunc__(self, func, method, *inputs, **kwargs):
+		# """Method for compatibility with NumPy >= 1.13 ufuncs and dot
+		# functions.
+		# """
+		out = kwargs.get("out")
+
+		if out is not None:
+			raise ValueError("quspin hamiltonian class does not support 'out' for numpy.multiply or numpy.dot.")
+
+		if (func == _np.dot) or (func == _np.multiply):
+
+			if ishamiltonian(inputs[0]):
+				return inputs[0].__mul__(inputs[1])
+			elif ishamiltonian(inputs[1]):
+				return inputs[1].__rmul__(inputs[0])
+
 
 
 def ishamiltonian(obj):
