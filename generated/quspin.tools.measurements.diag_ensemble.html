@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -30,7 +30,7 @@
     <link rel="next" title="quspin.tools.measurements.ED_state_vs_time" href="quspin.tools.measurements.ED_state_vs_time.html" />
     <link rel="prev" title="quspin.tools.measurements.ent_entropy" href="quspin.tools.measurements.ent_entropy.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -86,7 +86,7 @@ states, due to the generic system-size dependence!</strong></p>
 </li>
 <li><p class="first">numpy.ndarray: density matrix (DM), shape = (Ns,Ns).</p>
 </li>
-<li><p class="first">dict: mixed DM as dictionary <cite>{“V1”:V1, “E1”:E1, “f”:f, “f_args”:f_args, “V1_state”:int, “f_norm”:`False</cite>}` to define a diagonal DM in the basis <span class="math">\(V_1\)</span> of the Hamiltonian <span class="math">\(H_1\)</span>. The meaning of the keys (keys CANNOT be chosen arbitrarily) is as flollows:</p>
+<li><p class="first">dict: mixed DM as dictionary <cite>{&#8220;V1&#8221;:V1, &#8220;E1&#8221;:E1, &#8220;f&#8221;:f, &#8220;f_args&#8221;:f_args, &#8220;V1_state&#8221;:int, &#8220;f_norm&#8221;:`False</cite>}` to define a diagonal DM in the basis <span class="math">\(V_1\)</span> of the Hamiltonian <span class="math">\(H_1\)</span>. The meaning of the keys (keys CANNOT be chosen arbitrarily) is as flollows:</p>
 <blockquote>
 <div><ul>
 <li><p class="first">numpy.ndarray: <cite>V1</cite> (required) contains eigenbasis of <span class="math">\(H_1\)</span> in the columns.</p>
@@ -94,7 +94,7 @@ states, due to the generic system-size dependence!</strong></p>
 <li><p class="first">numpy.ndarray: <cite>E1</cite> (required) eigenenergies of <span class="math">\(H_1\)</span>.</p>
 </li>
 <li><dl class="first docutils">
-<dt><code class="xref py py-obj docutils literal"><span class="pre">function</span></code> ‘f’ (optional) is a function which represents the distribution of the spectrum </dt>
+<dt><code class="xref py py-obj docutils literal"><span class="pre">function</span></code> &#8216;f&#8217; (optional) is a function which represents the distribution of the spectrum </dt>
 <dd><p class="first">used to define the mixed DM of the initial state (see example).</p>
 <p class="last">Default is a thermal distribution with inverse temperature <cite>beta</cite>: 
 <cite>f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )</cite>.</p>
@@ -144,7 +144,7 @@ produce correct resultsand raises an error.</p>
 <p><strong>rho_d</strong> : bool, optional</p>
 <blockquote>
 <div><p>When set to <cite>True</cite>, returns the Diagonal ensemble DM. Default is <cite>False</cite>.</p>
-<p>Adds the key “rho_d” to output.</p>
+<p>Adds the key &#8220;rho_d&#8221; to output.</p>
 <p>For example, if <cite>system_state</cite> is the pure state <span class="math">\(|\psi\rangle\)</span>:</p>
 <div class="math">
 \[\rho_d^\psi = \sum_{n_2} \left|\langle\psi|n_2\rangle\right|^2\left|n_2\rangle\langle n_2\right| = \sum_{n_2} \left(\rho_d^\psi\right)_{n_2n_2}\left|n_2\rangle\langle n_2\right| \]</div>
@@ -152,7 +152,7 @@ produce correct resultsand raises an error.</p>
 <p><strong>Obs</strong> : :obj:, optional</p>
 <blockquote>
 <div><p>Hermitian matrix of the same shape as <cite>V2</cite>, to calculate the Diagonal ensemble expectation value of.</p>
-<p>Adds the key “Obs” to output. Can be of type <cite>numpy.ndarray</cite> or an instance of the <cite>hamiltonian</cite> class.</p>
+<p>Adds the key &#8220;Obs&#8221; to output. Can be of type <cite>numpy.ndarray</cite> or an instance of the <cite>hamiltonian</cite> class.</p>
 <p>For example, if <cite>system_state</cite> is the pure state <span class="math">\(|\psi\rangle\)</span>:</p>
 <div class="math">
 \[\langle\mathcal{O}\rangle_d^\psi = \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \frac{1}{N}\langle\psi\left|\mathcal{O}(t)\right|\psi\rangle = \frac{1}{N}\sum_{n_2}\left(\rho_d^\psi\right)_{n_2n_2} \langle n_2\left|\mathcal{O}\right|n_2\rangle\]</div>
@@ -161,7 +161,7 @@ produce correct resultsand raises an error.</p>
 <blockquote>
 <div><p>QUANTUM fluctuations of the expectation of <cite>Obs</cite> at infinite times. Requires <cite>Obs</cite>. Calculates
 temporal fluctuations <cite>delta_t_Obs</cite> for along the way (see above).</p>
-<p>Adds keys “delta_q_Obs” and “delta_t_Obs” to output.</p>
+<p>Adds keys &#8220;delta_q_Obs&#8221; and &#8220;delta_t_Obs&#8221; to output.</p>
 <p>For example, if <cite>system_state</cite> is the pure state <span class="math">\(|\psi\rangle\)</span>:</p>
 <div class="math">
 \[\delta_q\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{\lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left| \mathcal{O}(t)\right| \psi\rangle^2 - \langle\mathcal{O}\rangle_d^2}= \frac{1}{N}\sqrt{ \sum_{n_2\neq m_2} \left(\rho_d^\psi\right)_{n_2n_2} [\mathcal{O}]^2_{n_2m_2} \left(\rho_d^\psi\right)_{m_2m_2} }\]</div>
@@ -169,7 +169,7 @@ temporal fluctuations <cite>delta_t_Obs</cite> for along the way (see above).</p
 <p><strong>delta_t_Obs</strong> : bool, optional</p>
 <blockquote>
 <div><p>TEMPORAL fluctuations around infinite-time expectation of <cite>Obs</cite>. Requires <cite>Obs</cite>.</p>
-<p>Adds the key “delta_t_Obs” to output.</p>
+<p>Adds the key &#8220;delta_t_Obs&#8221; to output.</p>
 <p>For example, if <cite>system_state</cite> is the pure state <span class="math">\(|\psi\rangle\)</span>:</p>
 <div class="math">
 \[\delta_t\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{ \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|[\mathcal{O}(t)]^2\right|\psi\rangle - \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2} = \frac{1}{N}\sqrt{\langle\mathcal{O}^2\rangle_d - \langle\mathcal{O}\rangle_d^2 - \left(\delta_q\mathcal{O}^\psi_d\right)^2 }\]</div>
@@ -182,7 +182,7 @@ temporal fluctuations <cite>delta_t_Obs</cite> for along the way (see above).</p
 <blockquote>
 <div><p>Computes the DIAGONAL Renyi entropy in the basis of <span class="math">\(H_2\)</span>. 
 The default Renyi parameter is <cite>alpha=1.0</cite> (see below). 
-Adds the key “Sd_Renyi” to output.
+Adds the key &#8220;Sd_Renyi&#8221; to output.
 For example, if <cite>system_state</cite> is the pure state <span class="math">\(|\psi\rangle\)</span>:</p>
 <div class="math">
 \[S_d^\psi = \frac{1}{1-\alpha}\log\mathrm{tr}\left(\rho_d^\psi\right)^\alpha\]</div>
@@ -192,7 +192,7 @@ For example, if <cite>system_state</cite> is the pure state <span class="math">\
 <div><p>Computes ENTANGLEMENT Renyi entropy of a subsystem (see <cite>Srdm_args</cite> for subsystem definition).</p>
 <p>Requires passing the (otherwise optional) argument <cite>Srdm_args</cite> (see below).</p>
 <p>The default Renyi parameter is <cite>alpha=1.0</cite> (see below).</p>
-<p>Adds the key “Srdm_Renyi” to output.</p>
+<p>Adds the key &#8220;Srdm_Renyi&#8221; to output.</p>
 <p>For example, if <cite>system_state</cite> is the pure state <span class="math">\(|\psi\rangle\)</span> 
 (see also notation in documentation of <cite>ent_entropy</cite>):</p>
 <div class="math">
@@ -205,16 +205,16 @@ entropy. Required when <cite>Srdm_Renyi = True</cite>. The following keys are al
 <blockquote>
 <div><ul>
 <li><dl class="first docutils">
-<dt>“basis”: obj(basis), required</dt>
+<dt>&#8220;basis&#8221;: obj(basis), required</dt>
 <dd><p class="first last">Basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>“chain_subsys” <span class="classifier-delimiter">:</span> <span class="classifier">list, optional </span></dt>
+<dt>&#8220;chain_subsys&#8221; <span class="classifier-delimiter">:</span> <span class="classifier">list, optional </span></dt>
 <dd><p class="first">Lattice sites to specify the chain subsystem of interest. Default is:</p>
-<p>– [0,1,…,N/2-1,N/2] for <cite>spin_basis_1d</cite>, <cite>fermion_basis_1d</cite>, <cite>boson_basis_1d</cite>.</p>
-<p class="last">– [0,1,…,N-1,N] for <cite>photon_basis</cite>.</p>
+<p>&#8211; [0,1,...,N/2-1,N/2] for <cite>spin_basis_1d</cite>, <cite>fermion_basis_1d</cite>, <cite>boson_basis_1d</cite>.</p>
+<p class="last">&#8211; [0,1,...,N-1,N] for <cite>photon_basis</cite>.</p>
 </dd>
 </dl>
 </li>
@@ -225,36 +225,30 @@ entropy. Required when <cite>Srdm_Renyi = True</cite>. The following keys are al
 <blockquote>
 <div><p>If set to <cite>True</cite>, all observables are normalised by the system size <cite>N</cite>, except
 for the <cite>Srdm_Renyi</cite> which is normalised by the subsystem size, i.e. by the length of <cite>chain_subsys</cite>.
-Default is ‘True’.</p>
+Default is &#8216;True&#8217;.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dict</p>
 <blockquote class="last">
 <div><p>The following keys of the output are possible, depending on the choice of flags:</p>
-<ul>
-<li><p class="first">“rho_d”: density matrix of Diagonal Ensemble.</p>
-</li>
-<li><p class="first">“<a href="#id1"><span class="problematic" id="id2">Obs_</span></a>…”: infinite-time expectation of observable <cite>Obs</cite>.</p>
-</li>
-<li><p class="first">“<a href="#id3"><span class="problematic" id="id4">delta_t_Obs_</span></a>…”: infinite-time temporal fluctuations of <cite>Obs</cite>.</p>
-</li>
-<li><p class="first">“<a href="#id5"><span class="problematic" id="id6">delta_q_Obs_</span></a>…”: infinite-time quantum fluctuations of <cite>Obs</cite>.</p>
-</li>
+<ul class="simple">
+<li>&#8220;rho_d&#8221;: density matrix of Diagonal Ensemble.</li>
+<li>&#8220;<a href="#id1"><span class="problematic" id="id2">Obs_</span></a>...&#8221;: infinite-time expectation of observable <cite>Obs</cite>.</li>
+<li>&#8220;<a href="#id3"><span class="problematic" id="id4">delta_t_Obs_</span></a>...&#8221;: infinite-time temporal fluctuations of <cite>Obs</cite>.</li>
+<li>&#8220;<a href="#id5"><span class="problematic" id="id6">delta_q_Obs_</span></a>...&#8221;: infinite-time quantum fluctuations of <cite>Obs</cite>.</li>
 <li><dl class="first docutils">
-<dt>“<a href="#id7"><span class="problematic" id="id8">Sd_</span></a>…” (“<a href="#id9"><span class="problematic" id="id10">Sd_Renyi_</span></a>…” for <span class="math">\(\alpha\neq1.0\)</span>): Renyi diagonal entropy of density matrix of </dt>
-<dd><p class="first last"><cite>rho_d</cite> with parameter <cite>alpha</cite>.</p>
-</dd>
+<dt>&#8220;<a href="#id7"><span class="problematic" id="id8">Sd_</span></a>...&#8221; (&#8220;<a href="#id9"><span class="problematic" id="id10">Sd_Renyi_</span></a>...&#8221; for <span class="math">\(\alpha\neq1.0\)</span>): Renyi diagonal entropy of density matrix of </dt>
+<dd><cite>rho_d</cite> with parameter <cite>alpha</cite>.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>“<a href="#id11"><span class="problematic" id="id12">Srdm_</span></a>…” (“<a href="#id13"><span class="problematic" id="id14">Srdm_Renyi_</span></a>…” for <span class="math">\(\alpha\neq1.0\)</span>): Renyi entanglement entropy of reduced DM of </dt>
-<dd><p class="first last"><cite>rho_d</cite> (<cite>rho_d</cite> is a mixed DM itself) with parameter <cite>alpha</cite>.</p>
-</dd>
+<dt>&#8220;<a href="#id11"><span class="problematic" id="id12">Srdm_</span></a>...&#8221; (&#8220;<a href="#id13"><span class="problematic" id="id14">Srdm_Renyi_</span></a>...&#8221; for <span class="math">\(\alpha\neq1.0\)</span>): Renyi entanglement entropy of reduced DM of </dt>
+<dd><cite>rho_d</cite> (<cite>rho_d</cite> is a mixed DM itself) with parameter <cite>alpha</cite>.</dd>
 </dl>
 </li>
 </ul>
-<p>Replace “…” above by ‘pure’, ‘thermal’ or ‘mixed’ depending on input parameters.</p>
+<p>Replace &#8221;...&#8221; above by &#8216;pure&#8217;, &#8216;thermal&#8217; or &#8216;mixed&#8217; depending on input parameters.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -264,7 +258,7 @@ Default is ‘True’.</p>
 <p>We prepare a quantum system in an eigenstate <span class="math">\(\psi_1\)</span> of the Hamiltonian <span class="math">\(H_1=\sum_j hS^x_j + g S^z_j\)</span>.
 At time <span class="math">\(t=0\)</span> we quench to the Hamiltonian <span class="math">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>, and evolve
 the initial state <span class="math">\(\psi_1\)</span> with it. We compute the infinite-time (i.e. Diagonal Ensemble) expectation value of the Hamiltonian <span class="math">\(H_1\)</span>, and
-it’s infinite-time temporal fluctuations <span class="math">\(\delta_t\mathcal{O}^\psi_d\)</span> (see above for the definition).</p>
+it&#8217;s infinite-time temporal fluctuations <span class="math">\(\delta_t\mathcal{O}^\psi_d\)</span> (see above for the definition).</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -386,7 +380,7 @@ it’s infinite-time temporal fluctuations <span class="math">\(\delta_t\mathcal
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

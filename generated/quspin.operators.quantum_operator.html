@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,10 +52,10 @@
 <h1>quspin.operators.quantum_operator<a class="headerlink" href="#quspin-operators-quantum-operator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.operators.quantum_operator">
-<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_operator</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_operator</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs parameter-dependent <cite>hamiltonian</cite> operators.</p>
 <p>The <cite>quantum_operator</cite> class maps quantum operators to keys of a dictionary. When calling various methods
-of <cite>quantum_operator</cite>, it allows one to ‘dynamically’ specify the pre-factors of these operators.</p>
+of <cite>quantum_operator</cite>, it allows one to &#8216;dynamically&#8217; specify the pre-factors of these operators.</p>
 <p class="rubric">Examples</p>
 <p>It is often required to be able to handle a parameter-dependent Hamiltonian <span class="math">\(H(\lambda)=H_1 + \lambda H_2\)</span>, e.g.</p>
 <div class="math">
@@ -253,7 +253,7 @@ without having to re-build the Hamiltonian every time.</p>
 </table>
 <dl class="method">
 <dt id="quspin.operators.quantum_operator.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type ‘numpy.complex128’&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>quantum_operator</cite> object (parameter dependent quantum quantum_operators).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -274,7 +274,7 @@ used to specify the coupling strength during calls of the <cite>quantum_operator
 <blockquote>
 <div><p>Number of lattice sites for the <cite>hamiltonian</cite> object.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : ‘type’</p>
+<p><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the quantum_operator with.</p>
 </div></blockquote>
@@ -309,6 +309,120 @@ to create the quantum_operator.</p>
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.__init__" title="quspin.operators.quantum_operator.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(input_dict[,&nbsp;N,&nbsp;basis,&nbsp;shape,&nbsp;...])</td>
+<td>Intializes the <cite>quantum_operator</cite> object (parameter dependent quantum quantum_operators).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.aslinearoperator" title="quspin.operators.quantum_operator.aslinearoperator"><code class="xref py py-obj docutils literal"><span class="pre">aslinearoperator</span></code></a>([pars])</td>
+<td>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>scipy.sparse.linalg.Linearquantum_operator</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.astype" title="quspin.operators.quantum_operator.astype"><code class="xref py py-obj docutils literal"><span class="pre">astype</span></code></a>(dtype)</td>
+<td>Changes data type of <cite>quantum_operator</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.conj" title="quspin.operators.quantum_operator.conj"><code class="xref py py-obj docutils literal"><span class="pre">conj</span></code></a>()</td>
+<td>Conjugates <cite>quantum_operator</cite> quantum_operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.conjugate" title="quspin.operators.quantum_operator.conjugate"><code class="xref py py-obj docutils literal"><span class="pre">conjugate</span></code></a>()</td>
+<td>Conjugates <cite>quantum_operator</cite> quantum_operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.copy" title="quspin.operators.quantum_operator.copy"><code class="xref py py-obj docutils literal"><span class="pre">copy</span></code></a>([deep])</td>
+<td>Returns a deep copy of <cite>quantum_operator</cite> object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.diagonal" title="quspin.operators.quantum_operator.diagonal"><code class="xref py py-obj docutils literal"><span class="pre">diagonal</span></code></a>([pars])</td>
+<td>Returns diagonal of <cite>quantum_operator</cite> quantum_operator for parameters <cite>pars</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.dot" title="quspin.operators.quantum_operator.dot"><code class="xref py py-obj docutils literal"><span class="pre">dot</span></code></a>(V[,&nbsp;pars,&nbsp;check])</td>
+<td>Matrix-vector multiplication of <cite>quantum_operator</cite> quantum_operator for parameters <cite>pars</cite>, with state <cite>V</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.eigh" title="quspin.operators.quantum_operator.eigh"><code class="xref py py-obj docutils literal"><span class="pre">eigh</span></code></a>([pars])</td>
+<td>Computes COMPLETE eigensystem of hermitian <cite>quantum_operator</cite> quantum_operator using DENSE hermitian methods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.eigsh" title="quspin.operators.quantum_operator.eigsh"><code class="xref py py-obj docutils literal"><span class="pre">eigsh</span></code></a>([pars])</td>
+<td>Computes SOME eigenvalues of hermitian <cite>quantum_operator</cite> quantum_operator using SPARSE hermitian methods.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.eigvalsh" title="quspin.operators.quantum_operator.eigvalsh"><code class="xref py py-obj docutils literal"><span class="pre">eigvalsh</span></code></a>([pars])</td>
+<td>Computes ALL eigenvalues of hermitian <cite>quantum_operator</cite> quantum_operator using DENSE hermitian methods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.getH" title="quspin.operators.quantum_operator.getH"><code class="xref py py-obj docutils literal"><span class="pre">getH</span></code></a>([copy])</td>
+<td>Calculates hermitian conjugate of <cite>quantum_operator</cite> quantum_operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.matmat" title="quspin.operators.quantum_operator.matmat"><code class="xref py py-obj docutils literal"><span class="pre">matmat</span></code></a>(X)</td>
+<td>Matrix-matrix multiplication.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.matrix_ele" title="quspin.operators.quantum_operator.matrix_ele"><code class="xref py py-obj docutils literal"><span class="pre">matrix_ele</span></code></a>(Vl,&nbsp;Vr[,&nbsp;pars,&nbsp;diagonal,&nbsp;check])</td>
+<td>Calculates matrix element of <cite>quantum_operator</cite> quantum_operator for parameters <cite>pars</cite> in states <cite>Vl</cite> and <cite>Vr</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.matvec" title="quspin.operators.quantum_operator.matvec"><code class="xref py py-obj docutils literal"><span class="pre">matvec</span></code></a>(x)</td>
+<td>Matrix-vector multiplication.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.rdot" title="quspin.operators.quantum_operator.rdot"><code class="xref py py-obj docutils literal"><span class="pre">rdot</span></code></a>(V[,&nbsp;pars,&nbsp;check])</td>
+<td>Vector-matrix multiplication of <cite>quantum_operator</cite> quantum_operator for parameters <cite>pars</cite>, with state <cite>V</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.rmatvec" title="quspin.operators.quantum_operator.rmatvec"><code class="xref py py-obj docutils literal"><span class="pre">rmatvec</span></code></a>(x)</td>
+<td>Adjoint matrix-vector multiplication.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.toarray" title="quspin.operators.quantum_operator.toarray"><code class="xref py py-obj docutils literal"><span class="pre">toarray</span></code></a>([pars,&nbsp;out])</td>
+<td>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a dense array.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.tocsc" title="quspin.operators.quantum_operator.tocsc"><code class="xref py py-obj docutils literal"><span class="pre">tocsc</span></code></a>([pars])</td>
+<td>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>scipy.sparse.csc_matrix</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.tocsr" title="quspin.operators.quantum_operator.tocsr"><code class="xref py py-obj docutils literal"><span class="pre">tocsr</span></code></a>([pars])</td>
+<td>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>scipy.sparse.csr_matrix</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.todense" title="quspin.operators.quantum_operator.todense"><code class="xref py py-obj docutils literal"><span class="pre">todense</span></code></a>([pars,&nbsp;out])</td>
+<td>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a dense array.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.tohamiltonian" title="quspin.operators.quantum_operator.tohamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">tohamiltonian</span></code></a>([pars])</td>
+<td>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>hamiltonian</cite> object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.trace" title="quspin.operators.quantum_operator.trace"><code class="xref py py-obj docutils literal"><span class="pre">trace</span></code></a>([pars])</td>
+<td>Calculates trace of <cite>quantum_operator</cite> quantum_operator for parameters <cite>pars</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.transpose" title="quspin.operators.quantum_operator.transpose"><code class="xref py py-obj docutils literal"><span class="pre">transpose</span></code></a>([copy])</td>
+<td>Transposes <cite>quantum_operator</cite> quantum_operator.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.H" title="quspin.operators.quantum_operator.H"><code class="xref py py-obj docutils literal"><span class="pre">H</span></code></a></td>
+<td><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: transposes and conjugates the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.Ns" title="quspin.operators.quantum_operator.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.T" title="quspin.operators.quantum_operator.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
+<td><a class="reference internal" href="#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal"><span class="pre">quantum_operator</span></code></a>: transposes the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.basis" title="quspin.operators.quantum_operator.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a></td>
+<td><a class="reference internal" href="#quspin.operators.quantum_operator.basis" title="quspin.operators.quantum_operator.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a>: basis used to build the <cite>hamiltonian</cite> object. Defaults to <cite>None</cite> if quantum_operator has</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.dtype" title="quspin.operators.quantum_operator.dtype"><code class="xref py py-obj docutils literal"><span class="pre">dtype</span></code></a></td>
+<td>type: data type of <cite>quantum_operator</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.get_shape" title="quspin.operators.quantum_operator.get_shape"><code class="xref py py-obj docutils literal"><span class="pre">get_shape</span></code></a></td>
+<td>tuple: shape of the <cite>quantum_operator</cite> object, always equal to <cite>(Ns,Ns)</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.is_dense" title="quspin.operators.quantum_operator.is_dense"><code class="xref py py-obj docutils literal"><span class="pre">is_dense</span></code></a></td>
+<td>bool: <cite>True</cite> if the quantum_operator contains a dense matrix as a componnent of either</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.ndim" title="quspin.operators.quantum_operator.ndim"><code class="xref py py-obj docutils literal"><span class="pre">ndim</span></code></a></td>
+<td>int: number of dimensions, always equal to 2.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.operators.quantum_operator.H">
 <code class="descname">H</code><a class="headerlink" href="#quspin.operators.quantum_operator.H" title="Permalink to this definition">¶</a></dt>
@@ -364,7 +478,7 @@ are assumed to be set to inity.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : ‘type’</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>The data type (e.g. numpy.float64) to cast the Hamiltonian with.</p>
 </div></blockquote>
@@ -1112,7 +1226,7 @@ are assumed to be set to inity.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

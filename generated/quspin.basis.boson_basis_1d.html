@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -61,19 +61,16 @@
         \texttt{boson_basis_1d}&amp;   \hat{1}        &amp;   \hat b^\dagger      &amp;       \hat b          &amp; \hat b^\dagger b     &amp;  \hat b^\dagger\hat b - \frac{\mathrm{sps}-1}{2}  \newline
 \end{array}\]</div>
 <p class="rubric">Notes</p>
-<ul>
-<li><p class="first">if <cite>Nb</cite> or <cite>nb</cite> are specified, by default <cite>sps</cite> is set to the number of bosons on the lattice.</p>
-</li>
+<ul class="simple">
+<li>if <cite>Nb</cite> or <cite>nb</cite> are specified, by default <cite>sps</cite> is set to the number of bosons on the lattice.</li>
 <li><dl class="first docutils">
 <dt>if <cite>sps</cite> is specified, while <cite>Nb</cite> or <cite>nb</cite> are not, all particle sectors are filled up to the maximumal </dt>
-<dd><p class="first last">occupation.</p>
-</dd>
+<dd>occupation.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>if <cite>Nb</cite> or <cite>nb</cite> and <cite>sps</cite> are specified, the finite boson basis is constructed with the local Hilbert space </dt>
-<dd><p class="first last">restrited by <cite>sps</cite>.</p>
-</dd>
+<dd>restrited by <cite>sps</cite>.</dd>
 </dl>
 </li>
 </ul>
@@ -189,11 +186,11 @@
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.check_symm" title="quspin.basis.boson_basis_1d.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for the required symmetries of the combined operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.ent_entropy" title="quspin.basis.boson_basis_1d.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.ent_entropy" title="quspin.basis.boson_basis_1d.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;...])</td>
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.expanded_form" title="quspin.basis.boson_basis_1d.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
+<td>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.get_proj" title="quspin.basis.boson_basis_1d.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;pcon])</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -204,10 +201,10 @@
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.index" title="quspin.basis.boson_basis_1d.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
 <td>Finds the index of user-defined Fock state in any lattice basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.inplace_Op" title="quspin.basis.boson_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.inplace_Op" title="quspin.basis.boson_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;...])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.partial_trace" title="quspin.basis.boson_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.partial_trace" title="quspin.basis.boson_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;...])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
 </tr>
 </tbody>
@@ -258,6 +255,81 @@
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.Op" title="quspin.basis.boson_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
+<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.__init__" title="quspin.basis.boson_basis_1d.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(L[,&nbsp;Nb,&nbsp;nb,&nbsp;sps])</td>
+<td>Intializes the <cite>boson_basis_1d</cite> object (basis for bosonic operators).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.check_hermitian" title="quspin.basis.boson_basis_1d.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for hermiticity of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.check_pcon" title="quspin.basis.boson_basis_1d.check_pcon"><code class="xref py py-obj docutils literal"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.check_symm" title="quspin.basis.boson_basis_1d.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for the required symmetries of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.ent_entropy" title="quspin.basis.boson_basis_1d.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;...])</td>
+<td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.expanded_form" title="quspin.basis.boson_basis_1d.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
+<td>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.get_proj" title="quspin.basis.boson_basis_1d.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;pcon])</td>
+<td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.get_vec" title="quspin.basis.boson_basis_1d.get_vec"><code class="xref py py-obj docutils literal"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse])</td>
+<td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.index" title="quspin.basis.boson_basis_1d.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
+<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.inplace_Op" title="quspin.basis.boson_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;...])</td>
+<td>Calculates the action of an operator on a state.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.partial_trace" title="quspin.basis.boson_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;...])</td>
+<td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.L" title="quspin.basis.boson_basis_1d.L"><code class="xref py py-obj docutils literal"><span class="pre">L</span></code></a></td>
+<td>int: length of lattice.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.N" title="quspin.basis.boson_basis_1d.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: number of sites the basis is constructed with.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.Ns" title="quspin.basis.boson_basis_1d.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.blocks" title="quspin.basis.boson_basis_1d.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.description" title="quspin.basis.boson_basis_1d.description"><code class="xref py py-obj docutils literal"><span class="pre">description</span></code></a></td>
+<td>str: information about <cite>basis</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.operators" title="quspin.basis.boson_basis_1d.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_1d.sps" title="quspin.basis.boson_basis_1d.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.boson_basis_1d.L">
 <code class="descname">L</code><a class="headerlink" href="#quspin.basis.boson_basis_1d.L" title="Permalink to this definition">¶</a></dt>
@@ -302,7 +374,7 @@
 <blockquote>
 <div><p>Coupling strength.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : ‘type’</p>
+<p><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
 </div></blockquote>
@@ -312,19 +384,16 @@
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(ME,row,col)</cite>, where</dt>
-<dd><ul class="first last">
-<li><p class="first">numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</p>
-</li>
+<dd><ul class="first last simple">
+<li>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>row</cite>: row indices of matrix representing the operator in the lattice basis,</dt>
-<dd><p class="first last">such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</p>
-</dd>
+<dd>such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>col</cite>: column index of matrix representing the operator in the lattice basis,</dt>
-<dd><p class="first last">such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</p>
-</dd>
+<dd>such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</dd>
 </dl>
 </li>
 </ul>
@@ -438,7 +507,7 @@
 <div><ul class="simple">
 <li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
 <li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
-<li>dict(‘V_states’,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
+<li>dict(&#8216;V_states&#8217;,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -452,9 +521,9 @@ Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lat
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“A”: returns reduced DM of subsystem A.</li>
-<li>“B”: returns reduced DM of subsystem B.</li>
-<li>“both”: returns reduced DM of both A and B subsystems.</li>
+<li>&#8220;A&#8221;: returns reduced DM of subsystem A.</li>
+<li>&#8220;B&#8221;: returns reduced DM of subsystem B.</li>
+<li>&#8220;both&#8221;: returns reduced DM of both A and B subsystems.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -501,12 +570,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 <div><dl class="docutils">
 <dt>Dictionary with following keys, depending on input parameters:</dt>
 <dd><ul class="first last simple">
-<li>“Sent_A”: entanglement entropy of subsystem A (default).</li>
-<li>“Sent_B”: entanglement entropy of subsystem B.</li>
-<li>“p_A”: singular values of reduced DM of subsystem A (default).</li>
-<li>“p_B”: singular values of reduced DM of subsystem B.</li>
-<li>“rdm_A”: reduced DM of subsystem A.</li>
-<li>“rdm_B”: reduced DM of subsystem B.</li>
+<li>&#8220;Sent_A&#8221;: entanglement entropy of subsystem A (default).</li>
+<li>&#8220;Sent_B&#8221;: entanglement entropy of subsystem B.</li>
+<li>&#8220;p_A&#8221;: singular values of reduced DM of subsystem A (default).</li>
+<li>&#8220;p_B&#8221;: singular values of reduced DM of subsystem B.</li>
+<li>&#8220;rdm_A&#8221;: reduced DM of subsystem A.</li>
+<li>&#8220;rdm_B&#8221;: reduced DM of subsystem B.</li>
 </ul>
 </dd>
 </dl>
@@ -527,7 +596,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.boson_basis_1d.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.boson_basis_1d.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
+<dd><p>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;. This function is useful for higher spin hamiltonians where &#8220;x&#8221; and &#8220;y&#8221; operators are not appropriate operators.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -546,17 +615,15 @@ to calculate the eigenvaues of the reduced DM.</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(static, dynamic)</cite>, where</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li><dl class="first docutils">
-<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd><p class="first last">be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
-</dd>
+<dt>list: <cite>static</cite>: operator strings with &#8220;x&#8221; and &#8220;y&#8221; expanded into &#8220;+&#8221; and &#8220;-&#8221;, formatted to </dt>
+<dd>be passed into the static argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd><p class="first last">be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
-</dd>
+<dt>list: <cite>dynamic</cite>: operator strings with &#8220;x&#8221; and &#8220;y&#8221; expanded into &#8220;+&#8221; and &#8220;-&#8221;, formatted to </dt>
+<dd>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 </ul>
@@ -583,7 +650,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : ‘type’</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the projector with.</p>
 </div></blockquote>
@@ -718,7 +785,7 @@ by <cite>index()</cite>.</p>
 <blockquote>
 <div><p>Coupling strength.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : ‘type’</p>
+<p><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </div></blockquote>
@@ -764,7 +831,7 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.boson_basis_1d.partial_trace">
-<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm=’A’</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.boson_basis_1d.partial_trace" title="Permalink to this definition">¶</a></dt>
+<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm='A'</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.boson_basis_1d.partial_trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -777,7 +844,7 @@ by <cite>index()</cite>.</p>
 <div><ul class="simple">
 <li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
 <li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
-<li>dict(‘V_states’,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
+<li>dict(&#8216;V_states&#8217;,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -791,9 +858,9 @@ Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lat
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“A”: returns reduced DM of subsystem A.</li>
-<li>“B”: returns reduced DM of subsystem B.</li>
-<li>“both”: returns reduced DM of both A and B subsystems.</li>
+<li>&#8220;A&#8221;: returns reduced DM of subsystem A.</li>
+<li>&#8220;B&#8221;: returns reduced DM of subsystem B.</li>
+<li>&#8220;both&#8221;: returns reduced DM of both A and B subsystems.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -878,7 +945,7 @@ it is a square array. Default is <cite>False</cite>.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

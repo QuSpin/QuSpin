@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -187,7 +187,7 @@ ramp-up, constant and ramp-down.</p>
 <p><strong>len_T</strong> : int</p>
 <blockquote>
 <div><p>Number of time points within a single period. N.B. the last period interval is assumed 
-open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’.</p>
+open on the right, i.e. [0,T) and the point T is NOT counted towards &#8216;len_T&#8217;.</p>
 </div></blockquote>
 <p><strong>N_up</strong> : int, optional</p>
 <blockquote>
@@ -203,6 +203,74 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.__init__" title="quspin.tools.Floquet.Floquet_t_vec.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(Omega,&nbsp;N_const[,&nbsp;len_T,&nbsp;N_up,&nbsp;N_down])</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.N" title="quspin.tools.Floquet.Floquet_t_vec.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: total number of periods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.T" title="quspin.tools.Floquet.Floquet_t_vec.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
+<td>float: drive period.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.const" title="quspin.tools.Floquet.Floquet_t_vec.const"><code class="xref py py-obj docutils literal"><span class="pre">const</span></code></a></td>
+<td>obj: refers to time vector of const-part (regime).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.down" title="quspin.tools.Floquet.Floquet_t_vec.down"><code class="xref py py-obj docutils literal"><span class="pre">down</span></code></a></td>
+<td>obj: refers to time vector of down-part (regime).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.dt" title="quspin.tools.Floquet.Floquet_t_vec.dt"><code class="xref py py-obj docutils literal"><span class="pre">dt</span></code></a></td>
+<td>float: time vector step size.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.f" title="quspin.tools.Floquet.Floquet_t_vec.f"><code class="xref py py-obj docutils literal"><span class="pre">f</span></code></a></td>
+<td>foat: final time value.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.i" title="quspin.tools.Floquet.Floquet_t_vec.i"><code class="xref py py-obj docutils literal"><span class="pre">i</span></code></a></td>
+<td>float: initial time value.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.len" title="quspin.tools.Floquet.Floquet_t_vec.len"><code class="xref py py-obj docutils literal"><span class="pre">len</span></code></a></td>
+<td>int: length of time vector.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.len_T" title="quspin.tools.Floquet.Floquet_t_vec.len_T"><code class="xref py py-obj docutils literal"><span class="pre">len_T</span></code></a></td>
+<td>int: number of time points within one period, assumed half-open; [0,T).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.strobo" title="quspin.tools.Floquet.Floquet_t_vec.strobo"><code class="xref py py-obj docutils literal"><span class="pre">strobo</span></code></a></td>
+<td>obj: calculates stroboscopic times in time vector with period length <cite>len_T</cite> and assigns them as</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.tot" title="quspin.tools.Floquet.Floquet_t_vec.tot"><code class="xref py py-obj docutils literal"><span class="pre">tot</span></code></a></td>
+<td>float: total time duration; <cite>_.f - _.i</cite> .</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.up" title="quspin.tools.Floquet.Floquet_t_vec.up"><code class="xref py py-obj docutils literal"><span class="pre">up</span></code></a></td>
+<td>obj: refers to time vector of up-part (regime).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.vals" title="quspin.tools.Floquet.Floquet_t_vec.vals"><code class="xref py py-obj docutils literal"><span class="pre">vals</span></code></a></td>
+<td>np.ndarray(float): time vector values.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.N">
 <code class="descname">N</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.N" title="Permalink to this definition">¶</a></dt>
@@ -339,7 +407,7 @@ attributes:</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

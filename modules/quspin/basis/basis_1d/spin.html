@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -181,7 +181,7 @@
 								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: z pauli/spin operator&quot;</span><span class="p">)</span>
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
-			<span class="n">basis_1d</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+			<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_pauli</span> <span class="o">=</span> <span class="kc">False</span>
 			<span class="n">pars</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="c1"># flag to turn off higher spin matrix elements for +/- operators</span>
@@ -192,7 +192,7 @@
 								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: z pauli/spin operator&quot;</span><span class="p">)</span>
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
-			<span class="n">basis_1d</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">boson_basis</span><span class="p">,</span><span class="n">boson_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
+			<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">boson_basis</span><span class="p">,</span><span class="n">boson_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
 
 
 	<span class="k">def</span> <span class="nf">_Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
@@ -357,7 +357,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

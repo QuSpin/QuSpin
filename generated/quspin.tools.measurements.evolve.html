@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -30,7 +30,7 @@
     <link rel="next" title="Installation" href="../Installation.html" />
     <link rel="prev" title="quspin.tools.measurements.mean_level_spacing" href="quspin.tools.measurements.mean_level_spacing.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -60,7 +60,7 @@
 <h1>quspin.tools.measurements.evolve<a class="headerlink" href="#quspin-tools-measurements-evolve" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="quspin.tools.measurements.evolve">
-<code class="descclassname">quspin.tools.measurements.</code><code class="descname">evolve</code><span class="sig-paren">(</span><em>v0</em>, <em>t0</em>, <em>times</em>, <em>f</em>, <em>solver_name=’dop853’</em>, <em>real=False</em>, <em>stack_state=False</em>, <em>verbose=False</em>, <em>imag_time=False</em>, <em>iterate=False</em>, <em>f_params=()</em>, <em>**solver_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.evolve" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">quspin.tools.measurements.</code><code class="descname">evolve</code><span class="sig-paren">(</span><em>v0</em>, <em>t0</em>, <em>times</em>, <em>f</em>, <em>solver_name='dop853'</em>, <em>real=False</em>, <em>stack_state=False</em>, <em>verbose=False</em>, <em>imag_time=False</em>, <em>iterate=False</em>, <em>f_params=()</em>, <em>**solver_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.evolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements (imaginary) time evolution for a user-defined first-order ODE.</p>
 <p>The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured 
 ODE solver in python, without any relation to other QuSpin objects.</p>
@@ -149,7 +149,7 @@ on a one-dimensional lattice for periodically-driven particles in a harmonic tra
 <div class="math">
 \[i\dot\varphi_j(t) = -J\left( e^{-iA\sin\Omega t}\varphi_{j-1}(t) + e^{+iA\sin\Omega t}\varphi_{j+1}(t) \right) + \kappa_\mathrm{trap}\varphi_j(t) + U|\varphi_j(t)|^2\varphi_j(t)\]</div>
 <p>where <span class="math">\(j\)</span> labels the lattice sites, <span class="math">\(J\)</span> is the lattice hopping amplitude, <span class="math">\(\kappa_\mathrm{trap}\)</span> is
-the strength of the harmonic trap, and <span class="math">\(U\)</span> – the mean-field interaction.</p>
+the strength of the harmonic trap, and <span class="math">\(U\)</span> &#8211; the mean-field interaction.</p>
 <p>Let us start by defining the single-particle Hamiltonian <span class="math">\(H(t)\)</span>.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -401,7 +401,7 @@ complex-valued example above.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

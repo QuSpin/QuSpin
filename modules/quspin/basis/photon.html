@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -206,7 +206,7 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span><span class="o">=</span><span class="kc">False</span>
 			<span class="n">b1</span> <span class="o">=</span> <span class="n">basis_constructor</span><span class="p">(</span><span class="o">*</span><span class="n">constructor_args</span><span class="p">,</span><span class="n">_Np</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 			<span class="n">b2</span> <span class="o">=</span> <span class="n">ho_basis</span><span class="p">(</span><span class="n">Nph</span><span class="p">)</span>
-			<span class="n">tensor_basis</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">b2</span><span class="p">)</span>
+			<span class="n">tensor_basis</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">b2</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Ntot</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ntot must be integer&quot;</span><span class="p">)</span>
 			<span class="k">if</span> <span class="n">Ntot</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ntot must be an integer &gt;= 0.&quot;</span><span class="p">)</span>
@@ -965,13 +965,13 @@
 			<span class="k">return</span> <span class="n">v0</span>
 
 	<span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
 		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">.</span><span class="n">__iter__</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
 	<span class="k">def</span> <span class="nf">_sort_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
 		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
@@ -1095,7 +1095,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

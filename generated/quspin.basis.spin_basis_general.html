@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,14 +52,14 @@
 <h1>quspin.basis.spin_basis_general<a class="headerlink" href="#quspin-basis-spin-basis-general" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.basis.spin_basis_general">
-<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spin_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nup=None</em>, <em>m=None</em>, <em>S=‘1/2’</em>, <em>pauli=True</em>, <em>Ns_block_est=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/spin.html#spin_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spin_basis_general" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spin_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nup=None</em>, <em>m=None</em>, <em>S='1/2'</em>, <em>pauli=True</em>, <em>Ns_block_est=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/spin.html#spin_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spin_basis_general" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for spin operators for USER-DEFINED symmetries.</p>
 <p>Any unitary symmetry transformation <span class="math">\(Q\)</span> of multiplicity <span class="math">\(m_Q\)</span> (<span class="math">\(Q^{m_Q}=1\)</span>) has
 eigenvalues <span class="math">\(\exp(-2\pi i q/m_Q)\)</span>, labelled by an ingeter <span class="math">\(q\in\{0,1,\dots,m_Q-1\}\)</span>.
 These integers <span class="math">\(q\)</span> are used to define the symmetry blocks.</p>
 <p>For instance, if <span class="math">\(Q=P\)</span> is parity (reflection), then <span class="math">\(q=0,1\)</span>. If <span class="math">\(Q=T\)</span> is translation by one lattice site,
-then <span class="math">\(q\)</span> labels the mometum blocks in the same fashion as for the <cite>…_basis_1d</cite> classes.</p>
-<p>User-defined symmetries with the <cite>…_basis_general</cite> class can be programmed as follows. Suppose we have a system of
+then <span class="math">\(q\)</span> labels the mometum blocks in the same fashion as for the <cite>..._basis_1d</cite> classes.</p>
+<p>User-defined symmetries with the <cite>..._basis_general</cite> class can be programmed as follows. Suppose we have a system of
 L sites, enumerated <span class="math">\(s=(s_0,s_1,\dots,s_{L-1})\)</span>. There are two types of operations one can perform on the sites:</p>
 <blockquote>
 <div><ul class="simple">
@@ -77,7 +77,7 @@ spin inversion. For a specific example, see below.</p>
 \end{array}\]</div>
 <p><strong>Note:</strong> The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
 the argument <cite>pauli</cite> of the <cite>spin_basis</cite> class. Higher spins can only be defined using the spin operators, and do NOT support
-the operator strings “x” and “y”.</p>
+the operator strings &#8220;x&#8221; and &#8220;y&#8221;.</p>
 <p class="rubric">Examples</p>
 <p>The code snipped below shows how to construct the two-dimensional transverse-field Ising model.</p>
 <div class="math">
@@ -195,11 +195,11 @@ we do translation invariance and parity (reflection) (along each lattice directi
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_symm" title="quspin.basis.spin_basis_general.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for the required symmetries of the combined operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.ent_entropy" title="quspin.basis.spin_basis_general.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.ent_entropy" title="quspin.basis.spin_basis_general.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;...])</td>
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.expanded_form" title="quspin.basis.spin_basis_general.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
+<td>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_proj" title="quspin.basis.spin_basis_general.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype)</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -210,17 +210,17 @@ we do translation invariance and parity (reflection) (along each lattice directi
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.index" title="quspin.basis.spin_basis_general.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
 <td>Finds the index of user-defined Fock state in any lattice basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.inplace_Op" title="quspin.basis.spin_basis_general.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.inplace_Op" title="quspin.basis.spin_basis_general.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;...])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.partial_trace" title="quspin.basis.spin_basis_general.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.partial_trace" title="quspin.basis.spin_basis_general.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;...])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="quspin.basis.spin_basis_general.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nup=None</em>, <em>m=None</em>, <em>S=‘1/2’</em>, <em>pauli=True</em>, <em>Ns_block_est=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/spin.html#spin_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spin_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nup=None</em>, <em>m=None</em>, <em>S='1/2'</em>, <em>pauli=True</em>, <em>Ns_block_est=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/spin.html#spin_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spin_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>spin_basis_general</cite> object (basis for spin operators).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -242,7 +242,7 @@ more particle sectors.</p>
 <p><strong>S: str, optional</strong></p>
 <blockquote>
 <div><p>Size of local spin degrees of freedom. Can be any (half-)integer from:
-“1/2”,”1”,”3/2”,…,”9999/2”,”5000”.</p>
+&#8220;1/2&#8221;,&#8221;1&#8221;,&#8221;3/2&#8221;,...,&#8221;9999/2&#8221;,&#8221;5000&#8221;.</p>
 </div></blockquote>
 <p><strong>pauli: bool, optional</strong></p>
 <blockquote>
@@ -269,6 +269,75 @@ sector.</p>
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.Op" title="quspin.basis.spin_basis_general.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
+<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.__init__" title="quspin.basis.spin_basis_general.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(N[,&nbsp;Nup,&nbsp;m,&nbsp;S,&nbsp;pauli,&nbsp;Ns_block_est])</td>
+<td>Intializes the <cite>spin_basis_general</cite> object (basis for spin operators).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_hermitian" title="quspin.basis.spin_basis_general.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for hermiticity of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_pcon" title="quspin.basis.spin_basis_general.check_pcon"><code class="xref py py-obj docutils literal"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_symm" title="quspin.basis.spin_basis_general.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for the required symmetries of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.ent_entropy" title="quspin.basis.spin_basis_general.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;...])</td>
+<td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.expanded_form" title="quspin.basis.spin_basis_general.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
+<td>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_proj" title="quspin.basis.spin_basis_general.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype)</td>
+<td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_vec" title="quspin.basis.spin_basis_general.get_vec"><code class="xref py py-obj docutils literal"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse])</td>
+<td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.index" title="quspin.basis.spin_basis_general.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
+<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.inplace_Op" title="quspin.basis.spin_basis_general.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;...])</td>
+<td>Calculates the action of an operator on a state.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.partial_trace" title="quspin.basis.spin_basis_general.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;...])</td>
+<td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.N" title="quspin.basis.spin_basis_general.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: number of sites the basis is constructed with.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.Ns" title="quspin.basis.spin_basis_general.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.blocks" title="quspin.basis.spin_basis_general.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.operators" title="quspin.basis.spin_basis_general.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.sps" title="quspin.basis.spin_basis_general.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.spin_basis_general.N">
 <code class="descname">N</code><a class="headerlink" href="#quspin.basis.spin_basis_general.N" title="Permalink to this definition">¶</a></dt>
@@ -307,7 +376,7 @@ sector.</p>
 <blockquote>
 <div><p>Coupling strength.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : ‘type’</p>
+<p><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
 </div></blockquote>
@@ -317,19 +386,16 @@ sector.</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(ME,row,col)</cite>, where</dt>
-<dd><ul class="first last">
-<li><p class="first">numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</p>
-</li>
+<dd><ul class="first last simple">
+<li>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>row</cite>: row indices of matrix representing the operator in the lattice basis,</dt>
-<dd><p class="first last">such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</p>
-</dd>
+<dd>such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>col</cite>: column index of matrix representing the operator in the lattice basis,</dt>
-<dd><p class="first last">such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</p>
-</dd>
+<dd>such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</dd>
 </dl>
 </li>
 </ul>
@@ -437,7 +503,7 @@ sector.</p>
 <div><ul class="simple">
 <li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
 <li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
-<li>dict(‘V_states’,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
+<li>dict(&#8216;V_states&#8217;,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -451,9 +517,9 @@ Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lat
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“A”: returns reduced DM of subsystem A.</li>
-<li>“B”: returns reduced DM of subsystem B.</li>
-<li>“both”: returns reduced DM of both A and B subsystems.</li>
+<li>&#8220;A&#8221;: returns reduced DM of subsystem A.</li>
+<li>&#8220;B&#8221;: returns reduced DM of subsystem B.</li>
+<li>&#8220;both&#8221;: returns reduced DM of both A and B subsystems.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -500,12 +566,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 <div><dl class="docutils">
 <dt>Dictionary with following keys, depending on input parameters:</dt>
 <dd><ul class="first last simple">
-<li>“Sent_A”: entanglement entropy of subsystem A (default).</li>
-<li>“Sent_B”: entanglement entropy of subsystem B.</li>
-<li>“p_A”: singular values of reduced DM of subsystem A (default).</li>
-<li>“p_B”: singular values of reduced DM of subsystem B.</li>
-<li>“rdm_A”: reduced DM of subsystem A.</li>
-<li>“rdm_B”: reduced DM of subsystem B.</li>
+<li>&#8220;Sent_A&#8221;: entanglement entropy of subsystem A (default).</li>
+<li>&#8220;Sent_B&#8221;: entanglement entropy of subsystem B.</li>
+<li>&#8220;p_A&#8221;: singular values of reduced DM of subsystem A (default).</li>
+<li>&#8220;p_B&#8221;: singular values of reduced DM of subsystem B.</li>
+<li>&#8220;rdm_A&#8221;: reduced DM of subsystem A.</li>
+<li>&#8220;rdm_B&#8221;: reduced DM of subsystem B.</li>
 </ul>
 </dd>
 </dl>
@@ -526,7 +592,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.spin_basis_general.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spin_basis_general.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
+<dd><p>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;. This function is useful for higher spin hamiltonians where &#8220;x&#8221; and &#8220;y&#8221; operators are not appropriate operators.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -545,17 +611,15 @@ to calculate the eigenvaues of the reduced DM.</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(static, dynamic)</cite>, where</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li><dl class="first docutils">
-<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd><p class="first last">be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
-</dd>
+<dt>list: <cite>static</cite>: operator strings with &#8220;x&#8221; and &#8220;y&#8221; expanded into &#8220;+&#8221; and &#8220;-&#8221;, formatted to </dt>
+<dd>be passed into the static argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd><p class="first last">be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
-</dd>
+<dt>list: <cite>dynamic</cite>: operator strings with &#8220;x&#8221; and &#8220;y&#8221; expanded into &#8220;+&#8221; and &#8220;-&#8221;, formatted to </dt>
+<dd>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 </ul>
@@ -582,7 +646,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : ‘type’</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the projector with.</p>
 </div></blockquote>
@@ -712,7 +776,7 @@ by <cite>index()</cite>.</p>
 <blockquote>
 <div><p>Coupling strength.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : ‘type’</p>
+<p><strong>dtype</strong> : &#8216;type&#8217;</p>
 <blockquote>
 <div><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </div></blockquote>
@@ -758,7 +822,7 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spin_basis_general.partial_trace">
-<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm=’A’</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spin_basis_general.partial_trace" title="Permalink to this definition">¶</a></dt>
+<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm='A'</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spin_basis_general.partial_trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -771,7 +835,7 @@ by <cite>index()</cite>.</p>
 <div><ul class="simple">
 <li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
 <li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
-<li>dict(‘V_states’,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
+<li>dict(&#8216;V_states&#8217;,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -785,9 +849,9 @@ Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lat
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“A”: returns reduced DM of subsystem A.</li>
-<li>“B”: returns reduced DM of subsystem B.</li>
-<li>“both”: returns reduced DM of both A and B subsystems.</li>
+<li>&#8220;A&#8221;: returns reduced DM of subsystem A.</li>
+<li>&#8220;B&#8221;: returns reduced DM of subsystem B.</li>
+<li>&#8220;both&#8221;: returns reduced DM of both A and B subsystems.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -872,7 +936,7 @@ it is a square array. Default is <cite>False</cite>.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>

@@ -1,6 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -30,7 +30,7 @@
     <link rel="next" title="quspin.tools.measurements.project_op" href="quspin.tools.measurements.project_op.html" />
     <link rel="prev" title="quspin.tools.measurements.ED_state_vs_time" href="quspin.tools.measurements.ED_state_vs_time.html" /> 
   </head>
-  <body>
+  <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -72,10 +72,10 @@
 <ul>
 <li><dl class="first docutils">
 <dt>tuple: <cite>psi_t = (psi, E, V)</cite> where </dt>
-<dd><p class="first">– np.ndarray: initial state <cite>psi</cite>.</p>
-<p>– np.ndarray: unitary matrix <cite>V</cite>, contains all eigenstates of the Hamiltonian <span class="math">\(H\)</span>.</p>
+<dd><p class="first">&#8211; np.ndarray: initial state <cite>psi</cite>.</p>
+<p>&#8211; np.ndarray: unitary matrix <cite>V</cite>, contains all eigenstates of the Hamiltonian <span class="math">\(H\)</span>.</p>
 <dl class="docutils">
-<dt>– np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math">\(H\)</span>. </dt>
+<dt>&#8211; np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math">\(H\)</span>. </dt>
 <dd><p class="first last">The order of the eigenvalues must correspond to the order of the columns of <cite>V</cite>.</p>
 </dd>
 </dl>
@@ -106,7 +106,7 @@ their time-dependent expectation value. Dictionary <cite>keys</cite> are chosen 
 </div></blockquote>
 <p><strong>return_state</strong> : bool, optional</p>
 <blockquote>
-<div><p>If set to <cite>True</cite>, adds key “psi_time” to output. The columns of the array
+<div><p>If set to <cite>True</cite>, adds key &#8220;psi_time&#8221; to output. The columns of the array
 contain the state vector at the <cite>times</cite> which specifies the column index. Default is <cite>False</cite>, unless
 <cite>Sent_args</cite> is nonempty.</p>
 </div></blockquote>
@@ -116,7 +116,7 @@ contain the state vector at the <cite>times</cite> which specifies the column in
 entropy. The following key is required:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“basis”: the basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</li>
+<li>&#8220;basis&#8221;: the basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</li>
 </ul>
 </div></blockquote>
 <p>The user can choose optional arguments according to those provided in the function method 
@@ -139,21 +139,18 @@ Default is <cite>False</cite>.</p>
 <blockquote class="last">
 <div><p>The following keys of the output are possible, depending on the choice of flags:</p>
 <blockquote>
-<div><ul>
+<div><ul class="simple">
 <li><dl class="first docutils">
-<dt>“custom_name”: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the </dt>
-<dd><p class="first last">corresponding observable <cite>Obs_dict[key]</cite> is calculated and returned under the user-defined name
-for the observable.</p>
-</dd>
+<dt>&#8220;custom_name&#8221;: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the </dt>
+<dd>corresponding observable <cite>Obs_dict[key]</cite> is calculated and returned under the user-defined name
+for the observable.</dd>
 </dl>
 </li>
-<li><p class="first">“psi_t”: (optional) returns time-dependent state, if <cite>return_state=True</cite> or <cite>Srdm_args</cite> is nonempty.</p>
-</li>
+<li>&#8220;psi_t&#8221;: (optional) returns time-dependent state, if <cite>return_state=True</cite> or <cite>Srdm_args</cite> is nonempty.</li>
 <li><dl class="first docutils">
-<dt>“Sent_time”: (optional) returns dictionary with keys corresponding to the entanglement entropy </dt>
-<dd><p class="first last">calculation for each time in <cite>times</cite>. Can have more keys than just “Sent_A”, e.g. if the reduced
-DM was also requested (toggled through <cite>Srdm_args</cite>.)</p>
-</dd>
+<dt>&#8220;Sent_time&#8221;: (optional) returns dictionary with keys corresponding to the entanglement entropy </dt>
+<dd>calculation for each time in <cite>times</cite>. Can have more keys than just &#8220;Sent_A&#8221;, e.g. if the reduced
+DM was also requested (toggled through <cite>Srdm_args</cite>.)</dd>
 </dl>
 </li>
 </ul>
@@ -297,7 +294,7 @@ under <span class="math">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
     </div>
   </body>
 </html>
