@@ -1,7 +1,7 @@
-quspin\.tools\.expm\_multiply\_parallel
-=======================================
+quspin\.tools\.misc\.expm\_multiply\_parallel
+=============================================
 
-.. currentmodule:: quspin.tools
+.. currentmodule:: quspin.tools.misc
 
 .. autoclass:: expm_multiply_parallel
 
