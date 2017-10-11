@@ -1,6 +1,6 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -29,7 +29,7 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Tools module (quspin.tools)" href="../tools.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -56,7 +56,7 @@
 <h1>quspin.tools.misc.expm_multiply_parallel<a class="headerlink" href="#quspin-tools-misc-expm-multiply-parallel" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.tools.misc.expm_multiply_parallel">
-<em class="property">class </em><code class="descclassname">quspin.tools.misc.</code><code class="descname">expm_multiply_parallel</code><span class="sig-paren">(</span><em>A</em>, <em>a=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.tools.misc.</code><code class="descname">expm_multiply_parallel</code><span class="sig-paren">(</span><em>A</em>, <em>a=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</p>
 <p class="rubric">Notes</p>
 <p>This is a wrapper over custom c++ code.</p>
@@ -145,7 +145,7 @@ The code snippet below initiates the class, and is required to run the example c
 </table>
 <dl class="method">
 <dt id="quspin.tools.misc.expm_multiply_parallel.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>A</em>, <em>a=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>A</em>, <em>a=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes <cite>expm_multiply_parallel</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -212,7 +212,7 @@ The code snippet below initiates the class, and is required to run the example c
 
 <dl class="method">
 <dt id="quspin.tools.misc.expm_multiply_parallel.dot">
-<code class="descname">dot</code><span class="sig-paren">(</span><em>v</em>, <em>work_array=None</em>, <em>overwrite_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">dot</code><span class="sig-paren">(</span><em>v</em>, <em>work_array=None</em>, <em>overwrite_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the action of <span class="math">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math">\(v\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -263,7 +263,7 @@ The code snippet below initiates the class, and is required to run the example c
 
 <dl class="method">
 <dt id="quspin.tools.misc.expm_multiply_parallel.set_a">
-<code class="descname">set_a</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/_expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.set_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel.set_a" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_a</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.set_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.expm_multiply_parallel.set_a" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the value of the property <cite>a</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -341,7 +341,7 @@ The code snippet below initiates the class, and is required to run the example c
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
     </div>
   </body>
 </html>

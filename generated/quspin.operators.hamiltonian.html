@@ -328,6 +328,135 @@ to create the operator.</p>
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.__init__" title="quspin.operators.hamiltonian.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(static_list,&nbsp;dynamic_list[,&nbsp;N,&nbsp;…])</td>
+<td>Intializes the <cite>hamtilonian</cite> object (any quantum operator).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.as_dense_format" title="quspin.operators.hamiltonian.as_dense_format"><code class="xref py py-obj docutils literal"><span class="pre">as_dense_format</span></code></a>([copy])</td>
+<td>Casts <cite>hamiltonian</cite> operator to DENSE format.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.as_sparse_format" title="quspin.operators.hamiltonian.as_sparse_format"><code class="xref py py-obj docutils literal"><span class="pre">as_sparse_format</span></code></a>(fmt[,&nbsp;copy])</td>
+<td>Casts <cite>hamiltonian</cite> operator to SPARSE format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.aslinearoperator" title="quspin.operators.hamiltonian.aslinearoperator"><code class="xref py py-obj docutils literal"><span class="pre">aslinearoperator</span></code></a>([time])</td>
+<td>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.linalg.LinearOperator</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.astype" title="quspin.operators.hamiltonian.astype"><code class="xref py py-obj docutils literal"><span class="pre">astype</span></code></a>(dtype)</td>
+<td>Changes data type of <cite>hamiltonian</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.check_is_dense" title="quspin.operators.hamiltonian.check_is_dense"><code class="xref py py-obj docutils literal"><span class="pre">check_is_dense</span></code></a>()</td>
+<td>updates attribute <cite>_.is_dense</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.conj" title="quspin.operators.hamiltonian.conj"><code class="xref py py-obj docutils literal"><span class="pre">conj</span></code></a>()</td>
+<td>Same functionality as <a class="reference internal" href="#quspin.operators.hamiltonian.conjugate" title="quspin.operators.hamiltonian.conjugate"><code class="xref py py-func docutils literal"><span class="pre">conjugate()</span></code></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.conjugate" title="quspin.operators.hamiltonian.conjugate"><code class="xref py py-obj docutils literal"><span class="pre">conjugate</span></code></a>()</td>
+<td>Conjugates <cite>hamiltonian</cite> operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.copy" title="quspin.operators.hamiltonian.copy"><code class="xref py py-obj docutils literal"><span class="pre">copy</span></code></a>([deep])</td>
+<td>Returns a deep or shallow copy of <cite>hamiltonian</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.diagonal" title="quspin.operators.hamiltonian.diagonal"><code class="xref py py-obj docutils literal"><span class="pre">diagonal</span></code></a>([time])</td>
+<td>Calculates diagonal of <cite>hamiltonian</cite> operator at time <cite>time</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.dot" title="quspin.operators.hamiltonian.dot"><code class="xref py py-obj docutils literal"><span class="pre">dot</span></code></a>(V[,&nbsp;time,&nbsp;check])</td>
+<td>Matrix-vector multiplication of <cite>hamiltonian</cite> operator at time <cite>time</cite>, with state <cite>V</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.eigh" title="quspin.operators.hamiltonian.eigh"><code class="xref py py-obj docutils literal"><span class="pre">eigh</span></code></a>([time])</td>
+<td>Computes COMPLETE eigensystem of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.eigsh" title="quspin.operators.hamiltonian.eigsh"><code class="xref py py-obj docutils literal"><span class="pre">eigsh</span></code></a>([time])</td>
+<td>Computes SOME eigenvalues of hermitian <cite>hamiltonian</cite> operator using SPARSE hermitian methods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.eigvalsh" title="quspin.operators.hamiltonian.eigvalsh"><code class="xref py py-obj docutils literal"><span class="pre">eigvalsh</span></code></a>([time])</td>
+<td>Computes ALL eigenvalues of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.evolve" title="quspin.operators.hamiltonian.evolve"><code class="xref py py-obj docutils literal"><span class="pre">evolve</span></code></a>(v0,&nbsp;t0,&nbsp;times[,&nbsp;eom,&nbsp;solver_name,&nbsp;…])</td>
+<td>Implements (imaginary) time evolution generated by the <cite>hamiltonian</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.expt_value" title="quspin.operators.hamiltonian.expt_value"><code class="xref py py-obj docutils literal"><span class="pre">expt_value</span></code></a>(V[,&nbsp;time,&nbsp;check,&nbsp;enforce_pure])</td>
+<td>Calculates expectation value of <cite>hamiltonian</cite> operator at time <cite>time</cite>, in state <cite>V</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.getH" title="quspin.operators.hamiltonian.getH"><code class="xref py py-obj docutils literal"><span class="pre">getH</span></code></a>([copy])</td>
+<td>Calculates hermitian conjugate of <cite>hamiltonian</cite> operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.matrix_ele" title="quspin.operators.hamiltonian.matrix_ele"><code class="xref py py-obj docutils literal"><span class="pre">matrix_ele</span></code></a>(Vl,&nbsp;Vr[,&nbsp;time,&nbsp;diagonal,&nbsp;check])</td>
+<td>Calculates matrix element of <cite>hamiltonian</cite> operator at time <cite>time</cite> in states <cite>Vl</cite> and <cite>Vr</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.project_to" title="quspin.operators.hamiltonian.project_to"><code class="xref py py-obj docutils literal"><span class="pre">project_to</span></code></a>(proj)</td>
+<td>Projects/Transforms <cite>hamiltonian</cite> operator with projector/operator <cite>proj</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.rdot" title="quspin.operators.hamiltonian.rdot"><code class="xref py py-obj docutils literal"><span class="pre">rdot</span></code></a>(V[,&nbsp;time,&nbsp;check])</td>
+<td>Vector-Matrix multiplication of <cite>hamiltonian</cite> operator at time <cite>time</cite>, with state <cite>V</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.rotate_by" title="quspin.operators.hamiltonian.rotate_by"><code class="xref py py-obj docutils literal"><span class="pre">rotate_by</span></code></a>(other[,&nbsp;generator])</td>
+<td>Rotates/Transforms <cite>hamiltonian</cite> object by an operator <cite>other</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.toarray" title="quspin.operators.hamiltonian.toarray"><code class="xref py py-obj docutils literal"><span class="pre">toarray</span></code></a>([time,&nbsp;order,&nbsp;out])</td>
+<td>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a dense array.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.tocsc" title="quspin.operators.hamiltonian.tocsc"><code class="xref py py-obj docutils literal"><span class="pre">tocsc</span></code></a>([time])</td>
+<td>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.csc_matrix</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.tocsr" title="quspin.operators.hamiltonian.tocsr"><code class="xref py py-obj docutils literal"><span class="pre">tocsr</span></code></a>([time])</td>
+<td>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.csr_matrix</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.todense" title="quspin.operators.hamiltonian.todense"><code class="xref py py-obj docutils literal"><span class="pre">todense</span></code></a>([time,&nbsp;order,&nbsp;out])</td>
+<td>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a dense array.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.trace" title="quspin.operators.hamiltonian.trace"><code class="xref py py-obj docutils literal"><span class="pre">trace</span></code></a>([time])</td>
+<td>Calculates trace of <cite>hamiltonian</cite> operator at time <cite>time</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.transpose" title="quspin.operators.hamiltonian.transpose"><code class="xref py py-obj docutils literal"><span class="pre">transpose</span></code></a>([copy])</td>
+<td>Transposes <cite>hamiltonian</cite> operator.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.H" title="quspin.operators.hamiltonian.H"><code class="xref py py-obj docutils literal"><span class="pre">H</span></code></a></td>
+<td><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes and conjugates the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.Ns" title="quspin.operators.hamiltonian.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.T" title="quspin.operators.hamiltonian.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
+<td><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.basis" title="quspin.operators.hamiltonian.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a></td>
+<td><a class="reference internal" href="#quspin.operators.hamiltonian.basis" title="quspin.operators.hamiltonian.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a>: basis used to build the <cite>hamiltonian</cite> object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.dtype" title="quspin.operators.hamiltonian.dtype"><code class="xref py py-obj docutils literal"><span class="pre">dtype</span></code></a></td>
+<td>type: data type of <cite>hamiltonian</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.dynamic" title="quspin.operators.hamiltonian.dynamic"><code class="xref py py-obj docutils literal"><span class="pre">dynamic</span></code></a></td>
+<td>dict: contains dynamic parts of the operator as <cite>{func: Hdyn}</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.get_shape" title="quspin.operators.hamiltonian.get_shape"><code class="xref py py-obj docutils literal"><span class="pre">get_shape</span></code></a></td>
+<td>tuple: shape of the <cite>hamiltonian</cite> object, always equal to <cite>(Ns,Ns)</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.is_dense" title="quspin.operators.hamiltonian.is_dense"><code class="xref py py-obj docutils literal"><span class="pre">is_dense</span></code></a></td>
+<td>bool: checks sparsity of operator matrix.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.ndim" title="quspin.operators.hamiltonian.ndim"><code class="xref py py-obj docutils literal"><span class="pre">ndim</span></code></a></td>
+<td>int: number of dimensions, always equal to 2.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.static" title="quspin.operators.hamiltonian.static"><code class="xref py py-obj docutils literal"><span class="pre">static</span></code></a></td>
+<td>scipy.sparse.csr: static part of the operator.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.operators.hamiltonian.H">
 <code class="descname">H</code><a class="headerlink" href="#quspin.operators.hamiltonian.H" title="Permalink to this definition">¶</a></dt>

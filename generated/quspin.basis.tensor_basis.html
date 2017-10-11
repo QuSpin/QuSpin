@@ -238,6 +238,81 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.Op" title="quspin.basis.tensor_basis.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
+<td>Constructs operator from a site-coupling list and an operator string in the tensor basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.__init__" title="quspin.basis.tensor_basis.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(*basis_list)</td>
+<td>Initialises the <cite>tensor_basis</cite> object (basis for tensor product Hilbert spaces).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.check_hermitian" title="quspin.basis.tensor_basis.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for hermiticity of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.check_pcon" title="quspin.basis.tensor_basis.check_pcon"><code class="xref py py-obj docutils literal"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.check_symm" title="quspin.basis.tensor_basis.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for the required symmetries of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.ent_entropy" title="quspin.basis.tensor_basis.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;return_rdm,&nbsp;…])</td>
+<td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.expanded_form" title="quspin.basis.tensor_basis.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.get_proj" title="quspin.basis.tensor_basis.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;full_left,&nbsp;full_right])</td>
+<td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.get_vec" title="quspin.basis.tensor_basis.get_vec"><code class="xref py py-obj docutils literal"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse,&nbsp;full_left,&nbsp;full_right])</td>
+<td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.index" title="quspin.basis.tensor_basis.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(*states)</td>
+<td>Finds the index of user-defined Fock state in tensor basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.inplace_Op" title="quspin.basis.tensor_basis.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
+<td>Calculates the action of an operator on a state.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.partial_trace" title="quspin.basis.tensor_basis.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<td>Calculates reduced density matrix, through a partial trace of a quantum state in <cite>tensor_basis</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.N" title="quspin.basis.tensor_basis.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: number of sites the basis is constructed with.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.Ns" title="quspin.basis.tensor_basis.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.basis_left" title="quspin.basis.tensor_basis.basis_left"><code class="xref py py-obj docutils literal"><span class="pre">basis_left</span></code></a></td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: first basis constructor out of the <cite>basis</cite> objects list to be tensored.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.basis_right" title="quspin.basis.tensor_basis.basis_right"><code class="xref py py-obj docutils literal"><span class="pre">basis_right</span></code></a></td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.blocks" title="quspin.basis.tensor_basis.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.tensor_basis.operators" title="quspin.basis.tensor_basis.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.tensor_basis.sps" title="quspin.basis.tensor_basis.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.tensor_basis.N">
 <code class="descname">N</code><a class="headerlink" href="#quspin.basis.tensor_basis.N" title="Permalink to this definition">¶</a></dt>

@@ -3053,9 +3053,14 @@
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 	<span class="k">def</span> <span class="nf">__numpy_ufunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-		<span class="c1"># &quot;&quot;&quot;Method for compatibility with NumPy&#39;s ufuncs and dot</span>
+		<span class="c1"># &quot;&quot;&quot;Method for compatibility with NumPy &lt;= 1.11 ufuncs and dot</span>
 		<span class="c1"># functions.</span>
 		<span class="c1"># &quot;&quot;&quot;</span>
+		<span class="n">out</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quspin hamiltonian class does not support &#39;out&#39; for numpy.multiply or numpy.dot.&quot;</span><span class="p">)</span>
+
 
 		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -3063,7 +3068,24 @@
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">NotImplemented</span></div>
+				<span class="k">return</span> <span class="bp">NotImplemented</span>
+
+	<span class="k">def</span> <span class="nf">__array_ufunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="c1"># &quot;&quot;&quot;Method for compatibility with NumPy &gt;= 1.13 ufuncs and dot</span>
+		<span class="c1"># functions.</span>
+		<span class="c1"># &quot;&quot;&quot;</span>
+		<span class="n">out</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quspin hamiltonian class does not support &#39;out&#39; for numpy.multiply or numpy.dot.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
+
+			<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
 
 
 <div class="viewcode-block" id="ishamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.ishamiltonian.html#quspin.operators.ishamiltonian">[docs]</a><span class="k">def</span> <span class="nf">ishamiltonian</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>quspin.tools._expm_multiply_parallel_core.expm_multiply_parallel_core &#8212; QuSpin 0.2.5 documentation</title>
+    <title>quspin.tools.expm_multiply_parallel_core.expm_multiply_parallel_core &#8212; QuSpin 0.2.5 documentation</title>
     
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
@@ -48,13 +48,13 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for quspin.tools._expm_multiply_parallel_core.expm_multiply_parallel_core</h1><div class="highlight"><pre>
+  <h1>Source code for quspin.tools.expm_multiply_parallel_core.expm_multiply_parallel_core</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">LinearOperator</span><span class="p">,</span><span class="n">onenormest</span><span class="p">,</span><span class="n">aslinearoperator</span>
 <span class="kn">from</span> <span class="nn">.expm_multiply_parallel_wrapper</span> <span class="k">import</span> <span class="n">_wrapper_expm_multiply</span><span class="p">,</span><span class="n">_wrapper_csr_trace</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
-<div class="viewcode-block" id="expm_multiply_parallel"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel">[docs]</a><span class="k">class</span> <span class="nc">expm_multiply_parallel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.misc.expm_multiply_parallel">[docs]</a><span class="k">class</span> <span class="nc">expm_multiply_parallel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Implements `scipy.sparse.linalg.expm_multiply()` for *openmp*.</span>
 
 <span class="sd">	Notes</span>
@@ -75,7 +75,7 @@
 <span class="sd">		:lines: 7-30</span>
 <span class="sd">	</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="expm_multiply_parallel.__init__"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel.__init__"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.misc.expm_multiply_parallel.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Initializes `expm_multiply_parallel`. </span>
 
 <span class="sd">		Parameters</span>
@@ -115,7 +115,7 @@
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
 
 
-<div class="viewcode-block" id="expm_multiply_parallel.set_a"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.set_a">[docs]</a>	<span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel.set_a"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.misc.expm_multiply_parallel.set_a">[docs]</a>	<span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Sets the value of the property `a`.</span>
 
 <span class="sd">		Examples</span>
@@ -139,7 +139,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting &#39;a&#39; to be scalar.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="expm_multiply_parallel.dot"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.expm_multiply_parallel.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel.dot"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.expm_multiply_parallel.html#quspin.tools.misc.expm_multiply_parallel.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :math:`v`. </span>
 
 <span class="sd">		Examples</span>

@@ -280,6 +280,75 @@ sector.</p>
 </table>
 </dd></dl>
 
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.Op" title="quspin.basis.boson_basis_general.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
+<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.__init__" title="quspin.basis.boson_basis_general.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(N[,&nbsp;Nb,&nbsp;nb,&nbsp;sps,&nbsp;Ns_block_est])</td>
+<td>Intializes the <cite>boson_basis_general</cite> object (basis for bosonic operators).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.check_hermitian" title="quspin.basis.boson_basis_general.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for hermiticity of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.check_pcon" title="quspin.basis.boson_basis_general.check_pcon"><code class="xref py py-obj docutils literal"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.check_symm" title="quspin.basis.boson_basis_general.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
+<td>Checks operator string lists for the required symmetries of the combined operator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.ent_entropy" title="quspin.basis.boson_basis_general.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
+<td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.expanded_form" title="quspin.basis.boson_basis_general.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.get_proj" title="quspin.basis.boson_basis_general.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype)</td>
+<td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.get_vec" title="quspin.basis.boson_basis_general.get_vec"><code class="xref py py-obj docutils literal"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse])</td>
+<td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.index" title="quspin.basis.boson_basis_general.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
+<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.inplace_Op" title="quspin.basis.boson_basis_general.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
+<td>Calculates the action of an operator on a state.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.partial_trace" title="quspin.basis.boson_basis_general.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.N" title="quspin.basis.boson_basis_general.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: number of sites the basis is constructed with.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.Ns" title="quspin.basis.boson_basis_general.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.blocks" title="quspin.basis.boson_basis_general.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.operators" title="quspin.basis.boson_basis_general.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.boson_basis_general.sps" title="quspin.basis.boson_basis_general.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.boson_basis_general.N">
 <code class="descname">N</code><a class="headerlink" href="#quspin.basis.boson_basis_general.N" title="Permalink to this definition">¶</a></dt>
@@ -496,13 +565,13 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>
 <div><p>When <cite>sparse=True</cite>, this flag enforces the use of
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh()</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
 to calculate the eigenvaues of the reduced DM.</p>
 </div></blockquote>
 <p><strong>maxiter</strong> : int, optional</p>
 <blockquote>
 <div><p>Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh()</a>.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
 </div></blockquote>
 </td>
 </tr>
