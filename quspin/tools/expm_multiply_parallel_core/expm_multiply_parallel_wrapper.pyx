@@ -1,6 +1,8 @@
 cimport cython
 cimport numpy as _np
 
+cdef extern from "glibc_fix.h":
+	pass
 
 ctypedef float complex floatcomplex
 ctypedef double complex doublecomplex
