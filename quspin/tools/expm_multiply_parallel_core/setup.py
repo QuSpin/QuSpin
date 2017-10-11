@@ -17,7 +17,7 @@ def cython_files():
 def configuration(parent_package='', top_path=None):
         import numpy,os,sys
         from numpy.distutils.misc_util import Configuration
-        config = Configuration('_expm_multiply_parallel_core',parent_package, top_path)
+        config = Configuration('expm_multiply_parallel_core',parent_package, top_path)
 
         extra_compile_args = []
         extra_link_args = []
