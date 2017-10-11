@@ -5,6 +5,9 @@ import scipy.sparse as _sp
 
 include "source/general_basis_core.pyx"
 
+cdef extern from "glibc_fix.h":
+	pass
+
 # specialized code 
 cdef extern from "spinful_fermion_basis_core.h":
 	cdef cppclass spinful_fermion_basis_core[I](general_basis_core[I]):
