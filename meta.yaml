@@ -17,6 +17,7 @@ requirements:
     - six
     - joblib
     - matplotlib
+    - dill
 
 test:
   imports:
