@@ -7,6 +7,7 @@
             "/home/phillip/Documents/ED_python/QuSpin/quspin/basis/basis_general/_basis_general_core/source/general_basis_core.h", 
             "/home/phillip/Documents/ED_python/QuSpin/quspin/basis/basis_general/_basis_general_core/source/general_basis_get_vec.h", 
             "/home/phillip/Documents/ED_python/QuSpin/quspin/basis/basis_general/_basis_general_core/source/general_basis_op.h", 
+            "/home/phillip/Documents/ED_python/QuSpin/quspin/basis/basis_general/_basis_general_core/source/glibc_fix.h", 
             "/home/phillip/Documents/ED_python/QuSpin/quspin/basis/basis_general/_basis_general_core/source/make_general_basis.h", 
             "/home/phillip/Documents/ED_python/QuSpin/quspin/basis/basis_general/_basis_general_core/source/spinless_fermion_basis_core.h"
         ], 
@@ -516,6 +517,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "general_basis_op.h"
 #include "general_basis_get_vec.h"
 #include <math.h>
+#include "glibc_fix.h"
 #include "spinless_fermion_basis_core.h"
 #include "pythread.h"
 #include "pystate.h"
@@ -1138,7 +1140,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":15
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":18
  * 
  * 
  * cdef class spinless_fermion_basis_core_wrap_32(general_basis_core_wrap_32):             # <<<<<<<<<<<<<<
@@ -1151,7 +1153,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":92
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":95
  * 
  * 
  * cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):             # <<<<<<<<<<<<<<
@@ -1164,7 +1166,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":82
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":85
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -1177,7 +1179,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":85
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":88
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))             # <<<<<<<<<<<<<<
@@ -1194,7 +1196,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":159
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":162
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -1207,7 +1209,7 @@ struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless
 };
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":162
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":165
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))             # <<<<<<<<<<<<<<
@@ -1302,7 +1304,7 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":15
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":18
  * 
  * 
  * cdef class spinless_fermion_basis_core_wrap_32(general_basis_core_wrap_32):             # <<<<<<<<<<<<<<
@@ -1317,7 +1319,7 @@ struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21s
 static struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *__pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32;
 
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":92
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":95
  * 
  * 
  * cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):             # <<<<<<<<<<<<<<
@@ -56078,7 +56080,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":16
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":19
  * 
  * cdef class spinless_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):             # <<<<<<<<<<<<<<
@@ -56123,23 +56125,23 @@ static int __pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 1); __PYX_ERR(1, 16, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 1); __PYX_ERR(1, 19, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pers)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 2); __PYX_ERR(1, 16, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 2); __PYX_ERR(1, 19, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_qs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 3); __PYX_ERR(1, 16, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 3); __PYX_ERR(1, 19, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 16, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 19, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -56150,13 +56152,13 @@ static int __pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_N = values[0];
-    __pyx_v_maps = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[1]); if (unlikely(!__pyx_v_maps.memview)) __PYX_ERR(1, 16, __pyx_L3_error)
-    __pyx_v_pers = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[2]); if (unlikely(!__pyx_v_pers.memview)) __PYX_ERR(1, 16, __pyx_L3_error)
-    __pyx_v_qs = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[3]); if (unlikely(!__pyx_v_qs.memview)) __PYX_ERR(1, 16, __pyx_L3_error)
+    __pyx_v_maps = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[1]); if (unlikely(!__pyx_v_maps.memview)) __PYX_ERR(1, 19, __pyx_L3_error)
+    __pyx_v_pers = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[2]); if (unlikely(!__pyx_v_pers.memview)) __PYX_ERR(1, 19, __pyx_L3_error)
+    __pyx_v_qs = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[3]); if (unlikely(!__pyx_v_qs.memview)) __PYX_ERR(1, 19, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 16, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 19, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("quspin.basis.basis_general._basis_general_core.spinless_fermion_core.spinless_fermion_basis_core_wrap_32.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -56182,32 +56184,32 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
   Py_ssize_t __pyx_t_8;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":18
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":21
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
  * 
  * 		if N > 32:             # <<<<<<<<<<<<<<
  * 			raise ValueError("for 32-bit code N must be <= 32.")
  * 		self._N = N
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_N, __pyx_int_32, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 18, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 18, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_N, __pyx_int_32, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 21, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 21, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":19
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":22
  * 
  * 		if N > 32:
  * 			raise ValueError("for 32-bit code N must be <= 32.")             # <<<<<<<<<<<<<<
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__137, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 19, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__137, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 22, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(1, 19, __pyx_L1_error)
+    __PYX_ERR(1, 22, __pyx_L1_error)
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":18
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":21
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
  * 
  * 		if N > 32:             # <<<<<<<<<<<<<<
@@ -56216,17 +56218,17 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  */
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":20
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":23
  * 		if N > 32:
  * 			raise ValueError("for 32-bit code N must be <= 32.")
  * 		self._N = N             # <<<<<<<<<<<<<<
  * 		self._nt = pers.shape[0]
  * 		self._sps = 2
  */
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 20, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 23, __pyx_L1_error)
   __pyx_v_self->__pyx_base._N = __pyx_t_3;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":21
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":24
  * 			raise ValueError("for 32-bit code N must be <= 32.")
  * 		self._N = N
  * 		self._nt = pers.shape[0]             # <<<<<<<<<<<<<<
@@ -56235,7 +56237,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  */
   __pyx_v_self->__pyx_base._nt = (__pyx_v_pers.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":22
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":25
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  * 		self._sps = 2             # <<<<<<<<<<<<<<
@@ -56244,7 +56246,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  */
   __pyx_v_self->__pyx_base._sps = 2;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":24
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":27
  * 		self._sps = 2
  * 
  * 		if self._nt>0:             # <<<<<<<<<<<<<<
@@ -56254,14 +56256,14 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
   __pyx_t_2 = ((__pyx_v_self->__pyx_base._nt > 0) != 0);
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":25
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":28
  * 
  * 		if self._nt>0:
  * 			self._basis_core = new spinless_fermion_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])             # <<<<<<<<<<<<<<
  * 		else:
  * 			self._basis_core = new spinless_fermion_basis_core[uint32_t](N)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 25, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 28, __pyx_L1_error)
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_6 = -1;
@@ -56275,7 +56277,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     } else if (unlikely(__pyx_t_5 >= __pyx_v_maps.shape[1])) __pyx_t_6 = 1;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(1, 25, __pyx_L1_error)
+      __PYX_ERR(1, 28, __pyx_L1_error)
     }
     __pyx_t_7 = 0;
     __pyx_t_6 = -1;
@@ -56285,7 +56287,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     } else if (unlikely(__pyx_t_7 >= __pyx_v_pers.shape[0])) __pyx_t_6 = 0;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(1, 25, __pyx_L1_error)
+      __PYX_ERR(1, 28, __pyx_L1_error)
     }
     __pyx_t_8 = 0;
     __pyx_t_6 = -1;
@@ -56295,11 +56297,11 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     } else if (unlikely(__pyx_t_8 >= __pyx_v_qs.shape[0])) __pyx_t_6 = 0;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(1, 25, __pyx_L1_error)
+      __PYX_ERR(1, 28, __pyx_L1_error)
     }
     __pyx_v_self->__pyx_base._basis_core = new spinless_fermion_basis_core<__pyx_t_5numpy_uint32_t> (__pyx_t_3, __pyx_v_self->__pyx_base._nt, (&(*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_maps.data + __pyx_t_4 * __pyx_v_maps.strides[0]) )) + __pyx_t_5)) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_pers.data + __pyx_t_7 * __pyx_v_pers.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_qs.data + __pyx_t_8 * __pyx_v_qs.strides[0]) )))));
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":24
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":27
  * 		self._sps = 2
  * 
  * 		if self._nt>0:             # <<<<<<<<<<<<<<
@@ -56309,7 +56311,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     goto __pyx_L4;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":27
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":30
  * 			self._basis_core = new spinless_fermion_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
  * 		else:
  * 			self._basis_core = new spinless_fermion_basis_core[uint32_t](N)             # <<<<<<<<<<<<<<
@@ -56317,12 +56319,12 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  * 
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 27, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 30, __pyx_L1_error)
     __pyx_v_self->__pyx_base._basis_core = new spinless_fermion_basis_core<__pyx_t_5numpy_uint32_t> (__pyx_t_3);
   }
   __pyx_L4:;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":16
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":19
  * 
  * cdef class spinless_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):             # <<<<<<<<<<<<<<
@@ -56345,7 +56347,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":31
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":34
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -56391,7 +56393,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, 1); __PYX_ERR(1, 31, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, 1); __PYX_ERR(1, 34, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -56407,7 +56409,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_basis") < 0)) __PYX_ERR(1, 31, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_basis") < 0)) __PYX_ERR(1, 34, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -56421,11 +56423,11 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_basis = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint32_t(values[0]); if (unlikely(!__pyx_v_basis.memview)) __PYX_ERR(1, 31, __pyx_L3_error)
-    __pyx_v_n = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint16_t(values[1]); if (unlikely(!__pyx_v_n.memview)) __PYX_ERR(1, 31, __pyx_L3_error)
+    __pyx_v_basis = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint32_t(values[0]); if (unlikely(!__pyx_v_basis.memview)) __PYX_ERR(1, 34, __pyx_L3_error)
+    __pyx_v_n = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint16_t(values[1]); if (unlikely(!__pyx_v_n.memview)) __PYX_ERR(1, 34, __pyx_L3_error)
     __pyx_v_Np = values[2];
     if (values[3]) {
-      __pyx_v_count = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(values[3]); if (unlikely(!__pyx_v_count.memview)) __PYX_ERR(1, 31, __pyx_L3_error)
+      __pyx_v_count = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(values[3]); if (unlikely(!__pyx_v_count.memview)) __PYX_ERR(1, 34, __pyx_L3_error)
     } else {
       __pyx_v_count = __pyx_k__138;
       __PYX_INC_MEMVIEW(&__pyx_v_count, 1);
@@ -56433,7 +56435,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 31, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 34, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("quspin.basis.basis_general._basis_general_core.spinless_fermion_core.spinless_fermion_basis_core_wrap_32.make_basis", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -56471,7 +56473,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   Py_ssize_t __pyx_t_13;
   __Pyx_RefNannySetupContext("make_basis", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":32
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":35
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
  * 		cdef int Ns_1 = 0             # <<<<<<<<<<<<<<
@@ -56480,7 +56482,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_Ns_1 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":33
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":36
  * 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
  * 		cdef int Ns_1 = 0
  * 		cdef int Ns_2 = 0             # <<<<<<<<<<<<<<
@@ -56489,7 +56491,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_Ns_2 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":34
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":37
  * 		cdef int Ns_1 = 0
  * 		cdef int Ns_2 = 0
  * 		cdef int Ns_3 = 0             # <<<<<<<<<<<<<<
@@ -56498,7 +56500,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_Ns_3 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":35
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":38
  * 		cdef int Ns_2 = 0
  * 		cdef int Ns_3 = 0
  * 		cdef uint8_t np = 0             # <<<<<<<<<<<<<<
@@ -56507,7 +56509,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_np = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":36
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":39
  * 		cdef int Ns_3 = 0
  * 		cdef uint8_t np = 0
  * 		cdef npy_intp i = 0             # <<<<<<<<<<<<<<
@@ -56516,19 +56518,19 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_i = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":37
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":40
  * 		cdef uint8_t np = 0
  * 		cdef npy_intp i = 0
  * 		cdef mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
  * 
  * 		if Np is None:
  */
-  __pyx_t_1 = PyInt_FromSsize_t((__pyx_v_basis.shape[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 37, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t((__pyx_v_basis.shape[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_mem_MAX = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":39
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":42
  * 		cdef mem_MAX = basis.shape[0]
  * 
  * 		if Np is None:             # <<<<<<<<<<<<<<
@@ -56539,7 +56541,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":40
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":43
  * 
  * 		if Np is None:
  * 			Ns_2 = self.make_basis_full(basis,n)             # <<<<<<<<<<<<<<
@@ -56548,7 +56550,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
     __pyx_v_Ns_2 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *)__pyx_v_self->__pyx_vtab)->make_basis_full(__pyx_v_self, __pyx_v_basis, __pyx_v_n);
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":39
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":42
  * 		cdef mem_MAX = basis.shape[0]
  * 
  * 		if Np is None:             # <<<<<<<<<<<<<<
@@ -56558,7 +56560,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":41
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":44
  * 		if Np is None:
  * 			Ns_2 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:             # <<<<<<<<<<<<<<
@@ -56569,17 +56571,17 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   __pyx_t_2 = (__pyx_t_3 != 0);
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":42
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":45
  * 			Ns_2 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:
  * 			Ns_2 = self.make_basis_pcon(Np,basis,n)             # <<<<<<<<<<<<<<
  * 		else:
  * 			Np_iter = iter(Np)
  */
-    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_Np); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 42, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_Np); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 45, __pyx_L1_error)
     __pyx_v_Ns_2 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_t_4, __pyx_v_basis, __pyx_v_n);
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":41
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":44
  * 		if Np is None:
  * 			Ns_2 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:             # <<<<<<<<<<<<<<
@@ -56589,7 +56591,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":44
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":47
  * 			Ns_2 = self.make_basis_pcon(Np,basis,n)
  * 		else:
  * 			Np_iter = iter(Np)             # <<<<<<<<<<<<<<
@@ -56597,12 +56599,12 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  * 				for np in Np_iter:
  */
   /*else*/ {
-    __pyx_t_1 = PyObject_GetIter(__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 44, __pyx_L1_error)
+    __pyx_t_1 = PyObject_GetIter(__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 47, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_Np_iter = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":45
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":48
  * 		else:
  * 			Np_iter = iter(Np)
  * 			if count is None:             # <<<<<<<<<<<<<<
@@ -56612,7 +56614,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     __pyx_t_2 = ((((PyObject *) __pyx_v_count.memview) == Py_None) != 0);
     if (__pyx_t_2) {
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":46
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":49
  * 			Np_iter = iter(Np)
  * 			if count is None:
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -56623,26 +56625,26 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
         __pyx_t_1 = __pyx_v_Np_iter; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 46, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 49, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 46, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 49, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_1))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 46, __pyx_L1_error)
+            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 49, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 46, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 49, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 46, __pyx_L1_error)
+            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 49, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 46, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 49, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           }
@@ -56652,17 +56654,17 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(1, 46, __pyx_L1_error)
+              else __PYX_ERR(1, 49, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_7);
         }
-        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 46, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 49, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_v_np = __pyx_t_8;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":47
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":50
  * 			if count is None:
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])             # <<<<<<<<<<<<<<
@@ -56687,7 +56689,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 47, __pyx_L1_error)
+    __PYX_ERR(1, 50, __pyx_L1_error)
 }
 
 __pyx_t_10.data = __pyx_v_n.data;
@@ -56708,7 +56710,7 @@ __pyx_t_10.data = __pyx_v_n.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 47, __pyx_L1_error)
+    __PYX_ERR(1, 50, __pyx_L1_error)
 }
 
 __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_v_np, __pyx_t_9, __pyx_t_10);
@@ -56719,7 +56721,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_10.memview = NULL;
         __pyx_t_10.data = NULL;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":48
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":51
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -56729,7 +56731,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_2 = ((__pyx_v_Ns_1 < 0) != 0);
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":49
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":52
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:
  * 						return Ns_1             # <<<<<<<<<<<<<<
@@ -56737,14 +56739,14 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  * 						Ns_2 += Ns_1
  */
           __Pyx_XDECREF(__pyx_r);
-          __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 49, __pyx_L1_error)
+          __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 52, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __pyx_r = __pyx_t_7;
           __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":48
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":51
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -56753,7 +56755,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":51
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":54
  * 						return Ns_1
  * 					else:
  * 						Ns_2 += Ns_1             # <<<<<<<<<<<<<<
@@ -56764,22 +56766,22 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __pyx_v_Ns_2 = (__pyx_v_Ns_2 + __pyx_v_Ns_1);
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":53
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":56
  * 						Ns_2 += Ns_1
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
  * 						return -1
  * 			else:
  */
-        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 53, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 56, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_11 = PyObject_RichCompare(__pyx_t_7, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 53, __pyx_L1_error)
+        __pyx_t_11 = PyObject_RichCompare(__pyx_t_7, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 56, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 53, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 56, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":54
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":57
  * 
  * 					if Ns_2 > mem_MAX:
  * 						return -1             # <<<<<<<<<<<<<<
@@ -56792,7 +56794,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":53
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":56
  * 						Ns_2 += Ns_1
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
@@ -56801,7 +56803,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":46
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":49
  * 			Np_iter = iter(Np)
  * 			if count is None:
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -56811,7 +56813,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
       }
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":45
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":48
  * 		else:
  * 			Np_iter = iter(Np)
  * 			if count is None:             # <<<<<<<<<<<<<<
@@ -56821,7 +56823,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
       goto __pyx_L4;
     }
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":57
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":60
  * 			else:
  * 
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -56833,26 +56835,26 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_1 = __pyx_v_Np_iter; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 57, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 60, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 57, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 60, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_1))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_11 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 57, __pyx_L1_error)
+            __pyx_t_11 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 60, __pyx_L1_error)
             #else
-            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 57, __pyx_L1_error)
+            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 60, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_11 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 57, __pyx_L1_error)
+            __pyx_t_11 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 60, __pyx_L1_error)
             #else
-            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 57, __pyx_L1_error)
+            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 60, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
             #endif
           }
@@ -56862,17 +56864,17 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(1, 57, __pyx_L1_error)
+              else __PYX_ERR(1, 60, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_11);
         }
-        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_11); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 57, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_11); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 60, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __pyx_v_np = __pyx_t_8;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":58
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":61
  * 
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])             # <<<<<<<<<<<<<<
@@ -56897,7 +56899,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 58, __pyx_L1_error)
+    __PYX_ERR(1, 61, __pyx_L1_error)
 }
 
 __pyx_t_10.data = __pyx_v_n.data;
@@ -56918,7 +56920,7 @@ __pyx_t_10.data = __pyx_v_n.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 58, __pyx_L1_error)
+    __PYX_ERR(1, 61, __pyx_L1_error)
 }
 
 __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_v_np, __pyx_t_9, __pyx_t_10);
@@ -56929,7 +56931,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_10.memview = NULL;
         __pyx_t_10.data = NULL;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":59
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":62
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -56939,7 +56941,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_2 = ((__pyx_v_Ns_1 < 0) != 0);
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":60
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":63
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:
  * 						return Ns_1             # <<<<<<<<<<<<<<
@@ -56947,14 +56949,14 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  * 						Ns_3 = Ns_2 + Ns_1
  */
           __Pyx_XDECREF(__pyx_r);
-          __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 60, __pyx_L1_error)
+          __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 63, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_11);
           __pyx_r = __pyx_t_11;
           __pyx_t_11 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":59
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":62
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -56963,7 +56965,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":62
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":65
  * 						return Ns_1
  * 					else:
  * 						Ns_3 = Ns_2 + Ns_1             # <<<<<<<<<<<<<<
@@ -56973,7 +56975,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         /*else*/ {
           __pyx_v_Ns_3 = (__pyx_v_Ns_2 + __pyx_v_Ns_1);
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":63
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":66
  * 					else:
  * 						Ns_3 = Ns_2 + Ns_1
  * 						for i in range(Ns_2,Ns_3,1):             # <<<<<<<<<<<<<<
@@ -56984,7 +56986,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           for (__pyx_t_12 = __pyx_v_Ns_2; __pyx_t_12 < __pyx_t_4; __pyx_t_12+=1) {
             __pyx_v_i = __pyx_t_12;
 
-            /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":64
+            /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":67
  * 						Ns_3 = Ns_2 + Ns_1
  * 						for i in range(Ns_2,Ns_3,1):
  * 							count[i] = np             # <<<<<<<<<<<<<<
@@ -56996,7 +56998,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
             *((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_count.data + __pyx_t_13 * __pyx_v_count.strides[0]) )) = __pyx_v_np;
           }
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":66
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":69
  * 							count[i] = np
  * 
  * 						Ns_2 = Ns_3             # <<<<<<<<<<<<<<
@@ -57006,22 +57008,22 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __pyx_v_Ns_2 = __pyx_v_Ns_3;
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":68
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":71
  * 						Ns_2 = Ns_3
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
  * 						return -1
  * 		return Ns_2
  */
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 68, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 71, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_7 = PyObject_RichCompare(__pyx_t_11, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 68, __pyx_L1_error)
+        __pyx_t_7 = PyObject_RichCompare(__pyx_t_11, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 71, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 68, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 71, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":69
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":72
  * 
  * 					if Ns_2 > mem_MAX:
  * 						return -1             # <<<<<<<<<<<<<<
@@ -57034,7 +57036,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":68
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":71
  * 						Ns_2 = Ns_3
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
@@ -57043,7 +57045,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":57
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":60
  * 			else:
  * 
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -57057,7 +57059,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
   }
   __pyx_L3:;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":70
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":73
  * 					if Ns_2 > mem_MAX:
  * 						return -1
  * 		return Ns_2             # <<<<<<<<<<<<<<
@@ -57065,13 +57067,13 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  * 	@cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 70, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":31
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":34
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -57099,7 +57101,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":73
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":76
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -57116,7 +57118,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("make_basis_full", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":74
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":77
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (1ull<<self._N)             # <<<<<<<<<<<<<<
@@ -57125,7 +57127,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
  */
   __pyx_v_Ns = (1ULL << __pyx_v_self->__pyx_base._N);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":75
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":78
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (1ull<<self._N)
  * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
@@ -57134,7 +57136,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
  */
   __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":76
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":79
  * 		cdef npy_intp Ns = (1ull<<self._N)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -57149,7 +57151,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":77
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":80
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:
  * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])             # <<<<<<<<<<<<<<
@@ -57163,7 +57165,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
         __pyx_v_Ns = make_basis<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_1 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_2 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":76
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":79
  * 		cdef npy_intp Ns = (1ull<<self._N)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -57182,7 +57184,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":79
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":82
  * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
@@ -57192,7 +57194,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":73
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":76
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -57207,7 +57209,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
 }
 static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_15make_basis_pcon_2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":85
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":88
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))             # <<<<<<<<<<<<<<
@@ -57224,7 +57226,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 85, __pyx_L1_error)
+    __PYX_ERR(1, 88, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -57232,7 +57234,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_15make_basis_pcon_2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_spinless_fermion_basis_core_wrap, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 85, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_15make_basis_pcon_2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_spinless_fermion_basis_core_wrap, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 88, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -57266,24 +57268,24 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 85, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 85, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 88, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 85, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 85, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 88, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -57291,17 +57293,17 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 85, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 88, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 85, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 85, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 88, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 85, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -57311,7 +57313,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(1, 85, __pyx_L1_error)
+          else __PYX_ERR(1, 88, __pyx_L1_error)
         }
         break;
       }
@@ -57321,7 +57323,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_i, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = PyNumber_Lshift(__pyx_int_1, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 85, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Lshift(__pyx_int_1, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 88, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -57340,7 +57342,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 85, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 88, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -57360,7 +57362,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":82
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":85
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -57388,26 +57390,26 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct__make_basis_pcon *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 82, __pyx_L1_error)
+    __PYX_ERR(1, 85, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
   __pyx_cur_scope->__pyx_v_Np = __pyx_v_Np;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":83
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":86
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)             # <<<<<<<<<<<<<<
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_comb); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 83, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_comb); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 83, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 83, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 83, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -57415,19 +57417,19 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 83, __pyx_L1_error)
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_exact, Py_True) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 83, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_exact, Py_True) < 0) __PYX_ERR(1, 86, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_5 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 83, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_5 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_Ns = __pyx_t_5;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":84
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":87
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
@@ -57436,28 +57438,28 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
  */
   __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":85
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":88
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))             # <<<<<<<<<<<<<<
  * 		with nogil:
  * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  */
-  __pyx_t_2 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_t_2 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyInt_As_npy_uint32(__pyx_t_2); if (unlikely((__pyx_t_6 == ((npy_uint32)-1)) && PyErr_Occurred())) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_npy_uint32(__pyx_t_2); if (unlikely((__pyx_t_6 == ((npy_uint32)-1)) && PyErr_Occurred())) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_s = __pyx_t_6;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":86
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":89
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -57472,7 +57474,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":87
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":90
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))
  * 		with nogil:
  * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])             # <<<<<<<<<<<<<<
@@ -57486,7 +57488,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
         __pyx_v_Ns = make_basis_pcon<__pyx_t_5numpy_uint32_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, __pyx_v_s, (&(*((__pyx_t_5numpy_uint32_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":86
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":89
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint32_t s  = sum(1<<i for i in range(Np))
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -57505,7 +57507,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":89
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":92
  * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
@@ -57515,7 +57517,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":82
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":85
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -57644,7 +57646,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":93
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":96
  * 
  * cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):             # <<<<<<<<<<<<<<
@@ -57689,23 +57691,23 @@ static int __pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maps)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 1); __PYX_ERR(1, 93, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 1); __PYX_ERR(1, 96, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pers)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 2); __PYX_ERR(1, 93, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 2); __PYX_ERR(1, 96, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_qs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 3); __PYX_ERR(1, 93, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, 3); __PYX_ERR(1, 96, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 93, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 96, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -57716,13 +57718,13 @@ static int __pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
     __pyx_v_N = values[0];
-    __pyx_v_maps = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[1]); if (unlikely(!__pyx_v_maps.memview)) __PYX_ERR(1, 93, __pyx_L3_error)
-    __pyx_v_pers = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[2]); if (unlikely(!__pyx_v_pers.memview)) __PYX_ERR(1, 93, __pyx_L3_error)
-    __pyx_v_qs = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[3]); if (unlikely(!__pyx_v_qs.memview)) __PYX_ERR(1, 93, __pyx_L3_error)
+    __pyx_v_maps = __Pyx_PyObject_to_MemoryviewSlice_d_dc_int(values[1]); if (unlikely(!__pyx_v_maps.memview)) __PYX_ERR(1, 96, __pyx_L3_error)
+    __pyx_v_pers = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[2]); if (unlikely(!__pyx_v_pers.memview)) __PYX_ERR(1, 96, __pyx_L3_error)
+    __pyx_v_qs = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[3]); if (unlikely(!__pyx_v_qs.memview)) __PYX_ERR(1, 96, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 93, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 96, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("quspin.basis.basis_general._basis_general_core.spinless_fermion_core.spinless_fermion_basis_core_wrap_64.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -57748,32 +57750,32 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
   Py_ssize_t __pyx_t_8;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":94
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":97
  * cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
  * 		if N > 64:             # <<<<<<<<<<<<<<
  * 			raise ValueError("for 64-bit code N must be <= 64.")
  * 		self._N = N
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_N, __pyx_int_64, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 94, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 94, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_N, __pyx_int_64, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 97, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 97, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":95
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":98
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
  * 		if N > 64:
  * 			raise ValueError("for 64-bit code N must be <= 64.")             # <<<<<<<<<<<<<<
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__141, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 95, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__141, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 98, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(1, 95, __pyx_L1_error)
+    __PYX_ERR(1, 98, __pyx_L1_error)
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":94
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":97
  * cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
  * 		if N > 64:             # <<<<<<<<<<<<<<
@@ -57782,17 +57784,17 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  */
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":96
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":99
  * 		if N > 64:
  * 			raise ValueError("for 64-bit code N must be <= 64.")
  * 		self._N = N             # <<<<<<<<<<<<<<
  * 		self._nt = pers.shape[0]
  * 		self._sps = 2
  */
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 96, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 99, __pyx_L1_error)
   __pyx_v_self->__pyx_base._N = __pyx_t_3;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":97
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":100
  * 			raise ValueError("for 64-bit code N must be <= 64.")
  * 		self._N = N
  * 		self._nt = pers.shape[0]             # <<<<<<<<<<<<<<
@@ -57801,7 +57803,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  */
   __pyx_v_self->__pyx_base._nt = (__pyx_v_pers.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":98
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":101
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  * 		self._sps = 2             # <<<<<<<<<<<<<<
@@ -57810,7 +57812,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  */
   __pyx_v_self->__pyx_base._sps = 2;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":99
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":102
  * 		self._nt = pers.shape[0]
  * 		self._sps = 2
  * 		if self._nt>0:             # <<<<<<<<<<<<<<
@@ -57820,14 +57822,14 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
   __pyx_t_2 = ((__pyx_v_self->__pyx_base._nt > 0) != 0);
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":100
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":103
  * 		self._sps = 2
  * 		if self._nt>0:
  * 			self._basis_core = new spinless_fermion_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])             # <<<<<<<<<<<<<<
  * 		else:
  * 			self._basis_core = new spinless_fermion_basis_core[uint64_t](N)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 100, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 103, __pyx_L1_error)
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_6 = -1;
@@ -57841,7 +57843,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     } else if (unlikely(__pyx_t_5 >= __pyx_v_maps.shape[1])) __pyx_t_6 = 1;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(1, 100, __pyx_L1_error)
+      __PYX_ERR(1, 103, __pyx_L1_error)
     }
     __pyx_t_7 = 0;
     __pyx_t_6 = -1;
@@ -57851,7 +57853,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     } else if (unlikely(__pyx_t_7 >= __pyx_v_pers.shape[0])) __pyx_t_6 = 0;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(1, 100, __pyx_L1_error)
+      __PYX_ERR(1, 103, __pyx_L1_error)
     }
     __pyx_t_8 = 0;
     __pyx_t_6 = -1;
@@ -57861,11 +57863,11 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     } else if (unlikely(__pyx_t_8 >= __pyx_v_qs.shape[0])) __pyx_t_6 = 0;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(1, 100, __pyx_L1_error)
+      __PYX_ERR(1, 103, __pyx_L1_error)
     }
     __pyx_v_self->__pyx_base._basis_core = new spinless_fermion_basis_core<__pyx_t_5numpy_uint64_t> (__pyx_t_3, __pyx_v_self->__pyx_base._nt, (&(*((int *) ( /* dim=1 */ ((char *) (((int *) ( /* dim=0 */ (__pyx_v_maps.data + __pyx_t_4 * __pyx_v_maps.strides[0]) )) + __pyx_t_5)) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_pers.data + __pyx_t_7 * __pyx_v_pers.strides[0]) )))), (&(*((int *) ( /* dim=0 */ (__pyx_v_qs.data + __pyx_t_8 * __pyx_v_qs.strides[0]) )))));
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":99
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":102
  * 		self._nt = pers.shape[0]
  * 		self._sps = 2
  * 		if self._nt>0:             # <<<<<<<<<<<<<<
@@ -57875,7 +57877,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
     goto __pyx_L4;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":102
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":105
  * 			self._basis_core = new spinless_fermion_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
  * 		else:
  * 			self._basis_core = new spinless_fermion_basis_core[uint64_t](N)             # <<<<<<<<<<<<<<
@@ -57883,12 +57885,12 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
  * 
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 102, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_N); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 105, __pyx_L1_error)
     __pyx_v_self->__pyx_base._basis_core = new spinless_fermion_basis_core<__pyx_t_5numpy_uint64_t> (__pyx_t_3);
   }
   __pyx_L4:;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":93
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":96
  * 
  * cdef class spinless_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):             # <<<<<<<<<<<<<<
@@ -57911,7 +57913,7 @@ static int __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinl
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":106
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":109
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -57957,7 +57959,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, 1); __PYX_ERR(1, 106, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, 1); __PYX_ERR(1, 109, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -57973,7 +57975,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_basis") < 0)) __PYX_ERR(1, 106, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "make_basis") < 0)) __PYX_ERR(1, 109, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -57987,11 +57989,11 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_basis = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint64_t(values[0]); if (unlikely(!__pyx_v_basis.memview)) __PYX_ERR(1, 106, __pyx_L3_error)
-    __pyx_v_n = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint16_t(values[1]); if (unlikely(!__pyx_v_n.memview)) __PYX_ERR(1, 106, __pyx_L3_error)
+    __pyx_v_basis = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint64_t(values[0]); if (unlikely(!__pyx_v_basis.memview)) __PYX_ERR(1, 109, __pyx_L3_error)
+    __pyx_v_n = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint16_t(values[1]); if (unlikely(!__pyx_v_n.memview)) __PYX_ERR(1, 109, __pyx_L3_error)
     __pyx_v_Np = values[2];
     if (values[3]) {
-      __pyx_v_count = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(values[3]); if (unlikely(!__pyx_v_count.memview)) __PYX_ERR(1, 106, __pyx_L3_error)
+      __pyx_v_count = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(values[3]); if (unlikely(!__pyx_v_count.memview)) __PYX_ERR(1, 109, __pyx_L3_error)
     } else {
       __pyx_v_count = __pyx_k__142;
       __PYX_INC_MEMVIEW(&__pyx_v_count, 1);
@@ -57999,7 +58001,7 @@ static PyObject *__pyx_pw_6quspin_5basis_13basis_general_19_basis_general_core_2
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 106, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("make_basis", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 109, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("quspin.basis.basis_general._basis_general_core.spinless_fermion_core.spinless_fermion_basis_core_wrap_64.make_basis", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -58037,7 +58039,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   Py_ssize_t __pyx_t_13;
   __Pyx_RefNannySetupContext("make_basis", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":107
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":110
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
  * 		cdef int Ns_1 = 0             # <<<<<<<<<<<<<<
@@ -58046,7 +58048,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_Ns_1 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":108
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":111
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
  * 		cdef int Ns_1 = 0
  * 		cdef int Ns_2 = 0             # <<<<<<<<<<<<<<
@@ -58055,7 +58057,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_Ns_2 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":109
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":112
  * 		cdef int Ns_1 = 0
  * 		cdef int Ns_2 = 0
  * 		cdef int Ns_3 = 0             # <<<<<<<<<<<<<<
@@ -58064,7 +58066,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_Ns_3 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":110
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":113
  * 		cdef int Ns_2 = 0
  * 		cdef int Ns_3 = 0
  * 		cdef uint8_t np = 0             # <<<<<<<<<<<<<<
@@ -58073,7 +58075,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_np = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":111
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":114
  * 		cdef int Ns_3 = 0
  * 		cdef uint8_t np = 0
  * 		cdef npy_intp i = 0             # <<<<<<<<<<<<<<
@@ -58082,19 +58084,19 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
   __pyx_v_i = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":112
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":115
  * 		cdef uint8_t np = 0
  * 		cdef npy_intp i = 0
  * 		cdef mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
  * 
  * 		if Np is None:
  */
-  __pyx_t_1 = PyInt_FromSsize_t((__pyx_v_basis.shape[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 112, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t((__pyx_v_basis.shape[0])); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_mem_MAX = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":114
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":117
  * 		cdef mem_MAX = basis.shape[0]
  * 
  * 		if Np is None:             # <<<<<<<<<<<<<<
@@ -58105,7 +58107,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":115
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":118
  * 
  * 		if Np is None:
  * 			Ns_2 = self.make_basis_full(basis,n)             # <<<<<<<<<<<<<<
@@ -58114,7 +58116,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  */
     __pyx_v_Ns_2 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_full(__pyx_v_self, __pyx_v_basis, __pyx_v_n);
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":114
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":117
  * 		cdef mem_MAX = basis.shape[0]
  * 
  * 		if Np is None:             # <<<<<<<<<<<<<<
@@ -58124,7 +58126,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":116
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":119
  * 		if Np is None:
  * 			Ns_2 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:             # <<<<<<<<<<<<<<
@@ -58135,17 +58137,17 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   __pyx_t_2 = (__pyx_t_3 != 0);
   if (__pyx_t_2) {
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":117
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":120
  * 			Ns_2 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:
  * 			Ns_2 = self.make_basis_pcon(Np,basis,n)             # <<<<<<<<<<<<<<
  * 		else:
  * 			Np_iter = iter(Np)
  */
-    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_Np); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 117, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_Np); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 120, __pyx_L1_error)
     __pyx_v_Ns_2 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_t_4, __pyx_v_basis, __pyx_v_n);
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":116
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":119
  * 		if Np is None:
  * 			Ns_2 = self.make_basis_full(basis,n)
  * 		elif type(Np) is int:             # <<<<<<<<<<<<<<
@@ -58155,7 +58157,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     goto __pyx_L3;
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":119
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":122
  * 			Ns_2 = self.make_basis_pcon(Np,basis,n)
  * 		else:
  * 			Np_iter = iter(Np)             # <<<<<<<<<<<<<<
@@ -58163,12 +58165,12 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
  * 				for np in Np_iter:
  */
   /*else*/ {
-    __pyx_t_1 = PyObject_GetIter(__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 119, __pyx_L1_error)
+    __pyx_t_1 = PyObject_GetIter(__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_Np_iter = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":120
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":123
  * 		else:
  * 			Np_iter = iter(Np)
  * 			if count is None:             # <<<<<<<<<<<<<<
@@ -58178,7 +58180,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     __pyx_t_2 = ((((PyObject *) __pyx_v_count.memview) == Py_None) != 0);
     if (__pyx_t_2) {
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":121
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":124
  * 			Np_iter = iter(Np)
  * 			if count is None:
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -58189,26 +58191,26 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
         __pyx_t_1 = __pyx_v_Np_iter; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 121, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 124, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 121, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 124, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_1))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 121, __pyx_L1_error)
+            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 124, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 121, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 124, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 121, __pyx_L1_error)
+            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 124, __pyx_L1_error)
             #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 121, __pyx_L1_error)
+            __pyx_t_7 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 124, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             #endif
           }
@@ -58218,17 +58220,17 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(1, 121, __pyx_L1_error)
+              else __PYX_ERR(1, 124, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_7);
         }
-        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 121, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_7); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 124, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_v_np = __pyx_t_8;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":122
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":125
  * 			if count is None:
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])             # <<<<<<<<<<<<<<
@@ -58253,7 +58255,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 122, __pyx_L1_error)
+    __PYX_ERR(1, 125, __pyx_L1_error)
 }
 
 __pyx_t_10.data = __pyx_v_n.data;
@@ -58274,7 +58276,7 @@ __pyx_t_10.data = __pyx_v_n.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 122, __pyx_L1_error)
+    __PYX_ERR(1, 125, __pyx_L1_error)
 }
 
 __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_v_np, __pyx_t_9, __pyx_t_10);
@@ -58285,7 +58287,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_10.memview = NULL;
         __pyx_t_10.data = NULL;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":123
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":126
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -58295,7 +58297,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_2 = ((__pyx_v_Ns_1 < 0) != 0);
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":124
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":127
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:
  * 						return Ns_1             # <<<<<<<<<<<<<<
@@ -58303,14 +58305,14 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  * 						Ns_2 += Ns_1
  */
           __Pyx_XDECREF(__pyx_r);
-          __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 124, __pyx_L1_error)
+          __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 127, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __pyx_r = __pyx_t_7;
           __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":123
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":126
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -58319,7 +58321,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":126
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":129
  * 						return Ns_1
  * 					else:
  * 						Ns_2 += Ns_1             # <<<<<<<<<<<<<<
@@ -58330,22 +58332,22 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __pyx_v_Ns_2 = (__pyx_v_Ns_2 + __pyx_v_Ns_1);
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":128
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":131
  * 						Ns_2 += Ns_1
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
  * 						return -1
  * 			else:
  */
-        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 128, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 131, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_11 = PyObject_RichCompare(__pyx_t_7, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 128, __pyx_L1_error)
+        __pyx_t_11 = PyObject_RichCompare(__pyx_t_7, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 131, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 128, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 131, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":129
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":132
  * 
  * 					if Ns_2 > mem_MAX:
  * 						return -1             # <<<<<<<<<<<<<<
@@ -58358,7 +58360,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":128
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":131
  * 						Ns_2 += Ns_1
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
@@ -58367,7 +58369,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":121
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":124
  * 			Np_iter = iter(Np)
  * 			if count is None:
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -58377,7 +58379,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
       }
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":120
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":123
  * 		else:
  * 			Np_iter = iter(Np)
  * 			if count is None:             # <<<<<<<<<<<<<<
@@ -58387,7 +58389,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
       goto __pyx_L4;
     }
 
-    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":132
+    /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":135
  * 			else:
  * 
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -58399,26 +58401,26 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_1 = __pyx_v_Np_iter; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 132, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_Np_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 135, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 132, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 135, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_1))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_11 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 132, __pyx_L1_error)
+            __pyx_t_11 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 135, __pyx_L1_error)
             #else
-            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 132, __pyx_L1_error)
+            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 135, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_11 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 132, __pyx_L1_error)
+            __pyx_t_11 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_11); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(1, 135, __pyx_L1_error)
             #else
-            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 132, __pyx_L1_error)
+            __pyx_t_11 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 135, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
             #endif
           }
@@ -58428,17 +58430,17 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(1, 132, __pyx_L1_error)
+              else __PYX_ERR(1, 135, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_11);
         }
-        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_11); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 132, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_As_npy_uint8(__pyx_t_11); if (unlikely((__pyx_t_8 == ((npy_uint8)-1)) && PyErr_Occurred())) __PYX_ERR(1, 135, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __pyx_v_np = __pyx_t_8;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":133
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":136
  * 
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])             # <<<<<<<<<<<<<<
@@ -58463,7 +58465,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 133, __pyx_L1_error)
+    __PYX_ERR(1, 136, __pyx_L1_error)
 }
 
 __pyx_t_10.data = __pyx_v_n.data;
@@ -58484,7 +58486,7 @@ __pyx_t_10.data = __pyx_v_n.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(1, 133, __pyx_L1_error)
+    __PYX_ERR(1, 136, __pyx_L1_error)
 }
 
 __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 *)__pyx_v_self->__pyx_vtab)->make_basis_pcon(__pyx_v_self, __pyx_v_np, __pyx_t_9, __pyx_t_10);
@@ -58495,7 +58497,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_10.memview = NULL;
         __pyx_t_10.data = NULL;
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":134
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":137
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -58505,7 +58507,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         __pyx_t_2 = ((__pyx_v_Ns_1 < 0) != 0);
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":135
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":138
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:
  * 						return Ns_1             # <<<<<<<<<<<<<<
@@ -58513,14 +58515,14 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  * 						Ns_3 = Ns_2 + Ns_1
  */
           __Pyx_XDECREF(__pyx_r);
-          __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 135, __pyx_L1_error)
+          __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 138, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_11);
           __pyx_r = __pyx_t_11;
           __pyx_t_11 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":134
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":137
  * 				for np in Np_iter:
  * 					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
  * 					if Ns_1 < 0:             # <<<<<<<<<<<<<<
@@ -58529,7 +58531,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":137
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":140
  * 						return Ns_1
  * 					else:
  * 						Ns_3 = Ns_2 + Ns_1             # <<<<<<<<<<<<<<
@@ -58539,7 +58541,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
         /*else*/ {
           __pyx_v_Ns_3 = (__pyx_v_Ns_2 + __pyx_v_Ns_1);
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":138
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":141
  * 					else:
  * 						Ns_3 = Ns_2 + Ns_1
  * 						for i in range(Ns_2,Ns_3,1):             # <<<<<<<<<<<<<<
@@ -58550,7 +58552,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           for (__pyx_t_12 = __pyx_v_Ns_2; __pyx_t_12 < __pyx_t_4; __pyx_t_12+=1) {
             __pyx_v_i = __pyx_t_12;
 
-            /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":139
+            /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":142
  * 						Ns_3 = Ns_2 + Ns_1
  * 						for i in range(Ns_2,Ns_3,1):
  * 							count[i] = np             # <<<<<<<<<<<<<<
@@ -58562,7 +58564,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
             *((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_count.data + __pyx_t_13 * __pyx_v_count.strides[0]) )) = __pyx_v_np;
           }
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":141
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":144
  * 							count[i] = np
  * 
  * 						Ns_2 = Ns_3             # <<<<<<<<<<<<<<
@@ -58572,22 +58574,22 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __pyx_v_Ns_2 = __pyx_v_Ns_3;
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":143
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":146
  * 						Ns_2 = Ns_3
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
  * 						return -1
  * 		return Ns_2
  */
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 143, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 146, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_7 = PyObject_RichCompare(__pyx_t_11, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 143, __pyx_L1_error)
+        __pyx_t_7 = PyObject_RichCompare(__pyx_t_11, __pyx_v_mem_MAX, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 146, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 143, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 146, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         if (__pyx_t_2) {
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":144
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":147
  * 
  * 					if Ns_2 > mem_MAX:
  * 						return -1             # <<<<<<<<<<<<<<
@@ -58600,7 +58602,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           goto __pyx_L0;
 
-          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":143
+          /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":146
  * 						Ns_2 = Ns_3
  * 
  * 					if Ns_2 > mem_MAX:             # <<<<<<<<<<<<<<
@@ -58609,7 +58611,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  */
         }
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":132
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":135
  * 			else:
  * 
  * 				for np in Np_iter:             # <<<<<<<<<<<<<<
@@ -58623,7 +58625,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
   }
   __pyx_L3:;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":145
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":148
  * 					if Ns_2 > mem_MAX:
  * 						return -1
  * 		return Ns_2             # <<<<<<<<<<<<<<
@@ -58631,13 +58633,13 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 145, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_Ns_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":106
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":109
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -58665,7 +58667,7 @@ __pyx_v_Ns_1 = ((struct __pyx_vtabstruct_6quspin_5basis_13basis_general_19_basis
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":150
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":153
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -58682,7 +58684,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("make_basis_full", 0);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":151
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":154
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (1ull<<self._N)             # <<<<<<<<<<<<<<
@@ -58691,7 +58693,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
  */
   __pyx_v_Ns = (1ULL << __pyx_v_self->__pyx_base._N);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":152
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":155
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = (1ull<<self._N)
  * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
@@ -58700,7 +58702,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
  */
   __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":153
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":156
  * 		cdef npy_intp Ns = (1ull<<self._N)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -58715,7 +58717,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":154
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":157
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:
  * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])             # <<<<<<<<<<<<<<
@@ -58729,7 +58731,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
         __pyx_v_Ns = make_basis<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_1 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_2 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":153
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":156
  * 		cdef npy_intp Ns = (1ull<<self._N)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -58748,7 +58750,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":156
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":159
  * 			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
@@ -58758,7 +58760,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":150
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":153
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -58773,7 +58775,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
 }
 static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_15make_basis_pcon_2generator1(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":162
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":165
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))             # <<<<<<<<<<<<<<
@@ -58790,7 +58792,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_3_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 162, __pyx_L1_error)
+    __PYX_ERR(1, 165, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -58798,7 +58800,7 @@ static PyObject *__pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_2
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_15make_basis_pcon_2generator1, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_spinless_fermion_basis_core_wrap_2, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 162, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_15make_basis_pcon_2generator1, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_spinless_fermion_basis_core_wrap_2, __pyx_n_s_quspin_basis_basis_general__basi); if (unlikely(!gen)) __PYX_ERR(1, 165, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -58832,24 +58834,24 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 162, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 162, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 165, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_Np); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 162, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 162, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 162, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 162, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 165, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -58857,17 +58859,17 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 162, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 165, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 162, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 162, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(1, 165, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 162, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -58877,7 +58879,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(1, 162, __pyx_L1_error)
+          else __PYX_ERR(1, 165, __pyx_L1_error)
         }
         break;
       }
@@ -58887,7 +58889,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_i, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = PyNumber_Lshift(__pyx_int_1, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 162, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Lshift(__pyx_int_1, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -58906,7 +58908,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 162, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(1, 165, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -58926,7 +58928,7 @@ static PyObject *__pyx_gb_6quspin_5basis_13basis_general_19_basis_general_core_2
   return __pyx_r;
 }
 
-/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":159
+/* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":162
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -58954,26 +58956,26 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_2_make_basis_pcon *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(1, 159, __pyx_L1_error)
+    __PYX_ERR(1, 162, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
   __pyx_cur_scope->__pyx_v_Np = __pyx_v_Np;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":160
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":163
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)             # <<<<<<<<<<<<<<
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_comb); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 160, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_comb); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 160, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base._N); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 160, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_Np); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 160, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -58981,19 +58983,19 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 160, __pyx_L1_error)
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_exact, Py_True) < 0) __PYX_ERR(1, 160, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 160, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_exact, Py_True) < 0) __PYX_ERR(1, 163, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_5 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 160, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_Py_intptr_t(__pyx_t_2); if (unlikely((__pyx_t_5 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(1, 163, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_Ns = __pyx_t_5;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":161
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":164
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]             # <<<<<<<<<<<<<<
@@ -59002,28 +59004,28 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
  */
   __pyx_v_mem_MAX = (__pyx_v_basis.shape[0]);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":162
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":165
  * 		cdef npy_intp Ns = comb(self._N,Np,exact=True)
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))             # <<<<<<<<<<<<<<
  * 		with nogil:
  * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  */
-  __pyx_t_2 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 162, __pyx_L1_error)
+  __pyx_t_2 = __pyx_pf_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_15make_basis_pcon_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 162, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 162, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyInt_As_npy_uint64(__pyx_t_2); if (unlikely((__pyx_t_6 == ((npy_uint64)-1)) && PyErr_Occurred())) __PYX_ERR(1, 162, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_npy_uint64(__pyx_t_2); if (unlikely((__pyx_t_6 == ((npy_uint64)-1)) && PyErr_Occurred())) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_s = __pyx_t_6;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":163
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":166
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -59038,7 +59040,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       #endif
       /*try:*/ {
 
-        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":164
+        /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":167
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))
  * 		with nogil:
  * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])             # <<<<<<<<<<<<<<
@@ -59052,7 +59054,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
         __pyx_v_Ns = make_basis_pcon<__pyx_t_5numpy_uint64_t,__pyx_t_5numpy_uint16_t>(__pyx_v_self->__pyx_base._basis_core, __pyx_v_Ns, __pyx_v_mem_MAX, __pyx_v_s, (&(*((__pyx_t_5numpy_uint64_t *) ( /* dim=0 */ (__pyx_v_basis.data + __pyx_t_7 * __pyx_v_basis.strides[0]) )))), (&(*((__pyx_t_5numpy_uint16_t *) ( /* dim=0 */ (__pyx_v_n.data + __pyx_t_8 * __pyx_v_n.strides[0]) )))));
       }
 
-      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":163
+      /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":166
  * 		cdef npy_intp mem_MAX = basis.shape[0]
  * 		cdef uint64_t s = sum(1<<i for i in range(Np))
  * 		with nogil:             # <<<<<<<<<<<<<<
@@ -59071,7 +59073,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
       }
   }
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":166
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":169
  * 			Ns =  make_basis_pcon(self._basis_core,Ns,mem_MAX,s,&basis[0],&n[0])
  * 
  * 		return Ns             # <<<<<<<<<<<<<<
@@ -59080,7 +59082,7 @@ static npy_intp __pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21s
   __pyx_r = __pyx_v_Ns;
   goto __pyx_L0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":159
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":162
  * 
  * 	@cython.boundscheck(False)
  * 	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):             # <<<<<<<<<<<<<<
@@ -76186,7 +76188,7 @@ static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_builtin_reversed = __Pyx_GetBuiltinName(__pyx_n_s_reversed); if (!__pyx_builtin_reversed) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 166, __pyx_L1_error)
-  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(1, 85, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(1, 88, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(3, 799, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(3, 989, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 146, __pyx_L1_error)
@@ -77457,14 +77459,14 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__136);
   __Pyx_GIVEREF(__pyx_tuple__136);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":19
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":22
  * 
  * 		if N > 32:
  * 			raise ValueError("for 32-bit code N must be <= 32.")             # <<<<<<<<<<<<<<
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  */
-  __pyx_tuple__137 = PyTuple_Pack(1, __pyx_kp_s_for_32_bit_code_N_must_be_32); if (unlikely(!__pyx_tuple__137)) __PYX_ERR(1, 19, __pyx_L1_error)
+  __pyx_tuple__137 = PyTuple_Pack(1, __pyx_kp_s_for_32_bit_code_N_must_be_32); if (unlikely(!__pyx_tuple__137)) __PYX_ERR(1, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__137);
   __Pyx_GIVEREF(__pyx_tuple__137);
 
@@ -77487,14 +77489,14 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__140);
   __Pyx_GIVEREF(__pyx_tuple__140);
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":95
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":98
  * 	def __cinit__(self,object N,int[:,::1] maps, int[:] pers, int[:] qs):
  * 		if N > 64:
  * 			raise ValueError("for 64-bit code N must be <= 64.")             # <<<<<<<<<<<<<<
  * 		self._N = N
  * 		self._nt = pers.shape[0]
  */
-  __pyx_tuple__141 = PyTuple_Pack(1, __pyx_kp_s_for_64_bit_code_N_must_be_64); if (unlikely(!__pyx_tuple__141)) __PYX_ERR(1, 95, __pyx_L1_error)
+  __pyx_tuple__141 = PyTuple_Pack(1, __pyx_kp_s_for_64_bit_code_N_must_be_64); if (unlikely(!__pyx_tuple__141)) __PYX_ERR(1, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__141);
   __Pyx_GIVEREF(__pyx_tuple__141);
 
@@ -78095,32 +78097,32 @@ PyMODINIT_FUNC PyInit_spinless_fermion_core(void)
   __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32.make_basis_full = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_make_basis_full;
   __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32.make_basis_pcon = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_32_make_basis_pcon;
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32.tp_base = __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_general_basis_core_wrap_32;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 15, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32.tp_dict, __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 15, __pyx_L1_error)
-  if (PyObject_SetAttrString(__pyx_m, "spinless_fermion_basis_core_wrap_32", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 15, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 15, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32.tp_dict, __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "spinless_fermion_basis_core_wrap_32", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32) < 0) __PYX_ERR(1, 18, __pyx_L1_error)
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32 = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_32;
   __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 = &__pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64;
   __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64.make_basis_full = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 *, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_make_basis_full;
   __pyx_vtable_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64.make_basis_pcon = (npy_intp (*)(struct __pyx_obj_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 *, int, __Pyx_memviewslice, __Pyx_memviewslice))__pyx_f_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_35spinless_fermion_basis_core_wrap_64_make_basis_pcon;
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64.tp_base = __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_general_basis_core_wrap_64;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 92, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64.tp_dict, __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 92, __pyx_L1_error)
-  if (PyObject_SetAttrString(__pyx_m, "spinless_fermion_basis_core_wrap_64", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 92, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 92, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64.tp_dict, __pyx_vtabptr_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "spinless_fermion_basis_core_wrap_64", (PyObject *)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64 = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_spinless_fermion_basis_core_wrap_64;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct__make_basis_pcon) < 0) __PYX_ERR(1, 82, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct__make_basis_pcon) < 0) __PYX_ERR(1, 85, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct__make_basis_pcon.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct__make_basis_pcon = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct__make_basis_pcon;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(1, 85, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(1, 88, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_1_genexpr.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_1_genexpr = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_1_genexpr;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_2_make_basis_pcon) < 0) __PYX_ERR(1, 159, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_2_make_basis_pcon) < 0) __PYX_ERR(1, 162, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_2_make_basis_pcon.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_2_make_basis_pcon = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_2_make_basis_pcon;
-  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_3_genexpr) < 0) __PYX_ERR(1, 162, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_3_genexpr) < 0) __PYX_ERR(1, 165, __pyx_L1_error)
   __pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_3_genexpr.tp_print = 0;
   __pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_3_genexpr = &__pyx_type_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core___pyx_scope_struct_3_genexpr;
   __pyx_vtabptr_array = &__pyx_vtable_array;
@@ -78721,7 +78723,7 @@ PyMODINIT_FUNC PyInit_spinless_fermion_core(void)
   PyType_Modified(__pyx_ptype_6quspin_5basis_13basis_general_19_basis_general_core_21spinless_fermion_core_general_basis_core_wrap_64);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":31
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":34
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -78729,12 +78731,12 @@ PyMODINIT_FUNC PyInit_spinless_fermion_core(void)
  * 		cdef int Ns_2 = 0
  */
   __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(Py_None);
-  if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(1, 31, __pyx_L1_error)
+  if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(1, 34, __pyx_L1_error)
   __pyx_k__138 = __pyx_t_13;
   __pyx_t_13.memview = NULL;
   __pyx_t_13.data = NULL;
 
-  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":106
+  /* "quspin/basis/basis_general/_basis_general_core/spinless_fermion_core.pyx":109
  * 
  * 	@cython.boundscheck(False)
  * 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):             # <<<<<<<<<<<<<<
@@ -78742,7 +78744,7 @@ PyMODINIT_FUNC PyInit_spinless_fermion_core(void)
  * 		cdef int Ns_2 = 0
  */
   __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_uint8_t(Py_None);
-  if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(1, 106, __pyx_L1_error)
+  if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(1, 109, __pyx_L1_error)
   __pyx_k__142 = __pyx_t_13;
   __pyx_t_13.memview = NULL;
   __pyx_t_13.data = NULL;
