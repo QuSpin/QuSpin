@@ -436,11 +436,12 @@ class exp_op(object):
 		-----------
 		other : obj
 			The operator :math:`A` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
-		time : scalar, optional
-			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.
 		shift : scalar
 			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
-
+		call_kwargs : obj, optional
+			extra keyword arguments which include:
+				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
+				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
 		Returns
 		--------
@@ -526,12 +527,13 @@ class exp_op(object):
 		-----------
 		other : obj
 			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
-		time : scalar, optional
-			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.
 		shift : scalar
 			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
-
-
+		call_kwargs : obj, optional
+			extra keyword arguments which include:
+				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
+				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
+		
 		Returns
 		--------
 		obj
@@ -623,11 +625,13 @@ class exp_op(object):
 		other : obj
 			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`
 			and :math:`\\exp(\\mathcal{O})`.
-		time : scalar, optional
-			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
 		shift : scalar
 			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
- 
+		call_kwargs : obj, optional
+			extra keyword arguments which include:
+				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
+				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
+		
 		Returns
 		--------
 		obj

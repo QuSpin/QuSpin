@@ -586,12 +586,14 @@ class hamiltonian(object):
 	
 		"""
 
+		from .exp_op_core import isexp_op
+
 		
 		if ishamiltonian(V):
 			return self * V
-		elif V.__class__.__name__=='exp_op':
-			return V.rdot(self,time=time)
-
+		elif isexp_op(V):
+			raise ValueError("This is ambiguous action. Use the .rdot() method of the `exp_op` class isntead.")
+			
 		if _np.array(time).ndim > 0:
 			if V.ndim > 3:
 				raise ValueError("Expecting V.ndim < 4.")

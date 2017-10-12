@@ -55,7 +55,7 @@ class spin_basis_1d(basis_1d):
 		pauli: bool, optional
 			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
 		**blocks: optional
-			extra keyword arguements which include:
+			extra keyword arguments which include:
 
 				**a** (*int*) - specifies unit cell size for translation.
 

@@ -1244,9 +1244,9 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 
 	if stack_state:
 		v1 = v0
-		v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
-		v0[:shape0[0]] = v1.real
-		v0[shape0[0]:] = v1.imag
+		v0 = _np.zeros(v0.shape[0],dtype=v1.real.dtype)
+		v0[:v0.shape[0]] = v1.real
+		v0[v0.shape[0]:] = v1.imag
 
 		solver = ode(f) # y_f = f(t,y,*args)
 	elif real:
