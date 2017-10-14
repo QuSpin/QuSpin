@@ -9,7 +9,7 @@ requirements:
   build:
     - python
     - numpy >=1.10
-
+    
   run:
     - python
     - numpy >=1.10
@@ -18,7 +18,7 @@ requirements:
     - joblib
     - matplotlib
     - dill
-
+    
 test:
   imports:
     - numpy 
