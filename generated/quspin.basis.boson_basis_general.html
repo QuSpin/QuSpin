@@ -5,12 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.basis.boson_basis_general &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +21,7 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
@@ -76,19 +73,16 @@ spin inversion. For a specific example, see below.</p>
         \texttt{boson_basis_general}&amp;   \hat{1}        &amp;   \hat b^\dagger      &amp;       \hat b          &amp; \hat b^\dagger b     &amp;  \hat b^\dagger\hat b - \frac{\mathrm{sps}-1}{2}  \newline
 \end{array}\]</div>
 <p class="rubric">Notes</p>
-<ul>
-<li><p class="first">if <cite>Nb</cite> or <cite>nb</cite> are specified, by default <cite>sps</cite> is set to the number of bosons on the lattice.</p>
-</li>
+<ul class="simple">
+<li>if <cite>Nb</cite> or <cite>nb</cite> are specified, by default <cite>sps</cite> is set to the number of bosons on the lattice.</li>
 <li><dl class="first docutils">
 <dt>if <cite>sps</cite> is specified, while <cite>Nb</cite> or <cite>nb</cite> are not, all particle sectors are filled up to the maximumal </dt>
-<dd><p class="first last">occupation.</p>
-</dd>
+<dd>occupation.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>if <cite>Nb</cite> or <cite>nb</cite> and <cite>sps</cite> are specified, the finite boson basis is constructed with the local Hilbert space </dt>
-<dd><p class="first last">restrited by <cite>sps</cite>.</p>
-</dd>
+<dd>restrited by <cite>sps</cite>.</dd>
 </dl>
 </li>
 </ul>
@@ -397,19 +391,16 @@ sector.</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(ME,row,col)</cite>, where</dt>
-<dd><ul class="first last">
-<li><p class="first">numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</p>
-</li>
+<dd><ul class="first last simple">
+<li>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>row</cite>: row indices of matrix representing the operator in the lattice basis,</dt>
-<dd><p class="first last">such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</p>
-</dd>
+<dd>such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>numpy.ndarray(int): <cite>col</cite>: column index of matrix representing the operator in the lattice basis,</dt>
-<dd><p class="first last">such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</p>
-</dd>
+<dd>such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</dd>
 </dl>
 </li>
 </ul>
@@ -560,7 +551,7 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <blockquote>
 <div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>:</p>
 <div class="math">
-\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha\]</div>
+\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
 </div></blockquote>
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>
@@ -625,17 +616,15 @@ to calculate the eigenvaues of the reduced DM.</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt><cite>(static, dynamic)</cite>, where</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li><dl class="first docutils">
 <dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd><p class="first last">be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
-</dd>
+<dd>be passed into the static argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd><p class="first last">be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
-</dd>
+<dd>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 </ul>
@@ -838,7 +827,7 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.boson_basis_general.partial_trace">
-<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm=’A’</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.boson_basis_general.partial_trace" title="Permalink to this definition">¶</a></dt>
+<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm='A'</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.boson_basis_general.partial_trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -952,7 +941,7 @@ it is a square array. Default is <cite>False</cite>.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

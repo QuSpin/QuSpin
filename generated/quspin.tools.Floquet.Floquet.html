@@ -5,12 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.tools.Floquet.Floquet &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +21,7 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="quspin.tools.block_tools.block_diag_hamiltonian" href="quspin.tools.block_tools.block_diag_hamiltonian.html" /> 
@@ -192,10 +189,10 @@ using <cite>evo_dict</cite> variable, case ii (see below).</p>
 <blockquote>
 <div><p>Dictionary which passes the different types of protocols to calculate the Floquet unitary. 
 Depending on the protocol type, it contains the following keys:</p>
-<ol class="lowerroman">
+<ol class="lowerroman simple">
 <li><dl class="first docutils">
 <dt>Periodic continuous protocol from a <cite>hamiltonian</cite> object.</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><cite>H</cite> : hamiltonian object to generate the time evolution.</li>
 <li><cite>T</cite> : period of the protocol.</li>
 <li><cite>rtol</cite> : (optional) relative tolerance for the ODE solver. (default = 1E-9)</li>
@@ -206,7 +203,7 @@ Depending on the protocol type, it contains the following keys:</p>
 </li>
 <li><dl class="first docutils">
 <dt>Periodic step protocol from a <cite>hamiltonian</cite> object. </dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><cite>H</cite> : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. <span class="math">\(\sign(\cos(\Omega t))\)</span>.</li>
 <li><cite>t_list</cite> : list of times to evaluate the hamiltonian at for each step.</li>
 <li><cite>dt_list</cite> : list of time step durations for each step of the evolution.</li>
@@ -216,7 +213,7 @@ Depending on the protocol type, it contains the following keys:</p>
 </li>
 <li><dl class="first docutils">
 <dt>Periodic step protocol from a list of hamiltonians. </dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li><cite>H_list</cite> : list of matrices to evolve with.</li>
 <li><cite>dt_list</cite> : list of time step durations. Must be the same size as <cite>H_list</cite>.</li>
 </ul>
@@ -390,7 +387,7 @@ Depending on the protocol type, it contains the following keys:</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>
