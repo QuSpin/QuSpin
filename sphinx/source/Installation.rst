@@ -1,7 +1,7 @@
 Installation
 ============
 
-QuSpin is currently being supported for Python 2.7 and Python 3.5 which are a prerequisite. We recommend the use of the free package manager `Anaconda <https://www.continuum.io/downloads>`_ which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use `miniconda <http://conda.pydata.org/miniconda.html>`_.
+QuSpin is currently being supported for Python 2 and Python 3 which are a prerequisite. We recommend the use of the free package manager `Anaconda <https://www.continuum.io/downloads>`_ which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use `miniconda <http://conda.pydata.org/miniconda.html>`_.
 	
 Mac OS X/Linux
 --------------
