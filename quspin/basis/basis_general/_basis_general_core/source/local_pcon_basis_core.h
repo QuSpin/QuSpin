@@ -8,9 +8,9 @@
 template<class I>
 I inline local_pcon_map_bits(I s,const int map[],const int N){
 	I ss = 0;
-	for(int i=0;i<2*N;i++){
+	for(int i=2*N;i>=0;i--){
 		int j = map[i];
-		ss ^= ( j<0 ? ((s&1)^1)<<(-(j+1)) : (s&1)<<j );
+		ss ^= ( j<0 ? ((s&1)^1)<<(2*N+j) : (s&1)<<(2*N-j-1) );
 		s >>= 1;
 	}
 	return ss;
@@ -51,24 +51,24 @@ class local_pcon_basis_core : public general_basis_core<I>
 			}
 		}
 
-		void print(I s){
-			I s_left,s_right;
-			split_state(s,s_left,s_right);
+		// void print(I s){
+		// 	I s_left,s_right;
+		// 	split_state(s,s_left,s_right);
 
-			std::cout << "|";
-			for(int i=0;i<general_basis_core<I>::N;i++){
-				std::cout << (s_left&1) << " ";
-				s_left>>=1;
-			}
-			std::cout << ">";
+		// 	std::cout << "|";
+		// 	for(int i=0;i<general_basis_core<I>::N;i++){
+		// 		std::cout << (s_left&1) << " ";
+		// 		s_left>>=1;
+		// 	}
+		// 	std::cout << ">";
 
-			std::cout << "|";
-			for(int i=0;i<general_basis_core<I>::N;i++){
-				std::cout << (s_right&1) << " ";
-				s_right>>=1;
-			}
-			std::cout << ">";
-		}
+		// 	std::cout << "|";
+		// 	for(int i=0;i<general_basis_core<I>::N;i++){
+		// 		std::cout << (s_right&1) << " ";
+		// 		s_right>>=1;
+		// 	}
+		// 	std::cout << ">";
+		// }
 
 		void split_state(I s,I &s_left,I &s_right){
 			s_right = ((I(1) << general_basis_core<I>::N) - 1)&s;

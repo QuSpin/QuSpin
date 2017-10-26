@@ -12,11 +12,11 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	int np = 0;
 	bool f_count = 0;
 
-	for(int i=0;i<N;i++){
+	for(int i=N;i>=0;i--){
 		int j = map[i];
 		bool n = (s&1);
 		if(n){pos_list[np]=( j<0 ? N + j : N-j-1); ++np;}
-		ss ^= ( j<0 ? (n^1)<<(-(j+1)) : n<<j );
+		ss ^= ( j<0 ? (n^1)<<(N+j) : n<<(N-j-1) );
 
 		f_count ^= (n && (i&1)) && (j<0);
 

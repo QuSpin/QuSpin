@@ -100,8 +100,11 @@ cdef class hcb_basis_core_wrap_64(general_basis_core_wrap_64):
 		self._N = N
 		self._nt = pers.shape[0]
 		self._sps = 2
-		self._basis_core = new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
-
+		if self._nt>0:
+			self._basis_core = new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+		else:
+			self._basis_core = new hcb_basis_core[uint64_t](N)
+			
 	@cython.boundscheck(False)
 	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
 		cdef int Ns_1 = 0
