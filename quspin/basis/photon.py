@@ -10,15 +10,15 @@ import warnings
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
-__all__ = ["photon_basis","ho_basis"]
+__all__ = ["photon_basis","ho_basis","coherent_state","photon_Hspace_dim"]
 
 def coherent_state(a,n,dtype=_np.float64):
-	"""Creates a harmonic oscillator (HO) coherent state.
+	""" Creates a harmonic oscillator (HO) coherent state.
 
 	Parameters
 	-----------
 	a : float
-		Expectation value of annihilation operator :math:`\\langla a\\rangle` or, equivalently 
+		Expectation value of annihilation operator :math:`\\langle a\\rangle` or, equivalently 
 		square root of the mean particle number.
 	n : int
 		Cut-off on the number of HO eigenstates kept in the definition of the coherent state.
@@ -47,7 +47,7 @@ def coherent_state(a,n,dtype=_np.float64):
 	return _np.exp(state)
 
 def photon_Hspace_dim(N,Ntot,Nph):
-	"""Calculates the dimension of the total spin-photon Hilbert space.
+	""" Calculates the dimension of the total spin-photon Hilbert space.
 
 	Parameters
 	-----------
