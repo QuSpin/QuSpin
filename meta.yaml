@@ -1,19 +1,24 @@
 package:
   name: quspin
-  version: "0.2.6"
+  version: "0.2.7b"
 
 source:
   path: ./
 
+build:
+  run_exports:
+    - libstdc++ {{ pin_compatible('g++', 'x') }}  # [unix]
+    - libsgcc {{ pin_compatible('gcc', 'x') }}  # [unix]
+
 requirements:
   build:
-    - python
-    - numpy >=1.10
-
+    - python {{ python }}
+    - numpy >=1.10.0
+ 
   run:
-    - python
-    - numpy >=1.10
-    - scipy >=0.18.0
+    - python {{ python }}
+    - numpy >=1.10.0
+    - scipy >=0.19.0
     - six
     - joblib
     - matplotlib
