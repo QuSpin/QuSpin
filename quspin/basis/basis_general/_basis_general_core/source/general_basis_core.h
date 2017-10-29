@@ -35,7 +35,7 @@ class general_basis_core{
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;
 		virtual void map_state(I[],npy_intp,int,signed char[]) = 0;
 		virtual I map_state(I,int,int&) = 0;
-		virtual void print(I) = 0;
+		// virtual void print(I) = 0;
 		virtual int get_N() const{
 			return N;
 		}

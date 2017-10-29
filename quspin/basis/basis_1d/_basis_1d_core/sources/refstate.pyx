@@ -31,7 +31,7 @@ cdef basis_type RefState_P_template(basis_type s,int L, NP_INT8_t * sign, int * 
 
 
     t = fliplr(s,L,&current_sign,bitop_pars)
-    if t < s:
+    if t > s:
         sign[0] = current_sign
         R[0] = 1
         return t
@@ -51,7 +51,7 @@ cdef basis_type RefState_PZ_template(basis_type s,int L, NP_INT8_t * sign, int *
 
     t = fliplr(s,L,&current_sign,bitop_pars)
     t = flip_all(t,L,&current_sign,bitop_pars)
-    if t < s:
+    if t > s:
         R[0] = 1
         return t
 
@@ -75,7 +75,7 @@ cdef basis_type RefState_P_Z_template(basis_type s,int L, NP_INT8_t * sign, int 
 
     r = s
     t = fliplr(s,L,&current_sign,bitop_pars)
-    if t < r:
+    if t > r:
         r = t
         sign[0] = current_sign
         R[0] = 1
@@ -83,7 +83,7 @@ cdef basis_type RefState_P_Z_template(basis_type s,int L, NP_INT8_t * sign, int 
 
     current_sign = 1
     t = flip_all(s,L,&current_sign,bitop_pars)
-    if t < r:
+    if t > r:
         r = t
         sign[0] = current_sign
         R[0] = 0
@@ -93,7 +93,7 @@ cdef basis_type RefState_P_Z_template(basis_type s,int L, NP_INT8_t * sign, int 
     current_sign = 1
     t = fliplr(s,L,&current_sign,bitop_pars)
     t = flip_all(t,L,&current_sign,bitop_pars)
-    if t < r:
+    if t > r:
         r = t
         sign[0] = current_sign
         R[0] = 1
@@ -116,7 +116,7 @@ cdef basis_type RefState_Z_template(basis_type s,int L, NP_INT8_t * sign, int * 
     sign[0] = 1
 
     t = flip_all(s,L,&current_sign,bitop_pars)
-    if t < s:
+    if t > s:
         sign[0] = current_sign
         R[0] = 1
         return t
@@ -135,7 +135,7 @@ cdef basis_type RefState_ZA_template(basis_type s,int L, NP_INT8_t * sign,int * 
 
 
     t = flip_sublat_A(s,L,&current_sign,bitop_pars)
-    if t < s:
+    if t > s:
         sign[0] = current_sign
         R[0] = 1
         return t
@@ -151,7 +151,7 @@ cdef basis_type RefState_ZB_template(basis_type s,int L, NP_INT8_t * sign,int * 
     sign[0] = 1
 
     t = flip_sublat_B(s,L,&current_sign,bitop_pars)
-    if t < s:
+    if t > s:
         sign[0] = current_sign
         R[0] = 1
         return t
@@ -170,7 +170,7 @@ cdef basis_type RefState_ZA_ZB_template(basis_type s,int L, NP_INT8_t * sign,int
     r = s
 
     t = flip_sublat_A(s,L,&current_sign,bitop_pars)
-    if t < r:
+    if t > r:
         r = t
         sign[0] = current_sign
         R[0] = 1
@@ -178,7 +178,7 @@ cdef basis_type RefState_ZA_ZB_template(basis_type s,int L, NP_INT8_t * sign,int
 
     current_sign = 1
     t = flip_sublat_B(s,L,&current_sign,bitop_pars)
-    if t < r:
+    if t > r:
         r = t
         sign[0] = current_sign
         R[0] = 0
@@ -186,7 +186,7 @@ cdef basis_type RefState_ZA_ZB_template(basis_type s,int L, NP_INT8_t * sign,int
 
     current_sign = 1
     t = flip_all(s,L,&current_sign,bitop_pars)
-    if t < r:
+    if t > r:
         r = t
         sign[0] = current_sign
         R[0] = 1
@@ -207,8 +207,8 @@ cdef basis_type RefState_T_template(basis_type s,int L,int T, NP_INT8_t * sign,i
     l = 0
 
     for i in range(1,L/T+1):
-        t=shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t=shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r = t; l = i;
 
@@ -235,8 +235,8 @@ cdef basis_type RefState_T_Z_template(basis_type s,int L,int T, NP_INT8_t * sign
 
     # print 0,0,current_sign
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; g=0;
         # print i,0,current_sign
@@ -245,8 +245,8 @@ cdef basis_type RefState_T_Z_template(basis_type s,int L,int T, NP_INT8_t * sign
     t = flip_all(s,L,&current_sign,bitop_pars)
     # print 0,1,current_sign
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; g=1;
         # print i,1,current_sign
@@ -271,16 +271,16 @@ cdef basis_type RefState_T_ZA_template(basis_type s,int L,int T, NP_INT8_t * sig
     sign[0] = 1
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gA=0;
 
     current_sign = 1
     t = flip_sublat_A(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gA=1;
 
@@ -304,16 +304,16 @@ cdef basis_type RefState_T_ZB_template(basis_type s,int L,int T, NP_INT8_t * sig
     sign[0] = 1
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gB=0;
 
     current_sign = 1
     t = flip_sublat_B(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gB=1;
 
@@ -338,32 +338,32 @@ cdef basis_type RefState_T_ZA_ZB_template(basis_type s,int L,int T, NP_INT8_t * 
     sign[0] = 1
     
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gA=0;gB=0;
 
     current_sign = 1
     t = flip_sublat_A(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gA=1;gB=0;
 
     current_sign = 1
     t = flip_sublat_B(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gA=0;gB=1;
 
     current_sign = 1
     t = flip_all(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; gA=1;gB=1;
 
@@ -389,8 +389,8 @@ cdef basis_type RefState_T_P_template(basis_type s,int L,int T, NP_INT8_t * sign
     sign[0] = 1
     # print 0,0,current_sign
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; q=0;
         # print i,0,current_sign
@@ -399,8 +399,8 @@ cdef basis_type RefState_T_P_template(basis_type s,int L,int T, NP_INT8_t * sign
     t = fliplr(s,L,&current_sign,bitop_pars)
     # print 0,1,current_sign
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; q=1;
         # print i,1,current_sign
@@ -435,8 +435,8 @@ cdef basis_type RefState_T_PZ_template(basis_type s,int L,int T, NP_INT8_t * sig
     sign[0] = 1
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; qg=0;
 
@@ -444,8 +444,8 @@ cdef basis_type RefState_T_PZ_template(basis_type s,int L,int T, NP_INT8_t * sig
     t = fliplr(s,L,&current_sign,bitop_pars)
     t = flip_all(t,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; qg=1;
 
@@ -479,24 +479,24 @@ cdef basis_type RefState_T_P_Z_template(basis_type s,int L,int T, NP_INT8_t * si
     sign[0] = 1
     
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; q=0;g=0;
 
     current_sign = 1
     t = fliplr(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; q=1;g=0;
 
     current_sign = 1
     t = flip_all(s,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; q=0;g=1;
 
@@ -504,8 +504,8 @@ cdef basis_type RefState_T_P_Z_template(basis_type s,int L,int T, NP_INT8_t * si
     t = fliplr(s,L,&current_sign,bitop_pars)
     t = flip_all(t,L,&current_sign,bitop_pars)
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&current_sign,bitop_pars)
-        if t < r:
+        t = shift(t,-T,L,&current_sign,bitop_pars)
+        if t > r:
             sign[0] = current_sign
             r=t; l=i; q=1;g=1;
 

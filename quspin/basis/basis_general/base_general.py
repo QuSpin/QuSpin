@@ -31,11 +31,11 @@ def process_map(map,q):
 			break
 
 	if per == 1:
-		warnings.warn("identity mapping found in set of transformations.",GeneralBasisWarning,stacklevel=3)
+		warnings.warn("identity mapping found in set of transformations.",GeneralBasisWarning,stacklevel=5)
 
 	return map,per,q,set(group)
 
-def check_maps(item1,item2):
+def check_symmetry_maps(item1,item2):
 	grp1 = item1[1][-1]
 	map1 = item1[1][0]
 	block1 = item1[0]
@@ -53,7 +53,7 @@ def check_maps(item1,item2):
 	s_map2 = map2 < 0 # sites with spin-inversion
 
 	if grp1 == grp2:
-		warnings.warn("mappings for block {} and block {} produce the same symmetry.".format(block1,block2),GeneralBasisWarning,stacklevel=3)
+		warnings.warn("mappings for block {} and block {} produce the same symmetry.".format(block1,block2),GeneralBasisWarning,stacklevel=5)
 
 	sites1 = _np.arange(len(map1))
 	sites2 = _np.arange(len(map2))
@@ -69,7 +69,7 @@ def check_maps(item1,item2):
 	sites2 = sites2[i_map1]
 
 	if not _np.array_equal(sites1,sites2):
-		warnings.warn("using non-commuting symmetries can lead to unwanted behaviour of general basis, make sure that quantum numbers are invariant under non-cummuting symmetries!",GeneralBasisWarning,stacklevel=3)
+		warnings.warn("using non-commuting symmetries can lead to unwanted behaviour of general basis, make sure that quantum numbers are invariant under non-cummuting symmetries!",GeneralBasisWarning,stacklevel=5)
 
 class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
@@ -101,7 +101,7 @@ class basis_general(lattice_basis):
 
 		for i,item1 in enumerate(sorted_items[:-1]):
 			for item2 in sorted_items[i+1:]:
-				check_maps(item1,item2)
+				check_symmetry_maps(item1,item2)
 
 		if sorted_items:
 			blocks,items = zip(*sorted_items)
@@ -118,7 +118,7 @@ class basis_general(lattice_basis):
 				raise ValueError("size of map is not equal to N.")
 
 			if self._maps.shape[0] != self._qs.shape[0]:
-				raise ValueError("number of maps must be the same as the number of quantum numbers provided.",GeneralBasisWarning,stacklevel=3)
+				raise ValueError("number of maps must be the same as the number of quantum numbers provided.")
 
 			for j in range(n_maps-1):
 				for i in range(j+1,n_maps,1):

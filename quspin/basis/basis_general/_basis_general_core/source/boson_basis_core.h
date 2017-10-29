@@ -9,7 +9,7 @@
 template<class I>
 I inline boson_map_bits(I s,const int map[],const I M[],const int sps,const int N){
 	I ss = 0;
-	for(int i=N;i>=0;i--){
+	for(int i=N-1;i>=0;i--){
 		int j = map[i];
 		ss += ( j<0 ? (sps-(s%sps)-1)*M[N+j] : (s%sps)*M[N-j-1] );
 		s /= sps;

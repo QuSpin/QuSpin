@@ -6,7 +6,7 @@ sys.path.insert(0,quspin_path)
 
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space spin basis
-from quspin.tools.measurements import evolve
+from quspin.tools.evolution import evolve
 from quspin.tools.Floquet import Floquet_t_vec
 import numpy as np # generic math functions
 import scipy.sparse as sp
