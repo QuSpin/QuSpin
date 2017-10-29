@@ -122,7 +122,7 @@ class boson_basis_1d(basis_1d):
 		zAblock = blocks.get("cAblock")
 		zBblock = blocks.get("cBblock")
 
-		if sps > 2 and any(type(block) is int for block in [zblock,zAblock,zBblock]):
+		if self._sps > 2 and any(type(block) is int for block in [zblock,zAblock,zBblock]):
 			raise ValueError("particle hole symmetry doesn't exist with sps > 2.")
 
 		if type(zblock) is int:
