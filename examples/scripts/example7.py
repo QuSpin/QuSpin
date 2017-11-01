@@ -1,12 +1,12 @@
 #####################################################################
 #                            example 7                              #
-#   In this script we demonstrate how to use QuSpin's to create		#
+#   In this script we demonstrate how to use QuSpin's to create	    #
 #   a ladder geometry and study quanch dynamics in the Bose-Hubbard #
-#	model. We also show how to compute the entanglement entropy of 	#
-#	bosonic systems. Last, we demonstrate how to use the block_ops 	#
-#	tool to decompose a state in the symemtry sectors of a 			#
-#	Hamiltonian, evolve the separate parts, and put back the state 	#
-#	in the end.														#
+#   model. We also show how to compute the entanglement entropy of  #
+#   bosonic systems. Last, we demonstrate how to use the block_ops  #
+#   tool to decompose a state in the symemtry sectors of a          #
+#   Hamiltonian, evolve the separate parts, and put back the state  #
+#   in the end.                                                     #
 #####################################################################
 from __future__ import print_function, division #import python 3 functions
 from quspin.operators import hamiltonian # Hamiltonians and operators

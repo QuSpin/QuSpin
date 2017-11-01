@@ -1,10 +1,10 @@
 #####################################################################
 #                            example 8                              #
-#   In this script we demonstrate how to use QuSpin to define		#
-#	and solve nonlinear ordinary differential equations. 			#
-#	In particular, we show real and imaginary time evolution		#
-#	in the Gross-Pitaevskii equation of a Bose condensate in a     	#
-#	harmonic trap.													#
+#   In this script we demonstrate how to use QuSpin to define       #
+#   and solve nonlinear ordinary differential equations.            #
+#   In particular, we show real and imaginary time evolution        #
+#   in the Gross-Pitaevskii equation of a Bose condensate in a      #
+#   harmonic trap.                                                  #
 #####################################################################
 from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators

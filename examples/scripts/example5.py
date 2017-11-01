@@ -4,8 +4,8 @@
 #    the Hamiltonian of the SSH model in real and momentum space.   # 
 #    Along the way, we showcase the block tools which allow the     #
 #    user to create block-diagonal Hamiltonians. Last, we show      #
-#    how to time-evolve free fermion states like the Fermi sea 		#
-#    and measure correlators.										#
+#    how to time-evolve free fermion states like the Fermi sea      #
+#    and measure correlators.                                       #
 #####################################################################
 from quspin.operators import hamiltonian,exp_op # Hamiltonians and operators
 from quspin.basis import spinless_fermion_basis_1d # Hilbert space fermion basis

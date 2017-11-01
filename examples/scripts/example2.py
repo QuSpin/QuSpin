@@ -1,7 +1,7 @@
 ##################################################################################
 #                            example 1                                           #
 #     In this example we show how to use some of QuSpin's tools for studying     #
-#     Floquet systems by analysing the heating in a periodically driven    		 #
+#     Floquet systems by analysing the heating in a periodically driven          #
 #     spin chain. We also show how to construct more complicated multi-spin      #
 #     interactions using QuSpin's interface.                                     #
 ##################################################################################
