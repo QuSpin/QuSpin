@@ -132,7 +132,23 @@
 83
 84
 85
-86</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+86
+87
+88
+89
+90
+91
+92
+93
+94</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">########################################################################</span>
+<span class="c1">#                            example 10                                #</span>
+<span class="c1">#   In this script we demonstrate how to use QuSpin&#39;s                  #	</span>
+<span class="c1">#   tensor basis class to build Hamiltonians for mixtures of different #</span>
+<span class="c1">#   species. We use this to study the non-equilibrium dynamics         #</span>
+<span class="c1">#   in a Bose-Fermi mixture. The example also shows how to compute     #</span>
+<span class="c1">#   the entanglement entropy shared between the species.               #</span>
+<span class="c1">########################################################################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">tensor_basis</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span><span class="p">,</span><span class="n">boson_basis_1d</span> <span class="c1"># bases</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>

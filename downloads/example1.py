@@ -1,8 +1,8 @@
 ##################################################################
 #                            example 1                           #
 #    In this script we demonstrate how to use QuSpin's           #
-#    functionality to solve the time dependent schrodinger       #
-#    equation with a time dependent operator. We also showcase   #
+#    functionality to solve the time-dependent Schroedinger      #
+#    equation with a time-dependent operator. We also showcase   #
 #    a function which is used to calculate the entanglement      #
 #    entropy of a pure state.                                    #
 ##################################################################

@@ -184,15 +184,13 @@
 134
 135
 136
-137
-138</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##################################################################################</span>
+137</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##################################################################################</span>
 <span class="c1">#                            example 1                                           #</span>
 <span class="c1">#     In this example we show how to use some of QuSpin&#39;s tools for studying     #</span>
-<span class="c1">#     Floquet systems by way of studying the heating in a periodically driven    #</span>
-<span class="c1">#     spin chain. We also show how to construct more complicated many-spin       #</span>
-<span class="c1">#     operators using QuSpin&#39;s interface.                                        #</span>
+<span class="c1">#     Floquet systems by analysing the heating in a periodically driven          #</span>
+<span class="c1">#     spin chain. We also show how to construct more complicated multi-spin      #</span>
+<span class="c1">#     interactions using QuSpin&#39;s interface.                                     #</span>
 <span class="c1">##################################################################################</span>
-
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span><span class="p">,</span> <span class="n">diag_ensemble</span> <span class="c1"># t_dep measurements</span>

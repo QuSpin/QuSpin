@@ -149,7 +149,21 @@
 100
 101
 102
-103</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+103
+104
+105
+106
+107
+108
+109
+110</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#####################################################################</span>
+<span class="c1">#                            example 9                              #</span>
+<span class="c1">#   In this script we demonstrate how to use QuSpin&#39;s               #</span>
+<span class="c1">#   general basis class to construct user-defined symmetry sectors.	#</span>
+<span class="c1">#   We study thermalisation in the 2D transverse-field Ising model  #</span>
+<span class="c1">#   with periodic boundary conditions.                              #</span>
+<span class="c1">#####################################################################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">exp_op</span> <span class="c1"># operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span> <span class="n">spin_basis_general</span> <span class="c1"># spin basis constructor</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>

@@ -1,11 +1,10 @@
 ##################################################################################
 #                            example 1                                           #
 #     In this example we show how to use some of QuSpin's tools for studying     #
-#     Floquet systems by way of studying the heating in a periodically driven    #
-#     spin chain. We also show how to construct more complicated many-spin       #
-#     operators using QuSpin's interface.                                        #
+#     Floquet systems by analysing the heating in a periodically driven          #
+#     spin chain. We also show how to construct more complicated multi-spin      #
+#     interactions using QuSpin's interface.                                     #
 ##################################################################################
-
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spin_basis_1d # Hilbert space spin basis
 from quspin.tools.measurements import obs_vs_time, diag_ensemble # t_dep measurements

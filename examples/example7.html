@@ -187,7 +187,27 @@
 138
 139
 140
-141</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span> <span class="c1">#import python 3 functions</span>
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#####################################################################</span>
+<span class="c1">#                            example 7                              #</span>
+<span class="c1">#   In this script we demonstrate how to use QuSpin&#39;s to create	    #</span>
+<span class="c1">#   a ladder geometry and study quanch dynamics in the Bose-Hubbard #</span>
+<span class="c1">#   model. We also show how to compute the entanglement entropy of  #</span>
+<span class="c1">#   bosonic systems. Last, we demonstrate how to use the block_ops  #</span>
+<span class="c1">#   tool to decompose a state in the symemtry sectors of a          #</span>
+<span class="c1">#   Hamiltonian, evolve the separate parts, and put back the state  #</span>
+<span class="c1">#   in the end.                                                     #</span>
+<span class="c1">#####################################################################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span> <span class="c1">#import python 3 functions</span>
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span> <span class="c1"># bosonic Hilbert space</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.block_tools</span> <span class="kn">import</span> <span class="n">block_ops</span> <span class="c1"># dynamics in symmetry blocks</span>
