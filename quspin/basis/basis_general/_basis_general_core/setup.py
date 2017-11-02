@@ -20,14 +20,12 @@ def configuration(parent_package='', top_path=None):
         from numpy.distutils.misc_util import Configuration
         config = Configuration('_basis_general_core',parent_package, top_path)
 
-        extra_compile_args = []
-        extra_link_args = []
         if sys.platform == "win32":
             extra_compile_args=["/openmp"]
             extra_link_args=["/openmp"]
 
         elif sys.platform == "darwin":
-            extra_compile_args = []
+            extra_compile_args = ["-fopenmp"]
             extra_link_args = ["-lgomp"]
         else:
             extra_compile_args = ["-fopenmp"]
