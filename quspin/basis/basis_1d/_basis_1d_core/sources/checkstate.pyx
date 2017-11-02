@@ -6,7 +6,7 @@ cdef int CheckState_P_template(int p, basis_type s, int L, basis_type[:] bitop_p
     cdef NP_INT8_t sign=1
     t=fliplr(t,L,&sign,bitop_pars)
     
-    if t > s: 
+    if t < s: 
         return 2
     elif t == s:
         if p*sign != -1:
@@ -23,7 +23,7 @@ cdef int CheckState_PZ_template(int pz,basis_type s,int L, basis_type[:] bitop_p
     
     t=fliplr(t,L,&sign,bitop_pars)
     t=flip_all(t,L,&sign,bitop_pars)
-    if t > s:
+    if t < s:
         return 2
     elif t == s:
         if pz*sign != -1:
@@ -40,7 +40,7 @@ cdef int CheckState_Z_template(int z,basis_type s,int L, basis_type[:] bitop_par
 
     t=flip_all(t,L,&sign,bitop_pars)
     
-    if t > s: 
+    if t < s: 
         return 2
     elif t == s:
         if z*sign != -1:
@@ -79,7 +79,7 @@ cdef int CheckState_ZA_template(int zA,basis_type s,int L, basis_type[:] bitop_p
     cdef NP_INT8_t sign=1
 
     t=flip_sublat_A(t,L,&sign,bitop_pars)
-    if t > s: 
+    if t < s: 
         return 2
     elif t == s:
         if zA*sign != -1:
@@ -95,7 +95,7 @@ cdef int CheckState_ZB_template(int zB,basis_type s,int L, basis_type[:] bitop_p
     cdef NP_INT8_t sign=1
 
     t=flip_sublat_B(t,L,&sign,bitop_pars)
-    if t > s: 
+    if t < s: 
         return 2
     elif t == s:
         if zB*sign != -1:
@@ -143,8 +143,8 @@ cdef int CheckState_T_template(int kblock,int L,basis_type s,int T, basis_type[:
     cdef int R=-1
     cdef int i
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             return R
         elif t == s:
             if sign > 0:
@@ -178,8 +178,8 @@ cdef void CheckState_T_P_template(int kblock,int L,basis_type s,int T,int *R, ba
       
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars) 
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars) 
+        if t > s:
             return
         elif t==s:
             if sign > 0:
@@ -196,14 +196,14 @@ cdef void CheckState_T_P_template(int kblock,int L,basis_type s,int T,int *R, ba
     sign = 1
     t = fliplr(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             R[2] = sign
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
     return
 
@@ -230,8 +230,8 @@ cdef void CheckState_T_P_Z_template(int kblock,int L,basis_type s,int T, int *R,
         return
 
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             R[0] = -1
             return
         elif t==s:
@@ -245,36 +245,36 @@ cdef void CheckState_T_P_Z_template(int kblock,int L,basis_type s,int T, int *R,
     sign=1
     t = fliplr(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
     t = s
     t = flip_all(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[2] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars)
+        t = shift(t,-T,L,&sign,bitop_pars)
 
     t = s
     t = flip_all(t,L,&sign,bitop_pars)
     t = fliplr(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[3] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars)    
+        t = shift(t,-T,L,&sign,bitop_pars)    
 
     return
 
@@ -299,8 +299,8 @@ cdef void CheckState_T_PZ_template(int kblock,int L,basis_type s,int T,int *R, b
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             return
         elif t==s:
             if sign > 0:
@@ -318,14 +318,14 @@ cdef void CheckState_T_PZ_template(int kblock,int L,basis_type s,int T,int *R, b
     t = flip_all(t,L,&sign,bitop_pars)
     t = fliplr(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             R[2] = sign
             break
-        t = shift(t,T,L,&sign,bitop_pars)
+        t = shift(t,-T,L,&sign,bitop_pars)
 
     return
 
@@ -349,8 +349,8 @@ cdef void CheckState_T_Z_template(int kblock,int L,basis_type s,int T,int *R, ba
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             return
         elif t==s:
             if sign > 0:
@@ -367,14 +367,14 @@ cdef void CheckState_T_Z_template(int kblock,int L,basis_type s,int T,int *R, ba
     t = s
     t = flip_all(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             R[2] = sign
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
     return
 
@@ -397,8 +397,8 @@ cdef void CheckState_T_ZA_template(int kblock,int L,basis_type s,int T,int *R, b
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             return
         elif t==s:
             if kblock*T*i % L != 0: # need to check the shift condition 
@@ -410,13 +410,13 @@ cdef void CheckState_T_ZA_template(int kblock,int L,basis_type s,int T,int *R, b
     t = s
     t = flip_sublat_A(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
     return
 
@@ -439,8 +439,8 @@ cdef void CheckState_T_ZB_template(int kblock,int L,basis_type s,int T,int *R, b
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             return
         elif t==s:
             if kblock*T*i % L != 0: # need to check the shift condition 
@@ -452,13 +452,13 @@ cdef void CheckState_T_ZB_template(int kblock,int L,basis_type s,int T,int *R, b
     t = s
     t = flip_sublat_B(t,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
     return
 
@@ -484,8 +484,8 @@ cdef void CheckState_T_ZA_ZB_template(int kblock,int L,basis_type s,int T,int *R
 
     r = L
     for i in range(1,L/T+1):
-        t = shift(t,T,L,&sign,bitop_pars)
-        if t < s:
+        t = shift(t,-T,L,&sign,bitop_pars)
+        if t > s:
             return
         elif t==s:
             if kblock*T*i % L != 0: # need to check the shift condition 
@@ -497,35 +497,35 @@ cdef void CheckState_T_ZA_ZB_template(int kblock,int L,basis_type s,int T,int *R
 
     t = flip_sublat_A(s,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[1] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
 
     t = flip_sublat_B(s,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[2] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
 
     t = flip_all(s,L,&sign,bitop_pars)
     for i in range(r):
-        if t < s:
+        if t > s:
             R[0] = -1
             return
         elif t == s:
             R[3] = i
             break
-        t = shift(t,T,L,&sign,bitop_pars) 
+        t = shift(t,-T,L,&sign,bitop_pars) 
 
     return
 

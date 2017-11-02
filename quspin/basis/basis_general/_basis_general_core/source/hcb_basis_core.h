@@ -8,9 +8,9 @@
 template<class I>
 I inline hcb_map_bits(I s,const int map[],const int N){
 	I ss = 0;
-	for(int i=0;i<N;i++){
+	for(int i=N-1;i>=0;i--){
 		int j = map[i];
-		ss ^= ( j<0 ? ((s&1)^1)<<(-(j+1)) : (s&1)<<j );
+		ss ^= ( j<0 ? ((s&1)^1)<<(N+j) : (s&1)<<(N-j-1) );
 		s >>= 1;
 	}
 	return ss;
@@ -51,13 +51,13 @@ class hcb_basis_core : public general_basis_core<I>
 			}
 		}
 
-		void print(I s){
-			std::cout << "|";
-			for(int i=0;i<general_basis_core<I>::N;i++){
-				std::cout << ((s>>i)&1) << " ";
-			}
-			std::cout << ">";
-		}
+		// void print(I s){
+		// 	std::cout << "|";
+		// 	for(int i=0;i<general_basis_core<I>::N;i++){
+		// 		std::cout << ((s>>i)&1) << " ";
+		// 	}
+		// 	std::cout << ">";
+		// }
 
 		bool check_state(I s){
 			int sign = 1;

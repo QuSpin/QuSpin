@@ -35,7 +35,7 @@ class general_basis_core{
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;
 		virtual void map_state(I[],npy_intp,int,signed char[]) = 0;
 		virtual I map_state(I,int,int&) = 0;
-		virtual void print(I) = 0;
+		// virtual void print(I) = 0;
 		virtual int get_N() const{
 			return N;
 		}
@@ -53,6 +53,7 @@ bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int 
 		return true;
 	}
 	const int per = B->pers[depth];
+
 	bool keep = true;
 	if(depth<nt-1){
 		for(int i=1;i<per+1 && keep ;i++){
@@ -60,7 +61,7 @@ bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int 
 				return false;
 
 			t = B->map_state(t,depth,sign);
-			if(t < s){
+			if(t > s){
 				return false;
 			}
 			else if (t == s){break;}
@@ -71,7 +72,7 @@ bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int 
 	else{
 		for(int i=1;i<per+1;i++){
 			t = B->map_state(t,depth,sign);
-			if(t < s){
+			if(t > s){
 				return false;
 			}
 			else if (t == s){break;}
@@ -166,7 +167,7 @@ I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &
 	else{
 		for(int i=0;i<per;i++){
 			gg[depth] = i;
-			if(t<r){
+			if(t>r){
 				r = t;
 				for(int j=0;j<nt;j++){
 					g[j] = gg[j];

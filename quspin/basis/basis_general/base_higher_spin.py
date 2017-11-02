@@ -63,20 +63,18 @@ class higher_spin_basis_general(basis_general):
 				Ns = Ns_block_est
 
 		Ns = max(Ns,1000)
-
 		if basis_type==_np.uint32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
-			n     = _np.zeros(Ns,dtype=_np.uint16)
+			n     = _np.zeros(Ns,dtype=self._n_dtype)
 			self._core = higher_spin_basis_core_wrap_32(N,sps,self._maps,self._pers,self._qs)
 		elif basis_type==_np.uint64:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
-			n     = _np.zeros(Ns,dtype=_np.uint16)
+			n     = _np.zeros(Ns,dtype=self._n_dtype)
 			self._core = higher_spin_basis_core_wrap_64(N,sps,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("states can't be represented as 64-bit unsigned integer")
 
 		self._sps=sps
-
 		if count_particles and (Nup is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 			self._Ns = self._core.make_basis(basis,n,Np=Nup,count=Np_list)
@@ -92,6 +90,7 @@ class higher_spin_basis_general(basis_general):
 			self._n = n[ind[::-1]].copy()
 			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
+
 			self._Ns = self._core.make_basis(basis,n,Np=Nup)
 			if self._Ns < 0:
 					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
@@ -107,4 +106,5 @@ class higher_spin_basis_general(basis_general):
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","z","+","-"])
+		self._reduce_n_dtype()
 
