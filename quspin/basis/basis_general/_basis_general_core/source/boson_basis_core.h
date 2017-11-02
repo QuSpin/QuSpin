@@ -84,6 +84,9 @@ class boson_basis_core : public general_basis_core<I>
 		}
 
 		I inline next_state_pcon(I s){
+			if(s == 0){
+				return s;
+			}
 			int n=0;
 			for(int i=0;i<general_basis_core<I>::N-1;i++){
 				unsigned int b1 = (s/M[i])%sps;

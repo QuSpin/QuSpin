@@ -153,7 +153,7 @@ cdef class general_basis_core_wrap_32:
 		pass
 
 	@cython.boundscheck(False)
-	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,uint16_t[:] n):
+	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,norm_type[:] n):
 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
 		cdef int n_op = indx.shape[0]
 		cdef npy_intp Ns = basis.shape[0]
@@ -168,7 +168,7 @@ cdef class general_basis_core_wrap_32:
 			raise TypeError("attemping to use real type for complex matrix elements.")
 
 	@cython.boundscheck(False)
-	def get_vec_dense(self, uint32_t[:] basis, uint16_t[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
+	def get_vec_dense(self, uint32_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
 		cdef npy_intp Ns = v_in.shape[0]
 		cdef npy_intp n_vec = v_in.shape[1]
 		cdef npy_intp Ns_full = self._sps**self._N
@@ -211,7 +211,7 @@ cdef class general_basis_core_wrap_64:
 		pass
 
 	@cython.boundscheck(False)
-	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,uint16_t[:] n):
+	def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,norm_type[:] n):
 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
 		cdef int n_op = indx.shape[0]
 		cdef npy_intp Ns = basis.shape[0]
@@ -226,7 +226,7 @@ cdef class general_basis_core_wrap_64:
 			raise TypeError("attemping to use real type for complex matrix elements.")
 
 	@cython.boundscheck(False)
-	def get_vec_dense(self, uint64_t[:] basis, uint16_t[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
+	def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
 		cdef npy_intp Ns = v_in.shape[0]
 		cdef npy_intp n_vec = v_in.shape[1]
 		cdef npy_intp Ns_full = (1<<self._N)

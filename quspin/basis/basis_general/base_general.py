@@ -64,7 +64,7 @@ def check_symmetry_maps(item1,item2):
 	sites1 = sites1[i_map2]
 
 	sites2[s_map2] = -(sites2[s_map2]+1)
-	sites2 = sites2[i_map2]	
+	sites2 = sites2[i_map2]
 	sites2[s_map1] = -(sites2[s_map1]+1)
 	sites2 = sites2[i_map1]
 
@@ -98,13 +98,23 @@ class basis_general(lattice_basis):
 
 		self._blocks = {block:((-1)**q if per==2 else q) for block,(_,per,q,_) in sorted_items}
 		self._maps_dict = {block:map for block,(map,_,_,_) in sorted_items}
-
+		remove_index = []
 		for i,item1 in enumerate(sorted_items[:-1]):
-			for item2 in sorted_items[i+1:]:
+			if item1[1][1] == 1:
+				remove_index.append(i)
+			for j,item2 in enumerate(sorted_items[i+1:]):
 				check_symmetry_maps(item1,item2)
 
+		remove_index.sort()
+		# print(remove_index)
 		if sorted_items:
 			blocks,items = zip(*sorted_items)
+			items = list(items)
+
+			for i in remove_index:
+				items.pop(i)
+
+			n_maps = len(items)
 			maps,pers,qs,_ = zip(*items)
 
 			self._maps = _np.vstack(maps)
@@ -128,6 +138,14 @@ class basis_general(lattice_basis):
 			self._maps = _np.array([[]],dtype=_np.int32)
 			self._qs   = _np.array([],dtype=_np.int32)
 			self._pers = _np.array([],dtype=_np.int32)
+
+		nmax = self._pers.prod()**2
+		self._n_dtype = _np.min_scalar_type(nmax)
+
+	def _reduce_n_dtype(self):
+		if len(self._n)>0:
+			self._n_dtype = _np.min_scalar_type(self._n.max())
+			self._n = self._n.astype(self._n_dtype)
 
 	def _Op(self,opstr,indx,J,dtype):
 
