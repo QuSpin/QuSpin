@@ -27,7 +27,7 @@ def configuration(parent_package='', top_path=None):
             extra_link_args=["/openmp"]
 
         elif sys.platform == "darwin":
-            extra_compile_args = []
+            extra_compile_args = ["-fopenmp"]
             extra_link_args = ["-lgomp"]
         else:
             extra_compile_args = ["-fopenmp"]
