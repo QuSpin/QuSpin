@@ -5,17 +5,16 @@ package:
 source:
   path: ./
 
-build:
-  run_exports:
-    - libstdc++ {{ pin_compatible('g++', 'x') }}  # [unix]
-    - libsgcc {{ pin_compatible('gcc', 'x') }}  # [unix]
+ 
 
 requirements:
   build:
+    - {{compiler('cxx')}}
     - python {{ python }}
     - numpy >=1.10.0
  
   run:
+    - {{compiler('cxx')}}
     - python {{ python }}
     - numpy >=1.10.0
     - scipy >=0.19.0
@@ -24,11 +23,6 @@ requirements:
     - matplotlib
     - dill
 
-test:
-  imports:
-    - numpy 
-    - scipy
-
 about:
   home: https://github.com/weinbe58/QuSpin.git
-  license: MET
+  license: BSD-3

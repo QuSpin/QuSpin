@@ -3,7 +3,7 @@
 
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
-#include <omp.h>
+#include "openmp.h"
 
 template<class I,class J>
 npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
