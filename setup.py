@@ -32,7 +32,7 @@ def setup_package():
 		name='quspin',
 		version=version,
 		maintainer="Phillip Weinberg, Marin Bukov",
-		maintainer_email="weinbe58@bu.edu,mbukov.bu.edu",
+		maintainer_email="weinbe58@bu.edu,mgbukov@berkeley.edu",
 		download_url="https://github.com/weinbe58/QuSpin.git",
 		license='BSD',
 		platforms=["Unix","Windows"]

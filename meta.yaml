@@ -1,6 +1,6 @@
 package:
   name: quspin
-  version: "0.2.7b"
+  version: "0.2.7"
 
 source:
   path: ./
@@ -13,6 +13,7 @@ requirements:
     - python {{ python }}
     - numpy >=1.10.0
  
+    
   run:
     - {{compiler('cxx')}}
     - python {{ python }}
@@ -22,6 +23,11 @@ requirements:
     - joblib
     - matplotlib
     - dill
+    
+test:
+  imports:
+    - numpy 
+    - scipy
 
 about:
   home: https://github.com/weinbe58/QuSpin.git

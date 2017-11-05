@@ -50,7 +50,8 @@ H_sc=hamiltonian(static_sc,dynamic_sc,dtype=np.float64,basis=basis_sc)
 #
 ##### define initial state #####
 # define atom ground state
-psi_at_i=np.array([1.0,0.0]) # spin-down eigenstate of \sigma^z
+#psi_at_i=np.array([1.0,0.0]) # spin-down eigenstate of \sigma^z in QuSpin 0.2.3 or older
+psi_at_i=np.array([0.0,1.0])  # spin-down eigenstate of \sigma^z in QuSpin 0.2.6 or newer
 # define photon coherent state with mean photon number Nph
 psi_ph_i=coherent_state(np.sqrt(Nph),Nph_tot+1)
 # compute atom-photon initial state as a tensor product
@@ -113,4 +114,4 @@ plt.grid(True)
 # save figure
 fig.savefig('example3.pdf', bbox_inches='tight')
 # show plot
-plt.show() 
+plt.show()

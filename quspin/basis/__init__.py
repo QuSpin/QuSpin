@@ -52,7 +52,14 @@ combining basis classes
    tensor_basis
    photon_basis
 
+functions
+----------
 
+.. autosummary::
+   :toctree: generated/
+
+   coherent_state
+   photon_Hspace_dim
 
 """
 from .basis_1d import *

@@ -264,14 +264,16 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	from scipy.integrate import complex_ode
 	from scipy.integrate import ode
 
-	if v0.ndim > 2:
+	ndim=v0.ndim
+	if ndim > 2:
 		raise ValueError("state mush have ndim < 3.")
 
 	shape0 = v0.shape
-
-	if v0.ndim == 2:
+	
+	if ndim == 2:
 		if v0.shape[0] != v0.shape[1]:
 			v0 = v0.ravel()
+			shape0_ravelled=v0.shape
 	 
 	
 	if _np.iscomplexobj(times):
@@ -280,11 +282,15 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
 	if stack_state:
-
-		v1 = v0
-		v0 = _np.zeros(2*v0.shape[0],dtype=v1.real.dtype)
-		v0[:v1.shape[0]] = v1.real
-		v0[v1.shape[0]:] = v1.imag
+		v1 = v0.copy()
+		if ndim == 1:
+			v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
+			v0[:shape0[0]] = v1.real
+			v0[shape0[0]:] = v1.imag
+		else:
+			v0 = _np.zeros(2*shape0_ravelled[0],dtype=v1.real.dtype)
+			v0[:shape0_ravelled[0]] = v1.real
+			v0[shape0_ravelled[0]:] = v1.imag
 
 		solver = ode(f) # y_f = f(t,y,*args)
 	elif real:
@@ -389,4 +395,3 @@ def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
 				yield solver.y.reshape(shape0)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
-

@@ -14,10 +14,10 @@ Jxy=np.sqrt(2.0) # xy interaction
 Jzz_0=1.0 # zz interaction
 hz=1.0/np.sqrt(3.0) # z external field
 #
-##### set up Heisenberg Hamiltonian in an enternal z-field #####
+##### set up Heisenberg Hamiltonian in an external z-field #####
 # compute spin-1/2 basis
-basis = spin_basis_1d(L,pauli=False)
-basis = spin_basis_1d(L,pauli=False,Nup=L//2) # zero magnetisation sector
+#basis = spin_basis_1d(L,pauli=False)
+#basis = spin_basis_1d(L,pauli=False,Nup=L//2) # zero magnetisation sector
 basis = spin_basis_1d(L,pauli=False,Nup=L//2,pblock=1) # and positive parity sector
 # define operators with OBC using site-coupling lists
 J_zz = [[Jzz_0,i,i+1] for i in range(L-1)] # OBC

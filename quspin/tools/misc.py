@@ -206,3 +206,4 @@ def mean_level_spacing(E):
 	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
 
 
+

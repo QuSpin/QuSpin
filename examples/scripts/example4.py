@@ -1,3 +1,8 @@
+#####################################################################
+#                            example 4                              #
+#    In this script we demonstrate how to construct fermionic       #
+#    Hamiltonians, and check the Jordan-Wigner transformation.      #
+#####################################################################
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spin_basis_1d, spinless_fermion_basis_1d # Hilbert space spin basis
 import numpy as np # generic math functions
