@@ -19,15 +19,4 @@ quspin\.tools\.Floquet\.Floquet
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~Floquet.EF
-      ~Floquet.HF
-      ~Floquet.T
-      ~Floquet.UF
-      ~Floquet.VF
-      ~Floquet.thetaF
-   
    

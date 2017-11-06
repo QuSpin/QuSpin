@@ -45,19 +45,4 @@ quspin\.operators\.hamiltonian
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~hamiltonian.H
-      ~hamiltonian.Ns
-      ~hamiltonian.T
-      ~hamiltonian.basis
-      ~hamiltonian.dtype
-      ~hamiltonian.dynamic
-      ~hamiltonian.get_shape
-      ~hamiltonian.is_dense
-      ~hamiltonian.ndim
-      ~hamiltonian.static
-   
    
