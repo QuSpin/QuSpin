@@ -64,7 +64,7 @@ type (boson, spin, fermion) specified by the basis constructor.</p>
 <p>One can instantiate the class either by parsing a set of symmetries, or an instance of <cite>basis</cite>. Note that
 instantiation with a <cite>basis</cite> will automatically ignore all symmetry inputs.</p>
 <p class="rubric">Examples</p>
-<p>Here is an Examples how to employ a <cite>basis</cite> object to construct the periodically driven XXZ Hamiltonian</p>
+<p>Here is an example how to employ a <cite>basis</cite> object to construct the periodically driven XXZ Hamiltonian</p>
 <div class="math">
 \[H(t) = \sum_{j=0}^{L-1} \left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\Omega t)S^x_j \right)\]</div>
 <p>in the zero-momentum sector (<cite>kblock=0</cite>) of positive parity (<cite>pblock=1</cite>). We use periodic boundary conditions.</p>
@@ -415,45 +415,6 @@ to create the operator.</p>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.transpose" title="quspin.operators.hamiltonian.transpose"><code class="xref py py-obj docutils literal"><span class="pre">transpose</span></code></a>([copy])</td>
 <td>Transposes <cite>hamiltonian</cite> operator.</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.H" title="quspin.operators.hamiltonian.H"><code class="xref py py-obj docutils literal"><span class="pre">H</span></code></a></td>
-<td><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes and conjugates the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}^*\)</span>.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.Ns" title="quspin.operators.hamiltonian.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
-<td>int: number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.T" title="quspin.operators.hamiltonian.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
-<td><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal"><span class="pre">hamiltonian</span></code></a>: transposes the operator matrix: <span class="math">\(H_{ij}\mapsto H_{ji}\)</span>.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.basis" title="quspin.operators.hamiltonian.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a></td>
-<td><a class="reference internal" href="#quspin.operators.hamiltonian.basis" title="quspin.operators.hamiltonian.basis"><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code></a>: basis used to build the <cite>hamiltonian</cite> object.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.dtype" title="quspin.operators.hamiltonian.dtype"><code class="xref py py-obj docutils literal"><span class="pre">dtype</span></code></a></td>
-<td>type: data type of <cite>hamiltonian</cite> object.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.dynamic" title="quspin.operators.hamiltonian.dynamic"><code class="xref py py-obj docutils literal"><span class="pre">dynamic</span></code></a></td>
-<td>dict: contains dynamic parts of the operator as <cite>{func: Hdyn}</cite>.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.get_shape" title="quspin.operators.hamiltonian.get_shape"><code class="xref py py-obj docutils literal"><span class="pre">get_shape</span></code></a></td>
-<td>tuple: shape of the <cite>hamiltonian</cite> object, always equal to <cite>(Ns,Ns)</cite>.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.is_dense" title="quspin.operators.hamiltonian.is_dense"><code class="xref py py-obj docutils literal"><span class="pre">is_dense</span></code></a></td>
-<td>bool: checks sparsity of operator matrix.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.hamiltonian.ndim" title="quspin.operators.hamiltonian.ndim"><code class="xref py py-obj docutils literal"><span class="pre">ndim</span></code></a></td>
-<td>int: number of dimensions, always equal to 2.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.hamiltonian.static" title="quspin.operators.hamiltonian.static"><code class="xref py py-obj docutils literal"><span class="pre">static</span></code></a></td>
-<td>scipy.sparse.csr: static part of the operator.</td>
 </tr>
 </tbody>
 </table>
