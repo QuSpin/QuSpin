@@ -751,6 +751,52 @@ class hamiltonian(object):
 
 		return (self.transpose().dot(V_transpose,time=time,check=check)).transpose()
 
+
+	def quant_fluct(self,V,time=0,check=True,enforce_pure=False):
+		"""Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.
+
+		.. math::
+			\\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enformce_pure`].
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* list: there are two possible outcomes:
+
+				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into the i-th column of `V` to get the i-th column of the output array.
+				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
+					in `time`. The results are then stacked such that the columns contain all the vectors. 
+
+				If either of these cases do not match, an error is thrown.
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+		check : bool, optional
+			
+		Returns
+		--------
+		float
+			Quantum fluctuations of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+			 
+		"""
+
+		return _np.sqrt( (self*self).expt_value(V,time=time,check=check,enforce_pure=enforce_pure) 
+							- self.expt_value(V,time=time,check=check,enforce_pure=enforce_pure)**2 + 1E-22j).real
+
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
 
