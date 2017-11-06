@@ -1,3 +1,11 @@
+########################################################################
+#                            example 10                                #
+#   In this script we demonstrate how to use QuSpin's                  #	
+#   tensor basis class to build Hamiltonians for mixtures of different #
+#   species. We use this to study the non-equilibrium dynamics         #
+#   in a Bose-Fermi mixture. The example also shows how to compute     #
+#   the entanglement entropy shared between the species.               #
+########################################################################
 from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import tensor_basis,spinless_fermion_basis_1d,boson_basis_1d # bases

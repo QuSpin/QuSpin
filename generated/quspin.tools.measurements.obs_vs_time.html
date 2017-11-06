@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,13 +21,13 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="quspin.tools.measurements.project_op" href="quspin.tools.measurements.project_op.html" />
-    <link rel="prev" title="quspin.tools.measurements.ED_state_vs_time" href="quspin.tools.measurements.ED_state_vs_time.html" /> 
+    <link rel="next" title="quspin.tools.block_tools.block_ops" href="quspin.tools.block_tools.block_ops.html" />
+    <link rel="prev" title="quspin.tools.measurements.diag_ensemble" href="quspin.tools.measurements.diag_ensemble.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -41,10 +38,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="quspin.tools.measurements.project_op.html" title="quspin.tools.measurements.project_op"
+          <a href="quspin.tools.block_tools.block_ops.html" title="quspin.tools.block_tools.block_ops"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="quspin.tools.measurements.ED_state_vs_time.html" title="quspin.tools.measurements.ED_state_vs_time"
+          <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
@@ -72,10 +69,10 @@
 <ul>
 <li><dl class="first docutils">
 <dt>tuple: <cite>psi_t = (psi, E, V)</cite> where </dt>
-<dd><p class="first">&#8211; np.ndarray: initial state <cite>psi</cite>.</p>
-<p>&#8211; np.ndarray: unitary matrix <cite>V</cite>, contains all eigenstates of the Hamiltonian <span class="math">\(H\)</span>.</p>
+<dd><p class="first">– np.ndarray: initial state <cite>psi</cite>.</p>
+<p>– np.ndarray: unitary matrix <cite>V</cite>, contains all eigenstates of the Hamiltonian <span class="math">\(H\)</span>.</p>
 <dl class="docutils">
-<dt>&#8211; np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math">\(H\)</span>. </dt>
+<dt>– np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math">\(H\)</span>. </dt>
 <dd><p class="first last">The order of the eigenvalues must correspond to the order of the columns of <cite>V</cite>.</p>
 </dd>
 </dl>
@@ -106,7 +103,7 @@ their time-dependent expectation value. Dictionary <cite>keys</cite> are chosen 
 </div></blockquote>
 <p><strong>return_state</strong> : bool, optional</p>
 <blockquote>
-<div><p>If set to <cite>True</cite>, adds key &#8220;psi_time&#8221; to output. The columns of the array
+<div><p>If set to <cite>True</cite>, adds key “psi_time” to output. The columns of the array
 contain the state vector at the <cite>times</cite> which specifies the column index. Default is <cite>False</cite>, unless
 <cite>Sent_args</cite> is nonempty.</p>
 </div></blockquote>
@@ -116,7 +113,7 @@ contain the state vector at the <cite>times</cite> which specifies the column in
 entropy. The following key is required:</p>
 <blockquote>
 <div><ul class="simple">
-<li>&#8220;basis&#8221;: the basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</li>
+<li>“basis”: the basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</li>
 </ul>
 </div></blockquote>
 <p>The user can choose optional arguments according to those provided in the function method 
@@ -141,15 +138,15 @@ Default is <cite>False</cite>.</p>
 <blockquote>
 <div><ul class="simple">
 <li><dl class="first docutils">
-<dt>&#8220;custom_name&#8221;: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the </dt>
+<dt>“custom_name”: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the </dt>
 <dd>corresponding observable <cite>Obs_dict[key]</cite> is calculated and returned under the user-defined name
 for the observable.</dd>
 </dl>
 </li>
-<li>&#8220;psi_t&#8221;: (optional) returns time-dependent state, if <cite>return_state=True</cite> or <cite>Srdm_args</cite> is nonempty.</li>
+<li>“psi_t”: (optional) returns time-dependent state, if <cite>return_state=True</cite> or <cite>Srdm_args</cite> is nonempty.</li>
 <li><dl class="first docutils">
-<dt>&#8220;Sent_time&#8221;: (optional) returns dictionary with keys corresponding to the entanglement entropy </dt>
-<dd>calculation for each time in <cite>times</cite>. Can have more keys than just &#8220;Sent_A&#8221;, e.g. if the reduced
+<dt>“Sent_time”: (optional) returns dictionary with keys corresponding to the entanglement entropy </dt>
+<dd>calculation for each time in <cite>times</cite>. Can have more keys than just “Sent_A”, e.g. if the reduced
 DM was also requested (toggled through <cite>Srdm_args</cite>.)</dd>
 </dl>
 </li>
@@ -247,11 +244,11 @@ under <span class="math">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.tools.measurements.ED_state_vs_time.html"
-                        title="previous chapter">quspin.tools.measurements.ED_state_vs_time</a></p>
+  <p class="topless"><a href="quspin.tools.measurements.diag_ensemble.html"
+                        title="previous chapter">quspin.tools.measurements.diag_ensemble</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.tools.measurements.project_op.html"
-                        title="next chapter">quspin.tools.measurements.project_op</a></p>
+  <p class="topless"><a href="quspin.tools.block_tools.block_ops.html"
+                        title="next chapter">quspin.tools.block_tools.block_ops</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -283,10 +280,10 @@ under <span class="math">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="quspin.tools.measurements.project_op.html" title="quspin.tools.measurements.project_op"
+          <a href="quspin.tools.block_tools.block_ops.html" title="quspin.tools.block_tools.block_ops"
              >next</a> |</li>
         <li class="right" >
-          <a href="quspin.tools.measurements.ED_state_vs_time.html" title="quspin.tools.measurements.ED_state_vs_time"
+          <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
@@ -294,7 +291,7 @@ under <span class="math">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

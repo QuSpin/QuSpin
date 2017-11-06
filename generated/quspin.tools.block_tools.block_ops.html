@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.tools.block_tools.block_ops &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,11 +21,12 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="quspin.tools.measurements.obs_vs_time" href="quspin.tools.measurements.obs_vs_time.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -38,6 +36,9 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
+             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
@@ -208,10 +209,10 @@ The code snippet below initiates the class, and is required to run the example c
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="quspin.tools.block_tools.block_ops.compute_all_blocks"><code class="xref py py-obj docutils literal"><span class="pre">compute_all_blocks</span></code></a>()</td>
 <td>Sets <cite>compute_all_blocks = True</cite>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal"><span class="pre">evolve</span></code></a>(psi_0,&nbsp;t0,&nbsp;times[,&nbsp;iterate,&nbsp;n_jobs,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal"><span class="pre">evolve</span></code></a>(psi_0,&nbsp;t0,&nbsp;times[,&nbsp;iterate,&nbsp;n_jobs,&nbsp;…])</td>
 <td>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>hamiltonian.evolve()</cite> in parallel.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal"><span class="pre">expm</span></code></a>(psi_0[,&nbsp;H_time_eval,&nbsp;iterate,&nbsp;n_jobs,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal"><span class="pre">expm</span></code></a>(psi_0[,&nbsp;H_time_eval,&nbsp;iterate,&nbsp;n_jobs,&nbsp;…])</td>
 <td>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>_expm_multiply()</cite> in parallel.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.update_blocks" title="quspin.tools.block_tools.block_ops.update_blocks"><code class="xref py py-obj docutils literal"><span class="pre">update_blocks</span></code></a>(blocks,&nbsp;basis_con,&nbsp;basis_args)</td>
@@ -249,7 +250,7 @@ as dictionaries or <cite>hamiltonian</cite> objects.</p>
 <div><p>This argument is passed as the first argument for <cite>basis_con</cite>.
 Contains all required arguments for the basis.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : &#8216;type&#8217;</p>
+<p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
 <div><p>The data type (e.g. numpy.float64) to construct the Hamiltonian with.</p>
 </div></blockquote>
@@ -299,16 +300,16 @@ Default is <cite>False</cite>.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.__init__" title="quspin.tools.block_tools.block_ops.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(blocks,&nbsp;static,&nbsp;dynamic,&nbsp;basis_con,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.__init__" title="quspin.tools.block_tools.block_ops.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(blocks,&nbsp;static,&nbsp;dynamic,&nbsp;basis_con,&nbsp;…)</td>
 <td>Instantiates the <cite>block_ops</cite> class.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="quspin.tools.block_tools.block_ops.compute_all_blocks"><code class="xref py py-obj docutils literal"><span class="pre">compute_all_blocks</span></code></a>()</td>
 <td>Sets <cite>compute_all_blocks = True</cite>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal"><span class="pre">evolve</span></code></a>(psi_0,&nbsp;t0,&nbsp;times[,&nbsp;iterate,&nbsp;n_jobs,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal"><span class="pre">evolve</span></code></a>(psi_0,&nbsp;t0,&nbsp;times[,&nbsp;iterate,&nbsp;n_jobs,&nbsp;…])</td>
 <td>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>hamiltonian.evolve()</cite> in parallel.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal"><span class="pre">expm</span></code></a>(psi_0[,&nbsp;H_time_eval,&nbsp;iterate,&nbsp;n_jobs,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal"><span class="pre">expm</span></code></a>(psi_0[,&nbsp;H_time_eval,&nbsp;iterate,&nbsp;n_jobs,&nbsp;…])</td>
 <td>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>_expm_multiply()</cite> in parallel.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.update_blocks" title="quspin.tools.block_tools.block_ops.update_blocks"><code class="xref py py-obj docutils literal"><span class="pre">update_blocks</span></code></a>(blocks,&nbsp;basis_con,&nbsp;basis_args)</td>
@@ -417,7 +418,7 @@ Does not need to obey and sort of symmetry.</p>
 <p><strong>iterate</strong> : bool, optional</p>
 <blockquote>
 <div><p>Flag to return generator when set to <cite>True</cite>. Otherwise the output is an array of states. 
-Default is &#8216;False&#8217;.</p>
+Default is ‘False’.</p>
 </div></blockquote>
 <p><strong>n_jobs</strong> : int, optional</p>
 <blockquote>
@@ -503,7 +504,7 @@ Does not need to obey and sort of symmetry.</p>
 <p><strong>iterate</strong> : bool, optional</p>
 <blockquote>
 <div><p>Flag to return generator when set to <cite>True</cite>. Otherwise the output is an array of states. 
-Default is &#8216;False&#8217;.</p>
+Default is ‘False’.</p>
 </div></blockquote>
 <p><strong>n_jobs</strong> : int, optional</p>
 <blockquote>
@@ -619,6 +620,9 @@ Default is <cite>False</cite>.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quspin.tools.measurements.obs_vs_time.html"
+                        title="previous chapter">quspin.tools.measurements.obs_vs_time</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -649,13 +653,16 @@ Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
+             >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

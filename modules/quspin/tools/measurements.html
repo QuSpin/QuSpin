@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.tools.measurements &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
@@ -24,11 +21,11 @@
     <script type="text/javascript" src="../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -58,27 +55,24 @@
 <span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
 <span class="kn">import</span> <span class="nn">numpy.linalg</span> <span class="k">as</span> <span class="nn">_npla</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">binom</span><span class="p">,</span> <span class="n">hyp2f1</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">isgenerator</span> <span class="k">as</span> <span class="n">_isgenerator</span> 
 
 <span class="c1"># needed for isinstance only</span>
 <span class="kn">from</span> <span class="nn">..operators</span> <span class="k">import</span> <span class="n">ishamiltonian</span> <span class="k">as</span> <span class="n">_ishamiltonian</span>
 <span class="kn">from</span> <span class="nn">..operators</span> <span class="k">import</span> <span class="n">hamiltonian</span> <span class="k">as</span> <span class="n">_hamiltonian</span>
-<span class="kn">from</span> <span class="nn">..basis</span> <span class="k">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span><span class="n">photon_basis</span><span class="p">,</span><span class="n">isbasis</span>
+<span class="kn">from</span> <span class="nn">..basis</span> <span class="k">import</span> <span class="n">isbasis</span> <span class="k">as</span> <span class="n">_isbasis</span>
 <span class="kn">from</span> <span class="nn">..basis.photon</span> <span class="k">import</span> <span class="n">photon_Hspace_dim</span>
+<span class="kn">from</span> <span class="nn">.evolution</span> <span class="k">import</span> <span class="n">ED_state_vs_time</span>
+<span class="kn">from</span> <span class="nn">.misc</span> <span class="k">import</span> <span class="n">project_op</span><span class="p">,</span><span class="n">KL_div</span><span class="p">,</span><span class="n">mean_level_spacing</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;ent_entropy&quot;</span><span class="p">,</span> 
 			<span class="s2">&quot;diag_ensemble&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;ED_state_vs_time&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;obs_vs_time&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;project_op&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;KL_div&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;mean_level_spacing&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;evolve&quot;</span><span class="p">]</span>
+			<span class="s2">&quot;obs_vs_time&quot;</span>
+			<span class="p">]</span>
 
 
 
@@ -246,7 +240,7 @@
 <span class="sd">	.. math::</span>
 <span class="sd">		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}</span>
 
-<span class="sd">	See eg. `arXiv:1509.06411 &lt;https://arxiv.org/abs/1509.06411/&gt;`_ for the physical definition of Diagonal Ensemble.</span>
+<span class="sd">	See eg. `arXiv:1509.06411 &lt;https://arxiv.org/abs/1509.06411&gt;`_ for the physical definition of Diagonal Ensemble.</span>
 <span class="sd">	</span>
 <span class="sd">	**Note: All expectation values depend statistically on the symmetry block used via the available number of </span>
 <span class="sd">	states, due to the generic system-size dependence!**</span>
@@ -763,7 +757,7 @@
 		<span class="n">basis</span> <span class="o">=</span> <span class="n">Sent_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;basis&quot;</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sent_args requires &#39;basis&#39; for calculation&quot;</span><span class="p">)</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">isbasis</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">_isbasis</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;basis&#39; object must be a proper basis object&quot;</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="p">(</span><span class="s2">&quot;chain_subsys&quot;</span> <span class="ow">in</span> <span class="n">Sent_args</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;DM&quot;</span> <span class="ow">in</span> <span class="n">Sent_args</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;svd_return_vec&quot;</span> <span class="ow">in</span> <span class="n">Sent_args</span><span class="p">):</span>
@@ -836,572 +830,6 @@
 			<span class="n">return_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
 
 	<span class="k">return</span> <span class="n">return_dict</span></div>
-
-<div class="viewcode-block" id="ED_state_vs_time"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.ED_state_vs_time.html#quspin.tools.measurements.ED_state_vs_time">[docs]</a><span class="k">def</span> <span class="nf">ED_state_vs_time</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates the time evolution of initial state using a complete eigenbasis. </span>
-
-<span class="sd">	The time evolution is carried out under the Hamiltonian :math:`H` with eigenenergies `E` and eigenstates `V`. </span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	The following example shows how to time-evolve a state :math:`\\psi` using the entire eigensystem </span>
-<span class="sd">	:math:`(E_1,V_1)` of a Hamiltonian :math:`H_1=\\sum_j hS^x_j + g S^z_j`.</span>
-<span class="sd">	</span>
-<span class="sd">	.. literalinclude:: ../../doc_examples/ED_state_vs_time-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 7-</span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	psi : numpy.ndarray</span>
-<span class="sd">		Initial state.</span>
-<span class="sd">	V : numpy.ndarray</span>
-<span class="sd">		Unitary matrix containing all eigenstates of the Hamiltonian :math:`H` in its columns. </span>
-<span class="sd">	E : numpy.ndarray</span>
-<span class="sd">		Eigenvalues of the Hamiltonian :math:`H`, listed in the order which corresponds to the columns of `V`. </span>
-<span class="sd">	times : numpy.ndarray</span>
-<span class="sd">		Vector of time to evaluate the time evolved state at. </span>
-<span class="sd">	iterate : bool, optional</span>
-<span class="sd">		If set to `True`, the function returns the generator of the time evolved state. </span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	obj</span>
-<span class="sd">		Either of the following:</span>
-<span class="sd">			* `numpy.ndarray` with the time evolved states as rows. </span>
-<span class="sd">			* `generator` which generates time-dependent states one by one.</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">psi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span>
-
-
-	<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;V&#39; must be a square matrix&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Number of eigenstates in &#39;V&#39; must equal number of eigenvalues in &#39;E&#39;!&quot;</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variables &#39;psi&#39; and &#39;E&#39; must have the same dimension!&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mixed states must be square!&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psi must be 1 or 2 dimension array.&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-		<span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variable &#39;times&#39; must be a array or iter like object!&quot;</span><span class="p">)</span>
-
-	<span class="n">times</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-	
-
-	<span class="c1"># define generator of time-evolved state in basis V2</span>
-	<span class="k">def</span> <span class="nf">pure_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">):</span>
-		<span class="c1"># a_n: probability amplitudes</span>
-		<span class="c1"># times: time vector</span>
-		<span class="n">a_n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-			<span class="k">yield</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">E</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">a_n</span> <span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">mixed_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">):</span>
-		<span class="c1"># a_n: probability amplitudes</span>
-		<span class="c1"># times: time vector</span>
-		<span class="n">rho_d</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">E</span><span class="p">)</span>
-			<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,j,jk,k,lk-&gt;il&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-
-
-	<span class="k">if</span> <span class="n">psi</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">pure_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">c_n</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
-
-			<span class="n">Ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-			<span class="n">Ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-
-			<span class="c1"># generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]</span>
-			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">Ns</span><span class="p">,</span><span class="n">Ntime</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> 
-			<span class="c1"># [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]</span>
-			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">psi_t</span><span class="o">*</span><span class="n">E</span>
-			<span class="c1"># [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]</span>
-			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">psi_t</span><span class="p">)</span>
-
-			<span class="c1"># [[c_n[0]exp(-1j*E[0]*times[0]), ..., c_n[-1]*exp(-1j*E[-1]*times[0])], ..., [c_n[0]*exp(-1j*E[0]*times[-1]), ...,c_n[o]*exp(-1j*E[01]*times[01])]</span>
-			<span class="n">psi_t</span> <span class="o">*=</span> <span class="n">c_n</span> 
-
-			<span class="c1"># for each vector trasform back to original basis</span>
-			<span class="n">psi_t</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> 
-
-			<span class="k">return</span> <span class="n">psi_t</span> <span class="c1"># [ psi(times[0]), ...,psi(times[-1]) ]</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">mixed_t_iter</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">Ntime</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-			<span class="n">Ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-
-			<span class="n">rho_d</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-
-			<span class="c1"># generate [[-1j*times[0], ..., -1j*times[0]], ..., [-1j*times[-1], ..., -1j*times[01]]</span>
-			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">Ns</span><span class="p">,</span><span class="n">Ntime</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
-			<span class="c1"># [[-1j*E[0]*times[0], ..., -1j*E[-1]*times[0]], ..., [-1j*E[0]*times[-1], ..., -1j*E[-1]*times[-1]]</span>
-			<span class="n">exp_t</span> <span class="o">=</span> <span class="n">exp_t</span><span class="o">*</span><span class="n">E</span>
-			<span class="c1"># [[exp(-1j*E[0]*times[0]), ..., exp(-1j*E[-1]*times[0])], ..., [exp(-1j*E[0]*times[-1]), ..., exp(-1j*E[01]*times[01])]</span>
-			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exp_t</span><span class="p">,</span><span class="n">exp_t</span><span class="p">)</span>
-			
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,tj,jk,tk,lk-&gt;ilt&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span></div>
-
-<div class="viewcode-block" id="project_op"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.project_op.html#quspin.tools.measurements.project_op">[docs]</a><span class="k">def</span> <span class="nf">project_op</span><span class="p">(</span><span class="n">Obs</span><span class="p">,</span><span class="n">proj</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Projects observable onto symmetry-reduced subspace.</span>
-
-<span class="sd">	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`</span>
-<span class="sd">	onto that reduced basis.</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	The following example shows how to project an operator :math:`H_1=\\sum_j hS^x_j + g S^z_j` from the</span>
-<span class="sd">	symmetry-reduced basis to the full basis.</span>
-<span class="sd">	</span>
-<span class="sd">	.. literalinclude:: ../../doc_examples/project_op-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 7-</span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	Obs : :obj:</span>
-<span class="sd">		Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.</span>
-<span class="sd">	proj : :obj:</span>
-<span class="sd">		Either one of the following:</span>
-
-<span class="sd">		* `basis` object with the basis of the Hilbert space after the projection.</span>
-<span class="sd">		* numpy.ndarray: a matrix which contains the projector.</span>
-
-<span class="sd">		Projectors can be calculated conveniently using the function method `basis.get_proj()`.</span>
-<span class="sd">	dtype : type, optional</span>
-<span class="sd">		Data type of output. Default is `numpy.complex128`.</span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	-------- </span>
-<span class="sd">	dict</span>
-<span class="sd">		Dictionary with keys</span>
-
-<span class="sd">		* &quot;Proj_Obs&quot;: projected observable `Obs`.</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
-
-	<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Proj_Obs&quot;</span><span class="p">]</span>
-
-	<span class="k">if</span> <span class="n">isbasis</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
-		<span class="n">proj</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="k">elif</span> <span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">proj</span><span class="p">)):</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting either matrix/array or basis object for proj argument.&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">_ishamiltonian</span><span class="p">(</span><span class="n">Obs</span><span class="p">):</span>
-
-		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-			<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch Obs:</span><span class="si">{0}</span><span class="s2"> proj</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="c1"># projecting from a smaller to larger H-space</span>
-				<span class="n">proj_down</span><span class="o">=</span><span class="kc">False</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="c1"># projecting from larger to smaller H-space</span>
-			<span class="n">proj_down</span><span class="o">=</span><span class="kc">True</span>
-
-		<span class="k">if</span> <span class="n">proj_down</span><span class="p">:</span>
-			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>		
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-
-	<span class="k">else</span><span class="p">:</span>
-
-		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting Obs to be a 2 dimensional array.&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting Obs to be a square array.&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-			<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch Obs:</span><span class="si">{0}</span><span class="s2"> proj</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">proj_down</span><span class="o">=</span><span class="kc">False</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">proj_down</span><span class="o">=</span><span class="kc">True</span>
-
-		<span class="k">if</span> <span class="n">proj_down</span><span class="p">:</span>
-			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">proj</span><span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
-
-	<span class="c1"># define dictionary with outputs</span>
-	<span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
-		<span class="n">return_dict</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-
-	<span class="k">return</span> <span class="n">return_dict</span></div>
-
-<div class="viewcode-block" id="KL_div"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.KL_div.html#quspin.tools.measurements.KL_div">[docs]</a><span class="k">def</span> <span class="nf">KL_div</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates Kullback-Leibler divergence of two discrete probability distributions.</span>
-
-<span class="sd">	.. math::</span>
-<span class="sd">		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}</span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	----------- </span>
-<span class="sd">	p1 : numpy.ndarray</span>
-<span class="sd">		Dscrete probability distribution.</span>
-<span class="sd">	p2 : numpy.ndarray</span>
-<span class="sd">		Discrete probability distribution.</span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	numpy.ndarray</span>
-<span class="sd">		Kullback-Leibler divergence of `p1` and `p2`.</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">p1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
-	<span class="n">p2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
-
-
-	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p2</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting the probability distributions &#39;p1&#39; and &#39;p2&#39; to have same size!&quot;</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">p2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting the probability distributions &#39;p1&#39; and &#39;p2&#39; to have linear dimension!&quot;</span><span class="p">)</span>
-
-
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p1</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p2</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting all entries of the probability distributions &#39;p1&#39; and &#39;p2&#39; to be non-negative!&quot;</span><span class="p">)</span>
-	
-	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E-13</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting &#39;p1&#39; to be normalised!&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E-13</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting &#39;p2&#39; to be normalised!&quot;</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p1</span><span class="o">==</span><span class="mf">0.0</span><span class="p">):</span>
-
-		<span class="n">inds</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">p1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-
-		<span class="n">p1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">inds</span><span class="p">)</span>
-		<span class="n">p2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="n">inds</span><span class="p">)</span>
-
-	<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span> <span class="n">p1</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="mean_level_spacing"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.mean_level_spacing.html#quspin.tools.measurements.mean_level_spacing">[docs]</a><span class="k">def</span> <span class="nf">mean_level_spacing</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates the mean-level spacing of an energy spectrum.</span>
-
-<span class="sd">	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in </span>
-<span class="sd">	`arXiv:1212.5611 &lt;https://arxiv.org/pdf/1212.5611.pdf/&gt;`_ for more details.</span>
-
-<span class="sd">	For Wigner-Dyson statistics, we have :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.53`, while</span>
-<span class="sd">	for Poisson statistics: :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.38`.</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	The following example shows how to calculate the mean level spacing :math:`\\langle\\tilde r_\mathrm{W}\\rangle` for the</span>
-<span class="sd">	spectrum of the ergodic Hamiltonian :math:`H_1=\\sum_jJ S^z_{j+1}S^z + hS^x_j + g S^z_j`.</span>
-<span class="sd">	</span>
-<span class="sd">	.. literalinclude:: ../../doc_examples/mean_level_spacing-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 7-</span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	E : numpy.ndarray</span>
-<span class="sd">		Ordered list of ascending, NONdegenerate energies.</span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	-------- </span>
-<span class="sd">	float</span>
-<span class="sd">		mean-level spacing.</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
-
-	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-		<span class="n">E</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">!=</span><span class="n">E</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting a sorted list of ascending, nondegenerate eigenenergies &#39;E&#39;.&quot;</span><span class="p">)</span>
-
-	<span class="c1"># compute consecutive E-differences</span>
-	<span class="n">sn</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-	<span class="c1"># check for degeneracies</span>
-	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">E</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Degeneracies found in spectrum &#39;E&#39;!&quot;</span><span class="p">)</span>
-	<span class="c1"># calculate the ratios of consecutive spacings</span>
-	<span class="n">aux</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-
-	<span class="n">aux</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sn</span>
-	<span class="n">aux</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">sn</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-	<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span> <span class="n">aux</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">aux</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span></div>
-
-
-<span class="c1">##### below are the routines for arbitary user-defimed time evolution.</span>
-
-<div class="viewcode-block" id="evolve"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.evolve.html#quspin.tools.measurements.evolve">[docs]</a><span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="n">real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="p">(),</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Implements (imaginary) time evolution for a user-defined first-order ODE.</span>
-
-<span class="sd">	The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured </span>
-<span class="sd">	ODE solver in python, without any relation to other QuSpin objects.</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	The following example shows how to use the`evolve()` function to solve the periodically-driven </span>
-<span class="sd">	Gross-Pitaevskii equation (GPE) on a one-imensional lattice. The GPE has a linear part, comprising the</span>
-<span class="sd">	kinetic energy and the external potentials (e.g. a harmonic trap), and a nonlinear part which describes</span>
-<span class="sd">	the interactions.</span>
-
-<span class="sd">	Below, in a few steps we show how to use the functionality of the `evolve()` function to solve the GPE </span>
-<span class="sd">	on a one-dimensional lattice for periodically-driven particles in a harmonic trap:</span>
-
-<span class="sd">	.. math::</span>
-<span class="sd">		i\\dot\\varphi_j(t) = -J\\left( e^{-iA\\sin\\Omega t}\\varphi_{j-1}(t) + e^{+iA\\sin\\Omega t}\\varphi_{j+1}(t) \\right) + \\kappa_\\mathrm{trap}\\varphi_j(t) + U|\\varphi_j(t)|^2\\varphi_j(t)</span>
-
-<span class="sd">	where :math:`j` labels the lattice sites, :math:`J` is the lattice hopping amplitude, :math:`\\kappa_\\mathrm{trap}` is</span>
-<span class="sd">	the strength of the harmonic trap, and :math:`U` -- the mean-field interaction.</span>
-
-<span class="sd">	Let us start by defining the single-particle Hamiltonian :math:`H(t)`.</span>
-
-
-<span class="sd">	.. literalinclude:: ../../doc_examples/evolve-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 7-47</span>
-
-<span class="sd">	Next, we define the GPE </span>
-
-<span class="sd">	.. math::</span>
-<span class="sd">		-i\\dot\\varphi(t) = H(t)\\varphi(t) + U |\\varphi(t)|^2 \\varphi(t)</span>
-
-<span class="sd">	and solve it using `evolve()`:</span>
-
-<span class="sd">	.. literalinclude:: ../../doc_examples/evolve-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 49-61</span>
-<span class="sd">		:lineno-start: 43</span>
-
-<span class="sd">	Since the GPE is a complex-valued equation, the above code requires the use of a complex-valued ODE solver </span>
-<span class="sd">	[which is done by `evolve()` under the hood, so long as no solver is explicitly specified].</span>
-
-<span class="sd">	An alternative way </span>
-<span class="sd">	to solve the GPE using a real-valued solver might be useful to speed-up the computation. This can be achieved </span>
-<span class="sd">	by decomposing the condensate wave function into a real and imaginary part, and proceeds as follows:</span>
-<span class="sd">	</span>
-<span class="sd">	The goal is to solve: </span>
-<span class="sd">	</span>
-<span class="sd">	.. math::</span>
-<span class="sd">		-i\\dot\\varphi(t) = H(t)\\varphi(t) + U |\\varphi(t)|^2 \\varphi(t)</span>
-<span class="sd">	</span>
-<span class="sd">	for the complex-valued :math:`\\varphi(t)` by re-writing it as a real-valued vector `phi=[u,v]` where </span>
-<span class="sd">	:math:`\\varphi(t) = u(t) + iv(t)`. The real and imaginary parts, :math:`u(t)` and :math:`v(t)`, have the same dimension as </span>
-<span class="sd">	:math:`\phi(t)`.</span>
-<span class="sd">	</span>
-<span class="sd">	In the most general form, the single-particle Hamiltonian can be decomposed as </span>
-<span class="sd">	:math:`H(t)= H_{stat} + f(t)H_{dyn}`, with a complex-valued driving function :math:`f(t)`. Then, the GPE can be cast in </span>
-<span class="sd">	the following real-valued form:</span>
-<span class="sd">	</span>
-<span class="sd">	.. math::</span>
-<span class="sd">		\\dot u(t) = +\\left[H_{stat} + U\\left(|u(t)|^2 + |v(t)|^2\\right) \\right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)</span>
-<span class="sd">	.. math::	</span>
-<span class="sd">		\\dot v(t) = -\\left[H_{stat} + U\\left(|u(t)|^2 + |v(t)|^2\\right) \\right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)</span>
-
-
-<span class="sd">	.. literalinclude:: ../../doc_examples/evolve-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 63-</span>
-<span class="sd">		:lineno-start: 59</span>
-
-<span class="sd">	The flag `stack_state=True` is required for `evolve()` to handle the complex-valued initial condition properly,</span>
-<span class="sd">	as well as to put together the output solution as a complex-valued vector in the end. Since the real-valued ODE solver </span>
-<span class="sd">	allows to parse ODE parameters, we can include them in the user-defined ODE function and use the </span>
-<span class="sd">	flag `f_params`. Notice the elegant way python allows one to circumvent the usage of this variable in the </span>
-<span class="sd">	complex-valued example above. </span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	v0 : numpy.ndarray</span>
-<span class="sd">		Initial state.</span>
-<span class="sd">	t0 : float</span>
-<span class="sd">		Initial time.</span>
-<span class="sd">	times : numpy.ndarray</span>
-<span class="sd">		Vector of times to compute the time-evolved state at.</span>
-<span class="sd">	f : :obj:`function`</span>
-<span class="sd">		User-defined function to solve first-order ODE (see Examples):</span>
-
-<span class="sd">		.. math::</span>
-<span class="sd">			v&#39;(t) = f(v(t),t)\\qquad v(t_0)=v_0</span>
-<span class="sd">	f_params : tuple, optional</span>
-<span class="sd">		A tuple to pass all parameters of the function `f` to ODE solver. Default is `f_params=()`.</span>
-<span class="sd">	iterate : bool, optional</span>
-<span class="sd">		If set to `True`, creates a generator object for the time-evolved the state. Default is `False`.</span>
-<span class="sd">	solver_name : str, optional</span>
-<span class="sd">		Scipy solver integrator name. Default is `dop853`. </span>
-
-<span class="sd">		See `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_ for other options.</span>
-<span class="sd">	solver_args : dict, optional</span>
-<span class="sd">		Dictionary with additional `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html/&gt;`_ arguments.	</span>
-<span class="sd">	real : bool, optional </span>
-<span class="sd">		Flag to determine if `f` is real or complex-valued. Default is `False`.</span>
-<span class="sd">	imag_time : bool, optional</span>
-<span class="sd">		Must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state </span>
-<span class="sd">		at each time in `times`. Default is `False`.</span>
-<span class="sd">	stack_state : bool, optional</span>
-<span class="sd">		If `f` is written to take care of real and imaginary parts separately (see Examples), this flag </span>
-<span class="sd">		will return a single complex-valued solution instead of the real and imaginary parts separately.</span>
-<span class="sd">		Default is `False`.</span>
-<span class="sd">	verbose : bool, optional</span>
-<span class="sd">		If set to `True`, prints normalisation of state at teach time in `times`.</span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	obj</span>
-<span class="sd">		Can be either one of the following:</span>
-<span class="sd">			* numpy.ndarray containing evolved state against time.</span>
-<span class="sd">			* generator object for time-evolved state (requires `iterate = True`).</span>
-<span class="sd">		</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-
-	<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">complex_ode</span>
-	<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">ode</span>
-
-	<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state mush have ndim &lt; 3.&quot;</span><span class="p">)</span>
-
-	<span class="n">shape0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
-
-	<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-	 
-	
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;times must be real number(s).&quot;</span><span class="p">)</span>
-
-	<span class="n">n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span> <span class="c1"># needed for imaginary time to preserve the proper norm of the state. </span>
-
-	<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-		<span class="n">v1</span> <span class="o">=</span> <span class="n">v0</span>
-		<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">v1</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-		<span class="n">v0</span><span class="p">[:</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">real</span>
-		<span class="n">v0</span><span class="p">[</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]:]</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">imag</span>
-
-		<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
-	<span class="k">elif</span> <span class="n">real</span><span class="p">:</span>
-		<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
-
-	<span class="k">if</span> <span class="n">solver_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="s2">&quot;dopri5&quot;</span><span class="p">]:</span>
-		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nsteps&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
-		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rtol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
-		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
-
-
-	<span class="n">solver</span><span class="o">.</span><span class="n">set_integrator</span><span class="p">(</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
-	<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="o">*</span><span class="n">f_params</span><span class="p">)</span>
-	<span class="n">solver</span><span class="o">.</span><span class="n">set_initial_value</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">t0</span><span class="p">)</span>
-
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-		<span class="k">return</span> <span class="n">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span></div>
-
-
-<span class="k">def</span> <span class="nf">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-	<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-	<span class="n">Ns</span><span class="o">=</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-	<span class="k">if</span> <span class="n">time</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">v0</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-
-	<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-		<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>	
-
-<span class="k">def</span> <span class="nf">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-	<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-
-	<span class="n">Ns</span><span class="o">=</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-	<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape0</span><span class="o">+</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-	
-	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-
-		<span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">v0</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">continue</span>
-
-		<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
-			
-
-	<span class="k">return</span> <span class="n">v</span>
-
-<span class="k">def</span> <span class="nf">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-	<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-	<span class="n">Ns</span><span class="o">=</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-
-	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="p">(</span><span class="n">v0</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">continue</span>
-			
-
-		<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 
 <span class="c1">##### private functions</span>
 
@@ -2005,7 +1433,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

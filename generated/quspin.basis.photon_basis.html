@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.basis.photon_basis &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,11 +21,11 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -69,7 +66,7 @@ couples a lattice particle to a single photon mode.</p>
 </dd>
 </dl>
 <p>The operator strings for the photon and lattice sectors are the same as for the lattice bases, respectively.
-The <cite>photon_basis</cite> operator string uses the pipe character &#8216;|&#8217; to distinguish
+The <cite>photon_basis</cite> operator string uses the pipe character ‘|’ to distinguish
 between lattice operators (left) and photon operators (right).</p>
 <div class="math">
 \[\begin{array}{cccc}
@@ -235,11 +232,11 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.check_symm" title="quspin.basis.photon_basis.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for the required symmetries of the combined operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.ent_entropy" title="quspin.basis.photon_basis.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;return_rdm,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.ent_entropy" title="quspin.basis.photon_basis.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;return_rdm,&nbsp;…])</td>
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.expanded_form" title="quspin.basis.photon_basis.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;.</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.get_proj" title="quspin.basis.photon_basis.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;Nph,&nbsp;full_part])</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -250,10 +247,10 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.index" title="quspin.basis.photon_basis.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(*states)</td>
 <td>Finds the index of user-defined Fock state in tensor basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.inplace_Op" title="quspin.basis.photon_basis.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.inplace_Op" title="quspin.basis.photon_basis.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.partial_trace" title="quspin.basis.photon_basis.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.partial_trace" title="quspin.basis.photon_basis.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in <cite>photon_basis</cite>.</td>
 </tr>
 </tbody>
@@ -311,11 +308,11 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.check_symm" title="quspin.basis.photon_basis.check_symm"><code class="xref py py-obj docutils literal"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for the required symmetries of the combined operator.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.ent_entropy" title="quspin.basis.photon_basis.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;return_rdm,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.ent_entropy" title="quspin.basis.photon_basis.ent_entropy"><code class="xref py py-obj docutils literal"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;return_rdm,&nbsp;…])</td>
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.expanded_form" title="quspin.basis.photon_basis.expanded_form"><code class="xref py py-obj docutils literal"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;.</td>
+<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.get_proj" title="quspin.basis.photon_basis.get_proj"><code class="xref py py-obj docutils literal"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;Nph,&nbsp;full_part])</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
@@ -326,10 +323,10 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.index" title="quspin.basis.photon_basis.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(*states)</td>
 <td>Finds the index of user-defined Fock state in tensor basis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.inplace_Op" title="quspin.basis.photon_basis.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.inplace_Op" title="quspin.basis.photon_basis.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.partial_trace" title="quspin.basis.photon_basis.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.partial_trace" title="quspin.basis.photon_basis.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in <cite>photon_basis</cite>.</td>
 </tr>
 </tbody>
@@ -414,7 +411,7 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>opstr</strong> : str</p>
 <blockquote>
 <div><p>Operator string in the photon basis format. Photon operators stand on the right. For instance:
-&gt;&gt;&gt; opstr = &#8220;x|n&#8221;</p>
+&gt;&gt;&gt; opstr = “x|n”</p>
 </div></blockquote>
 <p><strong>indx</strong> : list(int)</p>
 <blockquote>
@@ -427,7 +424,7 @@ the lattice site position. For instance:
 <blockquote>
 <div><p>Coupling strength.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : &#8216;type&#8217;</p>
+<p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
 </div></blockquote>
@@ -578,7 +575,7 @@ the lattice site position. For instance:
 <div><ul class="simple">
 <li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
 <li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
-<li>dict(&#8216;V_states&#8217;,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
+<li>dict(‘V_states’,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -587,8 +584,8 @@ the lattice site position. For instance:
 <div><p>Subsystem to calculate the density matrix of. Can be either one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>&#8220;particles&#8221;: refers to lattice subsystem (Default).</li>
-<li>&#8220;photons&#8221;: refers to photon subsystem.</li>
+<li>“particles”: refers to lattice subsystem (Default).</li>
+<li>“photons”: refers to photon subsystem.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -597,9 +594,9 @@ the lattice site position. For instance:
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>&#8220;A&#8221;: returns reduced DM of subsystem A.</li>
-<li>&#8220;B&#8221;: returns reduced DM of subsystem B.</li>
-<li>&#8220;both&#8221;: returns reduced DM of both A and B subsystems.</li>
+<li>“A”: returns reduced DM of subsystem A.</li>
+<li>“B”: returns reduced DM of subsystem B.</li>
+<li>“both”: returns reduced DM of both A and B subsystems.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -622,18 +619,18 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <blockquote>
 <div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>:</p>
 <div class="math">
-\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha\]</div>
+\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
 </div></blockquote>
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>
 <div><p>When <cite>sparse=True</cite>, this flag enforces the use of
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh()</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
 to calculate the eigenvaues of the reduced DM.</p>
 </div></blockquote>
 <p><strong>maxiter</strong> : int, optional</p>
 <blockquote>
 <div><p>Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh()</a>.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -642,12 +639,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 <div><dl class="docutils">
 <dt>Dictionary with following keys, depending on input parameters:</dt>
 <dd><ul class="first last simple">
-<li>&#8220;Sent_A&#8221;: entanglement entropy of subsystem A (default).</li>
-<li>&#8220;Sent_B&#8221;: entanglement entropy of subsystem B.</li>
-<li>&#8220;p_A&#8221;: singular values of reduced DM of subsystem A (default).</li>
-<li>&#8220;p_B&#8221;: singular values of reduced DM of subsystem B.</li>
-<li>&#8220;rdm_A&#8221;: reduced DM of subsystem A.</li>
-<li>&#8220;rdm_B&#8221;: reduced DM of subsystem B.</li>
+<li>“Sent_A”: entanglement entropy of subsystem A (default).</li>
+<li>“Sent_B”: entanglement entropy of subsystem B.</li>
+<li>“p_A”: singular values of reduced DM of subsystem A (default).</li>
+<li>“p_B”: singular values of reduced DM of subsystem B.</li>
+<li>“rdm_A”: reduced DM of subsystem A.</li>
+<li>“rdm_B”: reduced DM of subsystem B.</li>
 </ul>
 </dd>
 </dl>
@@ -668,7 +665,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dl class="method">
 <dt id="quspin.basis.photon_basis.expanded_form">
 <code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.photon_basis.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing &#8220;x&#8221; and &#8220;y&#8221; into operator combinations of &#8220;+&#8221; and &#8220;-&#8221;. This function is useful for higher spin hamiltonians where &#8220;x&#8221; and &#8220;y&#8221; operators are not appropriate operators.</p>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -689,12 +686,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 <dt><cite>(static, dynamic)</cite>, where</dt>
 <dd><ul class="first last simple">
 <li><dl class="first docutils">
-<dt>list: <cite>static</cite>: operator strings with &#8220;x&#8221; and &#8220;y&#8221; expanded into &#8220;+&#8221; and &#8220;-&#8221;, formatted to </dt>
+<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
 <dd>be passed into the static argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>list: <cite>dynamic</cite>: operator strings with &#8220;x&#8221; and &#8220;y&#8221; expanded into &#8220;+&#8221; and &#8220;-&#8221;, formatted to </dt>
+<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
 <dd>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</dd>
 </dl>
 </li>
@@ -722,7 +719,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : &#8216;type&#8217;</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : ‘type’</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the projector with.</p>
 </div></blockquote>
@@ -865,7 +862,7 @@ by <cite>index()</cite>.</p>
 <blockquote>
 <div><p>Coupling strength.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : &#8216;type&#8217;</p>
+<p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
 <div><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </div></blockquote>
@@ -924,7 +921,7 @@ by <cite>index()</cite>.</p>
 <div><ul class="simple">
 <li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
 <li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
-<li>dict(&#8216;V_states&#8217;,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
+<li>dict(‘V_states’,V_states) [shape (Ns,Nvecs)]: collection of <cite>Nvecs</cite> states stored in the columns of <cite>V_states</cite>.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -933,8 +930,8 @@ by <cite>index()</cite>.</p>
 <div><p>Subsystem to calculate the density matrix of. Can be either one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>&#8220;particles&#8221;: refers to lattice subsystem (Default).</li>
-<li>&#8220;photons&#8221;: refers to photon subsystem.</li>
+<li>“particles”: refers to lattice subsystem (Default).</li>
+<li>“photons”: refers to photon subsystem.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -943,9 +940,9 @@ by <cite>index()</cite>.</p>
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li>&#8220;A&#8221;: returns reduced DM of subsystem A.</li>
-<li>&#8220;B&#8221;: returns reduced DM of subsystem B.</li>
-<li>&#8220;both&#8221;: returns reduced DM of both A and B subsystems.</li>
+<li>“A”: returns reduced DM of subsystem A.</li>
+<li>“B”: returns reduced DM of subsystem B.</li>
+<li>“both”: returns reduced DM of both A and B subsystems.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -1068,7 +1065,7 @@ it is a square array. Default is <cite>False</cite>.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

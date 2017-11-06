@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.operators.exp_op_core &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
@@ -24,11 +21,11 @@
     <script type="text/javascript" src="../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -487,11 +484,12 @@
 <span class="sd">		-----------</span>
 <span class="sd">		other : obj</span>
 <span class="sd">			The operator :math:`A` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
-<span class="sd">		time : scalar, optional</span>
-<span class="sd">			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.</span>
 <span class="sd">		shift : scalar</span>
 <span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
-
+<span class="sd">		call_kwargs : obj, optional</span>
+<span class="sd">			extra keyword arguments which include:</span>
+<span class="sd">				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.</span>
+<span class="sd">				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.</span>
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -577,12 +575,13 @@
 <span class="sd">		-----------</span>
 <span class="sd">		other : obj</span>
 <span class="sd">			The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.</span>
-<span class="sd">		time : scalar, optional</span>
-<span class="sd">			Time to evaluate the operator to be exponentiated at. Default is `time=0.0`.</span>
 <span class="sd">		shift : scalar</span>
 <span class="sd">			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
-
-
+<span class="sd">		call_kwargs : obj, optional</span>
+<span class="sd">			extra keyword arguments which include:</span>
+<span class="sd">				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.</span>
+<span class="sd">				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.</span>
+<span class="sd">		</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		obj</span>
@@ -674,11 +673,13 @@
 <span class="sd">		other : obj</span>
 <span class="sd">			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`</span>
 <span class="sd">			and :math:`\\exp(\\mathcal{O})`.</span>
-<span class="sd">		time : scalar, optional</span>
-<span class="sd">			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.</span>
 <span class="sd">		shift : scalar</span>
 <span class="sd">			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.</span>
-<span class="sd"> </span>
+<span class="sd">		call_kwargs : obj, optional</span>
+<span class="sd">			extra keyword arguments which include:</span>
+<span class="sd">				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.</span>
+<span class="sd">				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.</span>
+<span class="sd">		</span>
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		obj</span>
@@ -898,7 +899,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

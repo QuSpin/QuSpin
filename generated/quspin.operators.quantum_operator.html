@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.operators.quantum_operator &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,11 +21,11 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -55,7 +52,7 @@
 <em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_operator</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs parameter-dependent <cite>hamiltonian</cite> operators.</p>
 <p>The <cite>quantum_operator</cite> class maps quantum operators to keys of a dictionary. When calling various methods
-of <cite>quantum_operator</cite>, it allows one to &#8216;dynamically&#8217; specify the pre-factors of these operators.</p>
+of <cite>quantum_operator</cite>, it allows one to ‘dynamically’ specify the pre-factors of these operators.</p>
 <p class="rubric">Examples</p>
 <p>It is often required to be able to handle a parameter-dependent Hamiltonian <span class="math">\(H(\lambda)=H_1 + \lambda H_2\)</span>, e.g.</p>
 <div class="math">
@@ -274,7 +271,7 @@ used to specify the coupling strength during calls of the <cite>quantum_operator
 <blockquote>
 <div><p>Number of lattice sites for the <cite>hamiltonian</cite> object.</p>
 </div></blockquote>
-<p><strong>dtype</strong> : &#8216;type&#8217;</p>
+<p><strong>dtype</strong> : ‘type’</p>
 <blockquote>
 <div><p>Data type (e.g. numpy.float64) to construct the quantum_operator with.</p>
 </div></blockquote>
@@ -316,7 +313,7 @@ to create the quantum_operator.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.__init__" title="quspin.operators.quantum_operator.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(input_dict[,&nbsp;N,&nbsp;basis,&nbsp;shape,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_operator.__init__" title="quspin.operators.quantum_operator.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(input_dict[,&nbsp;N,&nbsp;basis,&nbsp;shape,&nbsp;…])</td>
 <td>Intializes the <cite>quantum_operator</cite> object (parameter dependent quantum quantum_operators).</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_operator.aslinearoperator" title="quspin.operators.quantum_operator.aslinearoperator"><code class="xref py py-obj docutils literal"><span class="pre">aslinearoperator</span></code></a>([pars])</td>
@@ -446,7 +443,7 @@ to create the quantum_operator.</p>
 <code class="descname">aslinearoperator</code><span class="sig-paren">(</span><em>pars={}</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.aslinearoperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.aslinearoperator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>scipy.sparse.linalg.Linearquantum_operator</cite>.</p>
 <p>Casts the <cite>quantum_operator</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html/">scipy.sparse.linalg.Linearquantum_operator</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html">scipy.sparse.linalg.Linearquantum_operator</a>
 object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -478,7 +475,7 @@ are assumed to be set to inity.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : &#8216;type&#8217;</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : ‘type’</p>
 <blockquote>
 <div><p>The data type (e.g. numpy.float64) to cast the Hamiltonian with.</p>
 </div></blockquote>
@@ -641,7 +638,7 @@ vectors together.</p>
 <code class="descname">eigh</code><span class="sig-paren">(</span><em>pars={}</em>, <em>**eigh_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.eigh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.eigh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes COMPLETE eigensystem of hermitian <cite>quantum_operator</cite> quantum_operator using DENSE hermitian methods.</p>
 <p>This function method solves for all eigenvalues and eigenvectors. It calls 
-<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/">numpy.linalg.eigh</a>, 
+<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>, 
 and uses wrapped LAPACK functions which are contained in the module py_lapack.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -654,7 +651,7 @@ are assumed to be set to inity.</p>
 </div></blockquote>
 <p><strong>eigh_args :</strong></p>
 <blockquote>
-<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html/">numpy.linalg.eigh</a>.</p>
+<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -680,7 +677,7 @@ to reassure themselves of the hermiticity properties before use.</p>
 <code class="descname">eigsh</code><span class="sig-paren">(</span><em>pars={}</em>, <em>**eigsh_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.eigsh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.eigsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes SOME eigenvalues of hermitian <cite>quantum_operator</cite> quantum_operator using SPARSE hermitian methods.</p>
 <p>This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh</a>, which is a wrapper for ARPACK.</p>
+It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>, which is a wrapper for ARPACK.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -692,7 +689,7 @@ are assumed to be set to inity.</p>
 </div></blockquote>
 <p><strong>eigsh_args :</strong></p>
 <blockquote>
-<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/">scipy.sparse.linalg.eigsh</a>.</p>
+<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -718,7 +715,7 @@ to reassure themselves of the hermiticity properties before use.</p>
 <code class="descname">eigvalsh</code><span class="sig-paren">(</span><em>pars={}</em>, <em>**eigvalsh_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.eigvalsh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.eigvalsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes ALL eigenvalues of hermitian <cite>quantum_operator</cite> quantum_operator using DENSE hermitian methods.</p>
 <p>This function method solves for all eigenvalues. It calls 
-<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/">numpy.linalg.eigvalsh</a>, 
+<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh">numpy.linalg.eigvalsh</a>, 
 and uses wrapped LAPACK functions which are contained in the module py_lapack.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -731,7 +728,7 @@ are assumed to be set to inity.</p>
 </div></blockquote>
 <p><strong>eigvalsh_args :</strong></p>
 <blockquote>
-<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh/">numpy.linalg.eigvalsh</a>.</p>
+<div><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh">numpy.linalg.eigvalsh</a>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -1006,7 +1003,7 @@ are assumed to be set to inity.</p>
 <code class="descname">tocsc</code><span class="sig-paren">(</span><em>pars={}</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.tocsc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.tocsc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>scipy.sparse.csc_matrix</cite>.</p>
 <p>Casts the <cite>quantum_operator</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html/">scipy.sparse.csc_matrix</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html">scipy.sparse.csc_matrix</a>
 object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1035,7 +1032,7 @@ are assumed to be set to inity.</p>
 <code class="descname">tocsr</code><span class="sig-paren">(</span><em>pars={}</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.tocsr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.tocsr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>scipy.sparse.csr_matrix</cite>.</p>
 <p>Casts the <cite>quantum_operator</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html/">scipy.sparse.csr_matrix</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html">scipy.sparse.csr_matrix</a>
 object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1226,7 +1223,7 @@ are assumed to be set to inity.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

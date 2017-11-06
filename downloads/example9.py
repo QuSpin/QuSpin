@@ -1,3 +1,10 @@
+#####################################################################
+#                            example 9                              #
+#   In this script we demonstrate how to use QuSpin's               #
+#   general basis class to construct user-defined symmetry sectors.	#
+#   We study thermalisation in the 2D transverse-field Ising model  #
+#   with periodic boundary conditions.                              #
+#####################################################################
 from __future__ import print_function, division
 from quspin.operators import hamiltonian, exp_op # operators
 from quspin.basis import spin_basis_1d, spin_basis_general # spin basis constructor

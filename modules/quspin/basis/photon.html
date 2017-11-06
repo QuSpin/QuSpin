@@ -1,16 +1,13 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>quspin.basis.photon &#8212; QuSpin 0.2.5 documentation</title>
-    
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
@@ -24,11 +21,11 @@
     <script type="text/javascript" src="../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -61,15 +58,15 @@
 
 <span class="n">_dtypes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;f&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="s2">&quot;d&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="s2">&quot;F&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span><span class="s2">&quot;D&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">}</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;photon_basis&quot;</span><span class="p">,</span><span class="s2">&quot;ho_basis&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;photon_basis&quot;</span><span class="p">,</span><span class="s2">&quot;ho_basis&quot;</span><span class="p">,</span><span class="s2">&quot;coherent_state&quot;</span><span class="p">,</span><span class="s2">&quot;photon_Hspace_dim&quot;</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">coherent_state</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Creates a harmonic oscillator (HO) coherent state.</span>
+<div class="viewcode-block" id="coherent_state"><a class="viewcode-back" href="../../../generated/quspin.basis.coherent_state.html#quspin.basis.coherent_state">[docs]</a><span class="k">def</span> <span class="nf">coherent_state</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Creates a harmonic oscillator (HO) coherent state.</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
 <span class="sd">	a : float</span>
-<span class="sd">		Expectation value of annihilation operator :math:`\\langla a\\rangle` or, equivalently </span>
+<span class="sd">		Expectation value of annihilation operator :math:`\\langle a\\rangle` or, equivalently </span>
 <span class="sd">		square root of the mean particle number.</span>
 <span class="sd">	n : int</span>
 <span class="sd">		Cut-off on the number of HO eigenstates kept in the definition of the coherent state.</span>
@@ -95,10 +92,10 @@
 	<span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">s3</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">s3</span><span class="p">)</span>
 	<span class="n">s3</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">s3</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 	<span class="n">state</span> <span class="o">=</span> <span class="n">s1</span><span class="o">+</span><span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">s2</span><span class="o">-</span><span class="n">s3</span>
-	<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
 
-<span class="k">def</span> <span class="nf">photon_Hspace_dim</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Ntot</span><span class="p">,</span><span class="n">Nph</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates the dimension of the total spin-photon Hilbert space.</span>
+<div class="viewcode-block" id="photon_Hspace_dim"><a class="viewcode-back" href="../../../generated/quspin.basis.photon_Hspace_dim.html#quspin.basis.photon_Hspace_dim">[docs]</a><span class="k">def</span> <span class="nf">photon_Hspace_dim</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Ntot</span><span class="p">,</span><span class="n">Nph</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Calculates the dimension of the total spin-photon Hilbert space.</span>
 
 <span class="sd">	Parameters</span>
 <span class="sd">	-----------</span>
@@ -125,7 +122,7 @@
 	<span class="k">elif</span> <span class="n">Ntot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="k">return</span> <span class="mi">2</span><span class="o">**</span><span class="n">N</span> <span class="o">-</span> <span class="n">binom</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Ntot</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hyp2f1</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="n">N</span><span class="o">+</span><span class="n">Ntot</span><span class="p">,</span><span class="mi">2</span><span class="o">+</span><span class="n">Ntot</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 	<span class="k">else</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Either &#39;Ntot&#39; or &#39;Nph&#39; must be defined!&quot;</span><span class="p">)</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Either &#39;Ntot&#39; or &#39;Nph&#39; must be defined!&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="photon_basis"><a class="viewcode-back" href="../../../generated/quspin.basis.photon_basis.html#quspin.basis.photon_basis">[docs]</a><span class="k">class</span> <span class="nc">photon_basis</span><span class="p">(</span><span class="n">tensor_basis</span><span class="p">):</span>
@@ -607,14 +604,14 @@
 <span class="sd">			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:</span>
 
 <span class="sd">			.. math::</span>
-<span class="sd">				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\rho_d^\\psi \\right)^\\alpha</span>
+<span class="sd">				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha</span>
 <span class="sd">		sparse_diag : bool, optional</span>
 <span class="sd">			When `sparse=True`, this flag enforces the use of</span>
-<span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_</span>
+<span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_</span>
 <span class="sd">			to calculate the eigenvaues of the reduced DM.</span>
 <span class="sd">		maxiter : int, optional</span>
 <span class="sd">			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for </span>
-<span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html/&gt;`_.</span>
+<span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_.</span>
 <span class="sd">		</span>
 
 <span class="sd">		Returns</span>
@@ -1095,7 +1092,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>
