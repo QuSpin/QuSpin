@@ -531,6 +531,26 @@ class hamiltonian(object):
 		""":obj:`hamiltonian`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
+	@property
+	def nbytes(self):
+		nbytes = 0
+		if _sp.issparse(self._static):
+			nbytes += self._static.data.nbytes
+			nbytes += self._static.indices.nbytes
+			nbytes += self._static.indptr.nbytes
+		else:
+			nbytes += self._static.nbytes
+
+		for Hd in itervalues(self._dynamic):
+			if _sp.issparse(Hd):
+				nbytes += Hd.data.nbytes
+				nbytes += Hd.indices.nbytes
+				nbytes += Hd.indptr.nbytes
+			else:
+				nbytes += Hd.nbytes	
+
+		return nbytes	
+
 	def check_is_dense(self):
 		""" updates attribute `_.is_dense`."""
 		is_sparse = _sp.issparse(self._static)

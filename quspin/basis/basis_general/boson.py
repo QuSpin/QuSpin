@@ -205,11 +205,11 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			if basis_type==_np.uint32:
 				basis = _np.zeros(Ns,dtype=_np.uint32)
-				n     = _np.zeros(Ns,dtype=_np.uint16)
+				n     = _np.zeros(Ns,dtype=self._n_dtype)
 				self._core = boson_basis_core_wrap_32(N,self._sps,self._maps,self._pers,self._qs)
 			elif basis_type==_np.uint64:
 				basis = _np.zeros(Ns,dtype=_np.uint64)
-				n     = _np.zeros(Ns,dtype=_np.uint16)
+				n     = _np.zeros(Ns,dtype=self._n_dtype)
 				self._core = boson_basis_core_wrap_64(N,self._sps,self._maps,self._pers,self._qs)
 			else:
 				raise ValueError("states can't be represented as 64-bit unsigned integer")
@@ -242,6 +242,9 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._N = N
 			self._index_type = _np.min_scalar_type(-self._Ns)
+			self._allowed_ops=set(["I","z","n","+","-"])
+
+			self._reduce_n_dtype()
 
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:

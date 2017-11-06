@@ -53,11 +53,11 @@ class hcb_basis_general(basis_general):
 
 		if N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
-			n     = _np.zeros(Ns,dtype=_np.uint16)
+			n     = _np.zeros(Ns,dtype=self._n_dtype)
 			self._core = hcb_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
-			n     = _np.zeros(Ns,dtype=_np.uint16)
+			n     = _np.zeros(Ns,dtype=self._n_dtype)
 			self._core = hcb_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=64.")
@@ -92,6 +92,7 @@ class hcb_basis_general(basis_general):
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","x","y","z","+","-","n"])
+		self._reduce_n_dtype()
 
 
 

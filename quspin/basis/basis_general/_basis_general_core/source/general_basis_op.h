@@ -2,8 +2,6 @@
 #define _GENERAL_BASIS_OP_H
 
 #include <complex>
-#include <iostream>
-#include <iomanip>
 #include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
@@ -79,8 +77,16 @@ int general_op(general_basis_core<I> *B,
 
 		if(local_err == 0){
 			int sign = 1;
-			I rr = B->ref_state(r,g,gg,sign);
-			K j = binary_search(Ns,basis,rr);
+
+			for(int k=0;k<nt;k++){
+				gg[k]=g[k]=0;
+			}
+
+			K j = i;
+			if(r != basis[i]){
+				I rr = B->ref_state(r,g,gg,sign);
+				j = binary_search(Ns,basis,rr);
+			}
 
 			if(j >= 0){
 				for(int k=0;k<nt;k++){

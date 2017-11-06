@@ -4,30 +4,19 @@ Tools module (:mod:`quspin.tools`)
 ==================================
 .. currentmodule:: quspin.tools
 
-Classes and functions to manipulate quantum states.
+Classes and functions to manipulate quantum states and do calculations.
 
-misc
-----
+evolution
+----------
 
-.. currentmodule:: quspin.tools.misc
+.. currentmodule:: quspin.tools.evolution
 
 .. autosummary::
    :toctree: generated/
 
+   ED_state_vs_time
+   evolve
    expm_multiply_parallel
-
-
-block_tools
-------------
-
-.. currentmodule:: quspin.tools.block_tools
-
-.. autosummary::
-   :toctree: generated/
-
-   block_ops 
-   block_diag_hamiltonian
-
 
 Floquet
 --------
@@ -40,7 +29,6 @@ Floquet
    Floquet
    Floquet_t_vec
 
-
 measurements
 -------------
 
@@ -51,15 +39,34 @@ measurements
 
    ent_entropy
    diag_ensemble
-   ED_state_vs_time
    obs_vs_time
+
+block_tools
+------------
+
+.. currentmodule:: quspin.tools.block_tools
+
+.. autosummary::
+   :toctree: generated/
+
+   block_ops 
+   block_diag_hamiltonian
+
+misc
+----
+
+.. currentmodule:: quspin.tools.misc
+
+.. autosummary::
+   :toctree: generated/
+
    project_op
    KL_div
    mean_level_spacing
-   evolve
 
 """
+from . import evolution
 from . import Floquet
-from . import block_tools
 from . import measurements
+from . import block_tools
 from . import misc

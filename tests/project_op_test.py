@@ -6,7 +6,7 @@ sys.path.insert(0,quspin_path)
 
 from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from quspin.operators import hamiltonian # Hamiltonian and observables
-from quspin.tools.measurements import project_op, KL_div, mean_level_spacing
+from quspin.tools.misc import project_op, KL_div, mean_level_spacing
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed()

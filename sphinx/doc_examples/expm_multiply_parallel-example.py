@@ -6,7 +6,7 @@ sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spin_basis_1d # bosonic Hilbert space
-from quspin.tools.misc import expm_multiply_parallel # expm_multiply_parallel
+from quspin.tools.evolution import expm_multiply_parallel # expm_multiply_parallel
 import numpy as np # general math functions
 #
 L=12 # syste size
