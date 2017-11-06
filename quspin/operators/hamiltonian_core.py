@@ -171,7 +171,7 @@ class hamiltonian(object):
 	Examples
 	---------
 
-	Here is an Examples how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian
+	Here is an example how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian
 	
 	.. math::
 		H(t) = \\sum_{j=0}^{L-1} \\left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\\Omega t)S^x_j \\right)
