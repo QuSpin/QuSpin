@@ -139,7 +139,7 @@ class basis_general(lattice_basis):
 			self._qs   = _np.array([],dtype=_np.int32)
 			self._pers = _np.array([],dtype=_np.int32)
 
-		nmax = self._pers.prod()
+		nmax = self._pers.prod()**2
 		self._n_dtype = _np.min_scalar_type(nmax)
 
 	def _reduce_n_dtype(self):
