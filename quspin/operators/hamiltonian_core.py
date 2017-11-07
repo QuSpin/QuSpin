@@ -762,7 +762,7 @@ class hamiltonian(object):
 		-----------
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
-			[see `enformce_pure`].
+			[see `enforce_pure`].
 		time : obj, optional
 			Can be either one of the following:
 
@@ -794,8 +794,46 @@ class hamiltonian(object):
 			 
 		"""
 
-		return _np.sqrt( (self*self).expt_value(V,time=time,check=check,enforce_pure=enforce_pure) 
-							- self.expt_value(V,time=time,check=check,enforce_pure=enforce_pure)**2 + 1E-22j).real
+		from .exp_op_core import isexp_op
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		# fluctuations = sqrt( expctH2 - expctH^2 )
+
+		V_dot=self.dot(V,time=time,check=check)
+		if _np.array(time).ndim > 0: # multiple time point expectation values
+			if _sp.issparse(V): # multiple pure states multiple time points
+				expctH2 = (V_dot.H.dot(V_dot)).diagonal()
+			else:
+				V = _np.asarray(V)
+				if V.ndim == 2: # multiple pure states multiple time points
+					expctH2 = _np.einsum("ij,ij->j",V_dot.conj(),V_dot)
+				elif V.ndim == 3: # multiple mixed states multiple time points
+					rexpctH2 = _np.einsum("iij->j",V_dot)
+		else:
+
+			if _sp.issparse(V):
+				if V.shape[0] != V.shape[1]: # pure states
+					expctH2 = _np.asscalar((V_dot.H.dot(V_dot)).toarray())
+				else: # density matrix
+					expctH2 = V.diagonal().sum()
+			else:
+				V_dot = _np.asarray(V_dot).squeeze()
+				if V.ndim == 1: # pure state
+					expctH2 = _np.vdot(V_dot,V_dot)
+				elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
+					rexpctH2 = _np.einsum("ij,ij->j",V_dot.conj(),V_dot)
+				else: # density matrix
+					expctH2 = V_dot.trace()
+
+		return _np.sqrt( expctH2 - self.expt_value(V,time=time,check=check,enforce_pure=enforce_pure)**2 + 1E-22j).real
 
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
@@ -807,7 +845,7 @@ class hamiltonian(object):
 		-----------
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
-			[see `enformce_pure`].
+			[see `enforce_pure`].
 		time : obj, optional
 			Can be either one of the following:
 
