@@ -751,6 +751,90 @@ class hamiltonian(object):
 
 		return (self.transpose().dot(V_transpose,time=time,check=check)).transpose()
 
+
+	def quant_fluct(self,V,time=0,check=True,enforce_pure=False):
+		"""Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.
+
+		.. math::
+			\\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enforce_pure`].
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* list: there are two possible outcomes:
+
+				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into the i-th column of `V` to get the i-th column of the output array.
+				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
+					in `time`. The results are then stacked such that the columns contain all the vectors. 
+
+				If either of these cases do not match, an error is thrown.
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+		check : bool, optional
+			
+		Returns
+		--------
+		float
+			Quantum fluctuations of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+			 
+		"""
+
+		from .exp_op_core import isexp_op
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		# fluctuations = sqrt( expctH2 - expctH^2 )
+
+		V_dot=self.dot(V,time=time,check=check)
+		if _np.array(time).ndim > 0: # multiple time point expectation values
+			if _sp.issparse(V): # multiple pure states multiple time points
+				expctH2 = (V_dot.H.dot(V_dot)).diagonal()
+			else:
+				V = _np.asarray(V)
+				if V.ndim == 2: # multiple pure states multiple time points
+					expctH2 = _np.einsum("ij,ij->j",V_dot.conj(),V_dot)
+				elif V.ndim == 3: # multiple mixed states multiple time points
+					rexpctH2 = _np.einsum("iij->j",V_dot)
+		else:
+
+			if _sp.issparse(V):
+				if V.shape[0] != V.shape[1]: # pure states
+					expctH2 = _np.asscalar((V_dot.H.dot(V_dot)).toarray())
+				else: # density matrix
+					expctH2 = V.diagonal().sum()
+			else:
+				V_dot = _np.asarray(V_dot).squeeze()
+				if V.ndim == 1: # pure state
+					expctH2 = _np.vdot(V_dot,V_dot)
+				elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
+					rexpctH2 = _np.einsum("ij,ij->j",V_dot.conj(),V_dot)
+				else: # density matrix
+					expctH2 = V_dot.trace()
+
+		return _np.sqrt( expctH2 - self.expt_value(V,time=time,check=check,enforce_pure=enforce_pure)**2 + 1E-22j).real
+
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
 
@@ -761,7 +845,7 @@ class hamiltonian(object):
 		-----------
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
-			[see `enformce_pure`].
+			[see `enforce_pure`].
 		time : obj, optional
 			Can be either one of the following:
 
