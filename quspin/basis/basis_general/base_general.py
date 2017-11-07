@@ -207,6 +207,7 @@ class basis_general(lattice_basis):
 		c = _np.ones_like(self._basis,dtype=dtype)
 		sign = _np.ones_like(self._basis,dtype=_np.int8)
 		c[:] = self._n[:]
+		c *= self._pers.prod()
 		_np.sqrt(c,out=c)
 		_np.power(c,-1,out=c)
 		index_type = _np.min_scalar_type(-(self._sps**self._N))
