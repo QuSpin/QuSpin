@@ -1,6 +1,6 @@
 import cython
 from scipy.misc import comb
-from general_basis_core cimport dtype,index_type
+from general_basis_core cimport dtype,index_type,norm_type
 import scipy.sparse as _sp
 
 include "source/general_basis_core.pyx"
@@ -48,7 +48,7 @@ cdef class higher_spin_basis_core_wrap_32(general_basis_core_wrap_32):
 			self._basis_core = new higher_spin_basis_core[uint32_t](N,sps)
 
 	@cython.boundscheck(False)
-	def make_basis(self,uint32_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
+	def make_basis(self,uint32_t[:] basis,norm_type[:] n,object Np=None,uint8_t[:] count=None):
 		cdef int Ns_1 = 0
 		cdef int Ns_2 = 0
 		cdef int Ns_3 = 0
@@ -57,14 +57,14 @@ cdef class higher_spin_basis_core_wrap_32(general_basis_core_wrap_32):
 		cdef mem_MAX = basis.shape[0]
 
 		if Np is None:
-			Ns_2 = self.make_basis_full(basis,n)
+			Ns_2 = self.make_basis_full[norm_type](basis,n)
 		elif type(Np) is int:
-			Ns_2 = self.make_basis_pcon(Np,basis,n)
+			Ns_2 = self.make_basis_pcon[norm_type](Np,basis,n)
 		else:
 			Np_iter = iter(Np)
 			if count is None:
 				for np in Np_iter:
-					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					Ns_1 = self.make_basis_pcon[norm_type](np,basis[Ns_2:],n[Ns_2:])
 					if Ns_1 < 0:
 						return Ns_1
 					else:
@@ -75,7 +75,7 @@ cdef class higher_spin_basis_core_wrap_32(general_basis_core_wrap_32):
 			else:
 
 				for np in Np_iter:
-					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					Ns_1 = self.make_basis_pcon[norm_type](np,basis[Ns_2:],n[Ns_2:])
 					if Ns_1 < 0:
 						return Ns_1
 					else:
@@ -91,7 +91,7 @@ cdef class higher_spin_basis_core_wrap_32(general_basis_core_wrap_32):
 		return Ns_2
 
 	@cython.boundscheck(False)
-	cdef npy_intp make_basis_full(self,uint32_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_full(self,uint32_t[:] basis,norm_type[:] n):
 		cdef npy_intp Ns = (self._sps**self._N)
 		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
@@ -100,7 +100,7 @@ cdef class higher_spin_basis_core_wrap_32(general_basis_core_wrap_32):
 		return Ns
 
 	@cython.boundscheck(False)
-	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_pcon(self,int Np,uint32_t[:] basis,norm_type[:] n):
 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
 		cdef npy_intp mem_MAX = basis.shape[0]
 		cdef int l = Np/(self._sps-1)
@@ -126,7 +126,7 @@ cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
 			self._basis_core = new higher_spin_basis_core[uint64_t](N,sps)
 
 	@cython.boundscheck(False)
-	def make_basis(self,uint64_t[:] basis,uint16_t[:] n,object Np=None,uint8_t[:] count=None):
+	def make_basis(self,uint64_t[:] basis,norm_type[:] n,object Np=None,uint8_t[:] count=None):
 		cdef int Ns_1 = 0
 		cdef int Ns_2 = 0
 		cdef int Ns_3 = 0
@@ -135,14 +135,14 @@ cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
 		cdef mem_MAX = basis.shape[0]
 
 		if Np is None:
-			Ns_2 = self.make_basis_full(basis,n)
+			Ns_2 = self.make_basis_full[norm_type](basis,n)
 		elif type(Np) is int:
-			Ns_2 = self.make_basis_pcon(Np,basis,n)
+			Ns_2 = self.make_basis_pcon[norm_type](Np,basis,n)
 		else:
 			Np_iter = iter(Np)
 			if count is None:
 				for np in Np_iter:
-					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					Ns_1 = self.make_basis_pcon[norm_type](np,basis[Ns_2:],n[Ns_2:])
 					if Ns_1 < 0:
 						return Ns_1
 					else:
@@ -154,7 +154,7 @@ cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
 			else:
 
 				for np in Np_iter:
-					Ns_1 = self.make_basis_pcon(np,basis[Ns_2:],n[Ns_2:])
+					Ns_1 = self.make_basis_pcon[norm_type](np,basis[Ns_2:],n[Ns_2:])
 					if Ns_1 < 0:
 						return Ns_1
 					else:
@@ -170,7 +170,7 @@ cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
 		return Ns_2
 
 	@cython.boundscheck(False)
-	cdef npy_intp make_basis_full(self,uint64_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_full(self,uint64_t[:] basis,norm_type[:] n):
 		cdef npy_intp Ns = (self._sps**self._N)
 		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
@@ -179,7 +179,7 @@ cdef class higher_spin_basis_core_wrap_64(general_basis_core_wrap_64):
 		return Ns
 
 	@cython.boundscheck(False)
-	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,uint16_t[:] n):
+	cdef npy_intp make_basis_pcon(self,int Np,uint64_t[:] basis,norm_type[:] n):
 		cdef npy_intp Ns = H_dim(Np,self._N,self._sps-1)
 		cdef npy_intp mem_MAX = basis.shape[0]
 		cdef int l = Np/(self._sps-1)

@@ -2,7 +2,7 @@
 #ifndef _EXPM_MULTIPLY_H
 #define _EXPM_MULTIPLY_H
 
-#include <omp.h>
+#include "openmp.h"
 #include <cmath>
 #include <complex>
 #include <iostream>

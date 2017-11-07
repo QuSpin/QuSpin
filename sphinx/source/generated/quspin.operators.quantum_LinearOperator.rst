@@ -31,19 +31,4 @@ quspin\.operators\.quantum\_LinearOperator
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~quantum_LinearOperator.H
-      ~quantum_LinearOperator.Ns
-      ~quantum_LinearOperator.T
-      ~quantum_LinearOperator.basis
-      ~quantum_LinearOperator.diagonal
-      ~quantum_LinearOperator.dtype
-      ~quantum_LinearOperator.get_shape
-      ~quantum_LinearOperator.ndim
-      ~quantum_LinearOperator.shape
-      ~quantum_LinearOperator.static_list
-   
    

@@ -3,17 +3,15 @@
 
 #include <complex>
 #include <cmath>
-#include <iostream>
-#include <iomanip>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
 template<class I>
 I inline boson_map_bits(I s,const int map[],const I M[],const int sps,const int N){
 	I ss = 0;
-	for(int i=0;i<N;i++){
+	for(int i=N-1;i>=0;i--){
 		int j = map[i];
-		ss += ( j<0 ? (sps-(s%sps)-1)*M[-(j+1)] : (s%sps)*M[j] );
+		ss += ( j<0 ? (sps-(s%sps)-1)*M[N+j] : (s%sps)*M[N-j-1] );
 		s /= sps;
 	}
 	return ss;
@@ -68,14 +66,6 @@ class boson_basis_core : public general_basis_core<I>
 			}
 		}
 
-		void print(I s){
-			std::cout << "|";
-			for(int i=0;i<general_basis_core<I>::N;i++){
-				std::cout << ((s/M[i])%sps) << " ";
-			}
-			std::cout << ">";
-		}
-
 		bool check_state(I s){
 			int sign = 1;
 			return check_state_core<I>(this,s,sign,s,general_basis_core<I>::nt,0);
@@ -94,6 +84,9 @@ class boson_basis_core : public general_basis_core<I>
 		}
 
 		I inline next_state_pcon(I s){
+			if(s == 0){
+				return s;
+			}
 			int n=0;
 			for(int i=0;i<general_basis_core<I>::N-1;i++){
 				unsigned int b1 = (s/M[i])%sps;

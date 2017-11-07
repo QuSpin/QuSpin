@@ -171,7 +171,7 @@ class hamiltonian(object):
 	Examples
 	---------
 
-	Here is an Examples how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian
+	Here is an example how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian
 	
 	.. math::
 		H(t) = \\sum_{j=0}^{L-1} \\left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\\Omega t)S^x_j \\right)
@@ -530,6 +530,26 @@ class hamiltonian(object):
 	def H(self):
 		""":obj:`hamiltonian`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
+
+	@property
+	def nbytes(self):
+		nbytes = 0
+		if _sp.issparse(self._static):
+			nbytes += self._static.data.nbytes
+			nbytes += self._static.indices.nbytes
+			nbytes += self._static.indptr.nbytes
+		else:
+			nbytes += self._static.nbytes
+
+		for Hd in itervalues(self._dynamic):
+			if _sp.issparse(Hd):
+				nbytes += Hd.data.nbytes
+				nbytes += Hd.indices.nbytes
+				nbytes += Hd.indptr.nbytes
+			else:
+				nbytes += Hd.nbytes	
+
+		return nbytes	
 
 	def check_is_dense(self):
 		""" updates attribute `_.is_dense`."""
@@ -2528,10 +2548,18 @@ class hamiltonian(object):
 	def _imul_hamiltonian(self,other):
 		if self.dynamic and other.dynamic:
 			self._is_dense = self._is_dense or other._is_dense
-
 			new_dynamic_ops = {}
 			# create new dynamic operators coming from
-			# self.static * other
+		
+			# self.static * other.static
+			if _sp.issparse(self.static):
+				new_static_op = self.static.dot(other._static)
+			elif _sp.issparse(other._static):
+				new_static_op = self.static * other._static
+			else:
+				new_static_op = _np.matmul(self.static,other._static)
+
+			# self.static * other.dynamic
 			for func,Hd in iteritems(other._dynamic):
 				if _sp.issparse(self.static):
 					Hmul = self.static.dot(Hd)
@@ -2543,8 +2571,35 @@ class hamiltonian(object):
 				if not _check_almost_zero(Hmul):
 					new_dynamic_ops[func] = Hmul
 
+			# self.dynamic * other.static
+			for func,Hd in iteritems(self._dynamic):
+				if _sp.issparse(Hd):
+					Hmul = Hd.dot(other._static)
+				elif _sp.issparse(other._static):
+					Hmul = Hd * other._static
+				else:
+					Hmul = _np.matmul(Hd,other._static)
 
 
+				if func in new_dynamic_ops:
+					try:
+						new_dynamic_ops[func] += Hmul
+					except NotImplementedError:
+						new_dynamic_ops[func] = new_dynamic_ops[func] + Hmul
+
+					try:
+						new_dynamic_ops[func].sum_duplicates()
+						new_dynamic_ops[func].eliminate_zeros()
+					except: pass
+					if _check_almost_zero(new_dynamic_ops[func]):
+						new_dynamic_ops.pop(func)
+						
+				else:
+					if not _check_almost_zero(Hmul):
+						new_dynamic_ops[func] = Hmul
+
+
+			# self.dynamic * other.dynamic
 			for func1,H1 in iteritems(self._dynamic):
 				for func2,H2 in iteritems(other._dynamic):
 
@@ -2574,7 +2629,7 @@ class hamiltonian(object):
 						if not _check_almost_zero(H12):
 							new_dynamic_ops[func12] = H12
 
-
+			self._static = new_static_op
 			self._dynamic = new_dynamic_ops
 			return self.copy()
 		elif self.dynamic:

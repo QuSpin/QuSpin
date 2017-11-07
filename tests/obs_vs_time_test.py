@@ -7,7 +7,8 @@ sys.path.insert(0,quspin_path)
 
 from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from quspin.operators import hamiltonian, exp_op # Hamiltonian and observables
-from quspin.tools.measurements import obs_vs_time,ED_state_vs_time
+from quspin.tools.measurements import obs_vs_time
+from quspin.tools.evolution import ED_state_vs_time
 import numpy as np
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed(0)

@@ -242,9 +242,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
@@ -275,9 +275,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
@@ -307,9 +307,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
@@ -339,9 +339,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
@@ -368,9 +368,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
@@ -399,9 +399,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
@@ -429,9 +429,9 @@ class basis_1d(lattice_basis):
 				self._M = M[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._M = _np.resize(M,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._M = _np.array([],dtype=M.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 			
 			self._Ns = Ns
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
@@ -452,8 +452,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -476,8 +476,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -500,8 +500,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -522,8 +522,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -547,8 +547,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -572,8 +572,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -595,8 +595,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 				
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -621,8 +621,8 @@ class basis_1d(lattice_basis):
 				self._N = N[Ns-1::-1].copy()
 				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.resize(N,(0,))
-				self._basis = _np.resize(basis,(0,))
+				self._N = _np.array([],dtype=N.dtype)
+				self._basis = _np.array([],dtype=basis.dtype)
 
 			self._Ns = Ns
 			self._op_args=[self._N,self._basis,self._L,self._pars]
@@ -825,7 +825,7 @@ class basis_1d(lattice_basis):
 			del mask
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = sin(dtype(k*r))
+				c[ind_neg] = -sin(dtype(k*r))
 				_np.true_divide(c,norms,c)
 		else:
 			ind_pos = _np.fromiter(range(v0.shape[0]),count=v0.shape[0],dtype=_np.int32)
@@ -836,7 +836,7 @@ class basis_1d(lattice_basis):
 				elif k == pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(dtype(-1.0j*k*r))
+					c[:] = exp(dtype(1.0j*k*r))
 				_np.true_divide(c,norms,c)
 
 		if sparse:
@@ -912,7 +912,7 @@ class basis_1d(lattice_basis):
 			del mask
 			def C(r,k,c,norms,dtype,ind_neg,ind_pos):
 				c[ind_pos] = cos(dtype(k*r))
-				c[ind_neg] = sin(dtype(k*r))
+				c[ind_neg] = -sin(dtype(k*r))
 				_np.true_divide(c,norms,c)
 		else:
 			if (type(kblock) is int):
@@ -927,7 +927,7 @@ class basis_1d(lattice_basis):
 				elif k == pi:
 					c[:] = (-1.0)**r
 				else:
-					c[:] = exp(dtype(-1.0j*k*r))
+					c[:] = exp(dtype(1.0j*k*r))
 				_np.true_divide(c,norms,c)
 
 
