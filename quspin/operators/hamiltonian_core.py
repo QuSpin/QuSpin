@@ -770,7 +770,7 @@ class hamiltonian(object):
 		"""Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.
 
 		.. math::
-			\\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }
+			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2
 
 		Parameters
 		-----------
@@ -817,46 +817,19 @@ class hamiltonian(object):
 
 		# fluctuations =  expctH2 - expctH^2
 		kwargs = dict(time=time,enforce_pure=enforce_pure)
+		V_dot=self.dot(V,time=time,check=check)
+		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
 
 		if V.shape[0] != V.shape[1] or enforce_pure:
-			V_dot=self.dot(V,time=time,check=check)
 			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
-			expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
 		else:
-			V_dot=self.dot(V,time=time,check=check)
-			expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
 			V_dot=self.dot(V_dot,time=time,check=check)
 			sq_expt_value = self._expt_value_core(V,V_dot,**kwargs)
 
 		return expt_value_sq - sq_expt_value
 
 
-		# if _np.array(time).ndim > 0: # multiple time point expectation values
-		# 	if _sp.issparse(V): # multiple pure states multiple time points
-		# 		expctH2 = (V_dot.H.dot(V_dot)).diagonal()
-		# 	else:
-		# 		V = _np.asarray(V)
-		# 		if V.ndim == 2: # multiple pure states multiple time points
-		# 			expctH2 = _np.einsum("ij,ij->j",V_dot.conj(),V_dot)
-		# 		elif V.ndim == 3: # multiple mixed states multiple time points
-		# 			rexpctH2 = _np.einsum("iij->j",V_dot)
-		# else:
 
-		# 	if _sp.issparse(V):
-		# 		if V.shape[0] != V.shape[1]: # pure states
-		# 			expctH2 = _np.asscalar((V_dot.H.dot(V_dot)).toarray())
-		# 		else: # density matrix
-		# 			expctH2 = V.diagonal().sum()
-		# 	else:
-		# 		V_dot = _np.asarray(V_dot).squeeze()
-		# 		if V.ndim == 1: # pure state
-		# 			expctH2 = _np.vdot(V_dot,V_dot)
-		# 		elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
-		# 			rexpctH2 = _np.einsum("ij,ij->j",V_dot.conj(),V_dot)
-		# 		else: # density matrix
-		# 			expctH2 = V_dot.trace()
-
-		# return _np.sqrt( expctH2 - self.expt_value(V,time=time,check=check,enforce_pure=enforce_pure)**2 + 1E-22j).real
 
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
@@ -907,31 +880,6 @@ class hamiltonian(object):
 
 		
 		V_dot = self.dot(V,time=time,check=check)
-		# if _np.array(time).ndim > 0: # multiple time point expectation values
-		# 	if _sp.issparse(V): # multiple pure states multiple time points
-		# 		return (V.H.dot(V_dot)).diagonal()
-		# 	else:
-		# 		V = _np.asarray(V)
-		# 		if V.ndim == 2: # multiple pure states multiple time points
-		# 			return _np.einsum("ij,ij->j",V.conj(),V_dot)
-		# 		elif V.ndim == 3: # multiple mixed states multiple time points
-		# 			return _np.einsum("iij->j",V_dot)
-
-		# else:
-
-		# 	if _sp.issparse(V):
-		# 		if V.shape[0] != V.shape[1]: # pure states
-		# 			return _np.asscalar((V.H.dot(V_dot)).toarray())
-		# 		else: # density matrix
-		# 			return V.diagonal().sum()
-		# 	else:
-		# 		V_dot = _np.asarray(V_dot).squeeze()
-		# 		if V.ndim == 1: # pure state
-		# 			return _np.vdot(V,V_dot)
-		# 		elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
-		# 			return _np.einsum("ij,ij->j",V.conj(),V_dot)
-		# 		else: # density matrix
-		# 			return V_dot.trace()
 		return self._expt_value_core(V,V_dot,time=time,enforce_pure=enforce_pure)
 
 
