@@ -84,20 +84,12 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 {
 	bool err = true;
 	const int nt = B->get_nt();
-
-	double norm = 1.0;
-
-	for(int i=0;i<nt;i++){
-		norm *= B->pers[i];
-	}
-
-
-	#pragma omp parallel for schedule(dynamic) firstprivate(norm)
+	#pragma omp parallel for schedule(dynamic)
 	for(npy_intp k=0;k<Ns;k++){
 		if(!err)
 			continue;
 
-		std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
+		std::complex<double> c = 1.0/std::sqrt(double(n[k]));
 		int sign = 1;
 		bool local_err = get_vec_rep(B,basis[k],sign,nt,n_vec,Ns_full,&in[k*n_vec],c,out,0);
 		if(!local_err){

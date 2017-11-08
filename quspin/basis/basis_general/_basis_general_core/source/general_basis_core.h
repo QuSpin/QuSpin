@@ -106,12 +106,12 @@ double get_norm_core(general_basis_core<I> *B,I t,int sign, double k, double nor
 		}
 	}
 
-	// if(depth==0){
-	// 	// finally multiply by product of all the periods.
-	// 	for(int i=0;i<nt;i++){
-	// 		norm *= B->pers[i];
-	// 	}
-	// }
+	if(depth==0){
+		// finally multiply by product of all the periods.
+		for(int i=0;i<nt;i++){
+			norm *= B->pers[i];
+		}
+	}
 
 	return norm;
 }

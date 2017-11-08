@@ -1,6 +1,6 @@
 package:
   name: quspin
-  version: "0.2.8b"
+  version: "0.2.7"
 
 source:
   path: ./
