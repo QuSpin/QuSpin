@@ -101,13 +101,14 @@ def test_gen_basis_spin(l_max,S="1/2"):
 		basis_1d = spin_basis_1d(L,Nup=Nup,**basis_blocks)
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
 		n = basis_1d._get_norms(np.float64)**2
+		n_gen = (gen_basis._n.astype(np.float64))*gen_basis._pers.prod()
 
 		if basis_1d.Ns != gen_basis.Ns:
 			print(basis_1d)
 			print(gen_basis)
 			raise ValueError("basis size mismatch")
 		np.testing.assert_allclose(basis_1d._basis-gen_basis._basis,0,atol=1e-6)
-		np.testing.assert_allclose(n- gen_basis._n,0,atol=1e-6)
+		np.testing.assert_allclose(n-n_gen ,0,atol=1e-6)
 
 		for l in range(1,l_max+1):
 			for i0 in range(0,L-l+1,1):

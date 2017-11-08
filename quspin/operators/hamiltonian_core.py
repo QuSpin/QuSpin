@@ -19,6 +19,12 @@ from operator import mul
 import functools
 from six import iteritems,itervalues,viewkeys
 
+try:
+	from itertools import izip as zip
+except ImportError:
+	pass
+
+
 import warnings
 
 
@@ -574,21 +580,17 @@ class hamiltonian(object):
 
 		Parameters
 		-----------
-		V : numpy.ndarray
-			Vector (quantums state) to multiply the `hamiltonian` operator with.
+		V : {numpy.ndarray, scipy.spmatrix}
+			Array comtaining the quantums state to multiply the `hamiltonian` operator with.
 		time : obj, optional
 			Can be either one of the following:
 
-			* float: time to evalute the time-dependent part of the operator at (if existent). 
+			* float: time to evalute the time-dependent part of the operator at (if operator has time dependence). 
 				Default is `time = 0`.
-			* list: there are two possible outcomes:
+			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time 
+					and dotted into `V[...,i]` to get the i-th slice of the output array. Here V must be either 
+					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.
 
-				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
-					and dotted into the i-th column of `V` to get the i-th column of the output array.
-				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
-					in `time`. The results are then stacked such that the columns contain all the vectors. 
-
-				If either of these cases do not match, an error is thrown.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 			
@@ -618,7 +620,6 @@ class hamiltonian(object):
 			if V.ndim > 3:
 				raise ValueError("Expecting V.ndim < 4.")
 
-
 			time = _np.asarray(time)
 			if time.ndim > 1:
 				raise ValueError("Expecting time to be one dimensional array-like.")
@@ -631,14 +632,13 @@ class hamiltonian(object):
 					raise ValueError("For non-scalar times V.shape[-1] must be equal to len(time).")
 			else:
 				V = _np.asarray(V)
+				out_shape = V.shape
 				if V.ndim == 2 and V.shape[-1] == time.shape[0]:
 					if V.shape[0] != self._shape[1]:
 						raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-					V = V.T
-					V_dot = _np.vstack([self.dot(v,time=t,check=check) for v,t in zip(V[:],time)]).T
-					return V_dot
-
+					V_iter = iter(V.T[:])
+					
 				elif V.ndim == 3 and V.shape[-1] == time.shape[0]:
 					if V.shape[0] != self._shape[1]:
 						raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
@@ -646,13 +646,14 @@ class hamiltonian(object):
 					if V.shape[0] != V.shape[1]:
 						raise ValueError("Density matricies must be square!")
 
-					V = V.transpose((2,0,1))
-					V_dot = _np.dstack([self.dot(v,time=t,check=check) for v,t in zip(V[:],time)])
-
-					return V_dot
+					V_iter = iter(V.transpose((2,0,1))[:])
 
 				else:
 					raise ValueError("For non-scalar times V.shape[-1] must be equal to len(time).")
+
+				V_dot = _np.zeros(out_shape,dtype=_np.result_type(V.dtype,self._dtype))
+				for i,(v,t) in enumerate(zip(V_iter,time)):
+					V_dot[...,i] = self.dot(v,time=t,check=check)
 		else:	
 			if not check:
 				V_dot = self._static.dot(V)	
@@ -720,14 +721,9 @@ class hamiltonian(object):
 
 			* float: time to evalute the time-dependent part of the operator at (if existent). 
 				Default is `time = 0`.
-			* list: there are two possible outcomes:
-
-				-- if `V.shape[0] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
-					and dotted into the i-th row of `V` to get the i-th row of the output array.
-				-- if `V.shape[0] == 1` or `V.shape[0] == 0`, the `_.rdot` is evaluated on `V` for each time
-					in `time`. The results are then stacked such that the columns contain all the vectors. 
-
-				If either of these cases do not match, an error is thrown.
+			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time 
+					and the mattrix multiplication on the right is calculated with respect to `V[...,i]`. Here V must be either 
+					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 			
@@ -744,12 +740,94 @@ class hamiltonian(object):
 		corresponds to :math:`B = AH`. 
 	
 		"""
-		try:
-			V_transpose = V.transpose()
-		except AttributeError:
-			V_transpose = _np.asanyarray(V).transpose()
+		# try:
+		# 	V_transpose = V.transpose()
+		# except AttributeError:
+		# 	V_transpose = _np.asanyarray(V).transpose()
 
-		return (self.transpose().dot(V_transpose,time=time,check=check)).transpose()
+		try:
+			ndim = V.ndim
+		except AttributeError:
+			V = _np.asanyarray(V)
+			ndim = V.ndim
+
+		if ndim not in [1,2,3]:
+			raise ValueError("expecting V.ndim < 4.")
+
+		if ndim == 1:
+			return self.transpose().dot(V,time=time,check=check)
+		elif ndim == 2:
+			if _np.array(times).ndim>0:
+				return self.transpose().dot(V,time=time,check=check)
+			else:
+				return self.transpose().dot(V.transpose(),time=time,check=check).transpose()
+		else:
+			V_transpose = V.transpose((1,0,2))
+			return self.transpose().dot(V_transpose,time=time,check=check).transpose((1,0,2))
+
+
+	def quant_fluct(self,V,time=0,check=True,enforce_pure=False):
+		"""Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.
+
+		.. math::
+			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enforce_pure`].
+		time : obj, optional
+			Can be either one of the following:
+
+			* float: time to evalute the time-dependent part of the operator at (if existent). 
+				Default is `time = 0`.
+			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time 
+					and the fluctuations are calculated with respect to `V[...,i]`. Here V must be either 
+					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.
+
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+		check : bool, optional
+			
+		Returns
+		--------
+		float
+			Quantum fluctuations of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`\\Delta H^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 `. 
+			 
+		"""
+
+		from .exp_op_core import isexp_op
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		# fluctuations =  expctH2 - expctH^2
+		kwargs = dict(time=time,enforce_pure=enforce_pure)
+
+		V_dot=self.dot(V,time=time,check=check)
+		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
+
+		if V.shape[0] != V.shape[1] or enforce_pure:
+			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
+		else:
+			V_dot=self.dot(V_dot,time=time,check=check)
+			sq_expt_value = self._expt_value_core(V,V_dot,**kwargs)
+
+		return expt_value_sq - sq_expt_value
 
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
@@ -761,20 +839,15 @@ class hamiltonian(object):
 		-----------
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
-			[see `enformce_pure`].
+			[see `enforce_pure`].
 		time : obj, optional
 			Can be either one of the following:
 
 			* float: time to evalute the time-dependent part of the operator at (if existent). 
 				Default is `time = 0`.
-			* list: there are two possible outcomes:
-
-				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
-					and dotted into the i-th column of `V` to get the i-th column of the output array.
-				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
-					in `time`. The results are then stacked such that the columns contain all the vectors. 
-
-				If either of these cases do not match, an error is thrown.
+			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time 
+					and the expectation value is calculated with respect to `V[...,i]`. Here V must be either 
+					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.
 		enforce_pure : bool, optional
 			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
 			in the columns.
@@ -805,32 +878,39 @@ class hamiltonian(object):
 
 		
 		V_dot = self.dot(V,time=time,check=check)
+
+		return self._expt_value_core(V,V_dot,time=time,enforce_pure=enforce_pure)
+
+
+	def _expt_value_core(self,V_left,V_right,time=0,enforce_pure=False):
+		# helper functin to claculate expt_value() and quant_fluct()
+		
 		if _np.array(time).ndim > 0: # multiple time point expectation values
-			if _sp.issparse(V): # multiple pure states multiple time points
-				return (V.H.dot(V_dot)).diagonal()
+			if _sp.issparse(V_right): # multiple pure states multiple time points
+				return (V_left.H.dot(V_right)).diagonal()
 			else:
-				V = _np.asarray(V)
+				V_left = _np.asarray(V_left)
 				if V.ndim == 2: # multiple pure states multiple time points
-					return _np.einsum("ij,ij->j",V.conj(),V_dot)
+					return _np.einsum("ij,ij->j",V_left.conj(),V_right)
 				elif V.ndim == 3: # multiple mixed states multiple time points
-					return _np.einsum("iij->j",V_dot)
+					return _np.einsum("iij->j",V_right)
 
 		else:
 
-			if _sp.issparse(V):
-				if V.shape[0] != V.shape[1]: # pure states
-					return _np.asscalar((V.H.dot(V_dot)).toarray())
+			if _sp.issparse(V_right):
+				if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
+					return _np.asscalar((V_left.H.dot(V_right)).toarray())
 				else: # density matrix
-					return V.diagonal().sum()
+					return V_right.diagonal().sum()
 			else:
-				V_dot = _np.asarray(V_dot).squeeze()
-				if V.ndim == 1: # pure state
-					return _np.vdot(V,V_dot)
-				elif (V.ndim == 2 and V.shape[0] != V.shape[1]) or enforce_pure: # multiple pure states
-					return _np.einsum("ij,ij->j",V.conj(),V_dot)
+				V_right = _np.asarray(V_right).squeeze()
+				if V_right.ndim == 1: # pure state
+					return _np.vdot(V_left,V_right)
+				elif V_left.shape[0] != V_left.shape[1] or enforce_pure: # multiple pure states
+					return _np.einsum("ij,ij->j",V_left.conj(),V_right)
 				else: # density matrix
-					return V_dot.trace()
-			
+					return V_right.trace()
+		
 	def matrix_ele(self,Vl,Vr,time=0,diagonal=False,check=True):
 		"""Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.
 
@@ -843,23 +923,18 @@ class hamiltonian(object):
 
 		Parameters
 		-----------
-		Vl : numpy.ndarray
+		Vl : {numpy.ndarray, scipy.spmatrix}
 			Vector(s)/state(s) to multiple with on left side.
-		Vl : numpy.ndarray
+		Vl : {numpy.ndarray, scipy.spmatrix}
 			Vector(s)/state(s) to multiple with on right side.
 		time : obj, optional
 			Can be either one of the following:
 
 			* float: time to evalute the time-dependent part of the operator at (if existent). 
 				Default is `time = 0`.
-			* list: there are two possible outcomes:
-
-				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time 
-					and dotted into the i-th column of `V` to get the i-th column of the output array.
-				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time
-					in `time`. The results are then stacked such that the columns contain all the vectors. 
-
-				If either of these cases do not match, an error is thrown.
+			* (N,) array_like: if `V.shape[1] == N`, the `hamiltonian` operator is evaluated at the i-th time 
+					and the fluctuations are calculated with respect to `V[:,i]`. Here V must be a 2-d array
+					containing pure states in the columns of the array.
 		diagonal : bool, optional
 			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
 		check : bool,
@@ -885,6 +960,10 @@ class hamiltonian(object):
 			else:
 				return Vl.T.conj().dot(Vr)
  
+ 		if diagonal:
+			if Vl.shape[1] != Vr.shape[1]:
+				raise ValueError("number of vectors must be equal for diagonal=True.")
+
 		if Vr.ndim > 2:
 			raise ValueError('Expecting Vr to have ndim < 3')
 
@@ -2548,10 +2627,18 @@ class hamiltonian(object):
 	def _imul_hamiltonian(self,other):
 		if self.dynamic and other.dynamic:
 			self._is_dense = self._is_dense or other._is_dense
-
 			new_dynamic_ops = {}
 			# create new dynamic operators coming from
-			# self.static * other
+		
+			# self.static * other.static
+			if _sp.issparse(self.static):
+				new_static_op = self.static.dot(other._static)
+			elif _sp.issparse(other._static):
+				new_static_op = self.static * other._static
+			else:
+				new_static_op = _np.matmul(self.static,other._static)
+
+			# self.static * other.dynamic
 			for func,Hd in iteritems(other._dynamic):
 				if _sp.issparse(self.static):
 					Hmul = self.static.dot(Hd)
@@ -2563,8 +2650,35 @@ class hamiltonian(object):
 				if not _check_almost_zero(Hmul):
 					new_dynamic_ops[func] = Hmul
 
+			# self.dynamic * other.static
+			for func,Hd in iteritems(self._dynamic):
+				if _sp.issparse(Hd):
+					Hmul = Hd.dot(other._static)
+				elif _sp.issparse(other._static):
+					Hmul = Hd * other._static
+				else:
+					Hmul = _np.matmul(Hd,other._static)
 
 
+				if func in new_dynamic_ops:
+					try:
+						new_dynamic_ops[func] += Hmul
+					except NotImplementedError:
+						new_dynamic_ops[func] = new_dynamic_ops[func] + Hmul
+
+					try:
+						new_dynamic_ops[func].sum_duplicates()
+						new_dynamic_ops[func].eliminate_zeros()
+					except: pass
+					if _check_almost_zero(new_dynamic_ops[func]):
+						new_dynamic_ops.pop(func)
+						
+				else:
+					if not _check_almost_zero(Hmul):
+						new_dynamic_ops[func] = Hmul
+
+
+			# self.dynamic * other.dynamic
 			for func1,H1 in iteritems(self._dynamic):
 				for func2,H2 in iteritems(other._dynamic):
 
@@ -2594,7 +2708,7 @@ class hamiltonian(object):
 						if not _check_almost_zero(H12):
 							new_dynamic_ops[func12] = H12
 
-
+			self._static = new_static_op
 			self._dynamic = new_dynamic_ops
 			return self.copy()
 		elif self.dynamic:
