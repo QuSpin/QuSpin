@@ -4,6 +4,7 @@ from __future__ import print_function, division
 
 # need linear algebra packages
 import numpy as _np 
+from functools import partial as _partial
 
 # needed for isinstance only
 from .expm_multiply_parallel_core import expm_multiply_parallel
@@ -133,6 +134,8 @@ def ED_state_vs_time(psi,E,V,times,iterate=False):
 			_np.exp(exp_t,exp_t)
 			
 			return _np.einsum("ij,tj,jk,tk,lk->ilt",V,exp_t,rho_d,exp_t.conj(),V.conj())
+
+
 
 
 def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbose=False,imag_time=False,iterate=False,f_params=(),**solver_args):
@@ -271,9 +274,8 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	shape0 = v0.shape
 	
 	if ndim == 2:
-		if v0.shape[0] != v0.shape[1]:
-			v0 = v0.ravel()
-			shape0_ravelled=v0.shape
+		v0 = v0.ravel()
+		shape0_ravelled=v0.shape
 	 
 	
 	if _np.iscomplexobj(times):
@@ -293,10 +295,17 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 			v0[shape0_ravelled[0]:] = v1.imag
 
 		solver = ode(f) # y_f = f(t,y,*args)
+		solver.set_f_params(*f_params)
 	elif real:
 		solver = ode(f) # y_f = f(t,y,*args)
+		solver.set_f_params(*f_params)
 	else:
-		solver = complex_ode(f) # y_f = f(t,y,*args)
+		if len(f_params)>0:
+
+			f_p = lambda t,y:f(t,y,*f_params)
+			solver = complex_ode(f_p) # y_f = f(t,y,*args)
+		else:
+			solver = complex_ode(f) # y_f = f(t,y,*args)
 
 	if solver_name in ["dop853","dopri5"]:
 		if solver_args.get("nsteps") is None:
@@ -308,7 +317,6 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 
 
 	solver.set_integrator(solver_name,**solver_args)
-	solver.set_f_params(*f_params)
 	solver.set_initial_value(v0, t0)
 
 	if _np.isscalar(times):

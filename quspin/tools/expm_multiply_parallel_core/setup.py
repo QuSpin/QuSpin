@@ -28,8 +28,9 @@ def configuration(parent_package='', top_path=None):
             extra_compile_args = []
             extra_link_args = []
         else:
-            extra_compile_args = ["-fopenmp"]
-            extra_link_args = ["-fopenmp"]
+            # extra_compile_args = ["-fopenmp"]
+            # extra_link_args = ["-fopenmp"]
+            pass
  
         package_dir = os.path.dirname(os.path.realpath(__file__))
         include_dirs = os.path.join(package_dir,"source")
@@ -40,6 +41,11 @@ def configuration(parent_package='', top_path=None):
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
+        src = os.path.join(package_dir,"csr_matvec_wrapper.cpp") 
+        config.add_extension('csr_matvec_wrapper',sources=src,include_dirs=[numpy.get_include(),include_dirs],
+                                extra_compile_args=extra_compile_args,
+                                extra_link_args=extra_link_args,
+                                language="c++")
         return config
 
 if __name__ == '__main__':
