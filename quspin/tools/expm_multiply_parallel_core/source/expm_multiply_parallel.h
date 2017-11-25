@@ -5,12 +5,9 @@
 #include "openmp.h"
 #include "csr_matvec.h"
 #include <cmath>
+#include <algorithm>
 #include <complex>
 #include <iostream>
-#include <iomanip>
-
-
-
 
 template <class I, class T>
 T csr_trace(const I n,
@@ -38,47 +35,43 @@ T csr_trace(const I n,
 	return trace;
 }
 
+// template<typename T>
+// T inline my_max(T norm,T x){
+// 	T a = x*x;
+// 	// return (a<norm?norm:a);
+// 	return std::max(norm,a);
+// }
 
-
-template<typename T>
-T inline my_max(T norm,T x){
-	T a = x*x;
-	// return (a<norm?norm:a);
-	return std::max(norm,a);
-}
-
-template<typename T>
-T inline my_max(T norm,std::complex<T> x){
-	T re = x.real();
-	T im = x.imag();
-	T a = re*re+im*im;
-	// return (a<norm?norm:a);
-	return std::max(norm,a);
-}
-
+// template<typename T>
+// T inline my_max(T norm,std::complex<T> x){
+// 	T re = x.real();
+// 	T im = x.imag();
+// 	T a = re*re+im*im;
+// 	// return (a<norm?norm:a);
+// 	return std::max(norm,a);
+// }
 
 template<typename T,typename I>
-T inf_norm_chunk(T * arr, I n,int nthread,int threadn){
+T inf_norm_chunk(T * arr,I begin,I end){
 	T max = 0;
-	for(I i=threadn;i<n;i+=nthread){
+	for(I i=begin;i<end;i++){
 		T a = arr[i]*arr[i];
-		max = (a<max?max:a);
+		max = std::max(max,a);
 	}
 	return std::sqrt(max);
 }
 
 template<typename T,typename I>
-T inf_norm_chunk(std::complex<T> * arr, I n,int nthread,int threadn){
+T inf_norm_chunk(std::complex<T> * arr,I begin,I end){
 	T max = 0;
-	for(I i=threadn;i<n;i+=nthread){
+	for(I i=begin;i<end;i++){
 		T re = arr[i].real();
 		T im = arr[i].imag();
 		T a = re*re+im*im;
-		max = (a<max?max:a);
+		max = std::max(max,a);
 	}
 	return std::sqrt(max);
 }
-
 
 template<typename I, typename T1,typename T2,typename T3>
 void _expm_multiply(const I n,
@@ -105,17 +98,23 @@ void _expm_multiply(const I n,
 	{
 		int nthread = omp_get_num_threads();
 		int threadn = omp_get_thread_num();
-		int CHUNK = n/nthread;
+		I items_per_thread = n/nthread;
+		I begin = items_per_thread * threadn;
+		I end = items_per_thread * ( threadn + 1 );
+		if(threadn == nthread-1){
+			end += n%nthread;
+		}
+
 		T3 eta = std::exp(a*mu/T2(s));
 
-		#pragma omp for schedule(static,CHUNK)
+		#pragma omp for schedule(static,items_per_thread)
 		for(I k=0;k<n;k++){ 
 			B1[k] = F[k];
 			B2[k] = 0;
 		}
 		for(int i=0;i<s;i++){
 
-			T2 c1_thread = inf_norm_chunk(B1,n,nthread,threadn);
+			T2 c1_thread = inf_norm_chunk(B1,begin,end);
 
 			#pragma omp single
 			{
@@ -125,41 +124,36 @@ void _expm_multiply(const I n,
 
 			#pragma omp critical
 			{
-				c1 = (c1_thread<c1?c1:c1_thread);
+				c1 = std::max(c1,c1_thread);
 			}	
 
 			for(int j=1;j<m_star+1 && !flag;j++){
 
 				csr_matvec(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
 
-				#pragma omp for schedule(static,CHUNK)
+				#pragma omp for schedule(static,items_per_thread)
 				for(I k=0;k<n;k++){
-					F[k] += B2[k];
-					B1[k] = B2[k];
+					F[k] += B1[k] = B2[k];
 				}
 
-				T2 c2_thread = inf_norm_chunk(B2,n,nthread,threadn);
-				T2 c3_thread = inf_norm_chunk(F,n,nthread,threadn);
+				T2 c2_thread = inf_norm_chunk(B2,begin,end);
+				T2 c3_thread = inf_norm_chunk(F,begin,end);
 
 				#pragma omp single
 				{
-					c2 = 0;
-					c3 = 0;
+					c2 = c3 = 0;
 				}
 
 				#pragma omp critical
 				{
-					c2 = (c2_thread<c2?c2:c2_thread);
-					c3 = (c3_thread<c3?c3:c3_thread);
+					c2 = std::max(c2,c2_thread);
+					c3 = std::max(c3,c3_thread);
 				}	
 
 				#pragma omp barrier
 
 				#pragma omp single
 				{
-					c2 = std::sqrt(c2);
-					c3 = std::sqrt(c3);
-
 					if((c1+c2)<=(tol*c3)){
 						flag=true;
 					}
@@ -168,7 +162,7 @@ void _expm_multiply(const I n,
 
 			}
 
-			#pragma omp for schedule(static,CHUNK)
+			#pragma omp for schedule(static,items_per_thread)
 			for(I k=0;k<n;k++){
 				F[k] *= eta;
 				B1[k] = F[k];
@@ -176,7 +170,5 @@ void _expm_multiply(const I n,
 		}
 	}
 }
-
-
 
 #endif

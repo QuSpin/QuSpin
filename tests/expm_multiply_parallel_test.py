@@ -12,15 +12,16 @@ import numpy as np
 
 
 
-N = 1000
+N = 3500
 for i in range(100):
 	print("testing random matrix {}".format(i+1))
 	A = (random(N,N) + 1j*random(N,N))
 	A = A.tocsr()
+	A = (A + A.H)/2.0
 	v = np.random.uniform(-1,1,size=N) + 1j * np.random.uniform(-1,1,size=N)
 
-	v1 = expm_multiply(A,v)
-	v2 = expm_multiply_parallel(A).dot(v)
+	v1 = expm_multiply(-1j*A,v)
+	v2 = expm_multiply_parallel(A,a=-1j).dot(v)
 
 	np.testing.assert_allclose(v1-v2,0,atol=1e-10)
 

@@ -7,18 +7,8 @@ ctypedef double complex cdouble
 ctypedef float complex cfloat
 
 cdef extern from "csr_matvec.h":
-    void csr_matvec[I,T1,T2,T3](const bool,
-                              const I,
-                              const I[],
-                              const I[],
-                              const T1[],
-                              const T2,
-                              const T3[],
-                                    I[],
-                                    T3[],
-                                    T3[]) nogil
-
-
+    void csr_matvec[I,T1,T2,T3](const bool,const I,const I[],const I[],const T1[],
+                              const T2,const T3[],I[],T3[],T3[]) nogil
 
 ctypedef fused index:
   np.int32_t
@@ -41,8 +31,6 @@ ctypedef fused T3:
   double
   float complex
   double complex
-
-
 
 @cython.boundscheck(False)   
 def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
@@ -82,4 +70,3 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
       csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
   else:
     raise ValueError("imcompatbile types")
-
