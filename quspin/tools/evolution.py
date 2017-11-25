@@ -328,6 +328,8 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 			return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
 
 
+def _complex_func_wrap(t,y,func)
+
 def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
 	from numpy.linalg import norm
 	Ns=shape0[0]
