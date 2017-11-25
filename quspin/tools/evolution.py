@@ -284,6 +284,10 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	n = _np.linalg.norm(v0) # needed for imaginary time to preserve the proper norm of the state. 
 
 	if stack_state:
+		if imag_time:
+			raise ValueError("imag_time is not compatible with stack_state.")
+
+		complex_valued = False
 		v1 = v0.copy()
 		if ndim == 1:
 			v0 = _np.zeros(2*shape0[0],dtype=v1.real.dtype)
@@ -297,15 +301,14 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		solver = ode(f) # y_f = f(t,y,*args)
 		solver.set_f_params(*f_params)
 	elif real:
+		complex_valued = False
 		solver = ode(f) # y_f = f(t,y,*args)
 		solver.set_f_params(*f_params)
 	else:
-		if len(f_params)>0:
-
-			f_p = lambda t,y:f(t,y,*f_params)
-			solver = complex_ode(f_p) # y_f = f(t,y,*args)
-		else:
-			solver = complex_ode(f) # y_f = f(t,y,*args)
+		complex_valued = True
+		v0 = v0.astype(_np.complex128,copy=False).view(_np.float64)
+		solver = ode(_cmplx_f) # y_f = f(t,y,*args)
+		solver.set_f_params(f,f_params)
 
 	if solver_name in ["dop853","dopri5"]:
 		if solver_args.get("nsteps") is None:
@@ -320,88 +323,90 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	solver.set_initial_value(v0, t0)
 
 	if _np.isscalar(times):
-		return _evolve_scalar(solver,v0,t0,times,stack_state,imag_time,n,shape0)
+		return _evolve_scalar(solver,v0,t0,times,complex_valued,stack_state,imag_time,n,shape0)
 	else:
 		if iterate:
-			return _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+			return _evolve_iter(solver,v0,t0,times,verbose,complex_valued,stack_state,imag_time,n,shape0)
 		else:
-			return _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0)
+			return _evolve_list(solver,v0,t0,times,verbose,complex_valued,stack_state,imag_time,n,shape0)
 
 
-def _complex_func_wrap(t,y,func)
+def _cmplx_f(t,y,f,f_params):
+	yc = y.view(_np.complex128)
+	return f(t,yc,*f_params).view(_np.float64)
 
-def _evolve_scalar(solver,v0,t0,time,stack_state,imag_time,n,shape0):
-	from numpy.linalg import norm
-	Ns=shape0[0]
 
+def _format_output(y,complex_valued,stack_state,imag_time,n,shape0):
+	Ns = shape0[0]
+	if stack_state:
+		yout = y[:Ns].astype(_np.complex128).reshape(shape0)
+		yout[...] += 1j*y[Ns:].reshape(shape0)
+	elif complex_valued:
+		# yout = y.view(_np.complex128).reshape(shape0)
+		yout = y.view(_np.complex128).reshape(shape0)
+	else:
+		yout = y.reshape(shape0)
+
+	if imag_time:
+		yout /= (_np.linalg.norm(yout,axis=0)/n)
+
+	return yout
+
+
+
+def _evolve_scalar(solver,v0,t0,time,*output_args):
 	if time == t0:
-		if stack_state:
-			return (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
-		else:
-			return _np.array(v0).reshape(shape0)
+		return _format_output(v0,*output_args)
 
 	solver.integrate(time)
 	if solver.successful():
-		if imag_time: solver._y /= (norm(solver._y)/n)
-		if stack_state:
-			return (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
-		else:
-			return _np.array(solver.y).reshape(shape0)
+		return _format_output(solver._y,*output_args)
 	else:
 		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
-def _evolve_list(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
+def _evolve_list(solver,v0,t0,times,verbose,*output_args):
 	from numpy.linalg import norm
+	shape0 = output_args[-1]
+	Ns = shape0[0]
+	
+	if output_args[0] or output_args[1]:
+		v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
+	else:
+		v = _np.empty(shape0+(len(times),),dtype=_np.float64)
 
-	Ns=shape0[0]
-	v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
 	
 	for i,t in enumerate(times):
 
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if stack_state:
-				v[...,i] = (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
-			else:
-				v[...,i] = _np.array(v0).reshape(shape0)
+			v[...,i] = _format_output(v0,*output_args)
 			continue
 
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if imag_time: solver._y /= (norm(solver._y)/n)
-			if stack_state:
-				v[...,i] = (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
-			else:
-				v[...,i] = solver.y.reshape(shape0)
+			v[...,i] = _format_output(solver._y,*output_args)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 			
 
 	return v
 
-def _evolve_iter(solver,v0,t0,times,verbose,stack_state,imag_time,n,shape0):
+def _evolve_iter(solver,v0,t0,times,verbose,*output_args):
 	from numpy.linalg import norm
-	Ns=shape0[0]
+	shape0 = output_args[-1]
+	Ns = shape0[0]
 
 
 	for i,t in enumerate(times):
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if stack_state:
-				yield (v0[:Ns] + 1j*v0[Ns:]).reshape(shape0)
-			else:
-				yield _np.array(v0).reshape(shape0)
+			yield _format_output(v0,*output_args)
 			continue
 			
-
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			if imag_time: solver._y /= (norm(solver._y)/n)
-			if stack_state:
-				yield (solver.y[:Ns] + 1j*solver.y[Ns:]).reshape(shape0)
-			else:
-				yield solver.y.reshape(shape0)
+			yield _format_output(solver._y,*output_args)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
