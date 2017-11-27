@@ -4,6 +4,10 @@
 #include <algorithm>
 #include <omp.h>
 
+// See work my Merrill et. al. (http://ieeexplore.ieee.org/abstract/document/7877136/) for original work and implementation.
+// This code contains modified versions of algorithms 2 and 3.
+
+
 template<class I>
 class CountingInputIterator{
 	const I init;
