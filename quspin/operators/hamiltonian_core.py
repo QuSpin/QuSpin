@@ -7,7 +7,6 @@ from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
 from ._make_hamiltonian import test_function
 from ._functions import function
-from ._oputils import matmuladd
 
 # need linear algebra packages
 import scipy
