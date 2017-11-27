@@ -69,7 +69,7 @@ void csrmv_merge(const bool overwrite_y,
 		}
 	}
 	// Spawn parallel threads
-	#pragma omp for schedule(static)
+	#pragma omp for schedule(static,1)
 	for (int tid = 0; tid < num_threads; tid++)
 	{
 		// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread

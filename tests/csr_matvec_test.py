@@ -8,35 +8,36 @@ from quspin.tools.misc import csr_matvec
 import scipy.sparse as sp
 import numpy as np
 
+N=1000
 
-for i in range(100):
+for i in range(1000):
 	print("random matrix test: {}".format(i))
 
-	A = sp.random(100,100,format="csr")
+	A = sp.random(N,N,format="csr")
 	a = np.random.uniform(-1,1)
-	V = np.random.uniform(-1,1,size=100)
+	V = np.random.uniform(-1,1,size=N)
 	V3 = np.zeros_like(V)
 
 	V1 = a*A.dot(V)
-	V2 = csr_matvec(A,V,alpha=a)
-	csr_matvec(A,V,alpha=a,out=V3)
+	V2 = csr_matvec(A,V,a=a)
+	csr_matvec(A,V,a=a,out=V3)
 	np.testing.assert_allclose(V1,V2,atol=1e-15,rtol=1e-7)
 	np.testing.assert_allclose(V1,V3,atol=1e-15,rtol=1e-7)
 
 
-	V = V + 1j*np.random.uniform(-1,1,size=100)
+	V = V + 1j*np.random.uniform(-1,1,size=N)
 	V3 = np.zeros_like(V)
 	V1 = a*A.dot(V)
-	V2 = csr_matvec(A,V,alpha=a)
-	csr_matvec(A,V,out=V3,alpha=a)
+	V2 = csr_matvec(A,V,a=a)
+	csr_matvec(A,V,out=V3,a=a)
 	np.testing.assert_allclose(V1,V2,atol=1e-15,rtol=1e-7)
 	np.testing.assert_allclose(V1,V3,atol=1e-15,rtol=1e-7)
 
 
-	A = A + 1j*sp.random(100,100,format="csr")
-	alpha = a + 1j*np.random.uniform(-1,1)
+	A = A + 1j*sp.random(N,N,format="csr")
+	a = a + 1j*np.random.uniform(-1,1)
 	V1 = a*A.dot(V)
-	V2 = csr_matvec(A,V,alpha=a)
-	csr_matvec(A,V,out=V3,alpha=a)
+	V2 = csr_matvec(A,V,a=a)
+	csr_matvec(A,V,out=V3,a=a)
 	np.testing.assert_allclose(V1,V2,atol=1e-15,rtol=1e-7)
 	np.testing.assert_allclose(V1,V3,atol=1e-15,rtol=1e-7)
