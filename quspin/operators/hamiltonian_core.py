@@ -900,7 +900,7 @@ class hamiltonian(object):
 			if Vl.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(Vl.shape,self._shape))
 
-	 		if diagonal:
+			if diagonal:
 				if Vl.shape[1] != Vr.shape[1]:
 					raise ValueError("number of vectors must be equal for diagonal=True.")
 
