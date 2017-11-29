@@ -13,11 +13,11 @@ cdef npy_uintp make_p_basis_template(ns_type next_state, basis_type[:] ns_pars,
     cdef int rp
 
     cdef int j
-    cdef npy_uintp i
+
 
     Ns = 0
 
-    for i in range(MAX):
+    while(MAX!=0):
         rp = CheckState_P_template(pblock,s,L,ns_pars)
         if rp > 0:
             basis[Ns] = s
@@ -25,6 +25,8 @@ cdef npy_uintp make_p_basis_template(ns_type next_state, basis_type[:] ns_pars,
             Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -37,16 +39,18 @@ cdef npy_uintp make_p_z_basis_template(ns_type next_state, basis_type[:] ns_pars
                                     N_type  * N, basis_type[:]  basis):
     cdef npy_uintp Ns
     cdef int rpz
-    cdef npy_uintp i
+
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         rpz = CheckState_P_Z_template(pblock,zblock,s,L,ns_pars)
         if rpz > 0:
             basis[Ns] = s
             N[Ns] = rpz
             Ns += 1
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -59,10 +63,10 @@ cdef npy_uintp make_pz_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                         N_type  * N, basis_type[:]  basis):
     cdef npy_uintp Ns
     cdef int rpz
-    cdef npy_uintp i
+
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         rpz = CheckState_PZ_template(pzblock,s,L,ns_pars)
         if rpz > 0:
             basis[Ns] = s
@@ -70,6 +74,8 @@ cdef npy_uintp make_pz_basis_template(ns_type next_state, basis_type[:] ns_pars,
             Ns += 1
         
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -82,10 +88,10 @@ cdef npy_uintp make_t_basis_template(ns_type next_state, basis_type[:] ns_pars,
                                         int kblock,int a,N_type  * N, basis_type[:]  basis):
     cdef npy_uintp Ns
     cdef int r
-    cdef npy_uintp i
+
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         r=CheckState_T_template(kblock,L,s,a,ns_pars)
         if r > 0:
             N[Ns] = r                
@@ -93,6 +99,8 @@ cdef npy_uintp make_t_basis_template(ns_type next_state, basis_type[:] ns_pars,
             Ns += 1        
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -108,7 +116,7 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
     cdef int r_temp,r,mp,sign
     cdef int sigma,sigma_i,sigma_f,v
     cdef int R[3]
-    cdef npy_uintp i
+
     cdef double k = (2.0*_np.pi*kblock*a)/L
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
@@ -124,7 +132,7 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
     R[1] = 0
     R[2] = 0
 
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_P_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mp = R[1]
@@ -151,6 +159,8 @@ cdef npy_uintp make_t_p_basis_template(ns_type next_state, basis_type[:] ns_pars
                     Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -165,7 +175,7 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
                                                 N_type *N, M2_type *m, basis_type[:] basis):
     cdef double k = 2.0*_np.pi*kblock*a/L
     cdef npy_uintp Ns=0
-    cdef npy_uintp i
+
     cdef int r,r_temp,mp,mz,mpz,sign1,sign2
     cdef int sigma,sigma_i,sigma_f
     cdef int R[4]
@@ -184,7 +194,7 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
     R[2] = 0
     R[3] = 0
 
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_P_Z_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mp = R[1]
@@ -250,6 +260,8 @@ cdef npy_uintp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_pa
                         Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -264,7 +276,7 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
     cdef double k 
     
     cdef npy_uintp Ns
-    cdef npy_uintp i
+
     cdef int sigma,sigma_i,sigma_f
     cdef int r_temp,r,mpz,sign
     cdef int R[3]
@@ -283,7 +295,7 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
     R[0] = 0
     R[1] = 0
     R[2] = 0
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_PZ_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mpz = R[1]
@@ -310,6 +322,8 @@ cdef npy_uintp make_t_pz_basis_template(ns_type next_state, basis_type[:] ns_par
                     Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -323,7 +337,7 @@ cdef npy_uintp make_t_zA_basis_template(ns_type next_state, basis_type[:] ns_par
                                                 int L,int zAblock,int kblock,int a,
                                                 N_type *N, M1_type *m, basis_type[:] basis): 
     cdef double k 
-    cdef npy_uintp i
+
     cdef npy_uintp Ns
     cdef int mzA,r
     cdef int R[2]
@@ -334,7 +348,7 @@ cdef npy_uintp make_t_zA_basis_template(ns_type next_state, basis_type[:] ns_par
     R[0] = 0
     R[0] = 0    
 
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_ZA_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mzA = R[1]
@@ -351,7 +365,8 @@ cdef npy_uintp make_t_zA_basis_template(ns_type next_state, basis_type[:] ns_par
                 Ns += 1    
 
         s = next_state(s,ns_pars)
-                
+        MAX -= 1
+       
 
     return Ns
 
@@ -367,7 +382,7 @@ cdef npy_uintp make_t_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_
     cdef double k 
     cdef npy_uintp Ns
     cdef int mzA,mzB,mz,r
-    cdef npy_uintp i
+
     cdef int R[4]
     cdef int j
     
@@ -378,7 +393,7 @@ cdef npy_uintp make_t_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_
     R[2] = 0
     R[3] = 0
     
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_ZA_ZB_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mzA = R[1]
@@ -414,7 +429,9 @@ cdef npy_uintp make_t_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_
                     Ns += 1
         
         s = next_state(s,ns_pars)
-                
+        MAX -= 1
+
+
     return Ns
 
 
@@ -427,7 +444,7 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
                                             N_type *N,M1_type *m,basis_type[:] basis): 
     cdef double k 
     cdef npy_uintp Ns
-    cdef npy_uintp i
+
     cdef int mz,r,sign
     cdef int R[3]
     cdef int j
@@ -441,7 +458,7 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
     R[1] = 0
     R[2] = 0
 
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_Z_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mz = R[1]
@@ -460,6 +477,8 @@ cdef npy_uintp make_t_z_basis_template(ns_type next_state, basis_type[:] ns_pars
             Ns += 1    
         
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -474,7 +493,7 @@ cdef npy_uintp make_t_zB_basis_template(ns_type next_state, basis_type[:] ns_par
                                             N_type *N, M1_type *m,basis_type[:] basis): 
     cdef double k 
     cdef npy_uintp Ns
-    cdef npy_uintp i
+
     cdef int mzB,r
     cdef int R[2]
     cdef int j
@@ -485,7 +504,7 @@ cdef npy_uintp make_t_zB_basis_template(ns_type next_state, basis_type[:] ns_par
     R[0] = 0
     R[1] = 0
     
-    for i in range(MAX):
+    while(MAX!=0):
         CheckState_T_ZB_template(kblock,L,s,a,R,ns_pars)
         r = R[0]
         mzB = R[1]
@@ -502,6 +521,8 @@ cdef npy_uintp make_t_zB_basis_template(ns_type next_state, basis_type[:] ns_par
                 Ns += 1    
         
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -512,10 +533,10 @@ cdef npy_uintp make_z_basis_template(ns_type next_state, basis_type[:] ns_pars,
     cdef npy_uintp Ns
     cdef int rz
     cdef int j
-    cdef npy_uintp i
+
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         rz = CheckState_Z_template(zblock,s,L,ns_pars)
         if rz > 0:
             basis[Ns] = s
@@ -523,6 +544,8 @@ cdef npy_uintp make_z_basis_template(ns_type next_state, basis_type[:] ns_pars,
             Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -534,10 +557,10 @@ cdef npy_uintp make_zA_basis_template(ns_type next_state, basis_type[:] ns_pars,
     cdef npy_uintp Ns
     cdef int rzA
     cdef int j
-    cdef npy_uintp i
+
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         rzA = CheckState_ZA_template(zAblock,s,L,ns_pars)
         if rzA > 0:
             basis[Ns] = s
@@ -545,6 +568,8 @@ cdef npy_uintp make_zA_basis_template(ns_type next_state, basis_type[:] ns_pars,
             Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -555,10 +580,10 @@ cdef npy_uintp make_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
     cdef npy_uintp Ns
     cdef int rzB
     cdef int j
-    cdef npy_uintp i
+
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         rzB = CheckState_ZB_template(zBblock,s,L,ns_pars)
         if rzB > 0:
             basis[Ns] = s
@@ -566,6 +591,8 @@ cdef npy_uintp make_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
             Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
 
@@ -577,12 +604,12 @@ cdef npy_uintp make_zA_zB_basis_template(
                                             npy_uintp MAX,basis_type s,
                                             int L,int zAblock,int zBblock,N_type *N,basis_type[:] basis):
     cdef npy_uintp Ns
-    cdef npy_uintp i
+
     cdef int r
     cdef int j
 
     Ns = 0
-    for i in range(MAX):
+    while(MAX!=0):
         r = CheckState_ZA_ZB_template(zAblock,zBblock,s,L,ns_pars)
         if r > 0:
             basis[Ns] = s
@@ -590,5 +617,7 @@ cdef npy_uintp make_zA_zB_basis_template(
             Ns += 1
 
         s = next_state(s,ns_pars)
+        MAX -= 1
+
 
     return Ns
