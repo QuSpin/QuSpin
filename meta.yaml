@@ -9,13 +9,15 @@ source:
 
 requirements:
   build:
-    - {{compiler('cxx')}}
+    - {{compiler('cxx')}} # [unix]
+    - llvm-openmp # [osx]
     - python {{ python }}
     - numpy >=1.10.0
  
     
   run:
-    - {{compiler('cxx')}}
+    - libgcc >=5.2.0 # [linux]
+    - llvm-openmp # [osx]
     - python {{ python }}
     - numpy >=1.10.0
     - scipy >=0.19.0
