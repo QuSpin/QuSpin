@@ -1,7 +1,7 @@
 
 cdef void make_n_basis_template(ns_type next_state,basis_type[:] ns_pars,npy_intp MAX,basis_type s,basis_type[:] basis):
     cdef npy_intp i
-    for i in range(MAX+1):
+    for i in range(MAX):
         basis[i] = s
         s = next_state(s,ns_pars)
 
