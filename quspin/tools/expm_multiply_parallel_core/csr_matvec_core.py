@@ -52,7 +52,7 @@ def csr_matvec(A,v,a=None,out=None,overwrite_out=True):
 		a = 1.0
 
 	result_type=_np.result_type(v.dtype,A.dtype,a)
-
+	
 	if A.shape[1]!=v.size:
 		raise ValueError("dimension mismatch with shapes {} and {}".format(A.shape,v.shape))
 
@@ -64,9 +64,6 @@ def csr_matvec(A,v,a=None,out=None,overwrite_out=True):
 
 	if v.dtype != result_type:
 		v = v.astype(result_type)
-
-	if out.dtype != result_type:
-		raise ValueError("ValueError: output array is not the correct shape or dtype.")
 
 	if out.shape != v.shape:
 		raise ValueError("ValueError: output array is not the correct shape or dtype.")
