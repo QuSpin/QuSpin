@@ -35,7 +35,12 @@ cdef int n_op_template(basis_type[:] op_pars, npy_intp Ns, basis_type[:] basis,
         col[i] = i
 
     for i in range(Ns):
-        row[i] = findzstate(basis,Ns,row[i],&found)
+        if row[i]!=basis[i]:
+            row[i] = findzstate(basis,Ns,row[i],&found)
+        else:
+            row[i]=i
+            found=True
+
         if not found:
             ME[i] = _np.nan
 
@@ -72,7 +77,12 @@ cdef int p_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int pb
     for i in range(Ns):
         sign = 1
         s = RefState_P_template(row[i],L,&sign,&q,ref_pars)
-        s = findzstate(basis,Ns,s,&found)
+
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
         
         if not found:
             ME[i] = _np.nan
@@ -109,7 +119,11 @@ cdef int pz_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int p
     for i in range(Ns):
         sign = 1
         s = RefState_PZ_template(row[i],L,&sign,&qg,ref_pars)
-        s = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -162,7 +176,12 @@ cdef int p_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int 
         q = R[0]
         g = R[1]
         
-        s = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
+
         if not found:
             ME[i] = _np.nan
             continue
@@ -222,7 +241,12 @@ cdef int t_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int kb
     for i in range(Ns):
         sign = 1
         s = RefState_T_template(row[i],L,a,&sign,&l,ref_pars)
-        s = findzstate(basis,Ns,s,&found)
+
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -337,7 +361,11 @@ cdef int t_p_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int 
             l = R[0]
             q = R[1]
 
-            ss = findzstate(basis,Ns,s,&found)
+            if s!=basis[i]:
+                ss = findzstate(basis,Ns,s,&found)
+            else:
+                ss = i
+                found = True
 
             if not found:
                 ME[i] = _np.nan
@@ -362,7 +390,11 @@ cdef int t_p_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int 
             l = R[0]
             q = R[1]
 
-            ss = findzstate(basis,Ns,s,&found)
+            if s!=basis[i]:
+                ss = findzstate(basis,Ns,s,&found)
+            else:
+                ss = i
+                found = True
 
             if not found:
                 for j in range(i,i+o,1):
@@ -491,8 +523,11 @@ cdef int t_pz_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int
             l = R[0]
             qg = R[1]
 
-            ss = findzstate(basis,Ns,s,&found)
-
+            if s!=basis[i]:
+                ss = findzstate(basis,Ns,s,&found)
+            else:
+                ss = i
+                found = True
 
             if not found:
                 ME[i] = _np.nan
@@ -516,7 +551,11 @@ cdef int t_pz_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int
             l = R[0]
             qg = R[1]
 
-            ss = findzstate(basis,Ns,s,&found)
+            if s!=basis[i]:
+                ss = findzstate(basis,Ns,s,&found)
+            else:
+                ss = i
+                found = True
 
             if not found:
                 for j in range(i,i+o,1):
@@ -715,8 +754,11 @@ cdef int t_p_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,in
             q = R[1]
             g = R[2]
 
-            ss = findzstate(basis,Ns,s,&found)
-
+            if s!=basis[i]:
+                ss = findzstate(basis,Ns,s,&found)
+            else:
+                ss = i
+                found = True
 
             if not found:
                 ME[i] = _np.nan
@@ -740,7 +782,11 @@ cdef int t_p_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,in
             q = R[1]
             g = R[2]
 
-            ss = findzstate(basis,Ns,s,&found)
+            if s!=basis[i]:
+                ss = findzstate(basis,Ns,s,&found)
+            else:
+                ss = i
+                found = True
 
             if not found:
                 for j in range(i,i+o,1):
@@ -846,7 +892,11 @@ cdef int t_zA_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int
         l = R[0]
         gA = R[1]
 
-        ss = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            ss = findzstate(basis,Ns,s,&found)
+        else:
+            ss = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -962,7 +1012,11 @@ cdef int t_zA_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,
         gA = R[1]
         gB = R[2]
 
-        ss = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            ss = findzstate(basis,Ns,s,&found)
+        else:
+            ss = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -1049,7 +1103,11 @@ cdef int t_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int
         l = R[0]
         gB = R[1]
 
-        ss = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            ss = findzstate(basis,Ns,s,&found)
+        else:
+            ss = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -1137,7 +1195,11 @@ cdef int t_z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int 
         l = R[0]
         g = R[1]
 
-        ss = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            ss = findzstate(basis,Ns,s,&found)
+        else:
+            ss = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -1182,7 +1244,12 @@ cdef int zA_op_template( basis_type[:] op_pars,basis_type[:] ref_pars,int L,int 
     for i in range(Ns):
         sign = 1
         s = RefState_ZA_template(row[i],L,&sign,&gA,ref_pars)
-        s = findzstate(basis,Ns,s,&found)
+
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -1232,7 +1299,11 @@ cdef int zA_zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,
         gA = R[0]
         gB = R[1]
         
-        s = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -1268,7 +1339,11 @@ cdef int zB_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int z
     for i in range(Ns):
         sign = 1
         s = RefState_ZB_template(row[i],L,&sign,&gB,ref_pars)
-        s = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
 
         if not found:
             ME[i] = _np.nan
@@ -1306,7 +1381,11 @@ cdef int z_op_template(basis_type[:] op_pars,basis_type[:] ref_pars,int L,int zb
     for i in range(Ns):
         sign = 1
         s = RefState_Z_template(row[i],L,&sign,&g,ref_pars)
-        s = findzstate(basis,Ns,s,&found)
+        if s!=basis[i]:
+            s = findzstate(basis,Ns,s,&found)
+        else:
+            s = i
+            found = True
 
         if not found:
             ME[i] = _np.nan

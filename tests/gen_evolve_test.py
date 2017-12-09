@@ -75,24 +75,24 @@ def SO_real(time,V,H):
 t=Floquet_t_vec(Omega,20,len_T=1)
 
 
-for H_real in [0,1]:
+for stack_state in [0,1]:
 	
 	y_genevolve = evolve(V[:,0],t.i,t.f,SO_real,real=True,stack_state=True,f_params=(H,))
-	y = H.evolve(V[:,0],t.i,t.f,H_real=H_real)
+	y = H.evolve(V[:,0],t.i,t.f,stack_state=stack_state)
 	
 	np.testing.assert_allclose(y-y_genevolve,0.0,atol=1E-6,err_msg='Failed evolve_scalar comparison!')
 
 
 
 	y_genevolve = evolve(V[:,0],t.i,t.vals,SO_real,real=True,stack_state=True,f_params=(H,))
-	y = H.evolve(V[:,0],t.i,t.vals,H_real=H_real)
+	y = H.evolve(V[:,0],t.i,t.vals,stack_state=stack_state)
 
 	np.testing.assert_allclose(y-y_genevolve,0.0,atol=1E-6,err_msg='Failed evolve_list comparison!')
 
 
 
 	y_genevolve = evolve(V[:,0],t.i,t.vals,SO_real,real=True,stack_state=True,iterate=True,f_params=(H,))
-	y = H.evolve(V[:,0],t.i,t.vals,iterate=True,H_real=H_real)
+	y = H.evolve(V[:,0],t.i,t.vals,iterate=True,stack_state=stack_state)
 
 	for y_genevolve_t,y_t in zip(y_genevolve,y):
 		np.testing.assert_allclose(y_t-y_genevolve_t,0.0,atol=1E-6,err_msg='Failed evolve_iter comparison!')
