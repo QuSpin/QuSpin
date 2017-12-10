@@ -43,67 +43,13 @@ class bitops:
 
 
 class basis_1d(lattice_basis):
-	def __init__(self,basis_module,ops_module,L,Np=None,_Np=None,pars=None,**blocks):
+	def __init__(self,basis_module,ops_module,L,Np=None,pars=None,count_particles=False,**blocks):
 
 		if self.__class__.__name__ == "basis_1d":
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
 
-		if type(Np) is int:
-			self._check_pcon=True
-			self._get_proj_pcon = True
-			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
-	
-		elif Np is None: # User hasn't specified Np,
-			if _Np is not None: # check to see if photon_basis can create the particle sectors.
 
-				if type(_Np) is not int:
-					raise ValueError("_Np must be integer")
-
-				if _Np == -1: 
-					self._make_Np_block(basis_module,ops_module,L,pars=pars,**blocks)
-				elif _Np >= 0:
-					if _Np+1 > L: _Np = L
-					blocks["count_particles"] = True
-
-					zblock = blocks.get("zblock")
-					zAblock = blocks.get("zAblock")
-					zBblock = blocks.get("zAblock")
-				
-					if (type(zblock) is int) or (type(zAblock) is int) or (type(zBblock) is int):
-						raise ValueError("spin inversion symmetry not compatible with particle conserving photon_basis.")
-					
-					# loop over the first Np particle sectors (use the iterator initialization).
-					Np = list(range(_Np+1))
-					self.__init__(L,Np,**blocks)
-				else:
-					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
-
-			else: # if _Np is None then assume user wants to not specify Magnetization sector
-				self._check_pcon = False
-				self._get_proj_pcon = False
-				self._make_Np_block(basis_module,ops_module,L,pars=pars,**blocks)
-
-
-		else: # try to interate over Np 
-			try:
-				Nup_iter = iter(Np)
-			except TypeError:
-				raise TypeError("Np must be integer or iteratable object.")
-
-
-			warnings.warn("Test for particle conservation not implemented for particle conserving lists",UserWarning,stacklevel=3)
-
-			blocks["check_z_symm"] = False
-			Np = next(Nup_iter)
-			self._check_pcon = False
-			self._get_proj_pcon = False
-			self._make_Np_block(basis_module,ops_module,L,Np=Np,pars=pars,**blocks)
-			for Np in Nup_iter:
-				temp_basis =self.__class__(L,Np,**blocks)
-				self._append(temp_basis)	
-
-	def _make_Np_block(self,basis_module,ops_module,L,Np=None,pars=None,**blocks):
 		# getting arguments which are used in basis.
 		kblock=blocks.get("kblock")
 		zblock=blocks.get("zblock")
@@ -112,15 +58,6 @@ class basis_1d(lattice_basis):
 		pblock=blocks.get("pblock")
 		pzblock=blocks.get("pzblock")
 		a=blocks.get("a")
-
-		count_particles = blocks.get("count_particles")
-		if count_particles is None:
-			count_particles=False
-
-		check_z_symm = blocks.get("check_z_symm")
-		if check_z_symm is None:
-			check_z_symm=True
-
 
 		if type(L) is not int:
 			raise TypeError('L must be integer')
@@ -135,11 +72,6 @@ class basis_1d(lattice_basis):
 		# checking if a is compatible with L
 		if(L%a != 0):
 			raise ValueError('L must be interger multiple of lattice spacing a')
-
-		# checking type, and value of blocks
-		if Np is not None:
-			if type(Np) is not int: raise TypeError('Nup/Nb/Nf must be integer')
-			if Np < 0 or Np > L*(self.sps-1): raise ValueError("0 <= Number of particles <= %d" % (L*(self.sps-1)))
 
 		if pblock is not None:
 			if type(pblock) is not int: raise TypeError('pblock must be integer')
@@ -174,44 +106,36 @@ class basis_1d(lattice_basis):
 		self._basis_type = basis_module.get_basis_type(L,Np,self.sps,**blocks) # get the size of the integer representation needed for this basis (uint32,uint64,object)
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
 		self._bitops = bitops(basis_module,**blocks)
-
-		if type(Np) is int:
-			self._conserved = "N"
-			self._Ns_pcon = basis_module.get_Ns(L,Np,self.sps,**{})
-			self._Np = Np
-			self._make_n_basis = basis_module.n_basis
-		else:
+		self._check_pcon = False
+		if Np is None:
 			self._conserved = ""
 			self._Ns_pcon = None
+		else:
+			if type(Np) is not list:
+				raise ValueError("basis_1d expects list for Np")
 
+			self._Ns_pcon = None
+			if len(Np)==1:
+				self._Ns_pcon = basis_module.get_Ns(L,Np,self.sps,**{})
+				self._check_pcon = True
+
+			self._conserved = "N"
+			self._make_n_basis = basis_module.n_basis
 
 		# shout out if pblock and zA/zB blocks defined simultaneously
 		if type(pblock) is int and ((type(zAblock) is int) or (type(zBblock) is int)):
 			raise ValueError("zA and zB symmetries incompatible with parity symmetry")
 
-		if check_z_symm:
-			blocks["Np"] = Np
-			# checking if spin inversion is compatible with Np and L
-			if (type(Np) is int) and ((type(zblock) is int) or (type(pzblock) is int)):
-				if (L*(self.sps-1) % 2) != 0:
-					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
-				if Np != L*(self.sps-1)//2:
-					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
-
-			if (type(Np) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-				raise ValueError("zA/cA and zB/cB symmetries incompatible with magnetisation/particle symmetry")
-
-			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
-			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
-				if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
-					raise ValueError("unit cell size 'a' must be even")
-
-
-
-
 		self._blocks_1d = blocks
-		self._unique_me = True	
-		
+		self._unique_me = True
+
+		if count_particles: 
+			Np_list = _np.zeros((Ns,),dtype=_np.int8)
+		else:
+			Np_list = None
+
+		N,M = None,None
+
 		if (type(kblock) is int) and (type(pblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & T & P & Z"
 			else: self._conserved = "T & P & Z"
@@ -231,24 +155,13 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8) # normalisation*sigma
 				M=_np.empty(basis.shape,dtype=_np.uint16) # m = mp + (L+1)mz + (L+1)^2c; Anders' paper
 
-			if (type(Np) is int):
-				# arguments get overwritten by ops.-_basis 
-				Ns = basis_module.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_p_z_basis(L,pblock,zblock,kblock,a,self._pars,N,M,basis)
-
-			# cut off extra memory for overestimated state number and reverse order
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				# arguments get overwritten by ops.-_basis 
+				Ns = basis_module.n_t_p_z_basis(L,Np,pblock,zblock,kblock,a,self._pars,N,M,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zAblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & T & ZA & ZB"
@@ -266,22 +179,12 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8)
 				M=_np.empty(basis.shape,dtype=_np.uint16)
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_zA_zB_basis(L,zAblock,zBblock,kblock,a,self._pars,N,M,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_zA_zB_basis(L,Np,zAblock,zBblock,kblock,a,self._pars,N,M,basis,Np_list)				
 				
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(pzblock) is int):
 			if self._conserved: self._conserved += " & T & PZ"
@@ -298,22 +201,12 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8)
 				M=_np.empty(basis.shape,dtype=_np.uint8) #mpz
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_pz_basis(L,pzblock,kblock,a,self._pars,N,M,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_pz_basis(L,Np,pzblock,kblock,a,self._pars,N,M,basis,Np_list)
 				
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(pblock) is int):
 			if self._conserved: self._conserved += " & T & P"
@@ -330,21 +223,12 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8)
 				M=_np.empty(basis.shape,dtype=_np.uint8)
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_p_basis(L,pblock,kblock,a,self._pars,N,M,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_p_basis(L,Np,pblock,kblock,a,self._pars,N,M,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & T & Z"
@@ -359,22 +243,12 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8)
 				M=_np.empty(basis.shape,dtype=_np.uint8)
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_z_basis(L,zblock,kblock,a,self._pars,N,M,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_z_basis(L,Np,zblock,kblock,a,self._pars,N,M,basis,Np_list)				
 				
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zAblock) is int):
 			if self._conserved: self._conserved += " & T & ZA"
@@ -389,22 +263,12 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8)
 				M=_np.empty(basis.shape,dtype=_np.uint8)
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_zA_basis(L,zAblock,kblock,a,self._pars,N,M,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_zA_basis(L,Np,zAblock,kblock,a,self._pars,N,M,basis,Np_list)				
 				
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(kblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & T & ZB"
@@ -419,22 +283,12 @@ class basis_1d(lattice_basis):
 				N=_np.empty(basis.shape,dtype=_np.int8)
 				M=_np.empty(basis.shape,dtype=_np.uint8)
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,N,M,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_zB_basis(L,zBblock,kblock,a,self._pars,N,M,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._M = M[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._M = _np.array([],dtype=M.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_zB_basis(L,Np,zBblock,kblock,a,self._pars,N,M,basis,Np_list)
 			
 			self._Ns = Ns
-			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
 		elif (type(pblock) is int) and (type(zblock) is int):
 			if self._conserved: self._conserved += " & P & Z"
@@ -443,20 +297,12 @@ class basis_1d(lattice_basis):
 			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.p_z_op
 			
-			if (type(Np) is int):
-				Ns = basis_module.n_p_z_basis(L,Np,pblock,zblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.p_z_basis(L,pblock,zblock,self._pars,N,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_p_z_basis(L,Np,pblock,zblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		elif (type(zAblock) is int) and (type(zBblock) is int):
 			if self._conserved: self._conserved += " & ZA & ZB"
@@ -466,20 +312,12 @@ class basis_1d(lattice_basis):
 
 			basis = _np.empty((Ns,),dtype=self._basis_type)
 			N=_np.empty((Ns,),dtype=_np.int8)
-			if (type(Np) is int):
-				Ns = basis_module.n_zA_zB_basis(L,Np,zAblock,zBblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.zA_zB_basis(L,zAblock,zBblock,self._pars,N,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_zA_zB_basis(L,Np,zAblock,zBblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		elif type(pblock) is int:
 			if self._conserved: self._conserved += " & P"
@@ -488,20 +326,12 @@ class basis_1d(lattice_basis):
 			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.p_op
 
-			if (type(Np) is int):
-				Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.p_basis(L,pblock,self._pars,N,basis)
-				
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_p_basis(L,Np,pblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		elif type(zblock) is int:
 			if self._conserved: self._conserved += " & Z"
@@ -510,20 +340,12 @@ class basis_1d(lattice_basis):
 			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.z_op
 
-			if (type(Np) is int):
-				Ns = basis_module.n_z_basis(L,Np,zblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.z_basis(L,zblock,self._pars,N,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_z_basis(L,Np,zblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		elif type(zAblock) is int:
 			if self._conserved: self._conserved += " & ZA"
@@ -532,20 +354,12 @@ class basis_1d(lattice_basis):
 			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.zA_op
 
-			if (type(Np) is int):
-				Ns = basis_module.n_zA_basis(L,Np,zAblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.zA_basis(L,zAblock,self._pars,N,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_zA_basis(L,Np,zAblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		elif type(zBblock) is int:
 			if self._conserved: self._conserved += " & ZB"
@@ -554,21 +368,12 @@ class basis_1d(lattice_basis):
 			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.zB_op
 
-			if (type(Np) is int):
-				Ns = basis_module.n_zB_basis(L,Np,zBblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.zB_basis(L,zBblock,self._pars,N,basis)
-
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_zB_basis(L,Np,zBblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 			
 		elif type(pzblock) is int:
 			if self._conserved: self._conserved += " & PZ"
@@ -577,20 +382,12 @@ class basis_1d(lattice_basis):
 			N=_np.empty((Ns,),dtype=_np.int8)
 			self._op = ops_module.pz_op
 
-			if (type(Np) is int):
-				Ns = basis_module.n_pz_basis(L,Np,pzblock,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.pz_basis(L,pzblock,self._pars,N,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
-				
+				Ns = basis_module.n_pz_basis(L,Np,pzblock,self._pars,N,basis,Np_list)
+
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 	
 		elif type(kblock) is int:
 			if self._conserved: self._conserved += " & T"
@@ -603,69 +400,82 @@ class basis_1d(lattice_basis):
 			else:			
 				N=_np.empty(basis.shape,dtype=_np.int8)
 
-			if (type(Np) is int):
-				Ns = basis_module.n_t_basis(L,Np,kblock,a,self._pars,N,basis)
-			else:
+			if Np is None:
 				Ns = basis_module.t_basis(L,kblock,a,self._pars,N,basis)
-
-			if Ns > 0:
-				self._N = N[Ns-1::-1].copy()
-				self._basis = basis[Ns-1::-1].copy()
 			else:
-				self._N = _np.array([],dtype=N.dtype)
-				self._basis = _np.array([],dtype=basis.dtype)
+				Ns = basis_module.n_t_basis(L,Np,kblock,a,self._pars,N,basis,Np_list)
 
 			self._Ns = Ns
-			self._op_args=[self._N,self._basis,self._L,self._pars]
 
 		else: 
-			if type(Np) is int:
-				self._op = ops_module.n_op
-				basis = _np.empty((Ns,),dtype=self._basis_type)
-				basis_module.n_basis(L,Np,Ns,self._pars,basis)
-				self._Ns = Ns
-				self._basis = basis[::-1].copy()
-			else:
+			if Np is None:
 				self._op = ops_module.op
 				self._basis = _np.arange(Ns-1,-1,-1,dtype=self._basis_type)
 				self._Ns = Ns
-			self._op_args=[self._basis,self._pars]
+			else:
+				self._op = ops_module.n_op
+				basis = _np.empty((Ns,),dtype=self._basis_type)
+				basis_module.n_basis(L,Np,self._pars,basis,Np_list)
+				self._Ns = Ns
 
-		if count_particles: self._Np_list = _np.full(basis.shape,Np,dtype=_np.int8)
+		if N is not None and M is not None:
+			if Np is None or len(Np)==1:
+				if Ns > 0:
+					self._N = N[Ns-1::-1].copy()
+					self._M = M[Ns-1::-1].copy()
+					self._basis = basis[Ns-1::-1].copy()
+					if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				else:
+					self._N = _np.array([],dtype=N.dtype)
+					self._M = _np.array([],dtype=M.dtype)
+					self._basis = _np.array([],dtype=basis.dtype)
+					if Np_list is not None: self._Np_list = _np.array([],dtype=Np.dtype)
+			else:
+				if self._unique_me:
+					arg = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
+				else:
+					arg = _np.argsort(basis[:Ns],kind="mergesort")[::-1]
 
-	def _append(self,other):
-		Ns = self._Ns + other._Ns
+				self._basis = basis[arg].copy()
+				self._N = N[arg].copy()
+				self._M = M[arg].copy()
+				self._Np_list = Np_list[arg].copy()
 
-		if self._conserved == "" or self._conserved == "N":
-			self._op_args=[self._pars]
+			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
+
+		elif N is not None:
+			if Np is None or len(Np)==1:
+				if Ns > 0:
+					self._N = N[Ns-1::-1].copy()
+					self._basis = basis[Ns-1::-1].copy()
+					if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				else:
+					self._N = _np.array([],dtype=N.dtype)
+					self._basis = _np.array([],dtype=basis.dtype)
+					if Np_list is not None: self._Np_list = _np.array([],dtype=Np.dtype)
+			else:
+				arg = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
+
+				self._basis = basis[arg].copy()
+				self._N = N[arg].copy()
+				self._Np_list = Np_list[arg].copy()
+				if Np_list is not None: self._Np_list = Np_list[arg].copy()
+
+			self._op_args=[self._N,self._basis,self._L,self._pars]
+
 		else:
-			self._op_args=[self._L,self._pars]
+			if Np is None: 
+				pass
+			elif len(Np)==1:
+				self._basis = basis[Ns-1::-1].copy()
+				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+			else:
+				arg = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
 
+				self._basis = basis[arg].copy()
+				if Np_list is not None: self._Np_list = Np_list[arg].copy()
 
-		self._basis.resize((Ns,),refcheck=False)
-		self._basis[self._Ns:] = other._basis[:]
-		arg = self._basis.argsort()[::-1]
-		self._basis = self._basis[arg].copy()
-		self._op_args.insert(0,self._basis)
-
-		if hasattr(self,"_Np_list"):
-			self._Np_list.resize((Ns,),refcheck=False)
-			self._Np_list[self._Ns:] = other._Np_list[:]
-			self._Np_list = self._Np_list[arg].copy()
-
-		if hasattr(self,"_M"):
-			self._M.resize((Ns,),refcheck=False)
-			self._M[self._Ns:] = other._M[:]
-			self._M = self._M[arg].copy()
-			self._op_args.insert(0,self._M)	
-
-		if hasattr(self,"_N"):
-			self._N.resize((Ns,),refcheck=False)
-			self._N[self._Ns:] = other._N[:]
-			self._N = self._N[arg].copy()
-			self._op_args.insert(0,self._N)
-
-		self._Ns = Ns
+			self._op_args=[self._basis,self._pars]
 
 	@property
 	def L(self):
@@ -700,8 +510,6 @@ class basis_1d(lattice_basis):
 		string = """1d basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
 		string += self.operators
 		return string 
-
-
 
 	def _Op(self,opstr,indx,J,dtype):
 
@@ -1167,8 +975,7 @@ class basis_1d(lattice_basis):
 
 		return static_blocks,dynamic_blocks
 
-
-
+'''
 class basis_1d(lattice_basis):
 	def __init__(self,basis_module,ops_module,L,Np=None,_Np=None,pars=None,**blocks):
 
@@ -2304,8 +2111,7 @@ class basis_1d(lattice_basis):
 			if missingops:	dynamic_blocks["PZ/PC symm"] = (tuple(missingops),)
 
 		return static_blocks,dynamic_blocks
-
-
+'''
 
 def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks):
 	dtype=_dtypes[v0.dtype.char]

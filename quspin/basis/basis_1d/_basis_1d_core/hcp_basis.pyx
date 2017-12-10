@@ -52,9 +52,10 @@ def get_basis_type(L, Np, sps, **blocks):
     else:
         # if particles are conservated the largest representative is placing all particles as far left
         # as possible. 
-        l=Np//(sps-1)
+        np = max(Np)
+        l=np//(sps-1)
         s_max = sum((sps-1)*sps**(L-1-i)  for i in range(l))
-        s_max += (Np%(sps-1))*sps**(L-l-1)
+        s_max += (np%(sps-1))*sps**(L-l-1)
         dtype = _np.min_scalar_type(int(s_max))
         return _np.result_type(dtype,_np.uint32)
 
@@ -69,7 +70,9 @@ def get_Ns(L, Np, sps, **blocks):
     if Np is None:
         Ns = sps**L
     else:
-        Ns = H_dim(Np,L,sps-1)
+        Ns=0
+        for np in Np: 
+            Ns += H_dim(np,L,sps-1)
 
     if kblock is not None:
         # return Ns/L + some extra goes to zero as the system increases. 

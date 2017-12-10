@@ -64,12 +64,6 @@ class spinless_fermion_basis_1d(basis_1d):
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
 
-		_Np = blocks.get("_Np")
-		if _Np is not None:
-			blocks.pop("_Np")
-
-		self._blocks = blocks
-
 		if Nf is not None and nf is not None:
 			raise ValueError("Cannot Nf and nf simultaineously.")
 		elif Nf is None and nf is not None:
@@ -77,6 +71,39 @@ class spinless_fermion_basis_1d(basis_1d):
 				raise ValueError("nf must be between 0 and 1")
 			Nf = int(nf*L)
 
+		if Nf is None:
+			Nf_list = None
+		elif type(Nf) is int:
+			Nf_list = [Nf]
+		else:
+			try:
+				Nf_list = list(Nf)
+			except TypeError:
+				raise TypeError("Nb must be iterable returning integers")
+
+			if any((type(Nf) is not int) for Nf in Nf_list):
+				TypeError("Nb must be iterable returning integers")
+
+		if blocks.get("_Np") is not None:
+			_Np = blocks.get("_Np")
+			if Nf_list is not None:
+				raise ValueError("do not use _Np and Nup/nb simultaineously.")
+			blocks.pop("_Np")
+			
+			if _Np == -1:
+				count_particles = False
+				Nf_list = None
+			else:
+				count_particles = True
+				_Np = min(L,_Np)
+				Nf_list = list(range(_Np))
+
+		if Nf_list is None:
+			self._Np = None			
+		else:
+			self._Np = sum(Nf_list)
+
+		self._blocks = blocks			
 
 		self._sps = 2
 		Imax = (1<<L)-1
@@ -91,7 +118,7 @@ class spinless_fermion_basis_1d(basis_1d):
 							"\n\tz: c-symm number operator")
 
 		self._allowed_ops = set(["I","+","-","n","z"])
-		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf,_Np=_Np,pars=pars,**blocks)
+		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
 		# self._check_symm=None
 
 	def __type__(self):

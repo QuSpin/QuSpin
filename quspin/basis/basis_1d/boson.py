@@ -75,52 +75,80 @@ class boson_basis_1d(basis_1d):
 
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","cblock","cAblock","cBblock","pblock","pcblock","a","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
-		if sps is None:
+		if blocks.get("a") is None: # by default a = 1
+			blocks["a"] = 1
 
+		if blocks.get("check_z_symm") is None:
+			check_z_symm = True
+		else:
+			check_z_symm = False
+
+		if sps is None:
 			if Nb is not None:
 				if nb is not None:
 					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
-
 			elif nb is not None:
 				if Nb is not None:
 					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
-
 				Nb = int(nb*L)
 			else:
-
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
-
 			self._sps = Nb+1
 		else:
 			if Nb is not None:
 				if nb is not None:
 					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
-
 			elif nb is not None:
 				Nb = int(nb*L)
-
 			self._sps = sps
 
+		if Nb is None:
+			Nb_list = None
+		elif type(Nb) is int:
+			Nb_list = [Nb]
+		else:
+			try:
+				Nb_list = list(Nb)
+			except TypeError:
+				raise TypeError("Nb must be iterable returning integers")
 
-		if blocks.get("a") is None: # by default a = 1
-			blocks["a"] = 1
+			if any((type(Nb) is not int) for Nb in Nb_list):
+				TypeError("Nb must be iterable returning integers")
 
-		_Np = blocks.get("_Np")
-		if _Np is not None:
+		if blocks.get("_Np") is not None:
+			_Np = blocks.get("_Np")
+			if Nb_list is not None:
+				raise ValueError("do not use _Np and Nup/nb simultaineously.")
 			blocks.pop("_Np")
+			
+			if _Np == -1:
+				count_particles = False
+				Nb_list = None
+			else:
+				count_particles = True
+				_Np = min((self._sps-1)*L,_Np)
+				Nb_list = list(range(_Np))
+
+		if Nb_list is None:
+			self._Np = None			
+		else:
+			self._Np = sum(Nb_list)
 
 		self._blocks = blocks
-		
+
 		pblock = blocks.get("pblock")
 		zblock = blocks.get("cblock")
 		zAblock = blocks.get("cAblock")
 		zBblock = blocks.get("cBblock")
+		kblock = blocks.get("kblock")
+		pzblock = blocks.get("pcblock")
+		a = blocks.get("a")
 
 		if self._sps > 2 and any(type(block) is int for block in [zblock,zAblock,zBblock]):
 			raise ValueError("particle hole symmetry doesn't exist with sps > 2.")
@@ -145,6 +173,28 @@ class boson_basis_1d(basis_1d):
 			blocks["zblock"] = zAblock*zBblock
 			self._blocks["cblock"] = zAblock*zBblock
 
+		if check_z_symm:
+
+			# checking if spin inversion is compatible with Np and L
+			if (Nb_list is not None) and ((type(zblock) is int) or (type(pzblock) is int)):
+				if len(Nb_list) > 1:
+					ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+
+				Nb = Nb_list[0]
+
+				if (L*(self.sps-1) % 2) != 0:
+					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
+				if Np != L*(self.sps-1)//2:
+					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+
+			if (Nb_list is not None) and ((type(zAblock) is int) or (type(zBblock) is int)):
+				raise ValueError("zA/cA and zB/cB symmetries incompatible with magnetisation/particle symmetry")
+
+			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
+			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+				if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
+					raise ValueError("unit cell size 'a' must be even")
+
 		if self._sps <= 2:
 			Imax = (1<<L)-1
 			stag_A = sum(1<<i for i in range(0,L,2))
@@ -158,7 +208,7 @@ class boson_basis_1d(basis_1d):
 								"\n\tz: c-symm number operator")
 
 			self._allowed_ops = set(["I","+","-","n","z"])
-			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nb_list,pars=pars,count_particles=count_particles,**blocks)
 		else:
 			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (0,) # flag to turn off higher spin matrix elements for +/- operators
 			
@@ -170,7 +220,7 @@ class boson_basis_1d(basis_1d):
 								"\n\tz: ph-symm number operator")
 
 			self._allowed_ops = set(["I","+","-","n","z"])
-			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nb,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nb_list,pars=pars,count_particles=count_particles,**blocks)
 
 	def __type__(self):
 		return "<type 'qspin.basis.boson_basis_1d'>"

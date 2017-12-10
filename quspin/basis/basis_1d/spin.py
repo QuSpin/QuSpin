@@ -80,29 +80,6 @@ class spin_basis_1d(basis_1d):
 			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
 
 
-		if blocks.get("a") is None: # by default a = 1
-			blocks["a"] = 1
-
-		_Np = blocks.get("_Np")
-		if _Np is not None:
-			blocks.pop("_Np")
-
-
-		self._blocks = blocks
-		
-		pblock = blocks.get("pblock")
-		zblock = blocks.get("zblock")
-		zAblock = blocks.get("zAblock")
-		zBblock = blocks.get("zBblock")
-
-		if (type(pblock) is int) and (type(zblock) is int):
-			blocks["pzblock"] = pblock*zblock
-			self._blocks["pzblock"] = pblock*zblock
-
-		if (type(zAblock) is int) and (type(zBblock) is int):
-			blocks["zblock"] = zAblock*zBblock
-			self._blocks["zblock"] = zAblock*zBblock
-
 		self._sps,S = S_dict[S]
 
 		if Nup is not None and m is not None:
@@ -113,7 +90,90 @@ class spin_basis_1d(basis_1d):
 
 			Nup = int((m+S)*L)
 
+		if Nup is None:
+			Nup_list = None
+		elif type(Nup) is int:
+			Nup_list = [Nup]
+		else:
+			try:
+				Nup_list = list(Nup)
+			except TypeError:
+				raise TypeError("Nup must be iterable returning integers")
 
+			if any((type(Nup) is not int) for Nup in Nup_list):
+				TypeError("Nup must be iterable returning integers")
+
+		if blocks.get("_Np") is not None:
+			_Np = blocks.get("_Np")
+			if Nup_list is not None:
+				raise ValueError("do not use _Np and Nup/nb simultaineously.")
+			blocks.pop("_Np")
+
+			if _Np == -1:
+				count_particles = False
+				Nup_list = None
+			else:
+				count_particles = True
+				if _Np+1 > L: _Np = L
+				Nup_list = list(range(_Np+1))
+			
+			
+
+		if Nup_list is None:
+			self._Np = None			
+		else:
+			self._Np = sum(Nup_list)
+
+		self._blocks = blocks
+
+		if blocks.get("a") is None: # by default a = 1
+			blocks["a"] = 1
+
+		if blocks.get("check_z_symm") is None:
+			check_z_symm = True
+		else:
+			check_z_symm = False
+
+		pblock = blocks.get("pblock")
+		zblock = blocks.get("zblock")
+		zAblock = blocks.get("zAblock")
+		zBblock = blocks.get("zBblock")
+		kblock = blocks.get("kblock")
+		pzblock = blocks.get("pzblock")
+		a = blocks.get("a")
+
+		if (type(pblock) is int) and (type(zblock) is int):
+			blocks["pzblock"] = pblock*zblock
+			self._blocks["pzblock"] = pblock*zblock
+			pzblock = pblock*zblock
+
+		if (type(zAblock) is int) and (type(zBblock) is int):
+			blocks["zblock"] = zAblock*zBblock
+			self._blocks["zblock"] = zAblock*zBblock
+			zblock = zAblock*zBblock
+
+
+
+		if check_z_symm:
+			# checking if spin inversion is compatible with Np and L
+			if (Nup_list is not None) and ((type(zblock) is int) or (type(pzblock) is int)):
+				if len(Nup_list) > 1:
+					ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+
+				Nup = Nup_list[0]
+
+				if (L*(self.sps-1) % 2) != 0:
+					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
+				if Nup != L*(self.sps-1)//2:
+					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+
+			if (Nup_list is not None) and ((type(zAblock) is int) or (type(zBblock) is int)):
+				raise ValueError("zA/cA and zB/cB symmetries incompatible with magnetisation/particle symmetry")
+
+			# checking if ZA/ZB spin inversion is compatible with unit cell of translation symemtry
+			if (type(kblock) is int) and ((type(zAblock) is int) or (type(zBblock) is int)):
+				if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
+					raise ValueError("unit cell size 'a' must be even")
 
 		if self._sps <= 2:
 			self._pauli = pauli
@@ -130,7 +190,7 @@ class spin_basis_1d(basis_1d):
 								"\n\tz: z pauli/spin operator")
 
 			self._allowed_ops = set(["I","+","-","x","y","z"])
-			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nup_list,pars=pars,count_particles=count_particles,**blocks)
 		else:
 			self._pauli = False
 			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (1,) # flag to turn off higher spin matrix elements for +/- operators
@@ -141,7 +201,7 @@ class spin_basis_1d(basis_1d):
 								"\n\tz: z pauli/spin operator")
 
 			self._allowed_ops = set(["I","+","-","z"])
-			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nup,_Np=_Np,pars=pars,**blocks)
+			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nup_list,pars=pars,count_particles=count_particles,**blocks)
 
 
 	def _Op(self,opstr,indx,J,dtype):
