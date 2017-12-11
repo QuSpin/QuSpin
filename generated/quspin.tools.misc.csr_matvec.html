@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.photon_Hspace_dim &#8212; QuSpin 0.2.8 documentation</title>
+    <title>quspin.tools.misc.csr_matvec &#8212; QuSpin 0.2.8 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -35,8 +35,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Operators module (quspin.operators)" href="../operators.html" />
-    <link rel="prev" title="quspin.basis.coherent_state" href="quspin.basis.coherent_state.html" /> 
+    <link rel="next" title="quspin.tools.misc.project_op" href="quspin.tools.misc.project_op.html" />
+    <link rel="prev" title="quspin.tools.block_tools.block_diag_hamiltonian" href="quspin.tools.block_tools.block_diag_hamiltonian.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -49,13 +49,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../operators.html" title="Operators module (quspin.operators)"
+          <a href="quspin.tools.misc.project_op.html" title="quspin.tools.misc.project_op"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="quspin.basis.coherent_state.html" title="quspin.basis.coherent_state"
+          <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" title="quspin.tools.block_tools.block_diag_hamiltonian"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -64,42 +64,54 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quspin-basis-photon-hspace-dim">
-<h1>quspin.basis.photon_Hspace_dim<a class="headerlink" href="#quspin-basis-photon-hspace-dim" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="quspin-tools-misc-csr-matvec">
+<h1>quspin.tools.misc.csr_matvec<a class="headerlink" href="#quspin-tools-misc-csr-matvec" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="quspin.basis.photon_Hspace_dim">
-<code class="descclassname">quspin.basis.</code><code class="descname">photon_Hspace_dim</code><span class="sig-paren">(</span><em>N</em>, <em>Ntot</em>, <em>Nph</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/photon.html#photon_Hspace_dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.photon_Hspace_dim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the dimension of the total spin-photon Hilbert space.</p>
+<dt id="quspin.tools.misc.csr_matvec">
+<code class="descclassname">quspin.tools.misc.</code><code class="descname">csr_matvec</code><span class="sig-paren">(</span><em>A</em>, <em>v</em>, <em>a=None</em>, <em>out=None</em>, <em>overwrite_out=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/csr_matvec_core.html#csr_matvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.csr_matvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates matrix vector products <span class="math">\(x += a A y\)</span> or <span class="math">\(x = a A y\)</span> with csr matrix.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>N</strong> : int</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>A</strong> : scipy.spmatrix</p>
 <blockquote>
-<div><p>Number of lattice particles.</p>
+<div><p>Sparse matrix to take the dot product.</p>
 </div></blockquote>
-<p><strong>Ntot</strong> : int</p>
+<p><strong>v</strong> : array_like</p>
 <blockquote>
-<div><p>Total number of lattice particles and photons.</p>
+<div><p>array which contains the vector to take the product with.</p>
 </div></blockquote>
-<p><strong>Nph</strong> : int</p>
+<p><strong>a</strong> : scalar, optional</p>
 <blockquote>
-<div><p>Number of photons.</p>
+<div><p>value to scale the vector with after the product with <cite>A</cite> is taken.</p>
+</div></blockquote>
+<p><strong>out</strong> : array_like</p>
+<blockquote>
+<div><p>output array to put the results of the calculation.</p>
+</div></blockquote>
+<p><strong>overwrite_out</strong> : bool, optional</p>
+<blockquote>
+<div><p>If set to <cite>True</cite>, the function overwrites the values in <cite>out</cite> with the result. otherwise the result is
+added to the values in <cite>out</cite>.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">int</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy.ndarray</p>
 <blockquote class="last">
-<div><p>Dimension of the total spin-photon Hilbert space.</p>
+<div><p>result of <span class="math">\(\a A v\)</span>.</p>
+<p>If <cite>out</cite> is not None and <cite>overwrite_out = True</cite> the dunction returns <cite>out</cite> with the data overwritten, 
+otherwise if <cite>overwrite_out = False</cite> the result is added to <cite>out</cite>.</p>
+<p>If <cite>out</cite> is None the result is stored in a new array which is returned by the function.</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Ns</span> <span class="o">=</span> <span class="n">photon_Hspace_dim</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Ntot</span><span class="p">,</span><span class="n">Nph</span><span class="p">)</span>
-</pre></div>
-</div>
+<p class="rubric">Notes</p>
+<p>For QuSpin builds which support OpenMP this function will be multithreaded. Note that using
+out=v will result in incorrect results. Also note that if format of A is not ‘csr’ 
+the matrix will be converted.</p>
 </dd></dl>
 
 </div>
@@ -111,15 +123,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.basis.coherent_state.html"
-                        title="previous chapter">quspin.basis.coherent_state</a></p>
+  <p class="topless"><a href="quspin.tools.block_tools.block_diag_hamiltonian.html"
+                        title="previous chapter">quspin.tools.block_tools.block_diag_hamiltonian</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../operators.html"
-                        title="next chapter">Operators module (<code class="docutils literal"><span class="pre">quspin.operators</span></code>)</a></p>
+  <p class="topless"><a href="quspin.tools.misc.project_op.html"
+                        title="next chapter">quspin.tools.misc.project_op</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.basis.photon_Hspace_dim.rst.txt"
+      <li><a href="../sources/generated/quspin.tools.misc.csr_matvec.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -147,13 +159,13 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../operators.html" title="Operators module (quspin.operators)"
+          <a href="quspin.tools.misc.project_op.html" title="quspin.tools.misc.project_op"
              >next</a> |</li>
         <li class="right" >
-          <a href="quspin.basis.coherent_state.html" title="quspin.basis.coherent_state"
+          <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" title="quspin.tools.block_tools.block_diag_hamiltonian"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

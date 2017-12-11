@@ -4,14 +4,25 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>quspin.tools.misc &#8212; QuSpin 0.2.5 documentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.tools.misc &#8212; QuSpin 0.2.8 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.5',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +46,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,13 +68,14 @@
 <span class="c1"># needed for isinstance only</span>
 <span class="kn">from</span> <span class="nn">..operators</span> <span class="k">import</span> <span class="n">ishamiltonian</span> <span class="k">as</span> <span class="n">_ishamiltonian</span>
 <span class="kn">from</span> <span class="nn">..basis</span> <span class="k">import</span> <span class="n">isbasis</span>
+<span class="kn">from</span> <span class="nn">.expm_multiply_parallel_core</span> <span class="k">import</span> <span class="n">csr_matvec</span>
 
 <span class="n">__all__</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;project_op&quot;</span><span class="p">,</span> 
 			<span class="s2">&quot;KL_div&quot;</span><span class="p">,</span>
 			<span class="s2">&quot;mean_level_spacing&quot;</span>
 			<span class="p">]</span>
 
-<div class="viewcode-block" id="project_op"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.project_op.html#quspin.tools.measurements.project_op">[docs]</a><span class="k">def</span> <span class="nf">project_op</span><span class="p">(</span><span class="n">Obs</span><span class="p">,</span><span class="n">proj</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span>
+<div class="viewcode-block" id="project_op"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.project_op.html#quspin.tools.misc.project_op">[docs]</a><span class="k">def</span> <span class="nf">project_op</span><span class="p">(</span><span class="n">Obs</span><span class="p">,</span><span class="n">proj</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Projects observable onto symmetry-reduced subspace.</span>
 
 <span class="sd">	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`</span>
@@ -155,7 +167,7 @@
 
 	<span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="KL_div"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.KL_div.html#quspin.tools.measurements.KL_div">[docs]</a><span class="k">def</span> <span class="nf">KL_div</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">):</span>
+<div class="viewcode-block" id="KL_div"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.KL_div.html#quspin.tools.misc.KL_div">[docs]</a><span class="k">def</span> <span class="nf">KL_div</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Calculates Kullback-Leibler divergence of two discrete probability distributions.</span>
 
 <span class="sd">	.. math::</span>
@@ -202,7 +214,7 @@
 
 	<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span> <span class="n">p1</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="mean_level_spacing"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.mean_level_spacing.html#quspin.tools.measurements.mean_level_spacing">[docs]</a><span class="k">def</span> <span class="nf">mean_level_spacing</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+<div class="viewcode-block" id="mean_level_spacing"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.mean_level_spacing.html#quspin.tools.misc.mean_level_spacing">[docs]</a><span class="k">def</span> <span class="nf">mean_level_spacing</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Calculates the mean-level spacing of an energy spectrum.</span>
 
 <span class="sd">	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in </span>
@@ -285,7 +297,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

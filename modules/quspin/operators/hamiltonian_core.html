@@ -4,14 +4,25 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>quspin.operators.hamiltonian_core &#8212; QuSpin 0.2.5 documentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.operators.hamiltonian_core &#8212; QuSpin 0.2.8 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.5',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +46,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -66,6 +77,12 @@
 <span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">mul</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span><span class="p">,</span><span class="n">itervalues</span><span class="p">,</span><span class="n">viewkeys</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">izip</span> <span class="k">as</span> <span class="nb">zip</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+	<span class="k">pass</span>
+
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -400,32 +417,19 @@
 					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
 						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
-
-					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
-					<span class="k">try</span><span class="p">:</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+=</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
-					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
-
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
-
-					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
-					<span class="k">try</span><span class="p">:</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+=</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
-					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 				<span class="k">else</span><span class="p">:</span>
-					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 
 					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>			
 					<span class="k">try</span><span class="p">:</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+=</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+=</span> <span class="n">O</span>
 					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
 						<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
+
 
 			<span class="k">try</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -447,22 +451,8 @@
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 
 					<span class="n">O</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
-					
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
-
-					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
-
-
-				<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
-
-					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
-
 				<span class="k">else</span><span class="p">:</span>
-					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+					<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">O</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
 
@@ -475,7 +465,9 @@
 				<span class="k">else</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
 
-
+			<span class="n">updates</span> <span class="o">=</span> <span class="p">{</span><span class="n">func</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Hd</span><span class="p">)</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Hd</span><span class="p">)}</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+			
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;_shape&quot;</span><span class="p">):</span>
 				<span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -609,7 +601,7 @@
 
 	<span class="c1">### state manipulation/observable routines</span>
 
-<div class="viewcode-block" id="hamiltonian.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="hamiltonian.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication of `hamiltonian` operator at time `time`, with state `V`.</span>
 
 <span class="sd">		.. math::</span>
@@ -622,21 +614,17 @@
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
-<span class="sd">		V : numpy.ndarray</span>
-<span class="sd">			Vector (quantums state) to multiply the `hamiltonian` operator with.</span>
+<span class="sd">		V : {numpy.ndarray, scipy.spmatrix}</span>
+<span class="sd">			Array comtaining the quantums state to multiply the `hamiltonian` operator with.</span>
 <span class="sd">		time : obj, optional</span>
 <span class="sd">			Can be either one of the following:</span>
 
-<span class="sd">			* float: time to evalute the time-dependent part of the operator at (if existent). </span>
+<span class="sd">			* float: time to evalute the time-dependent part of the operator at (if operator has time dependence). </span>
 <span class="sd">				Default is `time = 0`.</span>
-<span class="sd">			* list: there are two possible outcomes:</span>
+<span class="sd">			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time </span>
+<span class="sd">					and dotted into `V[...,i]` to get the i-th slice of the output array. Here V must be either </span>
+<span class="sd">					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.</span>
 
-<span class="sd">				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time </span>
-<span class="sd">					and dotted into the i-th column of `V` to get the i-th column of the output array.</span>
-<span class="sd">				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time</span>
-<span class="sd">					in `time`. The results are then stacked such that the columns contain all the vectors. </span>
-
-<span class="sd">				If either of these cases do not match, an error is thrown.</span>
 <span class="sd">		check : bool, optional</span>
 <span class="sd">			Whether or not to do checks for shape compatibility.</span>
 <span class="sd">			</span>
@@ -661,93 +649,58 @@
 			<span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">V</span>
 		<span class="k">elif</span> <span class="n">isexp_op</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is ambiguous action. Use the .rdot() method of the `exp_op` class isntead.&quot;</span><span class="p">)</span>
-			
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+		<span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span>
+			<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+				<span class="n">V</span> <span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span>
+
+			<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
+
 			<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting V.ndim &lt; 4.&quot;</span><span class="p">)</span>
 
 
-			<span class="n">time</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="n">times</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+			
+		<span class="k">if</span> <span class="n">times</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">times</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting time to be one dimensional array-like.&quot;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For non-scalar times V.shape[-1] must be equal to len(time).&quot;</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-					<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
-					<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">get_col</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">)])</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For non-scalar times V.shape[-1] must be equal to len(time).&quot;</span><span class="p">)</span>
+				<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
+				<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">get_col</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">)])</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-					<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-					<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">T</span>
-					<span class="n">V_dot</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">V</span><span class="p">[:],</span><span class="n">time</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
-					<span class="k">return</span> <span class="n">V_dot</span>
-
-				<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-					<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
+				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+					<span class="n">V_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="p">[:])</span>
+					
+				<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
 					<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Density matricies must be square!&quot;</span><span class="p">)</span>
 
-					<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-					<span class="n">V_dot</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">V</span><span class="p">[:],</span><span class="n">time</span><span class="p">)])</span>
+					<span class="n">V_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))[:])</span>
 
-					<span class="k">return</span> <span class="n">V_dot</span>
-
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For non-scalar times V.shape[-1] must be equal to len(time).&quot;</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>	
-			<span class="k">if</span> <span class="ow">not</span> <span class="n">check</span><span class="p">:</span>
-				<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
-				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-
-				<span class="k">return</span> <span class="n">V_dot</span>
-
-			<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-		
-				<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
-				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-
-
-			<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-		
+				<span class="n">V_dot</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">))</span>
+				<span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">v</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">V_iter</span><span class="p">,</span><span class="n">time</span><span class="p">)):</span>
+					<span class="n">V_dot</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">])</span>	
+					<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+						<span class="n">V_dot</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]))</span>			
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 				<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">*</span> <span class="n">V</span>
 				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-				<span class="k">return</span> <span class="n">V_dot</span>
-
-			<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
-				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-
+					<span class="n">V_dot</span> <span class="o">=</span> <span class="n">V_dot</span> <span class="o">+</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting 1 or 2 dimensional array&quot;</span><span class="p">)</span>
-
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
+				<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 					<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 
-			<span class="k">return</span> <span class="n">V_dot</span></div>
+		<span class="k">return</span> <span class="n">V_dot</span></div>
 
 <div class="viewcode-block" id="hamiltonian.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.</span>
@@ -768,14 +721,9 @@
 
 <span class="sd">			* float: time to evalute the time-dependent part of the operator at (if existent). </span>
 <span class="sd">				Default is `time = 0`.</span>
-<span class="sd">			* list: there are two possible outcomes:</span>
-
-<span class="sd">				-- if `V.shape[0] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time </span>
-<span class="sd">					and dotted into the i-th row of `V` to get the i-th row of the output array.</span>
-<span class="sd">				-- if `V.shape[0] == 1` or `V.shape[0] == 0`, the `_.rdot` is evaluated on `V` for each time</span>
-<span class="sd">					in `time`. The results are then stacked such that the columns contain all the vectors. </span>
-
-<span class="sd">				If either of these cases do not match, an error is thrown.</span>
+<span class="sd">			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time </span>
+<span class="sd">					and the mattrix multiplication on the right is calculated with respect to `V[...,i]`. Here V must be either </span>
+<span class="sd">					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.</span>
 <span class="sd">		check : bool, optional</span>
 <span class="sd">			Whether or not to do checks for shape compatibility.</span>
 <span class="sd">			</span>
@@ -792,12 +740,92 @@
 <span class="sd">		corresponds to :math:`B = AH`. </span>
 <span class="sd">	</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">try</span><span class="p">:</span>
-			<span class="n">V_transpose</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-			<span class="n">V_transpose</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+		<span class="c1"># try:</span>
+		<span class="c1"># 	V_transpose = V.transpose()</span>
+		<span class="c1"># except AttributeError:</span>
+		<span class="c1"># 	V_transpose = _np.asanyarray(V).transpose()</span>
 
-		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">ndim</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+			<span class="n">ndim</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span>
+
+		<span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting V.ndim &lt; 4.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">V_transpose</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="hamiltonian.quant_fluct"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.quant_fluct">[docs]</a>	<span class="k">def</span> <span class="nf">quant_fluct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		V : numpy.ndarray</span>
+<span class="sd">			Depending on the shape, can be a single state or a collection of pure or mixed states</span>
+<span class="sd">			[see `enforce_pure`].</span>
+<span class="sd">		time : obj, optional</span>
+<span class="sd">			Can be either one of the following:</span>
+
+<span class="sd">			* float: time to evalute the time-dependent part of the operator at (if existent). </span>
+<span class="sd">				Default is `time = 0`.</span>
+<span class="sd">			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time </span>
+<span class="sd">					and the fluctuations are calculated with respect to `V[...,i]`. Here V must be either </span>
+<span class="sd">					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.</span>
+
+<span class="sd">		enforce_pure : bool, optional</span>
+<span class="sd">			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states</span>
+<span class="sd">			in the columns.</span>
+<span class="sd">		check : bool, optional</span>
+<span class="sd">			</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		float</span>
+<span class="sd">			Quantum fluctuations of `hamiltonian` operator in state `V`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)</span>
+
+<span class="sd">		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. </span>
+<span class="sd">			 </span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="k">import</span> <span class="n">isexp_op</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([])</span>
+
+		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">isexp_op</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of exp_op&quot;</span><span class="p">)</span>
+
+		<span class="c1"># fluctuations =  expctH2 - expctH^2</span>
+		<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span>
+		<span class="n">V_dot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+		<span class="n">expt_value_sq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+		<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+			<span class="n">sq_expt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">V_dot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+			<span class="n">sq_expt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">expt_value_sq</span> <span class="o">-</span> <span class="n">sq_expt_value</span></div>
 
 <div class="viewcode-block" id="hamiltonian.expt_value"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.expt_value">[docs]</a>	<span class="k">def</span> <span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.</span>
@@ -809,20 +837,15 @@
 <span class="sd">		-----------</span>
 <span class="sd">		V : numpy.ndarray</span>
 <span class="sd">			Depending on the shape, can be a single state or a collection of pure or mixed states</span>
-<span class="sd">			[see `enformce_pure`].</span>
+<span class="sd">			[see `enforce_pure`].</span>
 <span class="sd">		time : obj, optional</span>
 <span class="sd">			Can be either one of the following:</span>
 
 <span class="sd">			* float: time to evalute the time-dependent part of the operator at (if existent). </span>
 <span class="sd">				Default is `time = 0`.</span>
-<span class="sd">			* list: there are two possible outcomes:</span>
-
-<span class="sd">				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time </span>
-<span class="sd">					and dotted into the i-th column of `V` to get the i-th column of the output array.</span>
-<span class="sd">				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time</span>
-<span class="sd">					in `time`. The results are then stacked such that the columns contain all the vectors. </span>
-
-<span class="sd">				If either of these cases do not match, an error is thrown.</span>
+<span class="sd">			* (N,) array_like: if `V.shape[-1] == N`, the `hamiltonian` operator is evaluated at the i-th time </span>
+<span class="sd">					and the expectation value is calculated with respect to `V[...,i]`. Here V must be either </span>
+<span class="sd">					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.</span>
 <span class="sd">		enforce_pure : bool, optional</span>
 <span class="sd">			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states</span>
 <span class="sd">			in the columns.</span>
@@ -853,32 +876,36 @@
 
 		
 		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span></div>
+
+	<span class="k">def</span> <span class="nf">_expt_value_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		
 		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># multiple time point expectation values</span>
-			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span> <span class="c1"># multiple pure states multiple time points</span>
-				<span class="k">return</span> <span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_dot</span><span class="p">))</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span> <span class="c1"># multiple pure states multiple time points</span>
+				<span class="k">return</span> <span class="p">(</span><span class="n">V_left</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_right</span><span class="p">))</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># multiple pure states multiple time points</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_dot</span><span class="p">)</span>
-				<span class="k">elif</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># multiple mixed states multiple time points</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;iij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_dot</span><span class="p">)</span>
+				<span class="n">V_left</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_left</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># multiple pure states multiple time points</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_right</span><span class="p">)</span>
+				<span class="k">elif</span> <span class="n">V_left</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># multiple mixed states multiple time points</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;iij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
 
 		<span class="k">else</span><span class="p">:</span>
 
-			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="c1"># pure states</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">((</span><span class="n">V</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_dot</span><span class="p">))</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># pure states</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">((</span><span class="n">V_left</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_right</span><span class="p">))</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
 				<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
-					<span class="k">return</span> <span class="n">V</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+					<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">V_dot</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_dot</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># pure state</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">)</span>
-				<span class="k">elif</span> <span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># multiple pure states</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_dot</span><span class="p">)</span>
+				<span class="n">V_right</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_right</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+				<span class="k">if</span> <span class="n">V_right</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># pure state</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
+				<span class="k">elif</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># multiple pure states</span>
+					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_right</span><span class="p">)</span>
 				<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
-					<span class="k">return</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span></div>
-			
+					<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+		
 <div class="viewcode-block" id="hamiltonian.matrix_ele"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.matrix_ele">[docs]</a>	<span class="k">def</span> <span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Vl</span><span class="p">,</span><span class="n">Vr</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.</span>
 
@@ -891,23 +918,18 @@
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
-<span class="sd">		Vl : numpy.ndarray</span>
+<span class="sd">		Vl : {numpy.ndarray, scipy.spmatrix}</span>
 <span class="sd">			Vector(s)/state(s) to multiple with on left side.</span>
-<span class="sd">		Vl : numpy.ndarray</span>
+<span class="sd">		Vl : {numpy.ndarray, scipy.spmatrix}</span>
 <span class="sd">			Vector(s)/state(s) to multiple with on right side.</span>
 <span class="sd">		time : obj, optional</span>
 <span class="sd">			Can be either one of the following:</span>
 
 <span class="sd">			* float: time to evalute the time-dependent part of the operator at (if existent). </span>
 <span class="sd">				Default is `time = 0`.</span>
-<span class="sd">			* list: there are two possible outcomes:</span>
-
-<span class="sd">				-- if `V.shape[1] == len(time)`, the `hamiltonian` operator is evaluated at the i-th time </span>
-<span class="sd">					and dotted into the i-th column of `V` to get the i-th column of the output array.</span>
-<span class="sd">				-- if `V.shape[1] == 1` or `V.shape[1] == 0`, the `_.dot` is evaluated on `V` for each time</span>
-<span class="sd">					in `time`. The results are then stacked such that the columns contain all the vectors. </span>
-
-<span class="sd">				If either of these cases do not match, an error is thrown.</span>
+<span class="sd">			* (N,) array_like: if `V.shape[1] == N`, the `hamiltonian` operator is evaluated at the i-th time </span>
+<span class="sd">					and the fluctuations are calculated with respect to `V[:,i]`. Here V must be a 2-d array</span>
+<span class="sd">					containing pure states in the columns of the array.</span>
 <span class="sd">		diagonal : bool, optional</span>
 <span class="sd">			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.</span>
 <span class="sd">		check : bool,</span>
@@ -927,71 +949,33 @@
 
 		<span class="n">Vr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">check</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
- 
-		<span class="k">if</span> <span class="n">Vr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vr to have ndim &lt; 3&#39;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span>
+			<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+				<span class="n">Vl</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Vl</span><span class="p">)</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span>
 
-		<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
-			<span class="k">elif</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vl to have ndim &lt; 3&#39;</span><span class="p">)</span>
-
-		<span class="k">elif</span> <span class="n">Vl</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
-			<span class="k">elif</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
-
-		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Vl</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dimension mismatch&#39;</span><span class="p">)</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
+
+			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Vr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of vectors must be equal for diagonal=True.&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">Vr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vr to have ndim &lt; 3&#39;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Vl</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
 				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
-
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">Vl</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">Vl</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-				<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
-			<span class="k">elif</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
-
-				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vl to have ndim &lt; 3&#39;</span><span class="p">)</span></div>
+				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span></div>
 	
 	<span class="c1">### transformation routines</span>
 
@@ -1301,6 +1285,38 @@
 		<span class="n">rho_comm</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span>
 		<span class="k">return</span> <span class="n">rho_comm</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
 
+	<span class="k">def</span> <span class="nf">__multi_ISO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		args:</span>
+<span class="sd">			V, the vector to multiple with</span>
+<span class="sd">			time, the time to evalute drive at.</span>
+
+<span class="sd">		description:</span>
+<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V &gt;</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+		<span class="n">V_dot</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
+		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+			<span class="n">V_dot</span> <span class="o">-=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+
+		<span class="k">return</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+
+	<span class="k">def</span> <span class="nf">__ISO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		args:</span>
+<span class="sd">			V, the vector to multiple with</span>
+<span class="sd">			time, the time to evalute drive at.</span>
+
+<span class="sd">		description:</span>
+<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V &gt;</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">V_dot</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
+		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+			<span class="n">V_dot</span> <span class="o">-=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+
+		<span class="k">return</span> <span class="n">V_dot</span>
+
 	<span class="k">def</span> <span class="nf">__multi_SO_real</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		args:</span>
@@ -1322,38 +1338,6 @@
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">V_dot</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,:]</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:,:])</span>
 			<span class="n">V_dot</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:,:]</span> <span class="o">+=</span> <span class="o">-</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,:])</span>
-
-		<span class="k">return</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
-
-	<span class="k">def</span> <span class="nf">__multi_SO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		args:</span>
-<span class="sd">			V, the vector to multiple with</span>
-<span class="sd">			time, the time to evalute drive at.</span>
-
-<span class="sd">		description:</span>
-<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V &gt;</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
-		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-			<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
-
-		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">V_dot</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
-
-	<span class="k">def</span> <span class="nf">__multi_ISO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		args:</span>
-<span class="sd">			V, the vector to multiple with</span>
-<span class="sd">			time, the time to evalute drive at.</span>
-
-<span class="sd">		description:</span>
-<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V &gt;</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-		<span class="n">V_dot</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
-		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-			<span class="n">V_dot</span> <span class="o">-=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 
 		<span class="k">return</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
 
@@ -1380,6 +1364,22 @@
 
 		<span class="k">return</span> <span class="n">V_dot</span>
 
+	<span class="k">def</span> <span class="nf">__multi_SO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		args:</span>
+<span class="sd">			V, the vector to multiple with</span>
+<span class="sd">			time, the time to evalute drive at.</span>
+
+<span class="sd">		description:</span>
+<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V &gt;</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
+		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+			<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+
+		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">V_dot</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+
 	<span class="k">def</span> <span class="nf">__SO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		args:</span>
@@ -1389,29 +1389,30 @@
 <span class="sd">		description:</span>
 <span class="sd">			This function is what get&#39;s passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V &gt;</span>
 <span class="sd">		&quot;&quot;&quot;</span>
+
 		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 
 		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">V_dot</span>
 
-	<span class="k">def</span> <span class="nf">__ISO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__SO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		args:</span>
 <span class="sd">			V, the vector to multiple with</span>
 <span class="sd">			time, the time to evalute drive at.</span>
 
 <span class="sd">		description:</span>
-<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V &gt;</span>
+<span class="sd">			This function is what get&#39;s passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V &gt;</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
-		<span class="n">V_dot</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
+		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>	
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-			<span class="n">V_dot</span> <span class="o">-=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+			<span class="n">V_dot</span> <span class="o">+=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 
-		<span class="k">return</span> <span class="n">V_dot</span>
+		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">V_dot</span>		
 
-<div class="viewcode-block" id="hamiltonian.evolve"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">eom</span><span class="o">=</span><span class="s2">&quot;SE&quot;</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
+<div class="viewcode-block" id="hamiltonian.evolve"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">eom</span><span class="o">=</span><span class="s2">&quot;SE&quot;</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Implements (imaginary) time evolution generated by the `hamiltonian` object.</span>
 
 <span class="sd">		The functions handles evolution generated by both time-dependent and time-independent Hamiltonians. </span>
@@ -1451,7 +1452,7 @@
 <span class="sd">			See `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html&gt;`_ for other options.</span>
 <span class="sd">		solver_args : dict, optional</span>
 <span class="sd">			Dictionary with additional `scipy integrator (solver) &lt;https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html&gt;`_.	</span>
-<span class="sd">		H_real : bool, optional </span>
+<span class="sd">		stack_state : bool, optional </span>
 <span class="sd">			Flag to determine if `f` is real or complex-valued. Default is `False`.</span>
 <span class="sd">		imag_time : bool, optional</span>
 <span class="sd">			Must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state </span>
@@ -1474,15 +1475,26 @@
 
 <span class="sd">		&quot;&quot;&quot;</span>
 
-		<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">complex_ode</span>
-		<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">ode</span>
+		<span class="kn">from</span> <span class="nn">..tools.evolution</span> <span class="k">import</span> <span class="n">evolve</span>
 
-		<span class="n">shape0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">shape0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="n">v0</span> <span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+			<span class="n">shape0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
+
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;times must be real number(s).&quot;</span><span class="p">)</span>
+
+		<span class="n">evolve_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">)</span>
+		<span class="n">evolve_kwargs</span> <span class="o">=</span> <span class="n">solver_args</span>
+		<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;solver_name&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">solver_name</span>
+		<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;stack_state&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">stack_state</span>
+		<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">verbose</span>
+		<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;iterate&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">iterate</span>
+		<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;imag_time&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">imag_time</span>
 
 		<span class="k">if</span> <span class="n">eom</span> <span class="o">==</span> <span class="s2">&quot;SE&quot;</span><span class="p">:</span>
-			<span class="n">n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># needed for imaginary time to preserve the proper norm of the state. </span>
-
-			
 			<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;v0 must have ndim &lt;= 2&quot;</span><span class="p">)</span>
 
@@ -1490,33 +1502,29 @@
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;v0 must have </span><span class="si">{0}</span><span class="s2"> elements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
 
 			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+					<span class="n">evolve_args</span>  <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ISO</span><span class="p">,)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">evolve_args</span>  <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_ISO</span><span class="p">,)</span>
+
 				<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 				<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">v0</span><span class="p">):</span>
-					<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ISO</span><span class="p">)</span>
-					<span class="k">else</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_ISO</span><span class="p">)</span>
+					<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
 				<span class="k">else</span><span class="p">:</span>
-					<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ISO</span><span class="p">)</span>
-					<span class="k">else</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_ISO</span><span class="p">)</span>
+					<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]</span><span class="o">=</span><span class="kc">True</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-					<span class="n">v1</span> <span class="o">=</span> <span class="n">v0</span>
-					<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,)</span><span class="o">+</span><span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span><span class="n">dtype</span><span class="o">=</span><span class="n">v1</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-					<span class="n">v0</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">]</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">real</span>
-					<span class="n">v0</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">:]</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">imag</span>
+				<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
+					<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
 					<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__SO_real</span><span class="p">)</span>
+						<span class="n">evolve_args</span> <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__SO_real</span><span class="p">,)</span>
 					<span class="k">else</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_SO_real</span><span class="p">)</span>
+						<span class="n">evolve_args</span> <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_SO_real</span><span class="p">,)</span>
 				<span class="k">else</span><span class="p">:</span>
-					<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+					<span class="n">evolve_kwargs</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
 					<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__SO</span><span class="p">)</span>
+						<span class="n">evolve_args</span> <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__SO</span><span class="p">,)</span>
 					<span class="k">else</span><span class="p">:</span>
-						<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_SO</span><span class="p">)</span>
+						<span class="n">evolve_args</span> <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multi_SO</span><span class="p">,)</span>
 
 		<span class="k">elif</span> <span class="n">eom</span> <span class="o">==</span> <span class="s2">&quot;LvNE&quot;</span><span class="p">:</span>
 			<span class="n">n</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -1529,109 +1537,14 @@
 			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;imaginary time not implemented for Liouville-von Neumann dynamics&quot;</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;H_real not implemented for Liouville-von Neumann dynamics&quot;</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;stack_state not implemented for Liouville-von Neumann dynamics&quot;</span><span class="p">)</span>
 				<span class="k">else</span><span class="p">:</span>
-					<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__LO</span><span class="p">)</span>
+					<span class="n">evolve_args</span> <span class="o">=</span> <span class="n">evolve_args</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__LO</span><span class="p">,)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2"> equation&#39; not recognized, must be &#39;SE&#39; or &#39;LvNE&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">equation</span><span class="p">))</span>
 
-
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;times must be real number(s).&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">solver_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="s2">&quot;dopri5&quot;</span><span class="p">]:</span>
-			<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nsteps&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
-			<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rtol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
-			<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;atol&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">solver_args</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1E-9</span>
-
-				
-		<span class="n">solver</span><span class="o">.</span><span class="n">set_integrator</span><span class="p">(</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
-		<span class="n">solver</span><span class="o">.</span><span class="n">set_initial_value</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">t0</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span></div>
-	
-	<span class="k">def</span> <span class="nf">_evolve_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-		<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-		<span class="n">N_ele</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span><span class="o">//</span><span class="mi">2</span>
-
-		<span class="k">if</span> <span class="n">time</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-				<span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">((</span><span class="n">v0</span><span class="p">[:</span><span class="n">N_ele</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">N_ele</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-
-		<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">((</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">N_ele</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">N_ele</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>	
-
-	<span class="k">def</span> <span class="nf">_evolve_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-		<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-
-		<span class="n">N_ele</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span><span class="o">//</span><span class="mi">2</span>
-		<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape0</span><span class="o">+</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-		
-		<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-				<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-					<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">((</span><span class="n">v0</span><span class="p">[:</span><span class="n">N_ele</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">N_ele</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-				<span class="k">continue</span>
-
-			<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-				<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-				<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-					<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">((</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">N_ele</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">N_ele</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
-				
-		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">_evolve_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-		<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-		<span class="n">N_ele</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span><span class="o">//</span><span class="mi">2</span>
-
-		<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-				<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-					<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">((</span><span class="n">v0</span><span class="p">[:</span><span class="n">N_ele</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">N_ele</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-				<span class="k">continue</span>
-				
-
-			<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-				<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-				<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">H_real</span><span class="p">:</span>
-					<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">((</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">N_ele</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">N_ele</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">))</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">evolve</span><span class="p">(</span><span class="o">*</span><span class="n">evolve_args</span><span class="p">,</span><span class="o">**</span><span class="n">evolve_kwargs</span><span class="p">)</span></div>
 
 	<span class="c1">### routines to change object type	</span>
 
@@ -1853,11 +1766,11 @@
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
-			<span class="n">new_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+			<span class="n">new_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">new_static</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 
-		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[([</span><span class="n">M</span><span class="o">.</span><span class="n">todense</span><span class="p">(),</span><span class="n">func</span><span class="p">]</span> <span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">M</span><span class="p">,</span><span class="n">func</span><span class="p">])</span>
+		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[([</span><span class="n">M</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span><span class="n">func</span><span class="p">]</span> <span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">M</span><span class="p">,</span><span class="n">func</span><span class="p">])</span>
 						<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
 
 		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">new_static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span></div>
@@ -2596,10 +2509,18 @@
 	<span class="k">def</span> <span class="nf">_imul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">_is_dense</span>
-
 			<span class="n">new_dynamic_ops</span> <span class="o">=</span> <span class="p">{}</span>
 			<span class="c1"># create new dynamic operators coming from</span>
-			<span class="c1"># self.static * other</span>
+		
+			<span class="c1"># self.static * other.static</span>
+			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">):</span>
+				<span class="n">new_static_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
+			<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
+				<span class="n">new_static_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">static</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">_static</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">new_static_op</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">,</span><span class="n">other</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
+
+			<span class="c1"># self.static * other.dynamic</span>
 			<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 				<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">):</span>
 					<span class="n">Hmul</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Hd</span><span class="p">)</span>
@@ -2611,8 +2532,35 @@
 				<span class="k">if</span> <span class="ow">not</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="n">Hmul</span><span class="p">):</span>
 					<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="n">Hmul</span>
 
+			<span class="c1"># self.dynamic * other.static</span>
+			<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Hd</span><span class="p">):</span>
+					<span class="n">Hmul</span> <span class="o">=</span> <span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
+				<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
+					<span class="n">Hmul</span> <span class="o">=</span> <span class="n">Hd</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">_static</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">Hmul</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Hd</span><span class="p">,</span><span class="n">other</span><span class="o">.</span><span class="n">_static</span><span class="p">)</span>
 
 
+				<span class="k">if</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">new_dynamic_ops</span><span class="p">:</span>
+					<span class="k">try</span><span class="p">:</span>
+						<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Hmul</span>
+					<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+						<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">+</span> <span class="n">Hmul</span>
+
+					<span class="k">try</span><span class="p">:</span>
+						<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span><span class="o">.</span><span class="n">sum_duplicates</span><span class="p">()</span>
+						<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+					<span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+					<span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]):</span>
+						<span class="n">new_dynamic_ops</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+						
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">if</span> <span class="ow">not</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="n">Hmul</span><span class="p">):</span>
+						<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="n">Hmul</span>
+
+
+			<span class="c1"># self.dynamic * other.dynamic</span>
 			<span class="k">for</span> <span class="n">func1</span><span class="p">,</span><span class="n">H1</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 				<span class="k">for</span> <span class="n">func2</span><span class="p">,</span><span class="n">H2</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 
@@ -2642,7 +2590,7 @@
 						<span class="k">if</span> <span class="ow">not</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="n">H12</span><span class="p">):</span>
 							<span class="n">new_dynamic_ops</span><span class="p">[</span><span class="n">func12</span><span class="p">]</span> <span class="o">=</span> <span class="n">H12</span>
 
-
+			<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">new_static_op</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span> <span class="o">=</span> <span class="n">new_dynamic_ops</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">:</span>
@@ -3081,7 +3029,7 @@
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quspin hamiltonian class does not support &#39;out&#39; for numpy.multiply or numpy.dot.&quot;</span><span class="p">)</span>
 
 
-		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -3155,7 +3103,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

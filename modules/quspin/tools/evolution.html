@@ -4,14 +4,25 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>quspin.tools.evolution &#8212; QuSpin 0.2.5 documentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.tools.evolution &#8212; QuSpin 0.2.8 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.5',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +46,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -52,6 +63,7 @@
 
 <span class="c1"># need linear algebra packages</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span> 
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span> <span class="k">as</span> <span class="n">_partial</span>
 
 <span class="c1"># needed for isinstance only</span>
 <span class="kn">from</span> <span class="nn">.expm_multiply_parallel_core</span> <span class="k">import</span> <span class="n">expm_multiply_parallel</span>
@@ -181,6 +193,8 @@
 			<span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exp_t</span><span class="p">,</span><span class="n">exp_t</span><span class="p">)</span>
 			
 			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,tj,jk,tk,lk-&gt;ilt&quot;</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">exp_t</span><span class="p">,</span><span class="n">rho_d</span><span class="p">,</span><span class="n">exp_t</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span></div>
+
+
 
 
 <div class="viewcode-block" id="evolve"><a class="viewcode-back" href="../../../generated/quspin.tools.evolution.evolve.html#quspin.tools.evolution.evolve">[docs]</a><span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="n">real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="p">(),</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
@@ -319,9 +333,8 @@
 	<span class="n">shape0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
 	
 	<span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-			<span class="n">shape0_ravelled</span><span class="o">=</span><span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
+		<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+		<span class="n">shape0_ravelled</span><span class="o">=</span><span class="n">v0</span><span class="o">.</span><span class="n">shape</span>
 	 
 	
 	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
@@ -330,6 +343,10 @@
 	<span class="n">n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span> <span class="c1"># needed for imaginary time to preserve the proper norm of the state. </span>
 
 	<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;imag_time is not compatible with stack_state.&quot;</span><span class="p">)</span>
+
+		<span class="n">complex_valued</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="n">v1</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">v1</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -341,10 +358,16 @@
 			<span class="n">v0</span><span class="p">[</span><span class="n">shape0_ravelled</span><span class="p">[</span><span class="mi">0</span><span class="p">]:]</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">imag</span>
 
 		<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
+		<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="o">*</span><span class="n">f_params</span><span class="p">)</span>
 	<span class="k">elif</span> <span class="n">real</span><span class="p">:</span>
+		<span class="n">complex_valued</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
+		<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="o">*</span><span class="n">f_params</span><span class="p">)</span>
 	<span class="k">else</span><span class="p">:</span>
-		<span class="n">solver</span> <span class="o">=</span> <span class="n">complex_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
+		<span class="n">complex_valued</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+		<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="n">_cmplx_f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
+		<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">f_params</span><span class="p">)</span>
 
 	<span class="k">if</span> <span class="n">solver_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="s2">&quot;dopri5&quot;</span><span class="p">]:</span>
 		<span class="k">if</span> <span class="n">solver_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nsteps&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -356,91 +379,94 @@
 
 
 	<span class="n">solver</span><span class="o">.</span><span class="n">set_integrator</span><span class="p">(</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
-	<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="o">*</span><span class="n">f_params</span><span class="p">)</span>
 	<span class="n">solver</span><span class="o">.</span><span class="n">set_initial_value</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">t0</span><span class="p">)</span>
 
 	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
-		<span class="k">return</span> <span class="n">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">complex_valued</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
 	<span class="k">else</span><span class="p">:</span>
 		<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">complex_valued</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span></div>
+			<span class="k">return</span> <span class="n">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">complex_valued</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
-	<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-	<span class="n">Ns</span><span class="o">=</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">_cmplx_f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">f_params</span><span class="p">):</span>
+	<span class="n">yc</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">yc</span><span class="p">,</span><span class="o">*</span><span class="n">f_params</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
+
+<span class="k">def</span> <span class="nf">_format_output</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">complex_valued</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
+	<span class="n">Ns</span> <span class="o">=</span> <span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
+		<span class="n">yout</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+		<span class="n">yout</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="n">complex_valued</span><span class="p">:</span>
+		<span class="c1"># yout = y.view(_np.complex128).reshape(shape0)</span>
+		<span class="n">yout</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">yout</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span>
+		<span class="n">yout</span> <span class="o">/=</span> <span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">yout</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">yout</span>
+
+
+
+<span class="k">def</span> <span class="nf">_evolve_scalar</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">):</span>
 	<span class="k">if</span> <span class="n">time</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">v0</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">_format_output</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">)</span>
 
 	<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 	<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
-		<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">_format_output</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">)</span>
 	<span class="k">else</span><span class="p">:</span>
 		<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>	
 
-<span class="k">def</span> <span class="nf">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_evolve_list</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">):</span>
 	<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
+	<span class="n">shape0</span> <span class="o">=</span> <span class="n">output_args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">Ns</span> <span class="o">=</span> <span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	
+	<span class="k">if</span> <span class="n">output_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">output_args</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+		<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape0</span><span class="o">+</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape0</span><span class="o">+</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-	<span class="n">Ns</span><span class="o">=</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-	<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape0</span><span class="o">+</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
 	
 	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
 
 		<span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">v0</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+			<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_format_output</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">)</span>
 			<span class="k">continue</span>
 
 		<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
 			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+			<span class="n">v</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_format_output</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 			
 
 	<span class="k">return</span> <span class="n">v</span>
 
-<span class="k">def</span> <span class="nf">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">shape0</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_evolve_iter</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">):</span>
 	<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
-	<span class="n">Ns</span><span class="o">=</span><span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">shape0</span> <span class="o">=</span> <span class="n">output_args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">Ns</span> <span class="o">=</span> <span class="n">shape0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
 	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
 		<span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">t0</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="p">(</span><span class="n">v0</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">v0</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+			<span class="k">yield</span> <span class="n">_format_output</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">)</span>
 			<span class="k">continue</span>
 			
-
 		<span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">successful</span><span class="p">():</span>
 			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evolved to time </span><span class="si">{0}</span><span class="s2">, norm of state </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">)))</span>
-			<span class="k">if</span> <span class="n">imag_time</span><span class="p">:</span> <span class="n">solver</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">stack_state</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+			<span class="k">yield</span> <span class="n">_format_output</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span><span class="o">*</span><span class="n">output_args</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;failed to evolve to time </span><span class="si">{0}</span><span class="s2">, nsteps might be too small&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 </pre></div>
@@ -473,7 +499,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

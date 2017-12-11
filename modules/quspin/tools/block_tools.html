@@ -4,14 +4,25 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>quspin.tools.block_tools &#8212; QuSpin 0.2.5 documentation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.tools.block_tools &#8212; QuSpin 0.2.8 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.5',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +46,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -273,9 +284,9 @@
 	<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">:</span>
 		<span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">_evolve_gen</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_evolve_gen</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Generating function for evolution with `H.evolve`.&quot;&quot;&quot;</span>
-	<span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
+	<span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
 		<span class="k">yield</span> <span class="n">psi</span>
 
 <span class="k">def</span> <span class="nf">_expm_gen</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
@@ -295,9 +306,9 @@
 
 
 
-<span class="k">def</span> <span class="nf">_block_evolve_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_block_evolve_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;using `_generate_parallel` to get block evolution yields state in full H-space.&quot;&quot;&quot;</span>
-	<span class="n">args_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">psi_blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">H_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">))]</span>
+	<span class="n">args_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">psi_blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">H_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H_list</span><span class="p">))]</span>
 
 	<span class="k">for</span> <span class="n">psi_blocks</span> <span class="ow">in</span> <span class="n">_generate_parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),</span><span class="n">_evolve_gen</span><span class="p">,</span><span class="n">args_list</span><span class="p">):</span>
 		<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">)</span>
@@ -311,9 +322,9 @@
 		<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">)</span>
 		<span class="k">yield</span> <span class="n">P</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>	
 
-<span class="k">def</span> <span class="nf">_block_evolve_helper</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_block_evolve_helper</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;helper functions for doing evolution not with iterator.&quot;&quot;&quot;</span>
-	<span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="block_ops"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops">[docs]</a><span class="k">class</span> <span class="nc">block_ops</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -521,7 +532,7 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">_H_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span></div>
 
 
-<div class="viewcode-block" id="block_ops.evolve"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">H_real</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
+<div class="viewcode-block" id="block_ops.evolve"><a class="viewcode-back" href="../../../generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops.evolve">[docs]</a>	<span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">imag_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">solver_name</span><span class="o">=</span><span class="s2">&quot;dop853&quot;</span><span class="p">,</span><span class="o">**</span><span class="n">solver_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Creates symmetry blocks of the Hamiltonian and then uses them to run `hamiltonian.evolve()` in parallel.</span>
 <span class="sd">		</span>
 <span class="sd">		**Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.**</span>
@@ -648,9 +659,9 @@
 			<span class="k">if</span> <span class="n">iterate</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If iterate=True times must be a list/array.&quot;</span><span class="p">)</span>
-				<span class="k">return</span> <span class="n">_block_evolve_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">_block_evolve_iter</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_Parallel</span><span class="p">(</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span><span class="p">)(</span><span class="n">_delayed</span><span class="p">(</span><span class="n">_block_evolve_helper</span><span class="p">)(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">H_real</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">psi</span><span class="p">,</span><span class="n">H</span> <span class="ow">in</span> <span class="n">_izip</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">))</span>
+				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_Parallel</span><span class="p">(</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span><span class="p">)(</span><span class="n">_delayed</span><span class="p">(</span><span class="n">_block_evolve_helper</span><span class="p">)(</span><span class="n">H</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">stack_state</span><span class="p">,</span><span class="n">imag_time</span><span class="p">,</span><span class="n">solver_name</span><span class="p">,</span><span class="n">solver_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">psi</span><span class="p">,</span><span class="n">H</span> <span class="ow">in</span> <span class="n">_izip</span><span class="p">(</span><span class="n">psi_blocks</span><span class="p">,</span><span class="n">H_list</span><span class="p">))</span>
 				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>
 				<span class="n">psi_t</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span>
 				<span class="k">return</span> <span class="n">psi_t</span>
@@ -1028,7 +1039,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
