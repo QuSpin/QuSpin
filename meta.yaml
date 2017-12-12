@@ -10,6 +10,7 @@ source:
 requirements:
   build:
     - {{compiler('cxx')}} # [unix]
+    - llvm-openmp # [osx]
     - python {{ python }}
     - numpy >=1.10.0
  
@@ -17,8 +18,9 @@ requirements:
   run:
     - libgcc # [linux]
     - libstdcxx # [linux]
-    - clang # [os-x]
-    - clangxx # [os-x]
+    - clang # [osx]
+    - clangxx # [osx]
+    - llvm-openmp # [osx]
     - python {{ python }}
     - numpy >=1.10.0
     - scipy >=0.19.0
