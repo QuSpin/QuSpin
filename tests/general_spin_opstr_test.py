@@ -104,6 +104,7 @@ def test_gen_basis_spin(l_max,S="1/2"):
 		n_gen = (gen_basis._n.astype(np.float64))*gen_basis._pers.prod()
 
 		if basis_1d.Ns != gen_basis.Ns:
+			print(L,basis_blocks)
 			print(basis_1d)
 			print(gen_basis)
 			raise ValueError("basis size mismatch")

@@ -338,21 +338,21 @@ class tensor_basis(basis):
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
-			Subsystem to calculate the density matrix of. Can be either one of:
+			Defines subsystem A. Can be either one of:
 
 				* "left": refers to `basis_left` (Default).
 				* "right": refers to `basis_right`.
 				* "both": for initial mixed states the Renyi entropy of subsystem A and its complement
 					B need not be the same. This option automatically sets `return_rdm=both`.
 					
-		return_rdm : str, optional
-			Toggles returning the reduced DM. Can be tierh one of:
+		return_rdm : str, required
+			Toggles returning the reduced DM. Can be either one of:
 
 				* "A": returns reduced DM of subsystem A.
-				* "B": returns reduced DM of subsystem B.
-				* "both": returns reduced DM of both A and B subsystems.
+				* "B": returns reduced DM of subsystem B (complement of A).
+				* "both": returns reduced DM of both subsystems A and B.
 		enforce_pure : bool, optional
-			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			Whether or not to assume `state` is a collection of pure states or a mixed density matrix, if
 			it is a square array. Default is `False`.
 		sparse : bool, optional
 			Whether or not to return a sparse DM. Default is `False`.
@@ -460,7 +460,7 @@ class tensor_basis(basis):
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
-			Subsystem to calculate the density matrix of. Can be either one of:
+			Defines subsystem A. Can be either one of:
 
 				* "left": refers to `basis_left` (Default).
 				* "right": refers to `basis_right`.
@@ -470,8 +470,8 @@ class tensor_basis(basis):
 			Toggles returning the reduced DM. Can be tierh one of:
 
 				* "A": returns reduced DM of subsystem A.
-				* "B": returns reduced DM of subsystem B.
-				* "both": returns reduced DM of both A and B subsystems.
+				* "B": returns reduced DM of subsystem B (complement of A).
+				* "both": returns reduced DM of both subsystems A and B.
 		enforce_pure : bool, optional
 			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
 			it is a square array. Default is `False`.

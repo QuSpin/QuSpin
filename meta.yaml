@@ -1,6 +1,6 @@
 package:
   name: quspin
-  version: "0.2.8b"
+  version: "0.2.8"
 
 source:
   path: ./
@@ -16,7 +16,10 @@ requirements:
  
     
   run:
-    - libgcc >=5.2.0 # [linux]
+    - libgcc # [linux]
+    - libstdcxx # [linux]
+    - clang # [osx]
+    - clangxx # [osx]
     - llvm-openmp # [osx]
     - python {{ python }}
     - numpy >=1.10.0
