@@ -2,8 +2,6 @@ Installation
 ============
 
 QuSpin is currently being supported for Python 2 and Python 3 which are a prerequisite. We recommend the use of the free package manager `Anaconda <https://www.continuum.io/downloads>`_ which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use `miniconda <http://conda.pydata.org/miniconda.html>`_.
-
-For the manual installation you must have all the prerequisite python packages: `numpy <http://www.numpy.org/>`_, `scipy <https://www.scipy.org>`_, `joblib <https://pythonhosted.org/joblib/>`_, `six <https://pythonhosted.org/six/>`_, and `dill <https://pypi.python.org/pypi/dill>`_ installed. For Windows machines one needs the correct verion of the Microsoft Visual Stuios compiler for the given python version you are building the package for. A good resource which can help you with this is `here <https://github.com/cython/cython/wiki/CythonExtensionsOnWindows>`_. For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. When installing the package manually, if you add the flag `--record install.txt`, the location of all the installed files will be output to `install.txt` This is useful as most package managers will not be able to remove manually installed packages and so in order to delete this package you need to manually remove all the files. 
 	
 Mac OS X/Linux
 --------------

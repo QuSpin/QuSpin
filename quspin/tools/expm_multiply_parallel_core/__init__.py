@@ -1,2 +1,1 @@
 from .expm_multiply_parallel_core import expm_multiply_parallel
-from .csr_matvec_core import csr_matvec
