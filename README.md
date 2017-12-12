@@ -47,9 +47,7 @@ or Windows command line:
 ```
 setup.py install
 ```
-For the manual installation you must have all the prerequisite python packages: [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), and [joblib](https://pythonhosted.org/joblib/) installed. We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages.
-
-When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code. 
+For the manual installation you must have all the prerequisite python packages: [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [joblib](https://pythonhosted.org/joblib/), [six](https://pythonhosted.org/six/), and [dill](https://pypi.python.org/pypi/dill) installed. For Windows machines one needs the correct verion of the Microsoft Visual Stuios compiler for the given python version you are building the package for. A good resource which can help you with this is [here](https://github.com/cython/cython/wiki/CythonExtensionsOnWindows). For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. For most setups We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages and we have pre-built code which should be compatible with most 64-bit systems. When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code. 
 
 ### **updating the package**
 

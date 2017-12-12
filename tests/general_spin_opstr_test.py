@@ -103,6 +103,7 @@ def test_gen_basis_spin(l_max,S="1/2"):
 		n = basis_1d._get_norms(np.float64)**2
 
 		if basis_1d.Ns != gen_basis.Ns:
+			print(L,basis_blocks)
 			print(basis_1d)
 			print(gen_basis)
 			raise ValueError("basis size mismatch")
