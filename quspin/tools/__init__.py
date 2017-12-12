@@ -60,7 +60,6 @@ misc
 .. autosummary::
    :toctree: generated/
 
-   csr_matvec
    project_op
    KL_div
    mean_level_spacing

@@ -225,9 +225,9 @@ def _generate_parallel(n_process,n_iter,gen_func,args_list):
 	for p in ps:
 		p.join()
 
-def _evolve_gen(psi,H,t0,times,stack_state,imag_time,solver_name,solver_args):
+def _evolve_gen(psi,H,t0,times,H_real,imag_time,solver_name,solver_args):
 	"""Generating function for evolution with `H.evolve`."""
-	for psi in H.evolve(psi,t0,times,stack_state=stack_state,imag_time=imag_time,solver_name=solver_name,iterate=True,**solver_args):
+	for psi in H.evolve(psi,t0,times,H_real=H_real,imag_time=imag_time,solver_name=solver_name,iterate=True,**solver_args):
 		yield psi
 
 def _expm_gen(psi,H,times,dt):
@@ -247,9 +247,9 @@ def _expm_gen(psi,H,times,dt):
 
 
 
-def _block_evolve_iter(psi_blocks,H_list,P,t0,times,stack_state,imag_time,solver_name,solver_args,n_jobs):
+def _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name,solver_args,n_jobs):
 	"""using `_generate_parallel` to get block evolution yields state in full H-space."""
-	args_list = [(psi_blocks[i],H_list[i],t0,times,stack_state,imag_time,solver_name,solver_args) for i in range(len(H_list))]
+	args_list = [(psi_blocks[i],H_list[i],t0,times,H_real,imag_time,solver_name,solver_args) for i in range(len(H_list))]
 
 	for psi_blocks in _generate_parallel(n_jobs,len(times),_evolve_gen,args_list):
 		psi_t = _np.hstack(psi_blocks)
@@ -263,9 +263,9 @@ def _block_expm_iter(psi_blocks,H_list,P,start,stop,num,endpoint,n_jobs):
 		psi_t = _np.hstack(psi_blocks)
 		yield P.dot(psi_t)	
 
-def _block_evolve_helper(H,psi,t0,times,stack_state,imag_time,solver_name,solver_args):
+def _block_evolve_helper(H,psi,t0,times,H_real,imag_time,solver_name,solver_args):
 	"""helper functions for doing evolution not with iterator."""
-	return H.evolve(psi,t0,times,stack_state=stack_state,imag_time=imag_time,solver_name=solver_name,**solver_args)
+	return H.evolve(psi,t0,times,H_real=H_real,imag_time=imag_time,solver_name=solver_name,**solver_args)
 
 
 class block_ops(object):
@@ -473,7 +473,7 @@ class block_ops(object):
 				self._H_dict[key] = H
 
 
-	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,block_diag=False,stack_state=False,imag_time=False,solver_name="dop853",**solver_args):
+	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,block_diag=False,H_real=False,imag_time=False,solver_name="dop853",**solver_args):
 		"""Creates symmetry blocks of the Hamiltonian and then uses them to run `hamiltonian.evolve()` in parallel.
 		
 		**Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.**
@@ -600,9 +600,9 @@ class block_ops(object):
 			if iterate:
 				if _np.isscalar(times):
 					raise ValueError("If iterate=True times must be a list/array.")
-				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,stack_state,imag_time,solver_name,solver_args,n_jobs)
+				return _block_evolve_iter(psi_blocks,H_list,P,t0,times,H_real,imag_time,solver_name,solver_args,n_jobs)
 			else:
-				psi_t = _Parallel(n_jobs = n_jobs)(_delayed(_block_evolve_helper)(H,psi,t0,times,stack_state,imag_time,solver_name,solver_args) for psi,H in _izip(psi_blocks,H_list))
+				psi_t = _Parallel(n_jobs = n_jobs)(_delayed(_block_evolve_helper)(H,psi,t0,times,H_real,imag_time,solver_name,solver_args) for psi,H in _izip(psi_blocks,H_list))
 				psi_t = _np.vstack(psi_t)
 				psi_t = P.dot(psi_t)
 				return psi_t

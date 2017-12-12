@@ -84,9 +84,6 @@ class tensor_basis(basis):
 		self._blocks = self._basis_left._blocks.copy()
 		self._blocks.update(self._basis_right._blocks)
 
-		self._check_symm=None
-		self._check_pcon=None # update once check_pcon is implemented for tensor_basis
-
 		self._unique_me = self._basis_left._unique_me and self._basis_right._unique_me
 		self._operators = self._basis_left._operators +"\n"+ self._basis_right._operators
 
@@ -338,21 +335,21 @@ class tensor_basis(basis):
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
-			Defines subsystem A. Can be either one of:
+			Subsystem to calculate the density matrix of. Can be either one of:
 
 				* "left": refers to `basis_left` (Default).
 				* "right": refers to `basis_right`.
 				* "both": for initial mixed states the Renyi entropy of subsystem A and its complement
 					B need not be the same. This option automatically sets `return_rdm=both`.
 					
-		return_rdm : str, required
-			Toggles returning the reduced DM. Can be either one of:
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
 
 				* "A": returns reduced DM of subsystem A.
-				* "B": returns reduced DM of subsystem B (complement of A).
-				* "both": returns reduced DM of both subsystems A and B.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
 		enforce_pure : bool, optional
-			Whether or not to assume `state` is a collection of pure states or a mixed density matrix, if
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
 			it is a square array. Default is `False`.
 		sparse : bool, optional
 			Whether or not to return a sparse DM. Default is `False`.
@@ -460,7 +457,7 @@ class tensor_basis(basis):
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
-			Defines subsystem A. Can be either one of:
+			Subsystem to calculate the density matrix of. Can be either one of:
 
 				* "left": refers to `basis_left` (Default).
 				* "right": refers to `basis_right`.
@@ -470,8 +467,8 @@ class tensor_basis(basis):
 			Toggles returning the reduced DM. Can be tierh one of:
 
 				* "A": returns reduced DM of subsystem A.
-				* "B": returns reduced DM of subsystem B (complement of A).
-				* "both": returns reduced DM of both subsystems A and B.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
 		enforce_pure : bool, optional
 			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
 			it is a square array. Default is `False`.

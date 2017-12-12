@@ -9,7 +9,6 @@ import numpy as _np
 # needed for isinstance only
 from ..operators import ishamiltonian as _ishamiltonian
 from ..basis import isbasis
-from .expm_multiply_parallel_core import csr_matvec
 
 __all__ =  ["project_op", 
 			"KL_div",
