@@ -66,23 +66,6 @@ class boson_basis_core : public general_basis_core<I>
 			}
 		}
 
-		bool check_state(I s){
-			int sign = 1;
-			return check_state_core<I>(this,s,sign,s,general_basis_core<I>::nt,0);
-		}
-
-		I ref_state(I s,int g[],int gg[],int &sign){
-			for(int i=0;i<general_basis_core<I>::nt;i++){
-				g[i] = 0;
-				gg[i] = 0;
-			}
-			return ref_state_core<I>(this,s,s,g,gg,sign,general_basis_core<I>::nt,0);
-		}
-
-		double get_norm(I s){
-			return get_norm_core<I>(this,s,1,0.0,0.0,s,general_basis_core<I>::nt,0);
-		}
-
 		I inline next_state_pcon(I s){
 			if(s == 0){
 				return s;

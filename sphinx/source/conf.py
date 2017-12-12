@@ -39,6 +39,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinxtogithub',
               'numpydoc',
+              'sphinxcontrib.googleanalytics',
             ]
 
 
@@ -201,5 +202,6 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-
+# google analytics
+googleanalytics_id = 'UA-110543543-1'
 
