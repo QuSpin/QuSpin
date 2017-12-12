@@ -13,17 +13,14 @@ class function(object):
 	def __str__(self):
 		return self._f.__name__
 
-	def __repr__(self):
-		return self.__str__()
-
 	def conj(self):
 		return self.conjugate()
 
 	def __eq__(self,other):
-		if isinstance(other,function):
-			return hash(self)==hash(other)
-		else:
+		if self.__class__ != other.__class__:
 			return False
+		else:
+			return ((self._f == other._f) and (self._args == other._args))
 
 	def __ne__(self,other):
 		return not self.__eq__(other)
@@ -31,12 +28,8 @@ class function(object):
 	def __contains__(self,other):
 		return self == other
 
-	def _hash_list(self):
-		return [hash((self._f,self._args))]
-
 	def __hash__(self):
-		hash_list = tuple(self._hash_list())
-		return hash(hash_list)
+		return hash((self._f,self._args))
 
 	def __call__(self,*args):
 		return self._f(*(args+self._args))
@@ -49,7 +42,35 @@ class function(object):
 		else:
 			return mul_function(self,other)
 
+	def __add__(self,other):
+		return add_function(self,other)
 
+	def __sub__(self,other):
+		return sub_function(other,self)
+
+
+class noncomm_binary_function(function):
+	def __init__(self,function1,function2):
+		if not isinstance(function1,function):
+			raise ValueError("func1 must be function object.")
+
+		if not isinstance(function2,function):
+			raise ValueError("func2 must be function object.")
+
+		self._function1 = function1
+		self._function2 = function2
+
+	def __eq__(self,other):
+		if self.__class__ != other.__class__:
+			return False
+		else:
+			return ((self._function1==other._function1) and (self._function2==other._function2))
+
+	def __hash__(self):
+		return hash((self._function1.__hash__(),self._function2.__hash__()))
+
+	def __contains__(self,other):
+		return (self._function1.__contains__(other)) or (self._function2.__contains__(other))
 
 
 class comm_binary_function(function):
@@ -63,11 +84,19 @@ class comm_binary_function(function):
 		self._function1 = function1
 		self._function2 = function2
 
-	def _hash_list(self):
-		hash_list = self._function1._hash_list()
-		hash_list.extend(self._function2._hash_list())
-		hash_list.sort()
-		return hash_list
+
+	def __eq__(self,other):
+		if self.__class__ != other.__class__:
+			return False
+		else:
+			ord1 = ((self._function1==other._function1) and (self._function2==other._function2))
+			ord2 = ((self._function1==other._function2) and (self._function2==other._function1))
+			return (ord1 or ord2)
+
+	def __hash__(self):
+		hash1 = hash((self._function1.__hash__(),self._function2.__hash__()))
+		hash2 = hash((self._function2.__hash__(),self._function1.__hash__()))
+		return min(hash2,hash1)
 
 	def __contains__(self,other):
 		return (self._function1.__contains__(other)) or (self._function2.__contains__(other))
@@ -93,6 +122,26 @@ class mul_function(comm_binary_function):
 			return mul_function(self,other)
 
 
+class add_function(comm_binary_function):
+	def __init__(self,*args,**kwargs):
+		comm_binary_function.__init__(self,*args,**kwargs)
+
+	def __call__(self,*args):
+		return self._function1(*args)+self._function2(*args)			
+
+	def __str__(self):
+		return "({0} + {1})".format(self._function1.__str__(),self._function2.__str__())
+
+
+class sub_function(noncomm_binary_function):
+	def __init__(self,*args,**kwargs):
+		noncomm_binary_function.__init__(self,*args,**kwargs)
+
+	def __call__(self,*args):
+		return self._function1(*args)-self._function2(*args)
+
+	def __str__(self):
+		return "({0} - {1})".format(self._function1.__str__(),self._function2.__str__())
 
 
 class conjugate_function(function):
@@ -111,8 +160,14 @@ class conjugate_function(function):
 	def __str__(self):
 		return "conj({0})".format(self._function1.__str__())
 
-	def _hash_list(self):
-		return [hash((1j,self._function1._f,self._function1._args))]
+	def __eq__(self,other):
+		if self.__class__ != other.__class__:
+			return False
+		else:
+			return (self._function1 == other._function1) 
+
+	def __hash__(self):
+		return hash((1j,self._function1._f,self._function1._args))
 
 	def __contains__(self,other):
 		return self._function1.__contains__(other)
@@ -132,8 +187,16 @@ class pow_function(function):
 	def __str__(self):
 		return "{0}^{1}".format(self._function1.__str__(),self._p)
 
-	def _hash_list(self):
-		return [hash((self._function1._f,self._function1._args,self._p))]
+	def __eq__(self,other):
+		if self.__class__ != other.__class__:
+			return False
+		else:
+			return ((self._function1 == other._function1) and (self._p == other._p))
+
+
+	def __hash__(self):
+		return hash((self._function1._f,self._function1._args,self._p))
+
 
 	def __mul__(self,other):
 		if self._function1 == other:
@@ -144,31 +207,3 @@ class pow_function(function):
 	def __contains__(self,other):
 		return self._function1.__contains__(other)
 
-
-
-if __name__ == '__main__':
-	def f1(x):
-		return x
-
-	def f2(x):
-		return x
-
-	def f3(x):
-		return x
-
-	g1 = function(f1,())
-	g2 = function(f2,())
-	g3 = function(f3,())
-
-	A = g1*g2*g3
-	B = g2*g1*g3
-	C = g3*g1*g2
-
-
-
-	G = {A:"A"}
-
-	D = g1*g3*g2
-	print(hash(A)==hash(D))
-	print(A == D)
-	print(D in G)
