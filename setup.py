@@ -26,7 +26,7 @@ def setup_package():
 
 	ind = meta_file.index("version:")
 	version = meta_file[ind+1].replace('"','')
-	io
+
 
 	metadata = dict(
 		name='quspin',

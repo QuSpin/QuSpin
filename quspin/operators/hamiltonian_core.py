@@ -595,7 +595,7 @@ class hamiltonian(object):
 			try:
 				shape = V.shape
 			except AttributeError:
-				V = np.asanyarray(V)
+				V =_np.asanyarray(V)
 				shape = V.shape
 
 			if shape[0] != self._shape[1]:
@@ -900,7 +900,7 @@ class hamiltonian(object):
 			if Vl.shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(Vl.shape,self._shape))
 
-	 		if diagonal:
+			if diagonal:
 				if Vl.shape[1] != Vr.shape[1]:
 					raise ValueError("number of vectors must be equal for diagonal=True.")
 
@@ -1421,8 +1421,8 @@ class hamiltonian(object):
 		try:
 			shape0 = v0.shape
 		except AttributeError:
-			v0 = np.asanyarray(v0)
-			shape0 = v0.shape0
+			v0 =_np.asanyarray(v0)
+			shape0 = v0.shape
 
 		if _np.iscomplexobj(times):
 			raise ValueError("times must be real number(s).")
@@ -2970,7 +2970,7 @@ class hamiltonian(object):
 			raise ValueError("quspin hamiltonian class does not support 'out' for numpy.multiply or numpy.dot.")
 
 
-		if (func == np.dot) or (func == np.multiply):
+		if (func ==_np.dot) or (func ==_np.multiply):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:

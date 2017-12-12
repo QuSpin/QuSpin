@@ -169,6 +169,6 @@ if __name__ == '__main__':
 	G = {A:"A"}
 
 	D = g1*g3*g2
-	print hash(A)==hash(D)
-	print A == D
-	print D in G
+	print(hash(A)==hash(D))
+	print(A == D)
+	print(D in G)
