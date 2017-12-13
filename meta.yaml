@@ -9,13 +9,17 @@ source:
 
 requirements:
   build:
-    - {{compiler('cxx')}}
+    - {{compiler('cxx')}} # [unix]
     - python {{ python }}
     - numpy >=1.10.0
  
     
   run:
-    - {{compiler('cxx')}}
+    - libgcc # [linux]
+    - libstdcxx # [linux]
+    - clang # [osx]
+    - clangxx # [osx]
+    - libcxx # [osx]
     - python {{ python }}
     - numpy >=1.10.0
     - scipy >=0.19.0

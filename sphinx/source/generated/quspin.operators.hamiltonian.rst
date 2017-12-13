@@ -32,6 +32,7 @@ quspin\.operators\.hamiltonian
       ~hamiltonian.getH
       ~hamiltonian.matrix_ele
       ~hamiltonian.project_to
+      ~hamiltonian.quant_fluct
       ~hamiltonian.rdot
       ~hamiltonian.rotate_by
       ~hamiltonian.toarray
