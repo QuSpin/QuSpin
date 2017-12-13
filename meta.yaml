@@ -16,7 +16,8 @@ requirements:
     
   run:
     - libgcc # [linux]
-    - libstdcxx # [linux]
+    - libgcc-ng # [linux]
+    - libstdcxx-ng # [linux]
     - clang # [osx]
     - clangxx # [osx]
     - libcxx # [osx]
