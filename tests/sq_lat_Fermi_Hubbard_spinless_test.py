@@ -20,15 +20,17 @@ def test(Lx,Ly):
 	basis_dict = {}
 	Nfs=range(N+1)
 
-	for Nf in Nfs:
+	for Nf in [1]: # Nfs:
 		basis_blocks=[]
 		pcon_basis = spinless_fermion_basis_general(N,Nf=Nf)
+		print(pcon_basis)
 		Ns_block = 0
-		for blocks in tr.allowed_blocks_iter():
-			print(blocks)
+		for blocks in tr.allowed_blocks_iter_parity():
 			basis =  spinless_fermion_basis_general(N,Nf=Nf,**blocks)
+			#print(basis)
 			Ns_block += basis.Ns
 			basis_blocks.append(basis)
+			print(basis.Ns,N,Nf,blocks)
 
 		print(Nf,Ns_block,pcon_basis.Ns,basis.Ns)
 		#exit()
@@ -62,7 +64,9 @@ def test(Lx,Ly):
 		print("passed Nf={} sector".format(Nf))
 
 
-test(3,3)
+test(2,2)
+
+
 test(3,2)
 test(2,3)
 
