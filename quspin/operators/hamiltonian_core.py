@@ -959,8 +959,8 @@ class hamiltonian(object):
 				return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 			else:
 				return Vl.T.conj().dot(Vr)
- 
- 		if diagonal:
+
+		if diagonal:
 			if Vl.shape[1] != Vr.shape[1]:
 				raise ValueError("number of vectors must be equal for diagonal=True.")
 

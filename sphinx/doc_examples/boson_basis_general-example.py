@@ -30,7 +30,7 @@ basis_2d = boson_basis_general(N_2d,sps=3,kxblock=(T_x,0),kyblock=(T_y,0),pxbloc
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists
-hopping=[[-J,i,T_x[i]] for i in range(N_2d)]+[[-J,i,T_y[i]] for i in range(N_2d)]
+hopping=[[-J,i,T_x[i]] for i in range(N_2d)] + [[-J,i,T_y[i]] for i in range(N_2d)]
 potential=[[-mu-U/2.0,i] for i in range(N_2d)]
 interaction=[[U/2.0,i,i] for i in range(N_2d)]
 #

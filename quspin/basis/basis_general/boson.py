@@ -87,7 +87,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 	.. math::
 		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
 
-	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In partcular,
+	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In particular,
 	we do translation invariance and parity (reflection) (along each lattice direction).
 
 	.. literalinclude:: ../../doc_examples/boson_basis_general-example.py
