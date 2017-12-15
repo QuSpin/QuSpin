@@ -21,6 +21,8 @@ def cython_files():
 	cython_src = [
 					os.path.join(package_dir,"hcp_basis.pyx"),
 					os.path.join(package_dir,"hcp_ops.pyx"),
+					os.path.join(package_dir,"spf_basis.pyx"),
+					os.path.join(package_dir,"spf_ops.pyx"),
 					os.path.join(package_dir,"boson_basis.pyx"),
 					os.path.join(package_dir,"boson_ops.pyx"),
 				]
@@ -45,6 +47,11 @@ def configuration(parent_package='', top_path=None):
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
+		spf_ops_src = os.path.join(package_dir,"spf_basis.cpp")	
+		config.add_extension('spf_basis',sources=spf_ops_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
 		boson_basis_src = os.path.join(package_dir,"boson_basis.cpp")	
 		config.add_extension('boson_basis',sources=boson_basis_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
@@ -55,11 +62,15 @@ def configuration(parent_package='', top_path=None):
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
+		spf_ops_src = os.path.join(package_dir,"spf_ops.cpp")	
+		config.add_extension('spf_ops',sources=spf_ops_src,include_dirs=[numpy.get_include()],
+								extra_compile_args=["-fno-strict-aliasing"],
+								language="c++")
+
 		boson_ops_src = os.path.join(package_dir,"boson_ops.cpp")	
 		config.add_extension('boson_ops',sources=boson_ops_src,include_dirs=[numpy.get_include()],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
-
 
 		return config
 

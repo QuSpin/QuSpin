@@ -1,5 +1,5 @@
 
-cdef inline basis_type next_state_pcon(basis_type v,object[basis_type,ndim=1,mode="c"] pars):
+cdef inline basis_type next_state_pcon(basis_type v,basis_type[:] pars):
 	if v == 0 :
 		return v
 
@@ -15,10 +15,11 @@ cdef basis_type next_state_pcon_spf(basis_type v, basis_type[:] pars):
 	cdef basis_type s_right = v & pars[1]
 	cdef basis_type s_left = v >> L
 	if s_right < MAX_right:
-		s_right = next_state_pcon(s_right,None)
+		s_right = next_state_pcon[basis_type](s_right,None)
 	else:
-		s_left = next_state_pcon(s_left,None)
+		s_left = next_state_pcon[basis_type](s_left,None)
 		s_right = MIN_right
+		
 	return s_right+(s_left<<L)
 
 

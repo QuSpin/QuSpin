@@ -103,14 +103,13 @@ class spin_basis_1d(basis_1d):
 			if any((type(Nup) is not int) for Nup in Nup_list):
 				TypeError("Nup must be iterable returning integers")
 
+		count_particles = False
 		if blocks.get("_Np") is not None:
 			_Np = blocks.get("_Np")
 			if Nup_list is not None:
 				raise ValueError("do not use _Np and Nup/nb simultaineously.")
 			blocks.pop("_Np")
-
 			if _Np == -1:
-				count_particles = False
 				Nup_list = None
 			else:
 				count_particles = True

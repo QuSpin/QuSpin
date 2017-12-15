@@ -121,6 +121,7 @@ class boson_basis_1d(basis_1d):
 			if any((type(Nb) is not int) for Nb in Nb_list):
 				TypeError("Nb must be iterable returning integers")
 
+		count_particles = False
 		if blocks.get("_Np") is not None:
 			_Np = blocks.get("_Np")
 			if Nb_list is not None:
@@ -128,7 +129,6 @@ class boson_basis_1d(basis_1d):
 			blocks.pop("_Np")
 			
 			if _Np == -1:
-				count_particles = False
 				Nb_list = None
 			else:
 				count_particles = True

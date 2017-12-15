@@ -9,7 +9,7 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
     cdef int j,error,sign,i_op
     cdef int L = op_pars[0]
     cdef int N_indx = len(opstr)
-    cdef bool a,fermionic_op
+    cdef bool a
     cdef scalar_type M_E
     cdef unsigned char[:] c_opstr = bytearray(opstr,"utf-8")
     cdef basis_type one = 1
@@ -20,8 +20,6 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
     cdef char p = "+" # S^+ or creation operator
     cdef char m = "-" # S^- or annihilation operator
 
-
-    fermionic_op = op_pars[0]
     error = 0
     sign = 1
 
@@ -35,7 +33,7 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
             b = ( one << i_op ) #put the bit 1 at the place of the bit corresponding to the site indx[j]; ^b = flipbit
             a = ( r >> i_op ) & 1 #checks whether spin at site indx[j] is 1 ot 0; a = return of testbit
 
-            if bit_count(r,i_op,L) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
+            if bit_count(r,i_op,L,op_pars[2]) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
                 sign=1
             else:
                 sign=-1

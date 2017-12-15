@@ -7,11 +7,9 @@ def get_state(L,Ntup=None):
     else:
         N_left,N_right = Ntup
         MAX = comb(L,N_left,exact=True)*comb(L,N_right,exact=True)
-        for j in range(N_left):
-            s += ( <object>1 << j )
+        s = sum(<object>1 << i for i in range(N_left))
         s <<= L
-        for j in range(N_right):
-            s += ( <object>1 << j )
+        s += sum(<object>1 << i for i in range(N_right))
 
        
     return s,MAX

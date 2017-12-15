@@ -116,6 +116,12 @@ def py_flip_all(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] sig
             x[i] = flip_all(x[i],length,&signs[i],pars)
     else:
         for i in range(Ns):
-            x[i] = flip_all(x[i],length,&temp,pars)        
+            x[i] = flip_all(x[i],length,&temp,pars)
 
+  
 
+cdef flip_sublat_A(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
+    return I
+
+cdef flip_sublat_B(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
+    return I

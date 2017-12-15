@@ -1,6 +1,6 @@
-from ._basis_1d_core import hcp_basis,hcp_ops
+from ._basis_1d_core import hcp_basis,hcp_ops,spf_basis,spf_ops
 from .base_1d import basis_1d
-from ..base import basis
+from ..base import MAXPRINT
 import numpy as _np
 
 
@@ -54,7 +54,7 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["_Np","kblock","pblock","a","count_particles","check_z_symm","L"])
+		expected_keys = set(["_Np","kblock","pblock","a","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -84,6 +84,7 @@ class spinless_fermion_basis_1d(basis_1d):
 			if any((type(Nf) is not int) for Nf in Nf_list):
 				TypeError("Nb must be iterable returning integers")
 
+		count_particles = False
 		if blocks.get("_Np") is not None:
 			_Np = blocks.get("_Np")
 			if Nf_list is not None:
@@ -91,7 +92,6 @@ class spinless_fermion_basis_1d(basis_1d):
 			blocks.pop("_Np")
 			
 			if _Np == -1:
-				count_particles = False
 				Nf_list = None
 			else:
 				count_particles = True
@@ -130,6 +130,9 @@ class spinless_fermion_basis_1d(basis_1d):
 	def __name__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
 
+	@property
+	def N(self):
+		return 2*self._L
 
 	# functions called in base class:
 
@@ -191,3 +194,373 @@ class spinless_fermion_basis_1d(basis_1d):
 		op = list(op)
 		op.append(num)
 		return [tuple(op)]	
+
+
+class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
+	"""Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.
+
+	The supported operator strings for `spinless_fermion_basis_1d` are:
+
+	.. math::
+			\\begin{array}{cccc}
+				\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
+				\\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+			\\end{array}
+
+	Examples
+	--------
+
+	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
+
+	.. math::
+		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j
+
+	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	"""	
+	def __init__(self,L,Nf=None,nf=None,**blocks):
+		"""Intializes the `fermion_basis_1d` object (basis for fermionic operators).
+
+		Parameters
+		-----------
+		L: int
+			Length of chain/number of sites.
+		Nf: {int,list}, optional
+			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
+		nf: float, optional
+			Density of fermions in chain (fermions per site).
+		**blocks: optional
+			extra keyword arguments which include:
+
+				**a** (*int*) - specifies unit cell size for translation.
+
+				**kblock** (*int*) - specifies momentum block.
+
+				**pblock** (*int*) - specifies parity block.
+
+		"""
+
+		input_keys = set(blocks.keys())
+
+		expected_keys = set(["_Np","kblock","pblock","zblock","a","check_z_symm","L"])
+		wrong_keys = input_keys - expected_keys 
+		if wrong_keys:
+			temp = ", ".join(["{}" for key in wrong_keys])
+			raise ValueError(("unexpected optional argument(s): "+temp).format(*wrong_keys))
+
+
+		if blocks.get("a") is None: # by default a = 1
+			blocks["a"] = 1
+
+		if Nf is not None and nf is not None:
+			raise ValueError("cannot use 'nf' and 'Nf' simultaineously.")
+		if Nf is None and nf is not None:
+			Nf = [(int(nf[0]*L),int(nf[1]*L))]
+
+		self._sps = 2
+
+		count_particles = False
+		_Np = blocks.get("_Np")
+		if _Np  is not None and Nf is None:
+			count_particles = True
+			if type(_Np) is not int:
+				raise ValueError("_Np must be integer")
+			if _Np >= -1:
+				if _Np+1 > L: 
+					Nf =  []
+					for n in range(L+1):
+						Nf.extend((n-i,i)for i in range(n+1))
+
+					Nf = tuple(Nf)
+				elif _Np==-1:
+					Nf = None
+				else:
+					Nf=[]
+					for n in range(_Np+1):
+						Nf.extend((n-i,i)for i in range(n+1))
+
+					Nf = tuple(Nf)
+			else:
+				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
+
+
+		if Nf is None:
+			Nf_list = None
+			self._Np = None	
+		else:
+			if type(Nf) is tuple:
+				if len(Nf)==2:
+					Nup,Ndown = Nf
+					self._Np = Nup+Ndown
+					if (type(Nup) is not int) and (type(Ndown) is not int):
+						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+					Nf_list = [Nf]
+				else:
+					Nf_list = list(Nf)
+					N_up_list,N_down_list = zip(*Nf_list)
+					self._Np = sum(N_up_list)
+					self._Np += sum(N_down_list)
+					if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf_list):
+						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")		
+
+					if any((type(Nup) is not int) and (type(Ndown) is not int) for Nup,Ndown in Nf_list):
+						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")		
+
+					if any(Nup > L or Nup < 0 or Ndown > L or Ndown < 0 for Nup,Ndown in Nf_list):
+						raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= L")
+
+			else:
+				try:
+					Nf_iter = iter(Nf)
+				except TypeError:
+					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+
+
+				Nf_list = list(Nf)
+				N_up_list,_N_down_list = zip(*Nf_list)
+				self._Np = sum(N_up_list)
+				self._Np += sum(N_down_list)
+
+				if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf_list):
+					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")		
+
+				if any((type(Nup) is not int) and (type(Ndown) is not int) for Nup,Ndown in Nf_list):
+					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")		
+
+				if any(Nup > L or Nup < 0 or Ndown > L or Ndown < 0 for Nup,Ndown in Nf_list):
+					raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= L")
+
+		if blocks.get("check_z_symm") is None:
+			check_z_symm = True
+		else:
+			check_z_symm = False
+
+		self._blocks = blocks	
+		pblock = blocks.get("pblock")
+		zblock = blocks.get("zblock")
+		kblock = blocks.get("kblock")
+		pzblock = blocks.get("pzblock")
+		a = blocks.get("a")
+
+		if (type(pblock) is int) and (type(zblock) is int):
+			blocks["pzblock"] = pblock*zblock
+			self._blocks["pzblock"] = pblock*zblock
+			pzblock = pblock*zblock		
+
+
+
+		if check_z_symm:
+			# checking if spin inversion is compatible with Np and L
+			if (Nf_list is not None) and ((type(zblock) is int) or (type(pzblock) is int)):
+				if len(Nf_list) > 1:
+					ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+
+				Nup,Ndown = Nf_list[0]
+
+				if (L*(self.sps-1) % 2) != 0:
+					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
+				if Nup != L*(self.sps-1)//2 or Ndown != L*(self.sps-1)//2:
+					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+
+
+
+		Imax = (1<<L)-1
+		pars = _np.array([L,Imax,0,0]) # sign to be calculated
+		self._operators = ("availible operators for ferion_basis_1d:"+
+							"\n\tI: identity "+
+							"\n\t+: raising operator"+
+							"\n\t-: lowering operator"+
+							"\n\tn: number operator"+
+							"\n\tz: c-symm number operator")
+
+		self._allowed_ops = set(["I","+","-","n","z"])
+		basis_1d.__init__(self,spf_basis,spf_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
+		# self._check_symm=None
+
+
+	def _Op(self,opstr,indx,J,dtype):
+		i = opstr.index("|")
+		indx = _np.array(indx,dtype=_np.int32)
+		indx[i:] += self.L
+		opstr.replace("|","")
+
+		return basis_1d._Op(self,opstr,indx,J,dtype)
+		
+
+
+	def __type__(self):
+		return "<type 'qspin.basis.fermion_basis_1d'>"
+
+	def __repr__(self):
+		return "< instance of 'qspin.basis.fermion_basis_1d' with {0} states >".format(self._Ns)
+
+	def __name__(self):
+		return "<type 'qspin.basis.fermion_basis_1d'>"
+
+
+	# functions called in base class:
+
+	def _sort_opstr(self,op):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+
+		if opstr.count("|") == 0: 
+			raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+	
+		# if opstr.count("|") > 1: 
+		# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-opstr.count("|") != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx_left = indx[:i]
+		indx_right = indx[i:]
+
+		opstr_left,opstr_right=opstr.split("|",1)
+
+		op1 = list(op)
+		op1[0] = opstr_left
+		op1[1] = tuple(indx_left)
+
+		op2 = list(op)
+		op2[0] = opstr_right
+		op2[1] = tuple(indx_right)
+		
+		op1 = spinless_fermion_basis_1d._sort_opstr(self,op1)
+		op2 = spinless_fermion_basis_1d._sort_opstr(self,op2)
+
+		op[0] = "|".join((op1[0],op2[0]))
+		op[1] = op1[1] + op2[1]
+		
+		return tuple(op)
+
+	def _hc_opstr(self,op):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx_left = indx[:i]
+		indx_right = indx[i:]
+
+		opstr_left,opstr_right=opstr.split("|",1)
+
+		op1 = list(op)
+		op1[0] = opstr_left
+		op1[1] = indx_left
+		op1[2] = op[2]
+
+		op2 = list(op)
+		op2[0] = opstr_right
+		op2[1] = indx_right
+		op2[2] = complex(1.0)
+		
+		op1 = spinless_fermion_basis_1d._hc_opstr(self,op1)
+		op2 = spinless_fermion_basis_1d._hc_opstr(self,op2)
+
+		op[0] = "|".join((op1[0],op2[0]))
+		op[1] = op1[1] + op2[1]
+
+		op[2] = op1[2]*op2[2]
+
+
+		return tuple(op)
+	
+	def _non_zero(self,op):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx_left = indx[:i]
+		indx_right = indx[i:]
+
+		opstr_left,opstr_right=opstr.split("|",1)
+
+		op1 = list(op)
+		op1[0] = opstr_left
+		op1[1] = indx_left
+
+		op2 = list(op)
+		op2[0] = opstr_right
+		op2[1] = indx_right
+
+		return (spinless_fermion_basis_1d._non_zero(self,op1) and spinless_fermion_basis_1d._non_zero(self,op2))
+
+	def _expand_opstr(self,op,num):
+		op = list(op)
+		opstr = op[0]
+		indx  = op[1]
+	
+		if opstr.count("|") > 1: 
+			raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+		if len(opstr)-1 != len(indx):
+			raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+		i = opstr.index("|")
+		indx_left = indx[:i]
+		indx_right = indx[i:]
+
+		opstr_left,opstr_right=opstr.split("|",1)
+
+		op1 = list(op)
+		op1[0] = opstr_left
+		op1[1] = indx_left
+		op1[2] = 1.0
+
+		op2 = list(op)
+		op2[0] = opstr_right
+		op2[1] = indx_right
+
+		op1_list = spinless_fermion_basis_1d._expand_opstr(self,op1,num)
+		op2_list = spinless_fermion_basis_1d._expand_opstr(self,op2,num)
+
+		op_list = []
+		for new_op1 in op1_list:
+			for new_op2 in op2_list:
+				new_op = list(new_op1)
+				new_op[0] = "|".join((new_op1[0],new_op2[0]))
+				new_op[1] += tuple(new_op2[1])
+				new_op[2] *= new_op2[2]
+
+
+				op_list.append(tuple(new_op))
+
+		return tuple(op_list)
+
+	def _get__str__(self):
+		def get_state(b):
+			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
+			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
+			bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
+			return state_left+state_right
+
+
+		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
+		if self._Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+		else:
+			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+
+		return tuple(str_list)
