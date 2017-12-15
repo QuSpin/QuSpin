@@ -36,6 +36,19 @@ class spinful_fermion_basis_general(basis_general):
 	Examples
 	--------
 
+	The code snipped below shows how to construct the two-dimensional Fermi-Hubbard model with onsite interactions.
+	
+	.. math::
+		H = -J \\sum_{\\langle ij\\rangle,\\sigma} c^\\dagger_{i\\sigma}c_{j\\sigma} + \\mathrm{h.c.} - \\mu\\sum_{j,\\sigma} n_{j\\sigma} + U\\sum_j n_{j\\uparrow} n_{j\\downarrow}
+
+	Moreover, it demonstrates how to pass user-defined symmetries to the `spinfull_fermion_basis_general` constructor. In particular,
+	we do translation invariance and spin-exchange.
+
+	.. literalinclude:: ../../doc_examples/spinfull_fermion_basis_general-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
 	"""
 	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**blocks):
 		"""Intializes the `spinfull_fermion_basis_general` object (basis for fermionic operators).
@@ -319,7 +332,7 @@ class spinless_fermion_basis_general(basis_general):
 	.. math::
 		H=-J\\sum_{\\langle ij\\rangle} c^\\dagger_{i}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U \\sum_{\\langle ij\\rangle} n_{i} n_j
 
-	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In partcular,
+	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In particular,
 	we do translation invariance and parity (reflection) (along each lattice direction).
 
 	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_general-example.py
@@ -440,6 +453,7 @@ class spinless_fermion_basis_general(basis_general):
 			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nf)
+			print('HEREhere', self._Ns)
 			if self._Ns < 0:
 					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
