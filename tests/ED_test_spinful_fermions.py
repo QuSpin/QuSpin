@@ -13,17 +13,14 @@ from itertools import product
 ##### setting parameters for simulation
 # physical parameters
 J = 1.0 # hopping strength
-U = 5.0 # interaction strength
+U = 0.0 # interaction strength
 
-for L in [4]: #range(8):
-
-	N_up=L//2
-	N_down=L//2
+for L in [3]: #range(8):
 
 	##### create model
 	# define site-coupling lists
-	hop_right = [[-J,i,(i+1)%L] for i in range(L)] # hopping to the right OBC
-	hop_left = [[J,i,(i+1)%L] for i in range(L)] # hopping to the left OBC
+	hop_right = [[-J,i,(i+1)%L] for i in range(L)] # hopping to the right PBC
+	hop_left = [[J,i,(i+1)%L] for i in range(L)] # hopping to the left PBC
 	int_list = [[U,i,i] for i in range(L)] # onsite interaction
 	# create static lists
 	static= [	
@@ -33,22 +30,31 @@ for L in [4]: #range(8):
 			["|-+", hop_right], # down hop right
 			["n|n", int_list], # onsite interaction
 			]
+
+	basis = spinful_fermion_basis_1d(L)
 	
-	
-	###### create the basis
-	basis = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
-	basis_symm = spinful_fermion_basis_1d(L)
 
 	no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
 	H = hamiltonian(static,[],basis=basis,**no_checks)
-	H_symm = hamiltonian(static,[],basis=basis_symm,**no_checks)
-
-
 	E=H.eigvalsh()
-	E_sym=H_symm.eigvalsh()
+
+	E_symm=[]
+	
+	for N_up, N_down in product(range(L+1),range(L+1)):
+	
+		###### create the basis
+		basis_symm = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
+
+		print(basis_symm._basis)
+		
+		
+		H_symm = hamiltonian(static,[],basis=basis_symm,**no_checks)
+		E_symm.append( H_symm.eigvalsh() )
+
+	E_symm=np.sort( np.concatenate(E_symm) )
 
 	print(E)
-	print(E_sym)
+	print(E_symm)
 
 	#np.testing.assert_allclose(E_tensor-E_spinful,0.0,atol=1E-5,err_msg='Failed tensor and spinfil energies comparison!')
 

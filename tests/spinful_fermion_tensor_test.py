@@ -53,6 +53,5 @@ for L in range(8):
 
 
 		np.testing.assert_allclose(E_tensor-E_spinful,0.0,atol=1E-5,err_msg='Failed tensor and spinfil energies comparison!')
-
 		#np.testing.assert_allclose( (H_tensor-H_spinful).toarray(),0.0,atol=1E-5,err_msg='Failed tensor and spinfil energies comparison!')
 
