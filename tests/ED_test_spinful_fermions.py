@@ -22,8 +22,8 @@ for L in [4]: #range(8):
 
 	##### create model
 	# define site-coupling lists
-	hop_right = [[-J,i,(i+1)%L] for i in range(L-1)] # hopping to the right OBC
-	hop_left = [[J,i,(i+1)%L] for i in range(L-1)] # hopping to the left OBC
+	hop_right = [[-J,i,(i+1)%L] for i in range(L)] # hopping to the right OBC
+	hop_left = [[J,i,(i+1)%L] for i in range(L)] # hopping to the left OBC
 	int_list = [[U,i,i] for i in range(L)] # onsite interaction
 	# create static lists
 	static= [	
@@ -37,7 +37,7 @@ for L in [4]: #range(8):
 	
 	###### create the basis
 	basis = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
-	basis_symm = spinful_fermion_basis_1d(L,Nf=(N_up,N_down),kblock=0)
+	basis_symm = spinful_fermion_basis_1d(L)
 
 	no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
 	H = hamiltonian(static,[],basis=basis,**no_checks)
