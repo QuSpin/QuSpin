@@ -2,8 +2,24 @@
 #define _SPINLESS_FERMION_BASIS_OP_H
 
 #include <complex>
+// #include <stdint.h>
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
+
+npy_uint32 bit_count(npy_uint32 I, int l,int L){
+	I &= (0xFFFFFFFF >> (L-l));
+	I = I - ((I >> 1) & 0x55555555);
+	I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
+	return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
+}
+
+npy_uint64 bit_count(npy_uint64 I, int l,int L){
+	I &= (0xFFFFFFFFFFFFFFFF >> (L-l));
+	I = I - ((I >> 1) & 0x5555555555555555);
+	I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
+	return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
+
+}
 
 template<class I>
 I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
@@ -12,19 +28,20 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	int np = 0;
 	bool f_count = 0;
 
-	for(int i=N;i>=0;i--){
+	for(int i=N-1;i>=0;i--){
 		int j = map[i];
-		bool n = (s&1);
-		if(n){pos_list[np]=( j<0 ? N + j : N-j-1); ++np;}
-		ss ^= ( j<0 ? (n^1)<<(N+j) : n<<(N-j-1) );
+		I n = (s&1);
+		if(n){pos_list[np]=( j<0 ? N+j : N-j-1); ++np;}
+		ss ^= ( j<0 ? n^1<<(N+j) : n<<(N-j-1) );
 
-		f_count ^= (n && (i&1)) && (j<0);
+		f_count ^= (n && (i&1) && (j<0));
 
 		s >>= 1;
 	}
 
-	//starting at 2nd element as first element is already sorted.
-	//Loop Invariant - left part of the array is already sorted.
+	// sort in decending order counting number of permutations. 
+	// starting at 2nd element as first element is already sorted.
+	// Loop Invariant - left part of the array is already sorted.
 	if(np > 1){
 		for (int i = 1; i < np; i++) {
 			int moveMe = pos_list[i];
@@ -88,14 +105,8 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 			for(int j=n_op-1;j>-1;j--){
 				int ind = general_basis_core<I>::N-indx[j]-1;
-				int N_c = indx[j];
-				I f_count = 0;
-				I rr = r >> ind;
-				for(int i=0;i<N_c;i++){
-					f_count ^= (rr&1);
-					rr>>=1;
-				}
-				m *= std::complex<double>(f_count?-1:1);
+				I f_count = bit_count(r,ind,general_basis_core<I>::N);
+				m *= std::complex<double>((f_count&1)?-1:1);
 				I b = (one << ind);
 				bool a = bool((r >> ind)&one);
 				char op = opstr[j];
