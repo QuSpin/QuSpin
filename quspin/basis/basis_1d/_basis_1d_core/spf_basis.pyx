@@ -58,11 +58,11 @@ def get_basis_type(L, Np, sps, **blocks):
 
         l=np_right//(sps-1)
         s_max_right = sum((sps-1)*sps**(L-1-i)  for i in range(l))
-        s_max_right += (np_right%(sps-1))*sps**(L-l-1)
+        s_max_right += int( (np_right%(sps-1))*sps**(L-l-1) ) # if l=L need to convert to int
 
         l=np_left//(sps-1)
         s_max_left = sum((sps-1)*sps**(L-1-i)  for i in range(l))
-        s_max_left += (np_left%(sps-1))*sps**(L-l-1)
+        s_max_left += int( (np_left%(sps-1))*sps**(L-l-1) ) # if l=L need to convert to int
 
         s_max = (s_max_left << L) + s_max_right
 

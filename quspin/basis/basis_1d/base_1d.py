@@ -477,6 +477,9 @@ class basis_1d(lattice_basis):
 
 			self._op_args=[self._basis,self._pars]
 
+
+
+
 	@property
 	def L(self):
 		"""int: length of lattice."""
@@ -486,6 +489,7 @@ class basis_1d(lattice_basis):
 	def N(self):
 		"""int: number of sites the basis is constructed with."""
 		return self._L
+
 
 
 	@property
@@ -514,11 +518,11 @@ class basis_1d(lattice_basis):
 	def _Op(self,opstr,indx,J,dtype):
 
 		indx = _np.asarray(indx,dtype=_np.int32)
-
+		
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 
-		if _np.any(indx >= self._L) or _np.any(indx < 0):
+		if _np.any(indx >= self.N) or _np.any(indx < 0):
 			raise ValueError('values in indx falls outside of system')
 
 		extra_ops = set(opstr) - self._allowed_ops
@@ -540,7 +544,6 @@ class basis_1d(lattice_basis):
 		error = self._op(row,col,ME,opstr,indx,J,*self._op_args,**self._blocks_1d)
 
 		if error != 0: raise OpstrError(_basis_op_errors[error])
-		# print ME,row,col
 		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
 		col = col[mask]
 		row = row[mask]
