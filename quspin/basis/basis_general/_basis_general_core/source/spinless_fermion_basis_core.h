@@ -2,23 +2,21 @@
 #define _SPINLESS_FERMION_BASIS_OP_H
 
 #include <complex>
-// #include <stdint.h>
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
 npy_uint32 bit_count(npy_uint32 I, int l,int L){
-	I &= (0xFFFFFFFF >> (L-l));
+	I &= (0xFFFFFFFF >> (32-L+l));
 	I = I - ((I >> 1) & 0x55555555);
 	I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
 	return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
 }
 
 npy_uint64 bit_count(npy_uint64 I, int l,int L){
-	I &= (0xFFFFFFFFFFFFFFFF >> (L-l));
+	I &= (0xFFFFFFFFFFFFFFFF >> (64-L+l));
 	I = I - ((I >> 1) & 0x5555555555555555);
 	I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
 	return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
-
 }
 
 template<class I>
