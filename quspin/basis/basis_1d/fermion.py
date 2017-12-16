@@ -121,6 +121,7 @@ class spinless_fermion_basis_1d(basis_1d):
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
 		# self._check_symm=None
 
+
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
 
@@ -130,9 +131,7 @@ class spinless_fermion_basis_1d(basis_1d):
 	def __name__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
 
-	@property
-	def N(self):
-		return 2*self._L
+
 
 	# functions called in base class:
 
@@ -316,7 +315,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				try:
 					Nf_iter = iter(Nf)
 				except TypeError:
-					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+					raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 
 
 				Nf_list = list(Nf)
@@ -366,7 +365,6 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
 
 
-
 		Imax = (1<<L)-1
 		pars = _np.array([L,Imax,0,0]) # sign to be calculated
 		self._operators = ("availible operators for ferion_basis_1d:"+
@@ -381,11 +379,13 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		# self._check_symm=None
 
 
+
 	def _Op(self,opstr,indx,J,dtype):
+		
 		i = opstr.index("|")
 		indx = _np.array(indx,dtype=_np.int32)
 		indx[i:] += self.L
-		opstr.replace("|","")
+		opstr=opstr.replace("|","")
 
 		return basis_1d._Op(self,opstr,indx,J,dtype)
 		
@@ -399,6 +399,10 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 	def __name__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
+
+	@property
+	def N(self):
+		return 2*self._L
 
 
 	# functions called in base class:
@@ -564,3 +568,5 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
+
+

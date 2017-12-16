@@ -7,7 +7,7 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
     cdef npy_intp i
     cdef basis_type r,b
     cdef int j,error,sign,i_op
-    cdef int L = op_pars[0]
+    cdef int L = 2*op_pars[0] # factor of 2 for spinful fermions (effectively double lattice sites)
     cdef int N_indx = len(opstr)
     cdef bool a
     cdef scalar_type M_E
