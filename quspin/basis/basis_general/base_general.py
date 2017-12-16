@@ -86,11 +86,9 @@ class basis_general(lattice_basis):
 
 		n_maps = len(kwargs)
 
-
 		if any((type(map) is not tuple) and (len(map)!=2) for map in kwargs.values()):
 			raise ValueError("blocks must contain tuple: (map,q).")
 
-		
 		kwargs = {block:process_map(*item) for block,item in kwargs.items()}
 
 		sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
