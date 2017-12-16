@@ -30,12 +30,11 @@ for L in range(8):
 			["|-+", hop_right], # down hop right
 			["n|n", int_list], # onsite interaction
 			]
-	# set up hamiltonian dictionary and observable (imbalance I)
 	no_checks = dict(check_pcon=False,check_symm=False,check_herm=False,dtype=np.float64)
 
 	for N_up, N_down in product(range(L+1),range(L+1)):
 
-		print(L,N_up,N_down)
+		print("L=%s, Nup=%s, Ndown=%s" %(L,N_up,N_down) )
 
 		###### create the basis
 		# build the two bases to tensor together to spinful fermions
@@ -50,7 +49,8 @@ for L in range(8):
 
 
 		E_tensor,V_tensor=H_tensor.eigh()
-		E_spinful,V_spinful=H_tensor.eigh()
+		E_spinful,V_spinful=H_spinful.eigh()
+
 
 		np.testing.assert_allclose(E_tensor-E_spinful,0.0,atol=1E-5,err_msg='Failed tensor and spinfil energies comparison!')
 
