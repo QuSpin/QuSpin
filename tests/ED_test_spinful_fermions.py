@@ -12,7 +12,7 @@ from itertools import product
 #
 ##### setting parameters for simulation
 # physical parameters
-J = 1.0 # hopping strength
+J = 0.0 # hopping strength
 U = np.sqrt(5.0) # interaction strength
 
 for L in [3]: #range(6):

@@ -54,6 +54,8 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		input_keys = set(blocks.keys())
 
+		# Why can we NOT have a check_z_symm toggler just for one of those weirdass cases that worked?
+
 		expected_keys = set(["_Np","kblock","pblock","a","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
@@ -79,10 +81,10 @@ class spinless_fermion_basis_1d(basis_1d):
 			try:
 				Nf_list = list(Nf)
 			except TypeError:
-				raise TypeError("Nb must be iterable returning integers")
+				raise TypeError("Nf must be iterable returning integers")
 
 			if any((type(Nf) is not int) for Nf in Nf_list):
-				TypeError("Nb must be iterable returning integers")
+				TypeError("Nf must be iterable returning integers")
 
 		count_particles = False
 		if blocks.get("_Np") is not None:
@@ -149,7 +151,7 @@ class spinless_fermion_basis_1d(basis_1d):
 
 
 class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
-	"""Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.
+	"""Constructs basis for spinful fermionic operators in a specified 1-d symmetry sector.
 
 	The supported operator strings for `spinful_fermion_basis_1d` are:
 
@@ -159,13 +161,24 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				\\texttt{spinful_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
 			\\end{array}
 
+	
+	Notes
+	-----
+
+	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, '|', to distinguish the spin-up from 
+	spin-down species. However, the index array has NO pipe symbol.
+
 	Examples
 	--------
 
-	The code snippet below shows how to use the `spinful_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
+	The code snippet below shows how to use the `spinful_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive fermion spin for the Fermi-Hubbard Hamiltonian 
 
 	.. math::
-		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j
+		H=-J\\sum_{j,\\sigma} c^\\dagger_{j+1\\sigma}c_{j\\sigma} + \\mathrm{h.c.} - \\mu\\sum_{j,\\sigma} n_{j\\sigma} + U \\sum_j n_{j\\uparrow} n_{j\\downarrow}
+
+	Notice that the operator strings for constructing Hamiltonians with a `spinful_fermion_basis` object are separated by 
+	a pipe symbol, '|', while the index array has no splitting pipe character.
+		
 
 	.. literalinclude:: ../../doc_examples/spinful_fermion_basis_1d-example.py
 		:linenos:
@@ -180,10 +193,12 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		-----------
 		L: int
 			Length of chain/number of sites.
-		Nf: {int,list}, optional
-			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
-		nf: float, optional
-			Density of fermions in chain (fermions per site).
+		Nf: {tupe(int,list)}, optional
+			Number of fermions in chain. First (left) entry refers to spin-up and second (right) entry refers
+			to spin-down. Each of the two entries can be integer or list to specify one or more particle sectors.
+		nf: tuple(float), optional
+			Density of fermions in chain (fermions per site). First (left) entry refers to spin-up. Second (right)
+			entry refers to spin-down.
 		**blocks: optional
 			extra keyword arguments which include:
 
@@ -193,11 +208,17 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 				**pblock** (*int*) - specifies parity block.
 
+				**sblock** (*int*) - specifies fermion spin inversion block.
+
+				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block.
+
 		"""
 
 		input_keys = set(blocks.keys())
 
-		expected_keys = set(["_Np","kblock","pblock","zblock","a","check_z_symm","L"])
+		# Why can we NOT have fermion spin (sblock) symm on sublat A and sulat B separately?
+
+		expected_keys = set(["_Np","kblock","pblock","sblock","psblock","a","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
 		if wrong_keys:
 			temp = ", ".join(["{}" for key in wrong_keys])
@@ -285,16 +306,16 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				if any(Nup > L or Nup < 0 or Ndown > L or Ndown < 0 for Nup,Ndown in Nf_list):
 					raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= L")
 
-		if blocks.get("check_z_symm") is None:
+		if blocks.get("check_z_symm") is None or blocks.get("check_z_symm") is True:
 			check_z_symm = True
 		else:
 			check_z_symm = False
 
 		self._blocks = blocks	
 		pblock = blocks.get("pblock")
-		zblock = blocks.get("zblock")
+		zblock = blocks.get("sblock")
 		kblock = blocks.get("kblock")
-		pzblock = blocks.get("pzblock")
+		pzblock = blocks.get("psblock")
 		a = blocks.get("a")
 
 		if (type(pblock) is int) and (type(zblock) is int):
@@ -303,19 +324,21 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			pzblock = pblock*zblock		
 
 
+		### Why do we have the check below for fermion spin symmetry?
+
 
 		if check_z_symm:
-			# checking if spin inversion is compatible with Np and L
+			# checking if fermion spin inversion is compatible with Np and L
 			if (Nf_list is not None) and ((type(zblock) is int) or (type(pzblock) is int)):
 				if len(Nf_list) > 1:
-					ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+					ValueError("fermion spin inversion symmetry only reduces the half-filled particle sector")
 
 				Nup,Ndown = Nf_list[0]
 
 				if (L*(self.sps-1) % 2) != 0:
-					raise ValueError("spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling")
+					raise ValueError("fermion spin inversion symmetry with particle conservation must be used with chains at half filling")
 				if Nup != L*(self.sps-1)//2 or Ndown != L*(self.sps-1)//2:
-					raise ValueError("spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector")
+					raise ValueError("fermion spin inversion symmetry only reduces the half-filled particle sector")
 
 
 		Imax = (1<<L)-1

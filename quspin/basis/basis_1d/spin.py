@@ -128,7 +128,7 @@ class spin_basis_1d(basis_1d):
 		if blocks.get("a") is None: # by default a = 1
 			blocks["a"] = 1
 
-		if blocks.get("check_z_symm") is None:
+		if blocks.get("check_z_symm") is None or blocks.get("check_z_symm") is True:
 			check_z_symm = True
 		else:
 			check_z_symm = False
