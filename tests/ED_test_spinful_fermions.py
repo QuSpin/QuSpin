@@ -13,9 +13,9 @@ from itertools import product
 ##### setting parameters for simulation
 # physical parameters
 J = 1.0 # hopping strength
-U = 0.0 # interaction strength
+U = np.sqrt(5.0) # interaction strength
 
-for L in [3]: #range(8):
+for L in [3]: #range(6):
 
 	##### create model
 	# define site-coupling lists
@@ -35,7 +35,7 @@ for L in [3]: #range(8):
 	
 
 	no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
-	H = hamiltonian(static,[],basis=basis,**no_checks)
+	H = hamiltonian(static,[],basis=basis)
 	E=H.eigvalsh()
 
 	E_symm=[]
@@ -45,17 +45,16 @@ for L in [3]: #range(8):
 		###### create the basis
 		basis_symm = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
 
-		print(basis_symm._basis)
-		
-		
-		H_symm = hamiltonian(static,[],basis=basis_symm,**no_checks)
+		#print(basis_symm._basis)
+
+		H_symm = hamiltonian(static,[],basis=basis_symm)
 		E_symm.append( H_symm.eigvalsh() )
 
 	E_symm=np.sort( np.concatenate(E_symm) )
 
-	print(E)
-	print(E_symm)
+	#print(E)
+	#print(E_symm)
 
-	#np.testing.assert_allclose(E_tensor-E_spinful,0.0,atol=1E-5,err_msg='Failed tensor and spinfil energies comparison!')
+	np.testing.assert_allclose(E-E_symm,0.0,atol=1E-5,err_msg='Failed tensor and spinfil energies comparison!')
 
 	
