@@ -5,15 +5,15 @@
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
-npy_uint32 bit_count(npy_uint32 I, int l,int L){
-	I &= (0xFFFFFFFF >> (32-L+l));
+npy_uint32 bit_count(npy_uint32 I, int l){
+	I &= (0x7FFFFFFF >> (31-l));
 	I = I - ((I >> 1) & 0x55555555);
 	I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
 	return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
 }
 
-npy_uint64 bit_count(npy_uint64 I, int l,int L){
-	I &= (0xFFFFFFFFFFFFFFFF >> (64-L+l));
+npy_uint64 bit_count(npy_uint64 I, int l){
+	I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
 	I = I - ((I >> 1) & 0x5555555555555555);
 	I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
 	return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
@@ -103,7 +103,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 			for(int j=n_op-1;j>-1;j--){
 				int ind = general_basis_core<I>::N-indx[j]-1;
-				I f_count = bit_count(r,ind,general_basis_core<I>::N);
+				I f_count = bit_count(r,ind);
 				m *= std::complex<double>((f_count&1)?-1:1);
 				I b = (one << ind);
 				bool a = bool((r >> ind)&one);

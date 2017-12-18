@@ -1,13 +1,13 @@
 
-cdef NP_INT32_t bit_count(basis_type I, int l,int L,basis_type ones):
+cdef NP_INT32_t bit_count(basis_type I,int l):
     cdef basis_type out = 0
     if basis_type is NP_UINT32_t:
-        I &= (ones >> l)
+        I &= (0x7FFFFFFF >> (31-l));
         I = I - ((I >> 1) & 0x55555555);
         I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
         return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
     elif basis_type is NP_UINT64_t:
-        I &= (ones >> l)
+        I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
         I = I - ((I >> 1) & 0x5555555555555555);
         I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
         return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
@@ -27,8 +27,8 @@ cdef basis_type shift_single(basis_type I,int shift,int period,NP_INT8_t * sign,
     cdef basis_type I1 = (I >> (period - l))
     cdef basis_type I2 = ((I << l) & ones)
 
-    N1 = bit_count(I1,period,period,ones)
-    N2 = bit_count(I2,period,period,ones)
+    N1 = bit_count(I1,period)
+    N2 = bit_count(I2,period)
     sign[0] *= (-1 if (N1&1)&(N2&1) else 1)
 
     return (I2 | I1)
@@ -53,12 +53,12 @@ def py_shift(basis_type[:] x,int d,int length, basis_type[:] pars, NP_INT8_t[:] 
             x[i] = shift(x[i],d,length,&temp,pars)
 
 
-cdef basis_type fliplr_single(basis_type I, int length,NP_INT8_t * sign,basis_type ones):
+cdef basis_type fliplr_single(basis_type I, int length,NP_INT8_t * sign):
     # this function flips the bits of an integer around the centre, e.g. 1010 -> 0101
     # (generator of) parity symmetry
     cdef basis_type out = 0
     cdef int s = length - 1
-    cdef int N = bit_count(I,length,length,ones)
+    cdef int N = bit_count(I,length)
     sign[0] *= (-1 if N&2 else 1)
 
     out ^= (I&1)
@@ -77,8 +77,8 @@ cdef basis_type fliplr_single(basis_type I, int length,NP_INT8_t * sign,basis_ty
 cdef fliplr(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
     cdef basis_type I_right = I & pars[1]
     cdef basis_type I_left = (I >> length)
-    I_left = fliplr_single(I_left,length,sign,pars[1])
-    I_right = fliplr_single(I_right,length,sign,pars[1])
+    I_left = fliplr_single(I_left,length,sign)
+    I_right = fliplr_single(I_right,length,sign)
     return I_right + (I_left << length)
 
 
@@ -100,8 +100,8 @@ cdef inline basis_type flip_all(basis_type I, int length,NP_INT8_t * sign,basis_
     cdef basis_type I_left = (I >> length)
     cdef int N_left,N_right
 
-    N_left = bit_count(I_left,length,length,pars[1])
-    N_right = bit_count(I_right,length,length,pars[1])
+    N_left = bit_count(I_left,length)
+    N_right = bit_count(I_right,length)
 
     sign[0] *= (-1 if (N_left*N_right)%2 else 1)
     return I_left + (I_right << length)

@@ -1,13 +1,13 @@
 
-cdef NP_INT32_t bit_count(basis_type I, int l,int L,basis_type ones):
+cdef NP_INT32_t bit_count(basis_type I,int l):
     cdef basis_type out = 0
     if basis_type is NP_UINT32_t:
-        I &= (ones >> l)
+        I &= (0x7FFFFFFF >> (31-l));
         I = I - ((I >> 1) & 0x55555555);
         I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
         return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
     elif basis_type is NP_UINT64_t:
-        I &= (ones >> l)
+        I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
         I = I - ((I >> 1) & 0x5555555555555555);
         I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
         return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
@@ -26,8 +26,8 @@ cdef inline basis_type shift(basis_type I,int shift,int period,NP_INT8_t * sign,
     cdef basis_type I1 = (I >> (period - l))
     cdef basis_type I2 = ((I << l) & pars[2])
 
-    N1 = bit_count(I1,period,period,pars[2])
-    N2 = bit_count(I2,period,period,pars[2])
+    N1 = bit_count(I1,period)
+    N2 = bit_count(I2,period)
     sign[0] *= (-1 if (N1&1)&(N2&1)&pars[0] else 1)
 
     return (I2 | I1)
@@ -50,9 +50,9 @@ cdef basis_type fliplr(basis_type I, int length,NP_INT8_t * sign, basis_type[:] 
     # (generator of) parity symmetry
     cdef basis_type out = 0
     cdef int s = length - 1
-    cdef int N = bit_count(I,length,length,pars[2])
+    cdef int N = bit_count(I,length)
 
-    sign[0] *= (-1 if (N&2)&pars[0] else 1)
+    sign[0] *= (-1 if (N&2) and (pars[0]) else 1)
 
     out ^= (I&1)
     I >>= 1
