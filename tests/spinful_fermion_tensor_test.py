@@ -15,7 +15,7 @@ from itertools import product
 J = 1.0 # hopping strength
 U = 5.0 # interaction strength
 
-for L in range(8):
+for L in range(1,8,1):
 
 	##### create model
 	# define site-coupling lists

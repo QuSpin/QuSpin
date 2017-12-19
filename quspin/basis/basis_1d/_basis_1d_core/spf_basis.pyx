@@ -85,8 +85,8 @@ def get_Ns(L, Np, sps, **blocks):
             Ns += H_dim(np_left,L,sps-1)*H_dim(np_right,L,sps-1)
 
     if kblock is not None:
-        # return Ns/L + some extra goes to zero as the system increases. 
-        return int((1+1.0/(L//a))*Ns/(L//a)+(L//a))
+        # return Ns/L + some extra goes to zero as the system increases.
+        return int( ( 1+1.0/(L//a) )*Ns/(L//a) + (L//a) )
     else:
         return Ns
 

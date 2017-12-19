@@ -609,7 +609,7 @@ def check_t_p(L,dtype,Nup=None):
 		Ekp.sort()
 
 		if norm(Ek-Ekp) > Ns*eps(dtype):
-				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,int(L/2),np.dtype(dtype),Nup,norm(Ek-Ekp)) )
+				raise Exception( "test failed t p symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,int(L/2),np.dtype(dtype),Nup,norm(Ek-Ekp)) )
 
 	else:
 		for kblock in range(1,L_2+1):
