@@ -20,7 +20,7 @@ cdef NP_INT32_t bit_count(basis_type I,int l):
 
 
 cdef basis_type shift_single(basis_type I,int shift,int period,NP_INT8_t * sign,basis_type ones):
-    # this functino is used to shift the bits of an integer by 'shift' bits.
+    # this function is used to shift the bits of an integer by 'shift' bits.
     # it is used when constructing the momentum states
     cdef int l = (shift+period)%period
     cdef int N1,N2,i

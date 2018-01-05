@@ -1405,6 +1405,7 @@ class hamiltonian(object):
 		--------
 		obj
 			Can be either one of the following:
+			
 			* numpy.ndarray containing evolved state against time.
 			* generator object for time-evolved state (requires `iterate = True`).
 
