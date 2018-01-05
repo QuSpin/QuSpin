@@ -55,7 +55,7 @@ def check_m(Lmax):
 				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype,norm(Em-E) ) )
 
 
-'''
+#'''
 def check_z(L,dtype,Nf=None):
 	
 	J1=[[2.0*random()-1.0,i,i] for i in range(L)]
@@ -96,8 +96,8 @@ def check_z(L,dtype,Nf=None):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf, norm(Ez-E)))
 
 check_z(2,np.float64,Nf=(1,1))
-'''
-
+#'''
+exit()
 
 
 

@@ -20,28 +20,30 @@ def test(Lx,Ly):
 	basis_dict = {}
 	Nfs=range(N+1)
 
-	for Nf in [1]: # Nfs:
+	for Nf in Nfs:
 		basis_blocks=[]
 		pcon_basis = spinless_fermion_basis_general(N,Nf=Nf)
-		print(pcon_basis)
 		Ns_block = 0
 		for blocks in tr.allowed_blocks_iter_parity():
 			basis =  spinless_fermion_basis_general(N,Nf=Nf,**blocks)
-			#print(basis)
 			Ns_block += basis.Ns
 			basis_blocks.append(basis)
-			print(basis.Ns,N,Nf,blocks)
-
-		print(Nf,Ns_block,pcon_basis.Ns,basis.Ns)
-		#exit()
+		
 		assert(Ns_block == pcon_basis.Ns)
 
 		basis_dict[Nf] = (pcon_basis,basis_blocks)
 
-	J = [[1.0,i,tr.T_x[i]] for i in range(N)]
-	J.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
+	J = [[np.sqrt(2.0),i,tr.T_x[i]] for i in range(N)]
+	J.extend([[np.sqrt(2.0),i,tr.T_y[i]] for i in range(N)])
+	
+	Jp = [[1.0,i,tr.T_x[i]] for i in range(N)]
+	Jp.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
 
-	static = [["nn",J],["+-",J],["-+",J]]
+	Jm = [[-1.0,i,tr.T_x[i]] for i in range(N)]
+	Jm.extend([[-1.0,i,tr.T_y[i]] for i in range(N)])
+	
+
+	static = [["nn",J],["+-",Jp],["-+",Jm]]
 
 	E_symm = {}
 
@@ -60,13 +62,14 @@ def test(Lx,Ly):
 
 		E_block = np.hstack(E_block)
 		E_block.sort()
+		print(Nf)
+		print(E_pcon)
+		print(E_block)
 		np.testing.assert_allclose(E_pcon,E_block,atol=1e-13)
 		print("passed Nf={} sector".format(Nf))
 
 
 test(2,2)
-
-
 test(3,2)
 test(2,3)
 

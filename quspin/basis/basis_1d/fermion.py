@@ -328,9 +328,6 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			pzblock = pblock*zblock		
 
 
-		### Why do we have the check below for fermion spin symmetry?
-
-
 		if check_z_symm:
 			# checking if fermion spin inversion is compatible with Np and L
 			if (Nf_list is not None) and ((type(zblock) is int) or (type(pzblock) is int)):

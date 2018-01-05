@@ -453,7 +453,6 @@ class spinless_fermion_basis_general(basis_general):
 			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nf)
-			print('HEREhere', self._Ns)
 			if self._Ns < 0:
 					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
