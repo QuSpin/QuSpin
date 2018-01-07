@@ -78,20 +78,20 @@ class basis_1d(lattice_basis):
 			if abs(pblock) != 1: raise ValueError("pblock must be +/- 1")
 
 		if zblock is not None:
-			if type(zblock) is not int: raise TypeError('zblock/cblock must be integer')
-			if abs(zblock) != 1: raise ValueError("zblock/cblock must be +/- 1")
+			if type(zblock) is not int: raise TypeError('zblock/sblock must be integer')
+			if abs(zblock) != 1: raise ValueError("zblock/sblock must be +/- 1")
 
 		if zAblock is not None:
-			if type(zAblock) is not int: raise TypeError('zAblock/cAblock must be integer')
-			if abs(zAblock) != 1: raise ValueError("zAblock/cAblock must be +/- 1")
+			if type(zAblock) is not int: raise TypeError('zAblock must be integer')
+			if abs(zAblock) != 1: raise ValueError("zAblock must be +/- 1")
 
 		if zBblock is not None:
-			if type(zBblock) is not int: raise TypeError('zBblock/cBblock must be integer')
-			if abs(zBblock) != 1: raise ValueError("zBblock/cBblock must be +/- 1")
+			if type(zBblock) is not int: raise TypeError('zBblock must be integer')
+			if abs(zBblock) != 1: raise ValueError("zBblock must be +/- 1")
 
 		if pzblock is not None:
-			if type(pzblock) is not int: raise TypeError('pzblock/pcblock must be integer')
-			if abs(pzblock) != 1: raise ValueError("pzblock/pcblock must be +/- 1")
+			if type(pzblock) is not int: raise TypeError('pzblock/psblock must be integer')
+			if abs(pzblock) != 1: raise ValueError("pzblock/psblock must be +/- 1")
 
 		if kblock is not None and (a <= L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')
@@ -1083,20 +1083,20 @@ class basis_1d(lattice_basis):
 			if abs(pblock) != 1: raise ValueError("pblock must be +/- 1")
 
 		if zblock is not None:
-			if type(zblock) is not int: raise TypeError('zblock/cblock must be integer')
-			if abs(zblock) != 1: raise ValueError("zblock/cblock must be +/- 1")
+			if type(zblock) is not int: raise TypeError('zblock/sblock must be integer')
+			if abs(zblock) != 1: raise ValueError("zblock/sblock must be +/- 1")
 
 		if zAblock is not None:
-			if type(zAblock) is not int: raise TypeError('zAblock/cAblock must be integer')
-			if abs(zAblock) != 1: raise ValueError("zAblock/cAblock must be +/- 1")
+			if type(zAblock) is not int: raise TypeError('zAblock must be integer')
+			if abs(zAblock) != 1: raise ValueError("zAblock must be +/- 1")
 
 		if zBblock is not None:
-			if type(zBblock) is not int: raise TypeError('zBblock/cBblock must be integer')
-			if abs(zBblock) != 1: raise ValueError("zBblock/cBblock must be +/- 1")
+			if type(zBblock) is not int: raise TypeError('zBblock must be integer')
+			if abs(zBblock) != 1: raise ValueError("zBblock must be +/- 1")
 
 		if pzblock is not None:
-			if type(pzblock) is not int: raise TypeError('pzblock/pcblock must be integer')
-			if abs(pzblock) != 1: raise ValueError("pzblock/pcblock must be +/- 1")
+			if type(pzblock) is not int: raise TypeError('pzblock/psblock must be integer')
+			if abs(pzblock) != 1: raise ValueError("pzblock/psblock must be +/- 1")
 
 		if kblock is not None and (a <= L):
 			if type(kblock) is not int: raise TypeError('kblock must be integer')

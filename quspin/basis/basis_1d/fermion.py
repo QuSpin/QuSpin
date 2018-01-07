@@ -1,4 +1,5 @@
 from ._basis_1d_core import hcp_basis,hcp_ops,spf_basis,spf_ops
+from . import _check_1d_symm_spf as _check
 from .base_1d import basis_1d
 from ..base import MAXPRINT
 import numpy as _np
@@ -320,11 +321,18 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		zblock = blocks.get("sblock")
 		kblock = blocks.get("kblock")
 		pzblock = blocks.get("psblock")
-		a = blocks.get("a")
+
+		if zblock is not None:
+			blocks.pop("sblock")
+			blocks["zblock"] = zblock
+
+		if pzblock is not None:
+			blocks.pop("psblock")
+			blocks["pzblock"] = pzblock
 
 		if (type(pblock) is int) and (type(zblock) is int):
 			blocks["pzblock"] = pblock*zblock
-			self._blocks["pzblock"] = pblock*zblock
+			self._blocks["psblock"] = pblock*zblock
 			pzblock = pblock*zblock		
 
 
@@ -414,6 +422,59 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		return tuple(str_list)
 
 
+	def _check_symm(self,static,dynamic,photon_basis=None):
+		kblock = self._blocks_1d.get("kblock")
+		pblock = self._blocks_1d.get("pblock")
+		zblock = self._blocks_1d.get("zblock")
+		pzblock = self._blocks_1d.get("pzblock")
+		a = self._blocks_1d.get("a")
+		L = self.L
+
+		if photon_basis is None:
+			photon = False
+			basis_sort_opstr = self._sort_opstr
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
+		else:
+			photon = True
+			basis_sort_opstr = photon_basis._sort_opstr
+			static_list,dynamic_list = photon_basis._get_local_lists(static,dynamic)
+
+
+		static_blocks = {}
+		dynamic_blocks = {}
+		if kblock is not None:
+			missingops = _check.check_T(basis_sort_opstr,static_list,L,a)
+			if missingops:	static_blocks["T symm"] = (tuple(missingops),)
+
+			missingops = _check.check_T(basis_sort_opstr,dynamic_list,L,a)
+			if missingops:	dynamic_blocks["T symm"] = (tuple(missingops),)
+
+		if pblock is not None:
+			missingops = _check.check_P(basis_sort_opstr,static_list,L)
+			if missingops:	static_blocks["P symm"] = (tuple(missingops),)
+
+			missingops = _check.check_P(basis_sort_opstr,dynamic_list,L)
+			if missingops:	dynamic_blocks["P symm"] = (tuple(missingops),)
+
+		if zblock is not None:
+			oddops,missingops = _check.check_Z(basis_sort_opstr,static_list,photon)
+			if missingops or oddops:
+				static_blocks["Z/C/S symm"] = (tuple(oddops),tuple(missingops))
+
+			oddops,missingops = _check.check_Z(basis_sort_opstr,dynamic_list,photon)
+			if missingops or oddops:
+				dynamic_blocks["Z/C/S symm"] = (tuple(oddops),tuple(missingops))
+
+		if pzblock is not None:
+			missingops = _check.check_PZ(basis_sort_opstr,static_list,L,photon)
+			if missingops:	static_blocks["PZ/PC/PS symm"] = (tuple(missingops),)
+
+			missingops = _check.check_PZ(basis_sort_opstr,dynamic_list,L,photon)
+			if missingops:	dynamic_blocks["PZ/PC/PS symm"] = (tuple(missingops),)
+
+		return static_blocks,dynamic_blocks
+
+
 
 
 def _sort_opstr_spinless(op):
@@ -469,16 +530,19 @@ def _sort_opstr_spinful(op):
 	op1 = list(op)
 	op1[0] = opstr_left
 	op1[1] = tuple(indx_left)
+	op1[2] = 1
 
 	op2 = list(op)
 	op2[0] = opstr_right
 	op2[1] = tuple(indx_right)
+	op2[2] = 1
 
 	op1 = _sort_opstr_spinless(op1)
 	op2 = _sort_opstr_spinless(op2)
 
 	op[0] = "|".join((op1[0],op2[0]))
 	op[1] = op1[1] + op2[1]
+	op[2] *= op1[2] * op2[2]
 	
 	return tuple(op)
 
