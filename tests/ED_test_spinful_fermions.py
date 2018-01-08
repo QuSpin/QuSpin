@@ -65,16 +65,16 @@ def check_z(L,dtype,Nf=None):
 	
 	J1=[[2.0*random()-1.0,i,i] for i in range(L)]
 	J0=random()
-	J2p=[[2.0*J0-1.0,i,(i+1)%L] for i in range(L)]
-	J2m=[[-(2.0*J0-1.0),i,(i+1)%L] for i in range(L)]
-	J1p=[[2.0*J0-1.0,i,(i+1)%L] for i in range(L)]
-	J1m=[[-(2.0*J0-1.0),i,(i+1)%L] for i in range(L)]
+	J2p=[[2.0*J0-1.0,i,i+1] for i in range(L-1)]
+	J2m=[[-(2.0*J0-1.0),i,i+1] for i in range(L-1)]
+	J1p=[[2.0*J0-1.0,i,i+1] for i in range(L-1)]
+	J1m=[[-(2.0*J0-1.0),i,i+1] for i in range(L-1)]
 
 	static=[["z|z",J1],["+-|",J2p],["-+|",J2m],["|+-",J1p],["|-+",J1m]]
 
 	
 	basis=spinful_fermion_basis_1d(L=L,Nf=Nf)
-	H=hamiltonian(static,[],dtype=dtype,basis=basis)
+	H=hamiltonian(static,[],dtype=dtype,basis=basis,**no_checks)
 	Ns=H.Ns
 	E=H.eigvalsh()
 	
@@ -95,15 +95,7 @@ def check_z(L,dtype,Nf=None):
 #check_z(4,np.float64,Nf=(2,2))
 #check_z(4,np.complex128)
 
-
 def check_p(L,dtype,Nf=None):
-
-	""" 
-
-	1) correct checks for spinful fermions and go back to OBC
-	
-	"""
-
 
 	L_2=int(L/2)
 	hr=[2.0*random()-1.0 for i in range(L_2)]
@@ -116,11 +108,11 @@ def check_p(L,dtype,Nf=None):
 	J=[[1.0,i,i] for i in range(L)]
 
 	J0=random()
-	J2p=[[2.0*J0-1.0,i,(i+1)%L] for i in range(L-1)]
-	J2m=[[-(2.0*J0-1.0),i,(i+1)%L] for i in range(L-1)]
+	J2p=[[2.0*J0-1.0,i,i+1] for i in range(L-1)]
+	J2m=[[-(2.0*J0-1.0),i,i+1] for i in range(L-1)]
 	J0=random()
-	J1p=[[2.0*J0-1.0,i,(i+1)%L] for i in range(L-1)]
-	J1m=[[-(2.0*J0-1.0),i,(i+1)%L] for i in range(L-1)]
+	J1p=[[2.0*J0-1.0,i,i+1] for i in range(L-1)]
+	J1m=[[-(2.0*J0-1.0),i,i+1] for i in range(L-1)]
 
 
 	if type(Nf) is tuple:
@@ -168,8 +160,8 @@ def check_pz(L,dtype,Nf=None):
 	J=[[1.0,i,i] for i in range(L)]
 
 	J0=random()
-	Jp=[[2.0*J0-1.0,i,(i+1)%L] for i in range(L-1)]
-	Jm=[[-(2.0*J0-1.0),i,(i+1)%L] for i in range(L-1)]
+	Jp=[[2.0*J0-1.0,i,i+1] for i in range(L-1)]
+	Jm=[[-(2.0*J0-1.0),i,i+1] for i in range(L-1)]
 	
 	static=[["z|z",J],["+-|",Jp],["-+|",Jm],["|+-",Jp],["|-+",Jm],["z|",h],["|z",h]]
 	
@@ -208,8 +200,8 @@ def check_p_z(L,dtype,Nf=None):
 	J=[[1.0,i,i] for i in range(L)]
 
 	J0=random()
-	Jp=[[2.0*J0-1.0,i,(i+1)%L] for i in range(L-1)]
-	Jm=[[-(2.0*J0-1.0),i,(i+1)%L] for i in range(L-1)]
+	Jp=[[2.0*J0-1.0,i,i+1] for i in range(L-1)]
+	Jm=[[-(2.0*J0-1.0),i,i+1] for i in range(L-1)]
 	
 	if type(Nf) is tuple:
 		if type(Nf[0]) is int and type(Nf[1]) is int:
@@ -746,5 +738,4 @@ check_obc(4)
 check_pbc(8)
 
 print('GET RID OF NO_CHECKS')
-print('MAKE SURE OBC COUPLINGS ARE NOT TRANSL INV')
 print('RELEASE SEED')	
