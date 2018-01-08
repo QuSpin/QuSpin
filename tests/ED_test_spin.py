@@ -642,8 +642,8 @@ def check_t_p(L,dtype,Nup=None):
 
 
 def check_t_pz(L,dtype,Nup=None):
-	hx=random()*0.0
-	hz=random()*0.0
+	hx=random()
+	hz=random()
 	J=random()
 	h1=[[hx,i] for i in range(L)]
 	J1=[[J,i,(i+1)%L] for i in range(L)]

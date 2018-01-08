@@ -34,6 +34,7 @@ def check_T(sort_opstr,operator_list,L,a):
 
 def check_Z(sort_opstr,operator_list,photon):
 	missing_ops=[]
+
 	for op in operator_list:
 		opstr = str(op[0])
 		indx = list(op[1])

@@ -457,6 +457,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			if missingops:	dynamic_blocks["P symm"] = (tuple(missingops),)
 
 		if zblock is not None:
+			
 			oddops,missingops = _check.check_Z(basis_sort_opstr,static_list,photon)
 			if missingops or oddops:
 				static_blocks["Z/C/S symm"] = (tuple(oddops),tuple(missingops))
@@ -464,6 +465,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			oddops,missingops = _check.check_Z(basis_sort_opstr,dynamic_list,photon)
 			if missingops or oddops:
 				dynamic_blocks["Z/C/S symm"] = (tuple(oddops),tuple(missingops))
+			
 
 		if pzblock is not None:
 			missingops = _check.check_PZ(basis_sort_opstr,static_list,L,photon)
