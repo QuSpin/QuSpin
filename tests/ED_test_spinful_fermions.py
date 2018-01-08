@@ -194,7 +194,7 @@ def check_pz(L,dtype,Nf=None):
 
 
 #check_pz(4,np.float64,Nf=(2,2))
-#exit()
+
 
 def check_p_z(L,dtype,Nf=None):
 	L_2=int(L/2)
@@ -743,7 +743,7 @@ def check_pbc(Lmax):
 
 check_m(4)
 check_obc(4)
-check_obc(8)
+check_pbc(8)
 
 print('GET RID OF NO_CHECKS')
 print('MAKE SURE OBC COUPLINGS ARE NOT TRANSL INV')
