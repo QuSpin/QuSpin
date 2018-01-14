@@ -103,7 +103,7 @@ cdef inline basis_type flip_all(basis_type I, int length,NP_INT8_t * sign,basis_
     N_left = bit_count(I_left,length)
     N_right = bit_count(I_right,length)
 
-    sign[0] *= (-1 if (N_left*N_right)%2 else 1)
+    sign[0] *= (-1 if (N_left&1)&(N_right&1) else 1)
     return I_left + (I_right << length)
 
 
