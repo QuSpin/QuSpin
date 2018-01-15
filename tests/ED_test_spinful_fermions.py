@@ -15,14 +15,14 @@ from numpy.random import random,seed
 
 seed(0)
 
-#no_checks = dict()
-no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
+no_checks = dict()
+#no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
 
 
 dtypes=[np.float32,np.float64,np.complex64,np.complex128]
 	
 def eps(dtype):
-	return 2*10.0**(-5)
+	return 9E-3
 
 
 def check_m(Lmax):
@@ -41,23 +41,26 @@ def check_m(Lmax):
 			static=[["z|n",J1],["+-|",J2p],["-+|",J2m],["|+-",J1p],["|-+",J1m],["z|",h1],["|n",h2]]
 			
 			basis=spinful_fermion_basis_1d(L=L)
-			H=hamiltonian(static,[],dtype=dtype,basis=basis)
+			H=hamiltonian(static,[],dtype=dtype,basis=basis,**no_checks)
 			Ns=H.Ns
 			E=H.eigvalsh()
 
 			Em=[]
 			for Nf,Ndown in product(range(L+1),range(L+1)):
 				basis=spinful_fermion_basis_1d(L=L,Nf=(Nf,Ndown))
-				H=hamiltonian(static,[],dtype=dtype,basis=basis)
+				H=hamiltonian(static,[],dtype=dtype,basis=basis,**no_checks)
 				Etemp=H.eigvalsh()
 				Em.append(Etemp)
 
 			Em=np.concatenate(Em)
 			Em.sort()
-			
 
+			
 			if norm(Em-E) > eps(dtype):
 				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype,norm(Em-E) ) )
+
+
+#check_m(5)
 
 
 
@@ -292,7 +295,9 @@ def check_t(L,dtype,Nf=None):
 	basis=spinful_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis,**no_checks)
 	Ns=H.Ns
-	E=H.eigvalsh()
+
+	E,_=H.eigh()
+	#E=H.eigvalsh() # gives ValueError: On entry to CHBRDB parameter number 12 had an illegal value
 
 	Et=np.array([])
 	for kblock in range(0,L):
@@ -626,7 +631,7 @@ def check_t_pz(L,dtype,Nf=None):
 
 
 #check_t_pz(8,np.complex128,Nf=(4,4))
-#check_t_pz(6,np.complex128)
+#check_t_pz(6,np.float32)
 
 def check_t_p_z(L,dtype,Nf=None):
 	h0=random()
@@ -697,8 +702,8 @@ def check_t_p_z(L,dtype,Nf=None):
 				raise Exception( "test failed t z p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ekp1-Ekpz2)) )
 
 
-
-
+#check_t_p_z(8,np.complex128,Nf=(4,4))
+#check_t_p_z(6,np.complex128)
 
 
 def check_pbc(Lmax):
@@ -707,8 +712,7 @@ def check_pbc(Lmax):
 		for L in range(2,Lmax+1,1):
 			check_t(L,dtype)
 			for Nup in range(L+1):
-				N_down=L=Nup
-				check_t(L,dtype,Nf=(Nup,Ndown))
+				check_t(L,dtype,Nf=(Nup,L-Nup))
 
 	for dtype in (np.complex64,np.complex128):
 		for L in range(2,Lmax+1,2):
@@ -735,7 +739,7 @@ def check_pbc(Lmax):
 
 check_m(4)
 check_obc(4)
-check_pbc(8)
+check_pbc(4)
 
 print('GET RID OF NO_CHECKS')
 print('RELEASE SEED')	
