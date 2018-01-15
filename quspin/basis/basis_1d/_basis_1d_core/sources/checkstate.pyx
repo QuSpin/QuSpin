@@ -173,7 +173,8 @@ cdef void CheckState_T_P_template(int kblock,int L,basis_type s,int T,int *R, ba
     R[2] = 1
     r = 0
 
-    if CheckState_P_template(1,s,L,bitop_pars) < 0 and CheckState_P_template(-1,s,L,bitop_pars) < 0:
+    if CheckState_P_template(1,s,L,bitop_pars) < 0 and \
+       CheckState_P_template(-1,s,L,bitop_pars) < 0:
         return
       
 
@@ -229,8 +230,13 @@ cdef void CheckState_T_P_Z_template(int kblock,int L,basis_type s,int T, int *R,
     cdef int i,r
     r = L
 
-    if CheckState_P_Z_template(1,1,s,L,bitop_pars) < 0:
+    if CheckState_P_Z_template(1,1,s,L,bitop_pars) < 0 and \
+       CheckState_P_Z_template(-1,1,s,L,bitop_pars) < 0  and \
+       CheckState_P_Z_template(1,-1,s,L,bitop_pars) < 0 and \
+       CheckState_P_Z_template(-1,-1,s,L,bitop_pars) < 0:
         return
+
+
 
     for i in range(1,L/T+1):
         t = shift(t,-T,L,&sign,bitop_pars)
@@ -306,7 +312,8 @@ cdef void CheckState_T_PZ_template(int kblock,int L,basis_type s,int T,int *R, b
     R[2] =  1
     cdef int i,r
 
-    if CheckState_PZ_template(1,s,L,bitop_pars) < 0 and CheckState_PZ_template(-1,s,L,bitop_pars) < 0:
+    if CheckState_PZ_template(1,s,L,bitop_pars) < 0 and \
+       CheckState_PZ_template(-1,s,L,bitop_pars) < 0:
         return
 
     r = L
@@ -356,7 +363,8 @@ cdef void CheckState_T_Z_template(int kblock,int L,basis_type s,int T,int *R, ba
     R[1] = -1
     R[2] = 1
     cdef int i,r
-    if CheckState_Z_template(1,s,L,bitop_pars) < 0 and CheckState_Z_template(-1,s,L,bitop_pars) < 0:
+    if CheckState_Z_template(1,s,L,bitop_pars) < 0 and \
+       CheckState_Z_template(-1,s,L,bitop_pars) < 0:
         return
 
     r = L
@@ -404,7 +412,8 @@ cdef void CheckState_T_ZA_template(int kblock,int L,basis_type s,int T,int *R, b
     R[0] = -1
     R[1] = -1
     cdef int i,r
-    if CheckState_ZA_template(1,s,L,bitop_pars) < 0:
+    if CheckState_ZA_template(1,s,L,bitop_pars) < 0 and \
+       CheckState_ZA_template(-1,s,L,bitop_pars) < 0:
         return
 
     r = L
@@ -446,7 +455,8 @@ cdef void CheckState_T_ZB_template(int kblock,int L,basis_type s,int T,int *R, b
     R[0] = -1
     R[1] = -1
     cdef int i,r
-    if CheckState_ZB_template(1,s,L,bitop_pars) < 0:
+    if CheckState_ZB_template(1,s,L,bitop_pars) < 0 and \
+       CheckState_ZB_template(-1,s,L,bitop_pars) < 0:
         return
 
     r = L
@@ -490,7 +500,10 @@ cdef void CheckState_T_ZA_ZB_template(int kblock,int L,basis_type s,int T,int *R
     R[2] = -1
     R[3] = -1
     cdef int i,r
-    if CheckState_ZA_ZB_template(1,1,s,L,bitop_pars) < 0:
+    if CheckState_ZA_ZB_template(1,1,s,L,bitop_pars) < 0 and \
+       CheckState_ZA_ZB_template(1,-1,s,L,bitop_pars) < 0 and \
+       CheckState_ZA_ZB_template(-1,1,s,L,bitop_pars) < 0 and \
+       CheckState_ZA_ZB_template(-1,-1,s,L,bitop_pars) < 0:
         return
 
 

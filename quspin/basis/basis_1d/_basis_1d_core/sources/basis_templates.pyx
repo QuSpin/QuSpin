@@ -604,10 +604,9 @@ cdef npy_intp make_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
 
 
 
-cdef npy_intp make_zA_zB_basis_template(
-                                            ns_type next_state, basis_type[:] ns_pars,
-                                            npy_intp MAX,basis_type s,
-                                            int L,int zAblock,int zBblock,N_type *N,basis_type[:] basis):
+cdef npy_intp make_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
+                                        npy_intp MAX,basis_type s,
+                                        int L,int zAblock,int zBblock,N_type *N,basis_type[:] basis):
     cdef npy_intp Ns
 
     cdef int r

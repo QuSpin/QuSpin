@@ -56,7 +56,7 @@ def check_m(Lmax):
 			Em.sort()
 			
 
-			if norm(Em-E) > Ns*eps(dtype):
+			if norm(Em-E) > eps(dtype):
 				raise Exception( "test failed m symmetry at L={0:3d} with dtype {1} {2}".format(L,dtype,norm(Em-E) ) )
 
 
@@ -89,7 +89,7 @@ def check_z(L,dtype,Nf=None):
 	Ez=np.concatenate((E1,E2))
 	Ez.sort()
 
-	if norm(Ez-E) > Ns*eps(dtype):
+	if norm(Ez-E) > eps(dtype):
 		raise Exception( "test failed z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf, norm(Ez-E)))
 
 #check_z(4,np.float64,Nf=(2,2))
@@ -139,7 +139,7 @@ def check_p(L,dtype,Nf=None):
 	Ep=np.concatenate((E1,E2))
 	Ep.sort()
 
-	if norm(Ep-E) > Ns*eps(dtype):
+	if norm(Ep-E) > eps(dtype):
 		raise Exception( "test failed p symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf,norm(Ep-E)) )
 
 
@@ -181,7 +181,7 @@ def check_pz(L,dtype,Nf=None):
 	Epz=np.concatenate((E1,E2))
 	Epz.sort()
 
-	if norm(Epz-E) > Ns*eps(dtype):
+	if norm(Epz-E) > eps(dtype):
 		raise Exception( "test failed pz symmetry at L={0:3d} with dtype {1} and Nf={2:2d} {3}".format(L,np.dtype(dtype),Nf,norm(Epz-E)) )
 
 
@@ -232,7 +232,7 @@ def check_p_z(L,dtype,Nf=None):
 	Epz=np.concatenate((E1,E2,E3,E4))
 	Epz.sort()
 
-	if norm(Epz-E) > Ns*eps(dtype):
+	if norm(Epz-E) > eps(dtype):
 		raise Exception( "test failed pz symmetry at L={0:3d} with dtype {1} and Nf={2:2d} {3}".format(L,np.dtype(dtype),Nf,norm(Epz-E)) )
 
 
@@ -304,7 +304,7 @@ def check_t(L,dtype,Nf=None):
 	
 	Et.sort()
 	
-	if norm(Et-E) > Ns*eps(dtype):
+	if norm(Et-E) > eps(dtype):
 		raise Exception( "test failed t symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf,norm(Et-E)) )
 
 
@@ -351,7 +351,7 @@ def check_t_z(L,dtype,Nf=None):
 		Ekz.sort()
 
 
-		if norm(Ek-Ekz) > Ns*eps(dtype):
+		if norm(Ek-Ekz) > eps(dtype):
 			raise Exception( "test failed t z symmetry at L={0:3d} with dtype {1} and Nf={2} {3}".format(L,np.dtype(dtype),Nf,norm(Ek-Ekz)) )
 
 #check_t_z(4,np.complex128,Nf=(2,2))
@@ -405,10 +405,10 @@ def check_t_p(L,dtype,Nf=None):
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
 		
-		if norm(Ek-Ek1) > Ns*eps(dtype):
+		if norm(Ek-Ek1) > eps(dtype):
 			raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek1)) )
 
-		if norm(Ek-Ek2) > Ns*eps(dtype):
+		if norm(Ek-Ek2) > eps(dtype):
 			raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek2)) )
 
 
@@ -428,7 +428,7 @@ def check_t_p(L,dtype,Nf=None):
 	Ekp.sort()
 
 
-	if norm(Ek-Ekp) > Ns*eps(dtype):
+	if norm(Ek-Ekp) > eps(dtype):
 			raise Exception( "test failed t p symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,0,np.dtype(dtype),Nf,norm(Ek-Ekp)) )
 
 
@@ -448,10 +448,10 @@ def check_t_p(L,dtype,Nf=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if norm(Ek-Ek1) > Ns*eps(dtype):
+			if norm(Ek-Ek1) > eps(dtype):
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek1)) )
 	
-			if norm(Ek-Ek2) > Ns*eps(dtype):
+			if norm(Ek-Ek2) > eps(dtype):
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek1)) )
 
 		basisk=spinful_fermion_basis_1d(L=L,Nf=Nf,kblock=L_2)
@@ -469,7 +469,7 @@ def check_t_p(L,dtype,Nf=None):
 		Ekp=np.append(Ek1,Ek2)
 		Ekp.sort()
 
-		if norm(Ek-Ekp) > Ns*eps(dtype):
+		if norm(Ek-Ekp) > eps(dtype):
 				raise Exception( "test failed t p symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,int(L/2),np.dtype(dtype),Nf,norm(Ek-Ekp)) )
 
 	else:
@@ -488,10 +488,10 @@ def check_t_p(L,dtype,Nf=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if norm(Ek-Ek1) > Ns*eps(dtype):
+			if norm(Ek-Ek1) > eps(dtype):
 				raise Exception( "test failed t p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek1)) )
 	
-			if norm(Ek-Ek2) > Ns*eps(dtype):
+			if norm(Ek-Ek2) > eps(dtype):
 				raise Exception( "test failed t p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek2)) )
 	
 #check_t_p(4,np.complex128,Nf=(3,4))
@@ -536,10 +536,10 @@ def check_t_pz(L,dtype,Nf=None):
 
 		Ek1=Hk1.eigvalsh()
 		Ek2=Hk2.eigvalsh()
-		if norm(Ek-Ek1) > Ns*eps(dtype):
+		if norm(Ek-Ek1) > eps(dtype):
 			raise Exception( "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek1)) )
 
-		if norm(Ek-Ek2) > Ns*eps(dtype):
+		if norm(Ek-Ek2) > eps(dtype):
 			raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek2)) )
 
 
@@ -559,7 +559,7 @@ def check_t_pz(L,dtype,Nf=None):
 	Ekp.sort()
 
 
-	if norm(Ek-Ekp) > Ns*eps(dtype):
+	if norm(Ek-Ekp) > eps(dtype):
 			raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,0,np.dtype(dtype),Nf,norm(Ek-Ekp)) )
 
 	if((L/a)%2 == 0):
@@ -579,10 +579,10 @@ def check_t_pz(L,dtype,Nf=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if norm(Ek-Ek1) > Ns*eps(dtype):
+			if norm(Ek-Ek1) > eps(dtype):
 				raise Exception( "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek1)) )
 	
-			if norm(Ek-Ek2) > Ns*eps(dtype):
+			if norm(Ek-Ek2) > eps(dtype):
 				raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,kblock,np.dtype(dtype),Nup,norm(Ek-Ek2)) )
 
 		basisk=spinful_fermion_basis_1d(L=L,Nf=Nf,kblock=L_2,a=a)
@@ -600,7 +600,7 @@ def check_t_pz(L,dtype,Nf=None):
 		Ekp=np.append(Ek1,Ek2)
 		Ekp.sort()
 
-		if norm(Ek-Ekp) > Ns*eps(dtype):
+		if norm(Ek-Ekp) > eps(dtype):
 				raise Exception( "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(L,int(L/2),np.dtype(dtype),Nup,norm(Ek-Ekp)) )
 	else:
 		for kblock in range(1,L_2+1):
@@ -618,10 +618,10 @@ def check_t_pz(L,dtype,Nf=None):
 			Ek1=Hk1.eigvalsh()
 			Ek2=Hk2.eigvalsh()
 	
-			if norm(Ek-Ek1) > Ns*eps(dtype):
+			if norm(Ek-Ek1) > eps(dtype):
 				raise Exception( "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek1)) )
 	
-			if norm(Ek-Ek2) > Ns*eps(dtype):
+			if norm(Ek-Ek2) > eps(dtype):
 				raise Exception( "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ek-Ek2)) )
 
 
@@ -648,7 +648,7 @@ def check_t_p_z(L,dtype,Nf=None):
 	L_2=int(L/2)
 	for kblock in range(-L_2+1,L_2+1):
 
-		print(kblock)
+		# print(kblock)
 
 		basisk1=spinful_fermion_basis_1d(L=L,Nf=Nf,kblock=kblock,pblock=+1)
 		Hkp1=hamiltonian(static,[],dtype=dtype,basis=basisk1,**no_checks)
@@ -678,27 +678,27 @@ def check_t_p_z(L,dtype,Nf=None):
 		Ekpz2=np.concatenate((Ekpz21,Ekpz22))
 		Ekpz2.sort()
 
-		print(Ekp1)
-		print(Ekpz1)
+		# print(basisk1)
+		# print(basisk11)
+		# print(basisk12)
 		#exit()
 			
-		if norm(Ekp1-Ekpz1) > Ns*eps(dtype):
+		if norm(Ekp1-Ekpz1) > eps(dtype):
 			raise Exception( "test failed t z p+  symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ekp1-Ekpz1)) )
 
-		if norm(Ekp2-Ekpz2) > Ns*eps(dtype):
+		if norm(Ekp2-Ekpz2) > eps(dtype):
 			raise Exception( "test failed t z p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ekp2-Ekpz2)) )
 
 		if(kblock not in [0,L_2]):
-			if norm(Ekp2-Ekpz1) > Ns*eps(dtype):
+			if norm(Ekp2-Ekpz1) > eps(dtype):
 				raise Exception( "test failed t z p+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ekp2-Ekpz1)) )
 
-			if norm(Ekp1-Ekpz2) > Ns*eps(dtype):
+			if norm(Ekp1-Ekpz2) > eps(dtype):
 				raise Exception( "test failed t z p- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(L,kblock,np.dtype(dtype),Nf,norm(Ekp1-Ekpz2)) )
 
 
-#check_t_p_z(2,np.complex128,Nf=(1,1))
-check_t_p_z(2,np.complex128)
-exit()
+
+
 
 
 def check_pbc(Lmax):
