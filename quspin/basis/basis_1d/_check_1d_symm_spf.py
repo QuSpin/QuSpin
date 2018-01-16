@@ -41,13 +41,13 @@ def check_Z(sort_opstr,operator_list,photon):
 
 		if photon:
 			opstr_left,opstr_right,opstr_phtn = opstr.split("|")
-			N_left = len(opstr_left)
-			N_right = len(opstr_right)
+			N_left = len(opstr_left.replace("n","").replace("z",""))
+			N_right = len(opstr_right.replace("n","").replace("z",""))
 			new_opstr = "|".join((opstr_right,opstr_left,opstr_phtn))
 		else:
 			opstr_left,opstr_right = opstr.split("|")
-			N_left = len(opstr_left)
-			N_right = len(opstr_right)
+			N_left = len(opstr_left.replace("n","").replace("z",""))
+			N_right = len(opstr_right.replace("n","").replace("z",""))
 			new_opstr = "|".join((opstr_right,opstr_left))
 
 
@@ -88,13 +88,13 @@ def check_PZ(sort_opstr,operator_list,L,photon):
 
 		if photon:
 			opstr_left,opstr_right,opstr_phtn = opstr.split("|")
-			N_left = len(opstr_left)
-			N_right = len(opstr_right)
+			N_left = len(opstr_left.replace("n","").replace("z",""))
+			N_right = len(opstr_right.replace("n","").replace("z",""))
 			new_opstr = "|".join((opstr_right,opstr_left,opstr_phtn))
 		else:
 			opstr_left,opstr_right = opstr.split("|")
-			N_left = len(opstr_left)
-			N_right = len(opstr_right)
+			N_left = len(opstr_left.replace("n","").replace("z",""))
+			N_right = len(opstr_right.replace("n","").replace("z",""))
 			new_opstr = "|".join((opstr_right,opstr_left))
 
 		new_op = list(op)

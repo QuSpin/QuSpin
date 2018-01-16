@@ -123,7 +123,7 @@ def check_p(L,dtype,Nf=None):
 			static=[["z|z",J],["+-|",J1p],["-+|",J1m],["|+-",J2p],["|-+",J2m],["z|",h]]
 			#static=[["z|z",J],["+-|",J2p],["-+|",J2m],["|+-",J1p],["|-+",J1m]]
 	else:
-		static=[["z|z",J],["|+",h],["-|",h]]
+		static=[["z|z",J],["|+",h],["|-",h],["-|",h],["+|",h]]
 
 	
 	basis=spinful_fermion_basis_1d(L=L,Nf=Nf)
@@ -290,7 +290,7 @@ def check_t(L,dtype,Nf=None):
 		if type(Nf[0]) is int and type(Nf[1]) is int:
 			static=[["z|z",J],["+-|",J1p],["-+|",J1m],["|+-",J2p],["|-+",J2m],["z|",h]]
 	else:
-		static=[["z|z",J],["|+",h],["-|",h]]
+		static=[["z|z",J],["+|",h],["-|",h],["|+",h],["|-",h]]
 
 	basis=spinful_fermion_basis_1d(L=L,Nf=Nf)
 	H=hamiltonian(static,[],dtype=dtype,basis=basis,**no_checks)
@@ -383,7 +383,7 @@ def check_t_p(L,dtype,Nf=None):
 		if type(Nf[0]) is int and type(Nf[1]) is int:
 			static=[["z|z",J],["+-|",J1p],["-+|",J1m],["|+-",J2p],["|-+",J2m],["z|",h]]
 	else:
-		static=[["z|z",J],["|+",h],["-|",h]]
+		static=[["z|z",J],["+|",h],["-|",h],["|+",h],["|-",h]]
 
 	L_2=int(L/2)
 
