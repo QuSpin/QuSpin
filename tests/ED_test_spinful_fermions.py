@@ -13,7 +13,7 @@ from numpy.linalg import norm
 from numpy.random import random,seed
 
 
-seed(0)
+#seed(0)
 
 no_checks = dict()
 #no_checks = dict(check_pcon=False,check_symm=False,check_herm=False)
@@ -741,5 +741,5 @@ check_m(4)
 check_obc(4)
 check_pbc(4)
 
-print('GET RID OF NO_CHECKS')
-print('RELEASE SEED')	
+#print('GET RID OF NO_CHECKS')
+#print('RELEASE SEED')	
