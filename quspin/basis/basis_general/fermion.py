@@ -23,7 +23,7 @@ class spinful_fermion_basis_general(basis_general):
 		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`
 
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	spin inversion. For a specific example, see below.
+	population inversion. For a specific example, see below.
 
 	The supported operator strings for `spinfull_fermion_basis_general` are:
 
@@ -44,7 +44,7 @@ class spinful_fermion_basis_general(basis_general):
 	Moreover, it demonstrates how to pass user-defined symmetries to the `spinfull_fermion_basis_general` constructor. In particular,
 	we do translation invariance and spin-exchange.
 
-	.. literalinclude:: ../../doc_examples/spinfull_fermion_basis_general-example.py
+	.. literalinclude:: ../../doc_examples/spinful_fermion_basis_general-example.py
 		:linenos:
 		:language: python
 		:lines: 7-
@@ -314,7 +314,7 @@ class spinless_fermion_basis_general(basis_general):
 		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`
 
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	spin inversion. For a specific example, see below.
+	population inversion. For a specific example, see below.
 
 	The supported operator strings for `spinless_fermion_basis_general` are:
 
