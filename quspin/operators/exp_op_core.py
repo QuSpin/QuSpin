@@ -738,7 +738,8 @@ def _iter_sandwich(M, other, step, grid):
 		yield other.copy()
 
 def _hamiltonian_dot(M, other):
-	new = _shallowcopy(other)
+	new = other.copy(deep=False)
+	new._dtype = _np.result_type(M.dtype,new._dtype)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
@@ -758,7 +759,8 @@ def _hamiltonian_iter_dot(M, other, grid, step):
 		yield other
 
 def _hamiltonian_rdot(M, other):
-	new = _shallowcopy(other)
+	new = other.copy(deep=False)
+	new._dtype = _np.result_type(M.dtype,new._dtype)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
