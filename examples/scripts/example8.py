@@ -9,7 +9,7 @@
 from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space boson basis
-from quspin.tools.measurements import evolve # nonlinear evolution 
+from quspin.tools.evolution import evolve # nonlinear evolution 
 import numpy as np # generic math functions
 import matplotlib.pyplot as plt # plotting library
 from six import iteritems # loop over elements of dictionary
