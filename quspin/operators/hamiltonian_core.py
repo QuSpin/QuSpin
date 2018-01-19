@@ -1776,7 +1776,6 @@ class hamiltonian(object):
 
 		"""
 		dynamic = [[M.T,func] for func,M in iteritems(self.dynamic)]
-
 		return hamiltonian([self.static.T],dynamic,
 						basis=self._basis,dtype=self._dtype,copy=copy)
 
