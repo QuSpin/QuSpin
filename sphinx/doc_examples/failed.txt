@@ -1,6 +1,0 @@
-block_diag_hamiltonian-example.py
-
-block_ops-example.py
-
-spinfull_fermion_basis_general-example.py
-

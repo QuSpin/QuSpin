@@ -110,6 +110,8 @@ class basis_1d(lattice_basis):
 		if Np is None:
 			self._conserved = ""
 			self._Ns_pcon = None
+			self._get_proj_pcon = False
+
 		else:
 			if type(Np) is not list:
 				raise ValueError("basis_1d expects list for Np")
@@ -119,8 +121,10 @@ class basis_1d(lattice_basis):
 				self._Ns_pcon = basis_module.get_Ns(L,Np,self.sps,**{})
 				self._check_pcon = True
 
+			self._Nps = Np
 			self._conserved = "N"
 			self._make_n_basis = basis_module.n_basis
+			self._get_proj_pcon = True
 
 		# shout out if pblock and zA/zB blocks defined simultaneously
 		if type(pblock) is int and ((type(zAblock) is int) or (type(zBblock) is int)):
@@ -693,7 +697,7 @@ class basis_1d(lattice_basis):
 
 		if pcon and self._get_proj_pcon:
 			basis_pcon = _np.ones(self._Ns_pcon,dtype=self._basis_type)
-			self._make_n_basis(self.L,self._Np,self._Ns_pcon,self._pars,basis_pcon)
+			self._make_n_basis(self.L,self._Nps,self._pars,basis_pcon)
 			shape = (self._Ns_pcon,self._Ns)
 		elif pcon and not self._get_proj_pcon:
 			raise TypeError("pcon=True only works for basis of a single particle number sector.")
