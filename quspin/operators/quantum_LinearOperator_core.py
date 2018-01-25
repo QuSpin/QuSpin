@@ -78,11 +78,16 @@ class quantum_LinearOperator(LinearOperator):
 			to create the operator.
 
 		"""
+		copy_self = basis_args.get("_copy_self")
+		if copy_self is None:
+			copy_self = False
+
 
 		if type(static_list) in [list,tuple]:
-			for ele in static_list:
-				if not _check_static(ele):
-					raise ValueError("quantum_LinearOperator only supports operator string representations.")
+			if not copy_self:
+				for ele in static_list:
+					if not _check_static(ele):
+						raise ValueError("quantum_LinearOperator only supports operator string representations.")
 		else: 
 			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
 
@@ -133,8 +138,9 @@ class quantum_LinearOperator(LinearOperator):
 			self._diagonal = None
 
 
+		if not copy_self:
+			static_list = _consolidate_static(static_list)
 
-		static_list = _consolidate_static(static_list)
 		self._static_list = []
 		for opstr,indx,J in static_list:
 			ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
@@ -299,6 +305,7 @@ class quantum_LinearOperator(LinearOperator):
 		for opstr,indx,J in self.static_list:
 			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
 								self._conjugated,self._transposed,v_out=new_other)
+		new_other *= self._scale
 		return new_other
 
 	def _rmatvec(self,other):
@@ -434,7 +441,7 @@ class quantum_LinearOperator(LinearOperator):
 		"""Returns a deep copy of `quantum_LinearOperator` object."""
 		return quantum_LinearOperator(self._static_list,basis=self._basis,
 							diagonal=self._diagonal,scale=self._scale,dtype=self._dtype,
-							check_symm=False,check_herm=False,check_pcon=False)
+							check_symm=False,check_herm=False,check_pcon=False,_copy_self=True)
 
 	def __repr__(self):
 		return "<{0}x{1} quspin quantum_LinearOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
@@ -564,9 +571,11 @@ class quantum_LinearOperator(LinearOperator):
 			return (self.T._mul_sparse(other.T)).T
 
 	def _mul_scalar(self,other):
-		self._dtype = _np.result_type(self._dtype,other)
-		self._scale *= other
-		return self.copy()
+		new = self.copy()
+		new._dtype = _np.result_type(self._dtype,other)
+		new._scale *= other
+		# print(self._scale,new._scale)
+		return new
 
 	def _mul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
