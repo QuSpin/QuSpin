@@ -45,7 +45,7 @@ class quantum_LinearOperator(LinearOperator):
 		:lines: 7-
 
 	"""
-	def __init__(self,static_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+	def __init__(self,static_list,N=None,basis=None,diagonal=None,scale=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_LinearOperator` object.
 		
 		Parameters
@@ -61,8 +61,10 @@ class quantum_LinearOperator(LinearOperator):
 			number of sites to create the default spin basis with.
 		basis : :obj:`basis`, optional
 			basis object to construct quantum operator with.
-		diagonal : array_like
+		diagonal : array_like, optional
 			array containing diagonal matrix elements precalculated by other means. 
+		scale : scalar, optional
+			value which to scale the linear operator by.
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the operator with.
 		check_symm : bool, optional 
@@ -102,7 +104,15 @@ class quantum_LinearOperator(LinearOperator):
 		self._unique_me = self.basis._unique_me
 		self._transposed = False
 		self._conjugated = False
-		self._scale = _np.array(1.0,dtype=dtype)
+		if scale is None:
+			self._scale = _np.array(1.0,dtype=dtype)
+		else:
+			if _np.array(scale).ndim > 0:
+				raise ValueError("scale must be a scalar value")
+
+			self._scale = _np.array(scale,dtype=dtype)
+
+
 		self._dtype = dtype
 		self._ndim = 2
 		self._shape = (self._basis.Ns,self._basis.Ns)
@@ -423,7 +433,7 @@ class quantum_LinearOperator(LinearOperator):
 	def copy(self):
 		"""Returns a deep copy of `quantum_LinearOperator` object."""
 		return quantum_LinearOperator(self._static_list,basis=self._basis,
-							diagonal=self._diagonal,dtype=self._dtype,
+							diagonal=self._diagonal,scale=self._scale,dtype=self._dtype,
 							check_symm=False,check_herm=False,check_pcon=False)
 
 	def __repr__(self):
@@ -556,6 +566,7 @@ class quantum_LinearOperator(LinearOperator):
 	def _mul_scalar(self,other):
 		self._dtype = _np.result_type(self._dtype,other)
 		self._scale *= other
+		return self.copy()
 
 	def _mul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
