@@ -45,7 +45,7 @@ class quantum_LinearOperator(LinearOperator):
 		:lines: 7-
 
 	"""
-	def __init__(self,static_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+	def __init__(self,static_list,N=None,basis=None,diagonal=None,scale=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_LinearOperator` object.
 		
 		Parameters
@@ -61,8 +61,10 @@ class quantum_LinearOperator(LinearOperator):
 			number of sites to create the default spin basis with.
 		basis : :obj:`basis`, optional
 			basis object to construct quantum operator with.
-		diagonal : array_like
+		diagonal : array_like, optional
 			array containing diagonal matrix elements precalculated by other means. 
+		scale : scalar, optional
+			value which to scale the linear operator by.
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the operator with.
 		check_symm : bool, optional 
@@ -76,11 +78,16 @@ class quantum_LinearOperator(LinearOperator):
 			to create the operator.
 
 		"""
+		copy_self = basis_args.get("_copy_self")
+		if copy_self is None:
+			copy_self = False
+
 
 		if type(static_list) in [list,tuple]:
-			for ele in static_list:
-				if not _check_static(ele):
-					raise ValueError("quantum_LinearOperator only supports operator string representations.")
+			if not copy_self:
+				for ele in static_list:
+					if not _check_static(ele):
+						raise ValueError("quantum_LinearOperator only supports operator string representations.")
 		else: 
 			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
 
@@ -102,7 +109,15 @@ class quantum_LinearOperator(LinearOperator):
 		self._unique_me = self.basis._unique_me
 		self._transposed = False
 		self._conjugated = False
-		self._scale = _np.array(1.0,dtype=dtype)
+		if scale is None:
+			self._scale = _np.array(1.0,dtype=dtype)
+		else:
+			if _np.array(scale).ndim > 0:
+				raise ValueError("scale must be a scalar value")
+
+			self._scale = _np.array(scale,dtype=dtype)
+
+
 		self._dtype = dtype
 		self._ndim = 2
 		self._shape = (self._basis.Ns,self._basis.Ns)
@@ -123,34 +138,37 @@ class quantum_LinearOperator(LinearOperator):
 			self._diagonal = None
 
 
+		if not copy_self:
+			static_list = _consolidate_static(static_list)
+			self._static_list = []
+			for opstr,indx,J in static_list:
+				ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
+				if (row==col).all():
+					if self._diagonal is None:
+						self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
 
-		static_list = _consolidate_static(static_list)
-		self._static_list = []
-		for opstr,indx,J in static_list:
-			ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
-			if (row==col).all():
-				if self._diagonal is None:
-					self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
-
-				if self._unique_me:
-					if row.shape[0] == self.Ns:
-						self._diagonal += ME.real
+					if self._unique_me:
+						if row.shape[0] == self.Ns:
+							self._diagonal += ME.real
+						else:
+							self._diagonal[row] += ME[row].real
 					else:
-						self._diagonal[row] += ME[row].real
-				else:
-					while len(row) > 0:
-						# if there are multiply matrix elements per row as there are for some
-						# symmetries availible then do the indexing for unique elements then
-						# delete them from the list and then repeat until all elements have been 
-						# taken care of. This is less memory efficient but works well for when
-						# there are a few number of matrix elements per row. 
-						row_unique,args = _np.unique(row,return_index=True)
+						while len(row) > 0:
+							# if there are multiply matrix elements per row as there are for some
+							# symmetries availible then do the indexing for unique elements then
+							# delete them from the list and then repeat until all elements have been 
+							# taken care of. This is less memory efficient but works well for when
+							# there are a few number of matrix elements per row. 
+							row_unique,args = _np.unique(row,return_index=True)
 
-						self._diagonal[row_unique] += ME[args].real
-						row = _np.delete(row,args)
-						ME = _np.delete(ME,args)					
-			else:
-				self._static_list.append((opstr,indx,J))
+							self._diagonal[row_unique] += ME[args].real
+							row = _np.delete(row,args)
+							ME = _np.delete(ME,args)					
+				else:
+					self._static_list.append((opstr,indx,J))
+
+		else:
+			self._static_list = static_list
 				
 
 
@@ -289,6 +307,7 @@ class quantum_LinearOperator(LinearOperator):
 		for opstr,indx,J in self.static_list:
 			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
 								self._conjugated,self._transposed,v_out=new_other)
+		new_other *= self._scale
 		return new_other
 
 	def _rmatvec(self,other):
@@ -423,8 +442,8 @@ class quantum_LinearOperator(LinearOperator):
 	def copy(self):
 		"""Returns a deep copy of `quantum_LinearOperator` object."""
 		return quantum_LinearOperator(self._static_list,basis=self._basis,
-							diagonal=self._diagonal,dtype=self._dtype,
-							check_symm=False,check_herm=False,check_pcon=False)
+							diagonal=self._diagonal,scale=self._scale,dtype=self._dtype,
+							check_symm=False,check_herm=False,check_pcon=False,_copy_self=True)
 
 	def __repr__(self):
 		return "<{0}x{1} quspin quantum_LinearOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
@@ -554,8 +573,11 @@ class quantum_LinearOperator(LinearOperator):
 			return (self.T._mul_sparse(other.T)).T
 
 	def _mul_scalar(self,other):
-		self._dtype = _np.result_type(self._dtype,other)
-		self._scale *= other
+		new = self.copy()
+		new._dtype = _np.result_type(self._dtype,other)
+		new._scale *= other
+		# print(self._scale,new._scale)
+		return new
 
 	def _mul_hamiltonian(self,other):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
