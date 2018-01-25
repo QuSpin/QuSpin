@@ -140,33 +140,35 @@ class quantum_LinearOperator(LinearOperator):
 
 		if not copy_self:
 			static_list = _consolidate_static(static_list)
+			self._static_list = []
+			for opstr,indx,J in static_list:
+				ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
+				if (row==col).all():
+					if self._diagonal is None:
+						self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
 
-		self._static_list = []
-		for opstr,indx,J in static_list:
-			ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
-			if (row==col).all():
-				if self._diagonal is None:
-					self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
-
-				if self._unique_me:
-					if row.shape[0] == self.Ns:
-						self._diagonal += ME.real
+					if self._unique_me:
+						if row.shape[0] == self.Ns:
+							self._diagonal += ME.real
+						else:
+							self._diagonal[row] += ME[row].real
 					else:
-						self._diagonal[row] += ME[row].real
-				else:
-					while len(row) > 0:
-						# if there are multiply matrix elements per row as there are for some
-						# symmetries availible then do the indexing for unique elements then
-						# delete them from the list and then repeat until all elements have been 
-						# taken care of. This is less memory efficient but works well for when
-						# there are a few number of matrix elements per row. 
-						row_unique,args = _np.unique(row,return_index=True)
+						while len(row) > 0:
+							# if there are multiply matrix elements per row as there are for some
+							# symmetries availible then do the indexing for unique elements then
+							# delete them from the list and then repeat until all elements have been 
+							# taken care of. This is less memory efficient but works well for when
+							# there are a few number of matrix elements per row. 
+							row_unique,args = _np.unique(row,return_index=True)
 
-						self._diagonal[row_unique] += ME[args].real
-						row = _np.delete(row,args)
-						ME = _np.delete(ME,args)					
-			else:
-				self._static_list.append((opstr,indx,J))
+							self._diagonal[row_unique] += ME[args].real
+							row = _np.delete(row,args)
+							ME = _np.delete(ME,args)					
+				else:
+					self._static_list.append((opstr,indx,J))
+
+		else:
+			self._static_list = static_list
 				
 
 
