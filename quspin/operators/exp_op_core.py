@@ -398,10 +398,12 @@ class exp_op(object):
 
 		Parameters
 		-----------
-		time : scalar, optional
-			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
 		dense : bool
 			Whether or not to return a dense or a sparse array. Detault is `dense = False`.
+		call_kwargs : obj, optional
+			extra keyword arguments which include:
+				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
+				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
 		Returns
 		--------
