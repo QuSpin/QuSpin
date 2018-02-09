@@ -24,6 +24,10 @@ try:
 except ImportError:
 	pass
 
+try:
+	from functools import reduce as reduce
+except ImportError:
+	pass
 
 import warnings
 
