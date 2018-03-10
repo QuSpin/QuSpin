@@ -1,3 +1,7 @@
+from __future__ import print_function, division
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 #####################################################################
 #                            example 7                              #
 #   In this script we demonstrate how to use QuSpin's to create	    #
@@ -8,7 +12,6 @@
 #   Hamiltonian, evolve the separate parts, and put back the state  #
 #   in the end.                                                     #
 #####################################################################
-from __future__ import print_function, division #import python 3 functions
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # bosonic Hilbert space
 from quspin.tools.block_tools import block_ops # dynamics in symmetry blocks
