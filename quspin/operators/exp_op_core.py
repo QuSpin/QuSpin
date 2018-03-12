@@ -398,10 +398,12 @@ class exp_op(object):
 
 		Parameters
 		-----------
-		time : scalar, optional
-			Time to evaluate the operator to be exponentiated. Default is `time=0.0`.
 		dense : bool
 			Whether or not to return a dense or a sparse array. Detault is `dense = False`.
+		call_kwargs : obj, optional
+			extra keyword arguments which include:
+				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
+				**pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
 		Returns
 		--------
@@ -738,7 +740,8 @@ def _iter_sandwich(M, other, step, grid):
 		yield other.copy()
 
 def _hamiltonian_dot(M, other):
-	new = _shallowcopy(other)
+	new = other.copy(deep=False)
+	new._dtype = _np.result_type(M.dtype,new._dtype)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 
@@ -758,7 +761,8 @@ def _hamiltonian_iter_dot(M, other, grid, step):
 		yield other
 
 def _hamiltonian_rdot(M, other):
-	new = _shallowcopy(other)
+	new = other.copy(deep=False)
+	new._dtype = _np.result_type(M.dtype,new._dtype)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
 

@@ -589,6 +589,7 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
+
 		def get_state(b):
 			n_space = len(str(self.sps))
 			if self.N <= 64:
@@ -615,3 +616,6 @@ class lattice_basis(basis):
 			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
+
+
+

@@ -1,3 +1,7 @@
+from __future__ import print_function, division
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 #####################################################################
 #                            example 8                              #
 #   In this script we demonstrate how to use QuSpin to define       #
@@ -6,10 +10,9 @@
 #   in the Gross-Pitaevskii equation of a Bose condensate in a      #
 #   harmonic trap.                                                  #
 #####################################################################
-from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space boson basis
-from quspin.tools.measurements import evolve # nonlinear evolution 
+from quspin.tools.evolution import evolve # nonlinear evolution 
 import numpy as np # generic math functions
 import matplotlib.pyplot as plt # plotting library
 from six import iteritems # loop over elements of dictionary
@@ -116,6 +119,7 @@ for i,psi in enumerate(psi_t):
 	plt.xlabel('$\\mathrm{lattice\\ sites}$',fontsize=14)
 	plt.title('$Jt=%0.2f,\\ E(t)-E_\\mathrm{GS}=%0.4fJ$'%(t[i],E-E_GS),fontsize=14)
 	plt.legend(loc='upper right',fontsize=14)
+	plt.tight_layout()
 	plt.draw() # draw frame
 	plt.pause(0.00005) # pause frame
 	plt.clf() # clear figure

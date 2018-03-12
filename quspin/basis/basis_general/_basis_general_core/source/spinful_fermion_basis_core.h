@@ -90,11 +90,8 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 
 			for(int j=n_op-1;j>-1;j--){
 				int ind = 2*general_basis_core<I>::N-indx[j]-1;
-				int N_c = indx[j];
-				int f_count = 0;
-				I rr = r >> ind;
-				for(int i=0;i<N_c;i++){f_count^=(rr&1);rr>>=1;}
-				m *= (f_count?-1:1);
+				I f_count = bit_count(r,ind);
+				m *= std::complex<double>((f_count&1)?-1:1);
 				I b = (one << ind);
 				bool a = bool((r >> ind)&one);
 				char op = opstr[j];

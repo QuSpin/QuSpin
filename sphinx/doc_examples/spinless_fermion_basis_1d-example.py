@@ -5,7 +5,7 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import spinless_fermion_basis_1d # Hilbert space spliness fermion basis
+from quspin.basis import spinless_fermion_basis_1d # Hilbert space spinless fermion basis
 import numpy as np # generic math functions
 #
 ##### define model parameters #####

@@ -1,3 +1,7 @@
+from __future__ import print_function, division
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 ########################################################################################
 #                                   example 3                                          #
 #    In this example we show how to use the photon_basis class to study spin chains    #
@@ -112,6 +116,7 @@ plt.tick_params(labelsize=16)
 # turn on grid
 plt.grid(True)
 # save figure
+plt.tight_layout()
 fig.savefig('example3.pdf', bbox_inches='tight')
 # show plot
 plt.show()
