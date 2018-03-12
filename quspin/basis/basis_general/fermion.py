@@ -170,7 +170,6 @@ class spinful_fermion_basis_general(basis_general):
 					raise ValueError("Ns_block_est must be an integer > 0")
 										
 				Ns = Ns_block_est
-
 		Ns = max(Ns,1000)
 		if N<=16:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
@@ -190,7 +189,7 @@ class spinful_fermion_basis_general(basis_general):
 			if self._Ns < 0:
 				raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
 
-			if self.Ns != basis.shape[0]:
+			if self._Ns != basis.shape[0]:
 				basis = basis[1:]
 				ind = ind[1:]
 			self._basis = basis[::-1].copy()
@@ -210,6 +209,12 @@ class spinful_fermion_basis_general(basis_general):
 
 		self._N = 2*N
 		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._operators = ("availible operators for ferion_basis_1d:"+
+							"\n\tI: identity "+
+							"\n\t+: raising operator"+
+							"\n\t-: lowering operator"+
+							"\n\tn: number operator"+
+							"\n\tz: c-symm number operator")
 		self._allowed_ops=set(["I","n","+","-"])
 		self._reduce_n_dtype()
 
@@ -466,6 +471,12 @@ class spinless_fermion_basis_general(basis_general):
 
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._operators = ("availible operators for ferion_basis_1d:"+
+							"\n\tI: identity "+
+							"\n\t+: raising operator"+
+							"\n\t-: lowering operator"+
+							"\n\tn: number operator"+
+							"\n\tz: c-symm number operator")
 		self._allowed_ops=set(["I","n","+","-"])
 		self._check_symm = None
 		self._reduce_n_dtype()

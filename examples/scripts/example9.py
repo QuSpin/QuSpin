@@ -1,3 +1,7 @@
+from __future__ import print_function, division
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 #####################################################################
 #                            example 9                              #
 #   In this script we demonstrate how to use QuSpin's               #
@@ -5,7 +9,6 @@
 #   We study thermalisation in the 2D transverse-field Ising model  #
 #   with periodic boundary conditions.                              #
 #####################################################################
-from __future__ import print_function, division
 from quspin.operators import hamiltonian, exp_op # operators
 from quspin.basis import spin_basis_1d, spin_basis_general # spin basis constructor
 from quspin.tools.measurements import obs_vs_time # calculating dynamics
@@ -106,5 +109,6 @@ plt.grid()
 plt.ylabel("$s_{\mathrm{ent}}(t)/s_\mathrm{Page}$",fontsize=20)
 plt.xlabel("$t/T$",fontsize=20)
 plt.legend(loc=0,fontsize=16)
+plt.tight_layout()
 plt.savefig("TFIM_S.pdf")
 plt.show()

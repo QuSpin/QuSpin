@@ -5,7 +5,7 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian, exp_op # operators
-from quspin.basis import spinfull_fermion_basis_general # spin basis constructor
+from quspin.basis import spinful_fermion_basis_general # spin basis constructor
 import numpy as np # general math functions
 #
 ###### define model parameters ######
@@ -26,7 +26,7 @@ P_x = x + Lx*(Ly-y-1) # reflection about x-axis
 P_y = (Lx-x-1) + Lx*y # reflection about y-axis
 #
 ###### setting up bases ######
-basis_2d=spinfull_fermion_basis_general(N_2d,kxblock=(T_x,0),kyblock=(T_y,0),pxblock=(P_x,0),pyblock=(P_y,0))
+basis_2d=spinful_fermion_basis_general(N_2d,kxblock=(T_x,0),kyblock=(T_y,0),pxblock=(P_x,0),pyblock=(P_y,0))
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists
