@@ -39,7 +39,7 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
 
             # calculate fermionic ME sign if the chain is fermionic
             if fermionic_op:
-                if bit_count(r,i_op,L) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
+                if bit_count(r,i_op) % 2 == 0: # counts number of 1 bits up to and excluding site indx[j]
                     sign=1
                 else:
                     sign=-1

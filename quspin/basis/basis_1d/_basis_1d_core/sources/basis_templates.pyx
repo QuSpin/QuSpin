@@ -1,7 +1,7 @@
 
 cdef void make_n_basis_template(ns_type next_state,basis_type[:] ns_pars,npy_intp MAX,basis_type s,basis_type[:] basis):
     cdef npy_intp i
-    for i in range(MAX+1):
+    for i in range(MAX):
         basis[i] = s
         s = next_state(s,ns_pars)
 
@@ -178,7 +178,7 @@ cdef npy_intp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_par
 
     cdef int r,r_temp,mp,mz,mpz,sign1,sign2
     cdef int sigma,sigma_i,sigma_f
-    cdef int R[4]
+    cdef int R[7]
 
     if ((2*kblock*a) % L) == 0: #picks up k = 0, pi modes
         sigma_i = 1
@@ -193,6 +193,9 @@ cdef npy_intp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_par
     R[1] = 0
     R[2] = 0
     R[3] = 0
+    R[4] = 0
+    R[5] = 0
+    R[6] = 0
 
     while(MAX!=0):
         CheckState_T_P_Z_template(kblock,L,s,a,R,ns_pars)
@@ -200,10 +203,12 @@ cdef npy_intp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_par
         mp = R[1]
         mz = R[2]
         mpz = R[3]
-        sign1 = 1
-        sign2 = 1
-        sign1 = ((sign1+1)//2)
-        sign2 = ((sign2+1)//2)
+        signp = R[4]
+        signz = R[5]
+        signpz = R[6]
+        signp1 = (R[4]+1)//2
+        signz1 = (R[5]+1)//2
+        signpz1 = (R[6]+1)//2
         if r>0:
             if mp == -1 and mz == -1 and mpz == -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
@@ -214,47 +219,47 @@ cdef npy_intp make_t_p_z_basis_template(ns_type next_state, basis_type[:] ns_par
             if mp != -1 and mz == -1 and mpz == -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
                     r_temp = r
-                    if 1 + sigma*pblock*cos(mp*k) == 0:
+                    if 1 + sigma*signp*pblock*cos(mp*k) == 0:
                         r_temp = -1
-                    if (sigma == -1) and (1 - sigma*pblock*cos(mp*k) != 0):
+                    if (sigma == -1) and (1 - sigma*signp*pblock*cos(mp*k) != 0):
                         r_temp = -1
                     if r_temp > 0:
 
-                        m[Ns] = mp + (1+sign1)*(L+1)**2 # c = 1 or 2 for + or - sign
+                        m[Ns] = mp + (1+signp1)*(L+1)**2 # c = 1 or 2 for + or - sign
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
             if mp == -1 and mz != -1 and mpz == -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
                     r_temp = r
-                    if 1 + zblock*cos(k*mz) == 0:
+                    if 1 + zblock*signz*cos(k*mz) == 0:
                         r_temp = -1
                     if r_temp > 0:        
-                        m[Ns] = mz*(L+1) + (3+sign1)*(L+1)**2 # c = 3 or 4 for + or - sign
+                        m[Ns] = mz*(L+1) + (3+signz1)*(L+1)**2 # c = 3 or 4 for + or - sign
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
             if mp == -1 and mz == -1 and mpz != -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
                     r_temp = r
-                    if 1 + sigma*pblock*zblock*cos(mpz*k) == 0:
+                    if 1 + sigma*signpz*pblock*zblock*cos(mpz*k) == 0:
                         r_temp = -1
-                    if (sigma == -1) and (1 - sigma*pblock*zblock*cos(mpz*k) != 0):
+                    if (sigma == -1) and (1 - sigma*signpz*pblock*zblock*cos(mpz*k) != 0):
                         r_temp = -1
                     if r_temp>0:
-                        m[Ns] = mpz + (5+sign1)*(L+1)**2 # c = 5 or 6 for + or - sign
+                        m[Ns] = mpz + (5+signpz1)*(L+1)**2 # c = 5 or 6 for + or - sign
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
             if mp != -1 and mz != -1:
                 for sigma in range(sigma_i,sigma_f+1,2):
                     r_temp = r
-                    if (1 + sigma*pblock*cos(mp*k) == 0) or (1 + zblock*cos(mz*k) == 0):
+                    if (1 + sigma*signp*pblock*cos(mp*k) == 0) or (1 + zblock*signz*cos(mz*k) == 0):
                         r_temp = -1
-                    if (sigma == -1) and ( (1 - sigma*pblock*cos(mp*k) != 0) or (1 - zblock*cos(mz*k) != 0) ):
+                    if (sigma == -1) and ( (1 - sigma*signp*pblock*cos(mp*k) != 0) or (1 - zblock*signz*cos(mz*k) != 0) ):
                         r_temp = -1
                     if r_temp>0:
-                        m[Ns] = mp + (L+1)*mz + (7+sign1+2*sign2)*(L+1)**2
+                        m[Ns] = mp + (L+1)*mz + (7+signp1+2*signz1)*(L+1)**2
                         N[Ns] = (sigma*r)                
                         basis[Ns] = s
                         Ns += 1
@@ -599,10 +604,9 @@ cdef npy_intp make_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
 
 
 
-cdef npy_intp make_zA_zB_basis_template(
-                                            ns_type next_state, basis_type[:] ns_pars,
-                                            npy_intp MAX,basis_type s,
-                                            int L,int zAblock,int zBblock,N_type *N,basis_type[:] basis):
+cdef npy_intp make_zA_zB_basis_template(ns_type next_state, basis_type[:] ns_pars,
+                                        npy_intp MAX,basis_type s,
+                                        int L,int zAblock,int zBblock,N_type *N,basis_type[:] basis):
     cdef npy_intp Ns
 
     cdef int r

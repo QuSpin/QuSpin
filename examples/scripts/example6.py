@@ -1,4 +1,7 @@
 from __future__ import print_function, division
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 from quspin.operators import hamiltonian,exp_op,quantum_operator # operators
 from quspin.basis import tensor_basis,spinless_fermion_basis_1d # Hilbert spaces
 from quspin.tools.measurements import obs_vs_time # calculating dynamics

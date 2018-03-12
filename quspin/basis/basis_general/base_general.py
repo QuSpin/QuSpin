@@ -69,7 +69,7 @@ def check_symmetry_maps(item1,item2):
 	sites2 = sites2[i_map1]
 
 	if not _np.array_equal(sites1,sites2):
-		warnings.warn("using non-commuting symmetries can lead to unwanted behaviour of general basis, make sure that quantum numbers are invariant under non-cummuting symmetries!",GeneralBasisWarning,stacklevel=5)
+		warnings.warn("using non-commuting symmetries can lead to unwanted behaviour of general basis, make sure that quantum numbers are invariant under non-commuting symmetries!",GeneralBasisWarning,stacklevel=5)
 
 class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
@@ -86,11 +86,9 @@ class basis_general(lattice_basis):
 
 		n_maps = len(kwargs)
 
-
 		if any((type(map) is not tuple) and (len(map)!=2) for map in kwargs.values()):
 			raise ValueError("blocks must contain tuple: (map,q).")
 
-		
 		kwargs = {block:process_map(*item) for block,item in kwargs.items()}
 
 		sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])

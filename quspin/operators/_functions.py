@@ -144,31 +144,3 @@ class pow_function(function):
 	def __contains__(self,other):
 		return self._function1.__contains__(other)
 
-
-
-if __name__ == '__main__':
-	def f1(x):
-		return x
-
-	def f2(x):
-		return x
-
-	def f3(x):
-		return x
-
-	g1 = function(f1,())
-	g2 = function(f2,())
-	g3 = function(f3,())
-
-	A = g1*g2*g3
-	B = g2*g1*g3
-	C = g3*g1*g2
-
-
-
-	G = {A:"A"}
-
-	D = g1*g3*g2
-	print(hash(A)==hash(D))
-	print(A == D)
-	print(D in G)

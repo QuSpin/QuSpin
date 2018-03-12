@@ -24,6 +24,10 @@ try:
 except ImportError:
 	pass
 
+try:
+	from functools import reduce as reduce
+except ImportError:
+	pass
 
 import warnings
 
@@ -1405,6 +1409,7 @@ class hamiltonian(object):
 		--------
 		obj
 			Can be either one of the following:
+			
 			* numpy.ndarray containing evolved state against time.
 			* generator object for time-evolved state (requires `iterate = True`).
 
@@ -1775,7 +1780,6 @@ class hamiltonian(object):
 
 		"""
 		dynamic = [[M.T,func] for func,M in iteritems(self.dynamic)]
-
 		return hamiltonian([self.static.T],dynamic,
 						basis=self._basis,dtype=self._dtype,copy=copy)
 

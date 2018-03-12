@@ -1,2 +1,2 @@
-spinless_fermion_basis_general-example.py
+spinful_fermion_basis_general-example.py
 

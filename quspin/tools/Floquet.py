@@ -235,7 +235,8 @@ class Floquet(object):
 				t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 
 				for func in H.dynamic:
-					if abs(func(t) - func(t+T) ) > 1E3*_np.finfo(_np.complex128).eps:
+					if abs(func(t) - func(t+T) ) > 1E5*_np.finfo(_np.complex128).eps:
+						print(abs(func(t) - func(t+T) ), 1E3*_np.finfo(_np.complex128).eps)
 						raise TypeError("Hamiltonian 'H' must be periodic with period 'T'!")
 
 				if not (type(n_jobs) is int):

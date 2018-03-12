@@ -1,3 +1,7 @@
+from __future__ import print_function, division
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 ##################################################################
 #                            example 1                           #
 #    In this script we demonstrate how to use QuSpin's           #
@@ -161,6 +165,7 @@ if __name__ == '__main__':
 	pltarr1[1].grid(True,which='both') # plot grid
 	pltarr1[1].tick_params(labelsize=16)
 	# save figure
+	plt.tight_layout()
 	fig.savefig('example1_MBL.pdf', bbox_inches='tight')
 	#
 	### ETH plot ###
@@ -180,6 +185,8 @@ if __name__ == '__main__':
 	pltarr2[1].grid(True,which='both') # plot grid
 	pltarr2[1].tick_params(labelsize=16)
 	# save figure
+	plt.tight_layout()
 	fig.savefig('example1_ETH.pdf', bbox_inches='tight')
 	#
 	plt.show() # show plots
+	#plt.close()

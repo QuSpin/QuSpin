@@ -30,10 +30,10 @@ basis_2d=spinless_fermion_basis_general(N_2d,kxblock=(T_x,0),kyblock=(T_y,0),pxb
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists
-hopping_left=[[-J,i,T_x[i]] for i in range(N_2d)]+[[-J,i,T_y[i]] for i in range(N_2d)]
-hopping_right=[[+J,i,T_x[i]] for i in range(N_2d)]+[[+J,i,T_y[i]] for i in range(N_2d)]
+hopping_left=[[-J,i,T_x[i]] for i in range(N_2d)] + [[-J,i,T_y[i]] for i in range(N_2d)]
+hopping_right=[[+J,i,T_x[i]] for i in range(N_2d)] + [[+J,i,T_y[i]] for i in range(N_2d)]
 potential=[[-mu,i] for i in range(N_2d)]
-interaction=[[U/2.0,i,T_x[i]] for i in range(N_2d)]+[[U,i,T_y[i]] for i in range(N_2d)]
+interaction=[[U,i,T_x[i]] for i in range(N_2d)] + [[U,i,T_y[i]] for i in range(N_2d)]
 #
 static=[["+-",hopping_left],["-+",hopping_right],["n",potential],["nn",interaction]]
 # build hamiltonian

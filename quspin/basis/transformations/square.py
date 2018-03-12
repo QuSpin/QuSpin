@@ -106,6 +106,28 @@ class square_lattice_trans(object):
 
 
 
+	def allowed_blocks_iter_parity(self):
+		P_x = self._P_x
+		P_y = self._P_y
+		P_e = self._P_e
+		P_d = self._P_d
+		Lx = self._Lx
+		Ly = self._Ly
+
+
+		for px,py in product(range(2),range(2)):
+
+			yield dict(pxblock=(P_x,px),pyblock=(P_y,py) )
+			'''
+			if px == py and Lx==Ly:
+				for pd in range(2):
+					yield dict(pxblock=(P_x,px),pyblock=(P_y,py) ,pdblock=(P_d,pd))
+			else:
+				for pe in range(2):
+					yield dict(pxblock=(P_x,px),pyblock=(P_y,py),pdblock=(P_e,pe))
+			'''
+
+			
 	def allowed_blocks_iter(self):
 		T_x = self._T_x
 		T_y = self._T_y
