@@ -80,7 +80,7 @@ n_t[:,0,:] = expt_n_t[:,0::2]
 n_t[:,1,:] = expt_n_t[:,1::2]
 # calculating entanglement entropy 
 sub_sys_A = range(0,N,2) # bottom side of ladder 
-gen = (basis.ent_entropy(psi,sub_sys_A=sub_sys_A)["Sent_A"]/L for psi in psi_t.T[:])
+gen = (basis.ent_entropy(psi,sub_sys_A=sub_sys_A)["Sent_A"] for psi in psi_t.T[:])
 ent_t = np.fromiter(gen,dtype=np.float64,count=num)
 # plotting static figures
 #"""
