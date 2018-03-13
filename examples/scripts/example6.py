@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 import sys,os
+# the following two lines (l4 and l5) are for developmet purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 from quspin.operators import hamiltonian,exp_op,quantum_operator # operators
@@ -9,7 +10,14 @@ import numpy as np # general math functions
 from numpy.random import uniform,choice # tools for doing random sampling
 from time import time # tool for calculating computation time
 import matplotlib.pyplot as plt # plotting library
-#
+#####################################################################
+#                            example 6                              #
+#   In this script we demonstrate how to use QuSpin's to create	    #
+#   a disordered Fermi-Hubbard model with a parameter-dependent     #
+#   Hamiltonian, and measure the imbalance on different lattice     #
+#   sites (see arXiv:1501.05661). We also show how to prepare       #
+#   fermion Fock states, and do disorder averaging.                 #
+#####################################################################
 ##### setting parameters for simulation
 # simulation parameters
 n_real = 100 # number of realizations
