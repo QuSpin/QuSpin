@@ -1,4 +1,0 @@
-general_spinless_fermion_opstr_test.py
-
-sq_lat_Fermi_Hubbard_spinless_test.py
-
