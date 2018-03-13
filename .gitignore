@@ -2,6 +2,7 @@
 *.pyc
 *.pyf
 *.pyd
+*.pdf
 
 photon_test.py
 compile.py

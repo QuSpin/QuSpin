@@ -53,6 +53,7 @@ basis_1=tensor_basis(basis_f,basis_f)
 basis_3=spinful_fermion_basis_1d(L=N,Nf=(2,2))
 # basis_4=spinful_fermion_basis_general(N,Nf=(2,2))
 
+
 basis_dict=dict(tensored_spinless_fermion_basis_1d=basis_1,
 			spinful_fermion_basis_1d=basis_3,
 			# tensored_spinless_fermion_basis_general=basis_2,

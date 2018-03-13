@@ -62,7 +62,16 @@ double check_state_core(general_basis_core<I> *B,I t,int sign, double k, double 
 			k += q;
 			t = B->map_state(t,depth,sign);
 
-			if(t > s || std::isnan(norm)){
+			#if defined(_WIN64)
+				// x64 version
+				bool isnan = _isnanf(norm) != 0;
+			#elif defined(_WIN32)
+				bool isnan = _isnan(norm) != 0;
+			#else
+				bool isnan = std::isnan(norm);
+			#endif
+
+			if(t > s || isnan){
 				return std::numeric_limits<double>::quiet_NaN();
 			}
 		}
