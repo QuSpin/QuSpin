@@ -1,6 +1,3 @@
-FHM_energies_test.py
-
-general_spinless_fermion_opstr_test.py
-
-sq_lat_Fermi_Hubbard_spinless_test.py
-
+FHM_energies_test.py\n
+general_spinless_fermion_opstr_test.py\n
+sq_lat_Fermi_Hubbard_spinless_test.py\n

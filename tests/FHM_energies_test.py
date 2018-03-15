@@ -4,7 +4,7 @@ import sys,os
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
-from quspin.basis import tensor_basis, spinless_fermion_basis_1d, spinful_fermion_basis_1d, spinful_fermion_basis_general, spinless_fermion_basis_general
+from quspin.basis import tensor_basis, spinless_fermion_basis_1d, spinful_fermion_basis_1d#, spinful_fermion_basis_general, spinless_fermion_basis_general
 from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian,quantum_operator
 import numpy as np
@@ -46,18 +46,18 @@ operator_dict=dict(H0=operator_list_0,H1=operator_list_1)
 basis_f=spinless_fermion_basis_1d(L=N,Nf=2)
 basis_1=tensor_basis(basis_f,basis_f)
 
-basis_f=spinless_fermion_basis_general(N,Nf=2)
-basis_2=tensor_basis(basis_f,basis_f)
+# basis_f=spinless_fermion_basis_general(N,Nf=2)
+# basis_2=tensor_basis(basis_f,basis_f)
 
 
 basis_3=spinful_fermion_basis_1d(L=N,Nf=(2,2))
-basis_4=spinful_fermion_basis_general(N,Nf=(2,2))
+# basis_4=spinful_fermion_basis_general(N,Nf=(2,2))
 
 
 basis_dict=dict(tensored_spinless_fermion_basis_1d=basis_1,
 			spinful_fermion_basis_1d=basis_3,
-			tensored_spinless_fermion_basis_general=basis_2,
-			spinful_fermion_basis_general=basis_4
+			#tensored_spinless_fermion_basis_general=basis_2,
+			#spinful_fermion_basis_general=basis_4
 			)
 for basis_name,basis in basis_dict.items():
 
