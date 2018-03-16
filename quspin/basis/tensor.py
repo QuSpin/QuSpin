@@ -65,10 +65,10 @@ class tensor_basis(basis):
 			raise ValueError("basis_list must contain instances of basis class")
 
 		fermion_list = []
-		for basis in basis_list:
+		for b in basis_list:
 			try:
-				is_fermion = basis._fermion_basis
-				is_pcon = not ((basis._check_pcon is None) or (not basis._check_pcon))
+				is_fermion = b._fermion_basis
+				is_pcon = not ((b._check_pcon is None) or (not basis._check_pcon))
 				fermion_list.append(is_fermion and is_pcon)
 			except:
 				pass
