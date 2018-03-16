@@ -218,6 +218,10 @@ class spinful_fermion_basis_general(basis_general):
 		self._allowed_ops=set(["I","n","+","-"])
 		self._reduce_n_dtype()
 
+	@property
+	def _fermion_basis(self):
+		return True 
+
 	def _get__str__(self):
 		def get_state(b):
 			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
@@ -480,6 +484,10 @@ class spinless_fermion_basis_general(basis_general):
 		self._allowed_ops=set(["I","n","+","-"])
 		self._check_symm = None
 		self._reduce_n_dtype()
+
+	@property
+	def _fermion_basis(self):
+		return True 
 
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
