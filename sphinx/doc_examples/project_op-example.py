@@ -29,5 +29,5 @@ psi1=V1[:,14] # pick any state as initial state
 #
 # project Hamiltonian from `kblock=0` and `pblock=1` onto full Hilbert space
 proj=basis.get_proj(np.float64) # calculate projector
-H1_full=project_op(H1,proj,dtype=np.float128)["Proj_Obs"]
+H1_full=project_op(H1,proj,dtype=np.float64)["Proj_Obs"]
 print("dimenions of symmetry-reduced and full Hilbert spaces are %i and %i." %(H1.Ns,H1_full.Ns) )

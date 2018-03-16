@@ -124,6 +124,10 @@ class spinless_fermion_basis_1d(basis_1d):
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
 		# self._check_symm=None
 
+	@property
+	def _fermion_basis(self):
+		return True 
+
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
@@ -133,8 +137,6 @@ class spinless_fermion_basis_1d(basis_1d):
 
 	def __name__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
-
-
 
 	# functions called in base class:
 
@@ -387,6 +389,9 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	def N(self):
 		return 2*self._L
 
+	@property
+	def _fermion_basis(self):
+		return True 
 
 	# functions called in base class:
 
