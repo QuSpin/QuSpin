@@ -2,6 +2,11 @@
 *.pyc
 *.pyf
 *.pyd
+*.pdf
+
+failed.txt
+
+./examples/scripts/*.pdf
 
 photon_test.py
 compile.py

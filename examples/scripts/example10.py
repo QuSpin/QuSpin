@@ -1,3 +1,8 @@
+from __future__ import print_function, division
+import sys,os
+# the following two lines (l4 and l5) are for developmet purposes and can be removed
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 ########################################################################
 #                            example 10                                #
 #   In this script we demonstrate how to use QuSpin's                  #	
@@ -6,7 +11,6 @@
 #   in a Bose-Fermi mixture. The example also shows how to compute     #
 #   the entanglement entropy shared between the species.               #
 ########################################################################
-from __future__ import print_function, division
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import tensor_basis,spinless_fermion_basis_1d,boson_basis_1d # bases
 from quspin.tools.measurements import obs_vs_time # calculating dynamics

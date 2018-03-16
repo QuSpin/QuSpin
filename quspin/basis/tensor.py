@@ -60,18 +60,23 @@ class tensor_basis(basis):
 
 		"""
 		if len(basis_list) < 2:
-			raise ValueError("basis_list must have more than one basis.")
+			raise ValueError("basis_list must contain at least 2 basis objects.")
 		if not isinstance(basis_list[0],basis):
 			raise ValueError("basis_list must contain instances of basis class")
 
-		# if not isinstance(basis_left,basis):
-		# 	raise ValueError("basis_left must be instance of basis class")
-		# if not isinstance(basis_right,basis):
-		# 	raise ValueError("basis_right must be instance of basis class")
-		# if isinstance(basis_left,tensor_basis): 
-		# 	raise TypeError("Can only create tensor basis with non-tensor type basis")
-		# if isinstance(basis_right,tensor_basis): 
-		# 	raise TypeError("Can only create tensor basis with non-tensor type basis")
+		fermion_list = []
+		for basis in basis_list:
+			try:
+				is_fermion = basis._fermion_basis
+				is_pcon = not ((basis._check_pcon is None) or (not basis._check_pcon))
+				fermion_list.append(is_fermion and is_pcon)
+			except:
+				pass
+
+		if len(fermion_list)>1 and not all(fermion_list):
+			warnings.warn("Tensor basis does not handle more than one non-particle conserving fermion basis objects because of the fermionic sign.")
+
+
 		self._basis_left=basis_list[0]
 		if len(basis_list) == 2:
 			self._basis_right=basis_list[1]

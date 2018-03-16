@@ -3,6 +3,12 @@
 
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include <cmath>
+#include <cfloat>
+
+
+
+
 
 template<class I,class J>
 npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
@@ -16,10 +22,20 @@ npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I bas
 			break;
 		}
 		double norm = B->check_state(s);
-		J nn = norm;
-		if(nn>0 && norm>0){
+		J int_norm = norm;
+
+		#if defined(_WIN64)
+			// x64 version
+			bool isnan = _isnanf(norm) != 0;
+		#elif defined(_WIN32)
+			bool isnan = _isnan(norm) != 0;
+		#else
+			bool isnan = std::isnan(norm);
+		#endif
+		
+		if(!isnan && int_norm>0 ){
 			basis[Ns] = s;
-			n[Ns] = nn;
+			n[Ns] = norm;
 			Ns++;
 		}
 		s++;
@@ -46,10 +62,21 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 		}
 
 		double norm = B->check_state(s);
-		J nn = norm;
-		if(nn>0 && norm>0){
+		J int_norm = norm;
+
+		#if defined(_WIN64)
+			// x64 version
+			bool isnan = _isnanf(norm) != 0;
+		#elif defined(_WIN32)
+			bool isnan = _isnan(norm) != 0;
+		#else
+			bool isnan = std::isnan(norm);
+		#endif
+		
+
+		if(!isnan && int_norm>0 ){
 			basis[Ns] = s;
-			n[Ns] = nn;
+			n[Ns] = norm;
 			Ns++;
 		}
 		s = B->next_state_pcon(s);

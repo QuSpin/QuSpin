@@ -165,7 +165,9 @@ class photon_basis(tensor_basis):
 			if isinstance(self._basis_left,tensor_basis): raise TypeError("Can only create photon basis with non-tensor type basis")
 			if not isinstance(self._basis_left,basis): raise TypeError("Can only create photon basis with basis type")
 			self._basis_right = ho_basis(Ntot)
-			self._n = Ntot - self._basis_left._Np_list 
+			self._n = self._basis_left._Np_list
+			self._n -= Ntot 
+			self._n *= -1
 			self._blocks = self._basis_left._blocks
 			self._Ns = self._basis_left._Ns
 			self._unique_me = self._basis_left._unique_me

@@ -30,6 +30,7 @@ one-dimensional symmetries
    spin_basis_1d
    boson_basis_1d
    spinless_fermion_basis_1d
+   spinful_fermion_basis_1d
 
 general lattice symmetries
 -----------------------------

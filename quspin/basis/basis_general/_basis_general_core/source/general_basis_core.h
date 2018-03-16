@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include <limits>
 #include <complex>
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
@@ -61,21 +62,31 @@ double check_state_core(general_basis_core<I> *B,I t,int sign, double k, double 
 			k += q;
 			t = B->map_state(t,depth,sign);
 
-			if(t > s || norm == 0){
-				return 0;
+			#if defined(_WIN64)
+				// x64 version
+				bool isnan = _isnanf(norm) != 0;
+			#elif defined(_WIN32)
+				bool isnan = _isnan(norm) != 0;
+			#else
+				bool isnan = std::isnan(norm);
+			#endif
+
+			if(t > s || isnan){
+				return std::numeric_limits<double>::quiet_NaN();
 			}
 		}
 	}
 	else{
 		for(int i=1;i<per+1;i++){
+
 			if(t==s){
 				norm += sign * std::cos(k);
 			}
 			k += q;
 			t = B->map_state(t,depth,sign);
-			
-			if(t>s){
-				return 0;
+			// std::cout << s << "," << t << "," << sign << ",   ";
+			if(t > s){
+				return std::numeric_limits<double>::quiet_NaN();
 			}
 		}
 	}
@@ -183,7 +194,10 @@ I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &
 
 template<class I>
 double general_basis_core<I>::check_state(I s){
-	return check_state_core<I>(this,s,1,0.0,0.0,s,nt,0);
+	int sign=1;
+	double k=0.0;
+	double norm=0.0;
+	return check_state_core<I>(this,s,sign,k,norm,s,nt,0);
 }
 
 template<class I>
