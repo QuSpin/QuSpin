@@ -56,8 +56,8 @@ basis_3=spinful_fermion_basis_1d(L=N,Nf=(2,2))
 
 basis_dict=dict(tensored_spinless_fermion_basis_1d=basis_1,
 			spinful_fermion_basis_1d=basis_3,
-			#tensored_spinless_fermion_basis_general=basis_2,
-			#spinful_fermion_basis_general=basis_4
+			# tensored_spinless_fermion_basis_general=basis_2,
+			# spinful_fermion_basis_general=basis_4
 			)
 for basis_name,basis in basis_dict.items():
 
