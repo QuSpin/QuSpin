@@ -80,4 +80,6 @@ for zblock,PBC in zip([-1,1],[1,-1]):
 	plt.legend(fontsize=16)
 	plt.grid()
 	plt.tight_layout()
-	plt.show()
+	plt.savefig('example4.pdf', bbox_inches='tight')
+	#plt.show()
+	plt.close()

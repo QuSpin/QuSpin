@@ -99,7 +99,7 @@ def real(H_dict,I,psi_0,w,t,i):
 	# return observable values
 	return obs_t["I"]
 #
-###### looping over differnt disorder strengths
+###### looping over different disorder strengths
 for w in w_list:	
 	I_data = np.vstack([real(H_dict,I,psi_0,w,t,i) for i in range(n_real)])
 	##### averaging and error estimation
@@ -119,4 +119,5 @@ plt.tick_params(labelsize=16)
 plt.legend(loc=0)
 plt.tight_layout()
 plt.savefig('fermion_MBL.pdf', bbox_inches='tight')
-plt.show()
+#plt.show()
+plt.close()
