@@ -13,7 +13,7 @@ L=6 # system size
 J=1.0 # hopping strength
 U=np.sqrt(2) # onsite interaction strength
 #
-##### construct basis in the 0-total momentum and +1-parity sector
+##### construct basis at half-filling in the 0-total momentum and +1-parity sector
 basis=spinful_fermion_basis_1d(L=L,Nf=(L//2,L//2),a=1,kblock=0,sblock=1)
 print(basis)
 #
