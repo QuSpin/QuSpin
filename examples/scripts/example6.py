@@ -4,7 +4,7 @@ import sys,os
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 from quspin.operators import hamiltonian,exp_op,quantum_operator # operators
-from quspin.basis import tensor_basis,spinless_fermion_basis_1d # Hilbert spaces
+from quspin.basis import spinful_fermion_basis_1d # Hilbert space basis
 from quspin.tools.measurements import obs_vs_time # calculating dynamics
 import numpy as np # general math functions
 from numpy.random import uniform,choice # tools for doing random sampling
@@ -35,10 +35,8 @@ start,stop,num=0.0,35.0,101
 t = np.linspace(start,stop,num=num,endpoint=True)
 #
 ###### create the basis
-# build the two bases to tensor together to spinful fermions
-basis_up = spinless_fermion_basis_1d(L,Nf=N_up) # up basis
-basis_down = spinless_fermion_basis_1d(L,Nf=N_down) # down basis
-basis = tensor_basis(basis_up,basis_down) # spinful fermions
+# build spinful fermions basis
+basis = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
 #
 ##### create model
 # define site-coupling lists
@@ -74,7 +72,7 @@ s_up = "".join("1000" for i in range(N_up))
 s_down = "".join("0010" for i in range(N_down))
 # basis.index accepts strings and returns the index 
 # which corresponds to that state in the basis list
-i_0 = basis.index(s_up,s_down) # find index of product state
+i_0 = basis.index(s_up+s_down) # find index of product state
 psi_0 = np.zeros(basis.Ns) # allocate space for state
 psi_0[i_0] = 1.0 # set MB state to be the given product state
 print("H-space size: {:d}, initial state: |{:s}>(x)|{:s}>".format(basis.Ns,s_up,s_down))
