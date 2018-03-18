@@ -209,6 +209,123 @@ class basis(object):
 		"""
 		return self._Op(opstr,indx,J,dtype)
 
+	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
+		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple/list, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+
+		Returns
+		--------
+		numpy.ndarray
+			Density matrix associated with `state`. Depends on optional arguments.
+
+		Examples
+		--------
+
+		>>> partial_trace(state,sub_sys_A=tuple(range(basis.N//2),return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
+
+		"""
+
+		return self._partial_trace(state,sub_sys_A=sub_sys_A,
+					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
+					enforce_pure=enforce_pure,sparse=sparse)
+
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
+
+		Notes
+		-----
+		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple/list, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+		return_rdm_EVs : bool, optional 
+			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,
+			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+			the spectrum of `rdm_A` is returned by default. Default is `False`.
+		alpha : float, optional
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+
+			.. math::
+				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha
+		sparse_diag : bool, optional
+			When `sparse=True`, this flag enforces the use of
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
+			to calculate the eigenvaues of the reduced DM.
+		maxiter : int, optional
+			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+
+		Returns
+		--------
+		dict
+			Dictionary with following keys, depending on input parameters:
+				* "Sent_A": entanglement entropy of subsystem A (default).
+				* "Sent_B": entanglement entropy of subsystem B.
+				* "p_A": singular values of reduced DM of subsystem A (default).
+				* "p_B": singular values of reduced DM of subsystem B.
+				* "rdm_A": reduced DM of subsystem A.
+				* "rdm_B": reduced DM of subsystem B.
+
+		Examples
+		--------
+
+		>>> ent_entropy(state,sub_sys_A=[0,3,4,7],return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
+
+		"""
+
+		return self._ent_entropy(state,sub_sys_A=sub_sys_A,density=density,
+								subsys_ordering=subsys_ordering,return_rdm=return_rdm,
+								enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
+								sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
+
+
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
 
