@@ -591,19 +591,19 @@ class basis_1d(lattice_basis):
 		squeeze = False
 
 		if v0.ndim == 1:
-			shape = (self._sps**self._L,1)
+			shape = (self.sps**self.N,1)
 			v0 = v0.reshape((-1,1))
 			squeeze = True
 		elif v0.ndim == 2:
-			shape = (self._sps**self._L,v0.shape[1])
+			shape = (self.sps**self.N,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._L,0),dtype=v0.dtype)
+				return _sp.csr_matrix(([],([],[])),shape=(self.sps**self.N,0),dtype=v0.dtype)
 			else:
-				return _np.zeros((self._sps**self._L,0),dtype=v0.dtype)
+				return _np.zeros((self.sps**self.N,0),dtype=v0.dtype)
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
@@ -1728,19 +1728,19 @@ class basis_1d(lattice_basis):
 		squeeze = False
 
 		if v0.ndim == 1:
-			shape = (self._sps**self._L,1)
+			shape = (self.sps**self.N,1)
 			v0 = v0.reshape((-1,1))
 			squeeze = True
 		elif v0.ndim == 2:
-			shape = (self._sps**self._L,v0.shape[1])
+			shape = (self.sps**self.N,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._L,0),dtype=v0.dtype)
+				return _sp.csr_matrix(([],([],[])),shape=(self.sps**self.N,0),dtype=v0.dtype)
 			else:
-				return _np.zeros((self._sps**self._L,0),dtype=v0.dtype)
+				return _np.zeros((self.sps**self.N,0),dtype=v0.dtype)
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
@@ -2141,7 +2141,7 @@ def _get_vec_dense(ops,pars,v0,basis_in,norms,ind_neg,ind_pos,shape,C,L,**blocks
 	else:
 		k = 0.0
 		a = L
-	
+
 	Ns_full = shape[0]
 	v_rev = v[::-1] # access array in reverse order. 
 
