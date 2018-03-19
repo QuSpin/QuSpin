@@ -290,7 +290,6 @@ class lattice_basis(basis):
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
 
 		"""
-
 		if sub_sys_A is None:
 			sub_sys_A = list(range(self.N//2))
 		else:
@@ -486,24 +485,24 @@ class lattice_basis(basis):
 		if return_rdm is None:
 			if N_A <= N_B:
 				partial_trace_args["return_rdm"] = "A"
-				rdm = self.partial_trace(state,**partial_trace_args)
+				rdm = self._partial_trace(state,**partial_trace_args)
 			else:
 				partial_trace_args["return_rdm"] = "B"
-				rdm = self.partial_trace(state,**partial_trace_args)
+				rdm = self._partial_trace(state,**partial_trace_args)
 
 		elif return_rdm=='A' and N_A <= N_B:
 			partial_trace_args["return_rdm"] = "A"
-			rdm_A = self.partial_trace(state,**partial_trace_args)
+			rdm_A = self._partial_trace(state,**partial_trace_args)
 			rdm = rdm_A
 
 		elif return_rdm=='B' and N_B <= N_A:
 			partial_trace_args["return_rdm"] = "B"
-			rdm_B = self.partial_trace(state,**partial_trace_args)
+			rdm_B = self._partial_trace(state,**partial_trace_args)
 			rdm = rdm_B
 
 		else:
 			partial_trace_args["return_rdm"] = "both"
-			rdm_A,rdm_B = self.partial_trace(state,**partial_trace_args)
+			rdm_A,rdm_B = self._partial_trace(state,**partial_trace_args)
 
 			if N_A < N_B:
 				rdm = rdm_A

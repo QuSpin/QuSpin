@@ -702,7 +702,7 @@ class basis_1d(lattice_basis):
 		elif pcon and not self._get_proj_pcon:
 			raise TypeError("pcon=True only works for basis of a single particle number sector.")
 		else:
-			shape = (self.sps**self.L,self._Ns)
+			shape = (self.sps**self.N,self._Ns)
 			basis_pcon = None
 
 		if self._Ns <= 0:
