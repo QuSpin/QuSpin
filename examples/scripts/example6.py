@@ -4,7 +4,7 @@ import sys,os
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 from quspin.operators import hamiltonian,exp_op,quantum_operator # operators
-from quspin.basis import tensor_basis,spinless_fermion_basis_1d # Hilbert spaces
+from quspin.basis import spinful_fermion_basis_1d # Hilbert space basis
 from quspin.tools.measurements import obs_vs_time # calculating dynamics
 import numpy as np # general math functions
 from numpy.random import uniform,choice # tools for doing random sampling
@@ -35,10 +35,8 @@ start,stop,num=0.0,35.0,101
 t = np.linspace(start,stop,num=num,endpoint=True)
 #
 ###### create the basis
-# build the two bases to tensor together to spinful fermions
-basis_up = spinless_fermion_basis_1d(L,Nf=N_up) # up basis
-basis_down = spinless_fermion_basis_1d(L,Nf=N_down) # down basis
-basis = tensor_basis(basis_up,basis_down) # spinful fermions
+# build spinful fermions basis
+basis = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
 #
 ##### create model
 # define site-coupling lists
@@ -101,7 +99,7 @@ def real(H_dict,I,psi_0,w,t,i):
 	# return observable values
 	return obs_t["I"]
 #
-###### looping over differnt disorder strengths
+###### looping over different disorder strengths
 for w in w_list:	
 	I_data = np.vstack([real(H_dict,I,psi_0,w,t,i) for i in range(n_real)])
 	##### averaging and error estimation
@@ -121,4 +119,5 @@ plt.tick_params(labelsize=16)
 plt.legend(loc=0)
 plt.tight_layout()
 plt.savefig('fermion_MBL.pdf', bbox_inches='tight')
-plt.show()
+#plt.show()
+plt.close()

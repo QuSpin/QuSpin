@@ -106,7 +106,8 @@ plt.xlabel("$Jt$",fontsize=20)
 plt.ylabel("$s_\mathrm{ent}(t)$",fontsize=20)
 plt.grid()
 plt.savefig("boson_entropy.pdf")
-plt.show()
+#plt.show()
+plt.close()
 #"""
 # setting up two plots to animate side by side
 fig, (ax1,ax2) = plt.subplots(1,2)
@@ -126,6 +127,7 @@ def run(i): # function to update frame
 # CAUTION: these are many animations
 ani = animation.FuncAnimation(fig, run, range(num),interval=50)
 plt.show()
+plt.close()
 #
 """ 
 ###### ladder lattice 
