@@ -72,7 +72,7 @@ s_up = "".join("1000" for i in range(N_up))
 s_down = "".join("0010" for i in range(N_down))
 # basis.index accepts strings and returns the index 
 # which corresponds to that state in the basis list
-i_0 = basis.index(s_up+s_down) # find index of product state
+i_0 = basis.index(s_up,s_down) # find index of product state
 psi_0 = np.zeros(basis.Ns) # allocate space for state
 psi_0[i_0] = 1.0 # set MB state to be the given product state
 print("H-space size: {:d}, initial state: |{:s}>(x)|{:s}>".format(basis.Ns,s_up,s_down))

@@ -168,7 +168,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	Notes
 	-----
 
-	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, '|', to distinguish the spin-up from 
+	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, `|`, to distinguish the spin-up from 
 	spin-down species. However, the index array has NO pipe symbol.
 
 	Examples
@@ -218,8 +218,6 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		"""
 
 		input_keys = set(blocks.keys())
-
-		# Why can we NOT have fermion spin (sblock) symm on sublat A and sulat B separately?
 
 		expected_keys = set(["_Np","kblock","pblock","sblock","psblock","a","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
@@ -373,8 +371,210 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		opstr=opstr.replace("|","")
 
 		return basis_1d._Op(self,opstr,indx,J,dtype)
-		
 
+	def index(self,up_state,down_state):
+		"""Finds the index of user-defined Fock state in spinful fermion basis.
+
+		Notes
+		-----
+		Particularly useful for defining initial Fock states through a unit vector in the direction specified
+		by `index()`. 
+
+		Parameters
+		-----------
+		up_state : str
+			string which define the Fock state for the spin up fermions. 
+
+		down_state : str
+			string which define the Fock state for the spin down fermions. 
+
+		Returns
+		--------
+		int
+			Position of the Fock state in the `spinful_fermion_basis_1d`.
+
+		Examples
+		--------
+
+		>>> s_up = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
+		>>> s_down = "".join("0" for i in range(2)) + "".join("1" for i in range(2))
+		>>> print( basis.index(s_up,s_down) )
+
+		"""
+		if type(up_state) is int:
+			pass
+		elif type(up_state) is str:
+			up_state = int(up_state,2)
+		else:
+			raise ValueError("up_state must be integer or string.")
+
+		if type(down_state) is int:
+			pass
+		elif type(down_state) is str:
+			down_state = int(down_state,2)
+		else:
+			raise ValueError("down_state must be integer or string.")
+
+		s = down_state + (up_state << self.L)
+
+		indx = _np.argwhere(self._basis == s)
+
+		if len(indx) != 0:
+			return _np.squeeze(indx)
+		else:
+			raise ValueError("state must be representive state in basis.")
+
+		
+	def partial_trace(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple/list, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+			Default is `tuple(range(N//2),range(N//2))` with `N` the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+			The format is `(spin_up_subsys,spin_down_subsys)` (see example below).
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+
+		Returns
+		--------
+		numpy.ndarray
+			Density matrix associated with `state`. Depends on optional arguments.
+
+		Examples
+		--------
+
+		>>> sub_sys_A_up=range(basis.L//2) # subsystem for spin-up fermions
+		>>> sub_sys_A_down=range(basis.L//2+1) # subsystem for spin-down fermions
+		>>> subsys_A=(sub_sys_A_up,sub_sys_A_down)
+		>>> state=1.0/np.sqrt(basis.Ns)*np.ones(basis.Ns) # infinite temperature state
+		>>> partial_trace(state,sub_sys_A=subsys_A,return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
+
+		"""
+		if sub_sys_A is None:
+			sub_sys_A = (list(range(self.L//2)),list(range(self.L//2)))
+
+		if type(sub_sys_A) is tuple and len(sub_sys_A) != 2:
+			raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the spin-up fermions in the \
+							  first (left) part of the tuple and the spin-down fermions in the last (right) part of the tuple.")
+
+
+		sub_sys_A_up,sub_sys_A_down = sub_sys_A
+
+		sub_sys_A = list(sub_sys_A_up)
+		sub_sys_A.extend([i+self.L for i in sub_sys_A_down])
+
+		return basis_1d._partial_trace(self,state,sub_sys_A=sub_sys_A,
+					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
+					enforce_pure=enforce_pure,sparse=sparse)
+
+
+
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
+
+		Notes
+		-----
+		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+			Default is `tuple(range(N//2),range(N//2))` with `N` the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+			The format is `(spin_up_subsys,spin_down_subsys)` (see example below).
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+		return_rdm_EVs : bool, optional 
+			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,
+			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+			the spectrum of `rdm_A` is returned by default. Default is `False`.
+		alpha : float, optional
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+
+			.. math::
+				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha
+		sparse_diag : bool, optional
+			When `sparse=True`, this flag enforces the use of
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
+			to calculate the eigenvaues of the reduced DM.
+		maxiter : int, optional
+			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+
+		Returns
+		--------
+		dict
+			Dictionary with following keys, depending on input parameters:
+				* "Sent_A": entanglement entropy of subsystem A (default).
+				* "Sent_B": entanglement entropy of subsystem B.
+				* "p_A": singular values of reduced DM of subsystem A (default).
+				* "p_B": singular values of reduced DM of subsystem B.
+				* "rdm_A": reduced DM of subsystem A.
+				* "rdm_B": reduced DM of subsystem B.
+
+		Examples
+		--------
+
+		>>> sub_sys_A_up=range(basis.L//2) # subsystem for spin-up fermions
+		>>> sub_sys_A_down=range(basis.L//2+1) # subsystem for spin-down fermions
+		>>> subsys_A=(sub_sys_A_up,sub_sys_A_down)
+		>>> state=1.0/np.sqrt(basis.Ns)*np.ones(basis.Ns) # infinite temperature state
+		>>> ent_entropy(state,sub_sys_A=subsys_A,return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
+
+		"""
+		if sub_sys_A is None:
+			sub_sys_A = (list(range(self.L//2)),list(range(self.L//2)))
+
+		if type(sub_sys_A) is tuple and len(sub_sys_A) != 2:
+			raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the up spins in the \
+							  first (left) part of the tuple and the down spins in the last (right) part of the tuple.")
+
+		sub_sys_A_up,sub_sys_A_down = sub_sys_A
+
+		sub_sys_A = list(sub_sys_A_up)
+		sub_sys_A.extend([i+self.L for i in sub_sys_A_down])
+
+		return basis_1d._ent_entropy(self,state,sub_sys_A,density=density,
+						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
+						enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
+						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
@@ -387,6 +587,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 	@property
 	def N(self):
+		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: :math:`N=2L`."""
 		return 2*self._L
 
 	@property
