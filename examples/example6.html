@@ -180,14 +180,13 @@
 120
 121
 122
-123
-124</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+123</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
 <span class="c1"># the following two lines (l4 and l5) are for developmet purposes and can be removed</span>
 <span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">exp_op</span><span class="p">,</span><span class="n">quantum_operator</span> <span class="c1"># operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">tensor_basis</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert spaces</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_1d</span> <span class="c1"># Hilbert space basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">uniform</span><span class="p">,</span><span class="n">choice</span> <span class="c1"># tools for doing random sampling</span>
@@ -218,10 +217,8 @@
 <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">###### create the basis</span>
-<span class="c1"># build the two bases to tensor together to spinful fermions</span>
-<span class="n">basis_up</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_up</span><span class="p">)</span> <span class="c1"># up basis</span>
-<span class="n">basis_down</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">N_down</span><span class="p">)</span> <span class="c1"># down basis</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">tensor_basis</span><span class="p">(</span><span class="n">basis_up</span><span class="p">,</span><span class="n">basis_down</span><span class="p">)</span> <span class="c1"># spinful fermions</span>
+<span class="c1"># build spinful fermions basis</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spinful_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="p">(</span><span class="n">N_up</span><span class="p">,</span><span class="n">N_down</span><span class="p">))</span>
 <span class="c1">#</span>
 <span class="c1">##### create model</span>
 <span class="c1"># define site-coupling lists</span>
@@ -284,7 +281,7 @@
 	<span class="c1"># return observable values</span>
 	<span class="k">return</span> <span class="n">obs_t</span><span class="p">[</span><span class="s2">&quot;I&quot;</span><span class="p">]</span>
 <span class="c1">#</span>
-<span class="c1">###### looping over differnt disorder strengths</span>
+<span class="c1">###### looping over different disorder strengths</span>
 <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">w_list</span><span class="p">:</span>	
 	<span class="n">I_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">real</span><span class="p">(</span><span class="n">H_dict</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="n">psi_0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_real</span><span class="p">)])</span>
 	<span class="c1">##### averaging and error estimation</span>
@@ -304,7 +301,8 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;fermion_MBL.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">#plt.show()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
 </div>

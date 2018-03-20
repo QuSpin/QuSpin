@@ -92,6 +92,8 @@
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ cat install_file.txt | xargs rm -rf.
 </pre></div>
 </div>
+<p><strong>Installing without sudo Privilidges</strong></p>
+<p>Sometimes, when one does not have sudo privilidges (i.e. access to the root directory is denied), one may not be able to install QuSpin directly. This is often the case on computing clusters, where one can only install programs in one’s home directory. To circumvent such problems, we advise the users to (i) download and install <a class="reference external" href="http://conda.pydata.org/miniconda.html">miniconda</a> in their home directory, (ii) create a <a class="reference external" href="https://conda.io/docs/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands">conda environment</a> and activate it, and (iii) install QuSpin inside the environment. To use QuSpin, one always has to activate the environment first.</p>
 </div>
 <div class="section" id="windows">
 <h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
@@ -113,8 +115,8 @@
 <div class="section" id="basic-use-of-command-line-to-run-python">
 <h1>Basic Use of Command Line to Run Python<a class="headerlink" href="#basic-use-of-command-line-to-run-python" title="Permalink to this headline">¶</a></h1>
 <p>Let us review how to use the command line for Windows and OS X/Linux to navigate your computer’s folders/directories and run the Python scripts.</p>
-<div class="section" id="id2">
-<h2>Mac OS X/Linux<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>Mac OS X/Linux<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>Some basic commands:</dt>
 <dd><ul class="first last">
@@ -179,8 +181,8 @@
 </dl>
 <p>Unix also has an auto complete feature if one hits the TAB key. It will complete a word or stop when it matches more than one file/folder name. The current directory is denoted by “.” and the directory above is “..”.</p>
 </div>
-<div class="section" id="id3">
-<h2>Windows<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Windows<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>Some basic commands:</dt>
 <dd><ul class="first last">
@@ -269,8 +271,8 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#basic-use-of-command-line-to-run-python">Basic Use of Command Line to Run Python</a><ul>
-<li><a class="reference internal" href="#id2">Mac OS X/Linux</a></li>
-<li><a class="reference internal" href="#id3">Windows</a></li>
+<li><a class="reference internal" href="#id3">Mac OS X/Linux</a></li>
+<li><a class="reference internal" href="#id4">Windows</a></li>
 <li><a class="reference internal" href="#execute-python-script-any-operating-system">Execute Python Script (any operating system)</a></li>
 </ul>
 </li>

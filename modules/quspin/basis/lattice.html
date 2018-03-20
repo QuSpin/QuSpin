@@ -129,7 +129,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;s must be representive state in basis. &quot;</span><span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">_partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.</span>
 
 <span class="sd">		Parameters</span>
@@ -283,7 +283,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">return</span> <span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span>
 
-	<span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">_ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</span>
 
 <span class="sd">		Notes</span>
@@ -349,7 +349,6 @@
 <span class="sd">		&gt;&gt;&gt;				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
-
 		<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
 		<span class="k">else</span><span class="p">:</span>
@@ -545,24 +544,24 @@
 		<span class="k">if</span> <span class="n">return_rdm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">N_A</span> <span class="o">&lt;=</span> <span class="n">N_B</span><span class="p">:</span>
 				<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-				<span class="n">rdm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+				<span class="n">rdm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-				<span class="n">rdm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+				<span class="n">rdm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
 
 		<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;A&#39;</span> <span class="ow">and</span> <span class="n">N_A</span> <span class="o">&lt;=</span> <span class="n">N_B</span><span class="p">:</span>
 			<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-			<span class="n">rdm_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+			<span class="n">rdm_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
 			<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_A</span>
 
 		<span class="k">elif</span> <span class="n">return_rdm</span><span class="o">==</span><span class="s1">&#39;B&#39;</span> <span class="ow">and</span> <span class="n">N_B</span> <span class="o">&lt;=</span> <span class="n">N_A</span><span class="p">:</span>
 			<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-			<span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+			<span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
 			<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_B</span>
 
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">partial_trace_args</span><span class="p">[</span><span class="s2">&quot;return_rdm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span>
-			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
+			<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="o">**</span><span class="n">partial_trace_args</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="n">N_A</span> <span class="o">&lt;</span> <span class="n">N_B</span><span class="p">:</span>
 				<span class="n">rdm</span> <span class="o">=</span> <span class="n">rdm_A</span>

@@ -124,10 +124,10 @@
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;basis_list must contain instances of basis class&quot;</span><span class="p">)</span>
 
 		<span class="n">fermion_list</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="k">for</span> <span class="n">basis</span> <span class="ow">in</span> <span class="n">basis_list</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">basis_list</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
-				<span class="n">is_fermion</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_fermion_basis</span>
-				<span class="n">is_pcon</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">((</span><span class="n">basis</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">basis</span><span class="o">.</span><span class="n">_check_pcon</span><span class="p">))</span>
+				<span class="n">is_fermion</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">_fermion_basis</span>
+				<span class="n">is_pcon</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">((</span><span class="n">b</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">basis</span><span class="o">.</span><span class="n">_check_pcon</span><span class="p">))</span>
 				<span class="n">fermion_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">is_fermion</span> <span class="ow">and</span> <span class="n">is_pcon</span><span class="p">)</span>
 			<span class="k">except</span><span class="p">:</span>
 				<span class="k">pass</span>
