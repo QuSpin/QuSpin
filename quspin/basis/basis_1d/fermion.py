@@ -168,7 +168,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	Notes
 	-----
 
-	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, '|', to distinguish the spin-up from 
+	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, `|`, to distinguish the spin-up from 
 	spin-down species. However, the index array has NO pipe symbol.
 
 	Examples
@@ -218,8 +218,6 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		"""
 
 		input_keys = set(blocks.keys())
-
-		# Why can we NOT have fermion spin (sblock) symm on sublat A and sulat B separately?
 
 		expected_keys = set(["_Np","kblock","pblock","sblock","psblock","a","check_z_symm","L"])
 		wrong_keys = input_keys - expected_keys 
@@ -399,7 +397,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		--------
 
 		>>> s_up = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
-		>>> s_down = "".join("1" for i in range(4))
+		>>> s_down = "".join("0" for i in range(2)) + "".join("1" for i in range(2))
 		>>> print( basis.index(s_up,s_down) )
 
 		"""
@@ -440,7 +438,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : tuple/list, optional
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
-			Default is `(list(range(L//2)),list(range(L//2)))` with `L` the number of lattice sites.
+			Default is `tuple(range(N//2),range(N//2))` with `N` the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+			The format is `(spin_up_subsys,spin_down_subsys)` (see example below).
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 
@@ -463,15 +462,19 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		Examples
 		--------
 
-		>>> partial_trace(state,sub_sys_A=tuple(range(basis.N//2),return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
+		>>> sub_sys_A_up=range(basis.L//2) # subsystem for spin-up fermions
+		>>> sub_sys_A_down=range(basis.L//2+1) # subsystem for spin-down fermions
+		>>> subsys_A=(sub_sys_A_up,sub_sys_A_down)
+		>>> state=1.0/np.sqrt(basis.Ns)*np.ones(basis.Ns) # infinite temperature state
+		>>> partial_trace(state,sub_sys_A=subsys_A,return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
 
 		"""
 		if sub_sys_A is None:
 			sub_sys_A = (list(range(self.L//2)),list(range(self.L//2)))
 
 		if type(sub_sys_A) is tuple and len(sub_sys_A) != 2:
-			raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the up spins in the \
-							  first (left) part of the tuple and the down spins in the last (right) part of the tuple.")
+			raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the spin-up fermions in the \
+							  first (left) part of the tuple and the spin-down fermions in the last (right) part of the tuple.")
 
 
 		sub_sys_A_up,sub_sys_A_down = sub_sys_A
@@ -502,7 +505,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : tuple, optional
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
-			Default is `(list(range(L//2)),list(range(L//2)))` with `L` the number of lattice sites.
+			Default is `tuple(range(N//2),range(N//2))` with `N` the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+			The format is `(spin_up_subsys,spin_down_subsys)` (see example below).
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 
@@ -547,7 +551,11 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		Examples
 		--------
 
-		>>> ent_entropy(state,sub_sys_A=([0,2,4],[1,3]),return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>> sub_sys_A_up=range(basis.L//2) # subsystem for spin-up fermions
+		>>> sub_sys_A_down=range(basis.L//2+1) # subsystem for spin-down fermions
+		>>> subsys_A=(sub_sys_A_up,sub_sys_A_down)
+		>>> state=1.0/np.sqrt(basis.Ns)*np.ones(basis.Ns) # infinite temperature state
+		>>> ent_entropy(state,sub_sys_A=subsys_A,return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
 
 		"""
@@ -579,7 +587,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 	@property
 	def N(self):
-		"""int: number of sites the basis is constructed with. NOTE: there is a copy of the lattice for spin up and spin down."""
+		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: :math:`N=2L`."""
 		return 2*self._L
 
 	@property

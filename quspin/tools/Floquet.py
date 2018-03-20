@@ -491,7 +491,10 @@ class Floquet_t_vec(object):
 
 	def __getitem__(self,s):
 		return self._vals.__getitem__(s)
-
+	
+	def __str__(self):
+		return str(self._vals)
+	
 	def __mul__(self,other):
 		return self._vals*other
 

@@ -187,7 +187,7 @@ if __name__ == '__main__':
 	pltarr2[1].tick_params(labelsize=16)
 	# save figure
 	plt.tight_layout()
-	fig.savefig('example1_ETH.pdf', bbox_inches='tight')
+	plt.savefig('example1_ETH.pdf', bbox_inches='tight')
 	#
-	plt.show() # show plots
-	#plt.close()
+	#plt.show() # show plots
+	plt.close()

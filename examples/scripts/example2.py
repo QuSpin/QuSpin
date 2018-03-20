@@ -138,6 +138,7 @@ plt.tick_params(labelsize=16)
 plt.grid(True)
 # save figure
 plt.tight_layout()
-fig.savefig('example2.pdf', bbox_inches='tight')
+plt.savefig('example2.pdf', bbox_inches='tight')
 # show plot
-plt.show() 
+#plt.show() 
+plt.close()
