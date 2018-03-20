@@ -440,7 +440,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : tuple/list, optional
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
-			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
+			Default is `(list(range(L//2)),list(range(L//2)))` with `L` the number of lattice sites.
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 
@@ -500,9 +500,9 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
 				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
-		sub_sys_A : tuple/list, optional
+		sub_sys_A : tuple, optional
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
-			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
+			Default is `(list(range(L//2)),list(range(L//2)))` with `L` the number of lattice sites.
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 
@@ -547,7 +547,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		Examples
 		--------
 
-		>>> ent_entropy(state,sub_sys_A=[0,3,4,7],return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>> ent_entropy(state,sub_sys_A=([0,2,4],[1,3]),return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
 
 		"""
@@ -567,83 +567,6 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 						enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
 						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
-
-
-	def inplace_op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
-		"""Calculates the action of an operator on a state.
-
-		Parameters
-		-----------
-		v_in : array_like
-			state (or states stored in columns) to act on with the operator.
-		opstr : str
-			Operator string in the lattice basis format. For instance:
-
-			>>> opstr = "zz"
-
-		indx : list(int)
-			List of integers to designate the sites the lattice basis operator is defined on. For instance:
-			
-			>>> indx = [2,3]
-
-		J : scalar
-			Coupling strength.
-		dtype : 'type'
-			Data type (e.g. `numpy.float64`) to construct the operator with.
-		transposed : bool, optional
-			if `True` this function will act with the trasposed operator.
-		conjugated : bool, optional
-			if `True` this function will act with the conjugated operator.
-		v_out : array_like
-			output array, must be the same shape as `v_in` and must match the type of the output.
-
-		Returns
-		--------
-		numpy.ndarray
-			* if `v_out` is not `None`, this function modifies `v_out` inplace and returns it. 
-
-			
-		Examples
-		--------
-
-		>>> J = 1.41
-		>>> indx = [2,3]
-		>>> opstr = "zz"
-		>>> dtype = np.float64
-		>>> ME, row, col = Op(opstr,indx,J,dtype)
-
-		"""
-		return basis_1d.inplace_op(self,v_in,opstr,indx,J,dtype,
-						transposed=transposed,conjugated=conjugated,v_out=v_out)
-
-	def expanded_form(self,static=[],dynamic=[]):
-		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
-
-		Parameters
-		-----------
-		static: list
-			Static operators formatted to be passed into the static argument of the `hamiltonian` class.
-		dynamic: list
-			Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
-
-		Returns
-		--------
-		tuple
-			`(static, dynamic)`, where
-				* list: `static`: operator strings with "x" and "y" expanded into "+" and "-", formatted to 
-					be passed into the static argument of the `hamiltonian` class.
-				* list: `dynamic`: operator strings with "x" and "y" expanded into "+" and "-", formatted to 
-					be passed into the dynamic argument of the `hamiltonian` class.
-
-		Examples
-		---------
-
-		>>> static = [["xx",[[1.0,0,1]]],["yy",[[1.0,0,1]]]]
-		>>> dynamic = [["y",[[1.0,0]],lambda t: t,[]]]
-		>>> expanded_form(static,dynamic)
-
-		"""
-		return basis_1d.expanded_form(static,dynamic)
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"

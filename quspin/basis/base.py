@@ -81,6 +81,10 @@ class basis(object):
 	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
 		"""Calculates the action of an operator on a state.
 
+		Notes
+		-----
+		This function works with the `tensor_basis` and other basis which use the "|" symbol in the opstr.
+
 		Parameters
 		-----------
 		v_in : array_like
@@ -329,6 +333,10 @@ class basis(object):
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
 
+		Notes
+		-----
+		This function works with the `tensor_basis` and other basis which use the "|" symbol in the opstr.
+
 		Parameters
 		-----------
 		static: list
@@ -350,7 +358,7 @@ class basis(object):
 
 		>>> static = [["xx",[[1.0,0,1]]],["yy",[[1.0,0,1]]]]
 		>>> dynamic = [["y",[[1.0,0]],lambda t: t,[]]]
-		>>> expanded_form(static,dynamic)
+		>>> expanded_form(static,dynamic)		
 
 		"""
 		static_list,dynamic_list = self._get_local_lists(static,dynamic)
