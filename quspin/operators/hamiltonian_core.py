@@ -164,7 +164,7 @@ def _hamiltonian_dot(hamiltonian,time,v):
 
 
 class hamiltonian(object):
-	"""Constructs quantum operators.
+	"""Constructs time-dependent (hermitian and nonhermitian) operators.
 
 	The `hamiltonian` class wraps most of the functionalty of the QuSpin package. This object allows the user to construct 
 	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
