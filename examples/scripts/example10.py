@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import sys,os
-# the following two lines (l4 and l5) are for developmet purposes and can be removed
+# line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 ########################################################################
