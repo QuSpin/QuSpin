@@ -104,7 +104,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="quantum_LinearOperator.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_LinearOperator.html#quspin.operators.quantum_LinearOperator.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static_list</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="o">**</span><span class="n">basis_args</span><span class="p">):</span>
+<div class="viewcode-block" id="quantum_LinearOperator.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_LinearOperator.html#quspin.operators.quantum_LinearOperator.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static_list</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="o">**</span><span class="n">basis_args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `quantum_LinearOperator` object.</span>
 <span class="sd">		</span>
 <span class="sd">		Parameters</span>
@@ -120,10 +120,8 @@
 <span class="sd">			number of sites to create the default spin basis with.</span>
 <span class="sd">		basis : :obj:`basis`, optional</span>
 <span class="sd">			basis object to construct quantum operator with.</span>
-<span class="sd">		diagonal : array_like, optional</span>
+<span class="sd">		diagonal : array_like</span>
 <span class="sd">			array containing diagonal matrix elements precalculated by other means. </span>
-<span class="sd">		scale : scalar, optional</span>
-<span class="sd">			value which to scale the linear operator by.</span>
 <span class="sd">		dtype : &#39;type&#39;</span>
 <span class="sd">			Data type (e.g. numpy.float64) to construct the operator with.</span>
 <span class="sd">		check_symm : bool, optional </span>
@@ -137,16 +135,11 @@
 <span class="sd">			to create the operator.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">copy_self</span> <span class="o">=</span> <span class="n">basis_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_copy_self&quot;</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">copy_self</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">copy_self</span> <span class="o">=</span> <span class="kc">False</span>
-
 
 		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">static_list</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">]:</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="n">copy_self</span><span class="p">:</span>
-				<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">static_list</span><span class="p">:</span>
-					<span class="k">if</span> <span class="ow">not</span> <span class="n">_check_static</span><span class="p">(</span><span class="n">ele</span><span class="p">):</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quantum_LinearOperator only supports operator string representations.&quot;</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">static_list</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">_check_static</span><span class="p">(</span><span class="n">ele</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quantum_LinearOperator only supports operator string representations.&quot;</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span> 
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;expecting list/tuple of lists/tuples containing opstr and list of indx&#39;</span><span class="p">)</span>
 
@@ -168,15 +161,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">_unique_me</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_transposed</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_conjugated</span> <span class="o">=</span> <span class="kc">False</span>
-		<span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;scale must be a scalar value&quot;</span><span class="p">)</span>
-
-			<span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-
+		<span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="mi">2</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
@@ -197,37 +182,34 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">copy_self</span><span class="p">:</span>
-			<span class="n">static_list</span> <span class="o">=</span> <span class="n">_consolidate_static</span><span class="p">(</span><span class="n">static_list</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_static_list</span> <span class="o">=</span> <span class="p">[]</span>
-			<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">static_list</span><span class="p">:</span>
-				<span class="n">ME</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
-				<span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="o">==</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">ME</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span><span class="p">:</span>
-						<span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">:</span>
-							<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="o">+=</span> <span class="n">ME</span><span class="o">.</span><span class="n">real</span>
-						<span class="k">else</span><span class="p">:</span>
-							<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ME</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+		<span class="n">static_list</span> <span class="o">=</span> <span class="n">_consolidate_static</span><span class="p">(</span><span class="n">static_list</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_static_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">static_list</span><span class="p">:</span>
+			<span class="n">ME</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="o">==</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">ME</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span> <span class="o">+=</span> <span class="n">ME</span><span class="o">.</span><span class="n">real</span>
 					<span class="k">else</span><span class="p">:</span>
-						<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-							<span class="c1"># if there are multiply matrix elements per row as there are for some</span>
-							<span class="c1"># symmetries availible then do the indexing for unique elements then</span>
-							<span class="c1"># delete them from the list and then repeat until all elements have been </span>
-							<span class="c1"># taken care of. This is less memory efficient but works well for when</span>
-							<span class="c1"># there are a few number of matrix elements per row. </span>
-							<span class="n">row_unique</span><span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-							<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span><span class="p">[</span><span class="n">row_unique</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ME</span><span class="p">[</span><span class="n">args</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
-							<span class="n">row</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">args</span><span class="p">)</span>
-							<span class="n">ME</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ME</span><span class="p">,</span><span class="n">args</span><span class="p">)</span>					
+						<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ME</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
 				<span class="k">else</span><span class="p">:</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_static_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">))</span>
+					<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+						<span class="c1"># if there are multiply matrix elements per row as there are for some</span>
+						<span class="c1"># symmetries availible then do the indexing for unique elements then</span>
+						<span class="c1"># delete them from the list and then repeat until all elements have been </span>
+						<span class="c1"># taken care of. This is less memory efficient but works well for when</span>
+						<span class="c1"># there are a few number of matrix elements per row. </span>
+						<span class="n">row_unique</span><span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-		<span class="k">else</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_static_list</span> <span class="o">=</span> <span class="n">static_list</span></div>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span><span class="p">[</span><span class="n">row_unique</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ME</span><span class="p">[</span><span class="n">args</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+						<span class="n">row</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">args</span><span class="p">)</span>
+						<span class="n">ME</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ME</span><span class="p">,</span><span class="n">args</span><span class="p">)</span>					
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_static_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">))</span></div>
 				
 
 
@@ -366,7 +348,6 @@
 		<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_list</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">inplace_Op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span> <span class="n">indx</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span>
 								<span class="bp">self</span><span class="o">.</span><span class="n">_conjugated</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_transposed</span><span class="p">,</span><span class="n">v_out</span><span class="o">=</span><span class="n">new_other</span><span class="p">)</span>
-		<span class="n">new_other</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span>
 		<span class="k">return</span> <span class="n">new_other</span>
 
 	<span class="k">def</span> <span class="nf">_rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
@@ -501,8 +482,8 @@
 <div class="viewcode-block" id="quantum_LinearOperator.copy"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_LinearOperator.html#quspin.operators.quantum_LinearOperator.copy">[docs]</a>	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns a deep copy of `quantum_LinearOperator` object.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static_list</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span>
-							<span class="n">diagonal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span>
-							<span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">_copy_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+							<span class="n">diagonal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_diagonal</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span>
+							<span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 	<span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{0}</span><span class="s2">x</span><span class="si">{1}</span><span class="s2"> quspin quantum_LinearOperator of type &#39;</span><span class="si">{2}</span><span class="s2">&#39;&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">))</span>
@@ -632,11 +613,8 @@
 			<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">_mul_sparse</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
 
 	<span class="k">def</span> <span class="nf">_mul_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-		<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-		<span class="n">new</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
-		<span class="n">new</span><span class="o">.</span><span class="n">_scale</span> <span class="o">*=</span> <span class="n">other</span>
-		<span class="c1"># print(self._scale,new._scale)</span>
-		<span class="k">return</span> <span class="n">new</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">*=</span> <span class="n">other</span>
 
 	<span class="k">def</span> <span class="nf">_mul_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
 		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>

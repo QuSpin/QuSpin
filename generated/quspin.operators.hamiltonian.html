@@ -64,8 +64,8 @@
 <h1>quspin.operators.hamiltonian<a class="headerlink" href="#quspin-operators-hamiltonian" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.operators.hamiltonian">
-<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">hamiltonian</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs quantum operators.</p>
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">hamiltonian</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs time-dependent (hermitian and nonhermitian) operators.</p>
 <p>The <cite>hamiltonian</cite> class wraps most of the functionalty of the QuSpin package. This object allows the user to construct 
 lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
 diagonalization, etc.</p>
@@ -272,7 +272,7 @@ instantiation with a <cite>basis</cite> will automatically ignore all symmetry i
 </table>
 <dl class="method">
 <dt id="quspin.operators.hamiltonian.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>hamtilonian</cite> object (any quantum operator).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

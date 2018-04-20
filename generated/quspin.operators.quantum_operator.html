@@ -60,8 +60,8 @@
 <h1>quspin.operators.quantum_operator<a class="headerlink" href="#quspin-operators-quantum-operator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.operators.quantum_operator">
-<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_operator</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs parameter-dependent <cite>hamiltonian</cite> operators.</p>
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_operator</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs parameter-dependent (hermitian and nonhermitian) operators.</p>
 <p>The <cite>quantum_operator</cite> class maps quantum operators to keys of a dictionary. When calling various methods
 of <cite>quantum_operator</cite>, it allows one to ‘dynamically’ specify the pre-factors of these operators.</p>
 <p class="rubric">Examples</p>
@@ -261,7 +261,7 @@ without having to re-build the Hamiltonian every time.</p>
 </table>
 <dl class="method">
 <dt id="quspin.operators.quantum_operator.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>input_dict</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_operator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>quantum_operator</cite> object (parameter dependent quantum quantum_operators).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
