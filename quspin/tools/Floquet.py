@@ -443,6 +443,8 @@ class Floquet_t_vec(object):
 		self._vals = self.T*n
 		# total length of time vector
 		self._len = self.vals.size
+		# shape
+		self._shape = self._vals.shape
 		# time step
 		self._dt = self.T/self.len_T
 		# define index of period -N_up
@@ -511,6 +513,11 @@ class Floquet_t_vec(object):
 	def N(self):
 		"""int: total number of periods."""
 		return self._N
+
+	@property
+	def shape(self):
+		"""tuple: shape of array."""
+		return self._shape
 
 	@property
 	def len_T(self):
