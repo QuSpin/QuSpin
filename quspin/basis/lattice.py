@@ -22,6 +22,7 @@ class lattice_basis(basis):
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
 
+
 	def __getitem__(self,key):
 		return self._basis.__getitem__(key)
 
@@ -439,7 +440,6 @@ class lattice_basis(basis):
 					return_dict[i] = _np.squeeze( locals()[i] )
 
 		return return_dict
-
 
 
 	##### private methods

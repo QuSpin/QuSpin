@@ -80,11 +80,15 @@ class basis_general(lattice_basis):
 			raise TypeError("general_basis class is not to be instantiated.")
 
 		kwargs = {key:value for key,value in kwargs.items() if value is not None}
-		
 		# if not kwargs:
 		# 	raise ValueError("require at least one map.")
 
 		n_maps = len(kwargs)
+
+		if n_maps>0:
+			self._conserved='custom symmeries'
+		else:
+			self._conserved=''
 
 		if any((type(map) is not tuple) and (len(map)!=2) for map in kwargs.values()):
 			raise ValueError("blocks must contain tuple: (map,q).")
@@ -139,6 +143,28 @@ class basis_general(lattice_basis):
 
 		nmax = self._pers.prod()
 		self._n_dtype = _np.min_scalar_type(nmax)
+
+
+	@property
+	def description(self):
+		"""str: information about `basis` object."""
+		blocks = ""
+
+		for symm in self._blocks:
+			blocks += symm+" = {"+symm+"}, "
+
+		blocks = blocks.format(**self._blocks)
+
+		if len(self._conserved) == 0:
+			symm = "no symmetry"
+		elif len(self._conserved) == 1:
+			symm = "symmetry"
+		else:
+			symm = "symmetries"
+
+		string = """general basis for lattice of N = {0} sites containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\n""".format(self._N,symm,self._conserved,'',blocks,self._Ns)
+		string += self.operators
+		return string
 
 	def _reduce_n_dtype(self):
 		if len(self._n)>0:
