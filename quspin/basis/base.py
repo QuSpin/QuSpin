@@ -24,6 +24,7 @@ class basis(object):
 							 " to be instantiated directly.")
 
 
+
 	def __str__(self):
 		
 		string = "reference states: \n"
