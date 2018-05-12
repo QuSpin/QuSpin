@@ -782,7 +782,7 @@ class hamiltonian(object):
 		-----------
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
-			[see `enforce_pure`].
+			[see `enforce_pure` argument of `basis.ent_entropy`].
 		time : obj, optional
 			Can be either one of the following:
 
