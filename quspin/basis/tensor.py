@@ -478,7 +478,7 @@ class tensor_basis(basis):
 				* "B": returns reduced DM of subsystem B (complement of A).
 				* "both": returns reduced DM of both subsystems A and B.
 		enforce_pure : bool, optional
-			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			Whether or not to assume `state` is a collection of pure states or a mixed density matrix, if
 			it is a square array. Default is `False`.
 		sparse : bool, optional
 			Whether or not to return a sparse DM. Default is `False`.
