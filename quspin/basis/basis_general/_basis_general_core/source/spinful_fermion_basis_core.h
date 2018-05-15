@@ -18,7 +18,7 @@ I inline spinful_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	for(int i=2*N;i>=0;i--){
 		int j = map[i];
 		int n = (s&1);
-		if(n){pos_list[np]=( j<0 ? N + j : N - j - 1); ++np;}
+		if(n){pos_list[np]=( j<0 ? -j + 1 : j ); ++np;}
 		ss ^= ( j<0 ? (n^1)<<(2*N+j) : n<<(2*N-j-1) );
 
 		f_count ^= (n && (i&1)) && (j<0);
@@ -91,7 +91,7 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			for(int j=n_op-1;j>-1;j--){
 				int ind = 2*general_basis_core<I>::N-indx[j]-1;
 				I f_count = bit_count(r,ind);
-				m *= std::complex<double>((f_count&1)?-1:1);
+				double sign = ((f_count&1)?-1:1);
 				I b = (one << ind);
 				bool a = bool((r >> ind)&one);
 				char op = opstr[j];
@@ -103,11 +103,11 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 						m *= (a?1:0);
 						break;
 					case '+':
-						m *= (a?0:1);
+						m *= (a?0:sign);
 						r ^= b;
 						break;
 					case '-':
-						m *= (a?1:0);
+						m *= (a?sign:0);
 						r ^= b;
 						break;
 					case 'I':

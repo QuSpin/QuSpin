@@ -163,7 +163,7 @@ double check_state_core(general_basis_core<I> *B,I t,int sign, double k, double 
 
 
 template<class I>
-I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,const int nt,const int depth){
+I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,int &tempsign,const int nt,const int depth){
 	if(nt<=0){
 		return s;
 	}
@@ -172,8 +172,8 @@ I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &
 	if(depth<nt-1){
 		for(int i=0;i<per;i++){
 			gg[depth] = i;
-			r = ref_state_core(B,t,r,g,gg,sign,nt,depth+1);
-			t = B->map_state(t,depth,sign);
+			r = ref_state_core(B,t,r,g,gg,sign,tempsign,nt,depth+1);
+			t = B->map_state(t,depth,tempsign);
 		}
 		return r;
 	}
@@ -182,11 +182,12 @@ I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &
 			gg[depth] = i;
 			if(t>r){
 				r = t;
+				sign = tempsign;
 				for(int j=0;j<nt;j++){
 					g[j] = gg[j];
 				}
 			}
-			t = B->map_state(t,depth,sign);
+			t = B->map_state(t,depth,tempsign);
 		}
 		return r;
 	}
@@ -202,11 +203,12 @@ double general_basis_core<I>::check_state(I s){
 
 template<class I>
 I general_basis_core<I>::ref_state(I s,int g[],int gg[],int &sign){
+	int tempsign=1;
 	for(int i=0;i<nt;i++){
 		g[i] = 0;
 		gg[i] = 0;
 	}
-	return ref_state_core<I>(this,s,s,g,gg,sign,nt,0);
+	return ref_state_core<I>(this,s,s,g,gg,sign,tempsign,nt,0);
 }
 
 
