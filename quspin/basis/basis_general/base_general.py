@@ -85,7 +85,7 @@ class basis_general(lattice_basis):
 		# 	raise ValueError("require at least one map.")
 
 		n_maps = len(kwargs)
-
+		
 		if any((type(map) is not tuple) and (len(map)!=2) for map in kwargs.values()):
 			raise ValueError("blocks must contain tuple: (map,q).")
 
