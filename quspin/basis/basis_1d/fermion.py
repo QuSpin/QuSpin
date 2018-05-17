@@ -113,7 +113,7 @@ class spinless_fermion_basis_1d(basis_1d):
 		stag_A = sum(1<<i for i in range(0,L,2))
 		stag_B = sum(1<<i for i in range(1,L,2))
 		pars = _np.array([1,L,Imax,stag_A,stag_B]) # sign to be calculated
-		self._operators = ("availible operators for fermion_basis_1d:"+
+		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
@@ -352,7 +352,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 		Imax = (1<<L)-1
 		pars = _np.array([L,Imax,0,0]) # sign to be calculated
-		self._operators = ("availible operators for fermion_basis_1d:"+
+		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
