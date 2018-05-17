@@ -107,6 +107,26 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		else:
 			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,**blocks)
 
+
+		if self._sps <= 2:
+			self._operators = ("availible operators for spin_basis_1d:"+
+								"\n\tI: identity "+
+								"\n\t+: raising operator"+
+								"\n\t-: lowering operator"+
+								"\n\tx: x pauli/spin operator"+
+								"\n\ty: y pauli/spin operator"+
+								"\n\tz: z pauli/spin operator")
+
+			self._allowed_ops = set(["I","+","-","x","y","z"])
+		else:
+			self._operators = ("availible operators for spin_basis_1d:"+
+								"\n\tI: identity "+
+								"\n\t+: raising operator"+
+								"\n\t-: lowering operator"+
+								"\n\tz: z pauli/spin operator")
+
+			self._allowed_ops = set(["I","+","-","z"])
+
 	def _Op(self,opstr,indx,J,dtype):
 		
 		if self._S == "1/2":

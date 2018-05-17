@@ -11,6 +11,8 @@ from ..operators import ishamiltonian as _ishamiltonian
 from ..basis import isbasis
 from .expm_multiply_parallel_core import csr_matvec
 
+import warnings
+
 __all__ =  ["project_op", 
 			"KL_div",
 			"mean_level_spacing"
@@ -155,7 +157,7 @@ def KL_div(p1,p2):
 
 	return _np.multiply( p1, _np.log( _np.divide(p1,p2) ) ).sum()
 
-def mean_level_spacing(E):
+def mean_level_spacing(E,verbose=True):
 	"""Calculates the mean-level spacing of an energy spectrum.
 
 	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in 
@@ -178,12 +180,16 @@ def mean_level_spacing(E):
 	Parameters
 	-----------
 	E : numpy.ndarray
-		Ordered list of ascending, NONdegenerate energies.
+		Ordered list of ascending, NONdegenerate energies. If `E` contains a repeating value, the function returns `nan`.
+	verbose : bool, optional
+		Toggles warning message about degeneracies of the spectrum `E`. 
 
 	Returns
 	-------- 
 	float
 		mean-level spacing.
+	nan
+		if spectrum `E` has degeneracies.
 
 	"""
 
@@ -193,18 +199,23 @@ def mean_level_spacing(E):
 	if _np.any(_np.sort(E)!=E):
 		raise TypeError("Expecting a sorted list of ascending, nondegenerate eigenenergies 'E'.")
 
-	# compute consecutive E-differences
-	sn = _np.diff(E)
+
 	# check for degeneracies
 	if len(_np.unique(E)) != len(E):
-		raise ValueError("Degeneracies found in spectrum 'E'!")
-	# calculate the ratios of consecutive spacings
-	aux = _np.zeros((len(E)-1,2),dtype=_np.float64)
+		if verbose:
+			warnings.warn("Degeneracies found in spectrum 'E'!")
+		return _np.nan
+	else:
+		# compute consecutive E-differences
+		sn = _np.diff(E)
+		
+		# calculate the ratios of consecutive spacings
+		aux = _np.zeros((len(E)-1,2),dtype=_np.float64)
 
-	aux[:,0] = sn
-	aux[:,1] = _np.roll(sn,-1)
+		aux[:,0] = sn
+		aux[:,1] = _np.roll(sn,-1)
 
-	return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
+		return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
 
 
 

@@ -242,6 +242,14 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._N = N
 			self._index_type = _np.min_scalar_type(-self._Ns)
+
+			self._operators = ("availible operators for boson_basis_1d:"+
+								"\n\tI: identity "+
+								"\n\t+: raising operator"+
+								"\n\t-: lowering operator"+
+								"\n\tn: number operator"+
+								"\n\tz: c-symm number operator")
+			
 			self._allowed_ops=set(["I","z","n","+","-"])
 
 			self._reduce_n_dtype()
