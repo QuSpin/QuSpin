@@ -311,7 +311,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 			v0 = v0.astype(_np.complex128,copy=False).view(_np.float64)
 		except ValueError:
 			# copy initial state v0 to make it contiguous
-			v0 = v0.astype(_np.complex128,copy=False).copy().view(_np.float64)
+			v0 = v0.astype(_np.complex128,copy=True).view(_np.float64)
 		solver = ode(_cmplx_f) # y_f = f(t,y,*args)
 		solver.set_f_params(f,f_params)
 
