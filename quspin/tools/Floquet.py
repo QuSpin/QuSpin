@@ -623,9 +623,41 @@ class Floquet_t_vec(object):
 			raise AttributeError("missing attribute 'down'")
 
 
-	
+	def get_coordinates(self,index):
+		"""Returns (period number, index within period) of the `Floquet_t_vec` value stored at `index`.
 
+		**Note: This function finds the indegers (i,j), such that `t_evolve[t_evolve.strobo.inds[i-1] + j] = t_evolve[index]`.
 
+		**Note: The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) `Floquet_t_vec` values is smaller than `1E-15`.
+
+		Parameters
+		-----------
+		index : int
+			Index, to compute the `Floquet_t_vec` coordinates of.
+
+		Returns
+		--------
+		tuple 
+			(i,j) such that `t_evolve[t_evolve.strobo.inds[i] + j] = t_evolve[index]`.
+
+		Examples
+		---------
+		>>> t = Floquet_t_vec(10.0,10) # define a Floquet vector
+		>>> index = 145 # pick a random index
+		>>> print(t[index]) # check element
+		>>> (i,j) = t.get_coordinates(index) # decompose index into stroboscopic coordinates
+		>>> print( t[t.strobo.inds[i] + j] ) # we obtain back original element
+
+		"""	
+
+		t=self._vals[index]
+		eps=1E-15
+
+		i=_np.searchsorted(self.strobo._vals,t+eps)-1
+
+		j=_np.where( _np.abs(t-i*self._T - self._vals[:self.strobo.inds[1]])<eps )[0][0]
+
+		return (i,j)
 
 
 
@@ -650,6 +682,27 @@ class _strobo_times():
 	@property
 	def vals(self):
 		return self._vals
+
+	def __iter__(self):
+		return self.vals.__iter__()
+
+	def __getitem__(self,s):
+		return self._vals.__getitem__(s)
+	
+	def __str__(self):
+		return str(self._vals)
+	
+	def __mul__(self,other):
+		return self._vals*other
+
+	def __div__(self,other):
+		return self._vals/other
+
+	def __truediv__(self,other):
+		return self._vals/other
+
+	def __len__(self):
+		return self._vals.__len__()
 	
 		 
 
@@ -672,9 +725,22 @@ class _periodic_ramp():
 
 	def __getitem__(self,s):
 		return self._vals.__getitem__(s)
+	
+	def __str__(self):
+		return str(self._vals)
+	
+	def __mul__(self,other):
+		return self._vals*other
+
+	def __div__(self,other):
+		return self._vals/other
+
+	def __truediv__(self,other):
+		return self._vals/other
 
 	def __len__(self):
 		return self._vals.__len__()
+
 
 	@property
 	def N(self):
