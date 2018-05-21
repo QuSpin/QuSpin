@@ -1,8 +1,9 @@
 Examples
 --------
 
-For a detailed information on how to use the package, check out these papers:
-	* `arXiv:1610.03042 <https://arxiv.org/abs/1610.03042>`_
+For a detailed tutorial on how to use the package, check out these papers:
+	* `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_
+	* `arXiv:1804.06782 <https://arxiv.org/abs/1804.06782>`_
 
 
 The following Python scripts demonstrate basic and advanced functionality of QuSpin:

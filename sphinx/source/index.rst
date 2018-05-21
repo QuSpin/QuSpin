@@ -8,7 +8,11 @@ Welcome to the Official QuSpin Documentation!
 
 QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems and (imaginary) time evolution following arbitrary user-specified driving protocols.
 
-This page contains the documentation for the use of all public functions and classes contained in QuSpin.
+This page contains the documentation for the use of all public functions and classes contained in QuSpin. 
+
+Check out these papers for a detailed tutorial:
+    * `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_
+    * `arXiv:1804.06782 <https://arxiv.org/abs/1804.06782>`_
 
 The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_.
 

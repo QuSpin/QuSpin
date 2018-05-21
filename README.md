@@ -1,6 +1,6 @@
 # **QuSpin**
 
-QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimension and (imaginary) time evolution following a user-specified driving protocol. 
+QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimensional lattice systems and (imaginary) time evolution following a user-specified driving protocol. 
 
 The complete ***Documentation*** for QuSpin can be found at 
 
@@ -12,6 +12,7 @@ http://weinbe58.github.io/QuSpin/Examples.html
 
 For an ***indepth introduction*** to the package, check out the following papers:
 * [SciPost Phys. __2__, 003 (2017)](https://scipost.org/10.21468/SciPostPhys.2.1.003)
+* [arXiv:1804.06782](https://arxiv.org/abs/1804.06782)
 
 QuSpin wraps Scipy, Numpy, and custom Cython libraries together to offer state-of-the art exact diagonalization calculations. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from local single-particle operators. It also gives the user the flexibility of accessing many pre-defined symmetries in 1d (e.g. translation, reflection, spin inversion), as well as user-defined symmetry based on elementary transformations, such as site and spin flips. Moreover, there are convenient built-in ways to specify the time and parameter dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
