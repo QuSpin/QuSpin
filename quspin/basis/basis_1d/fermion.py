@@ -196,7 +196,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		-----------
 		L: int
 			Length of chain/number of sites.
-		Nf: {tupe(int,list)}, optional
+		Nf: tuple(int,list), optional
 			Number of fermions in chain. First (left) entry refers to spin-up and second (right) entry refers
 			to spin-down. Each of the two entries can be integer or list to specify one or more particle sectors.
 		nf: tuple(float), optional
