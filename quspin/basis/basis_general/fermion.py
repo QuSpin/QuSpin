@@ -115,7 +115,6 @@ class spinful_fermion_basis_general(basis_general):
 			else:
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
-
 		if Nf is None:
 			Ns = (1<<N)**2
 		else:
@@ -159,7 +158,6 @@ class spinful_fermion_basis_general(basis_general):
 
 					Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
-
 		if len(self._pers)>0:
 			if Ns_block_est is None:
 				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
@@ -170,7 +168,6 @@ class spinful_fermion_basis_general(basis_general):
 					raise ValueError("Ns_block_est must be an integer > 0")
 										
 				Ns = Ns_block_est
-		Ns = max(Ns,1000)
 		if N<=16:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)

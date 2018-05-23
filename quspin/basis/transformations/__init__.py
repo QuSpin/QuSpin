@@ -1,1 +1,1 @@
-from .square import square_lattice_trans
+from .square import square_lattice_trans,square_lattice_trans_spinful_advanced

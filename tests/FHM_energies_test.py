@@ -5,7 +5,7 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 from quspin.basis import tensor_basis, spinless_fermion_basis_1d, spinful_fermion_basis_1d, spinful_fermion_basis_general, spinless_fermion_basis_general
-from quspin.basis.transformations import square_lattice_trans
+from quspin.basis.transformations import square_lattice_trans,square_lattice_trans_spinful_advanced
 from quspin.operators import hamiltonian,quantum_operator
 import numpy as np
 
@@ -27,6 +27,8 @@ E_paper=-np.array([12.0000000000000000,
 
 
 tr = square_lattice_trans(Lx,Ly)
+tr_adv = square_lattice_trans_spinful_advanced(4,4)
+exit()
 
 Jp = [[1.0,i,tr.T_x[i]] for i in range(N)]
 Jp.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
