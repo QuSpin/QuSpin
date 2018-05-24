@@ -491,6 +491,8 @@ class tensor_basis(basis):
 
 			.. math::
 				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha
+		
+			**Note:** The logarithm used is the natural logarithm (base e).
 		sparse_diag : bool, optional
 			When `sparse=True`, this flag enforces the use of
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
