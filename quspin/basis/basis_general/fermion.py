@@ -194,6 +194,7 @@ class spinful_fermion_basis_general(basis_general):
 			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nf)
+			print(self._Ns)
 			if self._Ns < 0:
 				raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
 
