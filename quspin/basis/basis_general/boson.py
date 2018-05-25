@@ -152,10 +152,31 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._sps = sps
 
-		self._allowed_ops=set(["I","n","+","-"])
+
+		self._allowed_ops=set(["I","z","n","+","-"])
+
+
 		if self._sps == 2:
+
+			self._operators = ("availible operators for boson_basis_1d:"+
+								"\n\tI: identity "+
+								"\n\t+: raising operator"+
+								"\n\t-: lowering operator"+
+								"\n\tn: number operator"+
+								"\n\tz: c-symm number operator")
+
 			hcb_basis_general.__init__(self,N,Nb=Nb,_Np=_Np,**blocks)
+		
 		else:
+
+			self._operators = ("availible operators for ferion_basis_1d:"+
+								"\n\tI: identity "+
+								"\n\t+: raising operator"+
+								"\n\t-: lowering operator"+
+								"\n\tn: number operator"+
+								"\n\tz: ph-symm number operator")
+
+
 			basis_general.__init__(self,N,**blocks)
 			self._check_pcon = False
 			count_particles = False
@@ -242,7 +263,6 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			self._N = N
 			self._index_type = _np.min_scalar_type(-self._Ns)
-			self._allowed_ops=set(["I","z","n","+","-"])
 
 			self._reduce_n_dtype()
 

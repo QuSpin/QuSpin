@@ -508,14 +508,14 @@ class basis_1d(lattice_basis):
 
 		blocks = blocks.format(**self._blocks)
 
-		if len(self.conserved) == 0:
+		if len(self._conserved) == 0:
 			symm = "no symmetry"
-		elif len(self.conserved) == 1:
+		elif len(self._conserved) == 1:
 			symm = "symmetry"
 		else:
 			symm = "symmetries"
 
-		string = """1d basis for chain of L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
+		string = """1d basis for chain of length L = {0} containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\t{3} \n\n""".format(self._L,symm,self._conserved,lat_space,blocks,self._Ns)
 		string += self.operators
 		return string 
 
@@ -1642,9 +1642,9 @@ class basis_1d(lattice_basis):
 
 		blocks = blocks.format(**self._blocks)
 
-		if len(self.conserved) == 0:
+		if len(self._conserved) == 0:
 			symm = "no symmetry"
-		elif len(self.conserved) == 1:
+		elif len(self._conserved) == 1:
 			symm = "symmetry"
 		else:
 			symm = "symmetries"

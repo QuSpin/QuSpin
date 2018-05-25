@@ -174,7 +174,7 @@ class basis(object):
 		return v_out			
 
 	def Op(self,opstr,indx,J,dtype):
-		"""Constructs operator from a site-coupling list and anoperator string in a lattice basis.
+		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.
 
 		Parameters
 		-----------
