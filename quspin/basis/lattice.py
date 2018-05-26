@@ -227,6 +227,13 @@ class lattice_basis(basis):
 	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
+		.. math::
+			S_\\mathrm{ent}(\\alpha) = \\frac{1}{N}\\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha 
+
+		where the normalization :math:`N` can be switched on and off using the optional argument `density`.
+			
+		**Note:** The logarithm used is the natural logarithm (base e).
+
 		Notes
 		-----
 		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
@@ -243,7 +250,7 @@ class lattice_basis(basis):
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
 			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
 		density : bool, optional
--			Toggles whether to return entanglement entropy normalized by the subsystem size.
+			Toggles whether to return entanglement entropy normalized by the number of sites in the subsystem.
 		return_rdm : str, optional
 			Toggles returning the reduced DM. Can be tierh one of:
 
@@ -262,12 +269,9 @@ class lattice_basis(basis):
 			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
 			the spectrum of `rdm_A` is returned by default. Default is `False`.
 		alpha : float, optional
-			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`.
 
-			.. math::
-				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha
-		
-			**Note:** The logarithm used is the natural logarithm (base e).
+			
 		sparse_diag : bool, optional
 			When `sparse=True`, this flag enforces the use of
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_

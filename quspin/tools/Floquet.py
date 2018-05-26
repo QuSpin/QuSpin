@@ -170,15 +170,15 @@ class Floquet(object):
 				* `atol` : (optional) absolute tolerance for the ODE solver. (default = 1E-9)
 
 			ii) Periodic step protocol from a `hamiltonian` object. 
-				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\sign(\\cos(\\Omega t))`.
+				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\mathrm{sign}(\\cos(\\Omega t))`.
 				* `t_list` : list of times to evaluate the hamiltonian at for each step.
 				* `dt_list` : list of time step durations for each step of the evolution.
--				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T`=`sum(dt_list)`. Use this option for periodic delta kicks.
+				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T=sum(dt_list)`. Use this option for periodic delta kicks.
 
 			iii) Periodic step protocol from a list of hamiltonians. 
 				* `H_list` : list of matrices to evolve with.
 				* `dt_list` : list of time step durations. Must be the same size as `H_list`.
-				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T`=`sum(dt_list)`. Use this option for periodic delta kicks.
+				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T=sum(dt_list)`. Use this option for periodic delta kicks.
 		
 		HF : bool
 			Set to `True` to calculate and return Floquet Hamiltonian under attribute `_.HF`. Default is `False`.
@@ -626,9 +626,11 @@ class Floquet_t_vec(object):
 	def get_coordinates(self,index):
 		"""Returns (period number, index within period) of the `Floquet_t_vec` value stored at `index`.
 
-		**Note: This function finds the indegers (i,j), such that `t_evolve[t_evolve.strobo.inds[i-1] + j] = t_evolve[index]`.
+		Notes
+		-----
+			* This function finds the indegers (i,j), such that `t_evolve[t_evolve.strobo.inds[i-1] + j] = t_evolve[index]`.
 
-		**Note: The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) `Floquet_t_vec` values is smaller than `1E-15`.
+			* The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) `Floquet_t_vec` values is smaller than `1E-15`.
 
 		Parameters
 		-----------

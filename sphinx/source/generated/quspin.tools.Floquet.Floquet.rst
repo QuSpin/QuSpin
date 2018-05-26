@@ -1,5 +1,5 @@
-quspin\.tools\.Floquet\.Floquet
-===============================
+quspin.tools.Floquet.Floquet
+============================
 
 .. currentmodule:: quspin.tools.Floquet
 
@@ -18,5 +18,16 @@ quspin\.tools\.Floquet\.Floquet
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Floquet.EF
+      ~Floquet.HF
+      ~Floquet.T
+      ~Floquet.UF
+      ~Floquet.VF
+      ~Floquet.thetaF
    
    

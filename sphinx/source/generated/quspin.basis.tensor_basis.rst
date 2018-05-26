@@ -1,5 +1,5 @@
-quspin\.basis\.tensor\_basis
-============================
+quspin.basis.tensor\_basis
+==========================
 
 .. currentmodule:: quspin.basis
 
@@ -29,5 +29,17 @@ quspin\.basis\.tensor\_basis
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~tensor_basis.N
+      ~tensor_basis.Ns
+      ~tensor_basis.basis_left
+      ~tensor_basis.basis_right
+      ~tensor_basis.blocks
+      ~tensor_basis.operators
+      ~tensor_basis.sps
    
    

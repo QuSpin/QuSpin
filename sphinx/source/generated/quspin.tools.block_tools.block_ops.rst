@@ -1,5 +1,5 @@
-quspin\.tools\.block\_tools\.block\_ops
-=======================================
+quspin.tools.block\_tools.block\_ops
+====================================
 
 .. currentmodule:: quspin.tools.block_tools
 
@@ -22,5 +22,17 @@ quspin\.tools\.block\_tools\.block\_ops
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~block_ops.H_dict
+      ~block_ops.P_dict
+      ~block_ops.basis_dict
+      ~block_ops.dtype
+      ~block_ops.dynamic
+      ~block_ops.save_previous_data
+      ~block_ops.static
    
    
