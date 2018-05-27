@@ -168,6 +168,8 @@ class spinful_fermion_basis_general(basis_general):
 					raise ValueError("Ns_block_est must be an integer > 0")
 										
 				Ns = Ns_block_est
+
+		Ns = max(Ns,1000)
 		if N<=16:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
@@ -184,7 +186,7 @@ class spinful_fermion_basis_general(basis_general):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
 			self._Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
 			if self._Ns < 0:
-				raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			if self._Ns != basis.shape[0]:
 				basis = basis[1:]
@@ -194,9 +196,8 @@ class spinful_fermion_basis_general(basis_general):
 			self._Np_list = Np_list[ind[::-1]].copy()
 		else:
 			self._Ns = self._core.make_basis(basis,n,Np=Nf)
-			print(self._Ns)
 			if self._Ns < 0:
-				raise ValueError("symmetries failed to produce proper reduction in H-space size, please check that mappings do not overlap.")
+					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 			basis,ind = _np.unique(basis,return_index=True)
 			if self.Ns != basis.shape[0]:
@@ -222,6 +223,7 @@ class spinful_fermion_basis_general(basis_general):
 
 	def _get__str__(self):
 		def get_state(b):
+			b = int(b)
 			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
 			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
 			bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
@@ -431,7 +433,6 @@ class spinless_fermion_basis_general(basis_general):
 
 
 		Ns = max(Ns,1000)
-
 		if N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)

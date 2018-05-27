@@ -9,46 +9,6 @@
 
 
 template<class I>
-I inline spinful_fermion_map_bits(I s,const int map[],const int N,int &sign){
-	I ss = 0;
-	int pos_list[64];
-	int np = 0;
-	bool f_count = 0;
-
-	for(int i=2*N;i>=0;i--){
-		int j = map[i];
-		int n = (s&1);
-		if(n){pos_list[np]=( j<0 ? -j + 1 : j ); ++np;}
-		ss ^= ( j<0 ? (n^1)<<(2*N+j) : n<<(2*N-j-1) );
-
-		f_count ^= (n && (i&1)) && (j<0);
-
-		s >>= 1;
-	}
-
-	//starting at 2nd element as first element is already sorted.
-	//Loop Invariant - left part of the array is already sorted.
-	if(np > 1){
-		for (int i = 1; i < np; i++) {
-			int moveMe = pos_list[i];
-			int j = i;
-			while (j > 0 && moveMe > pos_list[j - 1]) {
-				//Move element
-				pos_list[j] = pos_list[j - 1];
-				--j;
-				//increase the count as element swap is happend
-				f_count ^= 1;
-			}
-			pos_list[j] = moveMe;
-		}
-	}
-
-	sign *= (f_count ? -1 : 1);
-
-	return ss;
-}
-
-template<class I>
 class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 {
 	public:
@@ -65,8 +25,8 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			if(general_basis_core<I>::nt<=0){
 				return s;
 			}
-			const int n = general_basis_core<I>::N;
-			return spinful_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
+			const int n = general_basis_core<I>::N << 1;
+			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
 			
 		}
 
@@ -74,12 +34,12 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			if(general_basis_core<I>::nt<=0){
 				return;
 			}
-			const int n = general_basis_core<I>::N;
+			const int n = general_basis_core<I>::N << 1;
 			const int * map = &general_basis_core<I>::maps[n_map*n];
 			#pragma omp for schedule(static,1)
 			for(npy_intp i=0;i<M;i++){
 				int temp_sign = sign[i];
-				s[i] = spinful_fermion_map_bits(s[i],map,n,temp_sign);
+				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
 				sign[i] = temp_sign;
 			}
 		}

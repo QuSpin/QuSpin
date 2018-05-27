@@ -19,6 +19,59 @@ npy_uint64 bit_count(npy_uint64 I, int l){
 	return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
 }
 
+
+
+
+void mergeSort(int nums[], int left, int mid, int right, bool  &f_count){
+    int leftLength = mid - left + 1;
+    int rightLength = right - mid;
+    int lAr[64];
+    int rAr[64];
+    for (int i = 0; i < leftLength; i++) {
+      lAr[i] = nums[left + i];
+    }
+    for (int i = 0; i < rightLength; i++) {
+      rAr[i] = nums[mid + 1 + i];
+    }
+    int i = 0, j = 0, k = left;
+    while (i < leftLength && j < rightLength) {
+      if (lAr[i] <= rAr[j]) {
+        nums[k] = lAr[i];
+        if(j&1){f_count ^= 1;}
+        i++;
+      } else {
+        nums[k] = rAr[j];
+        j++;
+      }
+      k++;
+    }
+    //remaining iversions
+    if((j&1) && ((leftLength-i)&1)){f_count ^= 1;}
+    if (i >= leftLength) {
+      //copy remaining elements from right
+      for (; j < rightLength; j++, k++) {
+        nums[k] = rAr[j];
+      }
+    } else {
+      //copy remaining elements from left
+      for (; i < leftLength; i++, k++) {
+        nums[k] = lAr[i];
+      }
+    }
+  }
+
+
+ //I sort the array using merge sort technique.
+void getf_count(int nums[], int left, int right, bool &f_count){
+    if (left < right) {
+      int mid = (left + right) / 2;
+      getf_count(nums, left, mid, f_count);
+      getf_count(nums, mid + 1, right, f_count);
+      mergeSort(nums, left, mid, right, f_count);
+    }
+  }
+
+
 template<class I>
 I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	I ss = 0;
@@ -26,37 +79,42 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	int np = 0;
 	bool f_count = 0;
 
-	for(int i=N-1;i>=0;i--){
+	for(int i=N-1;i>=0;--i){
 		int j = map[i];
 		I n = (s&1);
 		// if(n){pos_list[np]=( j<0 ? N+j : N-j-1); ++np;}
-		if(n){pos_list[np]=( j<0 ? -j+1 : j); ++np;}
-		ss ^= ( j<0 ? n^1<<(N+j) : n<<(N-j-1) );
+		if(n){
+			pos_list[np]=( j<0 ? -j+1 : j);
+			++np;
+			f_count ^= ((j<0)&&(i&1));
+		}
+		ss ^= ( j<0 ? (n^1)<<(N+j) : n<<(N-j-1) );
 
-		f_count ^= (n && (i&1) && (j<0));
+		
 
 		s >>= 1;
 	}
 
-	// sort in decending order counting number of permutations. 
-	// starting at 2nd element as first element is already sorted.
-	// Loop Invariant - left part of the array is already sorted.
-	if(np > 1){
-		for (int i = 1; i < np; i++) {
-			int moveMe = pos_list[i];
-			int j = i;
-			while (j > 0 && moveMe > pos_list[j - 1]) {
-				//Move element
-				pos_list[j] = pos_list[j - 1];
-				--j;
-				//increase the count as element swap is happend
-				f_count ^= 1;
-			}
-			pos_list[j] = moveMe;
-		}
-	}
+	// // sort in decending order counting number of permutations. 
+	// // starting at 2nd element as first element is already sorted.
+	// // Loop Invariant - left part of the array is already sorted.
+	// if(np > 1){
+	// 	for (int i = 1; i < np; i++) {
+	// 		int moveMe = pos_list[i];
+	// 		int j = i;
+	// 		while (j > 0 && moveMe > pos_list[j - 1]) {
+	// 			//Move element
+	// 			pos_list[j] = pos_list[j - 1];
+	// 			--j;
+	// 			//increase the count as element swap is happend
+	// 			f_count ^= 1;
+	// 		}
+	// 		pos_list[j] = moveMe;
+	// 	}
+	// }
+	if(np>1){getf_count(pos_list,0,np-1,f_count);}
 
-	sign *= (f_count ? -1 : 1);
+	if(f_count){sign ^= (-2);}
 
 	return ss;
 }
