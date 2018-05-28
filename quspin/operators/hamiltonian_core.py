@@ -711,7 +711,7 @@ class hamiltonian(object):
 			return self.transpose().dot(V_transpose,time=time,check=check).transpose((1,0,2))
 
 	def quant_fluct(self,V,time=0,check=True,enforce_pure=False):
-		"""Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.
+		"""Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.
 
 		.. math::
 			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2
@@ -770,7 +770,7 @@ class hamiltonian(object):
 			V_dot=self.dot(V_dot,time=time,check=check)
 			sq_expt_value = self._expt_value_core(V,V_dot,**kwargs)
 
-		return expt_value_sq - sq_expt_value
+		return sq_expt_value - expt_value_sq
 
 	def expt_value(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
@@ -782,7 +782,7 @@ class hamiltonian(object):
 		-----------
 		V : numpy.ndarray
 			Depending on the shape, can be a single state or a collection of pure or mixed states
-			[see `enforce_pure`].
+			[see `enforce_pure` argument of `basis.ent_entropy`].
 		time : obj, optional
 			Can be either one of the following:
 

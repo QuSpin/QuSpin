@@ -1,5 +1,5 @@
-quspin\.basis\.spin\_basis\_general
-===================================
+quspin.basis.spin\_basis\_general
+=================================
 
 .. currentmodule:: quspin.basis
 
@@ -29,5 +29,16 @@ quspin\.basis\.spin\_basis\_general
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~spin_basis_general.N
+      ~spin_basis_general.Ns
+      ~spin_basis_general.blocks
+      ~spin_basis_general.description
+      ~spin_basis_general.operators
+      ~spin_basis_general.sps
    
    

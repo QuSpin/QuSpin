@@ -1,5 +1,5 @@
-quspin\.basis\.boson\_basis\_1d
-===============================
+quspin.basis.boson\_basis\_1d
+=============================
 
 .. currentmodule:: quspin.basis
 
@@ -29,5 +29,17 @@ quspin\.basis\.boson\_basis\_1d
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~boson_basis_1d.L
+      ~boson_basis_1d.N
+      ~boson_basis_1d.Ns
+      ~boson_basis_1d.blocks
+      ~boson_basis_1d.description
+      ~boson_basis_1d.operators
+      ~boson_basis_1d.sps
    
    

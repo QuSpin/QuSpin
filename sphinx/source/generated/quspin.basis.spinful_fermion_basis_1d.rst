@@ -1,5 +1,5 @@
-quspin\.basis\.spinful\_fermion\_basis\_1d
-==========================================
+quspin.basis.spinful\_fermion\_basis\_1d
+========================================
 
 .. currentmodule:: quspin.basis
 
@@ -29,5 +29,17 @@ quspin\.basis\.spinful\_fermion\_basis\_1d
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~spinful_fermion_basis_1d.L
+      ~spinful_fermion_basis_1d.N
+      ~spinful_fermion_basis_1d.Ns
+      ~spinful_fermion_basis_1d.blocks
+      ~spinful_fermion_basis_1d.description
+      ~spinful_fermion_basis_1d.operators
+      ~spinful_fermion_basis_1d.sps
    
    

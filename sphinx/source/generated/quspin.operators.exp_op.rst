@@ -1,5 +1,5 @@
-quspin\.operators\.exp\_op
-==========================
+quspin.operators.exp\_op
+========================
 
 .. currentmodule:: quspin.operators
 
@@ -30,5 +30,20 @@ quspin\.operators\.exp\_op
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~exp_op.H
+      ~exp_op.Ns
+      ~exp_op.O
+      ~exp_op.T
+      ~exp_op.a
+      ~exp_op.get_shape
+      ~exp_op.grid
+      ~exp_op.iterate
+      ~exp_op.ndim
+      ~exp_op.step
    
    

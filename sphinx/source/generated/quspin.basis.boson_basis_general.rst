@@ -1,5 +1,5 @@
-quspin\.basis\.boson\_basis\_general
-====================================
+quspin.basis.boson\_basis\_general
+==================================
 
 .. currentmodule:: quspin.basis
 
@@ -29,5 +29,16 @@ quspin\.basis\.boson\_basis\_general
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~boson_basis_general.N
+      ~boson_basis_general.Ns
+      ~boson_basis_general.blocks
+      ~boson_basis_general.description
+      ~boson_basis_general.operators
+      ~boson_basis_general.sps
    
    
