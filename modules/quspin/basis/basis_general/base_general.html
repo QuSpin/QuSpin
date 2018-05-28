@@ -145,6 +145,11 @@
 
 		<span class="n">n_maps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
+		<span class="k">if</span> <span class="n">n_maps</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="o">=</span><span class="s1">&#39;custom symmeries&#39;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+
 		<span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;blocks must contain tuple: (map,q).&quot;</span><span class="p">)</span>
 
@@ -198,6 +203,28 @@
 
 		<span class="n">nmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">nmax</span><span class="p">)</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;str: information about `basis` object.&quot;&quot;&quot;</span>
+		<span class="n">blocks</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+		<span class="k">for</span> <span class="n">symm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+			<span class="n">blocks</span> <span class="o">+=</span> <span class="n">symm</span><span class="o">+</span><span class="s2">&quot; = {&quot;</span><span class="o">+</span><span class="n">symm</span><span class="o">+</span><span class="s2">&quot;}, &quot;</span>
+
+		<span class="n">blocks</span> <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">symm</span> <span class="o">=</span> <span class="s2">&quot;no symmetry&quot;</span>
+		<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">symm</span> <span class="o">=</span> <span class="s2">&quot;symmetry&quot;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">symm</span> <span class="o">=</span> <span class="s2">&quot;symmetries&quot;</span>
+
+		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;general basis for lattice of N = </span><span class="si">{0}</span><span class="s2"> sites containing </span><span class="si">{5}</span><span class="s2"> states </span><span class="se">\n\t</span><span class="si">{1}</span><span class="s2">: </span><span class="si">{2}</span><span class="s2"> </span><span class="se">\n\t</span><span class="s2">quantum numbers: </span><span class="si">{4}</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span><span class="n">symm</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
+		<span class="n">string</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span>
+		<span class="k">return</span> <span class="n">string</span>
+
 
 	<span class="k">def</span> <span class="nf">_reduce_n_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>

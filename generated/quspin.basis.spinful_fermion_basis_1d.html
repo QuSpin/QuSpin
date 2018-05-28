@@ -174,7 +174,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="quspin.basis.spinful_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.check_hermitian" title="quspin.basis.spinful_fermion_basis_1d.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for hermiticity of the combined operator.</td>
@@ -220,7 +220,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <blockquote>
 <div><p>Length of chain/number of sites.</p>
 </div></blockquote>
-<p><strong>Nf: {tupe(int,list)}, optional</strong></p>
+<p><strong>Nf: tuple(int,list), optional</strong></p>
 <blockquote>
 <div><p>Number of fermions in chain. First (left) entry refers to spin-up and second (right) entry refers
 to spin-down. Each of the two entries can be integer or list to specify one or more particle sectors.</p>
@@ -255,7 +255,7 @@ entry refers to spin-down.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="quspin.basis.spinful_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="quspin.basis.spinful_fermion_basis_1d.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(L[,&nbsp;Nf,&nbsp;nf])</td>
 <td>Intializes the <cite>fermion_basis_1d</cite> object (basis for fermionic operators).</td>
@@ -292,6 +292,36 @@ entry refers to spin-down.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.L" title="quspin.basis.spinful_fermion_basis_1d.L"><code class="xref py py-obj docutils literal"><span class="pre">L</span></code></a></td>
+<td>int: length of lattice.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.N" title="quspin.basis.spinful_fermion_basis_1d.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: <span class="math">\(N=2L\)</span>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Ns" title="quspin.basis.spinful_fermion_basis_1d.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.blocks" title="quspin.basis.spinful_fermion_basis_1d.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.description" title="quspin.basis.spinful_fermion_basis_1d.description"><code class="xref py py-obj docutils literal"><span class="pre">description</span></code></a></td>
+<td>str: information about <cite>basis</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="quspin.basis.spinful_fermion_basis_1d.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="quspin.basis.spinful_fermion_basis_1d.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.spinful_fermion_basis_1d.L">
 <code class="descname">L</code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.L" title="Permalink to this definition">¶</a></dt>
@@ -313,7 +343,7 @@ entry refers to spin-down.</p>
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.Op">
 <code class="descname">Op</code><span class="sig-paren">(</span><em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</p>
+<dd><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -514,6 +544,7 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>:</p>
 <div class="math">
 \[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
+<p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
 </div></blockquote>
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>

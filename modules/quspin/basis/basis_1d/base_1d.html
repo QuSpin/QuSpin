@@ -567,14 +567,14 @@
 
 		<span class="n">blocks</span> <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conserved</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 			<span class="n">symm</span> <span class="o">=</span> <span class="s2">&quot;no symmetry&quot;</span>
-		<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conserved</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">symm</span> <span class="o">=</span> <span class="s2">&quot;symmetry&quot;</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">symm</span> <span class="o">=</span> <span class="s2">&quot;symmetries&quot;</span>
 
-		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;1d basis for chain of L = </span><span class="si">{0}</span><span class="s2"> containing </span><span class="si">{5}</span><span class="s2"> states </span><span class="se">\n\t</span><span class="si">{1}</span><span class="s2">: </span><span class="si">{2}</span><span class="s2"> </span><span class="se">\n\t</span><span class="s2">quantum numbers: </span><span class="si">{4}</span><span class="s2"> </span><span class="se">\n\t</span><span class="si">{3}</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_L</span><span class="p">,</span><span class="n">symm</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">,</span><span class="n">lat_space</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
+		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;1d basis for chain of length L = </span><span class="si">{0}</span><span class="s2"> containing </span><span class="si">{5}</span><span class="s2"> states </span><span class="se">\n\t</span><span class="si">{1}</span><span class="s2">: </span><span class="si">{2}</span><span class="s2"> </span><span class="se">\n\t</span><span class="s2">quantum numbers: </span><span class="si">{4}</span><span class="s2"> </span><span class="se">\n\t</span><span class="si">{3}</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_L</span><span class="p">,</span><span class="n">symm</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_conserved</span><span class="p">,</span><span class="n">lat_space</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
 		<span class="n">string</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span>
 		<span class="k">return</span> <span class="n">string</span> 
 
@@ -1701,9 +1701,9 @@
 
 <span class="sd">		blocks = blocks.format(**self._blocks)</span>
 
-<span class="sd">		if len(self.conserved) == 0:</span>
+<span class="sd">		if len(self._conserved) == 0:</span>
 <span class="sd">			symm = &quot;no symmetry&quot;</span>
-<span class="sd">		elif len(self.conserved) == 1:</span>
+<span class="sd">		elif len(self._conserved) == 1:</span>
 <span class="sd">			symm = &quot;symmetry&quot;</span>
 <span class="sd">		else:</span>
 <span class="sd">			symm = &quot;symmetries&quot;</span>

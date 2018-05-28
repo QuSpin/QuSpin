@@ -128,8 +128,8 @@
 
 
 
-<span class="k">def</span> <span class="nf">_evolve_step_1</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;This function calculates the evolved state for Periodic Step (point 2. in def of &#39;evo_dict&#39;). </span>
+<span class="k">def</span> <span class="nf">_evolve_step_3</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;This function calculates the evolved state for Periodic Step (point 3. in def of &#39;evo_dict&#39;). </span>
 <span class="sd">	</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	
@@ -142,7 +142,7 @@
 	<span class="k">return</span> <span class="n">psi0</span>
 
 <span class="k">def</span> <span class="nf">_evolve_step_2</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">t_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;This function calculates the evolved state for Periodic Step (point 3. in def of &#39;evo_dict&#39;. </span>
+	<span class="sd">&quot;&quot;&quot;This function calculates the evolved state for Periodic Step (point 2. in def of &#39;evo_dict&#39;. </span>
 <span class="sd">	</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	
@@ -163,9 +163,9 @@
 
 	<span class="k">return</span> <span class="n">vstack</span><span class="p">(</span><span class="n">sols</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">_get_U_step_1</span><span class="p">(</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">):</span> 
+<span class="k">def</span> <span class="nf">_get_U_step_3</span><span class="p">(</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">):</span> 
 	
-	<span class="n">sols</span><span class="o">=</span><span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_evolve_step_1</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_range_iter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">H_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+	<span class="n">sols</span><span class="o">=</span><span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">_evolve_step_3</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_range_iter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">H_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 
 	<span class="k">return</span> <span class="n">vstack</span><span class="p">(</span><span class="n">sols</span><span class="p">)</span>
 
@@ -229,13 +229,15 @@
 <span class="sd">				* `atol` : (optional) absolute tolerance for the ODE solver. (default = 1E-9)</span>
 
 <span class="sd">			ii) Periodic step protocol from a `hamiltonian` object. </span>
-<span class="sd">				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\sign(\\cos(\\Omega t))`.</span>
+<span class="sd">				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\mathrm{sign}(\\cos(\\Omega t))`.</span>
 <span class="sd">				* `t_list` : list of times to evaluate the hamiltonian at for each step.</span>
-<span class="sd">				* `dt_list` : list of time step durations for each step of the evolution. </span>
+<span class="sd">				* `dt_list` : list of time step durations for each step of the evolution.</span>
+<span class="sd">				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T=sum(dt_list)`. Use this option for periodic delta kicks.</span>
 
 <span class="sd">			iii) Periodic step protocol from a list of hamiltonians. </span>
 <span class="sd">				* `H_list` : list of matrices to evolve with.</span>
 <span class="sd">				* `dt_list` : list of time step durations. Must be the same size as `H_list`.</span>
+<span class="sd">				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T=sum(dt_list)`. Use this option for periodic delta kicks.</span>
 <span class="sd">		</span>
 <span class="sd">		HF : bool</span>
 <span class="sd">			Set to `True` to calculate and return Floquet Hamiltonian under attribute `_.HF`. Default is `False`.</span>
@@ -260,7 +262,7 @@
 		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">evo_dict</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
 
 			<span class="n">keys</span> <span class="o">=</span> <span class="n">evo_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-			<span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">,</span><span class="s2">&quot;arol&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">,</span><span class="s2">&quot;atol&quot;</span><span class="p">,</span><span class="s2">&quot;rtol&quot;</span><span class="p">]):</span>
+			<span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">,</span><span class="s2">&quot;atol&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">,</span><span class="s2">&quot;atol&quot;</span><span class="p">,</span><span class="s2">&quot;rtol&quot;</span><span class="p">]):</span>
 
 				<span class="n">H</span> <span class="o">=</span> <span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">]</span>
 				<span class="n">T</span> <span class="o">=</span> <span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
@@ -308,7 +310,7 @@
 				<span class="c1"># calculate evolution operator</span>
 				<span class="n">UF</span> <span class="o">=</span> <span class="n">_get_U_cont</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_atol</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rtol</span><span class="p">)</span>
 
-			<span class="k">elif</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;t_list&quot;</span><span class="p">,</span><span class="s2">&quot;dt_list&quot;</span><span class="p">]):</span>
+			<span class="k">elif</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;t_list&quot;</span><span class="p">,</span><span class="s2">&quot;dt_list&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;t_list&quot;</span><span class="p">,</span><span class="s2">&quot;dt_list&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">]):</span>
 				<span class="n">H</span> <span class="o">=</span> <span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">]</span>
 				<span class="n">t_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;t_list&quot;</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 				<span class="n">dt_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;dt_list&quot;</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -319,7 +321,10 @@
 				<span class="k">if</span> <span class="n">dt_list</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dt_list must be 1d array.&quot;</span><span class="p">)</span>
 
-				<span class="bp">self</span><span class="o">.</span><span class="n">_T</span> <span class="o">=</span> <span class="n">dt_list</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+				<span class="k">if</span> <span class="s2">&quot;T&quot;</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_T</span><span class="o">=</span><span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_T</span> <span class="o">=</span> <span class="n">dt_list</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
 				<span class="k">if</span> <span class="ow">not</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting hamiltonian object for &#39;H&#39;.&quot;</span><span class="p">)</span>
@@ -329,7 +334,7 @@
 
 
 
-			<span class="k">elif</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H_list&quot;</span><span class="p">,</span><span class="s2">&quot;dt_list&quot;</span><span class="p">]):</span>
+			<span class="k">elif</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H_list&quot;</span><span class="p">,</span><span class="s2">&quot;dt_list&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;H_list&quot;</span><span class="p">,</span><span class="s2">&quot;dt_list&quot;</span><span class="p">,</span><span class="s2">&quot;T&quot;</span><span class="p">]):</span>
 				<span class="n">H_list</span> <span class="o">=</span> <span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;H_list&quot;</span><span class="p">]</span>
 				<span class="n">dt_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;dt_list&quot;</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
@@ -337,7 +342,10 @@
 				<span class="k">if</span> <span class="n">dt_list</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dt_list must be 1d array.&quot;</span><span class="p">)</span>
 
-				<span class="bp">self</span><span class="o">.</span><span class="n">_T</span> <span class="o">=</span> <span class="n">dt_list</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+				<span class="k">if</span> <span class="s2">&quot;T&quot;</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_T</span><span class="o">=</span><span class="n">evo_dict</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_T</span> <span class="o">=</span> <span class="n">dt_list</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 				
 				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">H_list</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting list/tuple for H_list.&quot;</span><span class="p">)</span>
@@ -347,7 +355,7 @@
 
 
 				<span class="c1"># calculate evolution operator</span>
-				<span class="n">UF</span> <span class="o">=</span> <span class="n">_get_U_step_1</span><span class="p">(</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
+				<span class="n">UF</span> <span class="o">=</span> <span class="n">_get_U_step_3</span><span class="p">(</span><span class="n">H_list</span><span class="p">,</span><span class="n">dt_list</span><span class="p">,</span><span class="n">n_jobs</span><span class="p">)</span>
 				
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;evo_dict=</span><span class="si">{0}</span><span class="s2"> is not correct format.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">evo_dict</span><span class="p">))</span>	
@@ -502,6 +510,8 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">n</span>
 		<span class="c1"># total length of time vector</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="n">size</span>
+		<span class="c1"># shape</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="n">shape</span>
 		<span class="c1"># time step</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">len_T</span>
 		<span class="c1"># define index of period -N_up</span>
@@ -570,6 +580,11 @@
 	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;int: total number of periods.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;tuple: shape of array.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">len_T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -664,12 +679,46 @@
 		<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;_down&quot;</span><span class="p">):</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_up</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing attribute &#39;down&#39;&quot;</span><span class="p">)</span></div>
+			<span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing attribute &#39;down&#39;&quot;</span><span class="p">)</span>
 
 
-	
+<div class="viewcode-block" id="Floquet_t_vec.get_coordinates"><a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec.get_coordinates">[docs]</a>	<span class="k">def</span> <span class="nf">get_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Returns (period number, index within period) of the `Floquet_t_vec` value stored at `index`.</span>
 
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">			* This function finds the indegers (i,j), such that `t_evolve[t_evolve.strobo.inds[i-1] + j] = t_evolve[index]`.</span>
 
+<span class="sd">			* The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) `Floquet_t_vec` values is smaller than `1E-15`.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		index : int</span>
+<span class="sd">			Index, to compute the `Floquet_t_vec` coordinates of.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		tuple </span>
+<span class="sd">			(i,j) such that `t_evolve[t_evolve.strobo.inds[i] + j] = t_evolve[index]`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; t = Floquet_t_vec(10.0,10) # define a Floquet vector</span>
+<span class="sd">		&gt;&gt;&gt; index = 145 # pick a random index</span>
+<span class="sd">		&gt;&gt;&gt; print(t[index]) # check element</span>
+<span class="sd">		&gt;&gt;&gt; (i,j) = t.get_coordinates(index) # decompose index into stroboscopic coordinates</span>
+<span class="sd">		&gt;&gt;&gt; print( t[t.strobo.inds[i] + j] ) # we obtain back original element</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>	
+
+		<span class="n">t</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+		<span class="n">eps</span><span class="o">=</span><span class="mf">1E-15</span>
+
+		<span class="n">i</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">_vals</span><span class="p">,</span><span class="n">t</span><span class="o">+</span><span class="n">eps</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+		<span class="n">j</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">i</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_T</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">&lt;</span><span class="n">eps</span> <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+		<span class="k">return</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span></div></div>
 
 
 
@@ -694,6 +743,27 @@
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span>
+
+	<span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">*</span><span class="n">other</span>
+
+	<span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">/</span><span class="n">other</span>
+
+	<span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">/</span><span class="n">other</span>
+
+	<span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
 	
 		 
 
@@ -716,9 +786,22 @@
 
 	<span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">*</span><span class="n">other</span>
+
+	<span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">/</span><span class="n">other</span>
+
+	<span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">/</span><span class="n">other</span>
 
 	<span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

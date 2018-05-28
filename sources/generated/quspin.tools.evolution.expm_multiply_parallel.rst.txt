@@ -1,5 +1,5 @@
-quspin\.tools\.evolution\.expm\_multiply\_parallel
-==================================================
+quspin.tools.evolution.expm\_multiply\_parallel
+===============================================
 
 .. currentmodule:: quspin.tools.evolution
 
@@ -20,5 +20,12 @@ quspin\.tools\.evolution\.expm\_multiply\_parallel
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~expm_multiply_parallel.A
+      ~expm_multiply_parallel.a
    
    

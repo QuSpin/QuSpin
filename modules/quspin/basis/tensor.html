@@ -511,6 +511,11 @@
 <div class="viewcode-block" id="tensor_basis.ent_entropy"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.ent_entropy">[docs]</a>	<span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</span>
 
+<span class="sd">		.. math::</span>
+<span class="sd">			S_\\mathrm{ent}(\\alpha) = \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha </span>
+<span class="sd">	</span>
+<span class="sd">		**Note:** The logarithm used is the natural logarithm (base e).</span>
+
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
 <span class="sd">		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.</span>
@@ -537,7 +542,7 @@
 <span class="sd">				* &quot;B&quot;: returns reduced DM of subsystem B (complement of A).</span>
 <span class="sd">				* &quot;both&quot;: returns reduced DM of both subsystems A and B.</span>
 <span class="sd">		enforce_pure : bool, optional</span>
-<span class="sd">			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if</span>
+<span class="sd">			Whether or not to assume `state` is a collection of pure states or a mixed density matrix, if</span>
 <span class="sd">			it is a square array. Default is `False`.</span>
 <span class="sd">		sparse : bool, optional</span>
 <span class="sd">			Whether or not to return a sparse DM. Default is `False`.</span>
@@ -546,10 +551,7 @@
 <span class="sd">			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, </span>
 <span class="sd">			the spectrum of `rdm_A` is returned by default. Default is `False`.</span>
 <span class="sd">		alpha : float, optional</span>
-<span class="sd">			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:</span>
-
-<span class="sd">			.. math::</span>
-<span class="sd">				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha</span>
+<span class="sd">			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`.</span>
 <span class="sd">		sparse_diag : bool, optional</span>
 <span class="sd">			When `sparse=True`, this flag enforces the use of</span>
 <span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_</span>

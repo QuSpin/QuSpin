@@ -164,7 +164,29 @@
 		<span class="k">if</span> <span class="n">sps</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
 			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="n">Ns_block_est</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">higher_spin_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="n">sps</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="n">Ns_block_est</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
+			<span class="n">higher_spin_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="n">sps</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="n">Ns_block_est</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for spin_basis_1d:&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">x: x pauli/spin operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">y: y pauli/spin operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: z pauli/spin operator&quot;</span><span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for spin_basis_1d:&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: z pauli/spin operator&quot;</span><span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span></div>
+
+
 
 	<span class="k">def</span> <span class="nf">_Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
 		

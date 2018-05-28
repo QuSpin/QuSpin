@@ -172,7 +172,7 @@
 		<span class="n">stag_A</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 		<span class="n">stag_B</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 		<span class="n">pars</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Imax</span><span class="p">,</span><span class="n">stag_A</span><span class="p">,</span><span class="n">stag_B</span><span class="p">])</span> <span class="c1"># sign to be calculated</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for ferion_basis_1d:&quot;</span><span class="o">+</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for fermion_basis_1d:&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
@@ -255,7 +255,7 @@
 <span class="sd">		-----------</span>
 <span class="sd">		L: int</span>
 <span class="sd">			Length of chain/number of sites.</span>
-<span class="sd">		Nf: {tupe(int,list)}, optional</span>
+<span class="sd">		Nf: tuple(int,list), optional</span>
 <span class="sd">			Number of fermions in chain. First (left) entry refers to spin-up and second (right) entry refers</span>
 <span class="sd">			to spin-down. Each of the two entries can be integer or list to specify one or more particle sectors.</span>
 <span class="sd">		nf: tuple(float), optional</span>
@@ -411,7 +411,7 @@
 
 		<span class="n">Imax</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">L</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
 		<span class="n">pars</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="n">Imax</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># sign to be calculated</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for ferion_basis_1d:&quot;</span><span class="o">+</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for fermion_basis_1d:&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
@@ -588,6 +588,8 @@
 
 <span class="sd">			.. math::</span>
 <span class="sd">				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha</span>
+<span class="sd">		</span>
+<span class="sd">			**Note:** The logarithm used is the natural logarithm (base e).</span>
 <span class="sd">		sparse_diag : bool, optional</span>
 <span class="sd">			When `sparse=True`, this flag enforces the use of</span>
 <span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_</span>

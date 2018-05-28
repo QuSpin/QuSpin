@@ -211,10 +211,31 @@
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">sps</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
+
+
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for boson_basis_1d:&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
+
 			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+		
 		<span class="k">else</span><span class="p">:</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for ferion_basis_1d:&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: ph-symm number operator&quot;</span><span class="p">)</span>
+
+
 			<span class="n">basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">False</span>
 			<span class="n">count_particles</span> <span class="o">=</span> <span class="kc">False</span>
@@ -301,7 +322,6 @@
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_index_type</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_reduce_n_dtype</span><span class="p">()</span></div>
 

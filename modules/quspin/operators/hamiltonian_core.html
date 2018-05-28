@@ -223,7 +223,7 @@
 
 
 <div class="viewcode-block" id="hamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian">[docs]</a><span class="k">class</span> <span class="nc">hamiltonian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Constructs quantum operators.</span>
+	<span class="sd">&quot;&quot;&quot;Constructs time-dependent (hermitian and nonhermitian) operators.</span>
 
 <span class="sd">	The `hamiltonian` class wraps most of the functionalty of the QuSpin package. This object allows the user to construct </span>
 <span class="sd">	lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos </span>
@@ -770,7 +770,7 @@
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="hamiltonian.quant_fluct"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.quant_fluct">[docs]</a>	<span class="k">def</span> <span class="nf">quant_fluct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Calculates the quantum fluctuations of `hamiltonian` operator at time `time`, in state `V`.</span>
+		<span class="sd">&quot;&quot;&quot;Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.</span>
 
 <span class="sd">		.. math::</span>
 <span class="sd">			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2</span>
@@ -829,7 +829,7 @@
 			<span class="n">V_dot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
 			<span class="n">sq_expt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-		<span class="k">return</span> <span class="n">expt_value_sq</span> <span class="o">-</span> <span class="n">sq_expt_value</span></div>
+		<span class="k">return</span> <span class="n">sq_expt_value</span> <span class="o">-</span> <span class="n">expt_value_sq</span></div>
 
 <div class="viewcode-block" id="hamiltonian.expt_value"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.expt_value">[docs]</a>	<span class="k">def</span> <span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.</span>
@@ -841,7 +841,7 @@
 <span class="sd">		-----------</span>
 <span class="sd">		V : numpy.ndarray</span>
 <span class="sd">			Depending on the shape, can be a single state or a collection of pure or mixed states</span>
-<span class="sd">			[see `enforce_pure`].</span>
+<span class="sd">			[see `enforce_pure` argument of `basis.ent_entropy`].</span>
 <span class="sd">		time : obj, optional</span>
 <span class="sd">			Can be either one of the following:</span>
 

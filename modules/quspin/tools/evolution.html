@@ -365,7 +365,12 @@
 		<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="o">*</span><span class="n">f_params</span><span class="p">)</span>
 	<span class="k">else</span><span class="p">:</span>
 		<span class="n">complex_valued</span> <span class="o">=</span> <span class="kc">True</span>
-		<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+		<span class="c1"># check if array is contiguous (required by memory view)</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+			<span class="c1"># copy initial state v0 to make it contiguous</span>
+			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 		<span class="n">solver</span> <span class="o">=</span> <span class="n">ode</span><span class="p">(</span><span class="n">_cmplx_f</span><span class="p">)</span> <span class="c1"># y_f = f(t,y,*args)</span>
 		<span class="n">solver</span><span class="o">.</span><span class="n">set_f_params</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">f_params</span><span class="p">)</span>
 
