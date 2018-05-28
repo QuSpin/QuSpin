@@ -173,7 +173,7 @@ class basis_general(lattice_basis):
 		row = row[mask]
 		ME = ME[mask]
 
-		return ME,row,col	
+		return ME,row,col
 
 	def get_proj(self,dtype):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
