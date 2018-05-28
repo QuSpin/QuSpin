@@ -1,5 +1,5 @@
-quspin\.tools\.block\_tools\.block\_diag\_hamiltonian
-=====================================================
+quspin.tools.block\_tools.block\_diag\_hamiltonian
+==================================================
 
 .. currentmodule:: quspin.tools.block_tools
 

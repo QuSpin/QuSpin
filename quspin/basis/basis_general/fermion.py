@@ -214,7 +214,7 @@ class spinful_fermion_basis_general(basis_general):
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
 							"\n\tz: c-symm number operator")
-		self._allowed_ops=set(["z","I","n","+","-"])
+		self._allowed_ops=set(["I","n","+","-","z"])
 		self._reduce_n_dtype()
 
 	def _Op(self,opstr,indx,J,dtype):
@@ -510,7 +510,8 @@ class spinless_fermion_basis_general(basis_general):
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
 							"\n\tz: c-symm number operator")
-		self._allowed_ops=set(["z","I","n","+","-"])
+
+		self._allowed_ops=set(["I","n","+","-","z"])
 		self._check_symm = None
 		self._reduce_n_dtype()
 

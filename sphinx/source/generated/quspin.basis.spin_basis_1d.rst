@@ -1,5 +1,5 @@
-quspin\.basis\.spin\_basis\_1d
-==============================
+quspin.basis.spin\_basis\_1d
+============================
 
 .. currentmodule:: quspin.basis
 
@@ -29,5 +29,17 @@ quspin\.basis\.spin\_basis\_1d
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~spin_basis_1d.L
+      ~spin_basis_1d.N
+      ~spin_basis_1d.Ns
+      ~spin_basis_1d.blocks
+      ~spin_basis_1d.description
+      ~spin_basis_1d.operators
+      ~spin_basis_1d.sps
    
    

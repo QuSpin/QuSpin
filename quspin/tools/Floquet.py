@@ -69,8 +69,8 @@ def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 
 
 
-def _evolve_step_1(i,H_list,dt_list):
-	"""This function calculates the evolved state for Periodic Step (point 2. in def of 'evo_dict'). 
+def _evolve_step_3(i,H_list,dt_list):
+	"""This function calculates the evolved state for Periodic Step (point 3. in def of 'evo_dict'). 
 	
 	"""
 	
@@ -83,7 +83,7 @@ def _evolve_step_1(i,H_list,dt_list):
 	return psi0
 
 def _evolve_step_2(i,H,t_list,dt_list):
-	"""This function calculates the evolved state for Periodic Step (point 3. in def of 'evo_dict'. 
+	"""This function calculates the evolved state for Periodic Step (point 2. in def of 'evo_dict'. 
 	
 	"""
 	
@@ -104,9 +104,9 @@ def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9):
 
 	return vstack(sols)
 
-def _get_U_step_1(H_list,dt_list,n_jobs): 
+def _get_U_step_3(H_list,dt_list,n_jobs): 
 	
-	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_1)(i,H_list,dt_list) for i in _range_iter(0,H_list[0].Ns,1))
+	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_3)(i,H_list,dt_list) for i in _range_iter(0,H_list[0].Ns,1))
 
 	return vstack(sols)
 
@@ -170,13 +170,15 @@ class Floquet(object):
 				* `atol` : (optional) absolute tolerance for the ODE solver. (default = 1E-9)
 
 			ii) Periodic step protocol from a `hamiltonian` object. 
-				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\sign(\\cos(\\Omega t))`.
+				* `H` : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. :math:`\\mathrm{sign}(\\cos(\\Omega t))`.
 				* `t_list` : list of times to evaluate the hamiltonian at for each step.
-				* `dt_list` : list of time step durations for each step of the evolution. 
+				* `dt_list` : list of time step durations for each step of the evolution.
+				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T=sum(dt_list)`. Use this option for periodic delta kicks.
 
 			iii) Periodic step protocol from a list of hamiltonians. 
 				* `H_list` : list of matrices to evolve with.
 				* `dt_list` : list of time step durations. Must be the same size as `H_list`.
+				* `T`: (optional) drive period used to compute the Floquet Hamiltonian `H_F`. If not specified, then `T=sum(dt_list)`. Use this option for periodic delta kicks.
 		
 		HF : bool
 			Set to `True` to calculate and return Floquet Hamiltonian under attribute `_.HF`. Default is `False`.
@@ -201,7 +203,7 @@ class Floquet(object):
 		if isinstance(evo_dict,dict):
 
 			keys = evo_dict.keys()
-			if set(keys) == set(["H","T"]) or set(keys) == set(["H","T","arol"]) or set(keys) == set(["H","T","atol","rtol"]):
+			if set(keys) == set(["H","T"]) or set(keys) == set(["H","T","atol"]) or set(keys) == set(["H","T","atol","rtol"]):
 
 				H = evo_dict["H"]
 				T = evo_dict["T"]
@@ -249,7 +251,7 @@ class Floquet(object):
 				# calculate evolution operator
 				UF = _get_U_cont(H,self.T,n_jobs,atol=self._atol,rtol=self._rtol)
 
-			elif set(keys) == set(["H","t_list","dt_list"]):
+			elif set(keys) == set(["H","t_list","dt_list"]) or set(keys) == set(["H","t_list","dt_list","T"]):
 				H = evo_dict["H"]
 				t_list = _np.asarray(evo_dict["t_list"],dtype=_np.float64)
 				dt_list = _np.asarray(evo_dict["dt_list"],dtype=_np.float64)
@@ -260,7 +262,10 @@ class Floquet(object):
 				if dt_list.ndim != 1:
 					raise ValueError("dt_list must be 1d array.")
 
-				self._T = dt_list.sum()
+				if "T" in set(keys):
+					self._T=evo_dict["T"]
+				else:
+					self._T = dt_list.sum()
 
 				if not ishamiltonian(H):
 					raise ValueError("expecting hamiltonian object for 'H'.")
@@ -270,7 +275,7 @@ class Floquet(object):
 
 
 
-			elif set(keys) == set(["H_list","dt_list"]):
+			elif set(keys) == set(["H_list","dt_list"]) or set(keys) == set(["H_list","dt_list","T"]):
 				H_list = evo_dict["H_list"]
 				dt_list = _np.asarray(evo_dict["dt_list"],dtype=_np.float64)
 
@@ -278,7 +283,10 @@ class Floquet(object):
 				if dt_list.ndim != 1:
 					raise ValueError("dt_list must be 1d array.")
 
-				self._T = dt_list.sum()
+				if "T" in set(keys):
+					self._T=evo_dict["T"]
+				else:
+					self._T = dt_list.sum()
 				
 				if type(H_list) not in (list,tuple):
 					raise ValueError("expecting list/tuple for H_list.")
@@ -288,7 +296,7 @@ class Floquet(object):
 
 
 				# calculate evolution operator
-				UF = _get_U_step_1(H_list,dt_list,n_jobs)
+				UF = _get_U_step_3(H_list,dt_list,n_jobs)
 				
 			else:
 				raise ValueError("evo_dict={0} is not correct format.".format(evo_dict))	
@@ -443,6 +451,8 @@ class Floquet_t_vec(object):
 		self._vals = self.T*n
 		# total length of time vector
 		self._len = self.vals.size
+		# shape
+		self._shape = self._vals.shape
 		# time step
 		self._dt = self.T/self.len_T
 		# define index of period -N_up
@@ -511,6 +521,11 @@ class Floquet_t_vec(object):
 	def N(self):
 		"""int: total number of periods."""
 		return self._N
+	
+	@property
+	def shape(self):
+		"""tuple: shape of array."""
+		return self._shape
 
 	@property
 	def len_T(self):
@@ -608,9 +623,43 @@ class Floquet_t_vec(object):
 			raise AttributeError("missing attribute 'down'")
 
 
-	
+	def get_coordinates(self,index):
+		"""Returns (period number, index within period) of the `Floquet_t_vec` value stored at `index`.
 
+		Notes
+		-----
+			* This function finds the indegers (i,j), such that `t_evolve[t_evolve.strobo.inds[i-1] + j] = t_evolve[index]`.
 
+			* The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) `Floquet_t_vec` values is smaller than `1E-15`.
+
+		Parameters
+		-----------
+		index : int
+			Index, to compute the `Floquet_t_vec` coordinates of.
+
+		Returns
+		--------
+		tuple 
+			(i,j) such that `t_evolve[t_evolve.strobo.inds[i] + j] = t_evolve[index]`.
+
+		Examples
+		---------
+		>>> t = Floquet_t_vec(10.0,10) # define a Floquet vector
+		>>> index = 145 # pick a random index
+		>>> print(t[index]) # check element
+		>>> (i,j) = t.get_coordinates(index) # decompose index into stroboscopic coordinates
+		>>> print( t[t.strobo.inds[i] + j] ) # we obtain back original element
+
+		"""	
+
+		t=self._vals[index]
+		eps=1E-15
+
+		i=_np.searchsorted(self.strobo._vals,t+eps)-1
+
+		j=_np.where( _np.abs(t-i*self._T - self._vals[:self.strobo.inds[1]])<eps )[0][0]
+
+		return (i,j)
 
 
 
@@ -635,6 +684,27 @@ class _strobo_times():
 	@property
 	def vals(self):
 		return self._vals
+
+	def __iter__(self):
+		return self.vals.__iter__()
+
+	def __getitem__(self,s):
+		return self._vals.__getitem__(s)
+	
+	def __str__(self):
+		return str(self._vals)
+	
+	def __mul__(self,other):
+		return self._vals*other
+
+	def __div__(self,other):
+		return self._vals/other
+
+	def __truediv__(self,other):
+		return self._vals/other
+
+	def __len__(self):
+		return self._vals.__len__()
 	
 		 
 
@@ -657,9 +727,22 @@ class _periodic_ramp():
 
 	def __getitem__(self,s):
 		return self._vals.__getitem__(s)
+	
+	def __str__(self):
+		return str(self._vals)
+	
+	def __mul__(self,other):
+		return self._vals*other
+
+	def __div__(self,other):
+		return self._vals/other
+
+	def __truediv__(self,other):
+		return self._vals/other
 
 	def __len__(self):
 		return self._vals.__len__()
+
 
 	@property
 	def N(self):

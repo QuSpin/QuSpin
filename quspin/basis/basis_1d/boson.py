@@ -195,6 +195,8 @@ class boson_basis_1d(basis_1d):
 				if a%2 != 0: # T and ZA (ZB) symemtries do NOT commute
 					raise ValueError("unit cell size 'a' must be even")
 
+		self._allowed_ops = set(["I","+","-","n","z"])
+
 		if self._sps <= 2:
 			Imax = (1<<L)-1
 			stag_A = sum(1<<i for i in range(0,L,2))
@@ -207,7 +209,6 @@ class boson_basis_1d(basis_1d):
 								"\n\tn: number operator"+
 								"\n\tz: c-symm number operator")
 
-			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nb_list,pars=pars,count_particles=count_particles,**blocks)
 		else:
 			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (0,) # flag to turn off higher spin matrix elements for +/- operators
@@ -219,7 +220,6 @@ class boson_basis_1d(basis_1d):
 								"\n\tn: number operator"+
 								"\n\tz: ph-symm number operator")
 
-			self._allowed_ops = set(["I","+","-","n","z"])
 			basis_1d.__init__(self,boson_basis,boson_ops,L,Np=Nb_list,pars=pars,count_particles=count_particles,**blocks)
 
 	def __type__(self):

@@ -1,5 +1,5 @@
-quspin\.tools\.misc\.KL\_div
-============================
+quspin.tools.misc.KL\_div
+=========================
 
 .. currentmodule:: quspin.tools.misc
 

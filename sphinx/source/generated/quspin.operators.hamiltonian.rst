@@ -1,5 +1,5 @@
-quspin\.operators\.hamiltonian
-==============================
+quspin.operators.hamiltonian
+============================
 
 .. currentmodule:: quspin.operators
 
@@ -45,5 +45,21 @@ quspin\.operators\.hamiltonian
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~hamiltonian.H
+      ~hamiltonian.Ns
+      ~hamiltonian.T
+      ~hamiltonian.basis
+      ~hamiltonian.dtype
+      ~hamiltonian.dynamic
+      ~hamiltonian.get_shape
+      ~hamiltonian.is_dense
+      ~hamiltonian.nbytes
+      ~hamiltonian.ndim
+      ~hamiltonian.static
    
    

@@ -23,7 +23,7 @@ def _quantum_operator_dot(op,pars,v):
 	return op.dot(v,pars=pars,check=False)
 
 class quantum_operator(object):
-	"""Constructs parameter-dependent `hamiltonian` operators.
+	"""Constructs parameter-dependent (hermitian and nonhermitian) operators.
 
 		The `quantum_operator` class maps quantum operators to keys of a dictionary. When calling various methods
 		of `quantum_operator`, it allows one to 'dynamically' specify the pre-factors of these operators.

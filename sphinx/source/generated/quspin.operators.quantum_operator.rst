@@ -1,5 +1,5 @@
-quspin\.operators\.quantum\_operator
-====================================
+quspin.operators.quantum\_operator
+==================================
 
 .. currentmodule:: quspin.operators
 
@@ -41,5 +41,18 @@ quspin\.operators\.quantum\_operator
    
 
    
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~quantum_operator.H
+      ~quantum_operator.Ns
+      ~quantum_operator.T
+      ~quantum_operator.basis
+      ~quantum_operator.dtype
+      ~quantum_operator.get_shape
+      ~quantum_operator.is_dense
+      ~quantum_operator.ndim
    
    

@@ -113,7 +113,7 @@ class spinless_fermion_basis_1d(basis_1d):
 		stag_A = sum(1<<i for i in range(0,L,2))
 		stag_B = sum(1<<i for i in range(1,L,2))
 		pars = _np.array([1,L,Imax,stag_A,stag_B]) # sign to be calculated
-		self._operators = ("availible operators for ferion_basis_1d:"+
+		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
@@ -196,7 +196,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		-----------
 		L: int
 			Length of chain/number of sites.
-		Nf: {tupe(int,list)}, optional
+		Nf: tuple(int,list), optional
 			Number of fermions in chain. First (left) entry refers to spin-up and second (right) entry refers
 			to spin-down. Each of the two entries can be integer or list to specify one or more particle sectors.
 		nf: tuple(float), optional
@@ -352,7 +352,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 		Imax = (1<<L)-1
 		pars = _np.array([L,Imax,0,0]) # sign to be calculated
-		self._operators = ("availible operators for ferion_basis_1d:"+
+		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
@@ -529,6 +529,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 			.. math::
 				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha
+		
+			**Note:** The logarithm used is the natural logarithm (base e).
 		sparse_diag : bool, optional
 			When `sparse=True`, this flag enforces the use of
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
