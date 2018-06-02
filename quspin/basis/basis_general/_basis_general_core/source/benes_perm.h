@@ -6,25 +6,29 @@
 
 #define no_index int(-1)
 
+
 template<typename I>
 struct bit_info
 {};
 
 template<>
 struct bit_info<npy_uint64>
-{	enum {ld_bits=6,bits=64};};
+{	enum {ld_bits=6,bits=64,
+        eob=0x5555555555555555ull,
+        all_bits=0xFFFFFFFFFFFFFFFFull};};
 
 template<>
 struct bit_info<npy_uint32>
-{	enum {ld_bits=5,bits=32};};
+{	enum {ld_bits=5,bits=32,
+        eob=0x55555555u,all_bits=0xFFFFFFFFu};};
 
 template<>
 struct bit_info<npy_uint16>
-{	enum {ld_bits=4,bits=16};};
+{	enum {ld_bits=4,bits=16,eob=0x5555,all_bits=0xFFFF};};
 
 template<>
 struct bit_info<npy_uint8>
-{	enum {ld_bits=3,bits=8};};
+{	enum {ld_bits=3,bits=8,eob=0x55,all_bits=0xFF};};
 
 
 template<typename I>
@@ -89,28 +93,28 @@ struct ta_subword
 //////
 // aux functions
 
-unsigned char bit_count(unsigned char I, int l){
+npy_uint8 bit_count(npy_uint8 I, int l){
   I &= (0x7F >> (7-l));
   I = I - ((I >> 1) & 0x55);
   I = (I & 0x33) + ((I >> 2) & 0x33);
   return (((I + (I >> 4)) & 0x0F) * 0x01); 
 }
 
-unsigned short bit_count(unsigned short I, int l){
+npy_uint16 bit_count(npy_uint16 I, int l){
   I &= (0x7FFF >> (15-l));
   I = I - ((I >> 1) & 0x5555);
   I = (I & 0x3333) + ((I >> 2) & 0x3333);
   return (((I + (I >> 4)) & 0x0F0F) * 0x0101) >> 8;
 }
 
-unsigned int bit_count(unsigned int I, int l){
+npy_uint32 bit_count(npy_uint32 I, int l){
   I &= (0x7FFFFFFF >> (31-l));
   I = I - ((I >> 1) & 0x55555555);
   I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
   return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
 }
 
-unsigned long bit_count(unsigned long I, int l){
+npy_uint64 bit_count(npy_uint64 I, int l){
   I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
   I = I - ((I >> 1) & 0x5555555555555555);
   I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);

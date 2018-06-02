@@ -5,22 +5,6 @@
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
-npy_uint32 bit_count(npy_uint32 I, int l){
-	I &= (0x7FFFFFFF >> (31-l));
-	I = I - ((I >> 1) & 0x55555555);
-	I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
-	return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
-}
-
-npy_uint64 bit_count(npy_uint64 I, int l){
-	I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
-	I = I - ((I >> 1) & 0x5555555555555555);
-	I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
-	return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
-}
-
-
-
 
 void mergeSort(int nums[], int left, int mid, int right, bool  &f_count){
     int leftLength = mid - left + 1;
@@ -35,7 +19,7 @@ void mergeSort(int nums[], int left, int mid, int right, bool  &f_count){
     }
     int i = 0, j = 0, k = left;
     while (i < leftLength && j < rightLength) {
-      if (lAr[i] <= rAr[j]) {
+      if (lAr[i] >= rAr[j]) {
         nums[k] = lAr[i];
         if(j&1){f_count ^= 1;}
         i++;
@@ -72,6 +56,34 @@ void getf_count(int nums[], int left, int right, bool &f_count){
   }
 
 
+
+
+// template<class I>
+// I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
+// 	I ss = 0;
+// 	int pos_list[64];
+// 	int np = 0;
+// 	I sf_count = ((inv&s) & (bit_info<I>::eob >> (N&1)));
+// 	bool f_count = (bit_count(sf_count,0)&1);
+
+// 	s ^= inv;
+
+// 	for(int i=N-1;i>=0;--i){
+// 		if(s&1){
+// 			pos_list[np]=j;++np;
+// 			ss ^= ( I(1)<<(N-map[i]-1) );
+// 		}
+// 		s >>= 1;
+// 	}
+
+// 	if(np>1){getf_count(pos_list,0,np-1,f_count);}
+// 	if(f_count){sign ^= (-2);}
+
+// 	return ss;
+// }
+
+
+
 template<class I>
 I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	I ss = 0;
@@ -82,39 +94,18 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	for(int i=N-1;i>=0;--i){
 		int j = map[i];
 		I n = (s&1);
-		// if(n){pos_list[np]=( j<0 ? N+j : N-j-1); ++np;}
 		if(n){
-			pos_list[np]=( j<0 ? -j+1 : j);
+			pos_list[np] = ( j<0 ? -(j+1) : j);
 			++np;
 			f_count ^= ((j<0)&&(i&1));
 		}
 		ss ^= ( j<0 ? (n^1)<<(N+j) : n<<(N-j-1) );
 
-		
-
 		s >>= 1;
 	}
 
-	// // sort in decending order counting number of permutations. 
-	// // starting at 2nd element as first element is already sorted.
-	// // Loop Invariant - left part of the array is already sorted.
-	// if(np > 1){
-	// 	for (int i = 1; i < np; i++) {
-	// 		int moveMe = pos_list[i];
-	// 		int j = i;
-	// 		while (j > 0 && moveMe > pos_list[j - 1]) {
-	// 			//Move element
-	// 			pos_list[j] = pos_list[j - 1];
-	// 			--j;
-	// 			//increase the count as element swap is happend
-	// 			f_count ^= 1;
-	// 		}
-	// 		pos_list[j] = moveMe;
-	// 	}
-	// }
-	if(np>1){getf_count(pos_list,0,np-1,f_count);}
-
-	if(f_count){sign ^= (-2);}
+	getf_count(pos_list,0,np-1,f_count);
+	if(f_count){sign *= -1;}
 
 	return ss;
 }

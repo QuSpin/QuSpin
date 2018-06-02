@@ -2,6 +2,7 @@
 #define _SPINFUL_FERMION_BASIS_CORE_OP_H
 
 #include <complex>
+#include <iostream>
 #include "general_basis_core.h"
 #include "local_pcon_basis_core.h"
 #include "spinless_fermion_basis_core.h"
@@ -42,6 +43,53 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
 				sign[i] = temp_sign;
 			}
+		}
+
+		void split_state(I s,I &s_left,I &s_right){
+			s_right = (bit_info<I>::all_bits >> (bit_info<I>::bits-general_basis_core<I>::N))&s;
+			s_left = (s >> general_basis_core<I>::N);
+		}
+
+		void get_right_min_max(I s,I &min,I &max){
+			int n = bit_count(s,general_basis_core<I>::N);
+			if(n){
+				min = bit_info<I>::all_bits >> (bit_info<I>::bits-n);
+				max = min << (general_basis_core<I>::N - n);
+			}
+			else{
+				min = max = 0;
+			}
+		}
+
+		I comb_state(I s_left,I s_right){
+			return (s_left<<general_basis_core<I>::N)+s_right;
+		}
+
+		I next_state_pcon_side(I s){
+			if(s==0){return s;}
+			I t = (s | (s - 1)) + 1;
+			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
+		}
+
+		I next_state_pcon(I s){
+
+			I s_left  = 0;
+			I s_right = 0;
+			I min_right,max_right;
+
+			split_state(s,s_left,s_right);
+			int n = bit_count(s,general_basis_core<I>::N);
+			get_right_min_max(s_right,min_right,max_right);
+
+			if(s_right<max_right){
+				s_right = next_state_pcon_side(s_right);
+			}
+			else{
+				s_right = min_right;
+				s_left = next_state_pcon_side(s_left);
+			}
+
+			return comb_state(s_left,s_right);
 		}
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){

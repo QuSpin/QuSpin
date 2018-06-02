@@ -18,29 +18,32 @@ class general_basis_core{
 		const int N;
 		const int nt;
 		const int * maps;
-		const std::vector<tr_benes<I>> pm;
+		const I * inv;
+		std::vector<tr_benes<I> > pm;
 		const int * pers;
 		const int * qs;
 
 		general_basis_core(const int _N) : \
-			 N(_N), nt(0), maps(NULL), pers(NULL), qs(NULL), pm(NULL) {}
+			 N(_N), nt(0), maps(NULL), inv(NULL), pers(NULL), qs(NULL) {}
 
 		general_basis_core(const int _N,const int _nt,const int _maps[], \
 			const int _pers[], const int _qs[]) : \
-			 N(_N), nt(_nt), maps(_maps), pers(_pers), qs(_qs) {
+			 N(_N), nt(_nt), maps(_maps), inv(NULL) , pers(_pers), qs(_qs) {
 
-			 	ta_index<I> ind;
-			 	pm.resize(nt);
+			 	// ta_index<I> ind;
+			 	// pm.resize(nt);
 
-			 	for(int i=0;i<nt;i++){
-			 		for(int j=0;j<bit_info<I>::bits;++j){
-			 			ta_index[j] = no_index;
-			 		}
-			 		for(int j=0;j<N;++j){
-			 			ta_index[j] = maps[N*i+j];
-			 		}
-			 		gen_benes<I>(&pm[i],ta_index);
-			 	}
+			 	// for(int i=0;i<nt;i++){
+			 	// 	for(int j=0;j<bit_info<I>::bits;++j){
+			 	// 		ind[j] = no_index;
+			 	// 	}
+			 	// 	for(int j=N-1;j>=0;--j){
+			 	// 		int k = N-maps[N*i+j]-1;
+			 	// 		ind[j] = ;
+			 	// 	}
+			 	// 	gen_benes<I>(&pm[i],ind);
+			 	// }
+
 			 }
 
 		~general_basis_core() {}

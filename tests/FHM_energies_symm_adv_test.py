@@ -51,14 +51,13 @@ operator_dict=dict(H0=operator_list_0,H1=operator_list_1)
 
 
 basis=spinful_fermion_basis_general(N,Nf=(2,2),kx=(T_x,0),ky=(T_y,0))
-# print(basis.Ns)
-# exit()
+
 
 basis_name = "general spinful fermions advanced"
 
 H_U = quantum_operator(operator_dict,basis=basis,dtype=np.float64,check_pcon=False,check_symm=False,check_herm=False)
 
-E_quspin=np.zeros(E_paper.shape,)
+E_quspin=np.zeros(E_paper.shape)
 for j, U in enumerate(np.linspace(0.0,4.0,9)):
 
 	params_dict=dict(H0=1.0,H1=U)
