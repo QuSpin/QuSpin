@@ -443,7 +443,7 @@ class basis_1d(lattice_basis):
 				self._basis = basis[arg].copy()
 				self._N = N[arg].copy()
 				self._M = M[arg].copy()
-				self._Np_list = Np_list[arg].copy()
+				if Np_list is not None: self._Np_list = Np_list[arg].copy()
 
 			self._op_args=[self._N,self._M,self._basis,self._L,self._pars]
 
