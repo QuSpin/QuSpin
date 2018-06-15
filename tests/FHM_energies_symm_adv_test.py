@@ -49,7 +49,7 @@ operator_list_1=[["nn",U_onsite]]
 operator_dict=dict(H0=operator_list_0,H1=operator_list_1)
 
 
-basis=spinful_fermion_basis_general(N,Nf=(2,2),ky=(T_y,0),kx=(T_x,0))
+basis=spinful_fermion_basis_general(N,Nf=(2,2),ky=(T_y,0),kx=(T_x,0),simple_symm=False)
 
 
 basis_name = "general spinful fermions advanced"
