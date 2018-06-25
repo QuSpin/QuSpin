@@ -350,7 +350,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		simple_sym: bool, optional
-
+			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
