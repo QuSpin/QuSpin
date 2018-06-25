@@ -22,7 +22,7 @@ class general_basis_core{
 		const int * qs;
 
 		general_basis_core(const int _N) : \
-			 N(_N), nt(0), maps(NULL), inv(NULL), pers(NULL), qs(NULL) {}
+			 N(_N), nt(0), maps(NULL), pers(NULL), qs(NULL) {}
 
 		general_basis_core(const int _N,const int _nt,const int _maps[], \
 			const int _pers[], const int _qs[]) : \
