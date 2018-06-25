@@ -31,6 +31,39 @@ struct bit_info<npy_uint8>
 {	enum {ld_bits=3,bits=8,eob=0x55,all_bits=0xFF};};
 
 
+
+npy_uint8 bit_count(npy_uint8 I, int l){
+  I &= (0x7F >> (7-l));
+  I = I - ((I >> 1) & 0x55);
+  I = (I & 0x33) + ((I >> 2) & 0x33);
+  return (((I + (I >> 4)) & 0x0F) * 0x01); 
+}
+
+npy_uint16 bit_count(npy_uint16 I, int l){
+  I &= (0x7FFF >> (15-l));
+  I = I - ((I >> 1) & 0x5555);
+  I = (I & 0x3333) + ((I >> 2) & 0x3333);
+  return (((I + (I >> 4)) & 0x0F0F) * 0x0101) >> 8;
+}
+
+npy_uint32 bit_count(npy_uint32 I, int l){
+  I &= (0x7FFFFFFF >> (31-l));
+  I = I - ((I >> 1) & 0x55555555);
+  I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
+  return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
+}
+
+npy_uint64 bit_count(npy_uint64 I, int l){
+  I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
+  I = I - ((I >> 1) & 0x5555555555555555);
+  I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
+  return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
+}
+
+
+
+/*
+
 template<typename I>
 struct tr_bfly{
   // This structure is used to hold the configuration of
@@ -93,33 +126,6 @@ struct ta_subword
 //////
 // aux functions
 
-npy_uint8 bit_count(npy_uint8 I, int l){
-  I &= (0x7F >> (7-l));
-  I = I - ((I >> 1) & 0x55);
-  I = (I & 0x33) + ((I >> 2) & 0x33);
-  return (((I + (I >> 4)) & 0x0F) * 0x01); 
-}
-
-npy_uint16 bit_count(npy_uint16 I, int l){
-  I &= (0x7FFF >> (15-l));
-  I = I - ((I >> 1) & 0x5555);
-  I = (I & 0x3333) + ((I >> 2) & 0x3333);
-  return (((I + (I >> 4)) & 0x0F0F) * 0x0101) >> 8;
-}
-
-npy_uint32 bit_count(npy_uint32 I, int l){
-  I &= (0x7FFFFFFF >> (31-l));
-  I = I - ((I >> 1) & 0x55555555);
-  I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
-  return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
-}
-
-npy_uint64 bit_count(npy_uint64 I, int l){
-  I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
-  I = I - ((I >> 1) & 0x5555555555555555);
-  I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
-  return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
-}
 
 template<typename I>
 void invert_perm(const ta_index<I> &src, ta_index<I> &tgt) {
@@ -348,5 +354,5 @@ I benes_bwd(const tr_benes<I>* self, I x) {
 
   return ibfly(&self->b1, bfly(&self->b2,x));
   }
-
+*/
 #endif

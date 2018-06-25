@@ -6,6 +6,8 @@
 #include "numpy/ndarraytypes.h"
 
 
+
+
 void mergeSort(int nums[], int left, int mid, int right, bool  &f_count){
     int leftLength = mid - left + 1;
     int rightLength = right - mid;

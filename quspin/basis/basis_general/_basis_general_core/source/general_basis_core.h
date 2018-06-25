@@ -9,7 +9,7 @@
 #include <vector>
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
-// #include "benes_perm.h"
+#include "benes_perm.h"
 
 
 template<class I>
