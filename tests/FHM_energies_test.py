@@ -27,8 +27,6 @@ E_paper=-np.array([12.0000000000000000,
 
 
 tr = square_lattice_trans(Lx,Ly)
-tr_adv = square_lattice_trans_spinful_advanced(4,4)
-exit()
 
 Jp = [[1.0,i,tr.T_x[i]] for i in range(N)]
 Jp.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
