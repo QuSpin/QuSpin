@@ -268,13 +268,14 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			if type(Nf) is tuple:
 				if len(Nf)==2:
 					Nup,Ndown = Nf
+					if (type(Nup) is not int) and (type(Ndown) is not int):
+							raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+
 					if Nup>L:
 						raise ValueError("Nup cannot exceed system size L.")
 					if Ndown>L:
 						raise ValueError("Ndown cannot exceed system size L.")
 					self._Np = Nup+Ndown
-					if (type(Nup) is not int) and (type(Ndown) is not int):
-						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
 					Nf_list = [Nf]
 				else:
 					Nf_list = list(Nf)
@@ -298,7 +299,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 
 				Nf_list = list(Nf)
-				N_up_list,_N_down_list = zip(*Nf_list)
+				N_up_list,N_down_list = zip(*Nf_list)
 				self._Np = sum(N_up_list)
 				self._Np += sum(N_down_list)
 

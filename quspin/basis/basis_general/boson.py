@@ -140,8 +140,6 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Nb = int(nb*N)
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
-
-			self._sps = max(Nb+1,2)
 		else:
 			if Nb is not None:
 				if nb is not None:
@@ -150,8 +148,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			elif nb is not None:
 				Nb = int(nb*N)
 
-			self._sps = sps
-
+		
+		self._sps = sps
 
 		self._allowed_ops=set(["I","z","n","+","-"])
 
@@ -199,6 +197,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				basis_type = get_basis_type(N,Nb,sps)
 			elif type(Nb) is int:
 				self._check_pcon = True
+
+				if self._sps is None:
+					self._sps = Nb
+
 				Ns = H_dim(Nb,N,self._sps-1)
 				basis_type = get_basis_type(N,Nb,self._sps)
 			else:
@@ -206,6 +208,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 					Np_iter = iter(Nb)
 				except TypeError:
 					raise TypeError("Nb must be integer or iteratable object.")
+
+				if self._sps is None:
+					self._sps = max(Nb)				
+
 				Ns = 0
 				for b in Nb:
 					Ns += H_dim(b,N,self._sps-1)
@@ -214,7 +220,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:
-					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*sps
+					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*self._sps
 				else:
 					if type(Ns_block_est) is not int:
 						raise TypeError("Ns_block_est must be integer value.")
