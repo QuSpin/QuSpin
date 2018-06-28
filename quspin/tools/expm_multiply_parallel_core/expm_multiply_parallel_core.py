@@ -128,6 +128,9 @@ class expm_multiply_parallel(object):
 		v_dtype = _np.result_type(self._A.dtype,a_dtype,v.dtype)
 
 		if v_dtype != v.dtype:
+			if overwrite_v:
+				raise ValueError("input array must match correct output dtype the matrix multiplication.")
+
 			v = v.astype(v_dtype)
 
 		if v.shape[0] != self._A.shape[1]:
@@ -142,7 +145,7 @@ class expm_multiply_parallel(object):
 			if work_array.shape != (2*self._A.shape[0],):
 				raise ValueError("work_array array must be an array of shape (2*v.shape[0],) with same dtype as v.")
 			if work_array.dtype != v_dtype:
-				work_array = work_array.astype(v_dtype)
+				raise ValueError("work_array must be array of dtype which matches the result of the matrix-vector multiplication.")
 
 		_wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
 					self._m_star,self._s,self._a,self._tol,self._mu,v,work_array)
