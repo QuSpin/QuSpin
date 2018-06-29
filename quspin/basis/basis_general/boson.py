@@ -55,10 +55,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
 	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `..._basis_general` class can be programmed as follows. Suppose we have a system of
+	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of
 	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
-		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j`
-		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`
+		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
+		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry, hardcore bosons only)
 
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
 	spin inversion. For a specific example, see below.
@@ -82,7 +82,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 	Examples
 	--------
 
-	The code snipped below shows how to construct the two-dimensional Bose-Hubbard model.
+	The code snippet below shows how to construct the two-dimensional Bose-Hubbard model.
 	
 	.. math::
 		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
