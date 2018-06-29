@@ -327,7 +327,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	Notes
 	-----
 
-	The definition of the operation :math:`s_i \\leftrightarrow s_j` **differs** for the *simple* and *advanced* cases. 
+	The definition of the operation :math:`s_i\\leftrightarrow -(s_j+1)` **differs** for the *simple* and *advanced* cases. 
 
 
 	Examples
