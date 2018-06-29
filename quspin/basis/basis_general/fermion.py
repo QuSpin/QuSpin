@@ -1,6 +1,6 @@
 from ._basis_general_core import spinful_fermion_basis_core_wrap_32,spinful_fermion_basis_core_wrap_64
 from ._basis_general_core import spinless_fermion_basis_core_wrap_32,spinless_fermion_basis_core_wrap_64
-from .base_general import basis_general
+from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
 from scipy.misc import comb
@@ -729,6 +729,22 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			return spinless_fermion_basis_general._non_zero(self,op)
 
+	def _simple_to_adv(self,op):
+			op = list(op)
+			opstr = op[0]
+
+			i = opstr.index("|")
+			indx = list(op[1])
+			indx_left = tuple(indx[:i])
+			indx_right = tuple([j+self._N//2 for j in indx[i:]])
+
+			opstr_left,opstr_right=opstr.split("|",1)
+
+			op[0] = "".join([opstr_left,opstr_right])
+			op[1] = indx_left+indx_right
+
+			return tuple(op)
+
 	def _expand_opstr(self,op,num):
 		if self._simple_symm:
 			op = list(op)
@@ -775,3 +791,31 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			return spinless_fermion_basis_general._expand_opstr(self,op,num)
 
 
+
+	def _check_symm(self,static,dynamic,photon_basis=None):
+		if photon_basis is None:
+			basis_sort_opstr = lambda op:spinless_fermion_basis_general._sort_opstr(self,op)
+			static_list,dynamic_list = self._get_local_lists(static,dynamic)
+		else:
+			basis_sort_opstr = photon_basis._sort_opstr
+			static_list,dynamic_list = photon_basis._get_local_lists(static,dynamic)
+
+		if self._simple_symm:
+			static_list = [self._simple_to_adv(op) for op in static_list]
+			dynamic_list = [self._simple_to_adv(op) for op in dynamic_list]
+
+
+		static_blocks = {}
+		dynamic_blocks = {}
+		for block,map in self._maps_dict.items():
+			key = block+" symm"
+			odd_ops,missing_ops = _check_symm_map(map,basis_sort_opstr,static_list)
+			if odd_ops or missing_ops:
+				static_blocks[key] = (tuple(odd_ops),tuple(missing_ops))
+
+			odd_ops,missing_ops = _check_symm_map(map,basis_sort_opstr,dynamic_list)
+			if odd_ops or missing_ops:
+				dynamic_blocks[key] = (tuple(odd_ops),tuple(missing_ops))
+
+
+		return static_blocks,dynamic_blocks
