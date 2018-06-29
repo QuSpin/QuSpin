@@ -228,7 +228,7 @@ class spinless_fermion_basis_general(basis_general):
 		if zipstr:
 			n = len(zipstr)
 			swapped = True
-			anticommutes = 0
+			anticommutes = 1
 			while swapped:
 				swapped = False
 				for i in range(n-1):
@@ -239,12 +239,12 @@ class spinless_fermion_basis_general(basis_general):
 						swapped = True
 
 						if zipstr[i][0] in ["+","-"] and zipstr[i+1][0] in ["+","-"]:
-							anticommutes += 1
+							anticommutes *= -1
 
 			op1,op2 = zip(*zipstr)
 			op[0] = "".join(op1)
 			op[1] = tuple(op2)
-			op[2] *= (1 if anticommutes%2 == 0 else -1)
+			op[2] *= anticommutes
 		return tuple(op)
 
 	
@@ -272,7 +272,7 @@ class spinless_fermion_basis_general(basis_general):
 		op[1].reverse()
 		op[1] = tuple(op[1])
 		op[2] = op[2].conjugate()
-		return self._sort_opstr(op) # return the sorted op.
+		return spinless_fermion_basis_general._sort_opstr(self,op) # return the sorted op.
 
 
 	def _expand_opstr(self,op,num):
@@ -612,37 +612,63 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			op1 = list(op)
 			op1[0] = opstr_left
 			op1[1] = tuple(indx_left)
+			op1[2] = 1.0
 
 			op2 = list(op)
 			op2[0] = opstr_right
 			op2[1] = tuple(indx_right)
+			op2[2] = 1.0
 			
 			op1 = spinless_fermion_basis_general._sort_opstr(self,op1)
 			op2 = spinless_fermion_basis_general._sort_opstr(self,op2)
 
 			op[0] = "|".join((op1[0],op2[0]))
 			op[1] = op1[1] + op2[1]
-			
+			op[2] *= op1[2] * op2[2]
 			return tuple(op)
 		else:
 			return spinless_fermion_basis_general._sort_opstr(self,op)
 
-	# def _hc_opstr(self,op):
-	# 	if self._simple_symm:
-	# 		op = list(op)
-	# 		# take h.c. + <--> - , reverse operator order , and conjugate coupling
-	# 		op[0] = list(op[0].replace("+","%").replace("-","+").replace("%","-"))
-	# 		op[0].reverse()
-	# 		op[0] = "".join(op[0])
-	# 		op[1] = list(op[1])
-	# 		op[1].reverse()
-	# 		op[1] = tuple(op[1])
-	# 		op[2] = op[2].conjugate()
+	def _hc_opstr(self,op):
+		if self._simple_symm:
+			op = list(op)
+			opstr = op[0]
+			indx  = op[1]
 
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+		
+			if opstr.count("|") > 1: 
+				raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
 
-	# 		return self._sort_opstr(self,op)
-	# 	else:
-	# 		return spinless_fermion_basis_general._hc_opstr(self,op)
+			if len(opstr)-opstr.count("|") != len(indx):
+				raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+			i = opstr.index("|")
+			indx_left = indx[:i]
+			indx_right = indx[i:]
+
+			opstr_left,opstr_right=opstr.split("|")
+
+			op1 = list(op)
+			op1[0] = opstr_left
+			op1[1] = tuple(indx_left)
+
+			op2 = list(op)
+			op2[0] = opstr_right
+			op2[1] = tuple(indx_right)
+			op2[2] = 1.0
+			
+			op1 = spinless_fermion_basis_general._hc_opstr(self,op1)
+			op2 = spinless_fermion_basis_general._hc_opstr(self,op2)
+
+			op[0] = "|".join((op1[0],op2[0]))
+			op[1] = op1[1] + op2[1]
+			op[2] = op1[2] * op2[2]
+
+			return tuple(op)
+		else:
+			return spinless_fermion_basis_general._hc_opstr(self,op)
 
 	def _non_zero(self,op):
 		if self._simple_symm:
@@ -693,7 +719,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			indx_left = indx[:i]
 			indx_right = indx[i:]
 
-			opstr_left,opstr_right=opstr.split("|",1)
+			opstr_left,opstr_right=opstr.split("|")
 
 			op1 = list(op)
 			op1[0] = opstr_left
