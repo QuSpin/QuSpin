@@ -20,7 +20,7 @@ class spinless_fermion_basis_general(basis_general):
 	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of
 	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
-		* invert the population on a given site: :math:`s_i\\leftrightarrow (-1)^{\\sum_{k=i}^j n_k}(s_j+1)` (e.g., particle-hole symmetry)
+		* invert the **fermion population** on a given site with appropriate sign flip :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 		
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
 	population inversion. For a specific example, see below.
@@ -304,13 +304,13 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
 	User-defined symmetries with the `spinful_fermion_basis_general` class can be programmed in two equivalent ways: *simple* and *advanced*.
-		* *simple* symmetry definition uses the pipe symbol, |, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
+		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, |, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
 			* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 			* invert the **fermion spin** on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., fermion spin inversion)
 
-		* *advanced* symmetry definition does NOT use any pipe symbol in the operator string to distinguish between the spin-up and spin-down species. In the *advanced* case, the sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1},s_{L},s_{L+1},\\dots,s_{2L-1})`, where the first L sites label spin-up, and the last L sites -- spin-down. There are two types of operations one can perform on the sites:
+		* *advanced* symmetry definition (see optional argument `simple_symm`) does NOT use any pipe symbol in the operator string to distinguish between the spin-up and spin-down species. In the *advanced* case, the sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1}; s_{L},s_{L+1},\\dots,s_{2L-1})`, where the first L sites label spin-up, and the last L sites -- spin-down. There are two types of operations one can perform on the sites:
 			* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity, fermion spin inversion)
-			* invert the **fermion population** on a given site: :math:`s_i\\leftrightarrow (-1)^{\\sum_{k=i}^{j-1}n_{k\\uparrow}+n_{k\\downarrow}}(s_j+1)` (e.g., particle-hole symmetry)
+			* invert the **fermion population** on a given site with appropriate sign flip :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 	
 
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion
@@ -323,7 +323,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
 			\\texttt{spinful_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
 		\\end{array}
-	
+
 	Notes
 	-----
 
@@ -333,15 +333,30 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	Examples
 	--------
 
-	The code snipped below shows how to construct the two-dimensional Fermi-Hubbard model with onsite interactions.
+	The code snippets below show how to construct the two-dimensional Fermi-Hubbard model with onsite interactions.
 	
 	.. math::
 		H = -J \\sum_{\\langle ij\\rangle,\\sigma} c^\\dagger_{i\\sigma}c_{j\\sigma} + \\mathrm{h.c.} - \\mu\\sum_{j,\\sigma} n_{j\\sigma} + U\\sum_j n_{j\\uparrow} n_{j\\downarrow}
 
-	Moreover, it demonstrates how to pass user-defined symmetries to the `spinful_fermion_basis_general` constructor. In particular,
-	we do translation invariance and fermion spin-exchange.
+	The first code snippet demonstrates how to pass **simple** user-defined symmetries to the `spinful_fermion_basis_general` constructor. In particular,
+	we do translation invariance and fermion spin inversion.
 
-	.. literalinclude:: ../../doc_examples/spinful_fermion_basis_general-example.py
+	.. literalinclude:: ../../doc_examples/spinful_fermion_basis_general-simple-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	The second code snippet demonstrates how to pass **advanced** user-defined symmetries to the `spinful_fermion_basis_general` constructor. Like above,
+	we do translation invariance and fermion spin inversion.
+
+	.. literalinclude:: ../../doc_examples/spinful_fermion_basis_general-adv-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	The third code snippet demonstrates how to pass **advanced** user-defined particle-hole symemtry to the `spinful_fermion_basis_general` constructor with translational invariance.
+
+	.. literalinclude:: ../../doc_examples/spinful_fermion_basis_general-adv_ph-example.py
 		:linenos:
 		:language: python
 		:lines: 7-

@@ -41,13 +41,12 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	Examples
 	--------
 
-	The code snipped below shows how to construct the two-dimensional transverse-field Ising model.
+	The code snippet below shows how to construct the two-dimensional transverse-field Ising model.
 	
 	.. math::
 		H = J \\sum_{\\langle ij\\rangle} \\sigma^z_{i}\\sigma^z_j+ g\\sum_j\\sigma^x_j 
 
-	Moreover,
-	it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In particular,
+	Moreover, it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In particular,
 	we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion.
 
 	.. literalinclude:: ../../doc_examples/spin_basis_general-example.py

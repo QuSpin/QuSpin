@@ -20,7 +20,7 @@ class spinless_fermion_basis_1d(basis_1d):
 	Notes
 	-----
 
-	Particle-hole like symmetries for fermions can be programmed using the `spinless_fermion_basis_general` class.
+	Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.
 
 	Examples
 	--------
