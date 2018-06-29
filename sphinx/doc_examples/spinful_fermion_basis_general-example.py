@@ -16,17 +16,15 @@ J=1.0 # hopping matrix element
 U=2.0 # onsite interaction
 mu=0.5 # chemical potential
 #
-###### setting up user-defined symmetry transformations for 2d lattice ######
+###### setting up user-defined BASIC symmetry transformations for 2d lattice ######
 s = np.arange(N_2d) # sites [0,1,2,....]
 x = s%Lx # x positions for sites
 y = s//Lx # y positions for sites
 T_x = (x+1)%Lx + Lx*y # translation along x-direction
 T_y = x + Lx*((y+1)%Ly) # translation along y-direction
-P_x = x + Lx*(Ly-y-1) # reflection about x-axis
-P_y = (Lx-x-1) + Lx*y # reflection about y-axis
 #
 ###### setting up bases ######
-basis_2d=spinful_fermion_basis_general(N_2d,Nf=(2,2),kxblock=(T_x,0),kyblock=(T_y,0),pxblock=(P_x,0),pyblock=(P_y,0))
+basis_2d=spinful_fermion_basis_general(N_2d,Nf=(2,2),kxblock=(T_x,0),kyblock=(T_y,0))
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists

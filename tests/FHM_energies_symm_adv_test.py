@@ -5,7 +5,7 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 from quspin.basis import spinful_fermion_basis_general
-from quspin.basis.transformations import square_lattice_trans_spinful_advanced,square_lattice_trans
+from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian,quantum_operator
 import numpy as np
 

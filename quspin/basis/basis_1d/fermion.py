@@ -17,6 +17,11 @@ class spinless_fermion_basis_1d(basis_1d):
 				\\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
 			\\end{array}
 
+	Notes
+	-----
+
+	Particle-hole like symmetries for fermions can be programmed using the `spinless_fermion_basis_general` class.
+
 	Examples
 	--------
 
@@ -168,8 +173,9 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	Notes
 	-----
 
-	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, `|`, to distinguish the spin-up from 
-	spin-down species. However, the index array has NO pipe symbol.
+	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, |, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.
+	* Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.
+
 
 	Examples
 	--------
