@@ -40,10 +40,10 @@ cdef class spinful_fermion_basis_core_wrap_32(general_basis_core_wrap_32):
 
 
 		if Np is None:
-			Ns_1 = self.make_basis_full[norm_type](basis,n)
+			Ns_2 = self.make_basis_full[norm_type](basis,n)
 		elif type(Np) is tuple:
 			np_1,np_2 = Np
-			Ns_1 = self.make_basis_pcon[norm_type](np_1,np_2,basis,n)
+			Ns_2 = self.make_basis_pcon[norm_type](np_1,np_2,basis,n)
 		elif type(Np) is list:
 			if count is None:
 				for np_1,np_2 in Np:
@@ -118,10 +118,10 @@ cdef class spinful_fermion_basis_core_wrap_64(general_basis_core_wrap_64):
 
 
 		if Np is None:
-			Ns_1 = self.make_basis_full[norm_type](basis,n)
+			Ns_2 = self.make_basis_full[norm_type](basis,n)
 		elif type(Np) is tuple:
 			np_1,np_2 = Np
-			Ns_1 = self.make_basis_pcon[norm_type](np_1,np_2,basis,n)
+			Ns_2 = self.make_basis_pcon[norm_type](np_1,np_2,basis,n)
 		elif type(Np) is list:
 			if count is None:
 				for np_1,np_2 in Np:

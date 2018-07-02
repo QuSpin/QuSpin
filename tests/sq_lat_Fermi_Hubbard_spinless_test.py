@@ -62,9 +62,6 @@ def test(Lx,Ly):
 
 		E_block = np.hstack(E_block)
 		E_block.sort()
-		print(Nf)
-		print(E_pcon)
-		print(E_block)
 		np.testing.assert_allclose(E_pcon,E_block,atol=1e-13)
 		print("passed Nf={} sector".format(Nf))
 
@@ -72,4 +69,6 @@ def test(Lx,Ly):
 test(2,2)
 test(3,2)
 test(2,3)
-
+test(3,3)
+test(3,4)
+test(4,3)

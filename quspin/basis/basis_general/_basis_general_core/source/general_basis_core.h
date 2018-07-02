@@ -6,8 +6,10 @@
 #include <cmath>
 #include <limits>
 #include <complex>
+#include <vector>
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
+#include "benes_perm.h"
 
 
 template<class I>
@@ -24,7 +26,7 @@ class general_basis_core{
 
 		general_basis_core(const int _N,const int _nt,const int _maps[], \
 			const int _pers[], const int _qs[]) : \
-			 N(_N), nt(_nt), maps(_maps), pers(_pers), qs(_qs) {}
+			 N(_N), nt(_nt), maps(_maps) , pers(_pers), qs(_qs) { }
 
 		~general_basis_core() {}
 
@@ -94,6 +96,56 @@ double check_state_core(general_basis_core<I> *B,I t,int sign, double k, double 
 	return norm;
 }
 
+template<class I>
+I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,int &tempsign,const int nt,const int depth){
+	if(nt<=0){
+		return s;
+	}
+	I t = s;
+	const int per = B->pers[depth];
+	if(depth<nt-1){
+		for(int i=0;i<per;i++){
+			gg[depth] = i;
+			r = ref_state_core(B,t,r,g,gg,sign,tempsign,nt,depth+1);
+			t = B->map_state(t,depth,tempsign);
+		}
+		return r;
+	}
+	else{
+		for(int i=0;i<per;i++){
+			gg[depth] = i;
+			if(t>r){
+				r = t;
+				sign = tempsign;
+				for(int j=0;j<nt;j++){
+					g[j] = gg[j];
+				}
+			}
+			t = B->map_state(t,depth,tempsign);
+		}
+		return r;
+	}
+}
+
+template<class I>
+double general_basis_core<I>::check_state(I s){
+	int sign=1;
+	double k=0.0;
+	double norm=0.0;
+	return check_state_core<I>(this,s,sign,k,norm,s,nt,0);
+}
+
+template<class I>
+I general_basis_core<I>::ref_state(I s,int g[],int gg[],int &sign){
+	int tempsign=1;
+	for(int i=0;i<nt;i++){
+		g[i] = 0;
+		gg[i] = 0;
+	}
+	return ref_state_core<I>(this,s,s,g,gg,sign,tempsign,nt,0);
+}
+
+
 
 // template<class I>
 // bool check_state_core(general_basis_core<I> *B,I t,int sign,const I s,const int nt,const int depth){
@@ -160,54 +212,6 @@ double check_state_core(general_basis_core<I> *B,I t,int sign, double k, double 
 
 // 	return norm;
 // }
-
-
-template<class I>
-I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,const int nt,const int depth){
-	if(nt<=0){
-		return s;
-	}
-	I t = s;
-	const int per = B->pers[depth];
-	if(depth<nt-1){
-		for(int i=0;i<per;i++){
-			gg[depth] = i;
-			r = ref_state_core(B,t,r,g,gg,sign,nt,depth+1);
-			t = B->map_state(t,depth,sign);
-		}
-		return r;
-	}
-	else{
-		for(int i=0;i<per;i++){
-			gg[depth] = i;
-			if(t>r){
-				r = t;
-				for(int j=0;j<nt;j++){
-					g[j] = gg[j];
-				}
-			}
-			t = B->map_state(t,depth,sign);
-		}
-		return r;
-	}
-}
-
-template<class I>
-double general_basis_core<I>::check_state(I s){
-	int sign=1;
-	double k=0.0;
-	double norm=0.0;
-	return check_state_core<I>(this,s,sign,k,norm,s,nt,0);
-}
-
-template<class I>
-I general_basis_core<I>::ref_state(I s,int g[],int gg[],int &sign){
-	for(int i=0;i<nt;i++){
-		g[i] = 0;
-		gg[i] = 0;
-	}
-	return ref_state_core<I>(this,s,s,g,gg,sign,nt,0);
-}
 
 
 

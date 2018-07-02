@@ -4,7 +4,7 @@ import sys,os
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
-from quspin.operators import hamiltonian, exp_op # operators
+from quspin.operators import hamiltonian # operators
 from quspin.basis import spinless_fermion_basis_general # spin basis constructor
 import numpy as np # general math functions
 #

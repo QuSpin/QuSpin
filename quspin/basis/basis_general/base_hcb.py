@@ -2,6 +2,7 @@ from ._basis_general_core import hcb_basis_core_wrap_32,hcb_basis_core_wrap_64
 from .base_general import basis_general
 import numpy as _np
 from scipy.misc import comb
+import cProfile
 
 # general basis for hardcore bosons/spin-1/2
 class hcb_basis_general(basis_general):
@@ -63,32 +64,35 @@ class hcb_basis_general(basis_general):
 			raise ValueError("system size N must be <=64.")
 
 		self._sps=2
+		
 		if count_particles and (Nb is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
-			if self._Ns < 0:
-					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-			basis,ind = _np.unique(basis,return_index=True)
-			if self.Ns != basis.shape[0]:
-				basis = basis[1:]
-				ind = ind[1:]
-
-			self._basis = basis[::-1].copy()
-			self._n = n[ind[::-1]].copy()
-			self._Np_list = Np_list[ind[::-1]].copy()
+			Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
 		else:
-			self._Ns = self._core.make_basis(basis,n,Np=Nb)
-			if self._Ns < 0:
-					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
+			Np_list = None
+			Ns = self._core.make_basis(basis,n,Np=Nb)
 
-			basis,ind = _np.unique(basis,return_index=True)
-			if self.Ns != basis.shape[0]:
-				basis = basis[1:]
-				ind = ind[1:]
-			self._basis = basis[::-1].copy()
-			self._n = n[ind[::-1]].copy()
+		if Ns < 0:
+				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
+
+		if type(Nb) is int or Nb is None:
+			if Ns > 0:
+				self._basis = basis[Ns-1::-1].copy()
+				self._n = n[Ns-1::-1].copy()
+				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+			else:
+				self._basis = _np.array([],dtype=basis.dtype)
+				self._n = _np.array([],dtype=n.dtype)
+				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
+		else:
+			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
+			self._basis = basis[ind].copy()
+			self._n = n[ind].copy()
+			if Np_list is not None: self._Np_list = Np_list[ind].copy()
+
+
+		self._Ns = Ns
 		self._N = N
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","x","y","z","+","-","n"])

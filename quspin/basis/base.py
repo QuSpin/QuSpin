@@ -415,7 +415,7 @@ class basis(object):
 		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self._get_hc_local_lists(static_list,dynamic_list)
 		# calculate non-hermitian elements
 		diff = set( tuple(static_expand) ) - set( tuple(static_expand_hc) )
-		
+
 		if diff:
 			unique_opstrs = list(set( next(iter(zip(*tuple(diff))))) )
 			warnings.warn("The following static operator strings contain non-hermitian couplings: {}".format(unique_opstrs),UserWarning,stacklevel=3)
