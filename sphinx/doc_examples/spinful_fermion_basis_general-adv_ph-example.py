@@ -9,7 +9,7 @@ from quspin.basis import spinful_fermion_basis_general # spin basis constructor
 import numpy as np # general math functions
 #
 ###### define model parameters ######
-Lx, Ly = 4, 4 # linear dimension of spin 1 2d lattice
+Lx, Ly = 4,3 # linear dimension of spin 1 2d lattice
 N_2d = Lx*Ly # number of sites for spin 1
 #
 J=1.0 # hopping matrix element
@@ -29,7 +29,7 @@ PH = -(s+1) # particle-hole in the advanced case
 #
 ###### setting up bases ###### (note optional argument simple_symm=False)
 #basis_2d=spinful_fermion_basis_general(N_2d,simple_symm=False,Nf=(2,2),kxblock=(T_x,0),kyblock=(T_y,0))
-basis_2d=spinful_fermion_basis_general(N_2d,simple_symm=False,Nf=(2,2),kxblock=(T_x,0),kyblock=(T_y,0),phblock=(PH,0))  
+basis_2d=spinful_fermion_basis_general(N_2d,simple_symm=False,Nf=(6,6),kxblock=(T_x,0),kyblock=(T_y,0),phblock=(PH,0))  
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists for advanced case
@@ -43,5 +43,5 @@ static=[["+-",hopping_left], # spin-up and spin-down hop to left
 # build hamiltonian
 H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64)
 # diagonalise H
-E=H.eigvalsh()
+E=H.eigsh(k=10,which="SA",return_eigenvectors=False)
 print(E)

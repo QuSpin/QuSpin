@@ -112,7 +112,7 @@ class basis_general(lattice_basis):
 				check_symmetry_maps(item1,item2)
 
 		remove_index.sort()
-		# print(remove_index)
+
 		if sorted_items:
 			blocks,items = zip(*sorted_items)
 			items = list(items)

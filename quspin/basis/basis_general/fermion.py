@@ -210,7 +210,6 @@ class spinless_fermion_basis_general(basis_general):
 							"\n\tz: c-symm number operator")
 
 		self._allowed_ops=set(["I","n","+","-","z"])
-		self._check_symm = None
 		self._reduce_n_dtype()
 
 	@property
