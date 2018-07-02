@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -69,8 +69,10 @@
         \texttt{spinful_fermion_basis_1d}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}      \newline
 \end{array}\]</div>
 <p class="rubric">Notes</p>
-<p>The <cite>spinful_fermion_basis</cite> operator strings are separated by a pipe symbol, ‘|’, to distinguish the spin-up from 
-spin-down species. However, the index array has NO pipe symbol.</p>
+<ul class="simple">
+<li>The <cite>spinful_fermion_basis</cite> operator strings are separated by a pipe symbol, <a href="#id1"><span class="problematic" id="id2">|</span></a>, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.</li>
+<li>Particle-hole like symmetries for fermions can be programmed using the <cite>spinful_fermion_basis_general</cite> class.</li>
+</ul>
 <p class="rubric">Examples</p>
 <p>The code snippet below shows how to use the <cite>spinful_fermion_basis_1d</cite> class to construct the basis in the zero momentum sector of positive fermion spin for the Fermi-Hubbard Hamiltonian</p>
 <div class="math">
@@ -114,7 +116,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># hopping strength</span>
 <span class="n">U</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># onsite interaction strength</span>
 <span class="c1">#</span>
-<span class="c1">##### construct basis in the 0-total momentum and +1-parity sector</span>
+<span class="c1">##### construct basis at half-filling in the 0-total momentum and +1-spin flip sector</span>
 <span class="n">basis</span><span class="o">=</span><span class="n">spinful_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 <span class="c1">#</span>
@@ -146,8 +148,8 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.L" title="quspin.basis.spinful_fermion_basis_1d.L"><code class="xref py py-obj docutils literal"><span class="pre">L</span></code></a></td>
 <td>int: length of lattice.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.N" title="quspin.basis.spinful_fermion_basis_1d.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: <span class="math">\(N=2L\)</span>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Ns" title="quspin.basis.spinful_fermion_basis_1d.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
 <td>int: number of states in the Hilbert space.</td>
@@ -174,7 +176,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="quspin.basis.spinful_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.check_hermitian" title="quspin.basis.spinful_fermion_basis_1d.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for hermiticity of the combined operator.</td>
@@ -197,13 +199,13 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.get_vec" title="quspin.basis.spinful_fermion_basis_1d.get_vec"><code class="xref py py-obj docutils literal"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse])</td>
 <td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.index" title="quspin.basis.spinful_fermion_basis_1d.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
-<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.index" title="quspin.basis.spinful_fermion_basis_1d.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(up_state,&nbsp;down_state)</td>
+<td>Finds the index of user-defined Fock state in spinful fermion basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="quspin.basis.spinful_fermion_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="quspin.basis.spinful_fermion_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="quspin.basis.spinful_fermion_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
 </tr>
 </tbody>
@@ -220,7 +222,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <blockquote>
 <div><p>Length of chain/number of sites.</p>
 </div></blockquote>
-<p><strong>Nf: {tupe(int,list)}, optional</strong></p>
+<p><strong>Nf: tuple(int,list), optional</strong></p>
 <blockquote>
 <div><p>Number of fermions in chain. First (left) entry refers to spin-up and second (right) entry refers
 to spin-down. Each of the two entries can be integer or list to specify one or more particle sectors.</p>
@@ -255,7 +257,7 @@ entry refers to spin-down.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="quspin.basis.spinful_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="quspin.basis.spinful_fermion_basis_1d.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(L[,&nbsp;Nf,&nbsp;nf])</td>
 <td>Intializes the <cite>fermion_basis_1d</cite> object (basis for fermionic operators).</td>
@@ -281,14 +283,44 @@ entry refers to spin-down.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.get_vec" title="quspin.basis.spinful_fermion_basis_1d.get_vec"><code class="xref py py-obj docutils literal"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse])</td>
 <td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.index" title="quspin.basis.spinful_fermion_basis_1d.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(s)</td>
-<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.index" title="quspin.basis.spinful_fermion_basis_1d.index"><code class="xref py py-obj docutils literal"><span class="pre">index</span></code></a>(up_state,&nbsp;down_state)</td>
+<td>Finds the index of user-defined Fock state in spinful fermion basis.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="quspin.basis.spinful_fermion_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="quspin.basis.spinful_fermion_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="quspin.basis.spinful_fermion_basis_1d.partial_trace"><code class="xref py py-obj docutils literal"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.L" title="quspin.basis.spinful_fermion_basis_1d.L"><code class="xref py py-obj docutils literal"><span class="pre">L</span></code></a></td>
+<td>int: length of lattice.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.N" title="quspin.basis.spinful_fermion_basis_1d.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: <span class="math">\(N=2L\)</span>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Ns" title="quspin.basis.spinful_fermion_basis_1d.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.blocks" title="quspin.basis.spinful_fermion_basis_1d.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.description" title="quspin.basis.spinful_fermion_basis_1d.description"><code class="xref py py-obj docutils literal"><span class="pre">description</span></code></a></td>
+<td>str: information about <cite>basis</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="quspin.basis.spinful_fermion_basis_1d.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="quspin.basis.spinful_fermion_basis_1d.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
 </tr>
 </tbody>
 </table>
@@ -296,6 +328,12 @@ entry refers to spin-down.</p>
 <dt id="quspin.basis.spinful_fermion_basis_1d.L">
 <code class="descname">L</code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.L" title="Permalink to this definition">¶</a></dt>
 <dd><p>int: length of lattice.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.basis.spinful_fermion_basis_1d.N">
+<code class="descname">N</code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.N" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: <span class="math">\(N=2L\)</span>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -307,7 +345,7 @@ entry refers to spin-down.</p>
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.Op">
 <code class="descname">Op</code><span class="sig-paren">(</span><em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</p>
+<dd><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -450,7 +488,7 @@ entry refers to spin-down.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.ent_entropy">
-<code class="descname">ent_entropy</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>density=True</em>, <em>subsys_ordering=True</em>, <em>return_rdm=None</em>, <em>enforce_pure=False</em>, <em>return_rdm_EVs=False</em>, <em>sparse=False</em>, <em>alpha=1.0</em>, <em>sparse_diag=True</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.ent_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ent_entropy</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>density=True</em>, <em>subsys_ordering=True</em>, <em>return_rdm=None</em>, <em>enforce_pure=False</em>, <em>return_rdm_EVs=False</em>, <em>sparse=False</em>, <em>alpha=1.0</em>, <em>sparse_diag=True</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.ent_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.ent_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -467,10 +505,11 @@ entry refers to spin-down.</p>
 </ul>
 </div></blockquote>
 </div></blockquote>
-<p><strong>sub_sys_A</strong> : tuple/list, optional</p>
+<p><strong>sub_sys_A</strong> : tuple, optional</p>
 <blockquote>
 <div><p>Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
-Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lattice sites.</p>
+Default is <cite>tuple(range(N//2),range(N//2))</cite> with <cite>N</cite> the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+The format is <cite>(spin_up_subsys,spin_down_subsys)</cite> (see example below).</p>
 </div></blockquote>
 <p><strong>return_rdm</strong> : str, optional</p>
 <blockquote>
@@ -507,6 +546,7 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>:</p>
 <div class="math">
 \[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
+<p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
 </div></blockquote>
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>
@@ -543,7 +583,11 @@ to calculate the eigenvaues of the reduced DM.</p>
 <p class="rubric">Notes</p>
 <p>Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sub_sys_A_up</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># subsystem for spin-up fermions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sub_sys_A_down</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># subsystem for spin-down fermions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subsys_A</span><span class="o">=</span><span class="p">(</span><span class="n">sub_sys_A_up</span><span class="p">,</span><span class="n">sub_sys_A_down</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">state</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span> <span class="c1"># infinite temperature state</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="n">subsys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -590,10 +634,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>               
 </pre></div>
 </div>
 </dd></dl>
@@ -678,21 +724,25 @@ in a straightforward manner.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.index">
-<code class="descname">index</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the index of user-defined Fock state in any lattice basis.</p>
+<code class="descname">index</code><span class="sig-paren">(</span><em>up_state</em>, <em>down_state</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the index of user-defined Fock state in spinful fermion basis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>s</strong> : {str, int}</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>up_state</strong> : str</p>
 <blockquote>
-<div><p>Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
+<div><p>string which define the Fock state for the spin up fermions.</p>
+</div></blockquote>
+<p><strong>down_state</strong> : str</p>
+<blockquote>
+<div><p>string which define the Fock state for the spin down fermions.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">int</p>
 <blockquote class="last">
-<div><p>Position of the Fock state in the lattice basis.</p>
+<div><p>Position of the Fock state in the <cite>spinful_fermion_basis_1d</cite>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -702,11 +752,9 @@ in a straightforward manner.</p>
 <p>Particularly useful for defining initial Fock states through a unit vector in the direction specified
 by <cite>index()</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i0</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="s2">&quot;111000&quot;</span><span class="p">)</span> <span class="c1"># pick state from basis set</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">i0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span><span class="p">[</span><span class="n">i0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># define state corresponding to the string &quot;111000&quot;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s_up</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s_down</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span> <span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">s_up</span><span class="p">,</span><span class="n">s_down</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -769,6 +817,8 @@ by <cite>index()</cite>.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
@@ -787,7 +837,7 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.partial_trace">
-<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm='A'</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="Permalink to this definition">¶</a></dt>
+<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>density=True</em>, <em>subsys_ordering=True</em>, <em>return_rdm=None</em>, <em>enforce_pure=False</em>, <em>return_rdm_EVs=False</em>, <em>sparse=False</em>, <em>alpha=1.0</em>, <em>sparse_diag=True</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.partial_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -807,7 +857,8 @@ by <cite>index()</cite>.</p>
 <p><strong>sub_sys_A</strong> : tuple/list, optional</p>
 <blockquote>
 <div><p>Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
-Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lattice sites.</p>
+Default is <cite>tuple(range(N//2),range(N//2))</cite> with <cite>N</cite> the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+The format is <cite>(spin_up_subsys,spin_down_subsys)</cite> (see example below).</p>
 </div></blockquote>
 <p><strong>return_rdm</strong> : str, optional</p>
 <blockquote>
@@ -844,7 +895,11 @@ it is a square array. Default is <cite>False</cite>.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sub_sys_A_up</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># subsystem for spin-up fermions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sub_sys_A_down</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># subsystem for spin-down fermions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subsys_A</span><span class="o">=</span><span class="p">(</span><span class="n">sub_sys_A_up</span><span class="p">,</span><span class="n">sub_sys_A_down</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">state</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span> <span class="c1"># infinite temperature state</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="n">subsys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -895,7 +950,7 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>

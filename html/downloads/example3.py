@@ -1,5 +1,6 @@
 from __future__ import print_function, division
 import sys,os
+# line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 ########################################################################################
@@ -117,6 +118,7 @@ plt.tick_params(labelsize=16)
 plt.grid(True)
 # save figure
 plt.tight_layout()
-fig.savefig('example3.pdf', bbox_inches='tight')
+plt.savefig('example3.pdf', bbox_inches='tight')
 # show plot
-plt.show()
+#plt.show()
+plt.close()

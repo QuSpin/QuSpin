@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.boson &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.basis_general.boson &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -114,10 +114,10 @@
 <span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
 <span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
-<span class="sd">	User-defined symmetries with the `..._basis_general` class can be programmed as follows. Suppose we have a system of</span>
+<span class="sd">	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of</span>
 <span class="sd">	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
-<span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j`</span>
-<span class="sd">		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`</span>
+<span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)</span>
+<span class="sd">		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry, hardcore bosons only)</span>
 
 <span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and </span>
 <span class="sd">	spin inversion. For a specific example, see below.</span>
@@ -141,7 +141,7 @@
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>
 
-<span class="sd">	The code snipped below shows how to construct the two-dimensional Bose-Hubbard model.</span>
+<span class="sd">	The code snippet below shows how to construct the two-dimensional Bose-Hubbard model.</span>
 <span class="sd">	</span>
 <span class="sd">	.. math::</span>
 <span class="sd">		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)</span>
@@ -199,8 +199,6 @@
 				<span class="n">Nb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting value for &#39;Nb&#39;,&#39;nb&#39; or &#39;sps&#39;&quot;</span><span class="p">)</span>
-
-			<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Nb</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">Nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -209,12 +207,33 @@
 			<span class="k">elif</span> <span class="n">nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="n">Nb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nb</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
 
-			<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">sps</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">sps</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
+
+
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for boson_basis_1d:&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
+
 			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+		
 		<span class="k">else</span><span class="p">:</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;availible operators for ferion_basis_1d:&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">I: identity &quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
+								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: ph-symm number operator&quot;</span><span class="p">)</span>
+
+
 			<span class="n">basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">False</span>
 			<span class="n">count_particles</span> <span class="o">=</span> <span class="kc">False</span>
@@ -237,6 +256,10 @@
 				<span class="n">basis_type</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="p">,</span><span class="n">sps</span><span class="p">)</span>
 			<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">True</span>
+
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">Nb</span>
+
 				<span class="n">Ns</span> <span class="o">=</span> <span class="n">H_dim</span><span class="p">(</span><span class="n">Nb</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 				<span class="n">basis_type</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
@@ -244,6 +267,10 @@
 					<span class="n">Np_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span>
 				<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Nb must be integer or iteratable object.&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span>				
+
 				<span class="n">Ns</span> <span class="o">=</span> <span class="mi">0</span>
 				<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">Nb</span><span class="p">:</span>
 					<span class="n">Ns</span> <span class="o">+=</span> <span class="n">H_dim</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -252,7 +279,7 @@
 
 			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-					<span class="n">Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="n">sps</span>
+					<span class="n">Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span>
 				<span class="k">else</span><span class="p">:</span>
 					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
 						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be integer value.&quot;</span><span class="p">)</span>
@@ -273,35 +300,63 @@
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;states can&#39;t be represented as 64-bit unsigned integer&quot;</span><span class="p">)</span>
 
-			<span class="k">if</span> <span class="n">count_particles</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Nb_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+			<span class="c1"># if count_particles and (Nb_list is not None):</span>
+			<span class="c1"># 	Np_list = _np.zeros_like(basis,dtype=_np.uint8)</span>
+			<span class="c1"># 	self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)</span>
+			<span class="c1"># 	if self._Ns &lt; 0:</span>
+			<span class="c1"># 		raise ValueError(&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;)</span>
+
+			<span class="c1"># 	basis,ind = _np.unique(basis,return_index=True)</span>
+			<span class="c1"># 	if self.Ns != basis.shape[0]:</span>
+			<span class="c1"># 		basis = basis[1:]</span>
+			<span class="c1"># 		ind = ind[1:]</span>
+
+			<span class="c1"># 	self._basis = basis[::-1].copy()</span>
+			<span class="c1"># 	self._n = n[ind[::-1]].copy()</span>
+			<span class="c1"># 	self._Np_list = Np_list[ind[::-1]].copy()</span>
+			<span class="c1"># else:</span>
+			<span class="c1"># 	self._Ns = self._core.make_basis(basis,n,Np=Nb)</span>
+			<span class="c1"># 	if self._Ns &lt; 0:</span>
+			<span class="c1"># 		raise ValueError(&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;)</span>
+
+			<span class="c1"># 	basis,ind = _np.unique(basis,return_index=True)</span>
+			<span class="c1"># 	if self.Ns != basis.shape[0]:</span>
+			<span class="c1"># 		basis = basis[1:]</span>
+			<span class="c1"># 		ind = ind[1:]</span>
+			<span class="c1"># 	self._basis = basis[::-1].copy()</span>
+			<span class="c1"># 	self._n = n[ind[::-1]].copy()</span>
+
+
+			<span class="k">if</span> <span class="n">count_particles</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Nb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
 				<span class="n">Np_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">make_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="n">Np_list</span><span class="p">)</span>
-				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;</span><span class="p">)</span>
-
-				<span class="n">basis</span><span class="p">,</span><span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-					<span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-					<span class="n">ind</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-
-				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">ind</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[</span><span class="n">ind</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+				<span class="n">Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">make_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="n">Np_list</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">make_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nb</span><span class="p">)</span>
-				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">Np_list</span> <span class="o">=</span> <span class="kc">None</span>
+				<span class="n">Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">make_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nb</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">Ns</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;</span><span class="p">)</span>
 
-				<span class="n">basis</span><span class="p">,</span><span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">basis</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-					<span class="n">basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-					<span class="n">ind</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">ind</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">Nb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">Ns</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="n">Ns</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">Ns</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+					<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[</span><span class="n">Ns</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+					<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">Np_list</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;heapsort&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+				<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_index_type</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_reduce_n_dtype</span><span class="p">()</span></div>
 
@@ -387,7 +442,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

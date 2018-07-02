@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -75,6 +75,11 @@
 <span class="sd">				\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    \\newline	</span>
 <span class="sd">				\\texttt{spinless_fermion_basis_1d}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline</span>
 <span class="sd">			\\end{array}</span>
+
+<span class="sd">	Notes</span>
+<span class="sd">	-----</span>
+
+<span class="sd">	Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.</span>
 
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>
@@ -227,8 +232,9 @@
 <span class="sd">	Notes</span>
 <span class="sd">	-----</span>
 
-<span class="sd">	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, `|`, to distinguish the spin-up from </span>
-<span class="sd">	spin-down species. However, the index array has NO pipe symbol.</span>
+<span class="sd">	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, |, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.</span>
+<span class="sd">	* Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.</span>
+
 
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>
@@ -327,13 +333,14 @@
 			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Nf</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
 				<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Nf</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
 					<span class="n">Nup</span><span class="p">,</span><span class="n">Ndown</span> <span class="o">=</span> <span class="n">Nf</span>
+					<span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">Nup</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">Ndown</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nf must be tuple of integers or iteratable object of tuples.&quot;</span><span class="p">)</span>
+
 					<span class="k">if</span> <span class="n">Nup</span><span class="o">&gt;</span><span class="n">L</span><span class="p">:</span>
 						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nup cannot exceed system size L.&quot;</span><span class="p">)</span>
 					<span class="k">if</span> <span class="n">Ndown</span><span class="o">&gt;</span><span class="n">L</span><span class="p">:</span>
 						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ndown cannot exceed system size L.&quot;</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Nup</span><span class="o">+</span><span class="n">Ndown</span>
-					<span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">Nup</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">Ndown</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nf must be tuple of integers or iteratable object of tuples.&quot;</span><span class="p">)</span>
 					<span class="n">Nf_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">Nf</span><span class="p">]</span>
 				<span class="k">else</span><span class="p">:</span>
 					<span class="n">Nf_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Nf</span><span class="p">)</span>
@@ -357,7 +364,7 @@
 
 
 				<span class="n">Nf_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Nf</span><span class="p">)</span>
-				<span class="n">N_up_list</span><span class="p">,</span><span class="n">_N_down_list</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">Nf_list</span><span class="p">)</span>
+				<span class="n">N_up_list</span><span class="p">,</span><span class="n">N_down_list</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">Nf_list</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">N_up_list</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">N_down_list</span><span class="p">)</span>
 
@@ -983,7 +990,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

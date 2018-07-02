@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.spin &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.basis_general.spin &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -77,10 +77,10 @@
 <span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
 <span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
-<span class="sd">	User-defined symmetries with the `..._basis_general` class can be programmed as follows. Suppose we have a system of</span>
+<span class="sd">	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of</span>
 <span class="sd">	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
-<span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j`</span>
-<span class="sd">		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`</span>
+<span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)</span>
+<span class="sd">		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., spin inversion)</span>
 
 <span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and </span>
 <span class="sd">	spin inversion. For a specific example, see below.</span>
@@ -100,13 +100,12 @@
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>
 
-<span class="sd">	The code snipped below shows how to construct the two-dimensional transverse-field Ising model.</span>
+<span class="sd">	The code snippet below shows how to construct the two-dimensional transverse-field Ising model.</span>
 <span class="sd">	</span>
 <span class="sd">	.. math::</span>
 <span class="sd">		H = J \\sum_{\\langle ij\\rangle} \\sigma^z_{i}\\sigma^z_j+ g\\sum_j\\sigma^x_j </span>
 
-<span class="sd">	Moreover,</span>
-<span class="sd">	it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In particular,</span>
+<span class="sd">	Moreover, it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In particular,</span>
 <span class="sd">	we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion.</span>
 
 <span class="sd">	.. literalinclude:: ../../doc_examples/spin_basis_general-example.py</span>
@@ -343,7 +342,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.Floquet.Floquet_t_vec &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.tools.Floquet.Floquet_t_vec &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -163,17 +163,32 @@ ramp-up, constant and ramp-down.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.len_T" title="quspin.tools.Floquet.Floquet_t_vec.len_T"><code class="xref py py-obj docutils literal"><span class="pre">len_T</span></code></a></td>
 <td>int: number of time points within one period, assumed half-open; [0,T).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.strobo" title="quspin.tools.Floquet.Floquet_t_vec.strobo"><code class="xref py py-obj docutils literal"><span class="pre">strobo</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.shape" title="quspin.tools.Floquet.Floquet_t_vec.shape"><code class="xref py py-obj docutils literal"><span class="pre">shape</span></code></a></td>
+<td>tuple: shape of array.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.strobo" title="quspin.tools.Floquet.Floquet_t_vec.strobo"><code class="xref py py-obj docutils literal"><span class="pre">strobo</span></code></a></td>
 <td>obj: calculates stroboscopic times in time vector with period length <cite>len_T</cite> and assigns them as</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.tot" title="quspin.tools.Floquet.Floquet_t_vec.tot"><code class="xref py py-obj docutils literal"><span class="pre">tot</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.tot" title="quspin.tools.Floquet.Floquet_t_vec.tot"><code class="xref py py-obj docutils literal"><span class="pre">tot</span></code></a></td>
 <td>float: total time duration; <cite>_.f - _.i</cite> .</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.up" title="quspin.tools.Floquet.Floquet_t_vec.up"><code class="xref py py-obj docutils literal"><span class="pre">up</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.up" title="quspin.tools.Floquet.Floquet_t_vec.up"><code class="xref py py-obj docutils literal"><span class="pre">up</span></code></a></td>
 <td>obj: refers to time vector of up-part (regime).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.vals" title="quspin.tools.Floquet.Floquet_t_vec.vals"><code class="xref py py-obj docutils literal"><span class="pre">vals</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.vals" title="quspin.tools.Floquet.Floquet_t_vec.vals"><code class="xref py py-obj docutils literal"><span class="pre">vals</span></code></a></td>
 <td>np.ndarray(float): time vector values.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.get_coordinates" title="quspin.tools.Floquet.Floquet_t_vec.get_coordinates"><code class="xref py py-obj docutils literal"><span class="pre">get_coordinates</span></code></a>(index)</td>
+<td>Returns (period number, index within period) of the <cite>Floquet_t_vec</cite> value stored at <cite>index</cite>.</td>
 </tr>
 </tbody>
 </table>
@@ -229,6 +244,60 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 </table>
 </td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.get_coordinates" title="quspin.tools.Floquet.Floquet_t_vec.get_coordinates"><code class="xref py py-obj docutils literal"><span class="pre">get_coordinates</span></code></a>(index)</td>
+<td>Returns (period number, index within period) of the <cite>Floquet_t_vec</cite> value stored at <cite>index</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.N" title="quspin.tools.Floquet.Floquet_t_vec.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: total number of periods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.T" title="quspin.tools.Floquet.Floquet_t_vec.T"><code class="xref py py-obj docutils literal"><span class="pre">T</span></code></a></td>
+<td>float: drive period.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.const" title="quspin.tools.Floquet.Floquet_t_vec.const"><code class="xref py py-obj docutils literal"><span class="pre">const</span></code></a></td>
+<td>obj: refers to time vector of const-part (regime).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.down" title="quspin.tools.Floquet.Floquet_t_vec.down"><code class="xref py py-obj docutils literal"><span class="pre">down</span></code></a></td>
+<td>obj: refers to time vector of down-part (regime).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.dt" title="quspin.tools.Floquet.Floquet_t_vec.dt"><code class="xref py py-obj docutils literal"><span class="pre">dt</span></code></a></td>
+<td>float: time vector step size.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.f" title="quspin.tools.Floquet.Floquet_t_vec.f"><code class="xref py py-obj docutils literal"><span class="pre">f</span></code></a></td>
+<td>foat: final time value.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.i" title="quspin.tools.Floquet.Floquet_t_vec.i"><code class="xref py py-obj docutils literal"><span class="pre">i</span></code></a></td>
+<td>float: initial time value.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.len" title="quspin.tools.Floquet.Floquet_t_vec.len"><code class="xref py py-obj docutils literal"><span class="pre">len</span></code></a></td>
+<td>int: length of time vector.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.len_T" title="quspin.tools.Floquet.Floquet_t_vec.len_T"><code class="xref py py-obj docutils literal"><span class="pre">len_T</span></code></a></td>
+<td>int: number of time points within one period, assumed half-open; [0,T).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.shape" title="quspin.tools.Floquet.Floquet_t_vec.shape"><code class="xref py py-obj docutils literal"><span class="pre">shape</span></code></a></td>
+<td>tuple: shape of array.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.strobo" title="quspin.tools.Floquet.Floquet_t_vec.strobo"><code class="xref py py-obj docutils literal"><span class="pre">strobo</span></code></a></td>
+<td>obj: calculates stroboscopic times in time vector with period length <cite>len_T</cite> and assigns them as</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.tot" title="quspin.tools.Floquet.Floquet_t_vec.tot"><code class="xref py py-obj docutils literal"><span class="pre">tot</span></code></a></td>
+<td>float: total time duration; <cite>_.f - _.i</cite> .</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.up" title="quspin.tools.Floquet.Floquet_t_vec.up"><code class="xref py py-obj docutils literal"><span class="pre">up</span></code></a></td>
+<td>obj: refers to time vector of up-part (regime).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.Floquet.Floquet_t_vec.vals" title="quspin.tools.Floquet.Floquet_t_vec.vals"><code class="xref py py-obj docutils literal"><span class="pre">vals</span></code></a></td>
+<td>np.ndarray(float): time vector values.</td>
+</tr>
 </tbody>
 </table>
 <dl class="attribute">
@@ -270,6 +339,43 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 <dd><p>foat: final time value.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="quspin.tools.Floquet.Floquet_t_vec.get_coordinates">
+<code class="descname">get_coordinates</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec.get_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.get_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns (period number, index within period) of the <cite>Floquet_t_vec</cite> value stored at <cite>index</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>index</strong> : int</p>
+<blockquote>
+<div><p>Index, to compute the <cite>Floquet_t_vec</cite> coordinates of.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">tuple</p>
+<blockquote class="last">
+<div><p>(i,j) such that <cite>t_evolve[t_evolve.strobo.inds[i] + j] = t_evolve[index]</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>This function finds the indegers (i,j), such that <cite>t_evolve[t_evolve.strobo.inds[i-1] + j] = t_evolve[index]</cite>.</li>
+<li>The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) <cite>Floquet_t_vec</cite> values is smaller than <cite>1E-15</cite>.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Floquet_t_vec</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># define a Floquet vector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="mi">145</span> <span class="c1"># pick a random index</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">index</span><span class="p">])</span> <span class="c1"># check element</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="c1"># decompose index into stroboscopic coordinates</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span> <span class="n">t</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="p">)</span> <span class="c1"># we obtain back original element</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.i">
 <code class="descname">i</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.i" title="Permalink to this definition">¶</a></dt>
@@ -286,6 +392,12 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 <dt id="quspin.tools.Floquet.Floquet_t_vec.len_T">
 <code class="descname">len_T</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.len_T" title="Permalink to this definition">¶</a></dt>
 <dd><p>int: number of time points within one period, assumed half-open; [0,T).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quspin.tools.Floquet.Floquet_t_vec.shape">
+<code class="descname">shape</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>tuple: shape of array.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -361,7 +473,7 @@ attributes:</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>

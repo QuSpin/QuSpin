@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import sys,os
-# the following two lines (l4 and l5) are for developmet purposes and can be removed
+# line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 #####################################################################
@@ -97,7 +97,9 @@ plt.yticks(fontsize=16)
 plt.legend(fontsize=16)
 plt.grid()
 plt.tight_layout()
-plt.show()
+plt.savefig('example5a.pdf', bbox_inches='tight')
+#plt.show()
+plt.close()
 ##### plot correlator
 plt.plot(t,correlator,linewidth=2)
 plt.xlabel('$t$',fontsize=16)
@@ -106,4 +108,6 @@ plt.xticks(fontsize=16)
 plt.yticks(fontsize=16)
 plt.grid()
 plt.tight_layout()
-plt.show()
+plt.savefig('example5b.pdf', bbox_inches='tight')
+#plt.show()
+plt.close()

@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.photon_basis &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.photon_basis &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -342,6 +342,63 @@ As an initial state, we choose a coherent state in the photon sector and the gro
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.N" title="quspin.basis.photon_basis.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: number of sites the basis is constructed with.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.Ns" title="quspin.basis.photon_basis.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.basis_left" title="quspin.basis.photon_basis.basis_left"><code class="xref py py-obj docutils literal"><span class="pre">basis_left</span></code></a></td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: first basis constructor out of the <cite>basis</cite> objects list to be tensored.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.basis_right" title="quspin.basis.photon_basis.basis_right"><code class="xref py py-obj docutils literal"><span class="pre">basis_right</span></code></a></td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.blocks" title="quspin.basis.photon_basis.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.chain_N" title="quspin.basis.photon_basis.chain_N"><code class="xref py py-obj docutils literal"><span class="pre">chain_N</span></code></a></td>
+<td>int: number of sites on lattice.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.chain_Ns" title="quspin.basis.photon_basis.chain_Ns"><code class="xref py py-obj docutils literal"><span class="pre">chain_Ns</span></code></a></td>
+<td>int: number of states in the photon Hilbert space only.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.operators" title="quspin.basis.photon_basis.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_N" title="quspin.basis.photon_basis.particle_N"><code class="xref py py-obj docutils literal"><span class="pre">particle_N</span></code></a></td>
+<td>nt: number of sites on lattice.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_Ns" title="quspin.basis.photon_basis.particle_Ns"><code class="xref py py-obj docutils literal"><span class="pre">particle_Ns</span></code></a></td>
+<td>int: number of states in the lattice Hilbert space only.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_basis" title="quspin.basis.photon_basis.particle_basis"><code class="xref py py-obj docutils literal"><span class="pre">particle_basis</span></code></a></td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: lattice basis.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.particle_sps" title="quspin.basis.photon_basis.particle_sps"><code class="xref py py-obj docutils literal"><span class="pre">particle_sps</span></code></a></td>
+<td>int: number of lattice states per site.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.photon_Ns" title="quspin.basis.photon_basis.photon_Ns"><code class="xref py py-obj docutils literal"><span class="pre">photon_Ns</span></code></a></td>
+<td>int: number of states in the photon Hilbert space only.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.photon_basis" title="quspin.basis.photon_basis.photon_basis"><code class="xref py py-obj docutils literal"><span class="pre">photon_basis</span></code></a></td>
+<td><code class="xref py py-obj docutils literal"><span class="pre">basis</span></code>: lattice basis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.photon_basis.photon_sps" title="quspin.basis.photon_basis.photon_sps"><code class="xref py py-obj docutils literal"><span class="pre">photon_sps</span></code></a></td>
+<td>int: number of photon states per site.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.photon_basis.sps" title="quspin.basis.photon_basis.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.photon_basis.N">
 <code class="descname">N</code><a class="headerlink" href="#quspin.basis.photon_basis.N" title="Permalink to this definition">¶</a></dt>
@@ -518,6 +575,9 @@ the lattice site position. For instance:
 <dt id="quspin.basis.photon_basis.ent_entropy">
 <code class="descname">ent_entropy</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A='particles'</em>, <em>return_rdm=None</em>, <em>enforce_pure=False</em>, <em>return_rdm_EVs=False</em>, <em>sparse=False</em>, <em>alpha=1.0</em>, <em>sparse_diag=True</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/photon.html#photon_basis.ent_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.photon_basis.ent_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p>
+<div class="math">
+\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
+<p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -571,9 +631,7 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 </div></blockquote>
 <p><strong>alpha</strong> : float, optional</p>
 <blockquote>
-<div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>:</p>
-<div class="math">
-\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
+<div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>.</p>
 </div></blockquote>
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>
@@ -657,10 +715,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>               
 </pre></div>
 </div>
 </dd></dl>
@@ -844,6 +904,8 @@ by <cite>index()</cite>.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
@@ -1013,7 +1075,7 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>

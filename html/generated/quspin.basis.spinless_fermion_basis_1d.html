@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spinless_fermion_basis_1d &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.spinless_fermion_basis_1d &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -68,6 +68,8 @@
         \texttt{basis}/\texttt{opstr}   &amp;   \texttt{&quot;I&quot;}   &amp;   \texttt{&quot;+&quot;}   &amp;   \texttt{&quot;-&quot;}  &amp;   \texttt{&quot;n&quot;}   &amp;   \texttt{&quot;z&quot;}    \newline 
         \texttt{spinless_fermion_basis_1d}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}      \newline
 \end{array}\]</div>
+<p class="rubric">Notes</p>
+<p>Particle-hole like symmetries for fermions can be programmed using the <cite>spinful_fermion_basis_general</cite> class.</p>
 <p class="rubric">Examples</p>
 <p>The code snippet below shows how to use the <cite>spinless_fermion_basis_1d</cite> class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian</p>
 <div class="math">
@@ -167,7 +169,7 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.Op" title="quspin.basis.spinless_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.check_hermitian" title="quspin.basis.spinless_fermion_basis_1d.check_hermitian"><code class="xref py py-obj docutils literal"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for hermiticity of the combined operator.</td>
@@ -244,7 +246,7 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.Op" title="quspin.basis.spinless_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</td>
+<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.__init__" title="quspin.basis.spinless_fermion_basis_1d.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(L[,&nbsp;Nf,&nbsp;nf])</td>
 <td>Intializes the <cite>fermion_basis_1d</cite> object (basis for fermionic operators).</td>
@@ -281,6 +283,36 @@
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.L" title="quspin.basis.spinless_fermion_basis_1d.L"><code class="xref py py-obj docutils literal"><span class="pre">L</span></code></a></td>
+<td>int: length of lattice.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.N" title="quspin.basis.spinless_fermion_basis_1d.N"><code class="xref py py-obj docutils literal"><span class="pre">N</span></code></a></td>
+<td>int: number of sites the basis is constructed with.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.Ns" title="quspin.basis.spinless_fermion_basis_1d.Ns"><code class="xref py py-obj docutils literal"><span class="pre">Ns</span></code></a></td>
+<td>int: number of states in the Hilbert space.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.blocks" title="quspin.basis.spinless_fermion_basis_1d.blocks"><code class="xref py py-obj docutils literal"><span class="pre">blocks</span></code></a></td>
+<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.description" title="quspin.basis.spinless_fermion_basis_1d.description"><code class="xref py py-obj docutils literal"><span class="pre">description</span></code></a></td>
+<td>str: information about <cite>basis</cite> object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.operators" title="quspin.basis.spinless_fermion_basis_1d.operators"><code class="xref py py-obj docutils literal"><span class="pre">operators</span></code></a></td>
+<td>set: set of available operator strings.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_1d.sps" title="quspin.basis.spinless_fermion_basis_1d.sps"><code class="xref py py-obj docutils literal"><span class="pre">sps</span></code></a></td>
+<td>int: number of states per site (i.e. the local degrees of freedom).</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="quspin.basis.spinless_fermion_basis_1d.L">
 <code class="descname">L</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_1d.L" title="Permalink to this definition">¶</a></dt>
@@ -302,7 +334,7 @@
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_1d.Op">
 <code class="descname">Op</code><span class="sig-paren">(</span><em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_1d.Op" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs operator from a site-coupling list and anoperator string in a lattice basis.</p>
+<dd><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -447,6 +479,10 @@
 <dt id="quspin.basis.spinless_fermion_basis_1d.ent_entropy">
 <code class="descname">ent_entropy</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>density=True</em>, <em>subsys_ordering=True</em>, <em>return_rdm=None</em>, <em>enforce_pure=False</em>, <em>return_rdm_EVs=False</em>, <em>sparse=False</em>, <em>alpha=1.0</em>, <em>sparse_diag=True</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_1d.ent_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p>
+<div class="math">
+\[S_\mathrm{ent}(\alpha) = \frac{1}{N}\frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha \]</div>
+<p>where the normalization <span class="math">\(N\)</span> can be switched on and off using the optional argument <cite>density</cite>.</p>
+<p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -467,6 +503,10 @@
 <div><p>Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
 Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lattice sites.</p>
 </div></blockquote>
+<p><strong>density</strong> : bool, optional</p>
+<blockquote>
+<div><p>Toggles whether to return entanglement entropy normalized by the number of sites in the subsystem.</p>
+</div></blockquote>
 <p><strong>return_rdm</strong> : str, optional</p>
 <blockquote>
 <div><p>Toggles returning the reduced DM. Can be tierh one of:</p>
@@ -480,7 +520,7 @@ Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lat
 </div></blockquote>
 <p><strong>enforce_pure</strong> : bool, optional</p>
 <blockquote>
-<div><p>Whether or not to assume <cite>state</cite> is a colelction of pure states or a mixed density matrix, if
+<div><p>Whether or not to assume <cite>state</cite> is a collection of pure states or a mixed density matrix, if
 it is a square array. Default is <cite>False</cite>.</p>
 </div></blockquote>
 <p><strong>subsys_ordering</strong> : bool, optional</p>
@@ -499,9 +539,7 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 </div></blockquote>
 <p><strong>alpha</strong> : float, optional</p>
 <blockquote>
-<div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>:</p>
-<div class="math">
-\[S_\mathrm{ent}(\alpha) =  \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
+<div><p>Renyi <span class="math">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math">\(\alpha=1\)</span>.</p>
 </div></blockquote>
 <p><strong>sparse_diag</strong> : bool, optional</p>
 <blockquote>
@@ -585,10 +623,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>               
 </pre></div>
 </div>
 </dd></dl>
@@ -764,6 +804,8 @@ by <cite>index()</cite>.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
@@ -890,7 +932,7 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>

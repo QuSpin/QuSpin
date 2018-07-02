@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spin_basis_general &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.spin_basis_general &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -67,12 +67,12 @@ eigenvalues <span class="math">\(\exp(-2\pi i q/m_Q)\)</span>, labelled by an in
 These integers <span class="math">\(q\)</span> are used to define the symmetry blocks.</p>
 <p>For instance, if <span class="math">\(Q=P\)</span> is parity (reflection), then <span class="math">\(q=0,1\)</span>. If <span class="math">\(Q=T\)</span> is translation by one lattice site,
 then <span class="math">\(q\)</span> labels the mometum blocks in the same fashion as for the <cite>…_basis_1d</cite> classes.</p>
-<p>User-defined symmetries with the <cite>…_basis_general</cite> class can be programmed as follows. Suppose we have a system of
+<p>User-defined symmetries with the <cite>spin_basis_general</cite> class can be programmed as follows. Suppose we have a system of
 L sites, enumerated <span class="math">\(s=(s_0,s_1,\dots,s_{L-1})\)</span>. There are two types of operations one can perform on the sites:</p>
 <blockquote>
 <div><ul class="simple">
-<li>exchange the labels of two sites: <span class="math">\(s_i \leftrightarrow s_j\)</span></li>
-<li>invert the population on a given site: <span class="math">\(s\leftrightarrow -(s+1)\)</span></li>
+<li>exchange the labels of two sites: <span class="math">\(s_i \leftrightarrow s_j\)</span> (e.g., translation, parity)</li>
+<li>invert the population on a given site: <span class="math">\(s_i\leftrightarrow -(s_j+1)\)</span> (e.g., spin inversion)</li>
 </ul>
 </div></blockquote>
 <p>These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
@@ -87,11 +87,10 @@ spin inversion. For a specific example, see below.</p>
 the argument <cite>pauli</cite> of the <cite>spin_basis</cite> class. Higher spins can only be defined using the spin operators, and do NOT support
 the operator strings “x” and “y”.</p>
 <p class="rubric">Examples</p>
-<p>The code snipped below shows how to construct the two-dimensional transverse-field Ising model.</p>
+<p>The code snippet below shows how to construct the two-dimensional transverse-field Ising model.</p>
 <div class="math">
 \[H = J \sum_{\langle ij\rangle} \sigma^z_{i}\sigma^z_j+ g\sum_j\sigma^x_j \]</div>
-<p>Moreover,
-it demonstrates how to pass user-defined symmetries to the <cite>spin_basis_general</cite> constructor. In particular,
+<p>Moreover, it demonstrates how to pass user-defined symmetries to the <cite>spin_basis_general</cite> constructor. In particular,
 we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -125,7 +124,7 @@ we do translation invariance and parity (reflection) (along each lattice directi
 30
 31
 32
-33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">exp_op</span> <span class="c1"># operators</span>
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span> <span class="c1"># spin basis constructor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
 <span class="c1">#</span>
@@ -960,7 +959,7 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>

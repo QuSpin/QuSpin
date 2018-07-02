@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.misc.mean_level_spacing &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.tools.misc.mean_level_spacing &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -54,7 +54,7 @@
         <li class="right" >
           <a href="quspin.tools.misc.KL_div.html" title="quspin.tools.misc.KL_div"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -68,7 +68,7 @@
 <h1>quspin.tools.misc.mean_level_spacing<a class="headerlink" href="#quspin-tools-misc-mean-level-spacing" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="quspin.tools.misc.mean_level_spacing">
-<code class="descclassname">quspin.tools.misc.</code><code class="descname">mean_level_spacing</code><span class="sig-paren">(</span><em>E</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#mean_level_spacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.mean_level_spacing" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">quspin.tools.misc.</code><code class="descname">mean_level_spacing</code><span class="sig-paren">(</span><em>E</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#mean_level_spacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.mean_level_spacing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the mean-level spacing of an energy spectrum.</p>
 <p>See mean level spacing, <span class="math">\(\langle\tilde r_\mathrm{W}\rangle\)</span>, in 
 <a class="reference external" href="https://arxiv.org/pdf/1212.5611.pdf">arXiv:1212.5611</a> for more details.</p>
@@ -80,13 +80,21 @@ for Poisson statistics: <span class="math">\(\langle\tilde r_\mathrm{W}\rangle\a
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>E</strong> : numpy.ndarray</p>
 <blockquote>
-<div><p>Ordered list of ascending, NONdegenerate energies.</p>
+<div><p>Ordered list of ascending, NONdegenerate energies. If <cite>E</cite> contains a repeating value, the function returns <cite>nan</cite>.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>Toggles warning message about degeneracies of the spectrum <cite>E</cite>.</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">float</p>
-<blockquote class="last">
+<blockquote>
 <div><p>mean-level spacing.</p>
+</div></blockquote>
+<p>nan</p>
+<blockquote class="last">
+<div><p>if spectrum <cite>E</cite> has degeneracies.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -200,7 +208,7 @@ spectrum of the ergodic Hamiltonian <span class="math">\(H_1=\sum_jJ S^z_{j+1}S^
         <li class="right" >
           <a href="quspin.tools.misc.KL_div.html" title="quspin.tools.misc.KL_div"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>

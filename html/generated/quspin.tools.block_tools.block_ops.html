@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.block_tools.block_ops &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.tools.block_tools.block_ops &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -325,6 +325,36 @@ Default is <cite>False</cite>.</p>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.update_blocks" title="quspin.tools.block_tools.block_ops.update_blocks"><code class="xref py py-obj docutils literal"><span class="pre">update_blocks</span></code></a>(blocks,&nbsp;basis_con,&nbsp;basis_args)</td>
 <td>Allows to update the <cite>blocks</cite> variable of the class.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.H_dict" title="quspin.tools.block_tools.block_ops.H_dict"><code class="xref py py-obj docutils literal"><span class="pre">H_dict</span></code></a></td>
+<td>dict: dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks,</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.P_dict" title="quspin.tools.block_tools.block_ops.P_dict"><code class="xref py py-obj docutils literal"><span class="pre">P_dict</span></code></a></td>
+<td>dict: dictionary which contains the block projectors under keys labelled by the symmetry blocks,</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.basis_dict" title="quspin.tools.block_tools.block_ops.basis_dict"><code class="xref py py-obj docutils literal"><span class="pre">basis_dict</span></code></a></td>
+<td>dict: dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks,</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dtype" title="quspin.tools.block_tools.block_ops.dtype"><code class="xref py py-obj docutils literal"><span class="pre">dtype</span></code></a></td>
+<td>type: numpy data type to store the block hamiltonians in.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dynamic" title="quspin.tools.block_tools.block_ops.dynamic"><code class="xref py py-obj docutils literal"><span class="pre">dynamic</span></code></a></td>
+<td>list: contains the dynamic operators used to construct the symmetry-block Hamiltonians.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.save_previous_data" title="quspin.tools.block_tools.block_ops.save_previous_data"><code class="xref py py-obj docutils literal"><span class="pre">save_previous_data</span></code></a></td>
+<td>bool: reflects state of optimal argument <cite>save_previous_data</cite>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.tools.block_tools.block_ops.static" title="quspin.tools.block_tools.block_ops.static"><code class="xref py py-obj docutils literal"><span class="pre">static</span></code></a></td>
+<td>list: contains the static operators used to construct the symmetry-block Hamiltonians.</td>
 </tr>
 </tbody>
 </table>
@@ -637,7 +667,7 @@ Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>

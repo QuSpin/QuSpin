@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 import sys,os
-# the following two lines (l4 and l5) are for developmet purposes and can be removed
+# line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
 #####################################################################
@@ -106,7 +106,8 @@ plt.xlabel("$Jt$",fontsize=20)
 plt.ylabel("$s_\mathrm{ent}(t)$",fontsize=20)
 plt.grid()
 plt.savefig("boson_entropy.pdf")
-plt.show()
+#plt.show()
+plt.close()
 #"""
 # setting up two plots to animate side by side
 fig, (ax1,ax2) = plt.subplots(1,2)
@@ -126,6 +127,7 @@ def run(i): # function to update frame
 # CAUTION: these are many animations
 ani = animation.FuncAnimation(fig, run, range(num),interval=50)
 plt.show()
+plt.close()
 #
 """ 
 ###### ladder lattice 

@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.evolution.expm_multiply_parallel &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.tools.evolution.expm_multiply_parallel &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="quspin.tools.evolution.evolve.html" title="quspin.tools.evolution.evolve"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -259,7 +259,7 @@ The code snippet below initiates the class, and is required to run the example c
 7
 8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##### compute expm_multiply applied on a state</span>
 <span class="n">_</span><span class="p">,</span><span class="n">psi</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;SA&#39;</span><span class="p">)</span> <span class="c1"># compute GS of H</span>
-<span class="n">psi</span><span class="o">=</span><span class="n">psi</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+<span class="n">psi</span><span class="o">=</span><span class="n">psi</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
 <span class="c1"># construct c++ work array for speed</span>
 <span class="n">work_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">psi</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">psi</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span> <span class="c1"># measure energy of state |psi&gt;</span>
@@ -343,7 +343,7 @@ The code snippet below initiates the class, and is required to run the example c
         <li class="right" >
           <a href="quspin.tools.evolution.evolve.html" title="quspin.tools.evolution.evolve"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>

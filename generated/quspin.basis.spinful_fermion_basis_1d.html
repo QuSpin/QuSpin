@@ -16,13 +16,13 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.2.9 documentation</title>
+    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.0 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.9',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -69,8 +69,10 @@
         \texttt{spinful_fermion_basis_1d}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}      \newline
 \end{array}\]</div>
 <p class="rubric">Notes</p>
-<p>The <cite>spinful_fermion_basis</cite> operator strings are separated by a pipe symbol, <cite>|</cite>, to distinguish the spin-up from 
-spin-down species. However, the index array has NO pipe symbol.</p>
+<ul class="simple">
+<li>The <cite>spinful_fermion_basis</cite> operator strings are separated by a pipe symbol, <a href="#id1"><span class="problematic" id="id2">|</span></a>, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.</li>
+<li>Particle-hole like symmetries for fermions can be programmed using the <cite>spinful_fermion_basis_general</cite> class.</li>
+</ul>
 <p class="rubric">Examples</p>
 <p>The code snippet below shows how to use the <cite>spinful_fermion_basis_1d</cite> class to construct the basis in the zero momentum sector of positive fermion spin for the Fermi-Hubbard Hamiltonian</p>
 <div class="math">
@@ -114,7 +116,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># hopping strength</span>
 <span class="n">U</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># onsite interaction strength</span>
 <span class="c1">#</span>
-<span class="c1">##### construct basis at half-filling in the 0-total momentum and +1-parity sector</span>
+<span class="c1">##### construct basis at half-filling in the 0-total momentum and +1-spin flip sector</span>
 <span class="n">basis</span><span class="o">=</span><span class="n">spinful_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 <span class="c1">#</span>
@@ -948,7 +950,7 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
