@@ -5,12 +5,26 @@
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
+// template<class I>
+// I inline hcb_map_bits(I s,const int map[],const I inv,const int N){
+// 	I ss = 0;
+
+
+// 	s ^= inv;
+// 	for(int i=N-1;i>=0;--i){
+// 		if(s&1){ss ^= ( I(1)<<(N-map[i]-1) );}
+// 		s >>= 1;
+// 	}
+// 	return ss;
+// }
+
 template<class I>
 I inline hcb_map_bits(I s,const int map[],const int N){
 	I ss = 0;
-	for(int i=N-1;i>=0;i--){
+
+	for(int i=N-1;i>=0;--i){
 		int j = map[i];
-		ss ^= ( j<0 ? ((s&1)^1)<<(N+j) : (s&1)<<(N-j-1) );
+		ss ^= (j<0 ? ((s&1)^1)<<(N+j) : (s&1)<<(N-j-1) );
 		s >>= 1;
 	}
 	return ss;

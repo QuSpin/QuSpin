@@ -1084,7 +1084,7 @@ class hamiltonian(object):
 	### Diagonalisation routines
 
 	def eigsh(self,time=0.0,**eigsh_args):
-		"""Computes SOME eigenvalues of hermitian `hamiltonian` operator using SPARSE hermitian methods.
+		"""Computes SOME eigenvalues and eigenvectors of hermitian `hamiltonian` operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
 		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.

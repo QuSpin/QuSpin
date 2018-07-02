@@ -17,6 +17,11 @@ class spinless_fermion_basis_1d(basis_1d):
 				\\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
 			\\end{array}
 
+	Notes
+	-----
+
+	Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.
+
 	Examples
 	--------
 
@@ -168,8 +173,9 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	Notes
 	-----
 
-	The `spinful_fermion_basis` operator strings are separated by a pipe symbol, `|`, to distinguish the spin-up from 
-	spin-down species. However, the index array has NO pipe symbol.
+	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, |, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.
+	* Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.
+
 
 	Examples
 	--------
@@ -268,13 +274,14 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			if type(Nf) is tuple:
 				if len(Nf)==2:
 					Nup,Ndown = Nf
+					if (type(Nup) is not int) and (type(Ndown) is not int):
+							raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+
 					if Nup>L:
 						raise ValueError("Nup cannot exceed system size L.")
 					if Ndown>L:
 						raise ValueError("Ndown cannot exceed system size L.")
 					self._Np = Nup+Ndown
-					if (type(Nup) is not int) and (type(Ndown) is not int):
-						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
 					Nf_list = [Nf]
 				else:
 					Nf_list = list(Nf)
@@ -298,7 +305,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 
 				Nf_list = list(Nf)
-				N_up_list,_N_down_list = zip(*Nf_list)
+				N_up_list,N_down_list = zip(*Nf_list)
 				self._Np = sum(N_up_list)
 				self._Np += sum(N_down_list)
 

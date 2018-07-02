@@ -2,51 +2,12 @@
 #define _SPINFUL_FERMION_BASIS_CORE_OP_H
 
 #include <complex>
+#include <iostream>
 #include "general_basis_core.h"
 #include "local_pcon_basis_core.h"
 #include "spinless_fermion_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
-
-template<class I>
-I inline spinful_fermion_map_bits(I s,const int map[],const int N,int &sign){
-	I ss = 0;
-	int pos_list[64];
-	int np = 0;
-	bool f_count = 0;
-
-	for(int i=2*N;i>=0;i--){
-		int j = map[i];
-		int n = (s&1);
-		if(n){pos_list[np]=( j<0 ? N + j : N - j - 1); ++np;}
-		ss ^= ( j<0 ? (n^1)<<(2*N+j) : n<<(2*N-j-1) );
-
-		f_count ^= (n && (i&1)) && (j<0);
-
-		s >>= 1;
-	}
-
-	//starting at 2nd element as first element is already sorted.
-	//Loop Invariant - left part of the array is already sorted.
-	if(np > 1){
-		for (int i = 1; i < np; i++) {
-			int moveMe = pos_list[i];
-			int j = i;
-			while (j > 0 && moveMe > pos_list[j - 1]) {
-				//Move element
-				pos_list[j] = pos_list[j - 1];
-				--j;
-				//increase the count as element swap is happend
-				f_count ^= 1;
-			}
-			pos_list[j] = moveMe;
-		}
-	}
-
-	sign *= (f_count ? -1 : 1);
-
-	return ss;
-}
 
 template<class I>
 class spinful_fermion_basis_core : public local_pcon_basis_core<I>
@@ -65,8 +26,8 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			if(general_basis_core<I>::nt<=0){
 				return s;
 			}
-			const int n = general_basis_core<I>::N;
-			return spinful_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
+			const int n = general_basis_core<I>::N << 1;
+			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
 			
 		}
 
@@ -74,14 +35,61 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			if(general_basis_core<I>::nt<=0){
 				return;
 			}
-			const int n = general_basis_core<I>::N;
+			const int n = general_basis_core<I>::N << 1;
 			const int * map = &general_basis_core<I>::maps[n_map*n];
 			#pragma omp for schedule(static,1)
 			for(npy_intp i=0;i<M;i++){
 				int temp_sign = sign[i];
-				s[i] = spinful_fermion_map_bits(s[i],map,n,temp_sign);
+				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
 				sign[i] = temp_sign;
 			}
+		}
+
+		void split_state(I s,I &s_left,I &s_right){
+			s_right = (bit_info<I>::all_bits >> (bit_info<I>::bits-general_basis_core<I>::N))&s;
+			s_left = (s >> general_basis_core<I>::N);
+		}
+
+		void get_right_min_max(I s,I &min,I &max){
+			int n = bit_count(s,general_basis_core<I>::N);
+			if(n){
+				min = bit_info<I>::all_bits >> (bit_info<I>::bits-n);
+				max = min << (general_basis_core<I>::N - n);
+			}
+			else{
+				min = max = 0;
+			}
+		}
+
+		I comb_state(I s_left,I s_right){
+			return (s_left<<general_basis_core<I>::N)+s_right;
+		}
+
+		I next_state_pcon_side(I s){
+			if(s==0){return s;}
+			I t = (s | (s - 1)) + 1;
+			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
+		}
+
+		I next_state_pcon(I s){
+
+			I s_left  = 0;
+			I s_right = 0;
+			I min_right,max_right;
+
+			split_state(s,s_left,s_right);
+			int n = bit_count(s,general_basis_core<I>::N);
+			get_right_min_max(s_right,min_right,max_right);
+
+			if(s_right<max_right){
+				s_right = next_state_pcon_side(s_right);
+			}
+			else{
+				s_right = min_right;
+				s_left = next_state_pcon_side(s_left);
+			}
+
+			return comb_state(s_left,s_right);
 		}
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
@@ -91,7 +99,7 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			for(int j=n_op-1;j>-1;j--){
 				int ind = 2*general_basis_core<I>::N-indx[j]-1;
 				I f_count = bit_count(r,ind);
-				m *= std::complex<double>((f_count&1)?-1:1);
+				double sign = ((f_count&1)?-1:1);
 				I b = (one << ind);
 				bool a = bool((r >> ind)&one);
 				char op = opstr[j];
@@ -103,11 +111,11 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 						m *= (a?1:0);
 						break;
 					case '+':
-						m *= (a?0:1);
+						m *= (a?0:sign);
 						r ^= b;
 						break;
 					case '-':
-						m *= (a?1:0);
+						m *= (a?sign:0);
 						r ^= b;
 						break;
 					case 'I':

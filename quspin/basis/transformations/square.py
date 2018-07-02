@@ -105,7 +105,6 @@ class square_lattice_trans(object):
 				yield blocks
 
 
-
 	def allowed_blocks_iter_parity(self):
 		P_x = self._P_x
 		P_y = self._P_y
@@ -172,3 +171,4 @@ class square_lattice_trans(object):
 				elif kx == -ky and (Lx==Ly):
 					for pe in range(2):
 						yield dict(kxblock=(T_x,kx),kyblock=(T_y,ky),pdblock=(P_e,pe))
+

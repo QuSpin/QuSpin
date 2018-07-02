@@ -55,10 +55,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
 	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `..._basis_general` class can be programmed as follows. Suppose we have a system of
+	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of
 	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
-		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j`
-		* invert the population on a given site: :math:`s\\leftrightarrow -(s+1)`
+		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
+		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry, hardcore bosons only)
 
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
 	spin inversion. For a specific example, see below.
@@ -82,7 +82,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 	Examples
 	--------
 
-	The code snipped below shows how to construct the two-dimensional Bose-Hubbard model.
+	The code snippet below shows how to construct the two-dimensional Bose-Hubbard model.
 	
 	.. math::
 		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
@@ -140,8 +140,6 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Nb = int(nb*N)
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
-
-			self._sps = max(Nb+1,2)
 		else:
 			if Nb is not None:
 				if nb is not None:
@@ -150,8 +148,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			elif nb is not None:
 				Nb = int(nb*N)
 
-			self._sps = sps
-
+		
+		self._sps = sps
 
 		self._allowed_ops=set(["I","z","n","+","-"])
 
@@ -199,6 +197,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				basis_type = get_basis_type(N,Nb,sps)
 			elif type(Nb) is int:
 				self._check_pcon = True
+
+				if self._sps is None:
+					self._sps = Nb
+
 				Ns = H_dim(Nb,N,self._sps-1)
 				basis_type = get_basis_type(N,Nb,self._sps)
 			else:
@@ -206,6 +208,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 					Np_iter = iter(Nb)
 				except TypeError:
 					raise TypeError("Nb must be integer or iteratable object.")
+
+				if self._sps is None:
+					self._sps = max(Nb)				
+
 				Ns = 0
 				for b in Nb:
 					Ns += H_dim(b,N,self._sps-1)
@@ -214,7 +220,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:
-					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*sps
+					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*self._sps
 				else:
 					if type(Ns_block_est) is not int:
 						raise TypeError("Ns_block_est must be integer value.")
@@ -235,32 +241,61 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			else:
 				raise ValueError("states can't be represented as 64-bit unsigned integer")
 
-			if count_particles and (Nb_list is not None):
+			# if count_particles and (Nb_list is not None):
+			# 	Np_list = _np.zeros_like(basis,dtype=_np.uint8)
+			# 	self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
+			# 	if self._Ns < 0:
+			# 		raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
+
+			# 	basis,ind = _np.unique(basis,return_index=True)
+			# 	if self.Ns != basis.shape[0]:
+			# 		basis = basis[1:]
+			# 		ind = ind[1:]
+
+			# 	self._basis = basis[::-1].copy()
+			# 	self._n = n[ind[::-1]].copy()
+			# 	self._Np_list = Np_list[ind[::-1]].copy()
+			# else:
+			# 	self._Ns = self._core.make_basis(basis,n,Np=Nb)
+			# 	if self._Ns < 0:
+			# 		raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
+
+			# 	basis,ind = _np.unique(basis,return_index=True)
+			# 	if self.Ns != basis.shape[0]:
+			# 		basis = basis[1:]
+			# 		ind = ind[1:]
+			# 	self._basis = basis[::-1].copy()
+			# 	self._n = n[ind[::-1]].copy()
+
+
+			if count_particles and (Nb is not None):
 				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-				self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
-				if self._Ns < 0:
-					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-				basis,ind = _np.unique(basis,return_index=True)
-				if self.Ns != basis.shape[0]:
-					basis = basis[1:]
-					ind = ind[1:]
-
-				self._basis = basis[::-1].copy()
-				self._n = n[ind[::-1]].copy()
-				self._Np_list = Np_list[ind[::-1]].copy()
+				Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
 			else:
-				self._Ns = self._core.make_basis(basis,n,Np=Nb)
-				if self._Ns < 0:
+				Np_list = None
+				Ns = self._core.make_basis(basis,n,Np=Nb)
+
+			if Ns < 0:
 					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
-				basis,ind = _np.unique(basis,return_index=True)
-				if self.Ns != basis.shape[0]:
-					basis = basis[1:]
-					ind = ind[1:]
-				self._basis = basis[::-1].copy()
-				self._n = n[ind[::-1]].copy()
+			if type(Nb) is int or Nb is None:
+				if Ns > 0:
+					self._basis = basis[Ns-1::-1].copy()
+					self._n = n[Ns-1::-1].copy()
+					if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				else:
+					self._basis = _np.array([],dtype=basis.dtype)
+					self._n = _np.array([],dtype=n.dtype)
+					if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
+			else:
+				ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
+				self._basis = basis[ind].copy()
+				self._n = n[ind].copy()
+				if Np_list is not None: self._Np_list = Np_list[ind].copy()
 
+
+
+			self._Ns = Ns
 			self._N = N
 			self._index_type = _np.min_scalar_type(-self._Ns)
 

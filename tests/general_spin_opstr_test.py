@@ -40,6 +40,10 @@ def check_ME(b1,b2,opstr,indx,dtype,err_msg):
 			np.testing.assert_allclose(col1-col2,0,atol=1e-6,err_msg=err_msg)
 			np.testing.assert_allclose(ME1-ME2,0,atol=1e-6,err_msg=err_msg)
 		except:
+			print(ME1-ME2)
+			print(row1-row2)
+			print(col1-col2)
+			print()
 			print(ME1)
 			print(row1)
 			print(col1)
@@ -108,8 +112,16 @@ def test_gen_basis_spin(l_max,S="1/2"):
 			print(basis_1d)
 			print(gen_basis)
 			raise ValueError("basis size mismatch")
-		np.testing.assert_allclose(basis_1d._basis-gen_basis._basis,0,atol=1e-6)
-		np.testing.assert_allclose(n-n_gen ,0,atol=1e-6)
+
+		try:
+			np.testing.assert_allclose(basis_1d._basis-gen_basis._basis,0,atol=1e-6)
+			np.testing.assert_allclose(n-n_gen ,0,atol=1e-6)
+		except:
+			print(basis_1d._basis)
+			print(gen_basis._basis)
+			print(n.shape)
+			print(n_gen.shape)
+			raise Exception
 
 		for l in range(1,l_max+1):
 			for i0 in range(0,L-l+1,1):

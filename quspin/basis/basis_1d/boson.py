@@ -99,14 +99,14 @@ class boson_basis_1d(basis_1d):
 				Nb = int(nb*L)
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
-			self._sps = Nb+1
 		else:
 			if Nb is not None:
 				if nb is not None:
 					raise ValueError("cannot use 'nb' and 'Nb' simultaineously.")
 			elif nb is not None:
 				Nb = int(nb*L)
-			self._sps = sps
+
+		self._sps = sps
 
 		if Nb is None:
 			Nb_list = None
@@ -120,6 +120,7 @@ class boson_basis_1d(basis_1d):
 
 			if any((type(Nb) is not int) for Nb in Nb_list):
 				TypeError("Nb must be iterable returning integers")
+
 
 		count_particles = False
 		if blocks.get("_Np") is not None:
@@ -139,6 +140,9 @@ class boson_basis_1d(basis_1d):
 			self._Np = None			
 		else:
 			self._Np = sum(Nb_list)
+
+		if self._sps is None:
+			self._sps = max(Nb_list)
 
 		self._blocks = blocks
 
