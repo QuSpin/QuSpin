@@ -129,7 +129,7 @@ class expm_multiply_parallel(object):
 
 		if v_dtype != v.dtype:
 			if overwrite_v:
-				raise ValueError("input array must match correct output dtype the matrix multiplication.")
+				raise ValueError("input array must match correct output dtype for matrix multiplication.")
 
 			v = v.astype(v_dtype)
 

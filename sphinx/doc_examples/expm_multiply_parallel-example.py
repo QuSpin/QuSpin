@@ -36,7 +36,7 @@ print(expH.a)
 #
 ##### compute expm_multiply applied on a state
 _,psi=H.eigsh(k=1,which='SA') # compute GS of H
-psi=psi.squeeze()
+psi=psi.squeeze().astype(np.complex128) # cast array type to complex double due to complex matrix exp
 # construct c++ work array for speed
 work_array=np.zeros((2*len(psi),), dtype=psi.dtype)
 print(H.expt_value(psi)) # measure energy of state |psi>
