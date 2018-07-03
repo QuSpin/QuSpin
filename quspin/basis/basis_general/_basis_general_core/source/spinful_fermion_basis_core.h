@@ -46,14 +46,14 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 		}
 
 		void split_state(I s,I &s_left,I &s_right){
-			s_right = (bit_info<I>::all_bits >> (bit_info<I>::bits-general_basis_core<I>::N))&s;
+			s_right = (I(bit_info<I>::all_bits) >> (bit_info<I>::bits-general_basis_core<I>::N))&s;
 			s_left = (s >> general_basis_core<I>::N);
 		}
 
 		void get_right_min_max(I s,I &min,I &max){
 			int n = bit_count(s,general_basis_core<I>::N);
 			if(n){
-				min = bit_info<I>::all_bits >> (bit_info<I>::bits-n);
+				min = I(bit_info<I>::all_bits) >> (bit_info<I>::bits-n);
 				max = min << (general_basis_core<I>::N - n);
 			}
 			else{
@@ -78,7 +78,6 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			I min_right,max_right;
 
 			split_state(s,s_left,s_right);
-			int n = bit_count(s,general_basis_core<I>::N);
 			get_right_min_max(s_right,min_right,max_right);
 
 			if(s_right<max_right){
