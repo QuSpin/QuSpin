@@ -8,10 +8,12 @@ source:
  
 
 requirements:
-  build:
-    - {{compiler('cxx')}} # [unix]
+  host:
     - python {{ python }}
     - numpy >=1.10.0
+
+  build:
+    - {{compiler('cxx')}} # [unix]
  
     
   run:
