@@ -36,9 +36,9 @@ This will compile the source code and copy it to the installation directory of P
 	$ cat install_file.txt | xargs rm -rf. 
 	
 	
-**Installing without sudo Privilidges**
+**Installing without sudo Privileges**
 
-Sometimes, when one does not have sudo privilidges (i.e. access to the root directory is denied), one may not be able to install QuSpin directly. This is often the case on computing clusters, where one can only install programs in one's home directory. To circumvent such problems, we advise the users to (i) download and install `miniconda <http://conda.pydata.org/miniconda.html>`_ in their home directory, (ii) create a `conda environment <https://conda.io/docs/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands>`_ and activate it, and (iii) install QuSpin inside the environment. To use QuSpin, one always has to activate the environment first.  
+Sometimes, when one does not have sudo privileges (i.e. access to the root directory is denied), one may not be able to install QuSpin directly. This is often the case on computing clusters, where one can only install programs in one's home directory. To circumvent such problems, we advise the users to (i) download and install `miniconda <http://conda.pydata.org/miniconda.html>`_ in their home directory, (ii) create a `conda environment <https://conda.io/docs/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands>`_ and activate it, and (iii) install QuSpin inside the environment. To use QuSpin, one always has to activate the environment first.  
 
 Windows
 -------
