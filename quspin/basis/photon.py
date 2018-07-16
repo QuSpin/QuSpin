@@ -433,7 +433,6 @@ class photon_basis(tensor_basis):
 
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
-				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
 			Subsystem to calculate the density matrix of. Can be either one of:
 
@@ -538,7 +537,6 @@ class photon_basis(tensor_basis):
 
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
-				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
 			Subsystem to calculate the density matrix of. Can be either one of:
 

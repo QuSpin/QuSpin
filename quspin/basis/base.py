@@ -223,7 +223,6 @@ class basis(object):
 
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
-				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : tuple/list, optional
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
 			Default is `tuple(range(N//2))` with `N` the number of lattice sites.
@@ -279,7 +278,6 @@ class basis(object):
 
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
-				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : tuple/list, optional
 			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
 			Default is `tuple(range(N//2))` with `N` the number of lattice sites.

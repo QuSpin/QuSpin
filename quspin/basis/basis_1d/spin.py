@@ -19,9 +19,10 @@ class spin_basis_1d(basis_1d):
 			\\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
 		\\end{array}
 
-	**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
-	the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support
-	the operator strings "x" and "y". 
+	**Note:** 
+		* The relation between spin and Pauli matrices is :math:`\\vec S = \\vec \\sigma/2`.
+		* The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support the operator strings "x" and "y". 
+		* The operator strings "+" and "-" are defined as follows: :math:`S^{\\pm}=S^x \\pm i S^y` (`pauli=False`) and :math:`\\sigma^{\\pm}=\\sigma^x \\pm i \\sigma^y` (`pauli=True`). 
 
 	Examples
 	--------

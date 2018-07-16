@@ -341,7 +341,6 @@ class tensor_basis(basis):
 
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
-				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
 			Defines subsystem A. Can be either one of:
 
@@ -468,7 +467,6 @@ class tensor_basis(basis):
 
 				* numpy.ndarray [shape (Ns,)]: pure state (default).
 				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
-				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
 		sub_sys_A : str, optional
 			Defines subsystem A. Can be either one of:
 
