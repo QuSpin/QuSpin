@@ -20,7 +20,7 @@ class spinless_fermion_basis_general(basis_general):
 	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of
 	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
-		* invert the **fermion population** on a given site with appropriate sign flip :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
+		* invert the **fermion population** on a given site with appropriate sign flip (see `"z"` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 		
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
 	population inversion. For a specific example, see below.
@@ -32,6 +32,12 @@ class spinless_fermion_basis_general(basis_general):
 			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
 			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
 		\\end{array}
+
+	Notes
+	-----
+
+	* For particle-hole symmetry, please use exclusively the operator string `"z"` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.
+
 
 	Examples
 	--------
@@ -309,7 +315,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		* *advanced* symmetry definition (see optional argument `simple_symm`) does NOT use any pipe symbol in the operator string to distinguish between the spin-up and spin-down species. In the *advanced* case, the sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1}; s_{L},s_{L+1},\\dots,s_{2L-1})`, where the first L sites label spin-up, and the last L sites -- spin-down. There are two types of operations one can perform on the sites:
 			* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity, fermion spin inversion)
-			* invert the **fermion population** on a given site with appropriate sign flip :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
+			* invert the **fermion population** on a given site with appropriate sign flip (see `"z"` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 	
 
 	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion
@@ -326,7 +332,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	Notes
 	-----
 
-	The definition of the operation :math:`s_i\\leftrightarrow -(s_j+1)` **differs** for the *simple* and *advanced* cases. 
+	* The definition of the operation :math:`s_i\\leftrightarrow -(s_j+1)` **differs** for the *simple* and *advanced* cases.
+	* For particle-hole symmetry, please use exclusively the operator string `"z"` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.
 
 
 	Examples
