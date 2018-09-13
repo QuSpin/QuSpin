@@ -39,7 +39,7 @@ class quantum_LinearOperator(LinearOperator):
 
 	The following example shows how to construct and use `quantum_LinearOperator` objects.
 
-	.. literalinclude:: ../../doc_examples/quantum_linearOperator-example.py
+	.. literalinclude:: ../../doc_examples/quantum_LinearOperator-example.py
 		:linenos:
 		:language: python
 		:lines: 7-
@@ -139,7 +139,7 @@ class quantum_LinearOperator(LinearOperator):
 						self._diagonal[row] += ME[row].real
 				else:
 					while len(row) > 0:
-						# if there are multiply matrix elements per row as there are for some
+						# if there are multiple matrix elements per row as there are for some
 						# symmetries availible then do the indexing for unique elements then
 						# delete them from the list and then repeat until all elements have been 
 						# taken care of. This is less memory efficient but works well for when
@@ -151,7 +151,7 @@ class quantum_LinearOperator(LinearOperator):
 						ME = _np.delete(ME,args)					
 			else:
 				self._static_list.append((opstr,indx,J))
-				
+		
 
 
 
