@@ -15,7 +15,7 @@ except ImportError:
 
 np.set_printoptions(linewidth=100000,precision=2)
 
-def f(t):
+def f(t,np):
 	return np.sin(t)*t
 
 def test():
@@ -49,7 +49,7 @@ def test():
 		np.testing.assert_allclose(E,E_blocks)
 
 	static = [["zz",J]]
-	dynamic = [["x",h,f,[]]]
+	dynamic = [["x",h,f,[np]]]
 
 	blocks = []
 	for kblock in range(L):
