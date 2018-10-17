@@ -87,15 +87,15 @@ void csrmv_merge(const bool overwrite_y,
 		for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
 		{
 			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
-			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]];
 
-			y[thread_coord.x] += alpha*running_total;
+			y[thread_coord.x] += T3(alpha)*running_total;
 			running_total = 0.0;
 		}
 
 		// Consume partial portion of thread's last row
 		for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
-			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]];
 
 		// Save carry-outs
 		row_carry_out[tid] = thread_coord_end.x;
@@ -107,7 +107,7 @@ void csrmv_merge(const bool overwrite_y,
 	{
 		for (int tid = 0; tid < num_threads - 1; ++tid)
 		if (row_carry_out[tid] < num_rows)
-		y[row_carry_out[tid]] += alpha*value_carry_out[tid];
+		y[row_carry_out[tid]] += T3(alpha)*value_carry_out[tid];
 	}
 
 	#pragma omp barrier

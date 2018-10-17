@@ -11,8 +11,6 @@ import numpy as _np
 from inspect import isgenerator as _isgenerator 
 
 # needed for isinstance only
-from ..operators import ishamiltonian as _ishamiltonian
-from ..operators import hamiltonian as _hamiltonian
 from ..basis import isbasis as _isbasis
 from ..basis.photon import photon_Hspace_dim
 from .evolution import ED_state_vs_time
@@ -625,7 +623,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 				DM was also requested (toggled through `Srdm_args`.)
 
 	"""
-
+	from ..operators import ishamiltonian,hamiltonian
 	
 	variables = ['Expt_time']
 	
@@ -635,11 +633,11 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 	num_Obs = len(Obs_dict.keys())
 
 	for key, val in Obs_dict.items():
-		if not _ishamiltonian(val):
+		if not ishamiltonian(val):
 			if not(_sp.issparse(val)) and not(val.__class__ in [_np.ndarray,_np.matrix]):
 				val =_np.asanyarray(val)
 
-			Obs_dict[key] = _hamiltonian([val],[],dtype=val.dtype)
+			Obs_dict[key] = hamiltonian([val],[],dtype=val.dtype)
 
 
 	if type(psi_t) is tuple:

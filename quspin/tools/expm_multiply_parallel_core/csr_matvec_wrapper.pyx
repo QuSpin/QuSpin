@@ -38,35 +38,132 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
   cdef index nr = Yx.shape[0]
   cdef index rco[128];
   cdef T3 vco[128];
-  if T1 is double and T2 is double and T3 is double:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is double and T2 is double and T3 is cdouble:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is double and T2 is cdouble and T3 is cdouble:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is cdouble and T2 is cdouble and T3 is cdouble:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is cdouble and T2 is double and T3 is cdouble:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is float and T2 is float and T3 is float:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is float and T2 is float and T3 is cfloat:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is float and T2 is cfloat and T3 is cfloat:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is cfloat and T2 is cfloat and T3 is cfloat:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  elif T1 is cfloat and T2 is float and T3 is cfloat:
-    with nogil, parallel():
-      csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
-  else:
-    raise ValueError("imcompatbile types")
+
+  if T1 is cdouble:
+    if T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+    else:
+      raise ValueError
+
+  elif T1 is double:
+    if T2 is cdouble:
+      if T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    elif T2 is double:
+      if T3 is double or T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    elif T2 is cfloat:
+      if T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    else:
+      if T3 is double or T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+  elif T1 is cfloat:
+    if T2 is cdouble:
+      if T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    elif T2 is double:
+      if T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    elif T2 is cfloat:
+      if T3 is cdouble or T3 is cfloat:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    else:
+      if T3 is cdouble or T3 is cfloat:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+  else: #T1 is float
+    if T2 is cdouble:
+      if T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError  
+
+    elif T2 is double:
+      if T3 is double or T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    elif T2 is cfloat:
+      if T3 is cdouble or T3 is cfloat:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+    else:
+      if T3 is cdouble or T3 is cfloat or T3 is double or T3 is cdouble:
+        with nogil, parallel():
+          csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+      else:
+        raise ValueError
+
+
+
+  # if T1 is double and T2 is double and T3 is double:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is double and T2 is double and T3 is cdouble:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is double and T2 is cdouble and T3 is cdouble:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is cdouble and T2 is cdouble and T3 is cdouble:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is cdouble and T2 is double and T3 is cdouble:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is float and T2 is float and T3 is float:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is float and T2 is float and T3 is cfloat:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is float and T2 is cfloat and T3 is cfloat:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is cfloat and T2 is cfloat and T3 is cfloat:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # elif T1 is cfloat and T2 is float and T3 is cfloat:
+  #   with nogil, parallel():
+  #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+  # else:
+  #   raise ValueError("imcompatbile types")

@@ -2,8 +2,6 @@
 
 from __future__ import print_function, division
 
-from ..operators import hamiltonian,ishamiltonian
-
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
@@ -192,7 +190,8 @@ class Floquet(object):
 			Set the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
 
 		"""
-
+		from ..operators import ishamiltonian
+		
 		variables = []
 		if HF: variables.append('HF')
 		if UF: variables.append('UF')

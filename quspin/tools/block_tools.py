@@ -2,8 +2,6 @@
 
 from __future__ import print_function, division
 # QuSpin modules
-from ..operators import hamiltonian as _hamiltonian
-from ..operators import ishamiltonian as _ishamiltonian
 # numpy modules
 import numpy as _np # generic math functions
 # _scipy modules
@@ -95,6 +93,8 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 		the symmetry sectors.
 
 	"""
+	from ..operators import hamiltonian
+
 	H_list = []
 	P_list = []
 
@@ -111,7 +111,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 				P = b.get_proj(dtype,**get_proj_kwargs)
 				P_list.append(P)
 
-			H = _hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
+			H = hamiltonian(static,dynamic,basis=b,dtype=dtype,check_symm=check_symm,check_herm=check_herm,check_pcon=check_pcon)
 			check_symm = False
 			check_herm = False
 			check_pcon = False
@@ -132,9 +132,9 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 
 	if get_proj:
 		P = _sp.hstack(P_list,format="csr")
-		return P,_hamiltonian(static,dynamic,copy=False)
+		return P,hamiltonian(static,dynamic,copy=False)
 	else:
-		return _hamiltonian(static,dynamic,copy=False)
+		return hamiltonian(static,dynamic,copy=False)
 
 
 
@@ -459,6 +459,8 @@ class block_ops(object):
 			:lines: 57-58
 
 		"""
+		from ..operators import hamiltonian
+
 		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
 				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
@@ -466,10 +468,10 @@ class block_ops(object):
 
 			if self._H_dict.get(key) is None:
 				if not self._checked:
-					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+					H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 					self._checked=True
 				else:
-					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+					H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 				self._H_dict[key] = H
 
 
@@ -560,10 +562,10 @@ class block_ops(object):
 
 				if self._H_dict.get(key) is None:
 					if not self._checked:
-						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 						self._checked=True
 					else:
-						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 
 					if self._save:
 						self._H_dict[key] = H
@@ -733,10 +735,10 @@ class block_ops(object):
 				P.append(p.tocoo())
 				if self._H_dict.get(key) is None:
 					if not self._checked:
-						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 						self._checked=True
 					else:
-						H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 
 					if self._save:
 						self._H_dict[key] = H
@@ -937,10 +939,10 @@ class block_diag_ensemble(object):
 
 			if self._H_dict.get(key) is None:
 				if not self._checked:
-					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+					H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
 					self._checked=True
 				else:
-					H = _hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+					H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
 				self._H_dict[key] = H
 
 
