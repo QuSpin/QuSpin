@@ -44,7 +44,7 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
     else:
-      raise ValueError
+      raise ValueError("invalid types")
 
   elif T1 is double:
     if T2 is cdouble:
@@ -52,28 +52,28 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     elif T2 is double:
       if T3 is double or T3 is cdouble:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     elif T2 is cfloat:
       if T3 is cdouble:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     else:
       if T3 is double or T3 is cdouble:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
   elif T1 is cfloat:
     if T2 is cdouble:
@@ -81,28 +81,28 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     elif T2 is double:
       if T3 is cdouble:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     elif T2 is cfloat:
       if T3 is cdouble or T3 is cfloat:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     else:
       if T3 is cdouble or T3 is cfloat:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
   else: #T1 is float
     if T2 is cdouble:
@@ -110,28 +110,28 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError  
+        raise ValueError("invalid types")  
 
     elif T2 is double:
       if T3 is double or T3 is cdouble:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     elif T2 is cfloat:
       if T3 is cdouble or T3 is cfloat:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
     else:
       if T3 is cdouble or T3 is cfloat or T3 is double or T3 is cdouble:
         with nogil, parallel():
           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
       else:
-        raise ValueError
+        raise ValueError("invalid types")
 
 
 
@@ -166,4 +166,4 @@ def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
   #   with nogil, parallel():
   #     csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
   # else:
-  #   raise ValueError("imcompatbile types")
+  #   raise ValueError("invalid types")("imcompatbile types")

@@ -2348,6 +2348,7 @@ static const char __pyx_k_RuntimeError[] = "RuntimeError";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_float_complex[] = "float complex";
+static const char __pyx_k_invalid_types[] = "invalid types";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_double_complex[] = "double complex";
@@ -2722,6 +2723,7 @@ static PyObject *__pyx_kp_s_int64_t_float_float_double;
 static PyObject *__pyx_kp_s_int64_t_float_float_double_compl;
 static PyObject *__pyx_kp_s_int64_t_float_float_float;
 static PyObject *__pyx_kp_s_int64_t_float_float_float_comple;
+static PyObject *__pyx_kp_s_invalid_types;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_kind;
@@ -2970,9 +2972,6 @@ static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_slice__31;
-static PyObject *__pyx_slice__32;
-static PyObject *__pyx_slice__33;
 static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__11;
 static PyObject *__pyx_tuple__12;
@@ -2994,18 +2993,101 @@ static PyObject *__pyx_tuple__27;
 static PyObject *__pyx_tuple__28;
 static PyObject *__pyx_tuple__29;
 static PyObject *__pyx_tuple__30;
+static PyObject *__pyx_tuple__31;
+static PyObject *__pyx_tuple__32;
+static PyObject *__pyx_tuple__33;
 static PyObject *__pyx_tuple__34;
 static PyObject *__pyx_tuple__35;
 static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_tuple__37;
+static PyObject *__pyx_tuple__38;
 static PyObject *__pyx_tuple__39;
 static PyObject *__pyx_tuple__40;
 static PyObject *__pyx_tuple__41;
 static PyObject *__pyx_tuple__42;
 static PyObject *__pyx_tuple__43;
 static PyObject *__pyx_tuple__44;
-static PyObject *__pyx_codeobj__38;
-static PyObject *__pyx_codeobj__45;
+static PyObject *__pyx_tuple__45;
+static PyObject *__pyx_tuple__46;
+static PyObject *__pyx_tuple__47;
+static PyObject *__pyx_tuple__48;
+static PyObject *__pyx_tuple__49;
+static PyObject *__pyx_tuple__50;
+static PyObject *__pyx_tuple__51;
+static PyObject *__pyx_tuple__52;
+static PyObject *__pyx_tuple__53;
+static PyObject *__pyx_tuple__54;
+static PyObject *__pyx_tuple__55;
+static PyObject *__pyx_tuple__56;
+static PyObject *__pyx_tuple__57;
+static PyObject *__pyx_tuple__58;
+static PyObject *__pyx_tuple__59;
+static PyObject *__pyx_tuple__60;
+static PyObject *__pyx_tuple__61;
+static PyObject *__pyx_tuple__62;
+static PyObject *__pyx_tuple__63;
+static PyObject *__pyx_tuple__64;
+static PyObject *__pyx_tuple__65;
+static PyObject *__pyx_tuple__66;
+static PyObject *__pyx_tuple__67;
+static PyObject *__pyx_tuple__68;
+static PyObject *__pyx_tuple__69;
+static PyObject *__pyx_tuple__70;
+static PyObject *__pyx_tuple__71;
+static PyObject *__pyx_tuple__72;
+static PyObject *__pyx_tuple__73;
+static PyObject *__pyx_tuple__74;
+static PyObject *__pyx_tuple__75;
+static PyObject *__pyx_tuple__76;
+static PyObject *__pyx_tuple__77;
+static PyObject *__pyx_tuple__78;
+static PyObject *__pyx_tuple__79;
+static PyObject *__pyx_tuple__80;
+static PyObject *__pyx_tuple__81;
+static PyObject *__pyx_tuple__82;
+static PyObject *__pyx_tuple__83;
+static PyObject *__pyx_tuple__84;
+static PyObject *__pyx_tuple__85;
+static PyObject *__pyx_tuple__86;
+static PyObject *__pyx_tuple__87;
+static PyObject *__pyx_tuple__88;
+static PyObject *__pyx_tuple__89;
+static PyObject *__pyx_tuple__90;
+static PyObject *__pyx_tuple__91;
+static PyObject *__pyx_tuple__92;
+static PyObject *__pyx_tuple__93;
+static PyObject *__pyx_tuple__94;
+static PyObject *__pyx_tuple__95;
+static PyObject *__pyx_tuple__96;
+static PyObject *__pyx_tuple__97;
+static PyObject *__pyx_tuple__98;
+static PyObject *__pyx_tuple__99;
+static PyObject *__pyx_slice__111;
+static PyObject *__pyx_slice__112;
+static PyObject *__pyx_slice__113;
+static PyObject *__pyx_tuple__100;
+static PyObject *__pyx_tuple__101;
+static PyObject *__pyx_tuple__102;
+static PyObject *__pyx_tuple__103;
+static PyObject *__pyx_tuple__104;
+static PyObject *__pyx_tuple__105;
+static PyObject *__pyx_tuple__106;
+static PyObject *__pyx_tuple__107;
+static PyObject *__pyx_tuple__108;
+static PyObject *__pyx_tuple__109;
+static PyObject *__pyx_tuple__110;
+static PyObject *__pyx_tuple__114;
+static PyObject *__pyx_tuple__115;
+static PyObject *__pyx_tuple__116;
+static PyObject *__pyx_tuple__117;
+static PyObject *__pyx_tuple__119;
+static PyObject *__pyx_tuple__120;
+static PyObject *__pyx_tuple__121;
+static PyObject *__pyx_tuple__122;
+static PyObject *__pyx_tuple__123;
+static PyObject *__pyx_tuple__124;
+static PyObject *__pyx_codeobj__118;
+static PyObject *__pyx_codeobj__125;
 /* Late includes */
 
 /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -4349,6 +4431,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -4363,11 +4446,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":134
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 134, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -4380,6 +4466,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -4562,7 +4649,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -4794,7 +4881,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -5026,7 +5113,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -5209,6 +5296,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -5223,11 +5311,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":120
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 120, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -5240,6 +5331,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -5422,7 +5514,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -5605,6 +5697,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -5619,11 +5712,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":120
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 120, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -5636,6 +5732,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -5818,7 +5915,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -6001,6 +6098,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -6015,11 +6113,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":127
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 127, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -6032,6 +6133,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -6165,6 +6267,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -6179,11 +6282,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":127
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 127, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -6196,6 +6302,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -6378,7 +6485,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -6610,7 +6717,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -6793,6 +6900,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -6807,11 +6915,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -6824,6 +6935,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -6957,6 +7069,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -6971,11 +7084,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -6988,6 +7104,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -7121,6 +7238,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_0_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -7135,11 +7253,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -7152,6 +7273,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -7334,7 +7456,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -7517,6 +7639,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -7531,11 +7654,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":76
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 76, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -7548,6 +7674,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -7730,7 +7857,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -7913,6 +8040,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_0_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -7927,11 +8055,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":76
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 76, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -7944,6 +8075,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -8126,7 +8258,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -8309,6 +8441,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -8323,11 +8456,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":62
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 62, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -8340,6 +8476,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -8522,7 +8659,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -8705,6 +8842,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -8719,11 +8857,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":62
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 62, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -8736,6 +8877,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -8918,7 +9060,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -9101,6 +9243,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -9115,11 +9258,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 69, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -9132,6 +9278,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -9265,6 +9412,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -9279,11 +9427,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 69, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -9296,6 +9447,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -9429,6 +9581,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_2_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -9443,11 +9596,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 69, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -9460,6 +9616,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -9642,7 +9799,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -9825,6 +9982,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -9839,11 +9997,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 55, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -9856,6 +10017,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -9989,6 +10151,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -10003,11 +10166,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 55, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -10020,6 +10186,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -10153,6 +10320,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_1_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -10167,11 +10335,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 55, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -10184,6 +10355,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -10366,7 +10538,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -10549,6 +10721,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -10563,11 +10736,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":105
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   else: #T1 is float
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 105, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -10580,6 +10756,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -10713,6 +10890,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_0_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -10727,11 +10905,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":105
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   else: #T1 is float
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 105, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -10744,6 +10925,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -10926,7 +11108,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -11158,7 +11340,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -11341,6 +11523,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -11355,11 +11538,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -11372,6 +11558,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -11505,6 +11692,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_1_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -11519,11 +11707,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -11536,6 +11727,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -11669,6 +11861,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -11683,11 +11876,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -11700,6 +11896,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -11882,7 +12079,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -12065,6 +12262,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -12079,11 +12277,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":98
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 98, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -12096,6 +12297,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -12229,6 +12431,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -12243,11 +12446,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":98
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 98, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -12260,6 +12466,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -12442,7 +12649,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -12674,7 +12881,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -12857,6 +13064,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -12871,11 +13079,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -12888,6 +13099,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -13021,6 +13233,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -13035,11 +13248,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -13052,6 +13268,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -13185,6 +13402,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_2_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -13199,11 +13417,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -13216,6 +13437,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -13398,7 +13620,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -13581,6 +13803,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -13595,11 +13818,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -13612,6 +13838,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -13745,6 +13972,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_0_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -13759,11 +13987,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -13776,6 +14007,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -13909,6 +14141,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_0_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -13923,11 +14156,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -13940,6 +14176,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -14122,7 +14359,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -14305,6 +14542,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -14319,11 +14557,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__38, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -14336,6 +14577,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -14469,6 +14711,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_1_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -14483,11 +14726,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__39, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -14500,6 +14746,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -14633,6 +14880,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -14647,11 +14895,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -14664,6 +14915,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -14846,7 +15098,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -15029,6 +15281,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -15043,11 +15296,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__41, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -15060,6 +15316,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -15193,6 +15450,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -15207,11 +15465,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__42, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -15224,6 +15485,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -15357,6 +15619,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_2_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -15371,11 +15634,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__43, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -15388,6 +15654,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -15570,7 +15837,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -15753,6 +16020,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -15767,11 +16035,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__44, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -15784,6 +16055,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -15917,6 +16189,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -15931,11 +16204,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__45, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -15948,6 +16224,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -16081,6 +16358,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int32_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_3_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -16095,11 +16373,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__46, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -16112,6 +16393,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -16294,7 +16576,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -16477,6 +16759,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -16491,11 +16774,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":134
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__47, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 134, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -16508,6 +16794,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -16690,7 +16977,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -16922,7 +17209,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -17154,7 +17441,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -17337,6 +17624,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -17351,11 +17639,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":120
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__48, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 120, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -17368,6 +17659,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -17550,7 +17842,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -17733,6 +18025,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -17747,11 +18040,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":120
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__49, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 120, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -17764,6 +18060,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -17946,7 +18243,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -18129,6 +18426,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -18143,11 +18441,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":127
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__50, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 127, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -18160,6 +18461,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -18293,6 +18595,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -18307,11 +18610,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":127
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__51, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 127, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -18324,6 +18630,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -18506,7 +18813,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -18738,7 +19045,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -18921,6 +19228,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -18935,11 +19243,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__52, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -18952,6 +19263,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -19085,6 +19397,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -19099,11 +19412,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__53, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -19116,6 +19432,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -19249,6 +19566,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_0_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -19263,11 +19581,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__54, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -19280,6 +19601,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -19462,7 +19784,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -19645,6 +19967,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -19659,11 +19982,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":76
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__55, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 76, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -19676,6 +20002,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -19858,7 +20185,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -20041,6 +20368,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_0_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -20055,11 +20383,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":76
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__56, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 76, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -20072,6 +20403,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -20254,7 +20586,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -20437,6 +20769,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -20451,11 +20784,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":62
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__57, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 62, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -20468,6 +20804,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -20650,7 +20987,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -20833,6 +21170,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -20847,11 +21185,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":62
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__58, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 62, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -20864,6 +21205,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -21046,7 +21388,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -21229,6 +21571,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -21243,11 +21586,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__59, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 69, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -21260,6 +21606,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -21393,6 +21740,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -21407,11 +21755,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__60, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 69, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -21424,6 +21775,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -21557,6 +21909,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_2_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -21571,11 +21924,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__61, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 69, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -21588,6 +21944,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -21770,7 +22127,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -21953,6 +22310,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -21967,11 +22325,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__62, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 55, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -21984,6 +22345,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -22117,6 +22479,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -22131,11 +22494,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__63, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 55, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -22148,6 +22514,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -22281,6 +22648,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_1_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -22295,11 +22663,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__64, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 55, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -22312,6 +22683,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -22494,7 +22866,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -22677,6 +23049,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -22691,11 +23064,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":105
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   else: #T1 is float
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__65, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 105, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -22708,6 +23084,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -22841,6 +23218,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_0_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -22855,11 +23233,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":105
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   else: #T1 is float
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__66, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 105, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -22872,6 +23253,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -23054,7 +23436,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -23286,7 +23668,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -23469,6 +23851,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -23483,11 +23866,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__67, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -23500,6 +23886,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -23633,6 +24020,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_1_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -23647,11 +24035,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__68, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -23664,6 +24055,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -23797,6 +24189,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -23811,11 +24204,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is cfloat:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__69, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -23828,6 +24224,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -24010,7 +24407,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -24193,6 +24590,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -24207,11 +24605,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":98
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__70, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 98, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -24224,6 +24625,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -24357,6 +24759,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -24371,11 +24774,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":98
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__71, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 98, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -24388,6 +24794,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -24570,7 +24977,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -24802,7 +25209,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -24985,6 +25392,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -24999,11 +25407,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__72, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -25016,6 +25427,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -25149,6 +25561,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -25163,11 +25576,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__73, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -25180,6 +25596,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -25313,6 +25730,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_2_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -25327,11 +25745,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *       else:
- *         raise ValueError             # <<<<<<<<<<<<<<
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *     elif T2 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__74, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -25344,6 +25765,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -25526,7 +25948,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *       else:
- *         raise ValueError
+ *         raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -25709,6 +26131,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_0_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -25723,11 +26146,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__75, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -25740,6 +26166,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -25873,6 +26300,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_0_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -25887,11 +26315,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__76, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -25904,6 +26335,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -26037,6 +26469,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_0_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -26051,11 +26484,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__77, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -26068,6 +26504,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -26250,7 +26687,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -26433,6 +26870,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_1_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -26447,11 +26885,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__78, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -26464,6 +26905,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -26597,6 +27039,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_1_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -26611,11 +27054,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__79, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -26628,6 +27074,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -26761,6 +27208,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_1_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -26775,11 +27223,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__80, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -26792,6 +27243,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -26974,7 +27426,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -27157,6 +27609,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_2_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -27171,11 +27624,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__81, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -27188,6 +27644,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -27321,6 +27778,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_2_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -27335,11 +27793,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__82, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -27352,6 +27813,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -27485,6 +27947,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_2_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -27499,11 +27962,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__83, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -27516,6 +27982,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -27698,7 +28165,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -27881,6 +28348,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_3_0_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -27895,11 +28363,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__84, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -27912,6 +28383,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -28045,6 +28517,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_3_1_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -28059,11 +28532,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__85, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -28076,6 +28552,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -28209,6 +28686,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   CYTHON_UNUSED __pyx_t_5numpy_int64_t __pyx_v_nr;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_3_3_2_csr_matvec", 0);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":38
@@ -28223,11 +28701,14 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
  *     else:
- *       raise ValueError             # <<<<<<<<<<<<<<
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
  * 
  *   elif T1 is double:
  */
-  __Pyx_Raise(__pyx_builtin_ValueError, 0, 0, 0);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__86, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(0, 47, __pyx_L1_error)
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
@@ -28240,6 +28721,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper._csr_matvec", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __PYX_XDEC_MEMVIEW(&__pyx_v_Ap, 1);
@@ -28422,7 +28904,7 @@ static PyObject *__pyx_pf_6quspin_5tools_27expm_multiply_parallel_core_18csr_mat
  *         with nogil, parallel():
  *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
- *       raise ValueError
+ *       raise ValueError("invalid types")
  */
                 __pyx_t_1 = 0;
                 if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
@@ -28600,7 +29082,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 229, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__87, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 229, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -28656,7 +29138,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  * 
  *             info.buf = PyArray_DATA(self)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 233, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__88, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 233, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -28913,7 +29395,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 263, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__89, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 263, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -29793,7 +30275,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 810, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__90, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 810, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -29861,7 +30343,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  *             # One could encode it in the format string and have Cython
  *             # complain instead, BUT: < and > in format strings also imply
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 814, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__91, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 814, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -29970,7 +30452,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  */
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 834, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__92, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 834, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -30644,7 +31126,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1000, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__93, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1000, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -30773,7 +31255,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1006, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__94, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1006, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -30899,7 +31381,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1012, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__95, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1012, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -31143,7 +31625,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if itemsize <= 0:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 132, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__96, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 132, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -31175,7 +31657,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if not isinstance(format, bytes):
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 135, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__97, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -31210,7 +31692,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  */
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_format, __pyx_n_s_encode); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 138, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 138, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__98, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 138, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF_SET(__pyx_v_format, __pyx_t_5);
@@ -31290,7 +31772,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  * 
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 147, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__99, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -31564,7 +32046,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *             if self.dtype_is_object:
  */
-      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 175, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__100, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 175, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -31805,7 +32287,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
  *         info.buf = self.data
  *         info.len = self.len
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 191, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__101, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 191, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -32521,7 +33003,7 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__102, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -32574,7 +33056,7 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__103, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -34218,7 +34700,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 413, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__104, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 413, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -35245,7 +35727,7 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
  *         else:
  *             if len(self.view.format) == 1:
  */
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 490, __pyx_L5_except_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__105, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 490, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -35601,7 +36083,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
  * 
  *         if flags & PyBUF_STRIDES:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 515, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__106, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 515, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -36141,7 +36623,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 565, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__107, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 565, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -36255,7 +36737,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 572, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__28, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 572, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__108, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 572, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_3;
@@ -37256,7 +37738,7 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__109, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -37309,7 +37791,7 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__110, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -37660,9 +38142,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         __Pyx_GOTREF(__pyx_t_7);
         { Py_ssize_t __pyx_temp;
           for (__pyx_temp=0; __pyx_temp < ((__pyx_v_ndim - __pyx_t_8) + 1); __pyx_temp++) {
-            __Pyx_INCREF(__pyx_slice__31);
-            __Pyx_GIVEREF(__pyx_slice__31);
-            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__31);
+            __Pyx_INCREF(__pyx_slice__111);
+            __Pyx_GIVEREF(__pyx_slice__111);
+            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__111);
           }
         }
         __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 677, __pyx_L1_error)
@@ -37695,7 +38177,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
  *         else:
  */
       /*else*/ {
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__32); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 680, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__112); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 680, __pyx_L1_error)
       }
       __pyx_L7:;
 
@@ -37835,9 +38317,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     __Pyx_GOTREF(__pyx_t_3);
     { Py_ssize_t __pyx_temp;
       for (__pyx_temp=0; __pyx_temp < __pyx_v_nslices; __pyx_temp++) {
-        __Pyx_INCREF(__pyx_slice__33);
-        __Pyx_GIVEREF(__pyx_slice__33);
-        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__33);
+        __Pyx_INCREF(__pyx_slice__113);
+        __Pyx_GIVEREF(__pyx_slice__113);
+        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__113);
       }
     }
     __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 691, __pyx_L1_error)
@@ -37961,7 +38443,7 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
  * 
  * 
  */
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 698, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__114, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 698, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -40124,7 +40606,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__115, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -40177,7 +40659,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__116, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -44769,6 +45251,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_int64_t_float_float_double_compl, __pyx_k_int64_t_float_float_double_compl, sizeof(__pyx_k_int64_t_float_float_double_compl), 0, 0, 1, 0},
   {&__pyx_kp_s_int64_t_float_float_float, __pyx_k_int64_t_float_float_float, sizeof(__pyx_k_int64_t_float_float_float), 0, 0, 1, 0},
   {&__pyx_kp_s_int64_t_float_float_float_comple, __pyx_k_int64_t_float_float_float_comple, sizeof(__pyx_k_int64_t_float_float_float_comple), 0, 0, 1, 0},
+  {&__pyx_kp_s_invalid_types, __pyx_k_invalid_types, sizeof(__pyx_k_invalid_types), 0, 0, 1, 0},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
   {&__pyx_n_s_kind, __pyx_k_kind, sizeof(__pyx_k_kind), 0, 0, 1, 1},
@@ -44870,6 +45353,454 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":134
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":120
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is cfloat:
+ */
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":127
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is double:
+ */
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":76
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *   elif T1 is cfloat:
+ */
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":62
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is cfloat:
+ */
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is double:
+ */
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":105
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *   else: #T1 is float
+ */
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is cfloat:
+ */
+  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__29);
+  __Pyx_GIVEREF(__pyx_tuple__29);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":98
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is double:
+ */
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *     else:
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *   elif T1 is double:
+ */
+  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__35);
+  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
+  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__37);
+  __Pyx_GIVEREF(__pyx_tuple__37);
+  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__38);
+  __Pyx_GIVEREF(__pyx_tuple__38);
+  __pyx_tuple__39 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__39);
+  __Pyx_GIVEREF(__pyx_tuple__39);
+  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__40);
+  __Pyx_GIVEREF(__pyx_tuple__40);
+  __pyx_tuple__41 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__41);
+  __Pyx_GIVEREF(__pyx_tuple__41);
+  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__42);
+  __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_tuple__43 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__43);
+  __Pyx_GIVEREF(__pyx_tuple__43);
+  __pyx_tuple__44 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__44);
+  __Pyx_GIVEREF(__pyx_tuple__44);
+  __pyx_tuple__45 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__45);
+  __Pyx_GIVEREF(__pyx_tuple__45);
+  __pyx_tuple__46 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__46);
+  __Pyx_GIVEREF(__pyx_tuple__46);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":134
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_tuple__47 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__47);
+  __Pyx_GIVEREF(__pyx_tuple__47);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":120
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is cfloat:
+ */
+  __pyx_tuple__48 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__48);
+  __Pyx_GIVEREF(__pyx_tuple__48);
+  __pyx_tuple__49 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__49);
+  __Pyx_GIVEREF(__pyx_tuple__49);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":127
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+  __pyx_tuple__50 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__50);
+  __Pyx_GIVEREF(__pyx_tuple__50);
+  __pyx_tuple__51 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__51);
+  __Pyx_GIVEREF(__pyx_tuple__51);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":113
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is double:
+ */
+  __pyx_tuple__52 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__52);
+  __Pyx_GIVEREF(__pyx_tuple__52);
+  __pyx_tuple__53 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__53);
+  __Pyx_GIVEREF(__pyx_tuple__53);
+  __pyx_tuple__54 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__54);
+  __Pyx_GIVEREF(__pyx_tuple__54);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":76
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *   elif T1 is cfloat:
+ */
+  __pyx_tuple__55 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__55);
+  __Pyx_GIVEREF(__pyx_tuple__55);
+  __pyx_tuple__56 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__56);
+  __Pyx_GIVEREF(__pyx_tuple__56);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":62
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is cfloat:
+ */
+  __pyx_tuple__57 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__57);
+  __Pyx_GIVEREF(__pyx_tuple__57);
+  __pyx_tuple__58 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__58)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__58);
+  __Pyx_GIVEREF(__pyx_tuple__58);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":69
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+  __pyx_tuple__59 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__59)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__59);
+  __Pyx_GIVEREF(__pyx_tuple__59);
+  __pyx_tuple__60 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__60)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__60);
+  __Pyx_GIVEREF(__pyx_tuple__60);
+  __pyx_tuple__61 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__61)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__61);
+  __Pyx_GIVEREF(__pyx_tuple__61);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":55
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is double:
+ */
+  __pyx_tuple__62 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__62)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__62);
+  __Pyx_GIVEREF(__pyx_tuple__62);
+  __pyx_tuple__63 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__63)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__63);
+  __Pyx_GIVEREF(__pyx_tuple__63);
+  __pyx_tuple__64 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__64)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__64);
+  __Pyx_GIVEREF(__pyx_tuple__64);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":105
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *   else: #T1 is float
+ */
+  __pyx_tuple__65 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__65)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__65);
+  __Pyx_GIVEREF(__pyx_tuple__65);
+  __pyx_tuple__66 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__66)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__66);
+  __Pyx_GIVEREF(__pyx_tuple__66);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":91
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is cfloat:
+ */
+  __pyx_tuple__67 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__67);
+  __Pyx_GIVEREF(__pyx_tuple__67);
+  __pyx_tuple__68 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__68)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__68);
+  __Pyx_GIVEREF(__pyx_tuple__68);
+  __pyx_tuple__69 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__69);
+  __Pyx_GIVEREF(__pyx_tuple__69);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":98
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     else:
+ */
+  __pyx_tuple__70 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__70)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__70);
+  __Pyx_GIVEREF(__pyx_tuple__70);
+  __pyx_tuple__71 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__71)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__71);
+  __Pyx_GIVEREF(__pyx_tuple__71);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":84
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *       else:
+ *         raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *     elif T2 is double:
+ */
+  __pyx_tuple__72 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__72)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__72);
+  __Pyx_GIVEREF(__pyx_tuple__72);
+  __pyx_tuple__73 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__73)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__73);
+  __Pyx_GIVEREF(__pyx_tuple__73);
+  __pyx_tuple__74 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__74)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__74);
+  __Pyx_GIVEREF(__pyx_tuple__74);
+
+  /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":47
+ *           csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],alpha,&Xx[0],&rco[0],&vco[0],&Yx[0])
+ *     else:
+ *       raise ValueError("invalid types")             # <<<<<<<<<<<<<<
+ * 
+ *   elif T1 is double:
+ */
+  __pyx_tuple__75 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__75)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__75);
+  __Pyx_GIVEREF(__pyx_tuple__75);
+  __pyx_tuple__76 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__76)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__76);
+  __Pyx_GIVEREF(__pyx_tuple__76);
+  __pyx_tuple__77 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__77)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__77);
+  __Pyx_GIVEREF(__pyx_tuple__77);
+  __pyx_tuple__78 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__78)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__78);
+  __Pyx_GIVEREF(__pyx_tuple__78);
+  __pyx_tuple__79 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__79)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__79);
+  __Pyx_GIVEREF(__pyx_tuple__79);
+  __pyx_tuple__80 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__80)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__80);
+  __Pyx_GIVEREF(__pyx_tuple__80);
+  __pyx_tuple__81 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__81)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__81);
+  __Pyx_GIVEREF(__pyx_tuple__81);
+  __pyx_tuple__82 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__82)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__82);
+  __Pyx_GIVEREF(__pyx_tuple__82);
+  __pyx_tuple__83 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__83)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__83);
+  __Pyx_GIVEREF(__pyx_tuple__83);
+  __pyx_tuple__84 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__84)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__84);
+  __Pyx_GIVEREF(__pyx_tuple__84);
+  __pyx_tuple__85 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__85)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__85);
+  __Pyx_GIVEREF(__pyx_tuple__85);
+  __pyx_tuple__86 = PyTuple_Pack(1, __pyx_kp_s_invalid_types); if (unlikely(!__pyx_tuple__86)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__86);
+  __Pyx_GIVEREF(__pyx_tuple__86);
+
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":229
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):
@@ -44877,9 +45808,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(1, 229, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_tuple__87 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__87)) __PYX_ERR(1, 229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__87);
+  __Pyx_GIVEREF(__pyx_tuple__87);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":233
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
@@ -44888,9 +45819,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *             info.buf = PyArray_DATA(self)
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 233, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_tuple__88 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__88)) __PYX_ERR(1, 233, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__88);
+  __Pyx_GIVEREF(__pyx_tuple__88);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":263
  *                 if ((descr.byteorder == c'>' and little_endian) or
@@ -44899,9 +45830,9 @@ static int __Pyx_InitCachedConstants(void) {
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 263, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_tuple__89 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__89)) __PYX_ERR(1, 263, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__89);
+  __Pyx_GIVEREF(__pyx_tuple__89);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":810
  * 
@@ -44910,9 +45841,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(1, 810, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_tuple__90 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__90)) __PYX_ERR(1, 810, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__90);
+  __Pyx_GIVEREF(__pyx_tuple__90);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":814
  *         if ((child.byteorder == c'>' and little_endian) or
@@ -44921,9 +45852,9 @@ static int __Pyx_InitCachedConstants(void) {
  *             # One could encode it in the format string and have Cython
  *             # complain instead, BUT: < and > in format strings also imply
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 814, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_tuple__91 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__91)) __PYX_ERR(1, 814, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__91);
+  __Pyx_GIVEREF(__pyx_tuple__91);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":834
  *             t = child.type_num
@@ -44932,9 +45863,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(1, 834, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_tuple__92 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__92)) __PYX_ERR(1, 834, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__92);
+  __Pyx_GIVEREF(__pyx_tuple__92);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":1000
  *         _import_array()
@@ -44943,9 +45874,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(1, 1000, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_tuple__93 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__93)) __PYX_ERR(1, 1000, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__93);
+  __Pyx_GIVEREF(__pyx_tuple__93);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":1006
  *         _import_umath()
@@ -44954,18 +45885,18 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(1, 1006, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_tuple__94 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__94)) __PYX_ERR(1, 1006, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__94);
+  __Pyx_GIVEREF(__pyx_tuple__94);
 
   /* "../../../../../anaconda2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":1012
  *         _import_umath()
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 1012, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_tuple__95 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__95)) __PYX_ERR(1, 1012, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__95);
+  __Pyx_GIVEREF(__pyx_tuple__95);
 
   /* "View.MemoryView":132
  * 
@@ -44974,9 +45905,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         if itemsize <= 0:
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(2, 132, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_tuple__96 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__96)) __PYX_ERR(2, 132, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__96);
+  __Pyx_GIVEREF(__pyx_tuple__96);
 
   /* "View.MemoryView":135
  * 
@@ -44985,9 +45916,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         if not isinstance(format, bytes):
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(2, 135, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_tuple__97 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__97)) __PYX_ERR(2, 135, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__97);
+  __Pyx_GIVEREF(__pyx_tuple__97);
 
   /* "View.MemoryView":138
  * 
@@ -44996,9 +45927,9 @@ static int __Pyx_InitCachedConstants(void) {
  *         self._format = format  # keep a reference to the byte string
  *         self.format = self._format
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_ASCII); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(2, 138, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_tuple__98 = PyTuple_Pack(1, __pyx_n_s_ASCII); if (unlikely(!__pyx_tuple__98)) __PYX_ERR(2, 138, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__98);
+  __Pyx_GIVEREF(__pyx_tuple__98);
 
   /* "View.MemoryView":147
  * 
@@ -45007,9 +45938,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(2, 147, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__19);
-  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_tuple__99 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__99)) __PYX_ERR(2, 147, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__99);
+  __Pyx_GIVEREF(__pyx_tuple__99);
 
   /* "View.MemoryView":175
  *             self.data = <char *>malloc(self.len)
@@ -45018,9 +45949,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *             if self.dtype_is_object:
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(2, 175, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_tuple__100 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__100)) __PYX_ERR(2, 175, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__100);
+  __Pyx_GIVEREF(__pyx_tuple__100);
 
   /* "View.MemoryView":191
  *             bufmode = PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
@@ -45029,9 +45960,9 @@ static int __Pyx_InitCachedConstants(void) {
  *         info.buf = self.data
  *         info.len = self.len
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(2, 191, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__21);
-  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_tuple__101 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__101)) __PYX_ERR(2, 191, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__101);
+  __Pyx_GIVEREF(__pyx_tuple__101);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -45039,18 +45970,18 @@ static int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_tuple__102 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__102)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__102);
+  __Pyx_GIVEREF(__pyx_tuple__102);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__23);
-  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_tuple__103 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__103)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__103);
+  __Pyx_GIVEREF(__pyx_tuple__103);
 
   /* "View.MemoryView":413
  *     def __setitem__(memoryview self, object index, object value):
@@ -45059,9 +45990,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(2, 413, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_tuple__104 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__104)) __PYX_ERR(2, 413, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__104);
+  __Pyx_GIVEREF(__pyx_tuple__104);
 
   /* "View.MemoryView":490
  *             result = struct.unpack(self.view.format, bytesitem)
@@ -45070,9 +46001,9 @@ static int __Pyx_InitCachedConstants(void) {
  *         else:
  *             if len(self.view.format) == 1:
  */
-  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(2, 490, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__25);
-  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_tuple__105 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__105)) __PYX_ERR(2, 490, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__105);
+  __Pyx_GIVEREF(__pyx_tuple__105);
 
   /* "View.MemoryView":515
  *     def __getbuffer__(self, Py_buffer *info, int flags):
@@ -45081,9 +46012,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         if flags & PyBUF_STRIDES:
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(2, 515, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_tuple__106 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__106)) __PYX_ERR(2, 515, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__106);
+  __Pyx_GIVEREF(__pyx_tuple__106);
 
   /* "View.MemoryView":565
  *         if self.view.strides == NULL:
@@ -45092,9 +46023,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 565, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__27);
-  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_tuple__107 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__107)) __PYX_ERR(2, 565, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__107);
+  __Pyx_GIVEREF(__pyx_tuple__107);
 
   /* "View.MemoryView":572
  *     def suboffsets(self):
@@ -45103,12 +46034,12 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([suboffset for suboffset in self.view.suboffsets[:self.view.ndim]])
  */
-  __pyx_tuple__28 = PyTuple_New(1); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 572, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
+  __pyx_tuple__108 = PyTuple_New(1); if (unlikely(!__pyx_tuple__108)) __PYX_ERR(2, 572, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__108);
   __Pyx_INCREF(__pyx_int_neg_1);
   __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyTuple_SET_ITEM(__pyx_tuple__28, 0, __pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_tuple__28);
+  PyTuple_SET_ITEM(__pyx_tuple__108, 0, __pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_tuple__108);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -45116,18 +46047,18 @@ static int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__29);
-  __Pyx_GIVEREF(__pyx_tuple__29);
+  __pyx_tuple__109 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__109)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__109);
+  __Pyx_GIVEREF(__pyx_tuple__109);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_tuple__110 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__110)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__110);
+  __Pyx_GIVEREF(__pyx_tuple__110);
 
   /* "View.MemoryView":677
  *         if item is Ellipsis:
@@ -45136,9 +46067,9 @@ static int __Pyx_InitCachedConstants(void) {
  *                 seen_ellipsis = True
  *             else:
  */
-  __pyx_slice__31 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__31)) __PYX_ERR(2, 677, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_slice__31);
-  __Pyx_GIVEREF(__pyx_slice__31);
+  __pyx_slice__111 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__111)) __PYX_ERR(2, 677, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__111);
+  __Pyx_GIVEREF(__pyx_slice__111);
 
   /* "View.MemoryView":680
  *                 seen_ellipsis = True
@@ -45147,9 +46078,9 @@ static int __Pyx_InitCachedConstants(void) {
  *             have_slices = True
  *         else:
  */
-  __pyx_slice__32 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__32)) __PYX_ERR(2, 680, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_slice__32);
-  __Pyx_GIVEREF(__pyx_slice__32);
+  __pyx_slice__112 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__112)) __PYX_ERR(2, 680, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__112);
+  __Pyx_GIVEREF(__pyx_slice__112);
 
   /* "View.MemoryView":691
  *     nslices = ndim - len(result)
@@ -45158,9 +46089,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  *     return have_slices or nslices, tuple(result)
  */
-  __pyx_slice__33 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__33)) __PYX_ERR(2, 691, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_slice__33);
-  __Pyx_GIVEREF(__pyx_slice__33);
+  __pyx_slice__113 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__113)) __PYX_ERR(2, 691, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__113);
+  __Pyx_GIVEREF(__pyx_slice__113);
 
   /* "View.MemoryView":698
  *     for suboffset in suboffsets[:ndim]:
@@ -45169,9 +46100,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 698, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
-  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_tuple__114 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__114)) __PYX_ERR(2, 698, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__114);
+  __Pyx_GIVEREF(__pyx_tuple__114);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -45179,18 +46110,18 @@ static int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__35);
-  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_tuple__115 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__115)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__115);
+  __Pyx_GIVEREF(__pyx_tuple__115);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__36);
-  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_tuple__116 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__116)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__116);
+  __Pyx_GIVEREF(__pyx_tuple__116);
 
   /* "quspin/tools/expm_multiply_parallel_core/csr_matvec_wrapper.pyx":36
  * 
@@ -45199,10 +46130,10 @@ static int __Pyx_InitCachedConstants(void) {
  *                   T1[:] Ax, T2 alpha, T3[:] Xx, T3[:] Yx):
  *   cdef index nr = Yx.shape[0]
  */
-  __pyx_tuple__37 = PyTuple_Pack(10, __pyx_n_s_overwrite_y, __pyx_n_s_Ap, __pyx_n_s_Aj, __pyx_n_s_Ax, __pyx_n_s_alpha, __pyx_n_s_Xx, __pyx_n_s_Yx, __pyx_n_s_nr, __pyx_n_s_rco, __pyx_n_s_vco); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__37);
-  __Pyx_GIVEREF(__pyx_tuple__37);
-  __pyx_codeobj__38 = (PyObject*)__Pyx_PyCode_New(7, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__37, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_csr_matvec_wrapper_pyx, __pyx_n_s_csr_matvec, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__38)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_tuple__117 = PyTuple_Pack(10, __pyx_n_s_overwrite_y, __pyx_n_s_Ap, __pyx_n_s_Aj, __pyx_n_s_Ax, __pyx_n_s_alpha, __pyx_n_s_Xx, __pyx_n_s_Yx, __pyx_n_s_nr, __pyx_n_s_rco, __pyx_n_s_vco); if (unlikely(!__pyx_tuple__117)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__117);
+  __Pyx_GIVEREF(__pyx_tuple__117);
+  __pyx_codeobj__118 = (PyObject*)__Pyx_PyCode_New(7, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__117, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_csr_matvec_wrapper_pyx, __pyx_n_s_csr_matvec, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__118)) __PYX_ERR(0, 36, __pyx_L1_error)
 
   /* "View.MemoryView":285
  *         return self.name
@@ -45211,9 +46142,9 @@ static int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__39 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(2, 285, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__39);
-  __Pyx_GIVEREF(__pyx_tuple__39);
+  __pyx_tuple__119 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__119)) __PYX_ERR(2, 285, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__119);
+  __Pyx_GIVEREF(__pyx_tuple__119);
 
   /* "View.MemoryView":286
  * 
@@ -45222,9 +46153,9 @@ static int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(2, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__40);
-  __Pyx_GIVEREF(__pyx_tuple__40);
+  __pyx_tuple__120 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__120)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__120);
+  __Pyx_GIVEREF(__pyx_tuple__120);
 
   /* "View.MemoryView":287
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -45233,9 +46164,9 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__41 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(2, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__41);
-  __Pyx_GIVEREF(__pyx_tuple__41);
+  __pyx_tuple__121 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__121)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__121);
+  __Pyx_GIVEREF(__pyx_tuple__121);
 
   /* "View.MemoryView":290
  * 
@@ -45244,9 +46175,9 @@ static int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(2, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__42);
-  __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_tuple__122 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__122)) __PYX_ERR(2, 290, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__122);
+  __Pyx_GIVEREF(__pyx_tuple__122);
 
   /* "View.MemoryView":291
  * 
@@ -45255,19 +46186,19 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__43 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(2, 291, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__43);
-  __Pyx_GIVEREF(__pyx_tuple__43);
+  __pyx_tuple__123 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__123)) __PYX_ERR(2, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__123);
+  __Pyx_GIVEREF(__pyx_tuple__123);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     if __pyx_checksum != 0xb068931:
  *         from pickle import PickleError as __pyx_PickleError
  */
-  __pyx_tuple__44 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__44);
-  __Pyx_GIVEREF(__pyx_tuple__44);
-  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__124 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__124)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__124);
+  __Pyx_GIVEREF(__pyx_tuple__124);
+  __pyx_codeobj__125 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__124, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__125)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -45609,647 +46540,647 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_3_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_3_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_5_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_5_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_7_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_7_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_float_comple, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_9_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_9_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_double_compl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_11_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_11_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_13_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_13_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_15_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_15_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_float_compl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_17_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_17_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_double_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_19_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_19_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_complex_floa, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_21_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_21_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_complex_doub, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_23_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_23_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_complex_floa_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_25_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_25_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_float_complex_doub_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_27_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_27_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_complex_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_29_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_29_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_complex_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_31_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_31_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_complex_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_33_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_0_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_33_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_double_complex_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_35_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_35_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_37_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_37_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_39_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_39_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_float_compl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_41_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_41_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_double_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_43_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_43_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_45_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_45_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_47_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_47_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_float_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_49_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_49_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_double_com, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_51_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_51_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_complex_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_53_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_53_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_complex_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_55_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_55_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_complex_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_57_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_57_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_float_complex_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_59_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_59_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_complex_fl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_61_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_61_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_complex_do, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_63_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_63_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_complex_fl_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_65_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_1_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_65_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_double_complex_do_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_67_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_67_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_floa, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_69_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_69_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_doub, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_71_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_71_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_floa_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_73_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_73_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_doub_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_75_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_75_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_77_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_77_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_79_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_79_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_81_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_81_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_83_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_83_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_85_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_85_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_comp_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_87_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_87_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_comp_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_89_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_89_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_float_comp_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_91_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_91_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_com, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_93_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_93_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_com_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_95_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_95_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_com_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_97_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_2_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_97_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_float_complex_double_com_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_99_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_99_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_101_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_101_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_103_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_103_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_105_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_105_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_107_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_107_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_fl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_109_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_109_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_do, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_111_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_111_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_fl_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_113_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_113_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_do_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_115_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_115_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_com, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_117_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_117_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_com_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_119_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_119_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_com_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_121_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_121_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_float_com_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_123_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_123_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_co, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_125_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_125_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_co_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_127_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_127_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_co_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_129_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0_3_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_129_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int32_t_double_complex_double_co_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_131_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_131_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_133_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_133_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_135_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_135_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_float_comple, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_137_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_137_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_double_compl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_139_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_139_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_141_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_141_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_143_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_143_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_float_compl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_145_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_145_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_double_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_147_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_147_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_complex_floa, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_149_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_149_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_complex_doub, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_151_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_151_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_complex_floa_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_153_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_153_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_float_complex_doub_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_155_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_155_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_complex_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_157_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_157_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_complex_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_159_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_159_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_complex_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_161_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_0_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_161_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_double_complex_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_163_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_163_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_165_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_165_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_167_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_167_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_float_compl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_169_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_169_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_double_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_171_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_171_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_float, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_173_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_173_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_double, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_175_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_175_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_float_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_177_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_177_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_double_com, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_179_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_179_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_complex_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_181_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_181_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_complex_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_183_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_183_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_complex_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_185_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_185_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_float_complex_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_187_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_187_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_complex_fl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_189_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_189_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_complex_do, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_191_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_191_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_complex_fl_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_193_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_1_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_193_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_double_complex_do_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_195_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_195_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_floa, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_197_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_197_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_doub, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_199_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_199_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_floa_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_201_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_201_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_doub_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_203_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_203_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_205_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_205_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_207_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_207_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_209_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_209_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_211_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_211_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_comp, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_213_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_213_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_comp_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_215_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_215_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_comp_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_217_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_217_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_float_comp_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_219_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_219_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_com, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_221_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_221_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_com_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_223_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_223_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_com_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_225_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_2_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_225_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_float_complex_double_com_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_227_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_227_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_flo, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_229_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_229_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_dou, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_231_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_231_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_flo_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_233_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_0_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_233_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_dou_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_235_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_235_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_fl, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_237_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_237_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_do, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_239_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_239_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_fl_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_241_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_1_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_241_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_do_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_243_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_243_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_com, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_245_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_245_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_com_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_247_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_247_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_com_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_249_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_2_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_249_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_float_com_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_251_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_0__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_251_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_co, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_253_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_1__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_253_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_co_2, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_255_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_2__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_255_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_co_3, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_257_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1_3_3_3__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_257_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_int64_t_double_complex_double_co_4, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_1_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_mdef_6quspin_5tools_27expm_multiply_parallel_core_18csr_matvec_wrapper_1_csr_matvec, 0, __pyx_n_s_csr_matvec, NULL, __pyx_n_s_quspin_tools_expm_multiply_paral, __pyx_d, ((PyObject *)__pyx_codeobj__118)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_empty_tuple);
   ((__pyx_FusedFunctionObject *) __pyx_t_2)->__signatures__ = __pyx_t_1;
@@ -46287,7 +47218,7 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__39, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 285, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__119, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_3);
@@ -46301,7 +47232,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__120, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_3);
@@ -46315,7 +47246,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__41, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__121, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_3);
@@ -46329,7 +47260,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__42, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 290, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__122, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_3);
@@ -46343,7 +47274,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__43, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 291, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__123, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_3);
