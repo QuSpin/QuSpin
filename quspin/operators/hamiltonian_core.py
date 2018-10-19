@@ -1346,7 +1346,7 @@ class hamiltonian(object):
 
 	def __omp_SO(self,time,V,V_out):
 
-		_csr_matvec(self._static,V,out=V_dot,overwrite_out=True)
+		_csr_matvec(self._static,V,out=V_out,overwrite_out=True)
 		for func,Hd in iteritems(self._dynamic):
 			_csr_matvec(Hd,V,a=func(time),out=V_out,overwrite_out=False)
 
