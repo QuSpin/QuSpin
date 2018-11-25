@@ -18,14 +18,14 @@ except ImportError:
 L = 10
 dtype = np.float64
 T=0.5
-n=10
+n=20
 
 tol = 1e-6
 
 def drive(t):
 	return t*np.cos(2*np.pi*t/T)
 
-basis = spin_basis_1d(L,Nup=L//2,kblock=0,a=2)
+basis = spin_basis_1d(L,Nup=L//2,kblock=0,pzblock=1,a=2)
 times = np.arange(0,(n+0.1)*T,T/4)
 
 
