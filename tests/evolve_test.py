@@ -61,16 +61,27 @@ rho_0 = np.outer(psi_0.conj(),psi_0).astype(np.complex128)
 psi_t = H.evolve(psi_0,0,times,eom="SE",iterate=True,atol=1e-10,rtol=1e-10)
 O_expt = obs_vs_time(psi_t,times,dict(O=O_0))["O"]
 
-rho_t = H.evolve(rho_0,0,times,eom="LvNE",iterate=False,atol=1e-10,rtol=1e-10)
-O_expt_2 = np.einsum("ij...,ji->...",rho_t,O_0).real
-np.testing.assert_allclose(O_expt,O_expt_2)
-
+psi_t = H.evolve(psi_0,0,times,eom="SE_omp",iterate=True,atol=1e-10,rtol=1e-10)
+O_expt_omp = obs_vs_time(psi_t,times,dict(O=O_0))["O"]
 
 rho_t = H.evolve(rho_0,0,times,eom="LvNE",iterate=True,atol=1e-10,rtol=1e-10)
-for t,O_SE,rho in zip(times,O_expt,rho_t):
-	O_LvNE = np.einsum("ij,ji->",rho,O_0).real
-	if np.abs(O_SE-O_LvNE) > tol:
-		raise Exception("test failed by 'E_LvNE' at t={}, diff of {}".format(t,np.abs(E_SE-E_LvNE)))
+O_expt_rho = obs_vs_time(rho_t,times,dict(O=O_0))["O"]
+
+try:
+	np.testing.assert_allclose(O_expt,O_expt_rho)
+	np.testing.assert_allclose(O_expt,O_expt_omp)
+except AssertionError:
+	rho_t = H.evolve(rho_0,0,times,eom="LvNE",iterate=True,atol=1e-10,rtol=1e-10)
+	for t,O_SE,rho in zip(times,O_expt,rho_t):
+		O_LvNE = np.einsum("ij,ji->",rho,O_0).real
+		if np.abs(O_SE-O_LvNE) > tol:
+			raise Exception("'LvNE' failed at t={}, diff of {}".format(t,np.abs(O_SE-O_LvNE)))
+
+	psi_t = H.evolve(psi_0,0,times,eom="SE_omp",iterate=True,atol=1e-10,rtol=1e-10)
+	for t,O_SE,psi in zip(times,O_expt,psi_t):
+		O_omp = np.einsum("j,ji,i->",psi.conj(),O_0,psi).real
+		if np.abs(O_SE-O_omp) > tol:
+			raise Exception("'SE_omp' failed at t={}, diff of {}".format(t,np.abs(O_SE-O_omp)))
 
 
 print("evolve checks passed")
