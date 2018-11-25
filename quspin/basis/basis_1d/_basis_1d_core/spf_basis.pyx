@@ -1,8 +1,10 @@
 #!python
-#cython: boundscheck=False
-#cython: wraparound=False
-#cython: cdivision=True
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: language_level=2
 # distutils: language=c++
+
 
 
 cimport numpy as _np

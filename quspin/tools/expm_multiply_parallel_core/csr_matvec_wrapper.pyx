@@ -1,3 +1,4 @@
+# cython: language_level=2
 cimport numpy as np
 import cython
 from cython.parallel cimport parallel
