@@ -35,17 +35,17 @@ void csr_matvec(const bool overwrite_y,
 		for(I k = 0; k<n; k++){
 			T3 sum = 0;
 			for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
-				sum += Ax[jj] * x[Aj[jj]];
+				sum += T3(Ax[jj]) * x[Aj[jj]];
 			}
-			y[k] = a*sum;
+			y[k] = T3(a)*sum;
 		}
 	}else{
 		for(I k = 0; k<n; k++){
 			T3 sum = 0;
 			for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
-				sum += Ax[jj] * x[Aj[jj]];
+				sum +=  T3(Ax[jj]) * x[Aj[jj]];
 			}
-			y[k] += a*sum;
+			y[k] += T3(a)*sum;
 		}
 	}
 
