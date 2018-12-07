@@ -1391,6 +1391,7 @@ class hamiltonian(object):
 			Specifies the ODE type. Can be either one of
 
 				* "SE", real and imaginary-time Schroedinger equation.
+				* "SE_omp", real and imaginary-time Schroedinger equation with parallel csr matrix-vector dot-product.
 				* "LvNE", real-time Liouville equation.
 
 			Default is "eom = SE" (Schroedinger evolution).

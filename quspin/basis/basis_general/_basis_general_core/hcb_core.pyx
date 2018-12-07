@@ -24,6 +24,7 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 		self._N = N
 		self._nt = pers.shape[0]
 		self._sps = 2
+		self._Ns_full = (1ull << N)
 
 		if self._nt>0:
 			self._basis_core = new hcb_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
@@ -79,7 +80,7 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 		cdef npy_intp Ns = (1ull<<self._N)
 		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
-			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
+			Ns = make_basis(self._basis_core,self._Ns_full,mem_MAX,&basis[0],&n[0])
 
 		return Ns
 
@@ -101,6 +102,8 @@ cdef class hcb_basis_core_wrap_64(general_basis_core_wrap_64):
 		self._N = N
 		self._nt = pers.shape[0]
 		self._sps = 2
+		self._Ns_full = (1ull << N)
+
 		if self._nt>0:
 			self._basis_core = new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
 		else:
@@ -156,7 +159,7 @@ cdef class hcb_basis_core_wrap_64(general_basis_core_wrap_64):
 		cdef npy_intp Ns = (1ull<<self._N)
 		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
-			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
+			Ns = make_basis(self._basis_core,self._Ns_full,mem_MAX,&basis[0],&n[0])
 
 		return Ns
 

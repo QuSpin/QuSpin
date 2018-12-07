@@ -241,6 +241,7 @@ class basis_general(lattice_basis):
 		index_type = _np.min_scalar_type(-(self._sps**self._N))
 		col = _np.arange(self._Ns,dtype=index_type)
 		row = _np.arange(self._Ns,dtype=index_type)
+
 		return self._core.get_proj(self._basis,dtype,sign,c,row,col)
 
 	def get_vec(self,v0,sparse=True):
