@@ -30,6 +30,7 @@ requirements:
     - joblib
     - matplotlib
     - dill
+    - gmpy2 
     
 test:
   imports:

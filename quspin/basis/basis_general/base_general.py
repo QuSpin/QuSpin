@@ -222,7 +222,7 @@ class basis_general(lattice_basis):
 		
 		Returns
 		--------
-		scipy.sparse.csr_matrix
+		scipy.sparse.csc_matrix
 			Transformation/projector between the symmetry-reduced and the full basis.
 
 		Examples
