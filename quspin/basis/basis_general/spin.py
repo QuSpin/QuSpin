@@ -38,8 +38,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		* The relation between spin and Pauli matrices is :math:`\\vec S = \\vec \\sigma/2`.
 		* The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support the operator strings "x" and "y". 
 		* The operator strings "+" and "-" are defined as follows: :math:`S^{\\pm}=S^x \\pm i S^y` (`pauli=False`) and :math:`\\sigma^{\\pm}=\\sigma^x \\pm i \\sigma^y` (`pauli=True`). 
- 
+ 		* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
 
+ 		
 	Examples
 	--------
 
@@ -49,7 +50,11 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		H = J \\sum_{\\langle ij\\rangle} \\sigma^z_{i}\\sigma^z_j+ g\\sum_j\\sigma^x_j 
 
 	Moreover, it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In particular,
-	we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion.
+	we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion. Note that parity 
+	(reflection) and translation invariance are non-commuting symmetries, and QuSpin raises a warning when constructing the basis. 
+	However, they do commute in the zero-momentum (also in the pi-momentum) symmetry sector; hence, one can ignore the warning and
+	use the two symemtries together to reduce the Hilbert space dimension.
+
 
 	.. literalinclude:: ../../doc_examples/spin_basis_general-example.py
 		:linenos:
