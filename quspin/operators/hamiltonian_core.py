@@ -1264,6 +1264,15 @@ class hamiltonian(object):
 
 		return V_dot
 
+	def __omp_ISO(self,time,V,V_out):
+
+		_csr_matvec(self._static,V,out=V_out,overwrite_out=True)
+		for func,Hd in iteritems(self._dynamic):
+			_csr_matvec(Hd,V,a=func(time),out=V_out,overwrite_out=False)
+
+		V_out *= -1
+		return V_out
+
 	def __multi_SO_real(self,time,V):
 		"""
 		args:
@@ -1382,6 +1391,7 @@ class hamiltonian(object):
 			Specifies the ODE type. Can be either one of
 
 				* "SE", real and imaginary-time Schroedinger equation.
+				* "SE_omp", real and imaginary-time Schroedinger equation with parallel csr matrix-vector dot-product.
 				* "LvNE", real-time Liouville equation.
 
 			Default is "eom = SE" (Schroedinger evolution).
@@ -1449,7 +1459,8 @@ class hamiltonian(object):
 				else:
 					evolve_args  = evolve_args + (self.__multi_ISO,)
 
-				v0 = v0.astype(self.dtype)
+				v0 = v0.astype(_np.result_type(v0.dtype,self.dtype))
+
 				if _np.iscomplexobj(v0):
 					evolve_kwargs["real"]=False
 				else:
@@ -1467,6 +1478,37 @@ class hamiltonian(object):
 						evolve_args = evolve_args + (self.__SO,)
 					else:
 						evolve_args = evolve_args + (self.__multi_SO,)
+
+		elif eom == "SE_omp":
+			if not _sp.isspmatrix_csr(self.static):
+				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' format. ")
+			if not all(_sp.isspmatrix_csr(Hd) for func,Hd in iteritems(self._dynamic)):
+				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' format. ")
+
+			if v0.ndim > 1:
+				raise ValueError("v0 must have ndim <= 1")
+
+			if v0.shape[0] != self.Ns:
+				raise ValueError("v0 must have {0} elements".format(self.Ns))
+
+			if imag_time:
+				evolve_args  = evolve_args + (self.__omp_ISO,)
+
+				v0 = v0.astype(_np.result_type(v0.dtype,self.dtype))
+				evolve_kwargs["f_params"]=(v0.copy(),)
+				if _np.iscomplexobj(v0):
+					evolve_kwargs["real"]=False
+				else:
+					evolve_kwargs["real"]=True
+			else:
+				if stack_state:
+					raise NotImplementedError("stack state is not compatible with openmp implementation.")
+
+				v0 = v0.astype(_np.result_type(v0.dtype,self.dtype,_np.complex64))
+				evolve_kwargs["f_params"]=(v0.copy(),)
+				evolve_kwargs["real"]=False
+				evolve_args = evolve_args + (self.__omp_SO,)
+					
 
 		elif eom == "LvNE":
 			n = 1.0

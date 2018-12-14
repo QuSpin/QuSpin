@@ -148,7 +148,7 @@ class quantum_LinearOperator(LinearOperator):
 
 						self._diagonal[row_unique] += ME[args].real
 						row = _np.delete(row,args)
-						ME = _np.delete(ME,args)					
+						ME = _np.delete(ME,args)
 			else:
 				self._static_list.append((opstr,indx,J))
 		

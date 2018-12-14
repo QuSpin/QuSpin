@@ -41,34 +41,35 @@ def configuration(parent_package='', top_path=None):
 		config = Configuration('_basis_1d_core',parent_package, top_path)
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
+		sources_dir = os.path.join(package_dir,"sources")
 
 		hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	
-		config.add_extension('hcp_basis',sources=hcp_basis_src,include_dirs=[numpy.get_include()],
+		config.add_extension('hcp_basis',sources=hcp_basis_src,include_dirs=[numpy.get_include(),sources_dir],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
 		spf_ops_src = os.path.join(package_dir,"spf_basis.cpp")	
-		config.add_extension('spf_basis',sources=spf_ops_src,include_dirs=[numpy.get_include()],
+		config.add_extension('spf_basis',sources=spf_ops_src,include_dirs=[numpy.get_include(),sources_dir],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
 		boson_basis_src = os.path.join(package_dir,"boson_basis.cpp")	
-		config.add_extension('boson_basis',sources=boson_basis_src,include_dirs=[numpy.get_include()],
+		config.add_extension('boson_basis',sources=boson_basis_src,include_dirs=[numpy.get_include(),sources_dir],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
 		hcp_ops_src = os.path.join(package_dir,"hcp_ops.cpp")	
-		config.add_extension('hcp_ops',sources=hcp_ops_src,include_dirs=[numpy.get_include()],
+		config.add_extension('hcp_ops',sources=hcp_ops_src,include_dirs=[numpy.get_include(),sources_dir],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
 		spf_ops_src = os.path.join(package_dir,"spf_ops.cpp")	
-		config.add_extension('spf_ops',sources=spf_ops_src,include_dirs=[numpy.get_include()],
+		config.add_extension('spf_ops',sources=spf_ops_src,include_dirs=[numpy.get_include(),sources_dir],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 
 		boson_ops_src = os.path.join(package_dir,"boson_ops.cpp")	
-		config.add_extension('boson_ops',sources=boson_ops_src,include_dirs=[numpy.get_include()],
+		config.add_extension('boson_ops',sources=boson_ops_src,include_dirs=[numpy.get_include(),sources_dir],
 								extra_compile_args=["-fno-strict-aliasing"],
 								language="c++")
 

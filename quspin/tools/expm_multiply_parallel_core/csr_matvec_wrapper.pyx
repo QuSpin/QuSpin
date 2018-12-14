@@ -33,7 +33,7 @@ ctypedef fused T3:
   float complex
   double complex
 
-@cython.boundscheck(False)   
+@cython.boundscheck(False)
 def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
                   T1[:] Ax, T2 alpha, T3[:] Xx, T3[:] Yx):
   cdef index nr = Yx.shape[0]
