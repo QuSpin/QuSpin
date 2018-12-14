@@ -5,7 +5,7 @@
 
 
 int bitcount(uint32_t i,int l) {
-	i = i & (~(uint32_t)0 >> (31 - l));
+	i = i & ((0x7FFFFFFF) >> (31 - l));
 	#if defined(__GNUC__) || defined(__GNUG__)
 		return __builtin_popcount(i);
 	#else
@@ -16,7 +16,7 @@ int bitcount(uint32_t i,int l) {
 }
 
 int bitcount(uint64_t i, int l) {
-	i = i & (~(uint64_t)0 >> (63 - l));
+	i = i & ((0x7FFFFFFFFFFFFFFF) >> (63 - l));
 	#if defined(__GNUC__) || defined(__GNUG__)
 		return __builtin_popcountll(i);
 	#else
