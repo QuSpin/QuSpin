@@ -98,7 +98,7 @@ class basis_general(lattice_basis):
 			raise ValueError("blocks must contain tuple: (map,q).")
 
 		kwargs = {block:process_map(*item) for block,item in kwargs.items()}
-
+		
 		sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
 		sorted_items.reverse()
 
@@ -168,6 +168,77 @@ class basis_general(lattice_basis):
 		string = """general basis for lattice of N = {0} sites containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\n""".format(self._N,symm,self._conserved,'',blocks,self._Ns)
 		string += self.operators
 		return string
+
+
+	def make(self,N,Ns,Np):
+		"""Creates the basis by calling the corresponding constructor.
+
+		Parameters
+		-----------
+		N : int
+			number of sites.
+		Ns : int
+			estimate of the size of the reduced Hilbert space for the given symmetries.
+		Np : int
+			number of particles in the chain. For spin systems, this is the numbr of spin-up sites.
+				
+		Returns
+		--------
+		int
+			Total number of states in the (symmetry-reduced) Hilbert space.
+
+		Examples
+		--------
+		
+		>>> N, Nup = 8, 4
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> print(basis)
+		>>> basis.make(N,1000,Nup)
+		>>> print(basis)
+
+		"""
+
+		# preallocate variables
+		Ns = max(Ns,1000)
+		if N<=32:
+			basis = _np.zeros(Ns,dtype=_np.uint32)
+		elif N<=64:
+			basis = _np.zeros(Ns,dtype=_np.uint64)
+		
+		n = _np.zeros(Ns,dtype=self._n_dtype)
+		
+		# make basis
+		if self._count_particles and (Nb is not None):
+			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
+			Ns = self._core.make_basis(basis,norms,Np=Np,count=Np_list)
+		else:
+			Np_list = None
+			Ns = self._core.make_basis(basis,n,Np=Np)
+
+		if Ns < 0:
+				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
+
+		# sort basis
+		if type(Np) is int or Np is None:
+			if Ns > 0:
+				self._basis = basis[Ns-1::-1].copy()
+				self._n = n[Ns-1::-1].copy()
+				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+			else:
+				self._basis = _np.array([],dtype=basis.dtype)
+				self._n = _np.array([],dtype=n.dtype)
+				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
+		else:
+			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
+			self._basis = basis[ind].copy()
+			self._n = n[ind].copy()
+			if Np_list is not None: self._Np_list = Np_list[ind].copy()
+
+
+		self._reduce_n_dtype()
+
+		return Ns
+
 
 
 	def _reduce_n_dtype(self):
