@@ -60,6 +60,8 @@ void dia_matvec(const bool overwrite_y,
 			y[i] = 0;
 		}
 	}
+	
+	#pragma omp barrier
 
     for(I i = 0; i < n_diags; i++){
         const I k = offsets[i];  //diagonal offset
@@ -87,7 +89,7 @@ void dia_matvec(const bool overwrite_y,
             y_row[n] += (T2)(a * diag[n]) * x_row[n]; 
         }
 
-        #pragma omp berrier
+        #pragma omp barrier
 
     }
 }
@@ -124,6 +126,8 @@ void dia_matvecs(const bool overwrite_y,
 		}
 	}
 
+	#pragma omp barrier
+
     for(I i = 0; i < n_diags; i++){
         const I k = offsets[i];  //diagonal offset
 
@@ -149,7 +153,7 @@ void dia_matvecs(const bool overwrite_y,
             axpy(n_vecs,(T2)(a * diag[n]), x_row + (npy_intp)n_vecs * n, y_row + (npy_intp)n_vecs * n);
         }
 
-        #pragma omp berrier
+        #pragma omp barrier
 
     }
 }

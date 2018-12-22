@@ -15,7 +15,7 @@ def cython_files():
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
-    import os,numpy
+    import os,numpy,sys
     config = Configuration('operators', parent_package, top_path)
 
     extra_compile_args = []

@@ -199,6 +199,7 @@ class hamiltonian(object):
 		:lines: 7-
 
 	"""
+
 	def __init__(self,static_list,dynamic_list,N=None,basis=None,shape=None,dtype=_np.complex128,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
 		"""Intializes the `hamtilonian` object (any quantum operator).
 
@@ -350,7 +351,7 @@ class hamiltonian(object):
 					raise ValueError('hamiltonian must be square matrix')
 
 				self._shape=shape
-				self._static = None
+				self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 				self._dynamic = {}
 
 			for O in static_other_list:
@@ -677,10 +678,11 @@ class hamiltonian(object):
 					# 	V_dot[...,i] += func(t)*(Hd.dot(V[...,i]))	
 
 				# transpose, leave non-contiguous results which can be handled by numpy. 
+				
 				if V_dot.ndim == 2:
 					V_dot = V_dot.transpose()
 				else:
-					V_dot = V_dot.transpose((2,0,1))
+					V_dot = V_dot.transpose((1,2,0))
 		
 		else:
 			if _sp.issparse(V):
@@ -876,7 +878,6 @@ class hamiltonian(object):
 		return self._expt_value_core(V,V_dot,time=time,enforce_pure=enforce_pure)
 
 	def _expt_value_core(self,V_left,V_right,time=0,enforce_pure=False):
-		
 		if _np.array(time).ndim > 0: # multiple time point expectation values
 			if _sp.issparse(V_right): # multiple pure states multiple time points
 				return (V_left.H.dot(V_right)).diagonal()
@@ -1396,7 +1397,6 @@ class hamiltonian(object):
 		description:
 			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 		"""
-
 		V_dot = self._static.dot(V)	
 		for func,Hd in iteritems(self._dynamic):
 			V_dot += func(time)*(Hd.dot(V))
