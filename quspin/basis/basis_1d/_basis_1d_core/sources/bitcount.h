@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-int bitcount(uint32_t i,int l) {
+int bitcount_32_C(uint32_t i,int l) {
 	i = i & ((0x7FFFFFFF) >> (31 - l));
 	#if defined(__GNUC__) || defined(__GNUG__)
 		return __builtin_popcount(i);
@@ -15,7 +15,7 @@ int bitcount(uint32_t i,int l) {
 	#endif
 }
 
-int bitcount(uint64_t i, int l) {
+int bitcount_64_C(uint64_t i, int l) {
 	i = i & ((0x7FFFFFFFFFFFFFFF) >> (63 - l));
 	#if defined(__GNUC__) || defined(__GNUG__)
 		return __builtin_popcountll(i);

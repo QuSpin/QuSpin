@@ -1,15 +1,15 @@
 from gmpy2 import popcount
 
 cdef extern from "bitcount.h":
-    int bitcount(NP_UINT32_t,int)
-    int bitcount(NP_UINT64_t,int)
+    int bitcount_32_C(NP_UINT32_t,int)
+    int bitcount_64_C(NP_UINT64_t,int)
 
 
 cdef inline NP_INT32_t bit_count(basis_type I,int l):
     if basis_type is NP_UINT32_t:
-        return bitcount(I,l)
+        return bitcount_32_C(I,l)
     elif basis_type is NP_UINT64_t:
-        return bitcount(I,l)
+        return bitcount_64_C(I,l)
     else:
         return popcount(I&((1<<l)-1))
 
