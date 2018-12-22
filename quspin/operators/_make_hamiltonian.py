@@ -133,10 +133,10 @@ def _consolidate_dynamic(dynamic_list):
 
 
 
-def test_function(func,func_args):
+def test_function(func,func_args,dtype):
 	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 	func_val=func(t,*func_args)
-	func_val=_np.array(func_val)
+	func_val=_np.array(func_val,dtype=dtype)
 	if func_val.ndim > 0:
 		raise ValueError("function must return 0-dim numpy array or scalar value.")
 
@@ -160,7 +160,7 @@ def make_static(basis,static_list,dtype):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 	Ns=basis.Ns
-	H = _sp.csr_matrix((Ns,Ns),dtype=dtype)
+	H = _sp.dia_matrix((Ns,Ns),dtype=dtype)
 	static_list = _consolidate_static(static_list)
 	for opstr,indx,J in static_list:
 		# print(opstr,bond)
@@ -200,7 +200,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 	dynamic_list = _consolidate_dynamic(dynamic_list)
 	for opstr,indx,J,f,f_args in dynamic_list:
 		if _np.isscalar(f_args): raise TypeError("function arguments must be array type")
-		test_function(f,f_args)
+		test_function(f,f_args,dtype)
 
 		#indx = _np.asarray(indx,_np.int32)
 		ME,row,col = basis.Op(opstr,indx,J,dtype)

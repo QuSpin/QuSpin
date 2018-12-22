@@ -4,6 +4,7 @@ from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
 from ..tools.misc import csr_matvec as _csr_matvec
+from .oputils import matvec as _matvec
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
@@ -198,7 +199,7 @@ class hamiltonian(object):
 		:lines: 7-
 
 	"""
-	def __init__(self,static_list,dynamic_list,N=None,basis=None,shape=None,dtype=_np.complex128,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
+	def __init__(self,static_list,dynamic_list,N=None,basis=None,shape=None,dtype=_np.complex128,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
 		"""Intializes the `hamtilonian` object (any quantum operator).
 
 		Parameters
@@ -315,14 +316,11 @@ class hamiltonian(object):
 			self._dynamic=make_dynamic(self._basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
 
-		
-
-
 		if static_other_list or dynamic_other_list:
 			if not hasattr(self,"_shape"):
 				found = False
 				if shape is None: # if no shape argument found, search to see if the inputs have shapes.
-					for O in static_other_list:
+					for i,O in enumerate(static_other_list):
 						try: # take the first shape found
 							shape = O.shape
 							found = True
@@ -352,12 +350,15 @@ class hamiltonian(object):
 					raise ValueError('hamiltonian must be square matrix')
 
 				self._shape=shape
-				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+				self._static = None
 				self._dynamic = {}
 
 			for O in static_other_list:
 				if _sp.issparse(O):
 					self._mat_checks(O)
+					if self._static is None:
+						self._static = O.astype(self._dtype,copy=copy)
+						continue
 
 					try:
 						self._static += O.astype(self._dtype)
@@ -368,7 +369,12 @@ class hamiltonian(object):
 					O = _np.asarray(O,dtype=self._dtype)
 					self._mat_checks(O)
 
-					self._is_dense=True			
+					self._is_dense=True
+
+					if self._static is None:
+						self._static = O.astype(self._dtype,copy=copy)
+						continue
+
 					try:
 						self._static += O
 					except NotImplementedError:
@@ -379,7 +385,6 @@ class hamiltonian(object):
 
 
 			try:
-				self._static = self._static.tocsr(copy=False)
 				self._static.sum_duplicates()
 				self._static.eliminate_zeros()
 			except: pass
@@ -391,13 +396,13 @@ class hamiltonian(object):
 					O,func = tup
 				else:
 					O,f,f_args = tup
-					test_function(f,f_args)
+					test_function(f,f_args,self._dtype)
 					func = function(f,tuple(f_args))
 
 				if _sp.issparse(O):
 					self._mat_checks(O)
 
-					O = O.astype(self._dtype)
+					O = O.astype(self._dtype,copy=copy)
 				else:
 					O = _np.array(O,copy=copy,dtype=self._dtype)
 					self._mat_checks(O)
@@ -411,9 +416,6 @@ class hamiltonian(object):
 						self._dynamic[func] = self._dynamic[func] + O
 				else:
 					self._dynamic[func] = O
-
-			updates = {func:_np.asarray(Hd) for func,Hd in iteritems(self._dynamic) if not _sp.issparse(Hd)}
-			self._dynamic.update(updates)
 			
 		else:
 			if not hasattr(self,"_shape"):
@@ -445,8 +447,41 @@ class hamiltonian(object):
 					raise ValueError('hamiltonian must be square matrix')
 
 				self._shape=shape
-				self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
+				self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 				self._dynamic = {}
+
+		if static_fmt is not None:
+			if type(static_fmt) is not str:
+				raise ValueError("Expecting string for 'sparse_fmt'")
+
+			if static_fmt not in ["csr","csc","dia"]:
+				raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(static_fmt))
+
+
+			sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
+
+			if _sp.issparse(self._static):
+				self._static = sparse_constuctor(self._static)
+
+		if dynamic_fmt is not None:
+			if type(dynamic_fmt) is str:
+
+				if dynamic_fmt not in ["csr","csc","dia"]:
+					raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(dynamic_fmt))
+
+
+				sparse_constuctor = getattr(_sp,dynamic_fmt+"_matrix")
+				updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic) if _sp.issparse(Hd)}
+				self._dynamic.update(updates)
+
+			elif type(dynamic_fmt) in [list,tuple]:
+				for fmt,(f,f_args) in dynamic_fmt:
+					sparse_constuctor = getattr(_sp,fmt+"_matrix")
+					func = function(f,tuple(f_args))
+					self._dynamic[func] = sparse_constuctor(self._dynamic[func])
+					
+
+
 
 		self._Ns = self._shape[0]
 
@@ -612,6 +647,8 @@ class hamiltonian(object):
 
 
 		times = _np.array(time)
+		result_dtype = _np.result_type(V.dtype,self._dtype)
+
 			
 		if times.ndim > 0:
 			if times.ndim > 1:
@@ -623,29 +660,42 @@ class hamiltonian(object):
 				V = V.tocsc()
 				return _sp.vstack([self.dot(V.get_col(i),time=t,check=check) for i,t in enumerate(time)])
 			else:
-				if V.ndim == 2:
-					V_iter = iter(V.T[:])
-					
-				elif V.ndim == 3:
-					if V.shape[0] != V.shape[1]:
-						raise ValueError("Density matricies must be square!")
+				if V.ndim == 3 and V.shape[0] != V.shape[1]:
+					raise ValueError("Density matricies must be square!")
 
-					V_iter = iter(V.transpose((2,0,1))[:])
 
-				V_dot = _np.zeros(V.shape,dtype=_np.result_type(V.dtype,self._dtype))
-				for i,(v,t) in enumerate(zip(V_iter,time)):
-					V_dot[...,i] = self._static.dot(V[...,i])	
+				# allocate C-contiguous array to output results in.
+				V_dot = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
+				for i,t in enumerate(time):
+					v = _np.ascontiguousarray(V[...,i])
+					_matvec(self._static,v,overwrite_out=True,out=V_dot[i,...])
 					for func,Hd in iteritems(self._dynamic):
-						V_dot[...,i] += func(t)*(Hd.dot(V[...,i]))			
+						_matvec(Hd,v,overwrite_out=False,a=func(t),out=V_dot[i,...])
+
+					# V_dot[...,i] = self._static.dot(v)	
+					# for func,Hd in iteritems(self._dynamic):
+					# 	V_dot[...,i] += func(t)*(Hd.dot(V[...,i]))	
+
+				# transpose, leave non-contiguous results which can be handled by numpy. 
+				if V_dot.ndim == 2:
+					V_dot = V_dot.transpose()
+				else:
+					V_dot = V_dot.transpose((2,0,1))
+		
 		else:
 			if _sp.issparse(V):
 				V_dot = self._static * V
 				for func,Hd in iteritems(self._dynamic):
 					V_dot = V_dot + func(time)*(Hd.dot(V))
 			else:
-				V_dot = self._static.dot(V)
+				V = _np.ascontiguousarray(V,dtype=result_dtype)
+				V_dot = _matvec(self._static,V)
 				for func,Hd in iteritems(self._dynamic):
-					V_dot += func(time)*(Hd.dot(V))
+					_matvec(Hd,V,overwrite_out=False,a=func(time),out=V_dot)
+
+				# V_dot = self._static.dot(V)
+				# for func,Hd in iteritems(self._dynamic):
+				# 	V_dot += func(time)*(Hd.dot(V))
 
 		return V_dot
 
@@ -1230,7 +1280,7 @@ class hamiltonian(object):
 			rho_comm -= ft*(Hd.T.dot(rho.T)).T
 
 		rho_comm *= -1j
-		return rho_comm.reshape((-1,))
+		return rho_comm.ravel()
 
 	def __multi_ISO(self,time,V):
 		"""
@@ -1246,7 +1296,7 @@ class hamiltonian(object):
 		for func,Hd in iteritems(self._dynamic):
 			V_dot -= func(time)*(Hd.dot(V))
 
-		return V_dot.reshape((-1,))
+		return V_dot.ravel()
 
 	def __ISO(self,time,V):
 		"""
@@ -1266,12 +1316,13 @@ class hamiltonian(object):
 
 	def __omp_ISO(self,time,V,V_out):
 
-		_csr_matvec(self._static,V,out=V_out,overwrite_out=True)
+		V = V.reshape(V_out.shape)
+		_matvec(self._static,V,out=V_out,overwrite_out=True)
 		for func,Hd in iteritems(self._dynamic):
-			_csr_matvec(Hd,V,a=func(time),out=V_out,overwrite_out=False)
+			_matvec(Hd,V,a=func(time),out=V_out,overwrite_out=False)
 
 		V_out *= -1
-		return V_out
+		return V_out.ravel()
 
 	def __multi_SO_real(self,time,V):
 		"""
@@ -1352,15 +1403,15 @@ class hamiltonian(object):
 
 		return -1j*V_dot
 
-
 	def __omp_SO(self,time,V,V_out):
 
-		_csr_matvec(self._static,V,out=V_out,overwrite_out=True)
+		V = V.reshape(V_out.shape)
+		_matvec(self._static,V,out=V_out,overwrite_out=True)
 		for func,Hd in iteritems(self._dynamic):
-			_csr_matvec(Hd,V,a=func(time),out=V_out,overwrite_out=False)
+			_matvec(Hd,V,a=func(time),out=V_out,overwrite_out=False)
 
 		V_out *= -1j
-		return V_out
+		return V_out.ravel()
 
 	def evolve(self,v0,t0,times,eom="SE",solver_name="dop853",stack_state=False,verbose=False,iterate=False,imag_time=False,**solver_args):
 		"""Implements (imaginary) time evolution generated by the `hamiltonian` object.
@@ -1459,12 +1510,10 @@ class hamiltonian(object):
 				else:
 					evolve_args  = evolve_args + (self.__multi_ISO,)
 
-				v0 = v0.astype(_np.result_type(v0.dtype,self.dtype))
+				result_dtype = _np.result_type(v0.dtype,self.dtype)
+				scalar_val = _np.zeros((),dtype=result_dtype)
+				evolve_kwargs["real"] = not _np.iscomplexobj(scalar_val)
 
-				if _np.iscomplexobj(v0):
-					evolve_kwargs["real"]=False
-				else:
-					evolve_kwargs["real"]=True
 			else:
 				if stack_state:
 					evolve_kwargs["real"]=False
@@ -1480,13 +1529,14 @@ class hamiltonian(object):
 						evolve_args = evolve_args + (self.__multi_SO,)
 
 		elif eom == "SE_omp":
-			if not _sp.isspmatrix_csr(self.static):
-				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' format. ")
-			if not all(_sp.isspmatrix_csr(Hd) for func,Hd in iteritems(self._dynamic)):
-				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' format. ")
+			if not (_sp.isspmatrix_csr(self.static) or _sp.isspmatrix_dia(self.static)):
+				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
 
-			if v0.ndim > 1:
-				raise ValueError("v0 must have ndim <= 1")
+			if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) for func,Hd in iteritems(self._dynamic)):
+				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
+
+			if v0.ndim > 2:
+				raise ValueError("v0 must have ndim <= 2")
 
 			if v0.shape[0] != self.Ns:
 				raise ValueError("v0 must have {0} elements".format(self.Ns))
@@ -1494,18 +1544,16 @@ class hamiltonian(object):
 			if imag_time:
 				evolve_args  = evolve_args + (self.__omp_ISO,)
 
-				v0 = v0.astype(_np.result_type(v0.dtype,self.dtype))
-				evolve_kwargs["f_params"]=(v0.copy(),)
-				if _np.iscomplexobj(v0):
-					evolve_kwargs["real"]=False
-				else:
-					evolve_kwargs["real"]=True
+				result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
+				v0 = _np.array(v0,dtype=dtype,copy=True,order="C")
+				evolve_kwargs["f_params"]=(v0,)
+				evolve_kwargs["real"] = not _np.iscomplexobj(v0)
 			else:
 				if stack_state:
 					raise NotImplementedError("stack state is not compatible with openmp implementation.")
 
-				v0 = v0.astype(_np.result_type(v0.dtype,self.dtype,_np.complex64))
-				evolve_kwargs["f_params"]=(v0.copy(),)
+				v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+				evolve_kwargs["f_params"]=(v0,)
 				evolve_kwargs["real"]=False
 				evolve_args = evolve_args + (self.__omp_SO,)
 					
@@ -1759,7 +1807,7 @@ class hamiltonian(object):
 
 		return hamiltonian([new_static],dynamic,basis=self._basis,dtype=self._dtype,copy=copy)
 
-	def as_sparse_format(self,fmt,copy=False):
+	def as_sparse_format(self,static_fmt="csr",dynamic_fmt="csr",copy=False):
 		"""Casts `hamiltonian` operator to SPARSE format.
 
 		Parameters
@@ -1782,20 +1830,12 @@ class hamiltonian(object):
 		>>> H_sparse=H.as_sparse_format()
 
 		"""
-		if type(fmt) is not str:
-			raise ValueError("Expecting string for 'fmt'")
-
-		if fmt not in ["csr","csc","dia","bsr"]:
-			raise ValueError("'{0}' is not a valid sparse format or does not support arithmetic.".format(fmt))
 
 
-		sparse_constuctor = getattr(_sp,fmt+"_matrix")
+		dynamic = [[M,func]	for func,M in iteritems(self.dynamic)]
 
-		dynamic = [[sparse_constuctor(M,copy=copy),func]
-						for func,M in iteritems(self.dynamic)]
-
-		return hamiltonian([sparse_constuctor(self.static,copy=copy)],dynamic,
-						basis=self._basis,dtype=self._dtype)
+		return hamiltonian([self.static],dynamic,
+						basis=self._basis,dtype=self._dtype,static_fmt=static_fmt,dynamic_fmt=dynamic_fmt,copy=copy)
 
 	### algebra operations
 
