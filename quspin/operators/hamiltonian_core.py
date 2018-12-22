@@ -1535,8 +1535,8 @@ class hamiltonian(object):
 			if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) for func,Hd in iteritems(self._dynamic)):
 				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
 
-			if v0.ndim > 2:
-				raise ValueError("v0 must have ndim <= 2")
+			if v0.ndim > 1:
+				raise ValueError("v0 must have ndim <= 1")
 
 			if v0.shape[0] != self.Ns:
 				raise ValueError("v0 must have {0} elements".format(self.Ns))
@@ -2045,16 +2045,15 @@ class hamiltonian(object):
 		return string
 
 	def __repr__(self):
-		matrix_format={"csr":"Compressed Sparse Row",
-						"csc":"Compressed Sparse Column",
-						"dia":"DIAgonal",
-						"bsr":"Block Sparse Row"
-						}
-		if self.is_dense:
-			return "<{0}x{1} qspin dense hamiltonian of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
-		else:
-			fmt = matrix_format[self._static.getformat()]
-			return "<{0}x{1} qspin sprase hamiltonian of type '{2}' stored in {3} format>".format(*(self._shape[0],self._shape[1],self._dtype,fmt))
+		string = "<quspin.operators.hamiltonian:\nstatic mat: {0}\ndynamic:".format(self._static.__repr__())
+		for i,(func,Hd) in enumerate(iteritems(self._dynamic)):
+			h_str = Hd.__repr__()
+			func_str = func.__str__()
+			
+			string += ("\n {0}) func: {2}, mat: {1} ".format(i,h_str,func_str))
+		string = string + ">"
+
+		return string
 
 	def __neg__(self): # -self
 		dynamic = [[-M,func] for func,M in iteritems(self.dynamic)]		
