@@ -90,7 +90,7 @@ class basis_general(lattice_basis):
 			raise ValueError("general basis can only support up to 32 symmetries.")
 
 		if n_maps>0:
-			self._conserved='custom symmeries'
+			self._conserved='custom symmetries'
 		else:
 			self._conserved=''
 
