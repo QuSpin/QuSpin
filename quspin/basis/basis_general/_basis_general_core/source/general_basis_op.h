@@ -116,7 +116,7 @@ int general_op(general_basis_core<I> *B,
 
 
 
-template<class I, class J, class K, class T>
+template<class I, class K, class T>
 int general_op_int_state(general_basis_core<I> *B,
 						  const int n_op,
 						  const char opstr[],
