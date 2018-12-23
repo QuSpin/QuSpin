@@ -116,7 +116,75 @@ int general_op(general_basis_core<I> *B,
 
 
 
+template<class I, class J, class K, class T>
+int general_op_int_state(general_basis_core<I> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const npy_intp Ns,
+						  const I states[],
+						  const K ket[], // row
+						  		K bra[], // col
+						  		T M[]
+						  )
+{
+	const int nt = B->get_nt();
+	int err = 0;
+	int g[128],gg[128];
+	double norm_s, norm_r;
+		
+	#pragma omp parallel for schedule(static,1) private(g,gg)
 
+	for(npy_intp i=0;i<Ns;i++){
+		if(err != 0){
+			continue;
+		}
+
+		std::complex<double> m = A;
+		I s = states[i];
+		I r = states[i];
+		
+		int local_err = B->op(r,m,n_op,opstr,indx);
+
+		if(local_err == 0){
+			int sign = 1;
+			
+			if(r != s){
+				r = B->ref_state(r,g,gg,sign); // rr must be a representative
+				//j = binary_search(Ns,basis,rr);
+			}
+			
+
+			if(r != s){
+				norm_s = B->check_state(s);
+				norm_r = B->check_state(r);
+		
+				for(int k=0;k<nt;k++){
+					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+					m *= std::exp(std::complex<double>(0,-q));
+				}
+				m *= sign * std::sqrt(norm_r/norm_s);
+				local_err = check_imag(m,&M[i]); // assigns value to M[i]
+				bra[i] = s;
+				ket[i] = r;
+			}
+			else{
+				bra[i] = s;
+				ket[i] = s;
+				M[i] = std::numeric_limits<T>::quiet_NaN();
+			}
+		}
+
+
+		if(local_err != 0){
+			#pragma omp critical
+			err = local_err;
+		}
+	}
+
+	return err;
+}
 
 
 

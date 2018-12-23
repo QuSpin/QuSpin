@@ -58,5 +58,33 @@ basis_2d = spin_basis_general(N_2d, pauli=False,
 									zblock=(Z,0)
 								)
 
-print(basis_2d)
+
+
+#print(basis_2d._core.op())
+print(basis_2d._core.op_int_state)
+print(basis_2d._core.representative())
+
+
 exit()
+
+
+
+"""
+
+
+
+for j in range(basis_2d.Ns):
+	print(j,basis_2d[j])
+
+print()
+
+s=[17]
+r=[0]
+
+#print(basis_2d._core.op())
+print(basis_2d._core.representative())
+exit()
+
+"""
+
+

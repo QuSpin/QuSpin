@@ -167,6 +167,28 @@ cdef class general_basis_core_wrap_32:
 		elif err == 1:
 			raise TypeError("attemping to use real type for complex matrix elements.")
 
+
+	@cython.boundscheck(False)
+	def op_int_state(self,index_type[:] ket,index_type[:] bra,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] states):
+		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+		cdef int n_op = indx.shape[0]
+		cdef npy_intp Ns = states.shape[0]
+		cdef int err = 0;
+		cdef double complex JJ = J
+		with nogil:
+			err = general_op_int_state(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&states[0],&ket[0],&bra[0],&M[0])
+
+		if err == -1:
+			raise ValueError("operator not recognized.")
+		elif err == 1:
+			raise TypeError("attemping to use real type for complex matrix elements.")
+
+
+	@cython.boundscheck(False)
+	def representative(self,uint32_t[:] s,uint32_t[:] r):
+		with nogil:
+			general_representative(self._basis_core,&s[0],&r[0])
+
 	@cython.boundscheck(False)
 	def get_vec_dense(self, uint32_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
 		cdef npy_intp Ns = v_in.shape[0]
@@ -224,6 +246,7 @@ cdef class general_basis_core_wrap_64:
 			raise ValueError("operator not recognized.")
 		elif err == 1:
 			raise TypeError("attemping to use real type for complex matrix elements.")
+
 
 	@cython.boundscheck(False)
 	def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):

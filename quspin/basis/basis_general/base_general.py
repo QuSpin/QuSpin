@@ -210,7 +210,7 @@ class basis_general(lattice_basis):
 		# make basis
 		if self._count_particles and (Nb is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			Ns = self._core.make_basis(basis,norms,Np=Np,count=Np_list)
+			Ns = self._core.make_basis(basis,n,Np=Np,count=Np_list)
 		else:
 			Np_list = None
 			Ns = self._core.make_basis(basis,n,Np=Np)
