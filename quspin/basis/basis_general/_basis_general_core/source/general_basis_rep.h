@@ -11,13 +11,17 @@
 template<class I>
 void general_representative(general_basis_core<I> *B,
 						  const I s[],
-						  		I r[]
+						  		I r[],
+						  const npy_intp Ns
 						  )
-{
-	int sign = 1;
-	int g[128],gg[128];
+{	int g[128],gg[128];
+	int sign;
 
-	r[0] = B->ref_state(s[0],g,gg,sign);
+	for(npy_intp i=0;i<Ns;i++){
+
+		sign = 1;
+		r[i] = B->ref_state(s[i],g,gg,sign);
+	}
 
 }
 

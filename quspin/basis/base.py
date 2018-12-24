@@ -53,6 +53,11 @@ class basis(object):
 		return self._Ns
 
 	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		return self._basis
+
+	@property
 	def operators(self):
 		"""set: set of available operator strings."""
 		return self._operators

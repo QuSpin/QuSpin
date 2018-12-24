@@ -116,6 +116,79 @@ int general_op(general_basis_core<I> *B,
 
 
 
+template<class I, class J, class K, class T>
+int general_op2(general_basis_core<I> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const npy_intp Ns,
+						  const I basis[],
+						  const J n[],
+						  		I row[],
+						  		I col[],
+						  		T M[],
+						  		K ket[]
+						  )
+{
+	const int nt = B->get_nt();
+	int err = 0;
+	int g[128],gg[128];
+	#pragma omp parallel for schedule(static,1) private(g,gg)
+	for(npy_intp i=0;i<Ns;i++){
+		if(err != 0){
+			continue;
+		}
+
+		I s = basis[i];
+		I r = basis[i];
+		std::complex<double> m = A;
+		int local_err = B->op(r,m,n_op,opstr,indx);
+
+		if(local_err == 0){
+			int sign = 1;
+
+			for(int k=0;k<nt;k++){
+				gg[k]=g[k]=0;
+			}
+
+			K j = i;
+			I rr = r; 
+			if(r != basis[i]){
+				rr = B->ref_state(r,g,gg,sign);
+				j = binary_search(Ns,basis,rr);
+			}
+
+			if(j >= 0){
+				for(int k=0;k<nt;k++){
+					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+					m *= std::exp(std::complex<double>(0,-q));
+				}
+				m *= sign * std::sqrt(double(n[j])/double(n[i]));
+				local_err = check_imag(m,&M[i]);
+
+				col[i]=s;
+				row[i]=rr;
+			}
+			else{
+				col[i] = s;
+				row[i] = s;
+				M[i] = std::numeric_limits<T>::quiet_NaN();
+			}
+		}
+
+		if(local_err != 0){
+			#pragma omp critical
+			err = local_err;
+		}
+	}
+
+	return err;
+}
+
+
+
+
 template<class I, class T>
 int general_op_int_state(general_basis_core<I> *B,
 						  const int n_op,
@@ -127,6 +200,7 @@ int general_op_int_state(general_basis_core<I> *B,
 						  		I ket[], // row
 						  		I bra[], // col
 						  		T M[]
+						  		//I basis[]
 						  )
 {
 	const int nt = B->get_nt();
@@ -150,9 +224,10 @@ int general_op_int_state(general_basis_core<I> *B,
 		if(local_err == 0){
 			int sign = 1;
 			
+			//I j = i;
 			if(r != s){
 				r = B->ref_state(r,g,gg,sign); // rr must be a representative
-				//j = binary_search(Ns,basis,rr);
+				//j = binary_search(Ns,basis,r);
 			}
 			
 

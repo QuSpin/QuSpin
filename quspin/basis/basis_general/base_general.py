@@ -170,6 +170,52 @@ class basis_general(lattice_basis):
 		return string
 
 
+	def representative(self,states,out=None):
+		"""Maps states to their representatives under the `basis` symmetries.
+
+		Parameters
+		-----------
+		states : array_like(int)
+			Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.
+		out : numpy.ndarray(int), optional
+			variable to store the representative states in. Must be a numpy.ndarray of same datatype as `basis`, and same shape as `states`. 
+				
+		Returns
+		--------
+		array_like(int)
+			Representatives under `basis` symmetries, corresponding to `states`.
+
+		Examples
+		--------
+		
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> s = 17
+		>>> r = basis.representative(s)
+		>>> print(s,r)
+
+		"""
+
+		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
+
+		if out is None:
+			out=_np.zeros(states.shape,dtype=self._basis.dtype)
+			self._core.representative(states,out)
+
+			return out.squeeze()
+
+		else:
+			if states.shape!=out.shape:
+				raise TypeError('states and out must have shape.')
+			if out.dtype != self._basis.dtype:
+				raise TypeError('out must have same type as basis')
+			if not isinstance(out,_np.ndarray):
+				raise TypeError('out must be a numpy.ndarray')
+			
+			self._core.representative(states,out)
+
+			
+
+
 	def make(self,N,Ns,Np):
 		"""Creates the basis by calling the corresponding constructor.
 
@@ -245,6 +291,42 @@ class basis_general(lattice_basis):
 		if len(self._n)>0:
 			self._n_dtype = _np.min_scalar_type(self._n.max())
 			self._n = self._n.astype(self._n_dtype)
+
+
+	def _Op_int_state(self,opstr,indx,J,states,dtype):
+
+		indx = _np.asarray(indx,dtype=_np.int32)
+
+		if states.dtype!=self._basis.dtype:
+			raise TypeError('states must have same dtype as basis')
+
+		if len(opstr) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
+		if _np.any(indx >= self._N) or _np.any(indx < 0):
+			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr) - self._allowed_ops
+		if extra_ops:
+			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+	
+		bra = _np.zeros_like(states) # col
+		ket = _np.zeros_like(states) # row
+		ME = _np.zeros(states.shape[0],dtype=dtype)
+
+		
+		#self._core.op_int_state(ket,bra,ME,opstr,indx,J,states)
+
+		row = _np.zeros(self._Ns,dtype=self._index_type)
+		self._core.op2(ket,bra,ME,opstr,indx,J,self._basis,self._n,row)
+
+		# replace nan's by diagonal matrix elements
+		ME[_np.isnan(ME)]=J
+
+		return ME,ket,bra
+
+
 
 	def _Op(self,opstr,indx,J,dtype):
 

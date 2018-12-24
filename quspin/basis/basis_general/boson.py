@@ -243,8 +243,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Ns = self.make(N,Ns,Nb)
 			else:
 				Ns=1
-				self._basis=_np.zeros(Ns,dtype=_np.uint8)
-				self._n=_np.zeros(Ns,dtype=_np.uint8)
+				self._basis=_np.zeros(Ns,dtype=basis_type)
+				self._n=_np.zeros(Ns,dtype=basis_type)
 
 
 			self._Ns = Ns

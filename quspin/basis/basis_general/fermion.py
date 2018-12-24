@@ -140,14 +140,11 @@ class spinless_fermion_basis_general(basis_general):
 				Ns = Ns_block_est
 
 
-		#Ns = max(Ns,1000)
 		if N<=32:
-			#basis = _np.zeros(Ns,dtype=_np.uint32)
-			#n     = _np.zeros(Ns,dtype=self._n_dtype)
+			basis_type=_np.uint32
 			self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
-			#basis = _np.zeros(Ns,dtype=_np.uint64)
-			#n     = _np.zeros(Ns,dtype=self._n_dtype)
+			basis_type=_np.uint64
 			self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=64.")
@@ -157,8 +154,8 @@ class spinless_fermion_basis_general(basis_general):
 			Ns = self.make(N,Ns,Nf)
 		else:
 			Ns=1
-			self._basis=_np.zeros(Ns,dtype=_np.uint8)
-			self._n=_np.zeros(Ns,dtype=_np.uint8)
+			self._basis=_np.zeros(Ns,dtype=basis_type)
+			self._n=_np.zeros(Ns,dtype=basis_type)
 
 
 		self._sps=2
@@ -466,8 +463,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				Ns = Ns_block_est
 
 		if N<=16:
+			basis_type=_np.uint32
 			self._core = spinful_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=32:
+			basis_type=_np.uint64
 			self._core = spinful_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=32.")
@@ -477,8 +476,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			Ns = self.make(2*N,Ns,Nf)
 		else:
 			Ns=1
-			self._basis=_np.zeros(Ns,dtype=_np.uint8)
-			self._n=_np.zeros(Ns,dtype=_np.uint8)
+			self._basis=_np.zeros(Ns,dtype=basis_type)
+			self._n=_np.zeros(Ns,dtype=basis_type)
 
 		
 		self._sps=2

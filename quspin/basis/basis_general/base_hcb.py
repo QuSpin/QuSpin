@@ -52,8 +52,10 @@ class hcb_basis_general(basis_general):
 
 		# create basis constructor
 		if N<=32:
+			basis_type=_np.uint32
 			self._core = hcb_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
+			basis_type=_np.uint64
 			self._core = hcb_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=64.")
@@ -64,8 +66,8 @@ class hcb_basis_general(basis_general):
 			Ns = self.make(N,Ns,Nb)
 		else:
 			Ns=1
-			self._basis=_np.zeros(Ns,dtype=_np.uint8)
-			self._n=_np.zeros(Ns,dtype=_np.uint8)
+			self._basis=_np.zeros(Ns,dtype=basis_type)
+			self._n=_np.zeros(Ns,dtype=basis_type)
 			
 
 		self._sps=2

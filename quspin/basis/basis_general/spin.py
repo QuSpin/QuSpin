@@ -113,7 +113,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		if sps==2:
 			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
 		else:
-			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,**blocks)
+			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
 
 
 		if self._sps <= 2:

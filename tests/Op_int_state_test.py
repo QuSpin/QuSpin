@@ -4,9 +4,12 @@ import sys,os
 quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
 
+from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 import numpy as np
+import scipy.sparse as sp
 
+from quspin.operators._make_hamiltonian import _consolidate_static
 
 
 #
@@ -27,7 +30,7 @@ T_y = x +Lx*((y+1)%Ly) # translation along y-direction
 T_a = (x+1)%Lx + Lx*((y+1)%Ly) # translation along anti-diagonal
 T_d = (x-1)%Lx + Lx*((y+1)%Ly) # translation along diagonal
 
-R = np.rot90(s.reshape(Lx,Ly), axes=(0,1)).reshape(N_2d) # rotate
+R = np.rot90(s.reshape(Lx,Ly), axes=(0,1)).reshape(N_2d) # rotate anti-clockwise
 
 P_x = x + Lx*(Ly-y-1) # reflection about x-axis
 P_y = (Lx-x-1) + Lx*y # reflection about y-axis
@@ -36,7 +39,7 @@ Z   = -(s+1) # spin inversion
 
 #
 ###### setting up bases ######
-basis_2d = spin_basis_general(N_2d, pauli=False, make_basis=False,
+basis_2d = spin_basis_general(N_2d, pauli=False, make_basis=True,
 									Nup=N_2d//2,
 									kxblock=(T_x,0),kyblock=(T_y,0),
 									rblock=(R,0),
@@ -44,27 +47,42 @@ basis_2d = spin_basis_general(N_2d, pauli=False, make_basis=False,
 									zblock=(Z,0)
 								)
 
-basis_2d_full = spin_basis_general(N_2d, pauli=False, make_basis=True,
-									Nup=N_2d//2,
-								)
 
-# grab states of full basis
-states=basis_2d_full.states
-
-# check function
-ref_states=basis_2d.representative(states)
-ref_states=np.sort( np.unique(ref_states) )[::-1]
-
-# check inplace function
-ref_states_inplace=np.zeros_like(states)
-basis_2d.representative(states,out=ref_states_inplace)
-ref_states_inplace=np.sort( np.unique(ref_states_inplace) )[::-1]
-
-# make full basis to compare to
-basis_2d.make(N_2d,1000,N_2d//2)
+###### setting up hamiltonian ######
+# setting up site-coupling lists
+J1_list=[[J1,i,T_x[i]] for i in range(N_2d)] + [[J1,i,T_y[i]] for i in range(N_2d)]
+J2_list=[[J2,i,T_d[i]] for i in range(N_2d)] + [[J2,i,T_a[i]] for i in range(N_2d)]
+#
+static=[ ["xx",J1_list],["yy",J1_list],["zz",J1_list],  
+		 ["xx",J2_list],["yy",J2_list],["zz",J2_list]
+		]
 
 
-np.testing.assert_allclose(basis_2d.states - ref_states,0.0,atol=1E-5,err_msg='failed representative test!')
-np.testing.assert_allclose(basis_2d.states - ref_states_inplace,0.0,atol=1E-5,err_msg='failed inplace representative test!')
+static_list = _consolidate_static(static)
+
+H_new=sp.csr_matrix((basis_2d.Ns,basis_2d.Ns),dtype=np.float64)
+
+for opstr,indx,J in static_list:
+	
+	ME,ket,bra = basis_2d._Op_int_state(opstr,indx,J,basis_2d.states,dtype=np.float64)
+
+
+	#print(ME)
+
+	#print(np.searchsorted(ket,basis_2d.states))
+
+	print(np.unique(ket))
+	print()
+	print(basis_2d.states)
+	#print(bra)
+
+	exit()
+	
+exit()
+
+# build hamiltonian
+H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64)
+
+
 
 

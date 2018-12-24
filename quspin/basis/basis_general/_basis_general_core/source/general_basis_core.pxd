@@ -16,11 +16,15 @@ cdef extern from "make_general_basis.h":
 cdef extern from "general_basis_op.h":
 	int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
 						  const double complex, const npy_intp, const I[], const J[], K[], K[], T[]) nogil
+
+	int general_op2[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
+						  const double complex, const npy_intp, const I[], const J[], I[], I[], T[], K[]) nogil
+
 	int general_op_int_state[I,T](general_basis_core[I] *B,const int,const char[], const int[],
 						  const double complex, const npy_intp, const I[], I[], I[], T[]) nogil
 
 cdef extern from "general_basis_rep.h":
-	void general_representative[I](general_basis_core[I] *B, const I[], I[]) nogil
+	void general_representative[I](general_basis_core[I] *B, const I[], I[], const npy_intp) nogil
 
 cdef extern from "general_basis_get_vec.h":
 	bool get_vec_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
