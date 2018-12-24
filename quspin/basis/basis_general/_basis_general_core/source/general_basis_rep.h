@@ -1,5 +1,5 @@
-#ifndef _GENERAL_BASIS_OP_H
-#define _GENERAL_BASIS_OP_H
+#ifndef _GENERAL_BASIS_REP_H
+#define _GENERAL_BASIS_REP_H
 
 #include <complex>
 #include <limits>
@@ -9,9 +9,9 @@
 
 
 template<class I>
-void general_repesentative(general_basis_core<I> *B,
+void general_representative(general_basis_core<I> *B,
 						  const I s[],
-						  const I r[]
+						  		I r[]
 						  )
 {
 	int sign = 1;

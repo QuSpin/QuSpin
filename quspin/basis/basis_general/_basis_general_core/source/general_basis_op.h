@@ -116,7 +116,7 @@ int general_op(general_basis_core<I> *B,
 
 
 
-template<class I, class K, class T>
+template<class I, class T>
 int general_op_int_state(general_basis_core<I> *B,
 						  const int n_op,
 						  const char opstr[],
@@ -124,8 +124,8 @@ int general_op_int_state(general_basis_core<I> *B,
 						  const std::complex<double> A,
 						  const npy_intp Ns,
 						  const I states[],
-						  const K ket[], // row
-						  		K bra[], // col
+						  		I ket[], // row
+						  		I bra[], // col
 						  		T M[]
 						  )
 {

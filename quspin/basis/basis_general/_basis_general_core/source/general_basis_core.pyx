@@ -169,7 +169,7 @@ cdef class general_basis_core_wrap_32:
 
 
 	@cython.boundscheck(False)
-	def op_int_state(self,index_type[:] ket,index_type[:] bra,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] states):
+	def op_int_state(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] states):
 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
 		cdef int n_op = indx.shape[0]
 		cdef npy_intp Ns = states.shape[0]
@@ -183,7 +183,7 @@ cdef class general_basis_core_wrap_32:
 		elif err == 1:
 			raise TypeError("attemping to use real type for complex matrix elements.")
 
-
+		
 	@cython.boundscheck(False)
 	def representative(self,uint32_t[:] s,uint32_t[:] r):
 		with nogil:
