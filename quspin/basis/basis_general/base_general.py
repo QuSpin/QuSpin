@@ -293,7 +293,10 @@ class basis_general(lattice_basis):
 			self._n = self._n.astype(self._n_dtype)
 
 
-	def _Op_int_state(self,opstr,indx,J,states,dtype):
+	def _Op_int_state(self,opstr,indx,J,states,dtype,Np=_np.array([],dtype=_np.uint32)):
+
+		if not isinstance(Np,_np.ndarray):
+			Np=_np.array(Np,ndmin=1,dtype=_np.uint32) 
 
 		indx = _np.asarray(indx,dtype=_np.int32)
 
@@ -316,13 +319,13 @@ class basis_general(lattice_basis):
 		ME = _np.zeros(states.shape[0],dtype=dtype)
 
 		
-		#self._core.op_int_state(ket,bra,ME,opstr,indx,J,states)
+		self._core.op_int_state(ket,bra,ME,opstr,indx,J,states,Np)
 
-		row = _np.zeros(self._Ns,dtype=self._index_type)
-		self._core.op2(ket,bra,ME,opstr,indx,J,self._basis,self._n,row)
-
-		# replace nan's by diagonal matrix elements
-		ME[_np.isnan(ME)]=J
+		# remove nan's matrix elements
+		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+		bra = bra[mask]
+		ket = ket[mask]
+		ME = ME[mask]
 
 		return ME,ket,bra
 
