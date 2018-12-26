@@ -164,6 +164,10 @@ int general_op_int_state_pcon(general_basis_core<I> *B,
 
 		if(local_err == 0){
 			int sign = 1;
+
+			for(int k=0;k<nt;k++){
+				gg[k]=g[k]=0;
+			}
 				
 			if(r != s){ // off-diagonal matrix element
 				r = B->ref_state(r,g,gg,sign);
@@ -282,6 +286,10 @@ int general_op_int_state(general_basis_core<I> *B,
 
 		if(local_err == 0){
 			int sign = 1;
+
+			for(int k=0;k<nt;k++){
+				gg[k]=g[k]=0;
+			}
 				
 			if(r != s){ // off-diagonal matrix element
 				r = B->ref_state(r,g,gg,sign);
