@@ -5,7 +5,7 @@ quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
 
 from quspin.operators import hamiltonian
-from quspin.basis import spin_basis_general
+from quspin.basis import spin_basis_general,spinless_fermion_basis_general
 import numpy as np
 import scipy.sparse as sp
 
@@ -46,30 +46,68 @@ Z   = -(s+1) # spin inversion
 J1_list=[[J1,i,T_x[i]] for i in range(N_2d)] + [[J1,i,T_y[i]] for i in range(N_2d)]
 J2_list=[[J2,i,T_d[i]] for i in range(N_2d)] + [[J2,i,T_a[i]] for i in range(N_2d)]
 #
-static=[ ["xx",J1_list],["yy",J1_list],["zz",J1_list],  
-		 ["xx",J2_list],["yy",J2_list],["zz",J2_list]
+static=[ ["++",J1_list],["--",J1_list],["zz",J1_list],  
+		 ["++",J2_list],["--",J2_list],["zz",J2_list]
 		]
 
 
 static_list = _consolidate_static(static)
 
-for Nup in [ [], 1, N_2d//2, N_2d-3, [N_2d//2,N_2d//4], [N_2d//2,N_2d//4,N_2d//8] ]:
 
-	basis=spin_basis_general(N_2d, pauli=False, make_basis=True,
-									Nup=Nup,
+def compare(static_list,basis,basis_op):
+	for opstr,indx,J in static_list:
+		
+		ME,bra,ket = basis.Op_bra_ket(opstr,indx,J,np.float64,basis_op.states)
+		ME_op,row,col = basis_op.Op(opstr,indx,J,np.float64)
+
+		np.testing.assert_allclose(bra - basis_op[row],0.0,atol=1E-5,err_msg='failed bra/row in Op_bra_cket test!')
+		np.testing.assert_allclose(ket - basis_op[col],0.0,atol=1E-5,err_msg='failed ket/col in Op_bra_ket test!')
+		np.testing.assert_allclose(ME - ME_op,0.0,atol=1E-5,err_msg='failed ME in Op_bra_ket test!')
+
+
+
+for Np in [ None, 1, N_2d-3, [N_2d//2,N_2d//4,N_2d//8] ]:
+
+
+	basis=spin_basis_general(N_2d, make_basis=False,
+									Nup=Np,
+									kxblock=(T_x,0),kyblock=(T_y,0),
+									rblock=(R,0),
+									pxblock=(P_x,0),pyblock=(P_y,0),
+									zblock=(Z,0)
+								)
+
+	basis_op=spin_basis_general(N_2d, make_basis=True,
+									Nup=Np,
 									kxblock=(T_x,0),kyblock=(T_y,0),
 									rblock=(R,0),
 									pxblock=(P_x,0),pyblock=(P_y,0),
 									zblock=(Z,0)
 								)
 	
-	for opstr,indx,J in static_list:
-		
-		ME,bra,ket = basis.Op_bra_ket(opstr,indx,J,np.float64,basis.states)
-		ME_op,row,col = basis.Op(opstr,indx,J,np.float64)
+	
+	compare(static_list,basis,basis_op)
 
 
-		np.testing.assert_allclose(bra - basis[row],0.0,atol=1E-5,err_msg='failed bra/row in Op_bra_cket test!')
-		np.testing.assert_allclose(ket - basis[col],0.0,atol=1E-5,err_msg='failed ket/col in Op_bra_ket test!')
-		np.testing.assert_allclose(ME - ME_op,0.0,atol=1E-5,err_msg='failed ME in Op_bra_ket test!')
 
+
+	basis=spinless_fermion_basis_general(N_2d, make_basis=False,
+									Nf=Np,
+									kxblock=(T_x,0),kyblock=(T_y,0),
+									rblock=(R,0),
+									pxblock=(P_x,0),pyblock=(P_y,0),
+						#			zblock=(Z,0)
+								)
+
+	basis_op=spinless_fermion_basis_general(N_2d, make_basis=True,
+									Nf=Np,
+									kxblock=(T_x,0),kyblock=(T_y,0),
+									rblock=(R,0),
+									pxblock=(P_x,0),pyblock=(P_y,0),
+						#			zblock=(Z,0)
+								)
+
+
+	compare(static_list,basis,basis_op)
+
+	

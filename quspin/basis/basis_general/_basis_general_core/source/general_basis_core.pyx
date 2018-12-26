@@ -1,5 +1,5 @@
 from general_basis_core cimport *
-from numpy import pi
+from numpy import pi, array, uint64
 from libc.math cimport cos,sin,abs,sqrt
 import scipy.sparse as _sp
 
@@ -170,20 +170,29 @@ cdef class general_basis_core_wrap_32:
 
 
 	@cython.boundscheck(False)
-	def op_bra_ket(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, unsigned long int[:] Np):
+	def op_bra_ket(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
 		cdef int n_op = indx.shape[0]
 		cdef npy_intp Ns = ket.shape[0]
 		cdef int err = 0;
 		cdef double complex JJ = J
-		cdef int Npcon_blocks=Np.shape[0]
-
-		if Npcon_blocks==0:
+		cdef int Npcon_blocks #=Np.shape[0]
+		cdef unsigned long int[:] Np_array
+		
+		if Np is None:
 			with nogil:
 				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
 		else:
+
+			if type(Np) is int:
+				Npcon_blocks=1
+			else:
+				Npcon_blocks=len(Np)
+			
+			Np_array=array(Np,ndmin=1,dtype=uint64)
+
 			with nogil:
-				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np[0],&ket[0],&bra[0],&M[0])
+				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
 
 		if err == -1:
 			raise ValueError("operator not recognized.")
@@ -256,20 +265,29 @@ cdef class general_basis_core_wrap_64:
 			raise TypeError("attemping to use real type for complex matrix elements.")
 
 	@cython.boundscheck(False)
-	def op_bra_ket(self,uint64_t[:] ket,uint64_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, unsigned long int[:] Np):
+	def op_bra_ket(self,uint64_t[:] ket,uint64_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
 		cdef int n_op = indx.shape[0]
 		cdef npy_intp Ns = ket.shape[0]
 		cdef int err = 0;
 		cdef double complex JJ = J
-		cdef int Npcon_blocks=Np.shape[0]
-
-		if Npcon_blocks==0:
+		cdef int Npcon_blocks #=Np.shape[0]
+		cdef unsigned long int[:] Np_array
+		
+		if Np is None:
 			with nogil:
 				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
 		else:
+			
+			if type(Np) is int:
+				Npcon_blocks=1
+			else:
+				Npcon_blocks=len(Np)
+			
+			Np_array=array(Np,ndmin=1,dtype=uint64)
+
 			with nogil:
-				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np[0],&ket[0],&bra[0],&M[0])
+				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
 
 		if err == -1:
 			raise ValueError("operator not recognized.")

@@ -350,7 +350,7 @@ class basis_general(lattice_basis):
 		J : scalar
 			Coupling strength.
 		dtype : 'type'
-			Data type (e.g. numpy.float64) to construct the operator with.
+			Data type (e.g. numpy.float64) to construct the matrix elements with.
 		ket_states : numpy.ndarray(int)
 			Ket states in integer representation. Must be of same data type as `basis`.
 
@@ -395,9 +395,7 @@ class basis_general(lattice_basis):
 		bra = _np.zeros_like(ket_states) # row
 		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
 
-
-		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,_np.array(self._Np,dtype=_np.uint64,ndmin=1) )
-
+		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
 
 		# remove nan's matrix elements
 		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
