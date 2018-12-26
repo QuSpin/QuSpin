@@ -170,20 +170,20 @@ cdef class general_basis_core_wrap_32:
 
 
 	@cython.boundscheck(False)
-	def op_int_state(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] states, uint32_t[:] Np):
+	def op_bra_ket(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, unsigned long int[:] Np):
 		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
 		cdef int n_op = indx.shape[0]
-		cdef npy_intp Ns = states.shape[0]
+		cdef npy_intp Ns = ket.shape[0]
 		cdef int err = 0;
 		cdef double complex JJ = J
 		cdef int Npcon_blocks=Np.shape[0]
 
 		if Npcon_blocks==0:
 			with nogil:
-				err = general_op_int_state(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&states[0],&ket[0],&bra[0],&M[0])
+				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
 		else:
 			with nogil:
-				err = general_op_int_state_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np[0],&states[0],&ket[0],&bra[0],&M[0])
+				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np[0],&ket[0],&bra[0],&M[0])
 
 		if err == -1:
 			raise ValueError("operator not recognized.")
@@ -255,6 +255,32 @@ cdef class general_basis_core_wrap_64:
 		elif err == 1:
 			raise TypeError("attemping to use real type for complex matrix elements.")
 
+	@cython.boundscheck(False)
+	def op_bra_ket(self,uint64_t[:] ket,uint64_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, unsigned long int[:] Np):
+		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+		cdef int n_op = indx.shape[0]
+		cdef npy_intp Ns = ket.shape[0]
+		cdef int err = 0;
+		cdef double complex JJ = J
+		cdef int Npcon_blocks=Np.shape[0]
+
+		if Npcon_blocks==0:
+			with nogil:
+				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
+		else:
+			with nogil:
+				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np[0],&ket[0],&bra[0],&M[0])
+
+		if err == -1:
+			raise ValueError("operator not recognized.")
+		elif err == 1:
+			raise TypeError("attemping to use real type for complex matrix elements.")
+	
+	@cython.boundscheck(False)
+	def representative(self,uint64_t[:] states,uint64_t[:] ref_states):
+		cdef npy_intp Ns = states.shape[0]
+		with nogil:
+			general_representative(self._basis_core,&states[0],&ref_states[0],Ns)
 
 	@cython.boundscheck(False)
 	def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):

@@ -218,6 +218,7 @@ class basis(object):
 		"""
 		return self._Op(opstr,indx,J,dtype)
 
+
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
 

@@ -53,7 +53,7 @@ static=[ ["xx",J1_list],["yy",J1_list],["zz",J1_list],
 
 static_list = _consolidate_static(static)
 
-for Nup in [ [], N_2d//2, [N_2d//2,N_2d//4], [N_2d//2,N_2d//4,N_2d//8] ]:
+for Nup in [ [], 1, N_2d//2, N_2d-3, [N_2d//2,N_2d//4], [N_2d//2,N_2d//4,N_2d//8] ]:
 
 	basis=spin_basis_general(N_2d, pauli=False, make_basis=True,
 									Nup=Nup,
@@ -65,11 +65,11 @@ for Nup in [ [], N_2d//2, [N_2d//2,N_2d//4], [N_2d//2,N_2d//4,N_2d//8] ]:
 	
 	for opstr,indx,J in static_list:
 		
-		ME,ket,bra = basis._Op_int_state(opstr,indx,J,basis.states,dtype=np.float64,Np=Nup)
-		ME_op,row,col = basis._Op(opstr,indx,J,dtype=np.float64)
+		ME,bra,ket = basis.Op_bra_ket(opstr,indx,J,np.float64,basis.states)
+		ME_op,row,col = basis.Op(opstr,indx,J,np.float64)
 
 
-		np.testing.assert_allclose(ket - basis[row],0.0,atol=1E-5,err_msg='failed ket/row in Op_int_state test!')
-		np.testing.assert_allclose(bra - basis[col],0.0,atol=1E-5,err_msg='failed bra/com in Op_int_state test!')
-		np.testing.assert_allclose(ME - ME_op,0.0,atol=1E-5,err_msg='failed ME in Op_int_state test!')
+		np.testing.assert_allclose(bra - basis[row],0.0,atol=1E-5,err_msg='failed bra/row in Op_bra_cket test!')
+		np.testing.assert_allclose(ket - basis[col],0.0,atol=1E-5,err_msg='failed ket/col in Op_bra_ket test!')
+		np.testing.assert_allclose(ME - ME_op,0.0,atol=1E-5,err_msg='failed ME in Op_bra_ket test!')
 

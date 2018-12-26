@@ -149,19 +149,22 @@ class spinless_fermion_basis_general(basis_general):
 		else:
 			raise ValueError("system size N must be <=64.")
 
-		# make the basisl; make() is function method of base_general
+
+		self._N = N
+		self._Ns = Ns
+		self._Np = Nf
+		
+
+		# make the basis; make() is function method of base_general
 		if make_basis:		
-			Ns = self.make(N,Ns,Nf)
+			self.make()
 		else:
-			Ns=1
-			self._basis=_np.zeros(Ns,dtype=basis_type)
-			self._n=_np.zeros(Ns,dtype=basis_type)
+			self._Ns=1
+			self._basis=_np.zeros(self._Ns,dtype=basis_type)
+			self._n=_np.zeros(self._Ns,dtype=basis_type)
 
 
 		self._sps=2
-		self._Ns = Ns
-		self._N = N
-		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -471,19 +474,24 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("system size N must be <=32.")
 
-		# make the basisl; make() is function method of base_general
+
+
+		self._N = 2*N
+		self._Ns = Ns
+		self._Np = Nf
+		
+
+		# make the basis; make() is function method of base_general
 		if make_basis:		
-			Ns = self.make(2*N,Ns,Nf)
+			self.make()
 		else:
-			Ns=1
-			self._basis=_np.zeros(Ns,dtype=basis_type)
-			self._n=_np.zeros(Ns,dtype=basis_type)
+			self._Ns=1
+			self._basis=_np.zeros(self._Ns,dtype=basis_type)
+			self._n=_np.zeros(self._Ns,dtype=basis_type)
+
 
 		
 		self._sps=2
-		self._Ns = Ns
-		self._N = 2*N
-		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+

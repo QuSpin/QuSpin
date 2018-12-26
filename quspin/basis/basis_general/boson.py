@@ -152,7 +152,6 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 		
 		self._sps = sps
-
 		self._allowed_ops=set(["I","z","n","+","-"])
 
 
@@ -239,17 +238,21 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				raise ValueError("states can't be represented as 64-bit unsigned integer")
 
 
-			if make_basis:		
-				Ns = self.make(N,Ns,Nb)
-			else:
-				Ns=1
-				self._basis=_np.zeros(Ns,dtype=basis_type)
-				self._n=_np.zeros(Ns,dtype=basis_type)
-
-
-			self._Ns = Ns
 			self._N = N
-			self._index_type = _np.min_scalar_type(-self._Ns)
+			self._Ns = Ns
+			self._Np = Nb
+			
+
+			# make the basis; make() is function method of base_general
+			if make_basis:		
+				self.make()
+			else:
+				self._Ns=1
+				self._basis=_np.zeros(self._Ns,dtype=basis_type)
+				self._n=_np.zeros(self._Ns,dtype=basis_type)
+
+
+
 
 			
 	def _sort_opstr(self,op):

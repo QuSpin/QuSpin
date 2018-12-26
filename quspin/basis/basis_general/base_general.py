@@ -214,19 +214,13 @@ class basis_general(lattice_basis):
 			self._core.representative(states,out)
 
 			
-
-
-	def make(self,N,Ns,Np):
-		"""Creates the basis by calling the corresponding constructor.
+	def make(self,Ns_block_est=None):
+		"""Creates the entire basis by calling the basis constructor.
 
 		Parameters
 		-----------
-		N : int
-			number of sites.
-		Ns : int
-			estimate of the size of the reduced Hilbert space for the given symmetries.
-		Np : int
-			number of particles in the chain. For spin systems, this is the numbr of spin-up sites.
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 				
 		Returns
 		--------
@@ -239,33 +233,38 @@ class basis_general(lattice_basis):
 		>>> N, Nup = 8, 4
 		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
 		>>> print(basis)
-		>>> basis.make(N,1000,Nup)
+		>>> basis.make()
 		>>> print(basis)
 
 		"""
 
+		if Ns_block_est is not None:
+			Ns = Ns_block_est
+		else:
+			Ns = max(self._Ns,1000)
+
+
 		# preallocate variables
-		Ns = max(Ns,1000)
-		if N<=32:
+		if self._N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
-		elif N<=64:
+		elif self._N<=64:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
 		
 		n = _np.zeros(Ns,dtype=self._n_dtype)
 		
 		# make basis
-		if self._count_particles and (Nb is not None):
+		if self._count_particles and (self._Np is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			Ns = self._core.make_basis(basis,n,Np=Np,count=Np_list)
+			Ns = self._core.make_basis(basis,n,Np=self._Np,count=Np_list)
 		else:
 			Np_list = None
-			Ns = self._core.make_basis(basis,n,Np=Np)
+			Ns = self._core.make_basis(basis,n,Np=self._Np)
 
 		if Ns < 0:
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 		# sort basis
-		if type(Np) is int or Np is None:
+		if type(self._Np) is int or self._Np is None:
 			if Ns > 0:
 				self._basis = basis[Ns-1::-1].copy()
 				self._n = n[Ns-1::-1].copy()
@@ -281,9 +280,12 @@ class basis_general(lattice_basis):
 			if Np_list is not None: self._Np_list = Np_list[ind].copy()
 
 
+		self._Ns=Ns
+
+		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._reduce_n_dtype()
 
-		return Ns
+
 
 
 
@@ -291,44 +293,6 @@ class basis_general(lattice_basis):
 		if len(self._n)>0:
 			self._n_dtype = _np.min_scalar_type(self._n.max())
 			self._n = self._n.astype(self._n_dtype)
-
-
-	def _Op_int_state(self,opstr,indx,J,states,dtype,Np=_np.array([],dtype=_np.uint32)):
-
-		if not isinstance(Np,_np.ndarray):
-			Np=_np.array(Np,ndmin=1,dtype=_np.uint32) 
-
-		indx = _np.asarray(indx,dtype=_np.int32)
-
-		if states.dtype!=self._basis.dtype:
-			raise TypeError('states must have same dtype as basis')
-
-		if len(opstr) != len(indx):
-			raise ValueError('length of opstr does not match length of indx')
-
-		if _np.any(indx >= self._N) or _np.any(indx < 0):
-			raise ValueError('values in indx falls outside of system')
-
-		extra_ops = set(opstr) - self._allowed_ops
-		if extra_ops:
-			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
-
-	
-		bra = _np.zeros_like(states) # col
-		ket = _np.zeros_like(states) # row
-		ME = _np.zeros(states.shape[0],dtype=dtype)
-
-		
-		self._core.op_int_state(ket,bra,ME,opstr,indx,J,states,Np)
-
-		# remove nan's matrix elements
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
-		bra = bra[mask]
-		ket = ket[mask]
-		ME = ME[mask]
-
-		return ME,ket,bra
-
 
 
 	def _Op(self,opstr,indx,J,dtype):
@@ -360,6 +324,90 @@ class basis_general(lattice_basis):
 		ME = ME[mask]
 
 		return ME,row,col
+
+
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states):
+		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.
+
+		Given a set of ket states :math:`|s\\rangle`, the function returns the bra states :math:`\\langle s'|` which connect to them through an operator, together with the corresponding matrix elements.
+
+		Notes
+		-----
+			* Similar to `Op` but instead of returning the matrix indices (row,col), it returns the states (bra,ket) in integer representation. 
+			* Does NOT require the full basis (see `basis` optional argument `make_basis`). 
+			* If a state from `ket_states` does not have a non-zero matrix element, it is removed from the returned list.
+
+		Parameters
+		-----------
+		opstr : str
+			Operator string in the lattice basis format. For instance:
+
+			>>> opstr = "zz"
+		indx : list(int)
+			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			
+			>>> indx = [2,3]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the operator with.
+		ket_states : numpy.ndarray(int)
+			Ket states in integer representation. Must be of same data type as `basis`.
+
+		Returns
+		--------
+		tuple 
+			`(ME,bra,ket)`, where
+				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`, which connects the ket and bra states.
+				* numpy.ndarray(int): `bra`: bra states, obtained by applying the matrix representing the operator in the lattice basis,
+					to the ket states, such that `bra[i]` corresponds to `ME[i]` and connects to `ket[i]`.
+				* numpy.ndarray(int): `ket`: ket states, such that `ket[i]` corresponds to `ME[i]` and connects to `bra[i]`.
+
+			
+		Examples
+		--------
+
+		>>> J = 1.41
+		>>> indx = [2,3]
+		>>> opstr = "zz"
+		>>> dtype = np.float64
+		>>> ME, bra, ket = Op_bra_ket(opstr,indx,J,dtype,ket_states)
+
+		"""
+
+		
+		indx = _np.asarray(indx,dtype=_np.int32)
+
+		if ket_states.dtype!=self._basis.dtype:
+			raise TypeError('ket_states must have same dtype as basis')
+
+		if len(opstr) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
+		if _np.any(indx >= self._N) or _np.any(indx < 0):
+			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr) - self._allowed_ops
+		if extra_ops:
+			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+	
+		bra = _np.zeros_like(ket_states) # row
+		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
+
+
+		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,_np.array(self._Np,dtype=_np.uint64,ndmin=1) )
+
+
+		# remove nan's matrix elements
+		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+		bra = bra[mask]
+		ket_states = ket_states[mask]
+		ME = ME[mask]
+
+		return ME,bra,ket_states
+
+
 
 	def get_proj(self,dtype):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.

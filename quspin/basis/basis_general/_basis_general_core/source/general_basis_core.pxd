@@ -17,11 +17,11 @@ cdef extern from "general_basis_op.h":
 	int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
 						  const double complex, const npy_intp, const I[], const J[], K[], K[], T[]) nogil
 
-	int general_op_int_state[I,T](general_basis_core[I] *B,const int,const char[], const int[],
-						  const double complex, const npy_intp, const I[], I[], I[], T[]) nogil
+	int general_op_bra_ket[I,T](general_basis_core[I] *B,const int,const char[], const int[],
+						  const double complex, const npy_intp, const I[], I[], T[]) nogil
 
-	int general_op_int_state_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],
-						  const double complex, const npy_intp, const int, const I[], const I[], I[], I[], T[]) nogil
+	int general_op_bra_ket_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],
+						  const double complex, const npy_intp, const int, const unsigned long int[], const I[], I[], T[]) nogil
 
 cdef extern from "general_basis_rep.h":
 	void general_representative[I](general_basis_core[I] *B, const I[], I[], const npy_intp) nogil

@@ -70,18 +70,20 @@ class higher_spin_basis_general(basis_general):
 			raise ValueError("states can't be represented as 64-bit unsigned integer")
 
 
+		self._N = N
+		self._Ns = Ns
+		self._Np = Nup
+		
+
 		# make the basisl; make() is function method of base_general
 		if _make_basis:		
-			Ns = self.make(N,Ns,Nup)
+			self.make()
 		else:
-			Ns=1
-			self._basis=_np.zeros(Ns,dtype=basis_type)
-			self._n=_np.zeros(Ns,dtype=basis_type)
+			self._Ns=1
+			self._basis=_np.zeros(self._Ns,dtype=basis_type)
+			self._n=_np.zeros(self._Ns,dtype=basis_type)
 
 
 		self._sps=sps
-		self._Ns = Ns
-		self._N = N
-		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._allowed_ops=set(["I","z","+","-"])
 		

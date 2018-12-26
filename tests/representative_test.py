@@ -61,7 +61,7 @@ basis_2d.representative(states,out=ref_states_inplace)
 ref_states_inplace=np.sort( np.unique(ref_states_inplace) )[::-1]
 
 # make full basis to compare to
-basis_2d.make(N_2d,1000,N_2d//2)
+basis_2d.make()
 
 
 np.testing.assert_allclose(basis_2d.states - ref_states,0.0,atol=1E-5,err_msg='failed representative test!')

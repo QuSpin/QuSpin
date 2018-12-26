@@ -130,17 +130,19 @@ int general_op(general_basis_core<I> *B,
 }
 
 
+
+
+
+
+
 template<class I, class T>
-int general_op_int_state_pcon(general_basis_core<I> *B,
+int general_op_bra_ket(general_basis_core<I> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
 						  const std::complex<double> A,
 						  const npy_intp Ns,
-						  const int Npcon_blocks, // total number of particle-conserving sectors
-						  const I Np[], // array with particle conserving sectors
-						  const I states[],
-						  		I ket[], // row
+						  const I ket[], // row
 						  		I bra[], // col
 						  		T M[]
 						  )
@@ -157,8 +159,117 @@ int general_op_int_state_pcon(general_basis_core<I> *B,
 		}
 
 		std::complex<double> m = A;
-		const I s = states[i];
-		I r = states[i];
+		const I s = ket[i];
+		I r = ket[i];
+		
+		int local_err = B->op(r,m,n_op,opstr,indx);
+
+		if(local_err == 0){
+			int sign = 1;
+
+			for(int k=0;k<nt;k++){
+				gg[k]=g[k]=0;
+			}
+				
+			if(r != s){ // off-diagonal matrix element
+				r = B->ref_state(r,g,gg,sign);
+
+			
+				// use check_state to determine if state is a representative (same routine as in make-general_basis)
+				double norm_r = B->check_state(r);
+				double int_norm = norm_r;
+
+				#if defined(_WIN64)
+					// x64 version
+					bool isnan = _isnanf(norm_r) != 0;
+				#elif defined(_WIN32)
+					bool isnan = _isnan(norm_r) != 0;
+				#else
+					bool isnan = std::isnan(norm_r);
+				#endif
+
+
+				if(!isnan && int_norm > 0){ // ref_state is a representative
+
+					for(int k=0;k<nt;k++){
+						double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+						m *= std::exp(std::complex<double>(0,-q));
+					}
+
+					double norm_s = B->check_state(s);
+					m *= sign * std::sqrt(norm_r/norm_s);
+
+					local_err = check_imag(m,&M[i]); // assigns value to M[i]
+					bra[i] = r;
+
+				}
+				else{ // ref state in different particle number sector
+					M[i] = std::numeric_limits<T>::quiet_NaN();
+					bra[i] = s;
+				}
+
+				
+			}
+			else{ // diagonal matrix element
+
+				for(int k=0;k<nt;k++){
+					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+					m *= std::exp(std::complex<double>(0,-q));
+				}
+
+				m *= sign;
+
+				local_err = check_imag(m,&M[i]); // assigns value to M[i]
+				bra[i] = s;
+				
+			}
+			
+			
+		}
+
+
+		if(local_err != 0){
+			#pragma omp critical
+			err = local_err;
+		}
+	}
+
+	return err;
+}
+
+
+
+
+
+
+template<class I, class T>
+int general_op_bra_ket_pcon(general_basis_core<I> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const npy_intp Ns,
+						  const int Npcon_blocks, // total number of particle-conserving sectors
+						  const unsigned long int Np[], // array with particle conserving sectors
+						  const	I ket[], // row
+						  		I bra[], // col
+						  		T M[]
+						  )
+{
+	const int nt = B->get_nt();
+	int err = 0;
+	int g[128],gg[128];
+		
+	#pragma omp parallel for schedule(static,1) private(g,gg)
+
+	for(npy_intp i=0;i<Ns;i++){
+		if(err != 0){
+			continue;
+		}
+
+		std::complex<double> m = A;
+		const I s = ket[i];
+		I r = ket[i];
 		
 		int local_err = B->op(r,m,n_op,opstr,indx);
 
@@ -206,22 +317,18 @@ int general_op_int_state_pcon(general_basis_core<I> *B,
 						m *= sign * std::sqrt(norm_r/norm_s);
 
 						local_err = check_imag(m,&M[i]); // assigns value to M[i]
-						bra[i] = s;
-						ket[i] = r;
+						bra[i] = r;
 
 					}
 					else{ // ref_state not a representative
-						bra[i] = s;
-						ket[i] = s;
 						M[i] = std::numeric_limits<T>::quiet_NaN();
-
+						bra[i] = s;
 					}
 
 				}
 				else{ // ref state in different particle number sector
-					bra[i] = s;
-					ket[i] = s;
 					M[i] = std::numeric_limits<T>::quiet_NaN();
+					bra[i] = s;
 				}
 
 				
@@ -237,7 +344,6 @@ int general_op_int_state_pcon(general_basis_core<I> *B,
 
 				local_err = check_imag(m,&M[i]); // assigns value to M[i]
 				bra[i] = s;
-				ket[i] = s;
 			}
 			
 			
@@ -254,112 +360,6 @@ int general_op_int_state_pcon(general_basis_core<I> *B,
 }
 
 
-template<class I, class T>
-int general_op_int_state(general_basis_core<I> *B,
-						  const int n_op,
-						  const char opstr[],
-						  const int indx[],
-						  const std::complex<double> A,
-						  const npy_intp Ns,
-						  const I states[],
-						  		I ket[], // row
-						  		I bra[], // col
-						  		T M[]
-						  )
-{
-	const int nt = B->get_nt();
-	int err = 0;
-	int g[128],gg[128];
-		
-	#pragma omp parallel for schedule(static,1) private(g,gg)
-
-	for(npy_intp i=0;i<Ns;i++){
-		if(err != 0){
-			continue;
-		}
-
-		std::complex<double> m = A;
-		const I s = states[i];
-		I r = states[i];
-		
-		int local_err = B->op(r,m,n_op,opstr,indx);
-
-		if(local_err == 0){
-			int sign = 1;
-
-			for(int k=0;k<nt;k++){
-				gg[k]=g[k]=0;
-			}
-				
-			if(r != s){ // off-diagonal matrix element
-				r = B->ref_state(r,g,gg,sign);
-
-			
-				// use check_state to determine if state is a representative (same routine as in make-general_basis)
-				double norm_r = B->check_state(r);
-				double int_norm = norm_r;
-
-				#if defined(_WIN64)
-					// x64 version
-					bool isnan = _isnanf(norm_r) != 0;
-				#elif defined(_WIN32)
-					bool isnan = _isnan(norm_r) != 0;
-				#else
-					bool isnan = std::isnan(norm_r);
-				#endif
-
-
-				if(!isnan && int_norm > 0){ // ref_state is a representative
-
-					for(int k=0;k<nt;k++){
-						double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-						m *= std::exp(std::complex<double>(0,-q));
-					}
-
-					double norm_s = B->check_state(s);
-					m *= sign * std::sqrt(norm_r/norm_s);
-
-					local_err = check_imag(m,&M[i]); // assigns value to M[i]
-					bra[i] = s;
-					ket[i] = r;
-
-					
-
-				}
-				else{ // ref state in different particle number sector
-					bra[i] = s;
-					ket[i] = s;
-					M[i] = std::numeric_limits<T>::quiet_NaN();
-				}
-
-				
-			}
-			else{ // diagonal matrix element
-
-				for(int k=0;k<nt;k++){
-					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-					m *= std::exp(std::complex<double>(0,-q));
-				}
-
-				m *= sign;
-
-				local_err = check_imag(m,&M[i]); // assigns value to M[i]
-				bra[i] = s;
-				ket[i] = s;
-			}
-			
-			
-		}
-
-
-		if(local_err != 0){
-			#pragma omp critical
-			err = local_err;
-		}
-	}
-
-	return err;
-}
 
 
 #endif
