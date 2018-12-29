@@ -4,6 +4,7 @@
 #include <complex>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "benes_perm.h"
 
 // template<class I>
 // I inline hcb_map_bits(I s,const int map[],const I inv,const int N){

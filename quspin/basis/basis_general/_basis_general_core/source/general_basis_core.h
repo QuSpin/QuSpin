@@ -9,7 +9,7 @@
 #include <vector>
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
-#include "benes_perm.h"
+#include "bits_info.h"
 
 
 template<class I>
