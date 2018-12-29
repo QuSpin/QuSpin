@@ -3,7 +3,8 @@
 
 
 #include "numpy/ndarraytypes.h"
-#include "bit_info.h"
+#include "bits_info.h"
+#include <iostream>
 
 #define no_index int(-1)
 
@@ -161,7 +162,7 @@ static void exchange_bit_index(t_bit_index* a, t_bit_index* b) {
   }
 
 template<typename I>
-void gen_benes_ex(tr_benes<I>* self, const ta_index<I> c_tgt, const ta_subword<I> a_stage) {
+void gen_benes_ex(tr_benes<I>* self, const ta_index<I> &c_tgt, const ta_subword<I> &a_stage) {
 // Generate a configuration for the Benes network with variable stage order.
 // Use benes_fwd_ex and benes_bwd_ex.
 // Algorithm as sketched by Donal E. Knuth,
@@ -275,7 +276,7 @@ void gen_benes_ex(tr_benes<I>* self, const ta_index<I> c_tgt, const ta_subword<I
   }
 
 template<typename I>
-void gen_benes(tr_benes<I>* self, const ta_index<I> c_tgt) {
+void gen_benes(tr_benes<I>* self, const ta_index<I> &c_tgt) {
 // INLINE
 // Generate a configuration for the standard Benes network.
   ta_subword<I> a_stage_bwd;
