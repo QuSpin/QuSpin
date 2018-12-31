@@ -75,6 +75,7 @@ class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
 		self._unique_me = True
 		self._check_pcon = None
+		self._made_basis = False # keeps track of whether the basis has been made
 
 		if self.__class__ is basis_general:
 			raise TypeError("general_basis class is not to be instantiated.")
@@ -285,6 +286,8 @@ class basis_general(lattice_basis):
 		self._index_type = _np.min_scalar_type(-self._Ns)
 		self._reduce_n_dtype()
 
+		self._made_basis = True
+
 
 
 
@@ -296,6 +299,9 @@ class basis_general(lattice_basis):
 
 
 	def _Op(self,opstr,indx,J,dtype):
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
 		indx = _np.asarray(indx,dtype=_np.int32)
 
@@ -377,9 +383,7 @@ class basis_general(lattice_basis):
 
 		
 		indx = _np.asarray(indx,dtype=_np.int32)
-
-		if ket_states.dtype!=self._basis.dtype:
-			raise TypeError('ket_states must have same dtype as basis')
+		ket_states=_np.array(ket_states,dtype=self._basis.dtype,ndmin=1)
 
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
@@ -434,6 +438,10 @@ class basis_general(lattice_basis):
 		>>> print(P.shape)
 
 		"""
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
 		c = _np.ones_like(self._basis,dtype=dtype)
 		sign = _np.ones_like(self._basis,dtype=_np.int8)
 		c[:] = self._n[:]
@@ -474,6 +482,9 @@ class basis_general(lattice_basis):
 		>>> print(v_full.shape, v0.shape)
 
 		"""
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be cosntructed first, see basis.make().')
 
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)

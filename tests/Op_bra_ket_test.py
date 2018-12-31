@@ -38,8 +38,6 @@ P_y = (Lx-x-1) + Lx*y # reflection about y-axis
 Z   = -(s+1) # spin inversion
 
 #####
-#bases=np.ndarray(shape=3)
-#Nps=np.ndarray(shape=3)
 
 
 # setting up site-coupling lists
