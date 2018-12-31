@@ -84,7 +84,7 @@ class hcb_basis_core : public general_basis_core<I>
 			const I inv = invs[n_map];
 			#pragma omp for schedule(static,1)
 			for(npy_intp i=0;i<M;i++){
-				s[i] =benes_bwd(benes_map,s[i]^inv);	
+				s[i] = benes_bwd(benes_map,s[i]^inv);	
 			}
 		}
 
