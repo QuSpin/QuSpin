@@ -205,7 +205,7 @@ class basis_general(lattice_basis):
 
 		return ME,row,col
 
-	def get_proj(self,dtype):
+	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
@@ -219,6 +219,9 @@ class basis_general(lattice_basis):
 			Data type (e.g. numpy.float64) to construct the projector with.
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
+		pcon : bool, optional
+			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			(useful in bosonic/single particle systems). Default is `pcon=False`.
 		
 		Returns
 		--------
@@ -232,6 +235,15 @@ class basis_general(lattice_basis):
 		>>> print(P.shape)
 
 		"""
+
+
+		if pcon==True:
+			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
+				\n If you need to use this feature, consider the following procedure: \
+				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
+				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
+				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm)')
+
 		c = _np.ones_like(self._basis,dtype=dtype)
 		sign = _np.ones_like(self._basis,dtype=_np.int8)
 		c[:] = self._n[:]
@@ -244,7 +256,7 @@ class basis_general(lattice_basis):
 
 		return self._core.get_proj(self._basis,dtype,sign,c,row,col)
 
-	def get_vec(self,v0,sparse=True):
+	def get_vec(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
@@ -260,6 +272,9 @@ class basis_general(lattice_basis):
 			Contains in its columns the states in the symmetry-reduced basis.
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
+		pcon : bool, optional
+			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			(useful in bosonic/single particle systems). Default is `pcon=False`.
 		
 		Returns
 		--------
@@ -273,6 +288,14 @@ class basis_general(lattice_basis):
 		>>> print(v_full.shape, v0.shape)
 
 		"""
+
+		if pcon==True:
+			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
+				\n If you need to use this feature, consider the following procedure: \
+				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
+				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
+				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm) \
+				\n (iv) use P_pcon_symm to transform the state to the particle-conserving basis.')
 
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
