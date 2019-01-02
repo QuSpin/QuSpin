@@ -28,6 +28,83 @@ class lattice_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
+	def int_to_state(self,state,bracket_notation=True):
+		"""Finds string representation of a state defined in integer representation.
+
+		Notes
+		-----
+		This function is the einverse of `state_to_int`.
+
+		Parameters
+		-----------
+		state : int
+			Defines the Fock state in integer representation in underlying lattice `basis`.
+		bracket_notation : bool, optional
+			Toggles whether to return the state in |str> notation.
+
+		Returns
+		--------
+		str
+			String corresponding to the Fock `state` in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> s = basis[0] # pick state from basis set
+		>>> s_str = basis.int_to_state(s)
+		>>> print(s_str)
+
+		"""
+
+		if int(state)!=state:
+			raise ValueError("state must be integer")
+
+		n_space = len(str(self.sps))
+		if self.N <= 64:
+			bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
+			s_str = " ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits)
+		else:
+			left_bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
+			right_bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
+
+			str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
+			str_list.append("...")
+			str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
+			s_str = (" ".join(str_list))
+
+		if bracket_notation:
+			return "|"+s_str+">"
+		else:
+			return s_str.replace(' ', '')
+
+	def state_to_int(self,state):
+		"""Finds integer representation of a state defined in string format.
+
+		Notes
+		-----
+		This function is the einverse of `int_to_state`.
+
+		Parameters
+		-----------
+		state : str
+			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
+
+		Returns
+		--------
+		int
+			Integer corresponding to the Fock `state` in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> s_str = "111000" # pick state from basis set
+		>>> s = basis.state_to_int(s_str)
+		>>> print(s)
+
+		"""
+		
+		return self._basis[self.index(state)]
+
 	def index(self,s):
 		"""Finds the index of user-defined Fock state in any lattice basis.
 
@@ -56,12 +133,12 @@ class lattice_basis(basis):
 		>>> psi[i0] = 1.0 # define state corresponding to the string "111000"
 
 		"""
-		if type(s) is int:
+		if int(s)==s:
 			pass
 		elif type(s) is str:
 			s = int(s,self.sps)
 		else:
-			raise ValueError("s must be integer or state")
+			raise ValueError("s must be integer or string")
 
 		indx = _np.argwhere(self._basis == s)
 
@@ -492,6 +569,7 @@ class lattice_basis(basis):
 
 	def _get__str__(self):
 
+		'''
 		def get_state(b):
 			n_space = len(str(self.sps))
 			if self.N <= 64:
@@ -507,15 +585,15 @@ class lattice_basis(basis):
 				state = "|"+(" ".join(str_list))+">"
 
 			return state
-
+		'''
 
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+self.int_to_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+self.int_to_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+self.int_to_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
