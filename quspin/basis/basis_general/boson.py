@@ -218,6 +218,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 				basis_type = get_basis_type(N,max(Nb),self._sps)
 
+			self._pcon_args = dict(N=N,Nb=Nb,sps=sps)
+
 			if len(self._pers)>0:
 				if Ns_block_est is None:
 					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*self._sps

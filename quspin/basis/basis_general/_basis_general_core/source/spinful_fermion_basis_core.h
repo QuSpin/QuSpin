@@ -4,7 +4,6 @@
 #include <complex>
 #include <iostream>
 #include "general_basis_core.h"
-#include "local_pcon_basis_core.h"
 #include "spinless_fermion_basis_core.h"
 #include "numpy/ndarraytypes.h"
 

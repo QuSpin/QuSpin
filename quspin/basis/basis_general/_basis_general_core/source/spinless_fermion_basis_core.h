@@ -7,19 +7,21 @@
 
 
 
+template<class I>
+void mergeSort(I nums[],const I left,const I mid,const I right, bool  &f_count){
+    I lAr[mid - left + 1];
+    I rAr[right - mid];
 
-void mergeSort(int nums[], int left, int mid, int right, bool  &f_count){
-    int leftLength = mid - left + 1;
-    int rightLength = right - mid;
-    int lAr[64];
-    int rAr[64];
-    for (int i = 0; i < leftLength; i++) {
+    I leftLength = mid - left + 1;
+    I rightLength = right - mid;
+
+    for (I i = 0; i < leftLength; i++) {
       lAr[i] = nums[left + i];
     }
-    for (int i = 0; i < rightLength; i++) {
+    for (I i = 0; i < rightLength; i++) {
       rAr[i] = nums[mid + 1 + i];
     }
-    int i = 0, j = 0, k = left;
+    I i = 0, j = 0, k = left;
     while (i < leftLength && j < rightLength) {
       if (lAr[i] >= rAr[j]) {
         nums[k] = lAr[i];
@@ -46,13 +48,13 @@ void mergeSort(int nums[], int left, int mid, int right, bool  &f_count){
     }
   }
 
-
  //I sort the array using merge sort technique.
-void getf_count(int nums[], int left, int right, bool &f_count){
+template<class I>
+void getf_count(I nums[], I left, I right, bool &f_count){
     if (left < right) {
-      int mid = (left + right) / 2;
+      I mid = (I)((int)left + (int)right) / 2;
       getf_count(nums, left, mid, f_count);
-      getf_count(nums, mid + 1, right, f_count);
+      getf_count(nums, (I)(mid + 1), right, f_count);
       mergeSort(nums, left, mid, right, f_count);
     }
   }
@@ -87,6 +89,18 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	return ss;
 }
 
+// template<class I>
+// void get_map_sign(I s,I inv,int &sign){
+// 	typename bit_info<I>::bit_index_type pos_list[bit_info<I>::bits];
+// 	bool f_count = 0;
+
+// 	I ne = bit_count(bit_info<I>::eob&s,bit_info<I>::bits-1); // count number of partices on odd sites
+// 	f_count ^= (ne&1); 
+// 	typename bit_info<I>::bit_index_type n = bit_pos(s,pos_list) - 1; // get bit positions
+// 	getf_count(pos_list,(typename bit_info<I>::bit_index_type)0,n,f_count);
+// 	if(f_count){sign *= -1;}	
+// }
+
 
 template<class I>
 class spinless_fermion_basis_core : public hcb_basis_core<I>
@@ -101,6 +115,30 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 		~spinless_fermion_basis_core(){}
 
+
+		// I map_state(I s,int n_map,int &sign){
+		// 	if(general_basis_core<I>::nt<=0){
+		// 		return s;
+		// 	}
+		// 	get_map_sign<I>(s,hcb_basis_core<I>::invs[n_map],sign);
+		// 	return benes_bwd(&hcb_basis_core<I>::benes_maps[n_map],s^hcb_basis_core<I>::invs[n_map]);;
+			
+		// }
+
+		// void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
+		// 	if(general_basis_core<I>::nt<=0){
+		// 		return;
+		// 	}
+		// 	const tr_benes<I> * benes_map = &hcb_basis_core<I>::benes_maps[n_map];
+		// 	const I inv = hcb_basis_core<I>::invs[n_map];
+		// 	#pragma omp for schedule(static,1)
+		// 	for(npy_intp i=0;i<M;i++){
+		// 		int temp_sign = sign[i];
+		// 		get_map_sign<I>(s[i],inv,temp_sign);
+		// 		s[i] = benes_bwd(benes_map,s[i]^inv);
+		// 		sign[i] = temp_sign;
+		// 	}
+		// }
 
 		I map_state(I s,int n_map,int &sign){
 			if(general_basis_core<I>::nt<=0){
@@ -125,28 +163,6 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 			}
 		}
 
-		// I map_state(I s,int n_map,int &sign){
-		// 	if(general_basis_core<I>::nt<=0){
-		// 		return s;
-		// 	}
-		// 	const int n = general_basis_core<I>::N;
-		// 	return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
-			
-		// }
-
-		// void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
-		// 	if(general_basis_core<I>::nt<=0){
-		// 		return;
-		// 	}
-		// 	const int n = general_basis_core<I>::N;
-		// 	const int * map = &general_basis_core<I>::maps[n_map*n];
-		// 	#pragma omp for schedule(static,1)
-		// 	for(npy_intp i=0;i<M;i++){
-		// 		int temp_sign = sign[i];
-		// 		s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
-		// 		sign[i] = temp_sign;
-		// 	}
-		// }
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
 			I s = r;

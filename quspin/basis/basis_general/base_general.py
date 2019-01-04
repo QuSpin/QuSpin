@@ -75,6 +75,7 @@ class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
 		self._unique_me = True
 		self._check_pcon = None
+		self._basis_pcon = None
 
 		if self.__class__ is basis_general:
 			raise TypeError("general_basis class is not to be instantiated.")
@@ -289,13 +290,13 @@ class basis_general(lattice_basis):
 
 		"""
 
+		basis_pcon = None
+
 		if pcon==True:
-			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
-				\n If you need to use this feature, consider the following procedure: \
-				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
-				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
-				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm) \
-				\n (iv) use P_pcon_symm to transform the state to the particle-conserving basis.')
+			if self._basis_pcon is None:
+				self._basis_pcon = self.__class__(**self._pcon_args)
+
+			basis_pcon = self._basis_pcon._basis
 
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
@@ -303,11 +304,17 @@ class basis_general(lattice_basis):
 		squeeze = False
 
 		if v0.ndim == 1:
-			shape = (self._sps**self._N,1)
+			if pcon:
+				shape = (basis_pcon.size,1)
+			else:
+				shape = (self._sps**self._N,1)
 			v0 = v0.reshape((-1,1))
 			squeeze = True
 		elif v0.ndim == 2:
-			shape = (self._sps**self._N,v0.shape[1])
+			if pcon:
+				shape = (basis_pcon.size,v0.shape[1])
+			else:
+				shape = (self._sps**self._N,v0.shape[1])
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
@@ -329,10 +336,10 @@ class basis_general(lattice_basis):
 
 		if sparse:
 			# current work-around for sparse
-			return self.get_proj(v0.dtype).dot(_sp.csr_matrix(v0))
+			return self.get_proj(v0.dtype,pcon=pcon).dot(_sp.csr_matrix(v0))
 		else:
 			v_out = _np.zeros(shape,dtype=v0.dtype,)
-			self._core.get_vec_dense(self._basis,self._n,v0,v_out)
+			self._core.get_vec_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
 			if squeeze:
 				return  _np.squeeze(v_out)
 			else:
