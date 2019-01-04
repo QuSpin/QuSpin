@@ -50,7 +50,6 @@ class higher_spin_basis_general(basis_general):
 
 			basis_type = get_basis_type(N,max(iter(Nup)),sps)
 
-
 		if len(self._pers)>0:
 			if Ns_block_est is None:
 				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*sps

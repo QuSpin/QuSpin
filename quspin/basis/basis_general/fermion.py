@@ -126,6 +126,8 @@ class spinless_fermion_basis_general(basis_general):
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
 				Ns += comb(N,Nf,exact=True)
 
+		self._pcon_args = dict(N=N,Nf=Nf)
+
 		if len(self._pers)>0:
 			if Ns_block_est is None:
 				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
@@ -136,7 +138,6 @@ class spinless_fermion_basis_general(basis_general):
 					raise ValueError("Ns_block_est must be an integer > 0")
 					
 				Ns = Ns_block_est
-
 
 		Ns = max(Ns,1000)
 		if N<=32:
@@ -495,6 +496,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 					Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
+		self._pcon_args = dict(N=N,Nf=Nf)
+
 		if len(self._pers)>0:
 			if Ns_block_est is None:
 				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
@@ -558,6 +561,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		self._allowed_ops=set(["I","n","+","-","z"])
 		self._reduce_n_dtype()
 
+
 	def _Op(self,opstr,indx,J,dtype):
 		indx = _np.array(indx,dtype=_np.int32)
 		if self._simple_symm:
@@ -602,9 +606,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	def _get__str__(self):
 		def get_state(b):
 			b = int(b)
-			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
+			bits_left = ((b>>(self._N-i-1))&1 for i in range(self._N//2))
 			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
-			bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			bits_right = ((b>>(self._N//2-i-1))&1 for i in range(self._N//2))
 			state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
 			return state_left+state_right
 

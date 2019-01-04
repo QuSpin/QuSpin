@@ -309,13 +309,19 @@ cdef class general_basis_core_wrap_32:
             raise TypeError("attemping to use real type for complex matrix elements.")
 
     @cython.boundscheck(False)
-    def get_vec_dense(self, uint32_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
+    def get_vec_dense(self, uint32_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out,uint32_t[:] basis_pcon=None):
         cdef npy_intp Ns = v_in.shape[0]
         cdef npy_intp n_vec = v_in.shape[1]
         cdef bool err
+        cdef uint32_t * ptr = NULL
+        cdef npy_intp Ns_full = self._Ns_full
+
+        if basis_pcon is not None:
+            ptr = &basis_pcon[0]
+            Ns_full = basis_pcon.shape[0]
 
         with nogil:
-            err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,self._Ns_full,&v_in[0,0],&v_out[0,0])
+            err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,Ns_full,ptr,&v_in[0,0],&v_out[0,0])
 
         if not err:
             raise TypeError("attemping to use real type for complex elements.")
@@ -379,13 +385,19 @@ cdef class general_basis_core_wrap_64:
             raise TypeError("attemping to use real type for complex matrix elements.")
 
     @cython.boundscheck(False)
-    def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
+    def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out,uint64_t[:] basis_pcon=None):
         cdef npy_intp Ns = v_in.shape[0]
         cdef npy_intp n_vec = v_in.shape[1]
         cdef bool err
+        cdef uint64_t * ptr = NULL
+        cdef npy_intp Ns_full = self._Ns_full
+
+        if basis_pcon is not None:
+            ptr = &basis_pcon[0]
+            Ns_full = basis_pcon.shape[0]
 
         with nogil:
-            err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,self._Ns_full,&v_in[0,0],&v_out[0,0])
+            err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,Ns_full,ptr,&v_in[0,0],&v_out[0,0])
 
         if not err:
             raise TypeError("attemping to use real type for complex elements.")
