@@ -142,6 +142,146 @@ cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int
 
 
 
+@cython.boundscheck(False)
+cdef get_proj_pcon_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int nt, int nnt,
+                        int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint64_t[:] basis_pcon,object P):
+    cdef int per = B.pers[nt-nnt]
+    cdef npy_intp Ns_full = P.shape[0]
+    cdef npy_intp Ns = P.shape[1]
+
+    cdef double q = (2*pi*B.qs[nt-nnt])/per
+    cdef double complex cc = cos(q)-1j*sin(q)
+    cdef double norm
+    cdef npy_intp i,j
+
+    if nnt > 1:
+        for j in range(per):
+            if dtype is float or dtype is double:
+                if abs(cc.imag)>1.1e-15:
+                    raise TypeError("attemping to use real type for complex elements.")
+
+                P = get_proj_pcon_helper_64(B,basis,nt,nnt-1,sign,c,row,col,basis_pcon,P)
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= cc.real
+            else:
+                P = get_proj_pcon_helper_64(B,basis,nt,nnt-1,sign,c,row,col,basis_pcon,P)
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= cc
+
+            with nogil:
+                B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
+
+        return P
+
+    else:
+        for j in range(per):
+            if dtype is float or dtype is double:
+                if abs(cc.imag)>1.1e-15:
+                    raise TypeError("attemping to use real type for complex elements.")
+
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i]
+                        row[i] = <npy_intp>binary_search(Ns_full,&basis_pcon[0],basis[i])
+
+                P = P + _sp.csc_matrix((c,(row,col)),shape=P.shape)
+
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i] * cc.real
+
+            else:
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i]
+                        row[i] = <npy_intp>binary_search(Ns_full,&basis_pcon[0],basis[i])
+
+                P = P + _sp.csc_matrix((c,(row,col)),shape=P.shape)
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i] * cc
+
+            with nogil:
+                B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
+
+
+        return P
+
+
+
+
+@cython.boundscheck(False)
+cdef get_proj_pcon_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int nt, int nnt,
+                        int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint32_t[:] basis_pcon,object P):
+    cdef int per = B.pers[nt-nnt]
+    cdef npy_intp Ns_full = P.shape[0]
+    cdef npy_intp Ns = P.shape[1]
+
+    cdef double q = (2*pi*B.qs[nt-nnt])/per
+    cdef double complex cc = cos(q)-1j*sin(q)
+    cdef double norm
+    cdef npy_intp i,j
+
+
+    if nnt > 1:
+        for j in range(per):
+            if dtype is float or dtype is double:
+                if abs(cc.imag)>1.1e-15:
+                    raise TypeError("attemping to use real type for complex elements.")
+
+                P = get_proj_pcon_helper_32(B,basis,nt,nnt-1,sign,c,row,col,basis_pcon,P)
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= cc.real
+            else:
+                P = get_proj_pcon_helper_32(B,basis,nt,nnt-1,sign,c,row,col,basis_pcon,P)
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= cc
+
+            with nogil:
+                B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
+
+        return P
+
+    else:
+        for j in range(per):
+            if dtype is float or dtype is double:
+                if abs(cc.imag)>1.1e-15:
+                    raise TypeError("attemping to use real type for complex elements.")
+
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i]
+                        row[i] = <npy_intp>binary_search(Ns_full,&basis_pcon[0],basis[i])
+
+                P = P + _sp.csc_matrix((c,(row,col)),shape=P.shape)
+
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i] * cc.real
+
+            else:
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i]
+                        row[i] = <npy_intp>binary_search(Ns_full,&basis_pcon[0],basis[i])
+
+                P = P + _sp.csc_matrix((c,(row,col)),shape=P.shape)
+                with nogil:
+                    for i in range(Ns):
+                        c[i] *= sign[i] * cc
+
+            with nogil:
+                B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
+            
+        return P
+
+
+
+
 
 cdef class general_basis_core_wrap_32:
     cdef int _N
@@ -181,23 +321,36 @@ cdef class general_basis_core_wrap_32:
             raise TypeError("attemping to use real type for complex elements.")
 
     @cython.boundscheck(False)
-    def get_proj(self, uint32_t[:] basis, object Ptype,int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col):
+    def get_proj(self, uint32_t[:] basis, object Ptype,int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint32_t[:] basis_pcon = None):
         cdef npy_intp Ns = basis.shape[0]
+        cdef npy_intp Ns_full = self._Ns_full
+        cdef object P
+        cdef npy_intp i=0
 
-        cdef object P = _sp.csc_matrix((self._Ns_full,Ns),dtype=Ptype)
+        if basis_pcon is not None:
+            Ns_full = basis_pcon.shape[0]
+
         if Ns == 0:
-            return P
+            return _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
 
-        if self._nt <= 0:
-            with nogil:
-                for i in range(Ns):
-                    row[i] = self._Ns_full-basis[i]-1    
+        if basis_pcon is None:
+            if self._nt <= 0:
+                with nogil:
+                    for i in range(Ns):
+                        row[i] = Ns_full-basis[i]-1    
 
-            P = P + _sp.csc_matrix((c,(row,col)),shape=P.shape)
+                return _sp.csc_matrix((c,(row,col)),shape=(Ns_full,Ns))
+            else:
+                P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
+                return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
-            return P
         else:
-            return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
+
+            if self._nt <= 0: # basis is already just the full particle conserving basis
+                return _sp.identity(Ns,dtype=Ptype)
+            else:
+                P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
+                return get_proj_pcon_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,basis_pcon,P)           
 
 
 cdef class general_basis_core_wrap_64:
@@ -238,22 +391,34 @@ cdef class general_basis_core_wrap_64:
             raise TypeError("attemping to use real type for complex elements.")
 
     @cython.boundscheck(False)
-    def get_proj(self, uint64_t[:] basis, object Ptype, int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col):
+    def get_proj(self, uint64_t[:] basis, object Ptype, int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint64_t[:] basis_pcon = None):
         cdef npy_intp Ns = basis.shape[0]
+        cdef npy_intp Ns_full = self._Ns_full
+        cdef object P
+        cdef npy_intp i=0
 
-        cdef object P = _sp.csc_matrix((self._Ns_full,Ns),dtype=Ptype)
+        if basis_pcon is not None:
+            Ns_full = basis_pcon.shape[0]
+
         if Ns == 0:
-            return P
+            return _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
 
-        if self._nt <= 0:
-            with nogil:
-                for i in range(Ns):
-                    row[i] = self._Ns_full-basis[i]-1    
+        if basis_pcon is None:
+            if self._nt <= 0:
+                with nogil:
+                    for i in range(Ns):
+                        row[i] = Ns_full-basis[i]-1    
 
-            P = P + _sp.csc_matrix((c,(row,col)),shape=P.shape)
+                return _sp.csc_matrix((c,(row,col)),shape=(Ns_full,Ns))
+            else:
+                P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
+                return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
-            return P
         else:
-            return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
+            if self._nt <= 0: # basis is already just the full particle conserving basis
+                return _sp.identity(Ns,dtype=Ptype)
+            else:
+                P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
+                return get_proj_pcon_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,basis_pcon,P)   
 
