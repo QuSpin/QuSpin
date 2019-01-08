@@ -37,6 +37,7 @@ class higher_spin_basis_general(basis_general):
 			basis_type = get_basis_type(N,Nup,sps)
 		elif type(Nup) is int:
 			self._check_pcon = True
+			self._get_proj_pcon = True
 			Ns = H_dim(Nup,N,sps-1)
 			basis_type = get_basis_type(N,Nup,sps)
 		else:

@@ -76,6 +76,7 @@ class basis_general(lattice_basis):
 		self._unique_me = True
 		self._check_pcon = None
 		self._basis_pcon = None
+		self._get_proj_pcon = False
 
 		if self.__class__ is basis_general:
 			raise TypeError("general_basis class is not to be instantiated.")
@@ -238,24 +239,36 @@ class basis_general(lattice_basis):
 		"""
 
 
-		if pcon==True:
-			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
-				\n If you need to use this feature, consider the following procedure: \
-				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
-				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
-				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm)')
+		basis_pcon = None
+		Ns_full = (self._sps**self._N)
 
-		c = _np.ones_like(self._basis,dtype=dtype)
+		if pcon and self._get_proj_pcon:
+
+			if self._basis_pcon is None:
+				self._basis_pcon = self.__class__(**self._pcon_args)
+
+			basis_pcon = self._basis_pcon._basis
+			Ns_full = basis_pcon.shape[0]
+		elif pcon and self._get_proj_pcon:
+			raise TypeError("pcon=True only works for basis of a single particle number sector.")
+
+		# if pcon==True:
+		# 	raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
+		# 		\n If you need to use this feature, consider the following procedure: \
+		# 		\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
+		# 		\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
+		# 		\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm)')
+
+		c = self._n.astype(dtype,copy=True)
 		sign = _np.ones_like(self._basis,dtype=_np.int8)
-		c[:] = self._n[:]
 		c *= self._pers.prod()
 		_np.sqrt(c,out=c)
 		_np.power(c,-1,out=c)
-		index_type = _np.min_scalar_type(-(self._sps**self._N))
+		index_type = _np.min_scalar_type(-Ns_full)
 		col = _np.arange(self._Ns,dtype=index_type)
 		row = _np.arange(self._Ns,dtype=index_type)
 
-		return self._core.get_proj(self._basis,dtype,sign,c,row,col)
+		return self._core.get_proj(self._basis,dtype,sign,c,row,col,basis_pcon=basis_pcon)
 
 	def get_vec(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
@@ -302,27 +315,25 @@ class basis_general(lattice_basis):
 			v0 = _np.asanyarray(v0)
 
 		squeeze = False
+		if pcon:
+			Ns_full = basis_pcon.size
+		else:
+			Ns_full = self._sps**self._N
 
 		if v0.ndim == 1:
-			if pcon:
-				shape = (basis_pcon.size,1)
-			else:
-				shape = (self._sps**self._N,1)
 			v0 = v0.reshape((-1,1))
+			shape = (Ns_full,1)
 			squeeze = True
 		elif v0.ndim == 2:
-			if pcon:
-				shape = (basis_pcon.size,v0.shape[1])
-			else:
-				shape = (self._sps**self._N,v0.shape[1])
+			shape = (Ns_full,v0.shape[1])
 		else:
-			raise ValueError("excpecting v0 to have ndim at most 2")
+			raise ValueError("excpecting v0 to have ndim > 0 and at most 2")
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._N,0),dtype=v0.dtype)
+				return _sp.csr_matrix(([],([],[])),shape=(Ns_full,0),dtype=v0.dtype)
 			else:
-				return _np.zeros((self._sps**self._N,0),dtype=v0.dtype)
+				return _np.zeros((Ns_full,0),dtype=v0.dtype)
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
@@ -331,8 +342,7 @@ class basis_general(lattice_basis):
 			# return self.get_proj(v0.dtype).dot(v0)
 			raise ValueError
 
-		if not v0.flags["C_CONTIGUOUS"]:
-			v0 = _np.ascontiguousarray(v0)
+		v0 = _np.ascontiguousarray(v0)
 
 		if sparse:
 			# current work-around for sparse

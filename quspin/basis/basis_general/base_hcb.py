@@ -28,6 +28,7 @@ class hcb_basis_general(basis_general):
 			Ns = (1<<N)	
 		elif type(Nb) is int:
 			self._check_pcon = True
+			self._get_proj_pcon = True
 			Ns = comb(N,Nb,exact=True)
 		else:
 			try:

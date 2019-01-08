@@ -114,6 +114,7 @@ class spinless_fermion_basis_general(basis_general):
 			Ns = (1<<N)	
 		elif type(Nf) is int:
 			self._check_pcon = True
+			self._get_proj_pcon = True
 			Ns = comb(N,Nf,exact=True)
 		else:
 			try:
@@ -458,6 +459,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			if type(Nf) is tuple:
 				if len(Nf)==2:
+					self._get_proj_pcon = True
 					Nup,Ndown = Nf
 					if (type(Nup) is int) and type(Ndown) is int:
 						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)

@@ -35,7 +35,6 @@ cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int
                 B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 
         return P
-
     else:
         for j in range(per):
             if dtype is float or dtype is double:
@@ -106,7 +105,6 @@ cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int
                 B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 
         return P
-
     else:
         for j in range(per):
             if dtype is float or dtype is double:
@@ -174,7 +172,6 @@ cdef get_proj_pcon_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis
                 B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
 
         return P
-
     else:
         for j in range(per):
             if dtype is float or dtype is double:
@@ -243,7 +240,6 @@ cdef get_proj_pcon_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis
 
             with nogil:
                 B.map_state(&basis[0],Ns,nt-nnt,&sign[0])
-
         return P
 
     else:
@@ -287,7 +283,7 @@ cdef class general_basis_core_wrap_32:
     cdef int _N
     cdef int _nt
     cdef int _sps
-    cdef npy_intp _Ns_full
+    cdef object _Ns_full
     cdef general_basis_core[uint32_t] * _basis_core
 
     def __cinit__(self):
@@ -314,11 +310,13 @@ cdef class general_basis_core_wrap_32:
         cdef npy_intp n_vec = v_in.shape[1]
         cdef bool err
         cdef uint32_t * ptr = NULL
-        cdef npy_intp Ns_full = self._Ns_full
+        cdef npy_intp Ns_full = 0
 
         if basis_pcon is not None:
             ptr = &basis_pcon[0]
             Ns_full = basis_pcon.shape[0]
+        else:
+            Ns_full = self._Ns_full
 
         with nogil:
             err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,Ns_full,ptr,&v_in[0,0],&v_out[0,0])
@@ -329,12 +327,14 @@ cdef class general_basis_core_wrap_32:
     @cython.boundscheck(False)
     def get_proj(self, uint32_t[:] basis, object Ptype,int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint32_t[:] basis_pcon = None):
         cdef npy_intp Ns = basis.shape[0]
-        cdef npy_intp Ns_full = self._Ns_full
+        cdef npy_intp Ns_full = 0
         cdef object P
         cdef npy_intp i=0
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
+        else:
+            Ns_full = self._Ns_full
 
         if Ns == 0:
             return _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
@@ -351,7 +351,6 @@ cdef class general_basis_core_wrap_32:
                 return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
         else:
-
             if self._nt <= 0: # basis is already just the full particle conserving basis
                 return _sp.identity(Ns,dtype=Ptype)
             else:
@@ -363,7 +362,7 @@ cdef class general_basis_core_wrap_64:
     cdef int _N
     cdef int _nt
     cdef int _sps
-    cdef npy_intp _Ns_full
+    cdef object _Ns_full
     cdef general_basis_core[uint64_t] * _basis_core
 
     def __cinit__(self):
@@ -390,11 +389,13 @@ cdef class general_basis_core_wrap_64:
         cdef npy_intp n_vec = v_in.shape[1]
         cdef bool err
         cdef uint64_t * ptr = NULL
-        cdef npy_intp Ns_full = self._Ns_full
+        cdef npy_intp Ns_full = 0
 
         if basis_pcon is not None:
             ptr = &basis_pcon[0]
             Ns_full = basis_pcon.shape[0]
+        else:
+            Ns_full = self._Ns_full
 
         with nogil:
             err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,Ns_full,ptr,&v_in[0,0],&v_out[0,0])
@@ -405,12 +406,14 @@ cdef class general_basis_core_wrap_64:
     @cython.boundscheck(False)
     def get_proj(self, uint64_t[:] basis, object Ptype, int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint64_t[:] basis_pcon = None):
         cdef npy_intp Ns = basis.shape[0]
-        cdef npy_intp Ns_full = self._Ns_full
+        cdef npy_intp Ns_full = 0
         cdef object P
         cdef npy_intp i=0
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
+        else:
+            Ns_full = self._Ns_full
 
         if Ns == 0:
             return _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
@@ -427,7 +430,6 @@ cdef class general_basis_core_wrap_64:
                 return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
         else:
-
             if self._nt <= 0: # basis is already just the full particle conserving basis
                 return _sp.identity(Ns,dtype=Ptype)
             else:

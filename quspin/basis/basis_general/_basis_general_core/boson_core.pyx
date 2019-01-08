@@ -44,7 +44,7 @@ cdef class boson_basis_core_wrap_32(general_basis_core_wrap_32):
 		self._N = N
 		self._nt = pers.shape[0]
 		self._sps = sps
-		self._Ns_full = sps**N
+		self._Ns_full = (sps**N)
 
 		if self._sps < 2:
 			raise ValueError("must have sps > 2")
@@ -101,8 +101,9 @@ cdef class boson_basis_core_wrap_32(general_basis_core_wrap_32):
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,norm_type[:] n):
 		cdef npy_intp mem_MAX = basis.shape[0]
+		cdef npy_intp Ns = self._Ns_full
 		with nogil:
-			Ns = make_basis(self._basis_core,self._Ns_full,mem_MAX,&basis[0],&n[0])
+			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
 
 		return Ns
 
@@ -179,10 +180,10 @@ cdef class boson_basis_core_wrap_64(general_basis_core_wrap_64):
 
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_full(self,uint64_t[:] basis,norm_type[:] n):
-		cdef npy_intp Ns = (self._sps**self._N)
+		cdef npy_intp Ns = self._Ns_full
 		cdef npy_intp mem_MAX = basis.shape[0]
 		with nogil:
-			Ns = make_basis(self._basis_core,self._Ns_full,mem_MAX,&basis[0],&n[0])
+			Ns = make_basis(self._basis_core,Ns,mem_MAX,&basis[0],&n[0])
 
 		return Ns
 

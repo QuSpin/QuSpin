@@ -197,6 +197,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				basis_type = get_basis_type(N,Nb,sps)
 			elif type(Nb) is int:
 				self._check_pcon = True
+				self._get_proj_pcon = True
 
 				if self._sps is None:
 					self._sps = Nb
