@@ -766,7 +766,7 @@ class hamiltonian(object):
 		V_dot=self.dot(V,time=time,check=check)
 		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
 
-		if V.shape[0] != V.shape[1] or enforce_pure:
+		if len(V.shape) > 1 and V.shape[0] != V.shape[1] or enforce_pure:
 			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
 		else:
 			V_dot=self.dot(V_dot,time=time,check=check)

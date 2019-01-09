@@ -332,7 +332,7 @@ class basis_general(lattice_basis):
 		return ME,row,col
 
 
-	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states):
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.
 
 		Given a set of ket states :math:`|s\\rangle`, the function returns the bra states :math:`\\langle s'|` which connect to them through an operator, together with the corresponding matrix elements.
@@ -341,7 +341,7 @@ class basis_general(lattice_basis):
 		-----
 			* Similar to `Op` but instead of returning the matrix indices (row,col), it returns the states (bra,ket) in integer representation. 
 			* Does NOT require the full basis (see `basis` optional argument `make_basis`). 
-			* If a state from `ket_states` does not have a non-zero matrix element, it is removed from the returned list.
+			* If a state from `ket_states` does not have a non-zero matrix element, it is removed from the returned list. See otional argument `reduce_output`.
 
 		Parameters
 		-----------
@@ -359,6 +359,8 @@ class basis_general(lattice_basis):
 			Data type (e.g. numpy.float64) to construct the matrix elements with.
 		ket_states : numpy.ndarray(int)
 			Ket states in integer representation. Must be of same data type as `basis`.
+		reduce_output: bool, optional
+			If set to `True`, the retured arrays have the same size as `ket_states`; If set to `False` zeros are purged.
 
 		Returns
 		--------
@@ -400,12 +402,16 @@ class basis_general(lattice_basis):
 		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
 
 		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
-
-		# remove nan's matrix elements
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
-		bra = bra[mask]
-		ket_states = ket_states[mask]
-		ME = ME[mask]
+		
+		if reduce_output: 
+			# remove nan's matrix elements
+			mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+			bra = bra[mask]
+			ket_states = ket_states[mask]
+			ME = ME[mask]
+		else:
+			mask = _np.isnan(ME)
+			ME[mask] = 0.0
 
 		return ME,bra,ket_states
 

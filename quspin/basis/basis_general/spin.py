@@ -149,10 +149,10 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 		return ME,row,col
 
-	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states):
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 
 		if self._S == "1/2":
-			ME,bra,ket = hcb_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states)
+			ME,bra,ket = hcb_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 			if self._pauli:
 				n = len(opstr.replace("I",""))
 				ME *= (1<<n)
