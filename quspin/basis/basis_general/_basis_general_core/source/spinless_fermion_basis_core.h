@@ -63,48 +63,49 @@ void getf_count(I nums[], I left, I right, bool &f_count){
 
 
 
-template<class I>
-I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
+template<class I,class J>
+I inline spinless_fermion_map_bits(I s,const int map[],const int N,J pos_list[],int &sign){
 	I ss = 0;
-	int pos_list[bit_info<I>::bits];
-	int np = 0;
+	J np = 0;
 	bool f_count = 0;
 
 	for(int i=N-1;i>=0;--i){
 		int j = map[i];
 		I n = (s&1);
+		bool neg = j<0;
+		
 		if(n){
-			pos_list[np] = ( j<0 ? -(j+1) : j);
-			++np;
-			f_count ^= ((j<0)&&(i&1));
+			pos_list[np++] = ( neg ? -(j+1) : j);
+			f_count ^= (neg&&(i&1));
 		}
-		ss ^= ( j<0 ? (n^1)<<(N+j) : n<<(N-j-1) );
+		ss ^= ( neg ? (n^1)<<(N+j) : n<<(N-j-1) );
 
 		s >>= 1;
 	}
 
-	getf_count(pos_list,0,np-1,f_count);
+	getf_count<J>(pos_list,(J)0,np-1,f_count);
 	if(f_count){sign *= -1;}
 
 	return ss;
 }
 
-// template<class I>
-// void get_map_sign(I s,I inv,int &sign){
-// 	typename bit_info<I>::bit_index_type pos_list[bit_info<I>::bits];
-// 	bool f_count = 0;
+template<class I>
+void get_map_sign(I s,I inv,int &sign){
+	typename bit_info<I>::bit_index_type pos_list[bit_info<I>::bits];
+	bool f_count = 0;
 
-// 	I ne = bit_count(bit_info<I>::eob&s,bit_info<I>::bits-1); // count number of partices on odd sites
-// 	f_count ^= (ne&1); 
-// 	typename bit_info<I>::bit_index_type n = bit_pos(s,pos_list) - 1; // get bit positions
-// 	getf_count(pos_list,(typename bit_info<I>::bit_index_type)0,n,f_count);
-// 	if(f_count){sign *= -1;}	
-// }
+	I ne = bit_count(bit_info<I>::eob&s,bit_info<I>::bits-1); // count number of partices on odd sites
+	f_count ^= (ne&1); 
+	typename bit_info<I>::bit_index_type n = bit_pos(s,pos_list) - 1; // get bit positions
+	getf_count(pos_list,(typename bit_info<I>::bit_index_type)0,n,f_count);
+	if(f_count){sign *= -1;}	
+}
 
 
 template<class I>
 class spinless_fermion_basis_core : public hcb_basis_core<I>
 {
+	typename bit_info<I>::bit_index_type pos_list[bit_info<I>::bits];
 	public:
 		spinless_fermion_basis_core(const int _N) : \
 		hcb_basis_core<I>::hcb_basis_core(_N) { }
@@ -145,7 +146,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 				return s;
 			}
 			const int n = general_basis_core<I>::N;
-			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
+			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,pos_list,sign);
 			
 		}
 
@@ -158,7 +159,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 			#pragma omp for schedule(static,1)
 			for(npy_intp i=0;i<M;i++){
 				int temp_sign = sign[i];
-				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
+				s[i] = spinless_fermion_map_bits(s[i],map,n,pos_list,temp_sign);
 				sign[i] = temp_sign;
 			}
 		}

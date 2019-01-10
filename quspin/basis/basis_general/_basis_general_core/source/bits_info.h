@@ -2,6 +2,9 @@
 #define __BITS_INFO_H__
 
 #include "numpy/ndarraytypes.h"
+#include <cinttypes>
+
+
 typedef npy_uint8 uint8_t;
 typedef npy_uint16 uint16_t;
 typedef npy_uint32 uint32_t;
@@ -29,56 +32,56 @@ struct bit_info
 // struct bit_info<uint128_t>
 // { enum {ld_bits=7,bits=128,
 //   eob=eob<uint128_t,64>::val,all_bits=~(uint128_t)0};
-//   typedef unsigned char bit_index_type;
+//   typedef uint_fast8_t bit_index_type;
 // };
 
 // template<>
 // struct bit_info<uint256_t>
 // { enum {ld_bits=8,bits=256,
 //   eob=eob<uint256_t,128>::val,all_bits=~(uint256_t)0};
-//   typedef unsigned char bit_index_type;
+//   typedef uint_fast8_t bit_index_type;
 // };
 
 // template<>
 // struct bit_info<uint512_t>
 // { enum {ld_bits=9,bits=512,
 //   eob=eob<uint512_t,256>::val,all_bits=~(uint512_t)0};
-//   typedef unsigned short bit_index_type;
+//   typedef uint_fast16_t bit_index_type;
 // };
 
 // template<>
 // struct bit_info<uint1024_t>
 // { enum {ld_bits=10,bits=1024,
 //   eob=eob<uint1024_t,512>::val,all_bits=~(uint1024_t)0};
-//   typedef unsigned short bit_index_type;
+//   typedef uint_fast16_t bit_index_type;
 // };
 
 template<>
 struct bit_info<uint64_t>
 {	enum {ld_bits=6,bits=64,bytes=8,
   eob=eob<uint64_t,32>::val,all_bits=~(uint64_t)0};
-  typedef unsigned char bit_index_type;
+  typedef uint_fast8_t bit_index_type;
 };
 
 template<>
 struct bit_info<uint32_t>
 {	enum {ld_bits=5,bits=32,bytes=4,
   eob=eob<uint32_t,16>::val,all_bits=~(uint32_t)0};
-  typedef unsigned char bit_index_type;
+  typedef uint_fast8_t bit_index_type;
 };
 
 template<>
 struct bit_info<uint16_t>
 {	enum {ld_bits=4,bits=16,bytes=2,
   eob=eob<uint16_t,8>::val,all_bits=~(uint16_t)0};
-  typedef unsigned char bit_index_type;
+  typedef uint_fast8_t bit_index_type;
 };
 
 template<>
 struct bit_info<uint8_t>
 { enum {ld_bits=3,bits=8,bytes=1,
   eob=eob<uint8_t,4>::val,all_bits=~(uint8_t)0};
-  typedef unsigned char bit_index_type;
+  typedef uint_fast8_t bit_index_type;
 };
 
 
@@ -152,6 +155,11 @@ static unsigned short tabofs[256] = { 0,0,1,2,4,5,7,9,12,13,15,17,20,22,25,28,
                                       928,932,937,942,948,953,959,965,972,977,983,989,996,1002,1009,1016 }
 
 
+
+
+*/
+
+
 template<class T>
 typename bit_info<T>::bit_index_type bit_pos(T x, typename bit_info<T>::bit_index_type *idx)
 {
@@ -162,11 +170,6 @@ typename bit_info<T>::bit_index_type bit_pos(T x, typename bit_info<T>::bit_inde
   } while (x >>= 1); 
   return n;
 }
-
-*/
-
-
-
 
 #if defined(__GNUC__) || defined(__GNUG__)
 
