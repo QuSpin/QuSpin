@@ -60,28 +60,28 @@ template<>
 struct bit_info<uint64_t>
 {	enum {ld_bits=6,bits=64,bytes=8,
   eob=eob<uint64_t,32>::val,all_bits=~(uint64_t)0};
-  typedef uint_fast8_t bit_index_type;
+  typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<uint32_t>
 {	enum {ld_bits=5,bits=32,bytes=4,
   eob=eob<uint32_t,16>::val,all_bits=~(uint32_t)0};
-  typedef uint_fast8_t bit_index_type;
+  typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<uint16_t>
 {	enum {ld_bits=4,bits=16,bytes=2,
   eob=eob<uint16_t,8>::val,all_bits=~(uint16_t)0};
-  typedef uint_fast8_t bit_index_type;
+  typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<uint8_t>
 { enum {ld_bits=3,bits=8,bytes=1,
   eob=eob<uint8_t,4>::val,all_bits=~(uint8_t)0};
-  typedef uint_fast8_t bit_index_type;
+  typedef int bit_index_type;
 };
 
 
