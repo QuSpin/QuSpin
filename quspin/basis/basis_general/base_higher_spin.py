@@ -1,4 +1,4 @@
-from ._basis_general_core import higher_spin_basis_core_wrap_32,higher_spin_basis_core_wrap_64
+from ._basis_general_core import higher_spin_basis_core_wrap
 from .base_general import basis_general
 from .boson import H_dim,get_basis_type
 import numpy as _np
@@ -66,42 +66,17 @@ class higher_spin_basis_general(basis_general):
 		if basis_type==_np.uint32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = higher_spin_basis_core_wrap_32(N,sps,self._maps,self._pers,self._qs)
 		elif basis_type==_np.uint64:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = higher_spin_basis_core_wrap_64(N,sps,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("states can't be represented as 64-bit unsigned integer")
 
+		self._core = higher_spin_basis_core_wrap(basis_type,N,sps,self._maps,self._pers,self._qs)
+
+
 		self._sps=sps
-		# if count_particles and (Nup is not None):
-		# 	Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-		# 	self._Ns = self._core.make_basis(basis,n,Np=Nup,count=Np_list)
-		# 	if self._Ns < 0:
-		# 			raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
-		# 	basis,ind = _np.unique(basis,return_index=True)
-		# 	if self.Ns != basis.shape[0]:
-		# 		basis = basis[1:]
-		# 		ind = ind[1:]
-
-		# 	self._basis = basis[::-1].copy()
-		# 	self._n = n[ind[::-1]].copy()
-		# 	self._Np_list = Np_list[ind[::-1]].copy()
-		# else:
-
-		# 	self._Ns = self._core.make_basis(basis,n,Np=Nup)
-		# 	if self._Ns < 0:
-		# 			raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-		# 	basis,ind = _np.unique(basis,return_index=True)
-		# 	if self.Ns != basis.shape[0]:
-		# 		basis = basis[1:]
-		# 		ind = ind[1:]
-				
-		# 	self._basis = basis[::-1].copy()
-		# 	self._n = n[ind[::-1]].copy()
 
 		if count_particles and (Nup is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)

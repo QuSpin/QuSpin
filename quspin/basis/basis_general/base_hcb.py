@@ -1,4 +1,4 @@
-from ._basis_general_core import hcb_basis_core_wrap_32,hcb_basis_core_wrap_64
+from ._basis_general_core import hcb_basis_core_wrap
 from .base_general import basis_general
 import numpy as _np
 from scipy.misc import comb
@@ -56,14 +56,14 @@ class hcb_basis_general(basis_general):
 		if N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = hcb_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = hcb_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+
 		else:
 			raise ValueError("system size N must be <=64.")
 
+		self._core = hcb_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
 		self._sps=2
 		
 		if count_particles and (Nb is not None):

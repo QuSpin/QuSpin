@@ -1,5 +1,5 @@
 from ._basis_general_core import spinful_fermion_basis_core_wrap_32,spinful_fermion_basis_core_wrap_64
-from ._basis_general_core import spinless_fermion_basis_core_wrap_32,spinless_fermion_basis_core_wrap_64
+from ._basis_general_core import spinless_fermion_basis_core_wrap_32,spinless_fermion_basis_core_wrap_64,spinless_fermion_basis_core_wrap
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -144,13 +144,15 @@ class spinless_fermion_basis_general(basis_general):
 		if N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			# self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			# self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=64.")
+
+		self._core = spinless_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
 
 		self._sps=2
 		# if count_particles and (Nf is not None):

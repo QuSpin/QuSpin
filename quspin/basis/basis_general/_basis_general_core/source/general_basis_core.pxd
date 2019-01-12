@@ -12,6 +12,9 @@ cdef extern from "general_basis_core.h":
 cdef extern from "make_general_basis.h":
 	npy_intp make_basis[I,J](general_basis_core[I]*,npy_intp,npy_intp,I[], J[]) nogil
 	npy_intp make_basis_pcon[I,J](general_basis_core[I]*,npy_intp,npy_intp,I,I[], J[]) nogil
+	npy_intp make_basis_wrapper[I,J](void*,npy_intp,npy_intp,I[], J[]) nogil
+	npy_intp make_basis_pcon_wrapper[I,J](void*,npy_intp,npy_intp,I,I[], J[]) nogil
+
 
 cdef extern from "general_basis_op.h":
 	int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
@@ -39,5 +42,10 @@ ctypedef fused dtype:
 ctypedef fused norm_type:
 	uint8_t
 	uint16_t
+	uint32_t
+	uint64_t
+
+
+ctypedef fused basis_type:
 	uint32_t
 	uint64_t

@@ -8,6 +8,17 @@
 
 
 
+template<class I,class J>
+npy_intp inline make_basis_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
+	return make_basis(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,basis,n);
+}
+
+template<class I,class J>
+npy_intp inline make_basis_pcon_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
+	return make_basis_pcon(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,s,basis,n);
+}
+
+
 
 
 template<class I,class J>

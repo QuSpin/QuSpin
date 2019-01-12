@@ -1,4 +1,4 @@
-from ._basis_general_core import boson_basis_core_wrap_32,boson_basis_core_wrap_64
+from ._basis_general_core import boson_basis_core_wrap
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
@@ -27,21 +27,39 @@ def H_dim(N,length,m_max):
 
 
 
-
-def get_basis_type(N, Np, sps, **blocks):
+def get_basis_type(N, Np, sps, use_boost=False, **blocks):
     # calculates the datatype which will fit the largest representative state in basis
     if Np is None:
-        # if no particle conservation the largest representative is sps**N
-        dtype = _np.min_scalar_type(int(sps**N-1))
-        return _np.result_type(dtype,_np.uint32)
+        # if no particle conservation the largest representative is sps**N-1
+        s_max = sps**N-1
     else:
         # if particles are conservated the largest representative is placing all particles as far left
         # as possible. 
         l=Np//(sps-1)
         s_max = sum((sps-1)*sps**(N-1-i)  for i in range(l))
         s_max += (Np%(sps-1))*sps**(N-l-1)
-        dtype = _np.min_scalar_type(int(s_max))
-        return _np.result_type(dtype,_np.uint32)
+
+    s_max = int(s_max)
+
+    nbits = 0
+    while(s_max>0):
+        s_max >>= 1
+        nbits += 1
+
+    if nbits <= 32:
+    	return _np.uint32
+    elif nbits <= 64:
+    	return _np.uint64
+    elif nbits <= 128 and use_boost:
+    	return _np.dtype((np.void,16))
+    elif nbits <= 256 and use_boost:
+    	return _np.dtype((np.void,48))
+    elif nbits <= 512 and use_boost:
+    	return _np.dtype((np.void,80))
+    elif nbits <= 1024 and use_boost:
+    	return _np.dtype((np.void,144))
+    else:
+    	return _np.object
 
 
 # general basis for hardcore bosons/spin-1/2
@@ -236,40 +254,13 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			if basis_type==_np.uint32:
 				basis = _np.zeros(Ns,dtype=_np.uint32)
 				n     = _np.zeros(Ns,dtype=self._n_dtype)
-				self._core = boson_basis_core_wrap_32(N,self._sps,self._maps,self._pers,self._qs)
 			elif basis_type==_np.uint64:
 				basis = _np.zeros(Ns,dtype=_np.uint64)
 				n     = _np.zeros(Ns,dtype=self._n_dtype)
-				self._core = boson_basis_core_wrap_64(N,self._sps,self._maps,self._pers,self._qs)
 			else:
 				raise ValueError("states can't be represented as 64-bit unsigned integer")
 
-			# if count_particles and (Nb_list is not None):
-			# 	Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			# 	self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
-			# 	if self._Ns < 0:
-			# 		raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-			# 	basis,ind = _np.unique(basis,return_index=True)
-			# 	if self.Ns != basis.shape[0]:
-			# 		basis = basis[1:]
-			# 		ind = ind[1:]
-
-			# 	self._basis = basis[::-1].copy()
-			# 	self._n = n[ind[::-1]].copy()
-			# 	self._Np_list = Np_list[ind[::-1]].copy()
-			# else:
-			# 	self._Ns = self._core.make_basis(basis,n,Np=Nb)
-			# 	if self._Ns < 0:
-			# 		raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-			# 	basis,ind = _np.unique(basis,return_index=True)
-			# 	if self.Ns != basis.shape[0]:
-			# 		basis = basis[1:]
-			# 		ind = ind[1:]
-			# 	self._basis = basis[::-1].copy()
-			# 	self._n = n[ind[::-1]].copy()
-
+			self._core = boson_basis_core_wrap(basis_type,N,self._sps,self._maps,self._pers,self._qs)
 
 			if count_particles and (Nb is not None):
 				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
