@@ -1,5 +1,5 @@
-from ._basis_general_core import spinful_fermion_basis_core_wrap_32,spinful_fermion_basis_core_wrap_64
-from ._basis_general_core import spinless_fermion_basis_core_wrap_32,spinless_fermion_basis_core_wrap_64,spinless_fermion_basis_core_wrap
+from ._basis_general_core import spinful_fermion_basis_core_wrap
+from ._basis_general_core import spinless_fermion_basis_core_wrap
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -153,34 +153,7 @@ class spinless_fermion_basis_general(basis_general):
 			raise ValueError("system size N must be <=64.")
 
 		self._core = spinless_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
-
 		self._sps=2
-		# if count_particles and (Nf is not None):
-		# 	Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-		# 	self._Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
-		# 	if self._Ns < 0:
-		# 			raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-		# 	basis,ind = _np.unique(basis,return_index=True)
-		# 	if self.Ns != basis.shape[0]:
-		# 		basis = basis[1:]
-		# 		ind = ind[1:]
-
-		# 	self._basis = basis[::-1].copy()
-		# 	self._n = n[ind[::-1]].copy()
-		# 	self._Np_list = Np_list[ind[::-1]].copy()
-		# else:
-		# 	self._Ns = self._core.make_basis(basis,n,Np=Nf)
-		# 	if self._Ns < 0:
-		# 			raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-		# 	basis,ind = _np.unique(basis,return_index=True)
-		# 	if self.Ns != basis.shape[0]:
-		# 		basis = basis[1:]
-		# 		ind = ind[1:]
-				
-		# 	self._basis = basis[::-1].copy()
-		# 	self._n = n[ind[::-1]].copy()
 
 		if count_particles and (Nf is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
@@ -211,7 +184,7 @@ class spinless_fermion_basis_general(basis_general):
 
 		self._Ns = Ns
 		self._N = N
-		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._index_type = _np.result_type(_np.min_scalar_type(-self._Ns),_np.int32)
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -517,13 +490,16 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		if N<=16:
 			basis = _np.zeros(Ns,dtype=_np.uint32)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = spinful_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			# self._core = spinful_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=32:
 			basis = _np.zeros(Ns,dtype=_np.uint64)
 			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			self._core = spinful_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			# self._core = spinful_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("system size N must be <=32.")
+
+
+		self._core = spinful_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
 
 		self._sps=2
 		if count_particles and (Nf is not None):
@@ -555,7 +531,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		self._Ns = Ns
 		self._N = 2*N
-		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._index_type = _np.result_type(_np.min_scalar_type(-self._Ns),_np.int32)
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+

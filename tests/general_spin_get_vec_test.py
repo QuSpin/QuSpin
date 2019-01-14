@@ -67,7 +67,6 @@ def check_gen_basis_hcb(S="1/2"):
 
 		P1 = basis_1d.get_proj(dtype)
 		P2 = gen_basis.get_proj(dtype)
-
 		np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
 
 		if Nup is not None:
