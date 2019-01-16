@@ -24,7 +24,7 @@ cdef extern from "general_basis_op.h":
 						  const double complex, const npy_intp, const int, const unsigned long int[], const I[], I[], T[]) nogil
 
 cdef extern from "general_basis_rep.h":
-	void general_representative[I](general_basis_core[I] *B, const I[], I[], const npy_intp) nogil
+	void general_representative[I](general_basis_core[I] *B, const I[], I[], int[], int8_t[], const npy_intp, const int) nogil
 
 cdef extern from "general_basis_get_vec.h":
 	bool get_vec_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,

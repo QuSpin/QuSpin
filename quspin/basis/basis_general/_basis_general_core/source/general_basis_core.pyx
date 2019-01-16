@@ -166,46 +166,7 @@ cdef class general_basis_core_wrap_32:
 			raise ValueError("operator not recognized.")
 		elif err == 1:
 			raise TypeError("attemping to use real type for complex matrix elements.")
-
-
-
-	@cython.boundscheck(False)
-	def op_bra_ket(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
-		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
-		cdef int n_op = indx.shape[0]
-		cdef npy_intp Ns = ket.shape[0]
-		cdef int err = 0;
-		cdef double complex JJ = J
-		cdef int Npcon_blocks #=Np.shape[0]
-		cdef unsigned long int[:] Np_array
-		
-		if Np is None:
-			with nogil:
-				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
-		else:
-
-			if type(Np) is int:
-				Npcon_blocks=1
-			else:
-				Npcon_blocks=len(Np)
-			
-			Np_array=array(Np,ndmin=1,dtype=uint64)
-
-			with nogil:
-				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
-
-		if err == -1:
-			raise ValueError("operator not recognized.")
-		elif err == 1:
-			raise TypeError("attemping to use real type for complex matrix elements.")
-
-
-	@cython.boundscheck(False)
-	def representative(self,uint32_t[:] states,uint32_t[:] ref_states):
-		cdef npy_intp Ns = states.shape[0]
-		with nogil:
-			general_representative(self._basis_core,&states[0],&ref_states[0],Ns)
-
+	
 	@cython.boundscheck(False)
 	def get_vec_dense(self, uint32_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
 		cdef npy_intp Ns = v_in.shape[0]
@@ -239,6 +200,53 @@ cdef class general_basis_core_wrap_32:
 		else:
 			return get_proj_helper_32[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
+	@cython.boundscheck(False)
+	def op_bra_ket(self,uint32_t[:] ket,uint32_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
+		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+		cdef int n_op = indx.shape[0]
+		cdef npy_intp Ns = ket.shape[0]
+		cdef int err = 0;
+		cdef double complex JJ = J
+		cdef int Npcon_blocks #=Np.shape[0]
+		cdef unsigned long int[:] Np_array
+		
+		if Np is None:
+			with nogil:
+				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
+		else:
+
+			if type(Np) is int:
+				Npcon_blocks=1
+			else:
+				Npcon_blocks=len(Np)
+			
+			Np_array=array(Np,ndmin=1,dtype=uint64)
+
+			with nogil:
+				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
+
+		if err == -1:
+			raise ValueError("operator not recognized.")
+		elif err == 1:
+			raise TypeError("attemping to use real type for complex matrix elements.")
+
+	@cython.boundscheck(False)
+	def representative(self,uint32_t[:] states,uint32_t[:] ref_states,int[:,::1] g_out=None,int8_t[:] sign_out=None):
+		cdef npy_intp Ns = states.shape[0]
+		cdef int * g_out_ptr = NULL
+		cdef int8_t * sign_out_ptr = NULL
+		
+		if g_out is not None:
+			g_out_ptr = &g_out[0,0]
+
+		if sign_out is not None:
+			sign_out_ptr = &sign_out[0]
+
+		with nogil:
+			general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns,self._nt)
+
+
+
 
 cdef class general_basis_core_wrap_64:
 	cdef int _N
@@ -263,42 +271,6 @@ cdef class general_basis_core_wrap_64:
 			raise ValueError("operator not recognized.")
 		elif err == 1:
 			raise TypeError("attemping to use real type for complex matrix elements.")
-
-	@cython.boundscheck(False)
-	def op_bra_ket(self,uint64_t[:] ket,uint64_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
-		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
-		cdef int n_op = indx.shape[0]
-		cdef npy_intp Ns = ket.shape[0]
-		cdef int err = 0;
-		cdef double complex JJ = J
-		cdef int Npcon_blocks #=Np.shape[0]
-		cdef unsigned long int[:] Np_array
-		
-		if Np is None:
-			with nogil:
-				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
-		else:
-			
-			if type(Np) is int:
-				Npcon_blocks=1
-			else:
-				Npcon_blocks=len(Np)
-			
-			Np_array=array(Np,ndmin=1,dtype=uint64)
-
-			with nogil:
-				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
-
-		if err == -1:
-			raise ValueError("operator not recognized.")
-		elif err == 1:
-			raise TypeError("attemping to use real type for complex matrix elements.")
-	
-	@cython.boundscheck(False)
-	def representative(self,uint64_t[:] states,uint64_t[:] ref_states):
-		cdef npy_intp Ns = states.shape[0]
-		with nogil:
-			general_representative(self._basis_core,&states[0],&ref_states[0],Ns)
 
 	@cython.boundscheck(False)
 	def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out):
@@ -333,4 +305,48 @@ cdef class general_basis_core_wrap_64:
 		else:
 			return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
 
+	@cython.boundscheck(False)
+	def op_bra_ket(self,uint64_t[:] ket,uint64_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
+		cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+		cdef int n_op = indx.shape[0]
+		cdef npy_intp Ns = ket.shape[0]
+		cdef int err = 0;
+		cdef double complex JJ = J
+		cdef int Npcon_blocks #=Np.shape[0]
+		cdef unsigned long int[:] Np_array
+		
+		if Np is None:
+			with nogil:
+				err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
+		else:
+			
+			if type(Np) is int:
+				Npcon_blocks=1
+			else:
+				Npcon_blocks=len(Np)
+			
+			Np_array=array(Np,ndmin=1,dtype=uint64)
+
+			with nogil:
+				err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
+
+		if err == -1:
+			raise ValueError("operator not recognized.")
+		elif err == 1:
+			raise TypeError("attemping to use real type for complex matrix elements.")
+	
+	@cython.boundscheck(False)
+	def representative(self,uint64_t[:] states,uint64_t[:] ref_states,int[:,::1] g_out=None,int8_t[:] sign_out=None):
+		cdef npy_intp Ns = states.shape[0]
+		cdef int * g_out_ptr = NULL
+		cdef int8_t * sign_out_ptr = NULL
+		
+		if g_out is not None:
+			g_out_ptr = &g_out[0,0]
+
+		if sign_out is not None:
+			sign_out_ptr = &sign_out[0]
+
+		with nogil:
+			general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns,self._nt)
 

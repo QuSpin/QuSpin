@@ -53,11 +53,6 @@ class basis(object):
 		return self._Ns
 
 	@property
-	def states(self):
-		"""numpy.ndarray(int): basis states stored in their integer representation."""
-		return self._basis
-
-	@property
 	def operators(self):
 		"""set: set of available operator strings."""
 		return self._operators
@@ -79,6 +74,15 @@ class basis(object):
 			return self._sps
 		except AttributeError:
 			raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
+
+	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		basis_view=self._basis[:]
+		basis_view.setflags(write=0,uic=0)
+		return basis_view
+
+
 
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
