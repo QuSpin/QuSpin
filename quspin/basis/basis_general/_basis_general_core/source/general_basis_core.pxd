@@ -30,8 +30,8 @@ cdef extern from "misc.h":
 	K binary_search[K,I](const K,const I[],const I) nogil
 	void map_state_wrapper(void*,void*,npy_intp,int,uint8_t*) nogil
 
-cdef extern from "boost/multiprecision/cpp_int.hpp" namespace "boost::multiprecision": 
-	ctypedef uint128_t
+# cdef extern from "boost/multiprecision/cpp_int.hpp" namespace "boost::multiprecision": 
+# 	ctypedef uint128_t
 
 ctypedef fused index_type:
 	int32_t

@@ -264,7 +264,7 @@ class basis_general(lattice_basis):
 		c *= self._pers.prod()
 		_np.sqrt(c,out=c)
 		_np.power(c,-1,out=c)
-		index_type = _np.min_scalar_type(-Ns_full)
+		index_type = _np.result_type(_np.min_scalar_type(-Ns_full),_np.int32)
 		col = _np.arange(self._Ns,dtype=index_type)
 		row = _np.arange(self._Ns,dtype=index_type)
 

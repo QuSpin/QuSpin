@@ -75,6 +75,9 @@ cdef get_proj_helper(general_basis_core[state_type] * B, state_type * basis, int
         return P
 
 
+
+
+
 @cython.boundscheck(False)
 cdef get_proj_pcon_helper(general_basis_core[state_type] * B, state_type * basis, int nt, int nnt,
                         int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,state_type * basis_pcon,object P):
@@ -142,9 +145,6 @@ cdef get_proj_pcon_helper(general_basis_core[state_type] * B, state_type * basis
         return P
 
 
-
-
-
 """
 overall strategy to avoid copying the classes for each basis type:
 
@@ -182,89 +182,6 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == _np.uint64:
             with nogil:
                 err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint64_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
-        elif basis.dtype == _np.dtype((_np.void,16)):
-            if index_type is int32_t:
-                if norm_type is uint8_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint8_t,int32_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint8_t,int32_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint8_t,int32_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint8_t,int32_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-                elif norm_type is uint16_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint16_t,int32_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint16_t,int32_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint16_t,int32_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint16_t,int32_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-                elif norm_type is uint32_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint32_t,int32_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint32_t,int32_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint32_t,int32_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint32_t,int32_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-                elif norm_type is uint64_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint64_t,int32_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint64_t,int32_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint64_t,int32_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint64_t,int32_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-            elif index_type is int64_t:
-                if norm_type is uint8_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint8_t,int64_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint8_t,int64_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint8_t,int64_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint8_t,int64_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-                elif norm_type is uint16_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint16_t,int64_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint16_t,int64_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint16_t,int64_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint16_t,int64_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-                elif norm_type is uint32_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint32_t,int64_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint32_t,int64_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint32_t,int64_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint32_t,int64_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
-                elif norm_type is uint64_t:
-                    if dtype is float32_t:
-                        general_op_wrapper[uint128_t,uint64_t,int64_t,float32_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is float64_t:
-                        general_op_wrapper[uint128_t,uint64_t,int64_t,float64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex64_t:
-                        general_op_wrapper[uint128_t,uint64_t,int64_t,complex64_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-                    elif dtype is complex128_t:
-                        general_op_wrapper[uint128_t,uint64_t,int64_t,complex128_t](B,n_op,&c_opstr[0],&indx[0],JJ,Ns,basis_ptr,&n[0],&row[0],&col[0],&M[0])
-
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")
 
@@ -370,15 +287,6 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == _np.uint64:
             with nogil:
                 Ns = make_basis(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,<uint64_t*>basis_ptr,&n[0])
-        elif basis.dtype == _np.dtype((_np.void,16)):
-            if norm_type is uint8_t:
-                Ns = make_basis_wrapper[uint128_t,uint8_t](B,Ns,mem_MAX,basis_ptr,&n[0])
-            elif norm_type is uint16_t:
-                Ns = make_basis_wrapper[uint128_t,uint16_t](B,Ns,mem_MAX,basis_ptr,&n[0])
-            elif norm_type is uint32_t:
-                Ns = make_basis_wrapper[uint128_t,uint32_t](B,Ns,mem_MAX,basis_ptr,&n[0])
-            elif norm_type is uint64_t:
-                Ns = make_basis_wrapper[uint128_t,uint64_t](B,Ns,mem_MAX,basis_ptr,&n[0])          
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")  
         return Ns
@@ -397,15 +305,6 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == _np.uint64:
             with nogil:
                 Ns = make_basis_pcon(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,<uint64_t>s,<uint64_t*>basis_ptr,&n[0])
-        elif basis.dtype == _np.dtype((_np.void,16)):
-            if norm_type is uint8_t:
-                Ns = make_basis_pcon_wrapper[uint128_t,uint8_t](B,Ns,mem_MAX,s,basis_ptr,&n[0])
-            elif norm_type is uint16_t:
-                Ns = make_basis_pcon_wrapper[uint128_t,uint16_t](B,Ns,mem_MAX,s,basis_ptr,&n[0])
-            elif norm_type is uint32_t:
-                Ns = make_basis_pcon_wrapper[uint128_t,uint32_t](B,Ns,mem_MAX,s,basis_ptr,&n[0])
-            elif norm_type is uint64_t:
-                Ns = make_basis_pcon_wrapper[uint128_t,uint64_t](B,Ns,mem_MAX,s,basis_ptr,&n[0])    
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")  
         return Ns
