@@ -10,7 +10,7 @@ def cython_files():
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    # cython_src = ['spinful_fermion_core.pyx']
+    # cython_src = ['hcb_core.pyx']
     include_dirs = os.path.join(package_dir,"source")
     if USE_CYTHON:
         cythonize(cython_src,language="c++",include_path=[include_dirs])
