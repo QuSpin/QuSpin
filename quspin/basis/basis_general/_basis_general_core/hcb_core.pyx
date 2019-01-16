@@ -31,6 +31,7 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 		else:
 			self._basis_core = new hcb_basis_core[uint32_t](N)
 
+	
 	@cython.boundscheck(False)
 	def make_basis(self,uint32_t[:] basis,norm_type[:] n,object Np=None,uint8_t[:] count=None):
 		cdef int Ns_1 = 0
@@ -73,7 +74,6 @@ cdef class hcb_basis_core_wrap_32(general_basis_core_wrap_32):
 						return -1
 
 		return Ns_2
-
 
 	@cython.boundscheck(False)
 	cdef npy_intp make_basis_full(self,uint32_t[:] basis,norm_type[:] n):
