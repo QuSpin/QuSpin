@@ -554,7 +554,7 @@ class basis_1d(lattice_basis):
 
 		return ME,row,col		
 
-	def get_vec(self,v0,sparse=True):
+	def get_vec(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
@@ -570,7 +570,10 @@ class basis_1d(lattice_basis):
 			Contains in its columns the states in the symmetry-reduced basis.
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
-		
+		pcon : bool, optional
+			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			(useful in bosonic/single particle systems). Default is `pcon=False`.
+
 		Returns
 		--------
 		numpy.ndarray
@@ -583,6 +586,10 @@ class basis_1d(lattice_basis):
 		>>> print(v_full.shape, v0.shape)
 
 		"""
+
+		if pcon==True:
+			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \
+				Consider using the basis_1d.get_proj() function to construct the projector which already supports the pcon=True option.')
 
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
