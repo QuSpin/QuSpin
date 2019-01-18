@@ -7,15 +7,45 @@
 #include "numpy/ndarraytypes.h"
 
 
+template<class I,class J>
+void general_normalization(general_basis_core<I> *B,
+								  I s[],
+								  J n[],
+							const npy_intp Ns
+				)
+{	
+	for(npy_intp i=0;i<Ns;i++){
+
+		double norm = B->check_state(s[i]);
+		J int_norm = norm;
+
+		#if defined(_WIN64)
+			// x64 version
+			bool isnan = _isnanf(norm) != 0;
+		#elif defined(_WIN32)
+			bool isnan = _isnan(norm) != 0;
+		#else
+			bool isnan = std::isnan(norm);
+		#endif
+		
+		if(!isnan && int_norm>0 ){
+			n[i] = norm;
+		}
+		else{
+			n[i] = 0;
+		}
+	}
+}
+
 
 template<class I>
 void general_representative(general_basis_core<I> *B,
-						  const I s[],
-						  		I r[],
-						  		int *g_out_ptr,
-						  		npy_int8 *sign_out_ptr,
-						  const npy_intp Ns,
-						  const int nt
+							const I s[],
+									I r[],
+									int *g_out_ptr,
+									npy_int8 *sign_out_ptr,
+							const npy_intp Ns,
+							const int nt
 						  )
 {	int g[128],gg[128];
 	int sign;

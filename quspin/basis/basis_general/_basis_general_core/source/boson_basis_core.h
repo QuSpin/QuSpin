@@ -116,12 +116,16 @@ class boson_basis_core : public general_basis_core<I>
 			I s = r;
 			double me_offdiag=1;
 			double me_diag=1;
+			double S = (sps-1.0)/2.0;
+
 			for(int j=n_op-1;j>-1;j--){
 				int ind = general_basis_core<I>::N-indx[j]-1;
 				I occ = (r/M[ind])%sps;
 				I b = M[ind];
 				char op = opstr[j];
 				switch(op){
+					case 'z':
+						me_diag *= (occ-S);
 					case 'n':
 						me_diag *= occ;
 						break;

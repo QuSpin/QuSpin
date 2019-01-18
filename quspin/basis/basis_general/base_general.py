@@ -540,7 +540,7 @@ class basis_general(lattice_basis):
 		states : array_like(int)
 			Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.
 		out : numpy.ndarray(int), optional
-			variable to store the representative states in. Must be a numpy.ndarray of same datatype as `basis`, and same shape as `states`. 
+			variable to store the representative states in. Must be a `numpy.ndarray` of same datatype as `basis`, and same shape as `states`. 
 		return_g : bool, optional
 			if set to `True`, the function also returns the integer `g` corresponding to the number of times each basis symmetry needs to be applied to a given state to obtain its representative.
 		return_sign : bool, optional
@@ -608,7 +608,59 @@ class basis_general(lattice_basis):
 			else:
 				self._core.representative(states,out)
 				
+	def normalization(self,states,out=None):
+		"""Computes normalization of `basis` states. 
 
+		Notes
+		------
+			* Returns zero, if the state is not part of the symmetry-reduced basis.
+			* The normalizations can be used to compute matrix elements in the symmetry-reduced basis. 
+
+		Parameters
+		-----------
+		states : array_like(int)
+			Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.
+		out : numpy.ndarray(int), optional
+			variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `int`, and same shape as `states`. 
+	
+		Returns
+		--------
+		array_like(int)
+			normalizations of `states` for the given (symmetry-reduced) `basis`.
+		
+		Examples
+		--------
+		
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> s = 17
+		>>> norm_s = basis.normalization(s)
+		>>> print(s,norm_s)
+
+		"""
+
+		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
+
+		if out is None:
+			out=_np.zeros(states.shape,dtype=self._n_dtype)
+			self._core.normalization(states,out)
+			
+			out_dtype = _np.min_scalar_type(out.max())
+			out = out.astype(out_dtype)
+
+			return out.squeeze()
+
+		else:
+			if states.shape!=out.shape:
+				raise TypeError('states and out must have same shape.')
+
+			if _np.issubdtype(out.dtype, _np.signedinteger):
+				raise TypeError('out must have datatype numpy.uint8, numpy.uint16, numpy.uint32, or numpy.uint64.')
+		
+			self._core.normalization(states,out)
+
+			out_dtype = _np.min_scalar_type(out.max())
+			out = out.astype(out_dtype)
+		
 
 def _check_symm_map(map,sort_opstr,operator_list):
 	missing_ops=[]

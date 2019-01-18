@@ -247,6 +247,13 @@ cdef class general_basis_core_wrap_32:
             general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns,self._nt)
 
 
+    @cython.boundscheck(False)
+    def normalization(self,uint32_t[:] states,norm_type[:] norms):
+        cdef npy_intp Ns = states.shape[0]
+
+        with nogil:
+            general_normalization(self._basis_core,&states[0],&norms[0],Ns)
+
 
 
 cdef class general_basis_core_wrap_64:
@@ -349,4 +356,11 @@ cdef class general_basis_core_wrap_64:
 
         with nogil:
             general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns,self._nt)
+
+    @cython.boundscheck(False)
+    def normalization(self,uint64_t[:] states,norm_type[:] norms):
+        cdef npy_intp Ns = states.shape[0]
+
+        with nogil:
+            general_normalization(self._basis_core,&states[0],&norms[0],Ns)
 

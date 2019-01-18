@@ -502,6 +502,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		
 
 	def _Op(self,opstr,indx,J,dtype):
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
 		indx = _np.array(indx,dtype=_np.int32)
 		if self._simple_symm:
 			if opstr.count("|") == 0: 
@@ -537,6 +541,51 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		ME = ME[mask]
 
 		return ME,row,col
+
+
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
+		
+		indx = _np.asarray(indx,dtype=_np.int32)
+
+		if self._simple_symm:
+			if opstr.count("|") == 0: 
+				raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+
+			i = opstr.index("|")
+			
+			indx[i:] += (self._N//2)
+			opstr=opstr.replace("|","")
+
+
+		ket_states=_np.array(ket_states,dtype=self._basis.dtype,ndmin=1)
+
+		if len(opstr) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
+		if _np.any(indx >= self._N) or _np.any(indx < 0):
+			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr) - self._allowed_ops
+		if extra_ops:
+			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+	
+		bra = _np.zeros_like(ket_states) # row
+		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
+
+		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
+		
+		if reduce_output: 
+			# remove nan's matrix elements
+			mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+			bra = bra[mask]
+			ket_states = ket_states[mask]
+			ME = ME[mask]
+		else:
+			mask = _np.isnan(ME)
+			ME[mask] = 0.0
+
+		return ME,bra,ket_states
 
 	@property
 	def _fermion_basis(self):
