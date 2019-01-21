@@ -477,7 +477,7 @@ class basis_general(lattice_basis):
 		ket_states : numpy.ndarray(int)
 			Ket states in integer representation. Must be of same data type as `basis`.
 		reduce_output: bool, optional
-			If set to `True`, the retured arrays have the same size as `ket_states`; If set to `False` zeros are purged.
+			If set to `True`, the returned arrays have the same size as `ket_states`; If set to `False` zeros are purged.
 
 		Returns
 		--------
