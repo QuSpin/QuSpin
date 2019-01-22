@@ -620,8 +620,8 @@ class basis_general(lattice_basis):
 		-----------
 		states : array_like(int)
 			Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.
-		out : numpy.ndarray(int), optional
-			variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `int`, and same shape as `states`. 
+		out : numpy.ndarray(signe int), optional
+			variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `signe int` (e.g. `numpy.uint16`), and same shape as `states`. 
 	
 		Returns
 		--------

@@ -8,16 +8,20 @@
 
 
 template<class I,class J>
-void general_normalization(general_basis_core<I> *B,
+int general_normalization(general_basis_core<I> *B,
 								  I s[],
 								  J n[],
 							const npy_intp Ns
 				)
-{	
+{	int err = 0;
 	for(npy_intp i=0;i<Ns;i++){
 
 		double norm = B->check_state(s[i]);
 		J int_norm = norm;
+
+		if(err != 0){
+			continue;
+		}
 
 		#if defined(_WIN64)
 			// x64 version
@@ -28,13 +32,22 @@ void general_normalization(general_basis_core<I> *B,
 			bool isnan = std::isnan(norm);
 		#endif
 		
-		if(!isnan && int_norm>0 ){
-			n[i] = norm;
+		if( int_norm < std::numeric_limits<J>::max() ){ // checks if data type is large enough
+			if(!isnan && int_norm>0 ){
+				n[i] = norm;
+			}
+			else{
+				n[i] = 0;
+			}
+
 		}
 		else{
-			n[i] = 0;
+			err = 1;
 		}
+
 	}
+
+	return err;
 }
 
 

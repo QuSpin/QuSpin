@@ -115,7 +115,6 @@ for basis_2d,basis_2d_full in zip(bases_2d,bases_2d_full):
 	# make full basis to compare to
 	basis_2d.make(Ns_block_est=20000)
 
-
 	np.testing.assert_allclose(basis_2d.states - ref_states[mask],0.0,atol=1E-5,err_msg='failed representative test!')
 	np.testing.assert_allclose(basis_2d.states - ref_states_inplace[mask_inplace],0.0,atol=1E-5,err_msg='failed inplace representative test!')
 

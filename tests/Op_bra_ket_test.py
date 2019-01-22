@@ -56,9 +56,10 @@ static_list = _consolidate_static(static)
 static_list_spfs = _consolidate_static(static_spfs)
 
 
+
 def compare(static_list,basis,basis_op):
 	for opstr,indx,J in static_list:
-		
+
 		ME,bra,ket = basis.Op_bra_ket(opstr,indx,J,np.float64,basis_op.states)
 		ME_op,row,col = basis_op.Op(opstr,indx,J,np.float64)
 

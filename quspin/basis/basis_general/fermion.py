@@ -516,6 +516,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			indx[i:] += (self._N//2)
 			opstr=opstr.replace("|","")
 
+		'''
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 
@@ -539,14 +540,17 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		col = col[mask]
 		row = row[mask]
 		ME = ME[mask]
+		
 
 		return ME,row,col
+		'''
+		return spinless_fermion_basis_general._Op(self,opstr,indx,J,dtype)
+
 
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
 		indx = _np.asarray(indx,dtype=_np.int32)
-
 		if self._simple_symm:
 			if opstr.count("|") == 0: 
 				raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
@@ -555,8 +559,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			
 			indx[i:] += (self._N//2)
 			opstr=opstr.replace("|","")
-
-
+	
+		'''
 		ket_states=_np.array(ket_states,dtype=self._basis.dtype,ndmin=1)
 
 		if len(opstr) != len(indx):
@@ -586,6 +590,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			ME[mask] = 0.0
 
 		return ME,bra,ket_states
+		'''
+		return spinless_fermion_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
 	@property
 	def _fermion_basis(self):

@@ -252,7 +252,10 @@ cdef class general_basis_core_wrap_32:
         cdef npy_intp Ns = states.shape[0]
 
         with nogil:
-            general_normalization(self._basis_core,&states[0],&norms[0],Ns)
+            err = general_normalization(self._basis_core,&states[0],&norms[0],Ns)
+
+        if err > 0:
+            raise TypeError("normalization values exceeds given data type. Increase data type of signed integer for normalizations array.")	
 
 
 
@@ -362,5 +365,8 @@ cdef class general_basis_core_wrap_64:
         cdef npy_intp Ns = states.shape[0]
 
         with nogil:
-            general_normalization(self._basis_core,&states[0],&norms[0],Ns)
+            err = general_normalization(self._basis_core,&states[0],&norms[0],Ns)
+
+        if err > 0:
+            raise TypeError("normalization values exceeds given data type. Increase data type of signed integer for normalizations array.")	
 

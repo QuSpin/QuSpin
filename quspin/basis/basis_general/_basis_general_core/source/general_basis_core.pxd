@@ -26,7 +26,7 @@ cdef extern from "general_basis_op.h":
 cdef extern from "general_basis_rep.h":
 	void general_representative[I](general_basis_core[I] *B, const I[], I[], int[], int8_t[], const npy_intp, const int) nogil
 
-	void general_normalization[I,J](general_basis_core[I] *B, I[], J[], const npy_intp) nogil
+	int general_normalization[I,J](general_basis_core[I] *B, I[], J[], const npy_intp) nogil
 
 cdef extern from "general_basis_get_vec.h":
 	bool get_vec_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
