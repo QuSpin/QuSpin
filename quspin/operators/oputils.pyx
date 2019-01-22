@@ -2,7 +2,9 @@
 cimport numpy as np
 import cython
 from cython.parallel cimport parallel
+from openmp cimport omp_get_max_threads
 from libcpp cimport bool
+from libcpp.vector cimport vector
 import scipy.sparse as _sp
 import numpy as _np
 
@@ -11,7 +13,7 @@ ctypedef float complex cfloat
 
 cdef extern from "matvec.h":
     void csr_matvec[I,T1,T2](const bool,const I,const I[],const I[],const T1[],
-                              const T1,const T2[],I[],T2 [],T2 []) nogil
+                              const T1,const T2[],I[],T2[],T2 []) nogil
     void csr_matvecs[I,T1,T2](const bool,const I,const I,const I[],const I[],
                               const T1[],const T1,const T2[],T2 []) nogil
 
@@ -42,10 +44,14 @@ ctypedef fused T2:
   double complex
 
 @cython.boundscheck(False)   
-def _csr_matvec(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, T2[:] Xx, T2[:] Yx):
+def _csr_matvec(bool overwrite_y, indtype[::1] Ap, indtype[::1] Aj,T1[::1] Ax, T1 a, T2[::1] Xx, T2[::1] Yx):
   cdef indtype nr = Yx.shape[0]
-  cdef indtype rco[128];
-  cdef T2 vco[128];
+  cdef int nthreads = omp_get_max_threads()
+  cdef vector[indtype] rco
+  cdef vector[T2] vco
+
+  rco.resize(nthreads)
+  vco.resize(nthreads)
 
   if T1 is cdouble:
     if T2 is cdouble:
@@ -73,7 +79,7 @@ def _csr_matvec(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, T
       csr_matvec(overwrite_y,nr,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&rco[0],&vco[0],&Yx[0])
 
 @cython.boundscheck(False)
-def _csr_matvecs(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, T2[:,::1] Xx, T2[:,::1] Yx):
+def _csr_matvecs(bool overwrite_y, indtype[::1] Ap, indtype[::1] Aj,T1[::1] Ax, T1 a, T2[:,::1] Xx, T2[:,::1] Yx):
   cdef indtype nr = Yx.shape[0]
   cdef indtype nv = Xx.shape[1]
 
@@ -103,7 +109,7 @@ def _csr_matvecs(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, 
       csr_matvecs(overwrite_y,nr,nv,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0,0],&Yx[0,0])
 
 @cython.boundscheck(False)   
-def _csc_matvec(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, T2[:] Xx, T2[:] Yx):
+def _csc_matvec(bool overwrite_y, indtype[::1] Ap, indtype[::1] Aj,T1[::1] Ax, T1 a, T2[::1] Xx, T2[::1] Yx):
   cdef indtype nr = Yx.shape[0]
   cdef indtype nc = Xx.shape[0]
 
@@ -133,7 +139,7 @@ def _csc_matvec(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, T
       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
 
 @cython.boundscheck(False)   
-def _csc_matvecs(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, T2[:,::1] Xx, T2[:,::1] Yx):
+def _csc_matvecs(bool overwrite_y, indtype[::1] Ap, indtype[::1] Aj,T1[::1] Ax, T1 a, T2[:,::1] Xx, T2[:,::1] Yx):
   cdef indtype nr = Yx.shape[0]
   cdef indtype nc = Xx.shape[0]
   cdef indtype nv = Xx.shape[1]
@@ -164,7 +170,7 @@ def _csc_matvecs(bool overwrite_y, indtype[:] Ap, indtype[:] Aj,T1[:] Ax, T1 a, 
       csc_matvecs(overwrite_y,nr,nc,nv,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0,0],&Yx[0,0])
 
 @cython.boundscheck(False)   
-def _dia_matvec(bool overwrite_y, indtype[:] offsets ,T1[:,::1] diags, T1 a, T2[:] Xx, T2[:] Yx):
+def _dia_matvec(bool overwrite_y, indtype[::1] offsets ,T1[:,::1] diags, T1 a, T2[::1] Xx, T2[::1] Yx):
   cdef indtype nr = Yx.shape[0]
   cdef indtype nc = Xx.shape[0]
   cdef indtype L = diags.shape[1]
@@ -196,7 +202,7 @@ def _dia_matvec(bool overwrite_y, indtype[:] offsets ,T1[:,::1] diags, T1 a, T2[
       dia_matvec(overwrite_y,nr,nc,nd,L,&offsets[0],&diags[0,0],a,&Xx[0],&Yx[0])
 
 @cython.boundscheck(False)   
-def _dia_matvecs(bool overwrite_y, indtype[:] offsets ,T1[:,::1] diags, T1 a, T2[:,::1] Xx, T2[:,::1] Yx):
+def _dia_matvecs(bool overwrite_y, indtype[::1] offsets ,T1[:,::1] diags, T1 a, T2[:,::1] Xx, T2[:,::1] Yx):
   cdef indtype nr = Yx.shape[0]
   cdef indtype nc = Xx.shape[0]
   cdef indtype nv = Xx.shape[1]
@@ -205,36 +211,35 @@ def _dia_matvecs(bool overwrite_y, indtype[:] offsets ,T1[:,::1] diags, T1 a, T2
 
   if T1 is cdouble:
     if T2 is cdouble:
-      with nogil,parallel():
+      with nogil:
         dia_matvecs(overwrite_y,nr,nc,nv,nd,L,&offsets[0],&diags[0,0],a,&Xx[0,0],&Yx[0,0])
     else:
       raise TypeError("invalid types")
 
   elif T1 is double:
     if T2 is cdouble or T2 is double:
-      with nogil,parallel():
+      with nogil:
         dia_matvecs(overwrite_y,nr,nc,nv,nd,L,&offsets[0],&diags[0,0],a,&Xx[0,0],&Yx[0,0])
     else:
       raise TypeError("invalid types")
 
   elif T1 is cfloat:
     if T2 is cdouble or T2 is cfloat:
-      with nogil,parallel():
+      with nogil:
         dia_matvecs(overwrite_y,nr,nc,nv,nd,L,&offsets[0],&diags[0,0],a,&Xx[0,0],&Yx[0,0])
     else:
       raise TypeError("invalid types")
 
   else:
-    with nogil,parallel():
+    with nogil:
       dia_matvecs(overwrite_y,nr,nc,nv,nd,L,&offsets[0],&diags[0,0],a,&Xx[0,0],&Yx[0,0])
 
 
 def matvec(mat_obj,other,overwrite_out=False,out=None,a=1.0):
-  other = _np.require(other,requirements=("A","W","C"))
   result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
 
   if out is None:
-    overwrite_out = False
+    overwrite_out = True
     out = _np.zeros(mat_obj.shape[:1]+other.shape[1:],dtype=result_dtype,order="C")
 
   if _sp.isspmatrix_csr(mat_obj):

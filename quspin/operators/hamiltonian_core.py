@@ -3,7 +3,6 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from ..tools.misc import csr_matvec as _csr_matvec
 from .oputils import matvec as _matvec
 
 from ._make_hamiltonian import make_static
@@ -584,7 +583,7 @@ class hamiltonian(object):
 
 	### state manipulation/observable routines
 
-	def dot(self,V,time=0,check=True,out=None):
+	def dot(self,V,time=0,check=True,out=None,overwrite_out=True):
 		"""Matrix-vector multiplication of `hamiltonian` operator at time `time`, with state `V`.
 
 		.. math::
@@ -633,6 +632,8 @@ class hamiltonian(object):
 		elif isexp_op(V):
 			raise ValueError("This is ambiguous action. Use the .rdot() method of the `exp_op` class isntead.")
 
+		times = _np.array(time)
+
 		if check:
 			try:
 				shape = V.shape
@@ -647,14 +648,15 @@ class hamiltonian(object):
 				raise ValueError("Expecting V.ndim < 4.")
 
 
-		times = _np.array(time)
 		result_dtype = _np.result_type(V.dtype,self._dtype)
+		
+		if result_dtype not in supported_dtypes:
+			raise TypeError("resulting dtype is not supported.")
 
-			
 		if times.ndim > 0:
 			if times.ndim > 1:
 				raise ValueError("Expecting time to be one dimensional array-like.")
-			if V.shape[-1] != time.shape[0]:
+			if V.shape[-1] != times.shape[0]:
 				raise ValueError("For non-scalar times V.shape[-1] must be equal to len(time).")
 
 			if _sp.issparse(V):
@@ -664,18 +666,15 @@ class hamiltonian(object):
 				if V.ndim == 3 and V.shape[0] != V.shape[1]:
 					raise ValueError("Density matricies must be square!")
 
-
 				# allocate C-contiguous array to output results in.
+
 				V_dot = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
+
 				for i,t in enumerate(time):
 					v = _np.ascontiguousarray(V[...,i])
 					_matvec(self._static,v,overwrite_out=True,out=V_dot[i,...])
 					for func,Hd in iteritems(self._dynamic):
 						_matvec(Hd,v,overwrite_out=False,a=func(t),out=V_dot[i,...])
-
-					# V_dot[...,i] = self._static.dot(v)	
-					# for func,Hd in iteritems(self._dynamic):
-					# 	V_dot[...,i] += func(t)*(Hd.dot(V[...,i]))	
 
 				# transpose, leave non-contiguous results which can be handled by numpy. 
 				
@@ -683,23 +682,38 @@ class hamiltonian(object):
 					V_dot = V_dot.transpose()
 				else:
 					V_dot = V_dot.transpose((1,2,0))
+
+				return V_dot
 		
 		else:
+
 			if _sp.issparse(V):
-				V_dot = self._static * V
+				if out is not None:
+					raise TypeError("'out' option does not apply for sparse inputs.")
+
+				out = self._static * V
 				for func,Hd in iteritems(self._dynamic):
-					V_dot = V_dot + func(time)*(Hd.dot(V))
+					out = out + func(time)*(Hd.dot(V))
 			else:
-				V = _np.ascontiguousarray(V,dtype=result_dtype)
-				V_dot = _matvec(self._static,V)
+				if out is None:
+					out = _matvec(self._static,V)
+				else:
+					try:
+						if out.dtype != result_dtype:
+							raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+						if out.shape != V.shape:
+							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+						if not out.flags["CARRAY"]:
+							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+					except AttributeError:
+						raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+
+					_matvec(self._static,V,out=out,overwrite_out=overwrite_out)
+
 				for func,Hd in iteritems(self._dynamic):
-					_matvec(Hd,V,overwrite_out=False,a=func(time),out=V_dot)
+					_matvec(Hd,V,overwrite_out=False,a=func(time),out=out)
 
-				# V_dot = self._static.dot(V)
-				# for func,Hd in iteritems(self._dynamic):
-				# 	V_dot += func(time)*(Hd.dot(V))
-
-		return V_dot
+			return out
 
 	def rdot(self,V,time=0,check=True):
 		"""Vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.

@@ -114,4 +114,73 @@ void csrmv_merge(const bool overwrite_y,
 }
 
 
+template<class I,class T1,class T2,class T3>
+void csrmv_merge_strided(const bool overwrite_y,
+				const I num_rows,
+				const I row_offsets[],
+				const I column_indices[],
+				const T1 values[],
+				const T2 alpha,
+				const I stride,
+				const T3 x[], 
+					  I row_carry_out[],
+					  T3 value_carry_out[],
+					  T3 y[])
+{
+
+	const npy_intp Ntot = num_rows * stride;
+	const I* row_end_offsets = row_offsets + 1; // Merge list A: row end-offsets
+	const I num_nonzeros = row_offsets[num_rows];
+	int num_threads = omp_get_num_threads();
+	CountingInputIterator<I> nz_indices(0); // Merge list B: Natural numbers(NZ indices)
+	I num_merge_items = num_rows + num_nonzeros; // Merge path total length
+	I items_per_thread = (num_merge_items + num_threads - 1) / num_threads; // Merge items per thread
+
+	if(overwrite_y){
+		#pragma omp for schedule(static)
+		for(I i=0;i<Ntot;i+=stride){
+			y[i] = 0;
+		}
+	}
+	// Spawn parallel threads
+	#pragma omp for schedule(static,1)
+	for (int tid = 0; tid < num_threads; tid++)
+	{
+		// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
+		I diagonal = std::min(items_per_thread * tid, num_merge_items);
+		I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
+		CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
+		CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
+
+		// Consume merge items, whole rows first
+		T3 running_total = 0.0;
+		for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+		{
+			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
+			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]*stride];
+
+			y[(npy_intp)stride * thread_coord.x] += T3(alpha)*running_total;
+			running_total = 0.0;
+		}
+
+		// Consume partial portion of thread's last row
+		for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
+			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]*stride];
+
+		// Save carry-outs
+		row_carry_out[tid] = thread_coord_end.x;
+		value_carry_out[tid] = running_total;
+	}
+
+	// Carry-out fix-up (rows spanning multiple threads)
+	#pragma omp single
+	{
+		for (int tid = 0; tid < num_threads - 1; ++tid)
+		if (row_carry_out[tid] < num_rows)
+		y[row_carry_out[tid]*stride] += T3(alpha)*value_carry_out[tid];
+	}
+
+	#pragma omp barrier
+}
+
 #endif
