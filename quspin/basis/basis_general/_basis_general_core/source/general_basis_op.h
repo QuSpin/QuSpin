@@ -79,8 +79,8 @@ int general_op(general_basis_core<I> *B,
 {
 	const int nt = B->get_nt();
 	int err = 0;
-	int g[128],gg[128];
-	#pragma omp parallel for schedule(static,1) private(g,gg)
+	int g[nt];
+	#pragma omp parallel for schedule(static,1) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
@@ -94,12 +94,12 @@ int general_op(general_basis_core<I> *B,
 			int sign = 1;
 
 			for(int k=0;k<nt;k++){
-				gg[k]=g[k]=0;
+				g[k]=0;
 			}
 
 			K j = i;
 			if(r != basis[i]){
-				I rr = B->ref_state(r,g,gg,sign);
+				I rr = B->ref_state(r,g,sign);
 				j = binary_search(Ns,basis,rr);
 			}
 
@@ -149,9 +149,9 @@ int general_op_bra_ket(general_basis_core<I> *B,
 {
 	const int nt = B->get_nt();
 	int err = 0;
-	int g[128],gg[128];
+	int g[nt];
 		
-	#pragma omp parallel for schedule(static,1) private(g,gg)
+	#pragma omp parallel for schedule(static,1) private(g)
 
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
@@ -168,11 +168,11 @@ int general_op_bra_ket(general_basis_core<I> *B,
 			int sign = 1;
 
 			for(int k=0;k<nt;k++){
-				gg[k]=g[k]=0;
+				g[k]=0;
 			}
 				
 			if(r != s){ // off-diagonal matrix element
-				r = B->ref_state(r,g,gg,sign);
+				r = B->ref_state(r,g,sign);
 
 			
 				// use check_state to determine if state is a representative (same routine as in make-general_basis)
@@ -258,9 +258,9 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 {
 	const int nt = B->get_nt();
 	int err = 0;
-	int g[128],gg[128];
+	int g[nt];
 		
-	#pragma omp parallel for schedule(static,1) private(g,gg)
+	#pragma omp parallel for schedule(static,1) private(g)
 
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
@@ -277,11 +277,11 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 			int sign = 1;
 
 			for(int k=0;k<nt;k++){
-				gg[k]=g[k]=0;
+				g[k]=0;
 			}
 				
 			if(r != s){ // off-diagonal matrix element
-				r = B->ref_state(r,g,gg,sign);
+				r = B->ref_state(r,g,sign);
 
 				I np = count_bits(r); // compute particle number
 

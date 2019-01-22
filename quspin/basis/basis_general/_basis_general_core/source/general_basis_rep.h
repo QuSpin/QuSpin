@@ -60,14 +60,15 @@ void general_representative(general_basis_core<I> *B,
 							const npy_intp Ns,
 							const int nt
 						  )
-{	int g[128],gg[128];
+{
+	int g[nt];
 	int sign;
 
 	if(g_out_ptr && sign_out_ptr){
 		for(npy_intp i=0;i<Ns;i++){
 
 			int temp_sign = 1;
-			r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],gg,temp_sign);
+			r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_sign);
 			sign_out_ptr[i] = temp_sign;
 		}
 	}
@@ -75,14 +76,14 @@ void general_representative(general_basis_core<I> *B,
 		for(npy_intp i=0;i<Ns;i++){
 
 			sign = 1;
-			r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],gg,sign);
+			r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],sign);
 		}
 	}
 	else if(sign_out_ptr){
 		for(npy_intp i=0;i<Ns;i++){
 
 			int temp_sign = 1;
-			r[i] = B->ref_state(s[i],g,gg,temp_sign);
+			r[i] = B->ref_state(s[i],g,temp_sign);
 			sign_out_ptr[i] = temp_sign;
 		}
 	}
@@ -90,7 +91,7 @@ void general_representative(general_basis_core<I> *B,
 		for(npy_intp i=0;i<Ns;i++){
 
 			sign = 1;
-			r[i] = B->ref_state(s[i],g,gg,sign);
+			r[i] = B->ref_state(s[i],g,sign);
 		}
 	}
 

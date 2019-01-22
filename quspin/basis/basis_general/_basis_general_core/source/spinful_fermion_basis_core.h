@@ -45,6 +45,15 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			}
 		}
 
+		std::vector<int> count_particles(I s){
+			I s_left,s_right;
+			split_state(s,s_left,s_right);
+			int n_left  = bit_count(s_left,general_basis_core<I>::N);
+			int n_right = bit_count(s_right,general_basis_core<I>::N);
+			std::vector<int> v = {n_left,n_right};
+			return v;
+		}
+
 		void split_state(I s,I &s_left,I &s_right){
 			s_right = (I(bit_info<I>::all_bits) >> (bit_info<I>::bits-general_basis_core<I>::N))&s;
 			s_left = (s >> general_basis_core<I>::N);

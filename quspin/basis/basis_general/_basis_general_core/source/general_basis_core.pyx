@@ -2,6 +2,8 @@ from general_basis_core cimport *
 from numpy import pi, array, uint64
 from libc.math cimport cos,sin,abs,sqrt
 import scipy.sparse as _sp
+from libcpp.vector cimport vector
+from libcpp.set cimport set
 
 @cython.boundscheck(False)
 cdef get_proj_helper_64(general_basis_core[uint64_t] * B, uint64_t[:] basis, int nt, int nnt,
@@ -143,6 +145,32 @@ cdef get_proj_helper_32(general_basis_core[uint32_t] * B, uint32_t[:] basis, int
 
 
 
+cdef set[vector[int]] load_pcon_list(object Np):
+    cdef set[vector[int]] Np_cpp
+    cdef vector[int] np_cpp
+
+    if type(Np) is int:
+        np_cpp.push_back(Np)
+        Np_cpp.insert(np_cpp)
+        np_cpp.clear()
+    else:
+        Np_iter = iter(Np)
+
+        for np in Np_iter:
+            if type(np) is int:
+                np_cpp.push_back(np)
+            else:
+                np_iter = iter(np)
+                for n in np_iter:
+                    np_cpp.push_back(n)
+
+            Np_cpp.insert(np_cpp)
+            np_cpp.clear()
+
+    return Np_cpp
+
+
+
 cdef class general_basis_core_wrap_32:
     cdef int _N
     cdef int _nt
@@ -210,12 +238,13 @@ cdef class general_basis_core_wrap_32:
         cdef double complex JJ = J
         cdef int Npcon_blocks #=Np.shape[0]
         cdef unsigned long int[:] Np_array
+        cdef set[vector[int]] Np_set
         
         if Np is None:
             with nogil:
                 err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
         else:
-
+            Np_set = load_pcon_list(Np)
             if type(Np) is int:
                 Npcon_blocks=1
             else:

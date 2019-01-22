@@ -78,6 +78,16 @@ class boson_basis_core : public general_basis_core<I>
 			}
 		}
 
+		std::vector<int> count_particles(I s){
+			int n = 0;
+			for(int i=0;i<general_basis_core<I>::N;i++){
+				n += (s%sps);
+				s /= sps;
+			}
+			std::vector<int> v = {n};
+			return v;
+		}
+
 		I inline next_state_pcon(I s){
 			if(s == 0){
 				return s;
