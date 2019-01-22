@@ -68,7 +68,7 @@ def compare(static_list,basis,basis_op):
 		np.testing.assert_allclose(ME - ME_op,0.0,atol=1E-5,err_msg='failed ME in Op_bra_ket test!')
 
 
-for Np in [ None, 2, N_2d-1, (N_2d//4,N_2d//8) ]:
+for Np in [ None, 2, N_2d-1, [N_2d//4,N_2d//8] ]:
 
 
 	basis=spin_basis_general(N_2d, make_basis=False,
@@ -91,7 +91,7 @@ for Np in [ None, 2, N_2d-1, (N_2d//4,N_2d//8) ]:
 	compare(static_list,basis,basis_op)
 	print('passed spins')
 
-
+	
 
 	basis=spinless_fermion_basis_general(N_2d, make_basis=False,
 									Nf=Np,
@@ -138,8 +138,11 @@ for Np in [ None, 2, N_2d-1, (N_2d//4,N_2d//8) ]:
 
 	if Np==None: 
 		Nf=Np
+	elif type(Np) is list:
+		Nf=list(zip(Np,Np))	
 	else: 
 		Nf=(Np,Np)
+
 
 	basis=spinful_fermion_basis_general(N_2d, make_basis=False,
 									Nf=Nf,
@@ -160,5 +163,5 @@ for Np in [ None, 2, N_2d-1, (N_2d//4,N_2d//8) ]:
 
 	compare(static_list_spfs,basis,basis_op)
 	print('passed spinful fermios')
-
+	
 	

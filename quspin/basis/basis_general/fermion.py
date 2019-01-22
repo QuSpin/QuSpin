@@ -121,7 +121,7 @@ class spinless_fermion_basis_general(basis_general):
 			try:
 				Np_iter = iter(Nf)
 			except TypeError:
-				raise TypeError("Nf must be integer or iteratable object.")
+				raise TypeError("Nf must be integer or iterable object.")
 			Ns = 0
 			for Nf in Np_iter:
 				if Nf > N or Nf < 0:
@@ -332,8 +332,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		-----------
 		L: int
 			Length of chain/number of sites.
-		Nf: {int,list}, optional
-			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
+		Nf: tuple(int), optional
+			Number of fermions in chain. Can be tupe of integers or list of tuples of integers `[(Nup,Ndown),...]` to specify one or more particle sectors.
 		nf: float, optional
 			Density of fermions in chain (fermions per site).
 		Ns_block_est: int, optional
@@ -353,8 +353,6 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			sector.
 
 		"""
-
-
 
 		# Nf = [(Nup,Ndown),...]
 		# Nup is left side of basis sites 0 - N-1
@@ -420,11 +418,11 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 					if (type(Nup) is int) and type(Ndown) is int:
 						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 					else:
-						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 				else:
 					Nf = list(Nf)
 					if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):
-						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")		
+						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")		
 
 					Ns = 0
 					for Nup,Ndown in Nf:
@@ -438,10 +436,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				try:
 					Nf_iter = iter(Nf)
 				except TypeError:
-					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+					raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 
 				if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):
-					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+					raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 
 				Nf = list(Nf)
 

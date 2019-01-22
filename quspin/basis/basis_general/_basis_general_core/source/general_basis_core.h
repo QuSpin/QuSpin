@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
 #include "bits_info.h"
+#include <set>
 
 
 template<class I>
@@ -30,6 +31,7 @@ class general_basis_core{
 
 		~general_basis_core() {}
 
+		bool check_pcon(const I,const std::set<std::vector<int>>);
 		double check_state(I);
 		I ref_state(I,int[],int&);
 		virtual I next_state_pcon(I) = 0;
@@ -187,6 +189,18 @@ double general_basis_core<I>::check_state(I s){
 	return check_state_core_unrolled<I>(this,s,nt);
 }
 
+
+template<class I>
+bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>> Np){
+	// basis_core objects have a count_particles function which returns a vector of the required size;
+	// cython construct a vector of vectors, each sub-vector can be arbitrary size: see function load_pcon_list in general_basis_core.pyx
+	// in order to be compatible with later general basis classes which may have more than two spcies of particles!
+	//
+	bool pcon = false;
+	std::vector<int> v = this->count_particles(s); 
+	for(auto np : Np){pcon = (pcon | std::equal(v.begin(),v.end(),np.begin()));}
+	return pcon;
+}
 
 /* ----------------------------------------------------------------------------------------------------------------------------- */
 

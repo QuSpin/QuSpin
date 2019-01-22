@@ -171,6 +171,8 @@ cdef set[vector[int]] load_pcon_list(object Np):
 
 
 
+
+
 cdef class general_basis_core_wrap_32:
     cdef int _N
     cdef int _nt
@@ -236,24 +238,24 @@ cdef class general_basis_core_wrap_32:
         cdef npy_intp Ns = ket.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
-        cdef int Npcon_blocks #=Np.shape[0]
-        cdef unsigned long int[:] Np_array
+        cdef int Npcon_blocks 
+        #cdef unsigned long int[:] Np_array
         cdef set[vector[int]] Np_set
         
         if Np is None:
             with nogil:
                 err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
         else:
-            Np_set = load_pcon_list(Np)
             if type(Np) is int:
                 Npcon_blocks=1
             else:
                 Npcon_blocks=len(Np)
             
-            Np_array=array(Np,ndmin=1,dtype=uint64)
+            Np_set = load_pcon_list(Np)
+            #Np_array=array(Np,ndmin=1,dtype=uint64)
 
             with nogil:
-                err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
+                err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,Np_set,&ket[0],&bra[0],&M[0])
 
         if err == -1:
             raise ValueError("operator not recognized.")
@@ -343,6 +345,7 @@ cdef class general_basis_core_wrap_64:
             return P
         else:
             return get_proj_helper_64[dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
+    
 
     @cython.boundscheck(False)
     def op_bra_ket(self,uint64_t[:] ket,uint64_t[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
@@ -351,29 +354,30 @@ cdef class general_basis_core_wrap_64:
         cdef npy_intp Ns = ket.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
-        cdef int Npcon_blocks #=Np.shape[0]
-        cdef unsigned long int[:] Np_array
+        cdef int Npcon_blocks 
+        #cdef unsigned long int[:] Np_array
+        cdef set[vector[int]] Np_set
         
         if Np is None:
             with nogil:
                 err = general_op_bra_ket(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
         else:
-            
             if type(Np) is int:
                 Npcon_blocks=1
             else:
                 Npcon_blocks=len(Np)
             
-            Np_array=array(Np,ndmin=1,dtype=uint64)
+            Np_set = load_pcon_list(Np)
+            #Np_array=array(Np,ndmin=1,dtype=uint64)
 
             with nogil:
-                err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,&Np_array[0],&ket[0],&bra[0],&M[0])
+                err = general_op_bra_ket_pcon(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,Np_set,&ket[0],&bra[0],&M[0])
 
         if err == -1:
             raise ValueError("operator not recognized.")
         elif err == 1:
             raise TypeError("attemping to use real type for complex matrix elements.")
-    
+
     @cython.boundscheck(False)
     def representative(self,uint64_t[:] states,uint64_t[:] ref_states,int[:,::1] g_out=None,int8_t[:] sign_out=None):
         cdef npy_intp Ns = states.shape[0]

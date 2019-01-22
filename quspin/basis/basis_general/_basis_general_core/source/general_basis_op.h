@@ -9,19 +9,6 @@
 
 
 
-template<class I>
-int count_bits (I s) 
-{
-    int count=0;
-    while (s!=0)
-    {
-        s = s & (s-1);
-        count++;
-    }
-    return count;
-}
-
-
 template<class K,class I>
 K binary_search(const K N,const I A[],const I s){
 	K b,bmin,bmax;
@@ -142,8 +129,8 @@ int general_op_bra_ket(general_basis_core<I> *B,
 						  const int indx[],
 						  const std::complex<double> A,
 						  const npy_intp Ns,
-						  const I ket[], // row
-						  		I bra[], // col
+						  const I ket[], // col
+						  		I bra[], // row
 						  		T M[]
 						  )
 {
@@ -250,9 +237,10 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 						  const std::complex<double> A,
 						  const npy_intp Ns,
 						  const int Npcon_blocks, // total number of particle-conserving sectors
-						  const unsigned long int Np[], // array with particle conserving sectors
-						  const	I ket[], // row
-						  		I bra[], // col
+						  //const unsigned long int Np[], // array with particle conserving sectors
+						  const std::set<std::vector<int>> Np_set, // array with particle conserving sectors
+						  const	I ket[], // col
+						  		I bra[], // row
 						  		T M[]
 						  )
 {
@@ -283,12 +271,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 			if(r != s){ // off-diagonal matrix element
 				r = B->ref_state(r,g,sign);
 
-				I np = count_bits(r); // compute particle number
-
-				bool pcon_bool = 0;
-				for(int n=0; n<Npcon_blocks; n++){
-					pcon_bool |= (np==Np[n]);
-				}
+				bool pcon_bool = B->check_pcon(r,Np_set);
 
 				if(pcon_bool){ // reference state within same particle-number sector(s)
 
