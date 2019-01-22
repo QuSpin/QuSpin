@@ -506,15 +506,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		if not self._made_basis:
 			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
-		indx = _np.array(indx,dtype=_np.int32)
-		if self._simple_symm:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
 
-			i = opstr.index("|")
-			
-			indx[i:] += (self._N//2)
-			opstr=opstr.replace("|","")
+		if self._simple_symm:
+			opstr,indx = self._simple_to_adv((opstr,indx))
 
 		'''
 		if len(opstr) != len(indx):
@@ -546,19 +540,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		'''
 		return spinless_fermion_basis_general._Op(self,opstr,indx,J,dtype)
 
-
-
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
-		indx = _np.asarray(indx,dtype=_np.int32)
 		if self._simple_symm:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
-
-			i = opstr.index("|")
-			
-			indx[i:] += (self._N//2)
-			opstr=opstr.replace("|","")
+			opstr,indx = self._simple_to_adv((opstr,indx))
 	
 		'''
 		ket_states=_np.array(ket_states,dtype=self._basis.dtype,ndmin=1)
@@ -734,20 +719,22 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			return spinless_fermion_basis_general._non_zero(self,op)
 
 	def _simple_to_adv(self,op):
-			op = list(op)
-			opstr = op[0]
+		op = list(op)
+		opstr,indx = op[:2]
 
-			i = opstr.index("|")
-			indx = list(op[1])
-			indx_left = tuple(indx[:i])
-			indx_right = tuple([j+self._N//2 for j in indx[i:]])
+		if opstr.count("|") == 0: 
+			raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
 
-			opstr_left,opstr_right=opstr.split("|",1)
+		i = opstr.index("|")
+		indx = list(indx)
+		indx_left = tuple(indx[:i])
+		indx_right = tuple([j+self._N//2 for j in indx[i:]])
 
-			op[0] = "".join([opstr_left,opstr_right])
-			op[1] = indx_left+indx_right
+		opstr_left,opstr_right=opstr.split("|",1)
+		op[0] = "".join([opstr_left,opstr_right])
+		op[1] = tuple(indx_left+indx_right)
 
-			return tuple(op)
+		return tuple(op)
 
 	def _expand_opstr(self,op,num):
 		if self._simple_symm:
@@ -793,8 +780,6 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			return tuple(op_list)
 		else:
 			return spinless_fermion_basis_general._expand_opstr(self,op,num)
-
-
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		if photon_basis is None:
