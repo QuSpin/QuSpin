@@ -1,6 +1,7 @@
 #ifndef _MAKE_GENERAL_BASIS_H
 #define _MAKE_GENERAL_BASIS_H
 
+#include <iostream>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include <cmath>
@@ -60,7 +61,6 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 			unsuff_mem = true;
 			break;
 		}
-
 		double norm = B->check_state(s);
 		J int_norm = norm;
 
@@ -73,7 +73,8 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 			bool isnan = std::isnan(norm);
 		#endif
 		
-
+		// std::cout << s << "," << !isnan << "," << int_norm << std::endl;
+		
 		if(!isnan && int_norm>0 ){
 			basis[Ns] = s;
 			n[Ns] = norm;

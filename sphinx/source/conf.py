@@ -143,6 +143,7 @@ todo_include_todos = True
 #
 html_theme = 'classic'
 html_theme_options = {
+    'body_max_width':'fill-available',
     "linkcolor": "blue",
     "externalrefs": "true"
 }

@@ -82,6 +82,15 @@ class basis(object):
 		except AttributeError:
 			raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
 
+	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		basis_view=self._basis[:]
+		basis_view.setflags(write=0,uic=0)
+		return basis_view
+
+
+
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
 
@@ -220,6 +229,7 @@ class basis(object):
 
 		"""
 		return self._Op(opstr,indx,J,dtype)
+
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
