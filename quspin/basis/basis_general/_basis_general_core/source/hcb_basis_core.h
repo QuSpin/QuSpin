@@ -7,6 +7,7 @@
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "benes_perm.h"
+#include "openmp.h"
 
 
 
@@ -83,7 +84,8 @@ class hcb_basis_core : public general_basis_core<I>
 			}
 			const tr_benes<I> * benes_map = &benes_maps[n_map];
 			const I inv = invs[n_map];
-			#pragma omp for schedule(static,1)
+			const npy_intp chunk = M/omp_get_num_threads();
+			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<M;i++){
 				s[i] = benes_bwd(benes_map,s[i]^inv);	
 			}

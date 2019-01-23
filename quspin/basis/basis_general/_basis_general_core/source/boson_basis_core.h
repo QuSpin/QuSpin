@@ -5,6 +5,7 @@
 #include <cmath>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
 // template<class I>
 // I inline boson_map_bits(I s,const int map[],const I inv,const I M[],const int sps,const int N){
@@ -71,7 +72,8 @@ class boson_basis_core : public general_basis_core<I>
 			}
 			const int n = general_basis_core<I>::N;
 			const int * map = &general_basis_core<I>::maps[n_map*n];
-			#pragma omp for schedule(static,1)
+			const npy_intp chunk = P/omp_get_num_threads();
+			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<P;i++){
 				s[i] = boson_map_bits(s[i],map,M,sps,n);
 				sign[i] *= 1;

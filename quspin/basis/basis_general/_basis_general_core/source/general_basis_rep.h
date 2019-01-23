@@ -5,6 +5,7 @@
 #include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
 
 template<class I,class J>
@@ -14,6 +15,7 @@ int general_normalization(general_basis_core<I> *B,
 							const npy_intp Ns
 				)
 {	int err = 0;
+	#pragma omp parallel for schedule(dynamic)
 	for(npy_intp i=0;i<Ns;i++){
 
 		double norm = B->check_state(s[i]);
@@ -57,14 +59,16 @@ void general_representative(general_basis_core<I> *B,
 									I r[],
 									int *g_out_ptr,
 									npy_int8 *sign_out_ptr,
-							const npy_intp Ns,
-							const int nt
+							const npy_intp Ns
 						  )
 {
+	const int nt = B->get_nt();
+	const npy_intp chunk = Ns/omp_get_num_threads();
 	int g[nt];
 	int sign;
 
 	if(g_out_ptr && sign_out_ptr){
+		#pragma omp parallel for schedule(static,chunk)
 		for(npy_intp i=0;i<Ns;i++){
 
 			int temp_sign = 1;
@@ -73,6 +77,7 @@ void general_representative(general_basis_core<I> *B,
 		}
 	}
 	else if(g_out_ptr){
+		#pragma omp parallel for schedule(static,chunk)
 		for(npy_intp i=0;i<Ns;i++){
 
 			sign = 1;
@@ -80,6 +85,7 @@ void general_representative(general_basis_core<I> *B,
 		}
 	}
 	else if(sign_out_ptr){
+		#pragma omp parallel for schedule(static,chunk) private(g)
 		for(npy_intp i=0;i<Ns;i++){
 
 			int temp_sign = 1;
@@ -88,8 +94,8 @@ void general_representative(general_basis_core<I> *B,
 		}
 	}
 	else{
+		#pragma omp parallel for schedule(static,chunk) private(g)
 		for(npy_intp i=0;i<Ns;i++){
-
 			sign = 1;
 			r[i] = B->ref_state(s[i],g,sign);
 		}

@@ -6,6 +6,7 @@
 #include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
 
 
@@ -65,9 +66,10 @@ int general_op(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
+	const npy_intp chunk = Ns/omp_get_num_threads();
 	int err = 0;
 	int g[nt];
-	#pragma omp parallel for schedule(static,1) private(g)
+	#pragma omp parallel for schedule(static,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
@@ -135,11 +137,11 @@ int general_op_bra_ket(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
+	const npy_intp chunk = Ns/omp_get_num_threads();
 	int err = 0;
 	int g[nt];
 		
-	#pragma omp parallel for schedule(static,1) private(g)
-
+	#pragma omp parallel for schedule(static,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
@@ -245,11 +247,11 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
+	const npy_intp chunk = Ns/omp_get_num_threads();
 	int err = 0;
 	int g[nt];
 		
-	#pragma omp parallel for schedule(static,1) private(g)
-
+	#pragma omp parallel for schedule(static,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
