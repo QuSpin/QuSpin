@@ -76,7 +76,6 @@ class boson_basis_core : public general_basis_core<I>
 			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<P;i++){
 				s[i] = boson_map_bits(s[i],map,M,sps,n);
-				sign[i] *= 1;
 			}
 		}
 
