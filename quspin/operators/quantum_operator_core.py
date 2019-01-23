@@ -46,7 +46,7 @@ class quantum_operator(object):
 			:lines: 7-
 
 	"""
-	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,op_fmts={},dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_operator` object (parameter dependent quantum quantum_operators).
 
 		Parameters
@@ -159,7 +159,8 @@ class quantum_operator(object):
 			self._shape=(basis.Ns,basis.Ns)
 
 			for key,opstr_list in iteritems(opstr_dict):
-				self._quantum_operator[key]=make_static(basis,opstr_list,dtype)
+				O = make_static(basis,opstr_list,dtype)
+
 
 		if other_dict:
 			if not hasattr(self,"_shape"):
@@ -258,7 +259,6 @@ class quantum_operator(object):
 					if not basis is None: 
 						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
 
-			
 				if len(shape) != 2:
 					raise ValueError('expecting ndim = 2')
 				if shape[0] != shape[1]:
@@ -270,6 +270,18 @@ class quantum_operator(object):
 			self._basis = basis
 
 		self._Ns = self._shape[0]
+
+
+		for key in self._quantum_operator.keys():
+			if key in op_fmts:
+				fmt = op_fmts[key]
+				if fmt not in ["dia","csr","csc"]:
+					raise TypeError("sparse formats must be either 'csr','csc' or 'dia'.")
+
+				sparse_constuctor = getattr(_sp,fmt+"_matrix")
+				O = self._quantum_operator[key]
+				if _sp.issparse(O):
+					self._quantum_operator[key] = sparse_constuctor(O)
 
 
 	@property
