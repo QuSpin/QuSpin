@@ -46,17 +46,6 @@ class general_basis_core{
 		}
 };
 
-template<class T>
-bool inline isnan(T val){
-#if defined(_WIN64)
-	// x64 version
-	return _isnanf(val) != 0;
-#elif defined(_WIN32)
-	return _isnan(val) != 0;
-#else
-	return std::isnan(val);
-#endif
-}
 
 
 
