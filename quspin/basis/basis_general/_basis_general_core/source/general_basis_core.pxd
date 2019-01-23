@@ -26,7 +26,7 @@ cdef extern from "general_basis_op.h":
                           const double complex, const npy_intp, const int, const set[vector[int]], const I[], I[], T[]) nogil
 
 cdef extern from "general_basis_rep.h":
-    void general_representative[I](general_basis_core[I] *B, const I[], I[], int[], int8_t[], const npy_intp, const int) nogil
+    void general_representative[I](general_basis_core[I] *B, const I[], I[], int[], int8_t[], const npy_intp) nogil
 
     int general_normalization[I,J](general_basis_core[I] *B, I[], J[], const npy_intp) nogil
 

@@ -7,6 +7,7 @@
 #include "local_pcon_basis_core.h"
 #include "spinless_fermion_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
 
 template<class I>
@@ -37,7 +38,8 @@ class spinful_fermion_basis_core : public local_pcon_basis_core<I>
 			}
 			const int n = general_basis_core<I>::N << 1;
 			const int * map = &general_basis_core<I>::maps[n_map*n];
-			#pragma omp for schedule(static,1)
+			const npy_intp chunk = M/omp_get_num_threads();
+			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<M;i++){
 				int temp_sign = sign[i];
 				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);

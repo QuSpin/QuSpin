@@ -275,7 +275,7 @@ cdef class general_basis_core_wrap_32:
             sign_out_ptr = &sign_out[0]
 
         with nogil:
-            general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns,self._nt)
+            general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns)
 
 
     @cython.boundscheck(False)
@@ -391,7 +391,7 @@ cdef class general_basis_core_wrap_64:
             sign_out_ptr = &sign_out[0]
 
         with nogil:
-            general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns,self._nt)
+            general_representative(self._basis_core,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns)
 
     @cython.boundscheck(False)
     def normalization(self,uint64_t[:] states,norm_type[:] norms):
