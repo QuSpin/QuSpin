@@ -15,7 +15,9 @@ int general_normalization(general_basis_core<I> *B,
 							const npy_intp Ns
 				)
 {	int err = 0;
-	#pragma omp parallel for schedule(dynamic)
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
+
+	#pragma omp parallel for schedule(dynamic,chunk)
 	for(npy_intp i=0;i<Ns;i++){
 
 		double norm = B->check_state(s[i]);

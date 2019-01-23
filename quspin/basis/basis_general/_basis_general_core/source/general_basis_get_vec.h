@@ -84,6 +84,7 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 {
 	bool err = true;
 	const int nt = B->get_nt();
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	double norm = 1.0;
 
@@ -92,7 +93,7 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 	}
 
 
-	#pragma omp parallel for schedule(dynamic) firstprivate(norm)
+	#pragma omp parallel for schedule(dynamic,chunk) firstprivate(norm)
 	for(npy_intp k=0;k<Ns;k++){
 		if(!err)
 			continue;

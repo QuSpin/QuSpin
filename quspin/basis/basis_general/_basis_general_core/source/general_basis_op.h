@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <complex>
+#include <algorithm>
 #include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
@@ -66,10 +67,11 @@ int general_op(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
-	const npy_intp chunk = Ns/omp_get_num_threads();
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
+
 	int err = 0;
 	int g[nt];
-	#pragma omp parallel for schedule(static,chunk) private(g)
+	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
@@ -137,11 +139,12 @@ int general_op_bra_ket(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
-	const npy_intp chunk = Ns/omp_get_num_threads();
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
+
 	int err = 0;
 	int g[nt];
 		
-	#pragma omp parallel for schedule(static,chunk) private(g)
+	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
@@ -247,11 +250,11 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
-	const npy_intp chunk = Ns/omp_get_num_threads();
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 	int err = 0;
 	int g[nt];
 		
-	#pragma omp parallel for schedule(static,chunk) private(g)
+	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
 			continue;
