@@ -6,6 +6,7 @@
 #include "general_basis_core.h"
 #include "spinless_fermion_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
 
 
@@ -22,6 +23,40 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N,_nt,_maps,_pers,_qs), N_sys(_N)  {}
 
 		~spinful_fermion_basis_core() {}
+
+		I map_state(I s,int n_map,int &sign){
+			if(general_basis_core<I>::nt<=0){
+				return s;
+			}
+			const int n = general_basis_core<I>::N << 1;
+			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
+			
+		}
+
+		void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
+			if(general_basis_core<I>::nt<=0){
+				return;
+			}
+			const int n = general_basis_core<I>::N << 1;
+			const int * map = &general_basis_core<I>::maps[n_map*n];
+			const npy_intp chunk = M/omp_get_num_threads();
+			#pragma omp for schedule(static,chunk)
+			for(npy_intp i=0;i<M;i++){
+				int temp_sign = sign[i];
+				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
+				sign[i] = temp_sign;
+			}
+		}
+
+		std::vector<int> count_particles(I s){
+			I s_left,s_right;
+			split_state(s,s_left,s_right);
+			int n_left  = bit_count(s_left,general_basis_core<I>::N);
+			int n_right = bit_count(s_right,general_basis_core<I>::N);
+			std::vector<int> v = {n_left,n_right};
+			return v;
+		}
+
 
 		void inline split_state(I s,I &s_left,I &s_right){
 			s_right = ((~(I)0) >> I(bit_info<I>::bits-N_sys))&s;

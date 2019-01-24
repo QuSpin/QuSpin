@@ -375,27 +375,32 @@ def _evolve_list(solver,v0,t0,times,verbose,*output_args):
 	Ns = shape0[0]
 	
 	if output_args[0] or output_args[1]:
-		v = _np.empty(shape0+(len(times),),dtype=_np.complex128)
+		v = _np.empty((len(times),)+shape0,dtype=_np.complex128,order="C") 
 	else:
-		v = _np.empty(shape0+(len(times),),dtype=_np.float64)
+		v = _np.empty((len(times),)+shape0,dtype=_np.float64,order="C")
 
 	
 	for i,t in enumerate(times):
 
 		if t == t0:
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			v[...,i] = _format_output(v0,*output_args)
+			v[i,...] = _format_output(v0,*output_args)
 			continue
 
 		solver.integrate(t)
 		if solver.successful():
 			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			v[...,i] = _format_output(solver._y,*output_args)
+			v[i,...] = _format_output(solver._y,*output_args)
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 			
+	if v.ndim == 2:
+		v = v.transpose()
+	else:
+		v = v.transpose((1,2,0))
 
 	return v
+
 
 def _evolve_iter(solver,v0,t0,times,verbose,*output_args):
 	from numpy.linalg import norm

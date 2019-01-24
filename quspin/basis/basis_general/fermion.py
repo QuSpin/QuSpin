@@ -59,7 +59,7 @@ class spinless_fermion_basis_general(basis_general):
 	"""
 	
 
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,make_basis=True,**blocks):
 		"""Intializes the `spinless_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -72,6 +72,8 @@ class spinless_fermion_basis_general(basis_general):
 			Density of fermions in chain (fermions per site).
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 	
+		make_basis: bool, optional
+			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -95,9 +97,9 @@ class spinless_fermion_basis_general(basis_general):
 
 		basis_general.__init__(self,N,**blocks)
 		self._check_pcon = False
-		count_particles = False
+		self._count_particles = False
 		if _Np is not None and Nf is None:
-			count_particles = True
+			self._count_particles = True
 			if type(_Np) is not int:
 				raise ValueError("_Np must be integer")
 			if _Np >= -1:
@@ -120,7 +122,7 @@ class spinless_fermion_basis_general(basis_general):
 			try:
 				Np_iter = iter(Nf)
 			except TypeError:
-				raise TypeError("Nf must be integer or iteratable object.")
+				raise TypeError("Nf must be integer or iterable object.")
 			Ns = 0
 			for Nf in Np_iter:
 				if Nf > N or Nf < 0:
@@ -140,51 +142,32 @@ class spinless_fermion_basis_general(basis_general):
 					
 				Ns = Ns_block_est
 
-		Ns = max(Ns,1000)
 		if N<=32:
-			basis = _np.zeros(Ns,dtype=_np.uint32)
-			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			# self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint32
+			self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
-			basis = _np.zeros(Ns,dtype=_np.uint64)
-			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			# self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint64
+			self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
-			raise ValueError("system size N must be <=64.")
+			raise ValueError("basis type is not representable with uint32 or uint64.")
 
 		self._core = spinless_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
-		self._sps=2
-
-		if count_particles and (Nf is not None):
-			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
-		else:
-			Np_list = None
-			Ns = self._core.make_basis(basis,n,Np=Nf)
-
-		if Ns < 0:
-				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-		if type(Nf) is int or Nf is None:
-			if Ns > 0:
-				self._basis = basis[Ns-1::-1].copy()
-				self._n = n[Ns-1::-1].copy()
-				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
-			else:
-				self._basis = _np.array([],dtype=basis.dtype)
-				self._n = _np.array([],dtype=n.dtype)
-				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
-		else:
-			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
-			self._basis = basis[ind].copy()
-			self._n = n[ind].copy()
-			if Np_list is not None: self._Np_list = Np_list[ind].copy()
-
-
-
-		self._Ns = Ns
+		
+		self._sps = 2
 		self._N = N
-		self._index_type = _np.result_type(_np.min_scalar_type(-self._Ns),_np.int32)
+		self._Ns = Ns
+		self._Np = Nf
+		
+
+		# make the basis; make() is function method of base_general
+		if make_basis:		
+			self.make()
+		else:
+			self._Ns=1
+			self._basis=_np.zeros(self._Ns,dtype=basis_type)
+			self._n=_np.zeros(self._Ns,dtype=basis_type)
+
+
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -193,7 +176,7 @@ class spinless_fermion_basis_general(basis_general):
 							"\n\tz: c-symm number operator")
 
 		self._allowed_ops=set(["I","n","+","-","z"])
-		self._reduce_n_dtype()
+		
 
 	@property
 	def _fermion_basis(self):
@@ -345,21 +328,23 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,**blocks):
 		"""Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
 		-----------
 		L: int
 			Length of chain/number of sites.
-		Nf: {int,list}, optional
-			Number of fermions in chain. Can be integer or list to specify one or more particle sectors.
+		Nf: tuple(int), optional
+			Number of fermions in chain. Can be tupe of integers or list of tuples of integers `[(Nup,Ndown),...]` to specify one or more particle sectors.
 		nf: float, optional
 			Density of fermions in chain (fermions per site).
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		simple_sym: bool, optional
 			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
+		make_basis: bool, optional
+			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -371,8 +356,6 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			sector.
 
 		"""
-
-
 
 		# Nf = [(Nup,Ndown),...]
 		# Nup is left side of basis sites 0 - N-1
@@ -406,9 +389,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		basis_general.__init__(self,2*N,**blocks)
 		self._check_pcon = False
-		count_particles = False
+		self._count_particles = False
 		if _Np is not None and Nf is None:
-			count_particles = True
+			self._count_particles = True
 			if type(_Np) is not int:
 				raise ValueError("_Np must be integer")
 			if _Np >= -1:
@@ -439,11 +422,11 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 					if (type(Nup) is int) and type(Ndown) is int:
 						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 					else:
-						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 				else:
 					Nf = list(Nf)
 					if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):
-						raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")		
+						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")		
 
 					Ns = 0
 					for Nup,Ndown in Nf:
@@ -457,10 +440,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				try:
 					Nf_iter = iter(Nf)
 				except TypeError:
-					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+					raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 
 				if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):
-					raise ValueError("Nf must be tuple of integers or iteratable object of tuples.")
+					raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 
 				Nf = list(Nf)
 
@@ -486,73 +469,49 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 										
 				Ns = Ns_block_est
 
-		Ns = max(Ns,1000)
 		if N<=16:
-			basis = _np.zeros(Ns,dtype=_np.uint32)
-			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			# self._core = spinful_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint32
 		elif N<=32:
-			basis = _np.zeros(Ns,dtype=_np.uint64)
-			n     = _np.zeros(Ns,dtype=self._n_dtype)
-			# self._core = spinful_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint64
 		else:
-			raise ValueError("system size N must be <=32.")
-
+			raise ValueError("basis type is not representable with uint32 or uint64.")
 
 		self._core = spinful_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
 
-		self._sps=2
-		if count_particles and (Nf is not None):
-			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			Ns = self._core.make_basis(basis,n,Np=Nf,count=Np_list)
-		else:
-			Np_list = None
-			Ns = self._core.make_basis(basis,n,Np=Nf)
-
-		if Ns < 0:
-				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-		if type(Nf) is int or Nf is None:
-			if Ns > 0:
-				self._basis = basis[Ns-1::-1].copy()
-				self._n = n[Ns-1::-1].copy()
-				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
-			else:
-				self._basis = _np.array([],dtype=basis.dtype)
-				self._n = _np.array([],dtype=n.dtype)
-				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
-		else:
-			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
-			self._basis = basis[ind].copy()
-			self._n = n[ind].copy()
-			if Np_list is not None: self._Np_list = Np_list[ind].copy()
-
-
-
-		self._Ns = Ns
+		self._sps = 2
 		self._N = 2*N
-		self._index_type = _np.result_type(_np.min_scalar_type(-self._Ns),_np.int32)
+		self._Ns = Ns
+		self._Np = Nf
+		
+		# make the basis; make() is function method of base_general
+		if make_basis:		
+			self.make()
+		else:
+			self._Ns=1
+			self._basis=_np.zeros(self._Ns,dtype=basis_type)
+			self._n=_np.zeros(self._Ns,dtype=basis_type)
+
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
 							"\n\tz: c-symm number operator")
+
 		self._allowed_ops=set(["I","n","+","-","z"])
-		self._reduce_n_dtype()
+		
 
 
 	def _Op(self,opstr,indx,J,dtype):
-		indx = _np.array(indx,dtype=_np.int32)
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
+
 		if self._simple_symm:
-			if opstr.count("|") == 0: 
-				raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+			opstr,indx = self._simple_to_adv((opstr,indx))
 
-			i = opstr.index("|")
-			
-			indx[i:] += (self._N//2)
-			opstr=opstr.replace("|","")
-
+		'''
 		if len(opstr) != len(indx):
 			raise ValueError('length of opstr does not match length of indx')
 
@@ -576,8 +535,49 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		col = col[mask]
 		row = row[mask]
 		ME = ME[mask]
+		
 
 		return ME,row,col
+		'''
+		return spinless_fermion_basis_general._Op(self,opstr,indx,J,dtype)
+
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
+		
+		if self._simple_symm:
+			opstr,indx = self._simple_to_adv((opstr,indx))
+	
+		'''
+		ket_states=_np.array(ket_states,dtype=self._basis.dtype,ndmin=1)
+
+		if len(opstr) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
+		if _np.any(indx >= self._N) or _np.any(indx < 0):
+			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr) - self._allowed_ops
+		if extra_ops:
+			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+	
+		bra = _np.zeros_like(ket_states) # row
+		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
+
+		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
+		
+		if reduce_output: 
+			# remove nan's matrix elements
+			mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+			bra = bra[mask]
+			ket_states = ket_states[mask]
+			ME = ME[mask]
+		else:
+			mask = _np.isnan(ME)
+			ME[mask] = 0.0
+
+		return ME,bra,ket_states
+		'''
+		return spinless_fermion_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
 	@property
 	def _fermion_basis(self):
@@ -720,20 +720,22 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			return spinless_fermion_basis_general._non_zero(self,op)
 
 	def _simple_to_adv(self,op):
-			op = list(op)
-			opstr = op[0]
+		op = list(op)
+		opstr,indx = op[:2]
 
-			i = opstr.index("|")
-			indx = list(op[1])
-			indx_left = tuple(indx[:i])
-			indx_right = tuple([j+self._N//2 for j in indx[i:]])
+		if opstr.count("|") == 0: 
+			raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
 
-			opstr_left,opstr_right=opstr.split("|",1)
+		i = opstr.index("|")
+		indx = list(indx)
+		indx_left = tuple(indx[:i])
+		indx_right = tuple([j+self._N//2 for j in indx[i:]])
 
-			op[0] = "".join([opstr_left,opstr_right])
-			op[1] = indx_left+indx_right
+		opstr_left,opstr_right=opstr.split("|",1)
+		op[0] = "".join([opstr_left,opstr_right])
+		op[1] = tuple(indx_left+indx_right)
 
-			return tuple(op)
+		return tuple(op)
 
 	def _expand_opstr(self,op,num):
 		if self._simple_symm:
@@ -779,8 +781,6 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			return tuple(op_list)
 		else:
 			return spinless_fermion_basis_general._expand_opstr(self,op,num)
-
-
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		if photon_basis is None:

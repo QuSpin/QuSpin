@@ -1,12 +1,11 @@
 from general_basis_core cimport *
-from numpy import pi
+from numpy import pi, array, uint64
 from libc.math cimport cos,sin,abs,sqrt
 import scipy.sparse as _sp
 cimport numpy as _np
 import numpy as _np
-
-
-
+from libcpp.vector cimport vector
+from libcpp.set cimport set
 
 @cython.boundscheck(False)
 cdef get_proj_helper(general_basis_core[state_type] * B, state_type * basis, int nt, int nnt,
@@ -156,6 +155,34 @@ which can't be easily turned into a buffer.
 """
 
 
+cdef set[vector[int]] load_pcon_list(object Np):
+    cdef set[vector[int]] Np_cpp
+    cdef vector[int] np_cpp
+
+    if type(Np) is int:
+        np_cpp.push_back(Np)
+        Np_cpp.insert(np_cpp)
+        np_cpp.clear()
+    else:
+        Np_iter = iter(Np)
+
+        for np in Np_iter:
+            if type(np) is int:
+                np_cpp.push_back(np)
+            else:
+                np_iter = iter(np)
+                for n in np_iter:
+                    np_cpp.push_back(n)
+
+            Np_cpp.insert(np_cpp)
+            np_cpp.clear()
+
+    return Np_cpp
+
+
+
+
+
 cdef class general_basis_core_wrap:
     cdef int _N
     cdef int _nt
@@ -189,7 +216,7 @@ cdef class general_basis_core_wrap:
             raise ValueError("operator not recognized.")
         elif err == 1:
             raise TypeError("attemping to use real type for complex matrix elements.")
-
+    
     @cython.boundscheck(False)
     def get_vec_dense(self, _np.ndarray basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
         cdef npy_intp Ns = v_in.shape[0]
@@ -260,8 +287,6 @@ cdef class general_basis_core_wrap:
                     return get_proj_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,P)
                 else:
                     raise TypeError("basis dtype must be either uint32 or uint64")  
-
-
         else:
             if self._nt <= 0: # basis is already full particle conserving basis
                 return _sp.identity(Ns,dtype=Ptype)
@@ -273,6 +298,7 @@ cdef class general_basis_core_wrap:
                     return get_proj_pcon_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,<uint64_t*>basis_pcon_ptr,P)             
                 else:
                     raise TypeError("basis dtype must be either uint32 or uint64")  
+
 
     @cython.boundscheck(False)
     def _make_basis_full(self,_np.ndarray basis,norm_type[:] n):
@@ -311,164 +337,68 @@ cdef class general_basis_core_wrap:
 
 
 
+    ############################################################################ todo
 
 
 
+    @cython.boundscheck(False)
+    def op_bra_ket(self,state_type[:] ket,state_type[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
+        cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+        cdef int n_op = indx.shape[0]
+        cdef npy_intp Ns = ket.shape[0]
+        cdef int err = 0;
+        cdef double complex JJ = J
+        cdef int Npcon_blocks 
+        #cdef unsigned long int[:] Np_array
+        cdef set[vector[int]] Np_set
+        cdef void * B = self._basis_core
+        
+        if Np is None:
+            with nogil:
+                err = general_op_bra_ket(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
+        else:
+            if type(Np) is int:
+                Npcon_blocks=1
+            else:
+                Npcon_blocks=len(Np)
+            
+            Np_set = load_pcon_list(Np)
+            #Np_array=array(Np,ndmin=1,dtype=uint64)
 
-# cdef class general_basis_core_wrap_32:
-#     cdef int _N
-#     cdef int _nt
-#     cdef int _sps
-#     cdef object _Ns_full
-#     cdef general_basis_core[uint32_t] * _basis_core
+            with nogil:
+                err = general_op_bra_ket_pcon(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,Np_set,&ket[0],&bra[0],&M[0])
 
-#     def __cinit__(self):
-#         pass
+        if err == -1:
+            raise ValueError("operator not recognized.")
+        elif err == 1:
+            raise TypeError("attemping to use real type for complex matrix elements.")
 
-#     @cython.boundscheck(False)
-#     def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint32_t[:] basis,norm_type[:] n):
-#         cdef char[:] c_opstr = bytearray(opstr,"utf-8")
-#         cdef int n_op = indx.shape[0]
-#         cdef npy_intp Ns = basis.shape[0]
-#         cdef int err = 0;
-#         cdef double complex JJ = J
-#         with nogil:
-#             err = general_op(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&basis[0],&n[0],&row[0],&col[0],&M[0])
+    @cython.boundscheck(False)
+    def representative(self,state_type[:] states,state_type[:] ref_states,int[:,::1] g_out=None,int8_t[:] sign_out=None):
+        cdef npy_intp Ns = states.shape[0]
+        cdef int * g_out_ptr = NULL
+        cdef int8_t * sign_out_ptr = NULL
+        cdef void * B = self._basis_core
+        
+        if g_out is not None:
+            g_out_ptr = &g_out[0,0]
 
-#         if err == -1:
-#             raise ValueError("operator not recognized.")
-#         elif err == 1:
-#             raise TypeError("attemping to use real type for complex matrix elements.")
+        if sign_out is not None:
+            sign_out_ptr = &sign_out[0]
 
-#     @cython.boundscheck(False)
-#     def get_vec_dense(self, uint32_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out,uint32_t[:] basis_pcon=None):
-#         cdef npy_intp Ns = v_in.shape[0]
-#         cdef npy_intp n_vec = v_in.shape[1]
-#         cdef bool err
-#         cdef uint32_t * ptr = NULL
-#         cdef npy_intp Ns_full = 0
-
-#         if basis_pcon is not None:
-#             ptr = &basis_pcon[0]
-#             Ns_full = basis_pcon.shape[0]
-#         else:
-#             Ns_full = self._Ns_full
-
-#         with nogil:
-#             err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,Ns_full,ptr,&v_in[0,0],&v_out[0,0])
-
-#         if not err:
-#             raise TypeError("attemping to use real type for complex elements.")
-
-#     @cython.boundscheck(False)
-#     def get_proj(self, uint32_t[:] basis, object Ptype,int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint32_t[:] basis_pcon = None):
-#         cdef npy_intp Ns = basis.shape[0]
-#         cdef npy_intp Ns_full = 0
-#         cdef object P
-#         cdef npy_intp i=0
-
-#         if basis_pcon is not None:
-#             Ns_full = basis_pcon.shape[0]
-#         else:
-#             Ns_full = self._Ns_full
-
-#         if Ns == 0:
-#             return _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-
-#         if basis_pcon is None:
-#             if self._nt <= 0:
-#                 with nogil:
-#                     for i in range(Ns):
-#                         row[i] = Ns_full-basis[i]-1    
-
-#                 return _sp.csc_matrix((c,(row,col)),shape=(Ns_full,Ns))
-#             else:
-#                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-#                 return get_proj_helper[uint32_t,dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
-
-#         else:
-#             if self._nt <= 0: # basis is already just the full particle conserving basis
-#                 return _sp.identity(Ns,dtype=Ptype)
-#             else:
-#                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-#                 return get_proj_pcon_helper[uint32_t,dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,basis_pcon,P)           
+        with nogil:
+            general_representative(<general_basis_core[state_type]*>B,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns)
 
 
-# cdef class general_basis_core_wrap_64:
-#     cdef int _N
-#     cdef int _nt
-#     cdef int _sps
-#     cdef object _Ns_full
-#     cdef general_basis_core[uint64_t] * _basis_core
+    @cython.boundscheck(False)
+    def normalization(self,state_type[:] states,state_type[:] norms):
+        cdef npy_intp Ns = states.shape[0]
+        cdef void * B = self._basis_core
+        with nogil:
+            err = general_normalization(<general_basis_core[state_type]*>B,&states[0],&norms[0],Ns)
 
-#     def __cinit__(self):
-#         pass
+        if err > 0:
+            raise TypeError("normalization values exceeds given data type. Increase data type of signed integer for normalizations array.") 
 
-#     @cython.boundscheck(False)
-#     def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,uint64_t[:] basis,norm_type[:] n):
-#         cdef char[:] c_opstr = bytearray(opstr,"utf-8")
-#         cdef int n_op = indx.shape[0]
-#         cdef npy_intp Ns = basis.shape[0]
-#         cdef int err = 0;
-#         cdef double complex JJ = J
-#         with nogil:
-#             err = general_op(self._basis_core,n_op,&c_opstr[0],&indx[0],JJ,Ns,&basis[0],&n[0],&row[0],&col[0],&M[0])
 
-#         if err == -1:
-#             raise ValueError("operator not recognized.")
-#         elif err == 1:
-#             raise TypeError("attemping to use real type for complex matrix elements.")
-
-#     @cython.boundscheck(False)
-#     def get_vec_dense(self, uint64_t[:] basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out,uint64_t[:] basis_pcon=None):
-#         cdef npy_intp Ns = v_in.shape[0]
-#         cdef npy_intp n_vec = v_in.shape[1]
-#         cdef bool err
-#         cdef uint64_t * ptr = NULL
-#         cdef npy_intp Ns_full = 0
-
-#         if basis_pcon is not None:
-#             ptr = &basis_pcon[0]
-#             Ns_full = basis_pcon.shape[0]
-#         else:
-#             Ns_full = self._Ns_full
-
-#         with nogil:
-#             err = get_vec_general_dense(self._basis_core,&basis[0],&n[0],n_vec,Ns,Ns_full,ptr,&v_in[0,0],&v_out[0,0])
-
-#         if not err:
-#             raise TypeError("attemping to use real type for complex elements.")
-
-#     @cython.boundscheck(False)
-#     def get_proj(self, uint64_t[:] basis, object Ptype, int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,uint64_t[:] basis_pcon = None):
-#         cdef npy_intp Ns = basis.shape[0]
-#         cdef npy_intp Ns_full = 0
-#         cdef object P
-#         cdef npy_intp i=0
-
-#         if basis_pcon is not None:
-#             Ns_full = basis_pcon.shape[0]
-#         else:
-#             Ns_full = self._Ns_full
-
-#         if Ns == 0:
-#             return _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-
-#         if basis_pcon is None:
-#             if self._nt <= 0:
-#                 with nogil:
-#                     for i in range(Ns):
-#                         row[i] = Ns_full-basis[i]-1    
-
-#                 return _sp.csc_matrix((c,(row,col)),shape=(Ns_full,Ns))
-#             else:
-#                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-#                 return get_proj_helper[uint64_t,dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,P)
-
-#         else:
-#             if self._nt <= 0: # basis is already just the full particle conserving basis
-#                 return _sp.identity(Ns,dtype=Ptype)
-#             else:
-#                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-#                 return get_proj_pcon_helper[uint64_t,dtype,index_type](self._basis_core,basis,self._nt,self._nt,sign,c,row,col,basis_pcon,P)   
 

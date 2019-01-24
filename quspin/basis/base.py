@@ -1,7 +1,14 @@
 from __future__ import print_function
 import numpy as _np
 import scipy.sparse as _sp
-import warnings
+import warnings,numba
+
+
+@numba.njit
+def _coo_dot(v_in,v_out,row,col,ME):
+	n = row.size
+	for i in range(n):
+		v_out[row[i],...] += ME[i] * v_in[col[i]]
 
 
 MAXPRINT = 50
@@ -74,6 +81,15 @@ class basis(object):
 			return self._sps
 		except AttributeError:
 			raise NotImplementedError("basis class: {0} missing local number of degrees of freedom per site 'sps' required for entanglement entropy calculations!".format(self.__class__))
+
+	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		basis_view=self._basis[:]
+		basis_view.setflags(write=0,uic=0)
+		return basis_view
+
+
 
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
@@ -154,22 +170,23 @@ class basis(object):
 			ME = ME.conj()
 
 		# TODO: implement these in low level language.
-		if self._unique_me:
-			v_out[row] += _np.multiply(v_in[col].T,ME).T
-		else:
-			while len(row) > 0:
-				# if there are multiply matrix elements per row as there are for some
-				# symmetries availible then do the indexing for unique elements then
-				# delete them from the list and then repeat until all elements have been 
-				# taken care of. This is less memory efficient but works well for when
-				# there are a few number of matrix elements per row. 
-				row_unique,args = _np.unique(row,return_index=True)
-				col_unique = col[args]
+		_coo_dot(v_in,v_out,row,col,ME)
+		# if self._unique_me:
+		# 	v_out[row] += _np.multiply(v_in[col].T,ME).T
+		# else:
+		# 	while len(row) > 0:
+		# 		# if there are multiply matrix elements per row as there are for some
+		# 		# symmetries availible then do the indexing for unique elements then
+		# 		# delete them from the list and then repeat until all elements have been 
+		# 		# taken care of. This is less memory efficient but works well for when
+		# 		# there are a few number of matrix elements per row. 
+		# 		row_unique,args = _np.unique(row,return_index=True)
+		# 		col_unique = col[args]
 
-				v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
-				row = _np.delete(row,args)
-				col = _np.delete(col,args)
-				ME = _np.delete(ME,args)
+		# 		v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
+		# 		row = _np.delete(row,args)
+		# 		col = _np.delete(col,args)
+		# 		ME = _np.delete(ME,args)
 
 		return v_out			
 
@@ -212,6 +229,7 @@ class basis(object):
 
 		"""
 		return self._Op(opstr,indx,J,dtype)
+
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.

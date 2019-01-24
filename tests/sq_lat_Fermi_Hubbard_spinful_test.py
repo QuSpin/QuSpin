@@ -34,8 +34,7 @@ def test(Lx,Ly):
 		basis_dict[Nf] = (pcon_basis,basis_blocks)
 
 
-	J = [[np.sqrt(2.0),i,tr.T_x[i]] for i in range(N)]
-	J.extend([[np.sqrt(2.0),i,tr.T_y[i]] for i in range(N)])
+	J = [[np.sqrt(2.0),i,i] for i in range(N)]
 	
 	Jp = [[1.0,i,tr.T_x[i]] for i in range(N)]
 	Jp.extend([[1.0,i,tr.T_y[i]] for i in range(N)])
