@@ -50,7 +50,6 @@ class general_basis_core{
 };
 
 
-
 template<class I>
 double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt){
 
