@@ -163,14 +163,13 @@ def make_static(basis,static_list,dtype):
 	H = _sp.csr_matrix((Ns,Ns),dtype=dtype)
 	static_list = _consolidate_static(static_list)
 	for opstr,indx,J in static_list:
-		# print(opstr,bond)
+		
 		ME,row,col = basis.Op(opstr,indx,J,dtype)
 		Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
 		H=H+Ht
 		del Ht
 		H.sum_duplicates() # sum duplicate matrix elements
 		H.eliminate_zeros() # remove all zero matrix elements
-	# print()
 	return H 
 
 

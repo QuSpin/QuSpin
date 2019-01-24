@@ -62,7 +62,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,Ns_block_est=None,**blocks):
+	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,Ns_block_est=None,make_basis=True,**blocks):
 		"""Intializes the `spin_basis_general` object (basis for spin operators).
 
 		Parameters
@@ -81,6 +81,8 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
+		make_basis: bool, optional
+			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -109,9 +111,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			Nup = int((m+S)*N)
 
 		if sps==2:
-			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,_Np=_Np,**blocks)
+			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
 		else:
-			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,**blocks)
+			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
 
 
 		if self._sps <= 2:
@@ -260,3 +262,14 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			return tuple(l)
 
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
+
+		if self._S == "1/2":
+			ME,bra,ket = hcb_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
+			if self._pauli:
+				n = len(opstr.replace("I",""))
+				ME *= (1<<n)
+		else:
+			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states)
+
+		return ME,bra,ket

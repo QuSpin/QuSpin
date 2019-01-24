@@ -2,10 +2,12 @@
 #define _HCB_BASIS_CORE_H
 
 #include <complex>
+#include <vector>
 #include <iostream>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "benes_perm.h"
+#include "openmp.h"
 
 
 
@@ -82,10 +84,17 @@ class hcb_basis_core : public general_basis_core<I>
 			}
 			const tr_benes<I> * benes_map = &benes_maps[n_map];
 			const I inv = invs[n_map];
-			#pragma omp for schedule(static,1)
+			const npy_intp chunk = M/omp_get_num_threads();
+			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<M;i++){
 				s[i] = benes_bwd(benes_map,s[i]^inv);	
 			}
+		}
+
+		std::vector<int> count_particles(I s){
+			int n = bit_count(s,general_basis_core<I>::N);
+			std::vector<int> v = {n};
+			return v;
 		}
 
 		// I map_state(I s,int n_map,int &sign){

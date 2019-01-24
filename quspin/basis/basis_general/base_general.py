@@ -75,6 +75,7 @@ class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
 		self._unique_me = True
 		self._check_pcon = None
+		self._made_basis = False # keeps track of whether the basis has been made
 
 		if self.__class__ is basis_general:
 			raise TypeError("general_basis class is not to be instantiated.")
@@ -98,7 +99,7 @@ class basis_general(lattice_basis):
 			raise ValueError("blocks must contain tuple: (map,q).")
 
 		kwargs = {block:process_map(*item) for block,item in kwargs.items()}
-
+		
 		sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
 		sorted_items.reverse()
 
@@ -168,14 +169,18 @@ class basis_general(lattice_basis):
 		string = """general basis for lattice of N = {0} sites containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\n""".format(self._N,symm,self._conserved,'',blocks,self._Ns)
 		string += self.operators
 		return string
-
+	
 
 	def _reduce_n_dtype(self):
 		if len(self._n)>0:
 			self._n_dtype = _np.min_scalar_type(self._n.max())
 			self._n = self._n.astype(self._n_dtype)
 
+
 	def _Op(self,opstr,indx,J,dtype):
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
 		indx = _np.asarray(indx,dtype=_np.int32)
 
@@ -204,6 +209,7 @@ class basis_general(lattice_basis):
 		ME = ME[mask]
 
 		return ME,row,col
+	
 
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
@@ -236,13 +242,16 @@ class basis_general(lattice_basis):
 
 		"""
 
-
 		if pcon==True:
 			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
 				\n If you need to use this feature, consider the following procedure: \
 				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
 				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
 				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm)')
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
 
 		c = _np.ones_like(self._basis,dtype=dtype)
 		sign = _np.ones_like(self._basis,dtype=_np.int8)
@@ -296,6 +305,10 @@ class basis_general(lattice_basis):
 				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
 				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm) \
 				\n (iv) use P_pcon_symm to transform the state to the particle-conserving basis.')
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be cosntructed first, see basis.make().')
+
 
 		if not hasattr(v0,"shape"):
 			v0 = _np.asanyarray(v0)
@@ -362,6 +375,292 @@ class basis_general(lattice_basis):
 
 		return static_blocks,dynamic_blocks
 
+
+	def make(self,Ns_block_est=None):
+		"""Creates the entire basis by calling the basis constructor.
+
+		Parameters
+		-----------
+		Ns_block_est: int, optional
+			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
+				
+		Returns
+		--------
+		int
+			Total number of states in the (symmetry-reduced) Hilbert space.
+
+		Examples
+		--------
+		
+		>>> N, Nup = 8, 4
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> print(basis)
+		>>> basis.make()
+		>>> print(basis)
+
+		"""
+
+		if Ns_block_est is not None:
+			Ns = Ns_block_est
+		else:
+			Ns = max(self._Ns,1000)
+
+
+		# preallocate variables
+		if self._N<=32:
+			basis = _np.zeros(Ns,dtype=_np.uint32)
+		elif self._N<=64:
+			basis = _np.zeros(Ns,dtype=_np.uint64)
+		
+		n = _np.zeros(Ns,dtype=self._n_dtype)
+		
+		# make basis
+		if self._count_particles and (self._Np is not None):
+			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
+			Ns = self._core.make_basis(basis,n,Np=self._Np,count=Np_list)
+		else:
+			Np_list = None
+			Ns = self._core.make_basis(basis,n,Np=self._Np)
+
+		if Ns < 0:
+				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
+
+		# sort basis
+		if type(self._Np) is int or self._Np is None:
+			if Ns > 0:
+				self._basis = basis[Ns-1::-1].copy()
+				self._n = n[Ns-1::-1].copy()
+				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+			else:
+				self._basis = _np.array([],dtype=basis.dtype)
+				self._n = _np.array([],dtype=n.dtype)
+				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
+		else:
+			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
+			self._basis = basis[ind].copy()
+			self._n = n[ind].copy()
+			if Np_list is not None: self._Np_list = Np_list[ind].copy()
+
+
+		self._Ns=Ns
+
+		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._reduce_n_dtype()
+
+		self._made_basis = True
+
+	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
+		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.
+
+		Given a set of ket states :math:`|s\\rangle`, the function returns the bra states :math:`\\langle s'|` which connect to them through an operator, together with the corresponding matrix elements.
+
+		Notes
+		-----
+			* Similar to `Op` but instead of returning the matrix indices (row,col), it returns the states (bra,ket) in integer representation. 
+			* Does NOT require the full basis (see `basis` optional argument `make_basis`). 
+			* If a state from `ket_states` does not have a non-zero matrix element, it is removed from the returned list. See otional argument `reduce_output`.
+
+		Parameters
+		-----------
+		opstr : str
+			Operator string in the lattice basis format. For instance:
+
+			>>> opstr = "zz"
+		indx : list(int)
+			List of integers to designate the sites the lattice basis operator is defined on. For instance:
+			
+			>>> indx = [2,3]
+		J : scalar
+			Coupling strength.
+		dtype : 'type'
+			Data type (e.g. numpy.float64) to construct the matrix elements with.
+		ket_states : numpy.ndarray(int)
+			Ket states in integer representation. Must be of same data type as `basis`.
+		reduce_output: bool, optional
+			If set to `True`, the returned arrays have the same size as `ket_states`; If set to `False` zeros are purged.
+
+		Returns
+		--------
+		tuple 
+			`(ME,bra,ket)`, where
+				* numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`, which connects the ket and bra states.
+				* numpy.ndarray(int): `bra`: bra states, obtained by applying the matrix representing the operator in the lattice basis,
+					to the ket states, such that `bra[i]` corresponds to `ME[i]` and connects to `ket[i]`.
+				* numpy.ndarray(int): `ket`: ket states, such that `ket[i]` corresponds to `ME[i]` and connects to `bra[i]`.
+
+			
+		Examples
+		--------
+
+		>>> J = 1.41
+		>>> indx = [2,3]
+		>>> opstr = "zz"
+		>>> dtype = np.float64
+		>>> ME, bra, ket = Op_bra_ket(opstr,indx,J,dtype,ket_states)
+
+		"""
+
+		
+		indx = _np.asarray(indx,dtype=_np.int32)
+		ket_states=_np.array(ket_states,dtype=self._basis.dtype,ndmin=1)
+
+		if len(opstr) != len(indx):
+			raise ValueError('length of opstr does not match length of indx')
+
+		if _np.any(indx >= self._N) or _np.any(indx < 0):
+			raise ValueError('values in indx falls outside of system')
+
+		extra_ops = set(opstr) - self._allowed_ops
+		if extra_ops:
+			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+	
+		bra = _np.zeros_like(ket_states) # row
+		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
+
+		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
+		
+		if reduce_output: 
+			# remove nan's matrix elements
+			mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+			bra = bra[mask]
+			ket_states = ket_states[mask]
+			ME = ME[mask]
+		else:
+			mask = _np.isnan(ME)
+			ME[mask] = 0.0
+
+		return ME,bra,ket_states
+
+	def representative(self,states,out=None,return_g=False,return_sign=False):
+		"""Maps states to their representatives under the `basis` symmetries.
+
+		Parameters
+		-----------
+		states : array_like(int)
+			Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.
+		out : numpy.ndarray(int), optional
+			variable to store the representative states in. Must be a `numpy.ndarray` of same datatype as `basis`, and same shape as `states`. 
+		return_g : bool, optional
+			if set to `True`, the function also returns the integer `g` corresponding to the number of times each basis symmetry needs to be applied to a given state to obtain its representative.
+		return_sign : bool, optional
+			if set to `True`, the function returns the `sign` of the representative relative to the original state (nontrivial only for fermionic bases).
+
+		Returns
+		--------
+		tuple
+			( representatives, g_array, sign_array )
+			* array_like(int): `representatives`: Representatives under `basis` symmetries, corresponding to `states`.
+			* array_like(int): `g_array` of size (number of states, number of symmetries). Requires `return_g=True`. Contains integers corresponding to the number of times each basis symmetry needs to be applied to a given state to obtain its representative.
+			* array_like(int): `sign_array` of size (number of states,). Requires `return_sign=True`. Contains `sign` of the representative relative to the original state (nontrivial only for fermionic bases).
+
+		Examples
+		--------
+		
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> s = 17
+		>>> r = basis.representative(s)
+		>>> print(s,r)
+
+		"""
+
+		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
+
+		if return_g:
+			g_out=_np.zeros((states.shape[0],self._qs.shape[0] ), dtype=_np.int32, order='C')
+
+		if return_sign:
+			sign_out=_np.zeros((states.shape[0], ), dtype=_np.int8, order='C')
+
+		if out is None:
+			out=_np.zeros(states.shape,dtype=self._basis.dtype)
+
+			if return_g and return_sign:
+				self._core.representative(states,out,g_out=g_out,sign_out=sign_out)
+				return out.squeeze(), g_out, sign_out
+			elif return_g:
+				self._core.representative(states,out,g_out=g_out)
+				return out.squeeze(), g_out
+			elif return_sign:
+				self._core.representative(states,out,sign_out=sign_out)
+				return out.squeeze(), sign_out
+			else:
+				self._core.representative(states,out)
+				return out.squeeze()
+
+		else:
+			if states.shape!=out.shape:
+				raise TypeError('states and out must have same shape.')
+			if out.dtype != self._basis.dtype:
+				raise TypeError('out must have same type as basis')
+			if not isinstance(out,_np.ndarray):
+				raise TypeError('out must be a numpy.ndarray')
+			
+			if return_g and return_sign:
+				self._core.representative(states,out,g_out=g_out,sign_out=sign_out)
+				return g_out,sign_out
+			elif return_g:
+				self._core.representative(states,out,g_out=g_out)
+				return g_out
+			elif return_sign:
+				self._core.representative(states,out,sign_out=sign_out)
+				return sign_out
+			else:
+				self._core.representative(states,out)
+				
+	def normalization(self,states,out=None):
+		"""Computes normalization of `basis` states. 
+
+		Notes
+		------
+			* Returns zero, if the state is not part of the symmetry-reduced basis.
+			* The normalizations can be used to compute matrix elements in the symmetry-reduced basis. 
+
+		Parameters
+		-----------
+		states : array_like(int)
+			Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.
+		out : numpy.ndarray(signe int), optional
+			variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `signe int` (e.g. `numpy.uint16`), and same shape as `states`. 
+	
+		Returns
+		--------
+		array_like(int)
+			normalizations of `states` for the given (symmetry-reduced) `basis`.
+		
+		Examples
+		--------
+		
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> s = 17
+		>>> norm_s = basis.normalization(s)
+		>>> print(s,norm_s)
+
+		"""
+
+		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
+
+		if out is None:
+			out=_np.zeros(states.shape,dtype=self._n_dtype)
+			self._core.normalization(states,out)
+			
+			out_dtype = _np.min_scalar_type(out.max())
+			out = out.astype(out_dtype)
+
+			return out.squeeze()
+
+		else:
+			if states.shape!=out.shape:
+				raise TypeError('states and out must have same shape.')
+
+			if _np.issubdtype(out.dtype, _np.signedinteger):
+				raise TypeError('out must have datatype numpy.uint8, numpy.uint16, numpy.uint32, or numpy.uint64.')
+		
+			self._core.normalization(states,out)
+
+			out_dtype = _np.min_scalar_type(out.max())
+			out = out.astype(out_dtype)
+		
 
 def _check_symm_map(map,sort_opstr,operator_list):
 	missing_ops=[]

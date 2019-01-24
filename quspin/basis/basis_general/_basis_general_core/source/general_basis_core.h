@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
 #include "bits_info.h"
+#include <set>
 
 
 template<class I>
@@ -30,12 +31,14 @@ class general_basis_core{
 
 		~general_basis_core() {}
 
+		bool check_pcon(const I,const std::set<std::vector<int>>);
 		double check_state(I);
-		I ref_state(I,int[],int[],int&);
+		I ref_state(I,int[],int&);
 		virtual I next_state_pcon(I) = 0;
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;
 		virtual void map_state(I[],npy_intp,int,signed char[]) = 0;
 		virtual I map_state(I,int,int&) = 0;
+		virtual std::vector<int> count_particles(I s) = 0;
 		// virtual void print(I) = 0;
 		virtual int get_N() const{
 			return N;
@@ -45,8 +48,6 @@ class general_basis_core{
 			return nt;
 		}
 };
-
-
 
 
 template<class I>
@@ -177,7 +178,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 
 
 template<class I>
-I general_basis_core<I>::ref_state(I s,int g[],int gg[],int &sign){
+I general_basis_core<I>::ref_state(I s,int g[],int &sign){
 	return ref_state_core_unrolled<I>(this,s,g,sign,nt);
 }
 
@@ -189,7 +190,32 @@ double general_basis_core<I>::check_state(I s){
 }
 
 
+template<class I>
+bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>> Np){
+	// basis_core objects have a count_particles function which returns a vector of the required size;
+	// cython construct a vector of vectors, each sub-vector can be arbitrary size: see function load_pcon_list in general_basis_core.pyx
+	// in order to be compatible with later general basis classes which may have more than two spcies of particles!
+	//
+	bool pcon = false;
+	std::vector<int> v = this->count_particles(s); 
+	for(auto np : Np){pcon = (pcon | std::equal(v.begin(),v.end(),np.begin()));}
+	return pcon;
+}
+
 /* ----------------------------------------------------------------------------------------------------------------------------- */
+
+
+// template<class T>
+// bool inline isnan(T val){
+// #if defined(_WIN64)
+// 	// x64 version
+// 	return _isnanf(val) != 0;
+// #elif defined(_WIN32)
+// 	return _isnan(val) != 0;
+// #else
+// 	return std::isnan(val);
+// #endif
+// }
 
 // template<class I>
 // double check_state_core(general_basis_core<I> *B,I t,int sign, double k, double norm,const I s,const int nt,const int depth){

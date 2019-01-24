@@ -1,6 +1,7 @@
 #ifndef _MAKE_GENERAL_BASIS_H
 #define _MAKE_GENERAL_BASIS_H
 
+#include <iostream>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
@@ -74,7 +75,6 @@ npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_in
 			insuff_mem = true;
 			break;
 		}
-
 		double norm = B->check_state(s);
 		J int_norm = norm;
 
