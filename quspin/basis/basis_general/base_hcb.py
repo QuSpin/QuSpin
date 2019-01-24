@@ -59,6 +59,8 @@ class hcb_basis_general(basis_general):
 		else:
 			raise ValueError("basis type is not representable with uint32 or uint64.")
 
+		self._core = hcb_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
+
 		self._N = N
 		self._Ns = Ns
 		self._Np = Nb
@@ -69,8 +71,8 @@ class hcb_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
 			
 		self._sps=2
 		self._allowed_ops=set(["I","x","y","z","+","-","n"])

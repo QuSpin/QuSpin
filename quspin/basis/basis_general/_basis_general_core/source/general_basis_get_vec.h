@@ -141,8 +141,7 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 	if(basis_pcon){
 		#pragma omp parallel for schedule(dynamic,chunk) firstprivate(norm)
 		for(npy_intp k=0;k<Ns;k++){
-			if(!err)
-				continue;
+			if(!err){continue;}
 
 				std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
 				int sign = 1;
@@ -156,8 +155,7 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 	else{
 		#pragma omp parallel for schedule(dynamic,chunk) firstprivate(norm)
 		for(npy_intp k=0;k<Ns;k++){
-			if(!err)
-				continue;
+			if(!err){continue;}
 
 			std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
 			int sign = 1;

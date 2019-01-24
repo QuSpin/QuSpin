@@ -416,12 +416,6 @@ class basis_general(lattice_basis):
 		else:
 			Ns = max(self._Ns,1000)
 
-		try:
-			Np = max(self._Np)
-		except TypeError:
-			Np = self._Np
-
-
 		# preallocate variables
 		basis = _np.zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
@@ -438,7 +432,7 @@ class basis_general(lattice_basis):
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 		# sort basis
-		if type(self._Np) is int or self._Np is None:
+		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
 			if Ns > 0:
 				self._basis = basis[Ns-1::-1].copy()
 				self._n = n[Ns-1::-1].copy()
@@ -456,7 +450,7 @@ class basis_general(lattice_basis):
 
 		self._Ns=Ns
 
-		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._index_type = _np.result_type(_np.min_scalar_type(self._Ns),_np.int32)
 		self._reduce_n_dtype()
 
 		self._made_basis = True

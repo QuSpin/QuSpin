@@ -24,29 +24,6 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 
 		~spinful_fermion_basis_core() {}
 
-		I map_state(I s,int n_map,int &sign){
-			if(general_basis_core<I>::nt<=0){
-				return s;
-			}
-			const int n = general_basis_core<I>::N << 1;
-			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
-			
-		}
-
-		void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
-			if(general_basis_core<I>::nt<=0){
-				return;
-			}
-			const int n = general_basis_core<I>::N << 1;
-			const int * map = &general_basis_core<I>::maps[n_map*n];
-			const npy_intp chunk = M/omp_get_num_threads();
-			#pragma omp for schedule(static,chunk)
-			for(npy_intp i=0;i<M;i++){
-				int temp_sign = sign[i];
-				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
-				sign[i] = temp_sign;
-			}
-		}
 
 		std::vector<int> count_particles(I s){
 			I s_left,s_right;

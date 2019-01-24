@@ -391,7 +391,7 @@ cdef class general_basis_core_wrap:
 
 
     @cython.boundscheck(False)
-    def normalization(self,state_type[:] states,state_type[:] norms):
+    def normalization(self,state_type[:] states,norm_type[:] norms):
         cdef npy_intp Ns = states.shape[0]
         cdef void * B = self._basis_core
         with nogil:

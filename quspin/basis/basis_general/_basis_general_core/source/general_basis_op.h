@@ -116,7 +116,9 @@ int inline general_op_wrapper(void *B,
 						  		K col[],
 						  		T M[]
 						  )
-{general_op(reinterpret_cast<general_basis_core<I> *>(B),n_op,opstr,indx,A,Ns,(const I*)basis,n,row,col,M);}
+{
+	return general_op(reinterpret_cast<general_basis_core<I> *>(B),n_op,opstr,indx,A,Ns,(const I*)basis,n,row,col,M);
+}
 
 
 

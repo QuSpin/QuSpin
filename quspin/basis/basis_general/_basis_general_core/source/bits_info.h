@@ -175,16 +175,16 @@ T inline bit_count(T v,int l){
   v = v & (((~(T)0) >> 1) >> (bit_info<T>::bits - 1 - l));
 
   if(std::is_same<T, uint64_t>::value){
-    return __builtin_popcountll(v);
+    return (T)__builtin_popcountll(v);
   }
   else if(std::is_same<T, uint32_t>::value){
-    return __builtin_popcount(v);
+    return (T)__builtin_popcount(v);
   }
   else if(std::is_same<T, uint16_t>::value){
-    return __builtin_popcount((uint32_t)v);
+    return (T)__builtin_popcount((uint32_t)v);
   }
   else if(std::is_same<T, uint8_t>::value){
-    return __builtin_popcount((uint32_t)v);
+    return (T)__builtin_popcount((uint32_t)v);
   }
   else{
     v = v - ((v >> 1) & (T)~(T)0/3);                           // temp

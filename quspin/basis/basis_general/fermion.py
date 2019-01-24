@@ -144,14 +144,12 @@ class spinless_fermion_basis_general(basis_general):
 
 		if N<=32:
 			self._basis_dtype=_np.uint32
-			self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
 		elif N<=64:
 			self._basis_dtype=_np.uint64
-			self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
 		else:
 			raise ValueError("basis type is not representable with uint32 or uint64.")
 
-		self._core = spinless_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
+		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 		
 		self._sps = 2
 		self._N = N
@@ -164,8 +162,8 @@ class spinless_fermion_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
 
 
 		self._operators = ("availible operators for ferion_basis_1d:"+
@@ -476,7 +474,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("basis type is not representable with uint32 or uint64.")
 
-		self._core = spinful_fermion_basis_core_wrap(basis.dtype,N,self._maps,self._pers,self._qs)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 
 		self._sps = 2
 		self._N = 2*N
@@ -488,8 +486,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
 
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
