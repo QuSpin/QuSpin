@@ -47,7 +47,8 @@ void dia_matvec(const bool overwrite_y,
 	const int nthread = omp_get_num_threads();
 
 	if(overwrite_y){
-		#pragma omp for schedule(static,(n_row/nthread))
+		const I chunk = n_row/nthread;
+		#pragma omp for schedule(static,chunk)
 		for(I n=0;n<n_row;n++){
 			y[n] = 0; 
 		}
@@ -65,7 +66,6 @@ void dia_matvec(const bool overwrite_y,
 		const T1 * diag = diags + i*L + j_start;
 		const T2 * x_row = x + j_start;
 			  T2 * y_row = y + i_start;
-
 
 		#pragma omp for schedule(static,chunk)
 		for(I n=0;n<N;n++){
