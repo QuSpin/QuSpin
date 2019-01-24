@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from .oputils import matvec as _matvec
+from ._oputils import matvec as _matvec
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
@@ -671,7 +671,7 @@ class hamiltonian(object):
 				V_dot = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
 
 				for i,t in enumerate(time):
-					v = _np.ascontiguousarray(V[...,i])
+					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
 					_matvec(self._static,v,overwrite_out=True,out=V_dot[i,...])
 					for func,Hd in iteritems(self._dynamic):
 						_matvec(Hd,v,overwrite_out=False,a=func(t),out=V_dot[i,...])
@@ -695,6 +695,7 @@ class hamiltonian(object):
 				for func,Hd in iteritems(self._dynamic):
 					out = out + func(time)*(Hd.dot(V))
 			else:
+				V = _np.ascontiguousarray(V,dtype=result_dtype)
 				if out is None:
 					out = _matvec(self._static,V)
 				else:

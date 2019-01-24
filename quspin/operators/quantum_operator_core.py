@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from .oputils import matvec as _matvec
+from ._oputils import matvec as _matvec
 from ._make_hamiltonian import make_static
 
 from . import hamiltonian_core

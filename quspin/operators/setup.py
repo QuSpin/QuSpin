@@ -34,12 +34,12 @@ def configuration(parent_package='', top_path=None):
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     include_dirs = [numpy.get_include()]
-    include_dirs.append(os.path.join(package_dir,"oputils"))
+    include_dirs.append(os.path.join(package_dir,"_oputils"))
     include_dirs.append(os.path.join(package_dir,"..","tools","expm_multiply_parallel_core","source"))
 
 
-    src = os.path.join(package_dir,"oputils.cpp") 
-    config.add_extension('oputils',sources=src,include_dirs=include_dirs,
+    src = os.path.join(package_dir,"_oputils.cpp") 
+    config.add_extension('_oputils',sources=src,include_dirs=include_dirs,
                             extra_compile_args=extra_compile_args,
                             extra_link_args=extra_link_args,
                             language="c++")
