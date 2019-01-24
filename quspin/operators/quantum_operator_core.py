@@ -118,8 +118,6 @@ class quantum_operator(object):
 		else:
 			raise ValueError("input_dict must be dictionary or another quantum_operator quantum_operators")
 			
-
-
 		if opstr_dict:
 			# check if user input basis
 
@@ -160,6 +158,7 @@ class quantum_operator(object):
 
 			for key,opstr_list in iteritems(opstr_dict):
 				O = make_static(basis,opstr_list,dtype)
+				self._quantum_operator[key] = O
 
 
 		if other_dict:
@@ -270,7 +269,6 @@ class quantum_operator(object):
 			self._basis = basis
 
 		self._Ns = self._shape[0]
-
 
 		for key in self._quantum_operator.keys():
 			if key in op_fmts:
@@ -452,17 +450,16 @@ class quantum_operator(object):
 			if shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-			if Vl.ndim not in [1,2]:
+			if V.ndim not in [1,2]:
 				raise ValueError("Expecting  0< V.ndim < 3.")
 
 		result_dtype = _np.result_type(V.dtype,self._dtype)
 
-		if result_dtype not in supported_dtypes:
-			raise TypeError("resulting dtype is not supported.")
+		if not (result_dtype in hamiltonian_core.supported_dtypes):
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
 		if self.Ns <= 0:
 			return _np.asarray([],dtype=result_dtype)
-
 
 		if _sp.issparse(V):
 			if out is not None:
