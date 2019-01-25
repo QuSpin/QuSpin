@@ -9,7 +9,7 @@ from libcpp.set cimport set
 
 @cython.boundscheck(False)
 cdef get_proj_helper(general_basis_core[state_type] * B, state_type * basis, int nt, int nnt,
-                        int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,object P):
+                        int8_t[::1] sign, dtype[::1] c, index_type[::1] row, index_type[::1] col,object P):
     cdef int per = B.pers[nt-nnt]
     cdef npy_intp Ns_full = P.shape[0]
     cdef npy_intp Ns = P.shape[1]
@@ -79,7 +79,7 @@ cdef get_proj_helper(general_basis_core[state_type] * B, state_type * basis, int
 
 @cython.boundscheck(False)
 cdef get_proj_pcon_helper(general_basis_core[state_type] * B, state_type * basis, int nt, int nnt,
-                        int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,state_type * basis_pcon,object P):
+                        int8_t[::1] sign, dtype[::1] c, index_type[::1] row, index_type[::1] col,state_type * basis_pcon,object P):
     cdef int per = B.pers[nt-nnt]
     cdef npy_intp Ns_full = P.shape[0]
     cdef npy_intp Ns = P.shape[1]
@@ -194,14 +194,17 @@ cdef class general_basis_core_wrap:
         pass
 
     @cython.boundscheck(False)
-    def op(self,index_type[:] row,index_type[:] col,dtype[:] M,object opstr,int[:] indx,object J,_np.ndarray basis,norm_type[:] n):
-        cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+    def op(self,index_type[::1] row,index_type[::1] col,dtype[::1] M,object opstr,int[::1] indx,object J,_np.ndarray basis,norm_type[::1] n):
+        cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
         cdef int n_op = indx.shape[0]
         cdef npy_intp Ns = basis.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("input array must be C-contiguous")
 
         if basis.dtype == _np.uint32:
             with nogil:
@@ -218,7 +221,7 @@ cdef class general_basis_core_wrap:
             raise TypeError("attemping to use real type for complex matrix elements.")
     
     @cython.boundscheck(False)
-    def get_vec_dense(self, _np.ndarray basis, norm_type[:] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
+    def get_vec_dense(self, _np.ndarray basis, norm_type[::1] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
         cdef npy_intp Ns = v_in.shape[0]
         cdef npy_intp Ns_full = 0
         cdef npy_intp n_vec = v_in.shape[1]
@@ -226,6 +229,9 @@ cdef class general_basis_core_wrap:
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
         cdef void * basis_pcon_ptr = NULL
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("input array must be C-contiguous")
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
@@ -247,7 +253,7 @@ cdef class general_basis_core_wrap:
             raise TypeError("attemping to use real type for complex elements.")
 
     @cython.boundscheck(False)
-    def get_proj(self, _np.ndarray basis, object Ptype,int8_t[:] sign, dtype[:] c, index_type[:] row, index_type[:] col,_np.ndarray basis_pcon = None):
+    def get_proj(self, _np.ndarray basis, object Ptype,int8_t[::1] sign, dtype[::1] c, index_type[::1] row, index_type[::1] col,_np.ndarray basis_pcon = None):
         cdef npy_intp Ns = basis.shape[0]
         cdef npy_intp Ns_full = 0
         cdef object P
@@ -255,6 +261,9 @@ cdef class general_basis_core_wrap:
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
         cdef void * basis_pcon_ptr = NULL
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("input array must be C-contiguous")
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
@@ -301,11 +310,14 @@ cdef class general_basis_core_wrap:
 
 
     @cython.boundscheck(False)
-    def _make_basis_full(self,_np.ndarray basis,norm_type[:] n):
+    def _make_basis_full(self,_np.ndarray basis,norm_type[::1] n):
         cdef npy_intp Ns = self._Ns_full
         cdef npy_intp mem_MAX = basis.shape[0]
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("input array must be C-contiguous")
 
         if basis.dtype == _np.uint32:
             with nogil:
@@ -318,12 +330,15 @@ cdef class general_basis_core_wrap:
         return Ns
 
     @cython.boundscheck(False)
-    def _make_basis_pcon(self,object Np,_np.ndarray basis,norm_type[:] n):
+    def _make_basis_pcon(self,object Np,_np.ndarray basis,norm_type[::1] n):
         cdef npy_intp Ns = self.get_Ns_pcon(Np)
         cdef uint64_t s  = self.get_s0_pcon(Np)
         cdef npy_intp mem_MAX = basis.shape[0]
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0)
         cdef void * B = self._basis_core
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("input array must be C-contiguous")
 
         if basis.dtype == _np.uint32:
             with nogil:
@@ -342,14 +357,14 @@ cdef class general_basis_core_wrap:
 
 
     @cython.boundscheck(False)
-    def op_bra_ket(self,state_type[:] ket,state_type[:] bra,dtype[:] M,object opstr,int[:] indx,object J, object Np):
-        cdef char[:] c_opstr = bytearray(opstr,"utf-8")
+    def op_bra_ket(self,state_type[::1] ket,state_type[::1] bra,dtype[::1] M,object opstr,int[::1] indx,object J, object Np):
+        cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
         cdef int n_op = indx.shape[0]
         cdef npy_intp Ns = ket.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
         cdef int Npcon_blocks 
-        #cdef unsigned long int[:] Np_array
+        #cdef unsigned long int[::1] Np_array
         cdef set[vector[int]] Np_set
         cdef void * B = self._basis_core
         
@@ -374,7 +389,7 @@ cdef class general_basis_core_wrap:
             raise TypeError("attemping to use real type for complex matrix elements.")
 
     @cython.boundscheck(False)
-    def representative(self,state_type[:] states,state_type[:] ref_states,int[:,::1] g_out=None,int8_t[:] sign_out=None):
+    def representative(self,state_type[::1] states,state_type[::1] ref_states,int[:,::1] g_out=None,int8_t[::1] sign_out=None):
         cdef npy_intp Ns = states.shape[0]
         cdef int * g_out_ptr = NULL
         cdef int8_t * sign_out_ptr = NULL
@@ -391,7 +406,7 @@ cdef class general_basis_core_wrap:
 
 
     @cython.boundscheck(False)
-    def normalization(self,state_type[:] states,norm_type[:] norms):
+    def normalization(self,state_type[::1] states,norm_type[::1] norms):
         cdef npy_intp Ns = states.shape[0]
         cdef void * B = self._basis_core
         with nogil:

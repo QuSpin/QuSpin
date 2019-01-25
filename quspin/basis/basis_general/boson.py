@@ -50,13 +50,13 @@ def get_basis_type(N, Np, sps, use_boost=False, **blocks):
     elif nbits <= 64:
     	return _np.uint64
     elif nbits <= 128 and use_boost:
-    	return _np.dtype((np.void,16))
+    	return _np.dtype((np.void,16)) # sizeof(uint128) is 16
     elif nbits <= 256 and use_boost:
-    	return _np.dtype((np.void,48))
+    	return _np.dtype((np.void,48)) # sizeof(uint256) is 48
     elif nbits <= 512 and use_boost:
-    	return _np.dtype((np.void,80))
+    	return _np.dtype((np.void,80)) # sizeof(uint512) is 80
     elif nbits <= 1024 and use_boost:
-    	return _np.dtype((np.void,144))
+    	return _np.dtype((np.void,144)) # sizeof(uint1024) is 80
     else:
     	return _np.object
 

@@ -5,6 +5,7 @@
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
+#include "misc.h"
 #include <cmath>
 #include <cfloat>
 #include <vector>
@@ -13,16 +14,6 @@
 
 
 
-bool inline check_nan(double val){
-#if defined(_WIN64)
-	// x64 version
-	return _isnanf(val) != 0;
-#elif defined(_WIN32)
-	return _isnan(val) != 0;
-#else
-	return std::isnan(val);
-#endif
-}
 
 
 

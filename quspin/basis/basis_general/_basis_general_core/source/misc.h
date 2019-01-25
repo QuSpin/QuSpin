@@ -25,6 +25,17 @@ K binary_search(const K N,const I A[],const I s){
 }
 
 
+bool inline check_nan(double val){
+#if defined(_WIN64)
+	// x64 version
+	return _isnanf(val) != 0;
+#elif defined(_WIN32)
+	return _isnan(val) != 0;
+#else
+	return std::isnan(val);
+#endif
+}
+
 // template<class I>
 // void inline map_state_wrapper(void *b,void *basis,npy_intp Ns,int n,npy_int8 *sign){
 // 	reinterpret_cast<general_basis_core<I>*>(b)->map_state((I*)basis,Ns,n,sign);
