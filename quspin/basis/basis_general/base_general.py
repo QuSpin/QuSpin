@@ -572,6 +572,9 @@ class basis_general(lattice_basis):
 
 		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
 
+		if states.ndim != 1:
+			raise TypeError("dimension of array_like states must not exceed 1.")
+
 		if return_g:
 			g_out=_np.zeros((states.shape[0],self._qs.shape[0] ), dtype=_np.int32, order='C')
 
@@ -583,16 +586,16 @@ class basis_general(lattice_basis):
 
 			if return_g and return_sign:
 				self._core.representative(states,out,g_out=g_out,sign_out=sign_out)
-				return out.squeeze(), g_out, sign_out
+				return out, g_out, sign_out
 			elif return_g:
 				self._core.representative(states,out,g_out=g_out)
-				return out.squeeze(), g_out
+				return out, g_out
 			elif return_sign:
 				self._core.representative(states,out,sign_out=sign_out)
-				return out.squeeze(), sign_out
+				return out, sign_out
 			else:
 				self._core.representative(states,out)
-				return out.squeeze()
+				return out
 
 		else:
 			if states.shape!=out.shape:
