@@ -115,27 +115,27 @@ def _csc_matvec(bool overwrite_y, indtype[::1] Ap, indtype[::1] Aj,T1[::1] Ax, T
 
   if T1 is cdouble:
     if T2 is cdouble:
-      with nogil:
+      with nogil,parallel():
         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
     else:
       raise TypeError("invalid types")
 
   elif T1 is double:
     if T2 is cdouble or T2 is double:
-      with nogil:
+      with nogil,parallel():
         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
     else:
       raise TypeError("invalid types")
 
   elif T1 is cfloat:
     if T2 is cdouble or T2 is cfloat:
-      with nogil:
+      with nogil,parallel():
         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
     else:
       raise TypeError("invalid types")
 
   else:
-    with nogil:
+    with nogil,parallel():
       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
 
 @cython.boundscheck(False)   

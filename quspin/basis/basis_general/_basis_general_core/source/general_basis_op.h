@@ -7,30 +7,11 @@
 #include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "misc.h"
 #include "openmp.h"
 
 
 
-template<class K,class I>
-K binary_search(const K N,const I A[],const I s){
-	K b,bmin,bmax;
-	bmin = 0;
-	bmax = N-1;
-	while(bmin<=bmax){
-		b = (bmax+bmin)/2;
-		I a = A[b];
-		if(s==a){
-			return b;
-		}
-		else if(s<A[b]){
-			bmin = b + 1;
-		}
-		else{
-			bmax = b - 1;
-		}
-	}
-	return -1;
-}
 
 template<class T>
 int inline check_imag(std::complex<double> m,std::complex<T> *M){
@@ -122,7 +103,22 @@ int general_op(general_basis_core<I> *B,
 
 
 
-
+template<class I, class J, class K, class T>
+int inline general_op_wrapper(void *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const npy_intp Ns,
+						  const void *basis,
+						  const J n[],
+						  		K row[],
+						  		K col[],
+						  		T M[]
+						  )
+{
+	return general_op(reinterpret_cast<general_basis_core<I> *>(B),n_op,opstr,indx,A,Ns,(const I*)basis,n,row,col,M);
+}
 
 
 

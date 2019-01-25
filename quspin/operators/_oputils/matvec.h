@@ -75,8 +75,71 @@ void dia_matvec(const bool overwrite_y,
 }
 
 
+#include <complex>
+
+void inline atomic_add(float &y,const float &aa){
+	#pragma omp atomic
+	y += aa;
+}
+
+void inline atomic_add(double &y,const double &aa){
+	#pragma omp atomic
+	y += aa;
+}
+
+void inline atomic_add(std::complex<float> &y,const std::complex<float> &aa){
+	float * y_v = reinterpret_cast<float*>(&y);
+	const float * aa_v = reinterpret_cast<const float*>(&aa);
+
+	#pragma omp atomic
+	y_v[0] += aa_v[0];
+	#pragma omp atomic
+	y_v[1] += aa_v[1];	
+}
+
+void inline atomic_add(std::complex<double> &y,const std::complex<double> &aa){
+	double * y_v = reinterpret_cast<double*>(&y);
+	const double * aa_v = reinterpret_cast<const double*>(&aa);
+
+	#pragma omp atomic
+	y_v[0] += aa_v[0];
+	#pragma omp atomic
+	y_v[1] += aa_v[1];	
+}
 
 
+template<typename I, typename T1,typename T2>
+void csc_matvec(const bool overwrite_y,
+						const I n_row,
+						const I n_col,
+						const I Ap[],
+						const I Ai[],
+						const T1 Ax[],
+						const T1 a,
+						const T2 x[],
+							  T2 y[])
+{
+	const int nthread = omp_get_num_threads();
+	const I chunk = std::max((I)1,n_row/(100*nthread));
+	if(overwrite_y){
+		#pragma omp for schedule(static,chunk)
+		for(I j = 0; j < n_row; j++){
+			y[j] = 0;
+		}
+	}
+	
+	#pragma omp for schedule(dynamic,chunk)
+	for(I j = 0; j < n_col; j++){
+		I col_start = Ap[j];
+		I col_end   = Ap[j+1];
+
+		for(I ii = col_start; ii < col_end; ii++){
+			const I i = Ai[ii];
+			const T2 aa = (T2)(a * Ax[ii]) * x[j];
+			atomic_add(y[i],aa);
+		}
+	}
+}
 
 
 
@@ -152,6 +215,36 @@ void dia_matvec(const bool overwrite_y,
     }
 }
 
+
+template<typename I, typename T1,typename T2>
+void csc_matvec(const bool overwrite_y,
+						const I n_row,
+						const I n_col,
+						const I Ap[],
+						const I Ai[],
+						const T1 Ax[],
+						const T1 a,
+						const T2 x[],
+							  T2 y[])
+{
+	if(overwrite_y){
+		for(I j = 0; j < n_row; j++){
+			y[j] = 0;
+		}
+	}
+
+	
+
+	for(I j = 0; j < n_col; j++){
+		I col_start = Ap[j];
+		I col_end   = Ap[j+1];
+
+		for(I ii = col_start; ii < col_end; ii++){
+			const I i = Ai[ii];
+			y[i] += (T2)(a * Ax[ii]) * x[j];
+		}
+	}
+}
 
 
 
@@ -248,35 +341,7 @@ void csr_matvecs(const bool overwrite_y,
 
 
 
-template<typename I, typename T1,typename T2>
-void csc_matvec(const bool overwrite_y,
-						const I n_row,
-						const I n_col,
-						const I Ap[],
-						const I Ai[],
-						const T1 Ax[],
-						const T1 a,
-						const T2 x[],
-							  T2 y[])
-{
-	if(overwrite_y){
-		for(I j = 0; j < n_row; j++){
-			y[j] = 0;
-		}
-	}
 
-	
-
-	for(I j = 0; j < n_col; j++){
-		I col_start = Ap[j];
-		I col_end   = Ap[j+1];
-
-		for(I ii = col_start; ii < col_end; ii++){
-			const I i = Ai[ii];
-			y[i] += (T2)(a * Ax[ii]) * x[j];;
-		}
-	}
-}
 
 
 template<typename I, typename T1,typename T2>

@@ -1,4 +1,4 @@
-from ._basis_general_core import hcb_basis_core_wrap_32,hcb_basis_core_wrap_64
+from ._basis_general_core import hcb_basis_core_wrap
 from .base_general import basis_general
 import numpy as _np
 from scipy.misc import comb
@@ -28,6 +28,7 @@ class hcb_basis_general(basis_general):
 			Ns = (1<<N)	
 		elif type(Nb) is int:
 			self._check_pcon = True
+			self._get_proj_pcon = True
 			Ns = comb(N,Nb,exact=True)
 		else:
 			try:
@@ -52,14 +53,13 @@ class hcb_basis_general(basis_general):
 
 		# create basis constructor
 		if N<=32:
-			basis_type=_np.uint32
-			self._core = hcb_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint32
 		elif N<=64:
-			basis_type=_np.uint64
-			self._core = hcb_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint64
 		else:
-			raise ValueError("system size N must be <=64.")
+			raise ValueError("basis type is not representable with uint32 or uint64.")
 
+		self._core = hcb_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 
 		self._N = N
 		self._Ns = Ns
@@ -71,10 +71,9 @@ class hcb_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
 			
-
 		self._sps=2
 		self._allowed_ops=set(["I","x","y","z","+","-","n"])
 		

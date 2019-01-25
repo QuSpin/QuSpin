@@ -71,10 +71,15 @@ def check_symmetry_maps(item1,item2):
 	if not _np.array_equal(sites1,sites2):
 		warnings.warn("using non-commuting symmetries can lead to unwanted behaviour of general basis, make sure that quantum numbers are invariant under non-commuting symmetries!",GeneralBasisWarning,stacklevel=5)
 
+
+
+
 class basis_general(lattice_basis):
 	def __init__(self,N,**kwargs):
 		self._unique_me = True
 		self._check_pcon = None
+		self._basis_pcon = None
+		self._get_proj_pcon = False
 		self._made_basis = False # keeps track of whether the basis has been made
 
 		if self.__class__ is basis_general:
@@ -210,7 +215,6 @@ class basis_general(lattice_basis):
 
 		return ME,row,col
 	
-
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
@@ -242,28 +246,32 @@ class basis_general(lattice_basis):
 
 		"""
 
-		if pcon==True:
-			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
-				\n If you need to use this feature, consider the following procedure: \
-				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
-				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
-				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm)')
-
 		if not self._made_basis:
 			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
+		basis_pcon = None
+		Ns_full = (self._sps**self._N)
 
-		c = _np.ones_like(self._basis,dtype=dtype)
+		if pcon and self._get_proj_pcon:
+
+			if self._basis_pcon is None:
+				self._basis_pcon = self.__class__(**self._pcon_args)
+
+			basis_pcon = self._basis_pcon._basis
+			Ns_full = basis_pcon.shape[0]
+		elif pcon and self._get_proj_pcon:
+			raise TypeError("pcon=True only works for basis of a single particle number sector.")
+
 		sign = _np.ones_like(self._basis,dtype=_np.int8)
-		c[:] = self._n[:]
+		c = self._n.astype(dtype,copy=True)
 		c *= self._pers.prod()
 		_np.sqrt(c,out=c)
 		_np.power(c,-1,out=c)
-		index_type = _np.min_scalar_type(-(self._sps**self._N))
+		index_type = _np.result_type(_np.min_scalar_type(-Ns_full),_np.int32)
 		col = _np.arange(self._Ns,dtype=index_type)
 		row = _np.arange(self._Ns,dtype=index_type)
 
-		return self._core.get_proj(self._basis,dtype,sign,c,row,col)
+		return self._core.get_proj(self._basis,dtype,sign,c,row,col,basis_pcon=basis_pcon)
 
 	def get_vec(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
@@ -298,13 +306,13 @@ class basis_general(lattice_basis):
 
 		"""
 
+		basis_pcon = None
+
 		if pcon==True:
-			raise NotImplementedError('Optional argument pcon will be implemented in a future version. \n \
-				\n If you need to use this feature, consider the following procedure: \
-				\n (i) create the projector from the symmetry-reduced to the full basis P_full_symm=basis.get_proj(); \
-				\n (ii) create a second basis object basis2 which only has particle conservation to get the corresponding projector P_full_pcon=basis2.get_proj() \
-				\n (iii) compute the combined projector: P_pcon_symm = P_full_pcon.conj().T.dot(P_full_symm) \
-				\n (iv) use P_pcon_symm to transform the state to the particle-conserving basis.')
+			if self._basis_pcon is None:
+				self._basis_pcon = self.__class__(**self._pcon_args)
+
+			basis_pcon = self._basis_pcon._basis
 
 		if not self._made_basis:
 			raise AttributeError('this function requires the basis to be cosntructed first, see basis.make().')
@@ -314,21 +322,25 @@ class basis_general(lattice_basis):
 			v0 = _np.asanyarray(v0)
 
 		squeeze = False
+		if pcon:
+			Ns_full = basis_pcon.size
+		else:
+			Ns_full = self._sps**self._N
 
 		if v0.ndim == 1:
-			shape = (self._sps**self._N,1)
 			v0 = v0.reshape((-1,1))
+			shape = (Ns_full,1)
 			squeeze = True
 		elif v0.ndim == 2:
-			shape = (self._sps**self._N,v0.shape[1])
+			shape = (Ns_full,v0.shape[1])
 		else:
-			raise ValueError("excpecting v0 to have ndim at most 2")
+			raise ValueError("excpecting v0 to have ndim > 0 and at most 2")
 
 		if self._Ns <= 0:
 			if sparse:
-				return _sp.csr_matrix(([],([],[])),shape=(self._sps**self._N,0),dtype=v0.dtype)
+				return _sp.csr_matrix(([],([],[])),shape=(Ns_full,0),dtype=v0.dtype)
 			else:
-				return _np.zeros((self._sps**self._N,0),dtype=v0.dtype)
+				return _np.zeros((Ns_full,0),dtype=v0.dtype)
 
 		if v0.shape[0] != self._Ns:
 			raise ValueError("v0 shape {0} not compatible with Ns={1}".format(v0.shape,self._Ns))
@@ -337,15 +349,14 @@ class basis_general(lattice_basis):
 			# return self.get_proj(v0.dtype).dot(v0)
 			raise ValueError
 
-		if not v0.flags["C_CONTIGUOUS"]:
-			v0 = _np.ascontiguousarray(v0)
+		v0 = _np.ascontiguousarray(v0)
 
 		if sparse:
 			# current work-around for sparse
-			return self.get_proj(v0.dtype).dot(_sp.csr_matrix(v0))
+			return self.get_proj(v0.dtype,pcon=pcon).dot(_sp.csr_matrix(v0))
 		else:
 			v_out = _np.zeros(shape,dtype=v0.dtype,)
-			self._core.get_vec_dense(self._basis,self._n,v0,v_out)
+			self._core.get_vec_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
 			if squeeze:
 				return  _np.squeeze(v_out)
 			else:
@@ -405,13 +416,8 @@ class basis_general(lattice_basis):
 		else:
 			Ns = max(self._Ns,1000)
 
-
 		# preallocate variables
-		if self._N<=32:
-			basis = _np.zeros(Ns,dtype=_np.uint32)
-		elif self._N<=64:
-			basis = _np.zeros(Ns,dtype=_np.uint64)
-		
+		basis = _np.zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
 		
 		# make basis
@@ -426,7 +432,7 @@ class basis_general(lattice_basis):
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
 		# sort basis
-		if type(self._Np) is int or self._Np is None:
+		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
 			if Ns > 0:
 				self._basis = basis[Ns-1::-1].copy()
 				self._n = n[Ns-1::-1].copy()
@@ -444,7 +450,7 @@ class basis_general(lattice_basis):
 
 		self._Ns=Ns
 
-		self._index_type = _np.min_scalar_type(-self._Ns)
+		self._index_type = _np.result_type(_np.min_scalar_type(self._Ns),_np.int32)
 		self._reduce_n_dtype()
 
 		self._made_basis = True

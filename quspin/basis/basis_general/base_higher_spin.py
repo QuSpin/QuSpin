@@ -1,4 +1,4 @@
-from ._basis_general_core import higher_spin_basis_core_wrap_32,higher_spin_basis_core_wrap_64
+from ._basis_general_core import higher_spin_basis_core_wrap
 from .base_general import basis_general
 from .boson import H_dim,get_basis_type
 import numpy as _np
@@ -34,11 +34,12 @@ class higher_spin_basis_general(basis_general):
 
 		if Nup is None:
 			Ns = sps**N
-			basis_type = get_basis_type(N,Nup,sps)
+			self._basis_dtype = get_basis_type(N,Nup,sps)
 		elif type(Nup) is int:
 			self._check_pcon = True
+			self._get_proj_pcon = True
 			Ns = H_dim(Nup,N,sps-1)
-			basis_type = get_basis_type(N,Nup,sps)
+			self._basis_dtype = get_basis_type(N,Nup,sps)
 		else:
 			try:
 				Np_iter = iter(Nup)
@@ -48,8 +49,7 @@ class higher_spin_basis_general(basis_general):
 			for Nup in Np_iter:
 				Ns += H_dim(Nup,N,sps-1)
 
-			basis_type = get_basis_type(N,max(iter(Nup)),sps)
-
+			self._basis_dtype = get_basis_type(N,max(iter(Nup)),sps)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
@@ -62,13 +62,10 @@ class higher_spin_basis_general(basis_general):
 
 				Ns = Ns_block_est
 
-		if basis_type==_np.uint32:
-			self._core = higher_spin_basis_core_wrap_32(N,sps,self._maps,self._pers,self._qs)
-		elif basis_type==_np.uint64:
-			self._core = higher_spin_basis_core_wrap_64(N,sps,self._maps,self._pers,self._qs)
-		else:
-			raise ValueError("states can't be represented as 64-bit unsigned integer")
+		if self._basis_dtype not in [_np.uint32,_np.uint64]:
+			raise ValueError("basis type is not representable with uint32 or uint64.")
 
+		self._core = higher_spin_basis_core_wrap(self._basis_dtype,N,sps,self._maps,self._pers,self._qs)
 
 		self._N = N
 		self._Ns = Ns
@@ -82,7 +79,6 @@ class higher_spin_basis_general(basis_general):
 			self._Ns=1
 			self._basis=_np.zeros(self._Ns,dtype=basis_type)
 			self._n=_np.zeros(self._Ns,dtype=basis_type)
-
 
 		self._sps=sps
 		self._allowed_ops=set(["I","z","+","-"])

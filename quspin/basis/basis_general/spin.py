@@ -110,6 +110,11 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			Nup = int((m+S)*N)
 
+
+		self._pcon_args = dict(N=N,Nup=Nup,S=self._S)
+		if _Np is not None:
+			self._pcon_args["_Np"] = _Np
+
 		if sps==2:
 			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
 		else:

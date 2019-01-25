@@ -12,8 +12,8 @@ from itertools import product
 dtypes = [np.float32,np.float64,np.complex64,np.complex128]
 formats = ["dia","csr","csc"]
 
-def eps(dtype1,dtype2):
-	return 100*max(np.finfo(dtype1).eps,np.finfo(dtype2).eps)
+def eps(N,dtype1,dtype2):
+	return N*max(np.finfo(dtype1).eps,np.finfo(dtype2).eps)
 
 def func(t):
 	return t
@@ -22,14 +22,14 @@ def func_cmplx(t):
 	return 1j*t
 
 
-N = 100
+N = 1000
 for fmt in formats:
 	for dtype1,dtype2 in product(dtypes,dtypes):
 		for i in range(10):
 			print("testing {} {} {} {}".format(fmt,dtype1,dtype2,i+1))
 			if fmt in ["csr","csc"]:
 			
-				A = (random(N,N,density=0.3) + 1j*random(N,N,density=0.3))
+				A = (random(N,N,density=np.log(N)/N) + 1j*random(N,N,density=np.log(N)/N))
 				A = (A + A.H)/2.0
 				A = A.astype(dtype1).asformat(fmt)
 			else:
@@ -62,7 +62,7 @@ for fmt in formats:
 
 
 			result_dtype = np.result_type(dtype1,dtype2)
-			atol = eps(dtype1,dtype2)
+			atol = eps(N,dtype1,dtype2)
 			try:
 				np.testing.assert_allclose(res1,res2,atol=atol)
 			except AssertionError,e:

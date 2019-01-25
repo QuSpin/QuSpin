@@ -21221,7 +21221,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_146_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21232,31 +21232,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_146_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,float,float>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,float,float>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21442,7 +21461,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_148_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21453,31 +21472,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_148_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,float,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,float,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21663,7 +21701,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_150_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21674,31 +21712,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_150_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,float,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,float,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21884,7 +21941,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_152_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -21895,31 +21952,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_152_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,float,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,float,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -22284,7 +22360,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_156_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -22295,31 +22371,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_156_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":126
+                /* "quspin/operators/_oputils.pyx":126
  *     if T2 is cdouble or T2 is double:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,double,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,double,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -22684,7 +22779,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_160_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -22695,31 +22790,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_160_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":126
+                /* "quspin/operators/_oputils.pyx":126
  *     if T2 is cdouble or T2 is double:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,double,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,double,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -23263,7 +23377,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_166_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -23274,31 +23388,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_166_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":133
+                /* "quspin/operators/_oputils.pyx":133
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,__pyx_t_float_complex,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,__pyx_t_float_complex,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -23484,7 +23617,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_168_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -23495,31 +23628,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_168_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":133
+                /* "quspin/operators/_oputils.pyx":133
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,__pyx_t_float_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,__pyx_t_float_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -24242,7 +24394,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_176_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":118
  *   if T1 is cdouble:
  *     if T2 is cdouble:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -24253,31 +24405,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_176_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":119
+                /* "quspin/operators/_oputils.pyx":119
  *     if T2 is cdouble:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int32_t,__pyx_t_double_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int32_t,__pyx_t_double_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int32_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":118
  *   if T1 is cdouble:
  *     if T2 is cdouble:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -24463,7 +24634,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_178_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -24474,31 +24645,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_178_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,float,float>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,float,float>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -24684,7 +24874,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_180_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -24695,31 +24885,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_180_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,float,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,float,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -24905,7 +25114,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_182_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -24916,31 +25125,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_182_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,float,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,float,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -25126,7 +25354,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_184_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -25137,31 +25365,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_184_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":139
+                /* "quspin/operators/_oputils.pyx":139
  *   else:
- *     with nogil:
+ *     with nogil,parallel():
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,float,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,float,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":138
  * 
  *   else:
- *     with nogil:             # <<<<<<<<<<<<<<
+ *     with nogil,parallel():             # <<<<<<<<<<<<<<
  *       csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  * 
  */
@@ -25526,7 +25773,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_188_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -25537,31 +25784,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_188_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":126
+                /* "quspin/operators/_oputils.pyx":126
  *     if T2 is cdouble or T2 is double:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,double,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,double,double>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -25926,7 +26192,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_192_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -25937,31 +26203,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_192_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":126
+                /* "quspin/operators/_oputils.pyx":126
  *     if T2 is cdouble or T2 is double:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,double,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,double,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((double *) ( /* dim=0 */ ((char *) (((double *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_v_a, (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":125
  *   elif T1 is double:
  *     if T2 is cdouble or T2 is double:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -26505,7 +26790,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_198_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -26516,31 +26801,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_198_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":133
+                /* "quspin/operators/_oputils.pyx":133
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,__pyx_t_float_complex,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,__pyx_t_float_complex,__pyx_t_float_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -26726,7 +27030,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_200_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -26737,31 +27041,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_200_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":133
+                /* "quspin/operators/_oputils.pyx":133
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,__pyx_t_float_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,__pyx_t_float_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_float_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_float_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_float_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":132
  *   elif T1 is cfloat:
  *     if T2 is cdouble or T2 is cfloat:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -27484,7 +27807,7 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_208_csc_matvec(CYTHON_UNU
   /* "quspin/operators/_oputils.pyx":118
  *   if T1 is cdouble:
  *     if T2 is cdouble:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */
@@ -27495,31 +27818,50 @@ static PyObject *__pyx_pf_6quspin_9operators_8_oputils_208_csc_matvec(CYTHON_UNU
       __Pyx_FastGIL_Remember();
       #endif
       /*try:*/ {
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            #ifdef _OPENMP
+            #pragma omp parallel  private(__pyx_t_1, __pyx_t_2, __pyx_t_3, __pyx_t_4, __pyx_t_5)
+            #endif /* _OPENMP */
+            {
 
-        /* "quspin/operators/_oputils.pyx":119
+                /* "quspin/operators/_oputils.pyx":119
  *     if T2 is cdouble:
- *       with nogil:
+ *       with nogil,parallel():
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])             # <<<<<<<<<<<<<<
  *     else:
  *       raise TypeError("invalid types")
  */
-        __pyx_t_1 = 0;
-        if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
-        __pyx_t_2 = 0;
-        if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
-        __pyx_t_3 = 0;
-        if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
-        __pyx_t_4 = 0;
-        if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
-        __pyx_t_5 = 0;
-        if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
-        csc_matvec<__pyx_t_5numpy_int64_t,__pyx_t_double_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+                __pyx_t_1 = 0;
+                if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Ap.shape[0];
+                __pyx_t_2 = 0;
+                if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Aj.shape[0];
+                __pyx_t_3 = 0;
+                if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_Ax.shape[0];
+                __pyx_t_4 = 0;
+                if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_Xx.shape[0];
+                __pyx_t_5 = 0;
+                if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_Yx.shape[0];
+                csc_matvec<__pyx_t_5numpy_int64_t,__pyx_t_double_complex,__pyx_t_double_complex>(__pyx_v_overwrite_y, __pyx_v_nr, __pyx_v_nc, (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Ap.data) + __pyx_t_1)) )))), (&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ ((char *) (((__pyx_t_5numpy_int64_t *) __pyx_v_Aj.data) + __pyx_t_2)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Ax.data) + __pyx_t_3)) )))), __pyx_t_double_complex_from_parts(__Pyx_CREAL(__pyx_v_a), __Pyx_CIMAG(__pyx_v_a)), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Xx.data) + __pyx_t_4)) )))), (&(*((__pyx_t_double_complex *) ( /* dim=0 */ ((char *) (((__pyx_t_double_complex *) __pyx_v_Yx.data) + __pyx_t_5)) )))));
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
       }
 
       /* "quspin/operators/_oputils.pyx":118
  *   if T1 is cdouble:
  *     if T2 is cdouble:
- *       with nogil:             # <<<<<<<<<<<<<<
+ *       with nogil,parallel():             # <<<<<<<<<<<<<<
  *         csc_matvec(overwrite_y,nr,nc,&Ap[0],&Aj[0],&Ax[0],a,&Xx[0],&Yx[0])
  *     else:
  */

@@ -5,6 +5,7 @@
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
+#include "misc.h"
 #include <cmath>
 #include <cfloat>
 #include <vector>
@@ -13,16 +14,7 @@
 
 
 
-bool inline check_nan(double val){
-#if defined(_WIN64)
-	// x64 version
-	return _isnanf(val) != 0;
-#elif defined(_WIN32)
-	return _isnan(val) != 0;
-#else
-	return std::isnan(val);
-#endif
-}
+
 
 
 template<class I,class J>
@@ -243,5 +235,19 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 		return make_basis_pcon_sequential(B,MAX,mem_MAX,s,basis,n);
 	}
 }
+
+
+
+template<class I,class J>
+npy_intp inline make_basis_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,void * basis,J n[]){
+	return make_basis(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I*)basis,n);
+}
+
+template<class I,class J>
+npy_intp inline make_basis_pcon_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,npy_uint64 s,void * basis,J n[]){
+	return make_basis_pcon(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I)s,(I*)basis,n);
+}
+
+
 
 #endif

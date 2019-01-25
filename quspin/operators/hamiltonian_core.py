@@ -1544,10 +1544,10 @@ class hamiltonian(object):
 						evolve_args = evolve_args + (self.__multi_SO,)
 
 		elif eom == "SE_omp":
-			if not (_sp.isspmatrix_csr(self.static) or _sp.isspmatrix_dia(self.static)):
+			if not (_sp.isspmatrix_csr(self.static) or _sp.isspmatrix_dia(self.static) or _sp.isspmatrix_csc(self.static)):
 				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
 
-			if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) for func,Hd in iteritems(self._dynamic)):
+			if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) or _sp.isspmatrix_csc(Hd) for func,Hd in iteritems(self._dynamic)):
 				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
 
 			if v0.ndim > 1:

@@ -27,9 +27,11 @@ I inline hcb_map_bits(I s,const int map[],const int N){
 template<class I>
 class hcb_basis_core : public general_basis_core<I>
 {
-	tr_benes<I> * benes_maps;
-	I * invs;
+
 	public:
+		tr_benes<I> * benes_maps;
+		I * invs;
+
 		hcb_basis_core(const int _N) : \
 		general_basis_core<I>::general_basis_core(_N) {}
 

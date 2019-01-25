@@ -3,8 +3,10 @@
 
 #include <complex>
 #include <limits>
+#include <iostream>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "misc.h"
 #include "openmp.h"
 
 
@@ -15,38 +17,24 @@ int general_normalization(general_basis_core<I> *B,
 							const npy_intp Ns
 				)
 {	int err = 0;
-	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
 
 	#pragma omp parallel for schedule(dynamic,chunk)
 	for(npy_intp i=0;i<Ns;i++){
-
-		double norm = B->check_state(s[i]);
-		J int_norm = norm;
-
 		if(err != 0){
 			continue;
 		}
 
-		#if defined(_WIN64)
-			// x64 version
-			bool isnan = _isnanf(norm) != 0;
-		#elif defined(_WIN32)
-			bool isnan = _isnan(norm) != 0;
-		#else
-			bool isnan = std::isnan(norm);
-		#endif
+		double norm = B->check_state(s[i]);
+		npy_uint64 int_norm = norm;
 		
-		if( int_norm < std::numeric_limits<J>::max() ){ // checks if data type is large enough
-			if(!isnan && int_norm>0 ){
-				n[i] = norm;
-			}
-			else{
-				n[i] = 0;
-			}
-
+		// checks if data type is large enough
+		if(!check_nan(norm) && int_norm>0 ){
+			if( int_norm > std::numeric_limits<J>::max() ){err = 1;}
+			n[i] = int_norm;
 		}
 		else{
-			err = 1;
+			n[i] = 0;
 		}
 
 	}
@@ -65,7 +53,7 @@ void general_representative(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
-	const npy_intp chunk = Ns/omp_get_num_threads();
+	const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
 	int g[nt];
 	int sign;
 

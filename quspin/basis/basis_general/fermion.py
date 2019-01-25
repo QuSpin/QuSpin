@@ -1,5 +1,5 @@
-from ._basis_general_core import spinful_fermion_basis_core_wrap_32,spinful_fermion_basis_core_wrap_64
-from ._basis_general_core import spinless_fermion_basis_core_wrap_32,spinless_fermion_basis_core_wrap_64
+from ._basis_general_core import spinful_fermion_basis_core_wrap
+from ._basis_general_core import spinless_fermion_basis_core_wrap
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -116,6 +116,7 @@ class spinless_fermion_basis_general(basis_general):
 			Ns = (1<<N)	
 		elif type(Nf) is int:
 			self._check_pcon = True
+			self._get_proj_pcon = True
 			Ns = comb(N,Nf,exact=True)
 		else:
 			try:
@@ -128,6 +129,8 @@ class spinless_fermion_basis_general(basis_general):
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
 				Ns += comb(N,Nf,exact=True)
 
+		self._pcon_args = dict(N=N,Nf=Nf)
+
 		if len(self._pers)>0:
 			if Ns_block_est is None:
 				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
@@ -139,17 +142,16 @@ class spinless_fermion_basis_general(basis_general):
 					
 				Ns = Ns_block_est
 
-
 		if N<=32:
-			basis_type=_np.uint32
-			self._core = spinless_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint32
 		elif N<=64:
-			basis_type=_np.uint64
-			self._core = spinless_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint64
 		else:
-			raise ValueError("system size N must be <=64.")
+			raise ValueError("basis type is not representable with uint32 or uint64.")
 
-
+		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
+		
+		self._sps = 2
 		self._N = N
 		self._Ns = Ns
 		self._Np = Nf
@@ -160,11 +162,10 @@ class spinless_fermion_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
 
 
-		self._sps=2
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -414,6 +415,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			if type(Nf) is tuple:
 				if len(Nf)==2:
+					self._get_proj_pcon = True
 					Nup,Ndown = Nf
 					if (type(Nup) is int) and type(Ndown) is int:
 						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
@@ -452,6 +454,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 					Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
+		self._pcon_args = dict(N=N,Nf=Nf)
+
 		if len(self._pers)>0:
 			if Ns_block_est is None:
 				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
@@ -464,40 +468,37 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				Ns = Ns_block_est
 
 		if N<=16:
-			basis_type=_np.uint32
-			self._core = spinful_fermion_basis_core_wrap_32(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint32
 		elif N<=32:
-			basis_type=_np.uint64
-			self._core = spinful_fermion_basis_core_wrap_64(N,self._maps,self._pers,self._qs)
+			self._basis_dtype=_np.uint64
 		else:
-			raise ValueError("system size N must be <=32.")
+			raise ValueError("basis type is not representable with uint32 or uint64.")
 
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 
-
+		self._sps = 2
 		self._N = 2*N
 		self._Ns = Ns
 		self._Np = Nf
 		
-
 		# make the basis; make() is function method of base_general
 		if make_basis:		
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
 
-
-		
-		self._sps=2
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
 							"\n\tz: c-symm number operator")
+
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
+
 
 	def _Op(self,opstr,indx,J,dtype):
 
@@ -583,9 +584,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	def _get__str__(self):
 		def get_state(b):
 			b = int(b)
-			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
+			bits_left = ((b>>(self._N-i-1))&1 for i in range(self._N//2))
 			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
-			bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			bits_right = ((b>>(self._N//2-i-1))&1 for i in range(self._N//2))
 			state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
 			return state_left+state_right
 

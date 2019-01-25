@@ -67,8 +67,13 @@ def check_gen_basis_hcb(S="1/2"):
 
 		P1 = basis_1d.get_proj(dtype)
 		P2 = gen_basis.get_proj(dtype)
-
 		np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
+
+		if Nup is not None:
+			P1 = basis_1d.get_proj(dtype,pcon=True)
+			P2 = gen_basis.get_proj(dtype,pcon=True)
+
+			np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
 
 		v = np.random.ranf(size=(basis_1d.Ns,)).astype(dtype)
 		vs = np.random.ranf(size=(basis_1d.Ns,100)).astype(dtype)
