@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <limits>
+#include <iostream>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "misc.h"
@@ -20,26 +21,20 @@ int general_normalization(general_basis_core<I> *B,
 
 	#pragma omp parallel for schedule(dynamic,chunk)
 	for(npy_intp i=0;i<Ns;i++){
-
-		double norm = B->check_state(s[i]);
-		J int_norm = norm;
-
 		if(err != 0){
 			continue;
 		}
 
-
-		if( norm < std::numeric_limits<J>::max() ){ // checks if data type is large enough
-			if(!check_nan(norm) && int_norm>0 ){
-				n[i] = norm;
-			}
-			else{
-				n[i] = 0;
-			}
-
+		double norm = B->check_state(s[i]);
+		npy_uint64 int_norm = norm;
+		
+		// checks if data type is large enough
+		if(!check_nan(norm) && int_norm>0 ){
+			if( int_norm > std::numeric_limits<J>::max() ){err = 1;}
+			n[i] = int_norm;
 		}
 		else{
-			err = 1;
+			n[i] = 0;
 		}
 
 	}
