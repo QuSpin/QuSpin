@@ -419,7 +419,7 @@ class basis_general(lattice_basis):
 		# preallocate variables
 		basis = _np.zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
-		
+
 		# make basis
 		if self._count_particles and (self._Np is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)
