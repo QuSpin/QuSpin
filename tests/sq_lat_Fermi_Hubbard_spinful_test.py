@@ -25,19 +25,16 @@ def test(Lx,Ly):
 		pcon_basis = spinful_fermion_basis_general(N,Nf=(Nf,N-Nf) )
 		Ns_block = 0
 		for blocks in tr.allowed_blocks_iter_parity():
-			print(N,Nf,N-Nf)
-			print(blocks)
 			basis =  spinful_fermion_basis_general(N,Nf=(Nf,N-Nf),**blocks)
 			Ns_block += basis.Ns
 			basis_blocks.append(basis)
-		
+
 		assert(Ns_block == pcon_basis.Ns)
 
 		basis_dict[Nf] = (pcon_basis,basis_blocks)
 
 
-	J = [[np.sqrt(2.0),i,tr.T_x[i]] for i in range(N)]
-	J.extend([[np.sqrt(2.0),i,tr.T_y[i]] for i in range(N)])
+	J = [[np.sqrt(2.0),i,i] for i in range(N)]
 	
 	Jp = [[1.0,i,tr.T_x[i]] for i in range(N)]
 	Jp.extend([[1.0,i,tr.T_y[i]] for i in range(N)])

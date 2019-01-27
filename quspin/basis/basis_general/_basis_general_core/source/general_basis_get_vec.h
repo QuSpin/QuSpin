@@ -5,6 +5,7 @@
 
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "misc.h"
 
 
 template<class T>
@@ -72,6 +73,50 @@ bool get_vec_rep(general_basis_core<I> *B,
 }
 
 
+
+template<class I,class T>
+bool get_vec_rep_pcon(general_basis_core<I> *B,
+									 I s,
+								   int &sign,
+							 const int nt,
+							 const npy_intp n_vec,
+							 const I basis_pcon[],
+							 const npy_intp Ns_full,
+							 const T in[],
+							 std::complex<double> c,
+							 	   T out[],
+							 const int depth)
+{
+	bool err = true;
+	if(nt<=0){
+		const npy_intp full = (Ns_full - s - 1)*n_vec;
+		err = update_out_dense(c,sign,n_vec,in,&out[full]);		
+		return err;
+	}
+	int per = B->pers[depth];
+	double q = (2.0*M_PI*B->qs[depth])/per;
+	std::complex<double> cc = std::exp(std::complex<double>(0,-q));
+
+	if(depth < nt-1){
+		for(int j=0;j<per && err;j++){
+			err = get_vec_rep_pcon(B,s,sign,nt,n_vec,basis_pcon,Ns_full,in,c,out,depth+1);
+			c *= cc;
+			s = B->map_state(s,depth,sign);
+		}
+		return err;
+	}
+	else{
+		for(int j=0;j<per && err;j++){
+			const npy_intp full = binary_search(Ns_full,basis_pcon,s)*n_vec;
+			err = update_out_dense(c,sign,n_vec,in,&out[full]);
+			c *= cc;
+			s = B->map_state(s,depth,sign);
+		}
+		return err;
+	}
+}
+
+
 template<class I,class J,class T>
 bool get_vec_general_dense(general_basis_core<I> *B,
 										 const I basis[],
@@ -79,11 +124,13 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 										 const npy_intp n_vec,
 										 const npy_intp Ns,
 										 const npy_intp Ns_full,
+										 const I basis_pcon[],
 										 const T in[],
 										 	   T out[])
 {
 	bool err = true;
 	const int nt = B->get_nt();
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	double norm = 1.0;
 
@@ -91,18 +138,32 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 		norm *= B->pers[i];
 	}
 
+	if(basis_pcon){
+		#pragma omp parallel for schedule(dynamic,chunk) firstprivate(norm)
+		for(npy_intp k=0;k<Ns;k++){
+			if(!err){continue;}
 
-	#pragma omp parallel for schedule(dynamic) firstprivate(norm)
-	for(npy_intp k=0;k<Ns;k++){
-		if(!err)
-			continue;
+				std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
+				int sign = 1;
+				bool local_err = get_vec_rep_pcon(B,basis[k],sign,nt,n_vec,basis_pcon,Ns_full,&in[k*n_vec],c,out,0);
+				if(!local_err){
+					#pragma omp critical
+					err = local_err;
+				}
+		}
+	}
+	else{
+		#pragma omp parallel for schedule(dynamic,chunk) firstprivate(norm)
+		for(npy_intp k=0;k<Ns;k++){
+			if(!err){continue;}
 
-		std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
-		int sign = 1;
-		bool local_err = get_vec_rep(B,basis[k],sign,nt,n_vec,Ns_full,&in[k*n_vec],c,out,0);
-		if(!local_err){
-			#pragma omp critical
-			err = local_err;
+			std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
+			int sign = 1;
+			bool local_err = get_vec_rep(B,basis[k],sign,nt,n_vec,Ns_full,&in[k*n_vec],c,out,0);
+			if(!local_err){
+				#pragma omp critical
+				err = local_err;
+			}
 		}
 	}
 	return err;

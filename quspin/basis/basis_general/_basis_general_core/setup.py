@@ -10,6 +10,7 @@ def cython_files():
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+    # cython_src = ['hcb_core.pyx']
     include_dirs = os.path.join(package_dir,"source")
     if USE_CYTHON:
         cythonize(cython_src,language="c++",include_path=[include_dirs])
@@ -31,34 +32,35 @@ def configuration(parent_package='', top_path=None):
             extra_link_args = ["-lgomp"]
  
         package_dir = os.path.dirname(os.path.realpath(__file__))
-        include_dirs = os.path.join(package_dir,"source")
+        include_dir1 = os.path.join(os.environ["HOME"],"anaconda2","include")
+        include_dir2 = os.path.join(package_dir,"source")
 
         hcp_src = os.path.join(package_dir,"hcb_core.cpp") 
-        config.add_extension('hcb_core',sources=hcp_src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('hcb_core',sources=hcp_src,include_dirs=[numpy.get_include(),include_dir1,include_dir2],
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
         boson_src = os.path.join(package_dir,"boson_core.cpp") 
-        config.add_extension('boson_core',sources=boson_src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('boson_core',sources=boson_src,include_dirs=[numpy.get_include(),include_dir1,include_dir2],
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
         higher_spin_src = os.path.join(package_dir,"higher_spin_core.cpp") 
-        config.add_extension('higher_spin_core',sources=higher_spin_src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('higher_spin_core',sources=higher_spin_src,include_dirs=[numpy.get_include(),include_dir1,include_dir2],
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
         spinless_fermion_src = os.path.join(package_dir,"spinless_fermion_core.cpp") 
-        config.add_extension('spinless_fermion_core',sources=spinless_fermion_src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('spinless_fermion_core',sources=spinless_fermion_src,include_dirs=[numpy.get_include(),include_dir1,include_dir2],
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
         spinful_fermion_src = os.path.join(package_dir,"spinful_fermion_core.cpp") 
-        config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,include_dirs=[numpy.get_include(),include_dir1,include_dir2],
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")

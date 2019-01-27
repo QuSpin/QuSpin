@@ -23,6 +23,7 @@ requirements:
     - clang # [osx]
     - clangxx # [osx]
     - libcxx # [osx]
+    - llvm-openmp #[osx]
     - python {{ python }}
     - numpy >=1.10.0
     - scipy >=0.19.0
@@ -30,6 +31,8 @@ requirements:
     - joblib
     - matplotlib
     - dill
+    - gmpy2 
+    - numba
     
 test:
   imports:
