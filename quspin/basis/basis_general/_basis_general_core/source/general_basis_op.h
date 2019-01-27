@@ -48,6 +48,7 @@ int general_op(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
+	const bool full_basis = ((npy_intp)1 << (npy_intp)(B->N)) == Ns;
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
@@ -72,7 +73,13 @@ int general_op(general_basis_core<I> *B,
 			K j = i;
 			if(r != basis[i]){
 				I rr = B->ref_state(r,g,sign);
-				j = binary_search(Ns,basis,rr);
+				if(full_basis){
+					j = Ns - (npy_intp)rr - 1;
+				}
+				else{
+					j = binary_search(Ns,basis,rr);
+				}
+				
 			}
 
 			if(j >= 0){
@@ -103,21 +110,147 @@ int general_op(general_basis_core<I> *B,
 
 
 
-template<class I, class J, class K, class T>
-int inline general_op_wrapper(void *B,
+
+
+template<class T>
+int inline atomic_add(const std::complex<double> m,std::complex<T> *M){
+	T * M_v = reinterpret_cast<T*>(M);
+	const T m_real = m.real();
+	const T m_imag = m.imag();
+	#pragma omp atomic
+	M_v[0] += m_real;
+	#pragma omp atomic
+	M_v[1] += m_imag;
+	return 0;
+}
+
+template<class T>
+int inline atomic_add(const std::complex<double> m,T *M){
+	if(std::abs(m.imag())>1.1e-15){
+		return 1;
+	}
+	else{
+		const T m_real = m.real();
+		#pragma omp atomic
+		M[0] += m_real;
+		return 0;
+	}
+}
+
+template<class I, class J, class K>
+int general_inplace_op(general_basis_core<I> *B,
+						  const bool conjugate,
+						  const bool transpose,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
 						  const std::complex<double> A,
 						  const npy_intp Ns,
-						  const void *basis,
+						  const npy_intp nvecs,
+						  const I basis[],
 						  const J n[],
-						  		K row[],
-						  		K col[],
-						  		T M[]
-						  )
+						  const K v_in[],
+						  		K v_out[])
 {
-	return general_op(reinterpret_cast<general_basis_core<I> *>(B),n_op,opstr,indx,A,Ns,(const I*)basis,n,row,col,M);
+	const int nt = B->get_nt();
+	const bool full_basis = ((npy_intp)1 << (npy_intp)(B->N)) == Ns;
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
+
+	int err = 0;
+	int g[nt];
+	#pragma omp parallel for schedule(dynamic,chunk) private(g)
+	for(npy_intp i=0;i<Ns;i++){
+		if(err != 0){
+			continue;
+		}
+
+		I r = basis[i];
+		std::complex<double> m = A;
+		int local_err = B->op(r,m,n_op,opstr,indx);
+
+		if(local_err == 0){
+			int sign = 1;
+
+			for(int k=0;k<nt;k++){
+				g[k]=0;
+			}
+
+			npy_intp j = i;
+			if(r != basis[i]){
+				I rr = B->ref_state(r,g,sign);
+				if(full_basis){
+					j = Ns - (npy_intp)rr - 1;
+				}
+				else{
+					j = binary_search(Ns,basis,rr);
+				}
+				
+			}
+
+			if(j >= 0){
+				for(int k=0;k<nt;k++){
+					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+					m *= std::exp(std::complex<double>(0,-q));
+				}
+
+				m *= sign * std::sqrt(double(n[j])/double(n[i]));
+				if(transpose){
+					const K * v_in_col  = v_in  + j * nvecs;
+						  K * v_out_row = v_out + i * nvecs;
+					if(conjugate){
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}
+					else{
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}
+				}
+				else{
+					const K * v_in_col  = v_in  + i * nvecs;
+						  K * v_out_row = v_out + j * nvecs;
+					if(conjugate){
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}
+					else{
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}				
+				}
+
+
+
+			}
+		}
+
+		if(local_err != 0){
+			#pragma omp critical
+			err = local_err;
+		}
+	}
+
+	return err;
 }
 
 

@@ -14,12 +14,12 @@ cdef extern from "general_basis_core.h":
 cdef extern from "make_general_basis.h":
     npy_intp make_basis[I,J](general_basis_core[I]*,npy_intp,npy_intp,I[], J[]) nogil
     npy_intp make_basis_pcon[I,J](general_basis_core[I]*,npy_intp,npy_intp,I,I[], J[]) nogil
-    npy_intp make_basis_wrapper[I,J](void*,npy_intp,npy_intp,void*, J[]) nogil
-    npy_intp make_basis_pcon_wrapper[I,J](void*,npy_intp,npy_intp,uint64_t,void*, J[]) nogil
 
 cdef extern from "general_basis_op.h":
     int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const I[], const J[], K[], K[], T[]) nogil
+    int general_inplace_op[I,J,K](general_basis_core[I] *B,const bool,const bool,const int,const char[], const int[],
+                          const double complex, const npy_intp,const npy_intp, const I[], const J[],const K[], K[]) nogil
     int general_op_bra_ket[I,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const I[], I[], T[]) nogil
     int general_op_bra_ket_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],

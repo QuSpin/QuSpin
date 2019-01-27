@@ -219,7 +219,37 @@ cdef class general_basis_core_wrap:
             raise ValueError("operator not recognized.")
         elif err == 1:
             raise TypeError("attemping to use real type for complex matrix elements.")
-    
+ 
+    @cython.boundscheck(False)
+    def inplace_op(self,dtype[:,::1] v_in,dtype[:,::1] v_out,bool transposed,bool conjugated,object opstr,int[::1] indx,object J,_np.ndarray basis,norm_type[::1] n):
+        cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
+        cdef int n_op = indx.shape[0]
+        cdef npy_intp Ns = basis.shape[0]
+        cdef npy_intp nvecs = v_in.shape[1]
+        cdef int err = 0;
+        cdef double complex JJ = J
+        cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
+        cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("basis array must be C-contiguous")
+
+        if basis.dtype == _np.uint32:
+            with nogil:
+                err = general_inplace_op(<general_basis_core[uint32_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,Ns,nvecs,
+                                                        <uint32_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
+        elif basis.dtype == _np.uint64:
+            with nogil:
+                err = general_inplace_op(<general_basis_core[uint64_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,Ns,nvecs,
+                                                        <uint64_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
+        else:
+            raise TypeError("basis dtype must be either uint32 or uint64")
+
+        if err == -1:
+            raise ValueError("operator not recognized.")
+        elif err == 1:
+            raise TypeError("attemping to use real type for complex matrix elements.")
+
     @cython.boundscheck(False)
     def get_vec_dense(self, _np.ndarray basis, norm_type[::1] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
         cdef npy_intp Ns = v_in.shape[0]

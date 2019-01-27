@@ -214,6 +214,31 @@ class basis_general(lattice_basis):
 		ME = ME[mask]
 
 		return ME,row,col
+
+	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+		v_in = _np.asanyarray(v_in)
+		
+		result_dtype = _np.result_type(v_in.dtype,dtype)
+		v_in = _np.ascontiguousarray(v_in,dtype=result_dtype)
+
+		if v_in.shape[0] != self.Ns:
+			raise ValueError("dimension mismatch")
+
+		if v_out is None:
+			v_out = _np.zeros_like(v_in,dtype=result_dtype,order="C")
+		else:
+			if v_out.dtype != result_dtype:
+				raise TypeError
+			if not v_out.flags["CARRAY"]:
+				raise ValueError
+			if v_out.shape != v_in.shape:
+				raise ValueError("v_in.shape != v_out.shape")
+
+		indx = _np.ascontiguousarray(indx,dtype=_np.int32)
+
+		self._core.inplace_op(v_in.reshape((self._Ns,-1)),v_out.reshape((self._Ns,-1)),conjugated,transposed,opstr,indx,J,self._basis,self._n)
+
+		return v_out
 	
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
@@ -419,7 +444,7 @@ class basis_general(lattice_basis):
 		# preallocate variables
 		basis = _np.zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
-		
+
 		# make basis
 		if self._count_particles and (self._Np is not None):
 			Np_list = _np.zeros_like(basis,dtype=_np.uint8)

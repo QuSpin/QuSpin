@@ -65,19 +65,19 @@ for fmt in formats:
 			atol = eps(N,dtype1,dtype2)
 			try:
 				np.testing.assert_allclose(res1,res2,atol=atol)
-			except AssertionError,e:
+			except AssertionError as e:
 				print(res1-res2, atol)
 				raise AssertionError(e)
 
 			try:
 				np.testing.assert_allclose(res1,out,atol=atol)
-			except AssertionError,e:
+			except AssertionError as e:
 				print(res1-out, atol)
 				raise AssertionError(e)
 
 			try:
 				np.testing.assert_allclose(out,res2,atol=atol)
-			except AssertionError,e:
+			except AssertionError as e:
 				print(out-res2, atol)
 				raise AssertionError(e)
 

@@ -149,10 +149,26 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			if self._pauli:
 				n = len(opstr.replace("I",""))
 				ME *= (1<<n)
+
+			return ME,row,col
+
 		else:
 			return higher_spin_basis_general._Op(self,opstr,indx,J,dtype)
 
-		return ME,row,col
+		
+
+	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+		if self._S == "1/2":
+			if self._pauli:
+				n = len(opstr.replace("I",""))
+				J *= (1<<n)
+
+			return hcb_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+
+		else:
+			return higher_spin_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+
+		return ME,row,col		
 
 	def __type__(self):
 		return "<type 'qspin.basis.general_hcb'>"
