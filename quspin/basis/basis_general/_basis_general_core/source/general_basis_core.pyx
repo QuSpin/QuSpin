@@ -198,6 +198,7 @@ cdef class general_basis_core_wrap:
         cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
         cdef int n_op = indx.shape[0]
         cdef npy_intp Ns = basis.shape[0]
+        cdef bool basis_full = self._Ns_full == basis.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
@@ -208,10 +209,10 @@ cdef class general_basis_core_wrap:
 
         if basis.dtype == _np.uint32:
             with nogil:
-                err = general_op(<general_basis_core[uint32_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint32_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
+                err = general_op(<general_basis_core[uint32_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint32_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         elif basis.dtype == _np.uint64:
             with nogil:
-                err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint64_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
+                err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint64_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")
 
@@ -226,6 +227,7 @@ cdef class general_basis_core_wrap:
         cdef int n_op = indx.shape[0]
         cdef npy_intp Ns = basis.shape[0]
         cdef npy_intp nvecs = v_in.shape[1]
+        cdef bool basis_full = self._Ns_full == basis.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
@@ -236,11 +238,11 @@ cdef class general_basis_core_wrap:
 
         if basis.dtype == _np.uint32:
             with nogil:
-                err = general_inplace_op(<general_basis_core[uint32_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,Ns,nvecs,
+                err = general_inplace_op(<general_basis_core[uint32_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint32_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
         elif basis.dtype == _np.uint64:
             with nogil:
-                err = general_inplace_op(<general_basis_core[uint64_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,Ns,nvecs,
+                err = general_inplace_op(<general_basis_core[uint64_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint64_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")

@@ -15,7 +15,6 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 def check_ME(b1,b2,opstr,indx,dtype,err_msg):
-
 	if b1.Ns != b2.Ns:
 		print(b1._basis)
 		print(b2._basis)
@@ -108,7 +107,7 @@ def test_gen_basis_spin(l_max,S="1/2"):
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
 		n = basis_1d._get_norms(np.float64)**2
 		n_gen = (gen_basis._n.astype(np.float64))*gen_basis._pers.prod()
-
+		print(basis_1d.Ns,gen_basis.Ns,basis_blocks)
 		if basis_1d.Ns != gen_basis.Ns:
 			print(L,basis_blocks)
 			print(basis_1d)

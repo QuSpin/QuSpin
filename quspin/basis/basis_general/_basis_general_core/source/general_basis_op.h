@@ -39,6 +39,7 @@ int general_op(general_basis_core<I> *B,
 						  const char opstr[],
 						  const int indx[],
 						  const std::complex<double> A,
+						  const bool full_basis,
 						  const npy_intp Ns,
 						  const I basis[],
 						  const J n[],
@@ -48,7 +49,6 @@ int general_op(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
-	const bool full_basis = ((npy_intp)1 << (npy_intp)(B->N)) == Ns;
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
@@ -145,6 +145,7 @@ int general_inplace_op(general_basis_core<I> *B,
 						  const char opstr[],
 						  const int indx[],
 						  const std::complex<double> A,
+						  const bool full_basis,
 						  const npy_intp Ns,
 						  const npy_intp nvecs,
 						  const I basis[],
@@ -153,7 +154,6 @@ int general_inplace_op(general_basis_core<I> *B,
 						  		K v_out[])
 {
 	const int nt = B->get_nt();
-	const bool full_basis = ((npy_intp)1 << (npy_intp)(B->N)) == Ns;
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
