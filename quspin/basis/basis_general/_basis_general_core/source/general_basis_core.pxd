@@ -18,8 +18,8 @@ cdef extern from "make_general_basis.h":
 cdef extern from "general_basis_op.h":
     int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const I[], const J[], K[], K[], T[]) nogil
-    # int general_inplace_op[I,J,K](general_basis_core[I] *B,const int,const char[], const int[],
-    #                       const double complex, const npy_intp,const npy_intp, const I[], const J[], K[], K[]) nogil
+    int general_inplace_op[I,J,K](general_basis_core[I] *B,const bool,const bool,const int,const char[], const int[],
+                          const double complex, const npy_intp,const npy_intp, const I[], const J[],const K[], K[]) nogil
     int general_op_bra_ket[I,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const I[], I[], T[]) nogil
     int general_op_bra_ket_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],

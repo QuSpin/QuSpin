@@ -94,6 +94,40 @@ class basis(object):
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
 
+	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+		""" default version for all basis classes which works so long as _Op is implemented."""
+
+		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
+			v_in = _np.asanyarray(v_in)
+
+		if v_in.shape[0] != self.Ns:
+			raise ValueError("dimension mismatch")
+
+		if v_out is None:
+			result_dtype = _np.result_type(v_in.dtype,dtype)
+			v_out = _np.zeros_like(v_in,dtype=result_dtype)
+		else:
+			if v_out.__class__ not in [_np.ndarray, _np.matrix]:
+				v_out = _np.asanyarray(v_out)
+
+			if v_out.shape != v_in.shape:
+				raise ValueError("v_in.shape != v_out.shape")
+
+
+
+		if not transposed:
+			ME, row, col = self.Op(opstr, indx, J, dtype)
+		else:
+			ME, col, row = self.Op(opstr, indx, J, dtype)
+
+		if conjugated:
+			ME = ME.conj()
+
+		_coo_dot(v_in,v_out,row,col,ME)
+
+		return v_out			
+
+
 	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
 		"""Calculates the action of an operator on a state.
 
@@ -142,53 +176,7 @@ class basis(object):
 		>>> ME, row, col = Op(opstr,indx,J,dtype)
 
 		"""
-
-		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
-			v_in = _np.asanyarray(v_in)
-
-		if v_in.shape[0] != self.Ns:
-			raise ValueError("dimension mismatch")
-
-		if v_out is None:
-			result_dtype = _np.result_type(v_in.dtype,dtype)
-			v_out = _np.zeros_like(v_in,dtype=result_dtype)
-		else:
-			if v_out.__class__ not in [_np.ndarray, _np.matrix]:
-				v_out = _np.asanyarray(v_out)
-
-			if v_out.shape != v_in.shape:
-				raise ValueError("v_in.shape != v_out.shape")
-
-
-
-		if not transposed:
-			ME, row, col = self.Op(opstr, indx, J, dtype)
-		else:
-			ME, col, row = self.Op(opstr, indx, J, dtype)
-
-		if conjugated:
-			ME = ME.conj()
-
-		# TODO: implement these in low level language.
-		_coo_dot(v_in,v_out,row,col,ME)
-		# if self._unique_me:
-		# 	v_out[row] += _np.multiply(v_in[col].T,ME).T
-		# else:
-		# 	while len(row) > 0:
-		# 		# if there are multiply matrix elements per row as there are for some
-		# 		# symmetries availible then do the indexing for unique elements then
-		# 		# delete them from the list and then repeat until all elements have been 
-		# 		# taken care of. This is less memory efficient but works well for when
-		# 		# there are a few number of matrix elements per row. 
-		# 		row_unique,args = _np.unique(row,return_index=True)
-		# 		col_unique = col[args]
-
-		# 		v_out[row_unique] += _np.multiply(v_in[col_unique].T,ME[args]).T
-		# 		row = _np.delete(row,args)
-		# 		col = _np.delete(col,args)
-		# 		ME = _np.delete(ME,args)
-
-		return v_out			
+		return self._inplace_Op(v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
 
 	def Op(self,opstr,indx,J,dtype):
 		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.

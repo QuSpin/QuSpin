@@ -136,7 +136,7 @@ class quantum_LinearOperator(LinearOperator):
 					if row.shape[0] == self.Ns:
 						self._diagonal += ME.real
 					else:
-						self._diagonal[row] += ME[row].real
+						self._diagonal[row] += ME.real
 				else:
 					while len(row) > 0:
 						# if there are multiple matrix elements per row as there are for some

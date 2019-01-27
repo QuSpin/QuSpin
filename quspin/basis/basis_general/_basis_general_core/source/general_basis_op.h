@@ -48,6 +48,7 @@ int general_op(general_basis_core<I> *B,
 						  )
 {
 	const int nt = B->get_nt();
+	const bool full_basis = ((npy_intp)1 << (npy_intp)(B->N)) == Ns;
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
@@ -72,7 +73,13 @@ int general_op(general_basis_core<I> *B,
 			K j = i;
 			if(r != basis[i]){
 				I rr = B->ref_state(r,g,sign);
-				j = binary_search(Ns,basis,rr);
+				if(full_basis){
+					j = Ns - (npy_intp)rr - 1;
+				}
+				else{
+					j = binary_search(Ns,basis,rr);
+				}
+				
 			}
 
 			if(j >= 0){
@@ -103,7 +110,7 @@ int general_op(general_basis_core<I> *B,
 
 
 
-/*
+
 
 template<class T>
 int inline atomic_add(const std::complex<double> m,std::complex<T> *M){
@@ -111,9 +118,9 @@ int inline atomic_add(const std::complex<double> m,std::complex<T> *M){
 	const T m_real = m.real();
 	const T m_imag = m.imag();
 	#pragma omp atomic
-	M[0] += m_real;
+	M_v[0] += m_real;
 	#pragma omp atomic
-	M[1] += m_imag;
+	M_v[1] += m_imag;
 	return 0;
 }
 
@@ -132,6 +139,8 @@ int inline atomic_add(const std::complex<double> m,T *M){
 
 template<class I, class J, class K>
 int general_inplace_op(general_basis_core<I> *B,
+						  const bool conjugate,
+						  const bool transpose,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
@@ -140,10 +149,11 @@ int general_inplace_op(general_basis_core<I> *B,
 						  const npy_intp nvecs,
 						  const I basis[],
 						  const J n[],
-						  		K v_in[],
+						  const K v_in[],
 						  		K v_out[])
 {
 	const int nt = B->get_nt();
+	const bool full_basis = ((npy_intp)1 << (npy_intp)(B->N)) == Ns;
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
@@ -168,7 +178,13 @@ int general_inplace_op(general_basis_core<I> *B,
 			npy_intp j = i;
 			if(r != basis[i]){
 				I rr = B->ref_state(r,g,sign);
-				j = binary_search(Ns,basis,rr);
+				if(full_basis){
+					j = Ns - (npy_intp)rr - 1;
+				}
+				else{
+					j = binary_search(Ns,basis,rr);
+				}
+				
 			}
 
 			if(j >= 0){
@@ -176,17 +192,55 @@ int general_inplace_op(general_basis_core<I> *B,
 					double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
 					m *= std::exp(std::complex<double>(0,-q));
 				}
-				m *= sign * std::sqrt(double(n[j])/double(n[i]))
-				const K * v_in_col  = v_in  + i * nvecs;
-					  K * v_out_row = v_out + j * nvecs;
 
-				for(int k=0;k<nvecs;k++){
-					const std::complex<double> ME = v_in_col[k] * m;
-					local_err = atomic_add(ME,&v_out_col[k]);
-					if(local_err){
-						break;
+				m *= sign * std::sqrt(double(n[j])/double(n[i]));
+				if(transpose){
+					const K * v_in_col  = v_in  + j * nvecs;
+						  K * v_out_row = v_out + i * nvecs;
+					if(conjugate){
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}
+					else{
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
 					}
 				}
+				else{
+					const K * v_in_col  = v_in  + i * nvecs;
+						  K * v_out_row = v_out + j * nvecs;
+					if(conjugate){
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}
+					else{
+						for(int k=0;k<nvecs;k++){
+							const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
+							local_err = atomic_add(ME,&v_out_row[k]);
+							if(local_err){
+								break;
+							}
+						}
+					}				
+				}
+
+
+
 			}
 		}
 
@@ -199,7 +253,7 @@ int general_inplace_op(general_basis_core<I> *B,
 	return err;
 }
 
-*/
+
 
 template<class I, class T>
 int general_op_bra_ket(general_basis_core<I> *B,
