@@ -19,8 +19,8 @@ def eps(dtype1,dtype2):
 	return 100*max(np.finfo(dtype1).eps,np.finfo(dtype2).eps)
 
 
-Lx = 2
-Ly = 4
+Lx = 3
+Ly = 2
 N = Lx*Ly
 m = None
 
@@ -60,13 +60,54 @@ for b in [basis_full,basis_pcon,basis_pcon_symm]:
 			atol = eps(dtype1,dtype2)
 			np.testing.assert_allclose(v1,v2,atol=atol)
 
+			v1 = H.T.dot(v)
+			v2 = H_op.T.dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.conj().dot(v)
+			v2 = H_op.conj().dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.H.dot(v)
+			v2 = H_op.H.dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+
 			v = np.random.uniform(-1,1,size=(b.Ns,10)) + 1j*np.random.uniform(-1,1,size=(b.Ns,10))
 			v /= np.linalg.norm(v)
-
 
 			v1 = H.dot(v)
 			v2 = H_op.dot(v)
 
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+			v1 = H.T.dot(v)
+			v2 = H_op.T.dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.conj().dot(v)
+			v2 = H_op.conj().dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.H.dot(v)
+			v2 = H_op.H.dot(v)
 
 			atol = eps(dtype1,dtype2)
 			np.testing.assert_allclose(v1,v2,atol=atol)
@@ -99,13 +140,54 @@ for b in [basis_full,basis_pcon,basis_pcon_symm]:
 			atol = eps(dtype1,dtype2)
 			np.testing.assert_allclose(v1,v2,atol=atol)
 
+			v1 = H.T.dot(v)
+			v2 = H_op.T.dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.conj().dot(v)
+			v2 = H_op.conj().dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.H.dot(v)
+			v2 = H_op.H.dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+
 			v = np.random.uniform(-1,1,size=(b.Ns,10)) + 1j*np.random.uniform(-1,1,size=(b.Ns,10))
 			v /= np.linalg.norm(v)
-
 
 			v1 = H.dot(v)
 			v2 = H_op.dot(v)
 
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+			v1 = H.T.dot(v)
+			v2 = H_op.T.dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.conj().dot(v)
+			v2 = H_op.conj().dot(v)
+
+			atol = eps(dtype1,dtype2)
+			np.testing.assert_allclose(v1,v2,atol=atol)
+
+
+			v1 = H.H.dot(v)
+			v2 = H_op.H.dot(v)
 
 			atol = eps(dtype1,dtype2)
 			np.testing.assert_allclose(v1,v2,atol=atol)
