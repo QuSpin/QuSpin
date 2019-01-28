@@ -39,9 +39,6 @@ cdef extern from "general_basis_rep.h":
 
     int general_normalization[I,J](general_basis_core[I] *B, I[], J[], const npy_intp) nogil
 
-# cdef extern from "boost/multiprecision/cpp_int.hpp" namespace "boost::multiprecision": 
-#     ctypedef uint128_t
-
 ctypedef fused index_type:
     int32_t
     int64_t
