@@ -17,7 +17,6 @@
 
 
 
-
 template<class I,class J>
 npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
@@ -59,12 +58,6 @@ npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp me
 }
 
 
-template<class I, class J>
-struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
-{
-	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return std::get<0>(a) < std::get<0>(b);}
-};
-
 template<class I,class J>
 npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
 	npy_intp Ns = 0;
@@ -95,6 +88,12 @@ npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_in
 	}
 }
 
+template<class I, class J>
+struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
+{
+	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return std::get<0>(a) < std::get<0>(b);}
+};
+
 template<class I,class J>
 npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
@@ -120,11 +119,16 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 				#pragma omp atomic
 				Ns++;
 			}
+
 			s += nthread;
 			MAX -= nthread;
 		}
 
 		if(Ns < mem_MAX){
+			#pragma omp single
+			{
+				index = 0;
+			}
 			#pragma omp critical
 			{
 				const npy_intp Ns_block = thread_block.size();

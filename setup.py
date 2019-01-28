@@ -17,6 +17,12 @@ def setup_package():
 	except:
 		raise ImportError("build requires numpy for fortran extensions")
 
+	import os
+
+
+	# if sys.platform == "darwin":
+	# 	os.environ["CC"]="clang"
+	# 	os.environ["CXX"]="clang++"
 
 	io = open("meta.yaml","r")
 	meta_file = io.read()

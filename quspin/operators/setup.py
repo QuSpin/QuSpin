@@ -24,8 +24,8 @@ def configuration(parent_package='', top_path=None):
         extra_compile_args=["/openmp"]
         extra_link_args=["/openmp"]
     elif sys.platform == "darwin":
-        extra_compile_args = []
-        extra_link_args = []
+        extra_compile_args = ["-std=c++11","-fopenmp"]
+        extra_link_args = ["-fopenmp"]
     else:
         # extra_compile_args = []
         # extra_link_args = []
