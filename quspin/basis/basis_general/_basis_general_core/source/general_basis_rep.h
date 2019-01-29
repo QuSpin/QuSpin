@@ -54,7 +54,7 @@ void general_representative(general_basis_core<I> *B,
 {
 	const int nt = B->get_nt();
 	const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
-	int g[nt];
+	int * g = new int[nt];
 	int sign;
 
 	if(g_out_ptr && sign_out_ptr){
@@ -91,7 +91,7 @@ void general_representative(general_basis_core<I> *B,
 		}
 	}
 
-	
+	delete[] g;
 
 }
 

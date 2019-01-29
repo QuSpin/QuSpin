@@ -57,8 +57,8 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 		return 1;
 	}
 
-	int gg[nt];  // represent the different variables in the for loops;
-	double ks[nt];
+	int * gg = new int[nt];
+	double * ks = new double[nt];
 	double k = 0;
 	int sign = 1;
 	double norm = 0;
@@ -109,6 +109,9 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 			depth--;  // move to upper level of the loop
 		}
 	}
+	delete[] ks;
+	delete[] gg;
+	
 	return norm;
 }
 
@@ -120,7 +123,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 		return s;
 	}
 
-	int gg[nt];  // represent the different variables in the for loops;
+	int * gg = new int[nt];  // represent the different variables in the for loops;
 	int tempsign = 1;
 	I t = s;
 	I r = s;
@@ -173,6 +176,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 			depth--;  // move to upper level of the loop
 		}
 	}
+	delete[] gg;
 	return r;
 }
 

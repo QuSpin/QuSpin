@@ -10,8 +10,8 @@
 
 template<class I>
 void mergeSort(I nums[],const I left,const I mid,const I right, bool  &f_count){
-    I lAr[mid - left + 1];
-    I rAr[right - mid];
+    I * lAr = new I[mid - left + 1];
+    I * rAr = new I[right - mid];
 
     I leftLength = mid - left + 1;
     I rightLength = right - mid;
@@ -47,6 +47,8 @@ void mergeSort(I nums[],const I left,const I mid,const I right, bool  &f_count){
         nums[k] = lAr[i];
       }
     }
+    delete[] lAr;
+    delete[] rAr;
   }
 
  //I sort the array using merge sort technique.

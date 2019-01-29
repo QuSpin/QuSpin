@@ -7,10 +7,6 @@ source:
 
  
 
-build:
-  run_exports:
-
-
 requirements:
   host:
     - python {{ python }}
@@ -18,6 +14,7 @@ requirements:
 
   build:
     - {{compiler('cxx')}} # [unix]
+    - {{compiler('cxx')}} # [vc>=14]
     - llvm-openmp # [osx] 
     - llvm # [osx]
 

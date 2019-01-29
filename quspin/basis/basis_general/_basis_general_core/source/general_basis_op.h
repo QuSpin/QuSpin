@@ -52,7 +52,7 @@ int general_op(general_basis_core<I> *B,
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
-	int g[nt];
+	int * g = new int[nt];
 	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
@@ -104,6 +104,8 @@ int general_op(general_basis_core<I> *B,
 			err = local_err;
 		}
 	}
+
+	delete[] g;
 
 	return err;
 }
@@ -157,7 +159,7 @@ int general_inplace_op(general_basis_core<I> *B,
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
-	int g[nt];
+	int * g = new int[nt];
 	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
 		if(err != 0){
@@ -250,6 +252,7 @@ int general_inplace_op(general_basis_core<I> *B,
 		}
 	}
 
+	delete[] g;
 	return err;
 }
 
@@ -271,7 +274,7 @@ int general_op_bra_ket(general_basis_core<I> *B,
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 
 	int err = 0;
-	int g[nt];
+	int * g = new int[nt];
 		
 	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
@@ -355,6 +358,7 @@ int general_op_bra_ket(general_basis_core<I> *B,
 		}
 	}
 
+	delete[] g;
 	return err;
 }
 
@@ -381,7 +385,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 	const int nt = B->get_nt();
 	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 	int err = 0;
-	int g[nt];
+	int * g = new int[nt];
 		
 	#pragma omp parallel for schedule(dynamic,chunk) private(g)
 	for(npy_intp i=0;i<Ns;i++){
@@ -473,6 +477,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 		}
 	}
 
+	delete[] g;
 	return err;
 }
 
