@@ -10,7 +10,7 @@ import numpy as np
 
 N=1000
 
-for i in range(1000):
+for i in range(10):
 	print("random matrix test: {}".format(i))
 
 	A = sp.random(N,N,format="csr")

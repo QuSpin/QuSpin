@@ -13,7 +13,7 @@ import numpy as np
 
 
 N = 3500
-for i in range(100):
+for i in range(10):
 	print("testing random matrix {}".format(i+1))
 	A = (random(N,N) + 1j*random(N,N))
 	A = A.tocsr()

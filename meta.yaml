@@ -13,8 +13,7 @@ requirements:
     - numpy >=1.10.0
 
   build:
-    - {{compiler('cxx')}} # [unix]
-    - {{compiler('cxx')}} # [win,vc>=14]
+    - {{compiler('cxx')}} # [unix and win]
     - llvm-openmp # [osx] 
     - llvm # [osx]
 
