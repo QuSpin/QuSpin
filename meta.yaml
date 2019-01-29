@@ -14,7 +14,7 @@ requirements:
 
   build:
     - {{compiler('cxx')}} # [unix]
-    - {{compiler('cxx')}} # [vc>=14]
+    - {{compiler('cxx')}} # [win,vc>=14]
     - llvm-openmp # [osx] 
     - llvm # [osx]
 

@@ -80,12 +80,13 @@ class boson_basis_core : public general_basis_core<I>
 		}
 
 		std::vector<int> count_particles(I s){
+			std::vector<int> v(1);
 			int n = 0;
 			for(int i=0;i<general_basis_core<I>::N;i++){
 				n += (s%sps);
 				s /= sps;
 			}
-			std::vector<int> v = {n};
+			v[0] = n;
 			return v;
 		}
 

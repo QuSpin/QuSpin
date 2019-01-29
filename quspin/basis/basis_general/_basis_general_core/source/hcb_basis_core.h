@@ -94,8 +94,8 @@ class hcb_basis_core : public general_basis_core<I>
 		}
 
 		std::vector<int> count_particles(I s){
-			int n = bit_count(s,general_basis_core<I>::N);
-			std::vector<int> v = {n};
+			std::vector<int> v(1);
+			v[0] = bit_count(s,general_basis_core<I>::N);
 			return v;
 		}
 

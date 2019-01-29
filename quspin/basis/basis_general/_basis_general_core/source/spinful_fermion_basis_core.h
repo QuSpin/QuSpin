@@ -27,10 +27,10 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 
 		std::vector<int> count_particles(I s){
 			I s_left,s_right;
+			std::vector<int> v(2);
 			split_state(s,s_left,s_right);
-			int n_left  = bit_count(s_left,general_basis_core<I>::N);
-			int n_right = bit_count(s_right,general_basis_core<I>::N);
-			std::vector<int> v = {n_left,n_right};
+			v[0] = bit_count(s_left,general_basis_core<I>::N);
+			v[1] = bit_count(s_right,general_basis_core<I>::N);
 			return v;
 		}
 

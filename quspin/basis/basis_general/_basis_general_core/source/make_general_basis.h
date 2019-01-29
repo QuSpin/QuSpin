@@ -91,7 +91,7 @@ npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_in
 template<class I, class J>
 struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
 {
-	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return std::get<0>(a) < std::get<0>(b);}
+	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return a.first < b.first;}
 };
 
 template<class I,class J>
@@ -152,8 +152,8 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 		master_block.resize(Ns);
 		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
 		for(npy_intp i=0;i<Ns;i++){
-			basis[i] = std::get<0>(master_block[i]);
-			n[i] = std::get<1>(master_block[i]);
+			basis[i] = master_block[i].first;
+			n[i] = master_block[i].second;
 		}
 		return Ns;
 	}
@@ -212,8 +212,8 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp
 		master_block.resize(Ns);
 		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
 		for(npy_intp i=0;i<Ns;i++){
-			basis[i] = std::get<0>(master_block[i]);
-			n[i] = std::get<1>(master_block[i]);
+			basis[i] = master_block[i].first;
+			n[i] = master_block[i].second;
 		}
 		return Ns;
 	}
