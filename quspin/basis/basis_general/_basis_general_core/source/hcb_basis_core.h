@@ -126,14 +126,15 @@ class hcb_basis_core : public general_basis_core<I>
 			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
 		}
 
-		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
-			I s = r;
-			I one = 1;
+		int op(I &r,std::complex<double> &m,const int n_op,const char const opstr[],const int const indx[]){
+			const I s = r;
+			const I one = 1;
 			for(int j=n_op-1;j>-1;j--){
-				int ind = general_basis_core<I>::N-indx[j]-1;
-				I b = (one << ind);
-				bool a = bool((r >> ind)&one);
-				char op = opstr[j];
+
+				const I ind = general_basis_core<I>::N-indx[j]-1;
+				const I b = (one << ind);
+				const bool a = ((r >> ind)&one);
+				const char op = opstr[j];
 				switch(op){
 					case 'z':
 						m *= (a?0.5:-0.5);
