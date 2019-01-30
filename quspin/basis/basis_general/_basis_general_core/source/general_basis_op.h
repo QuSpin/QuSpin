@@ -293,8 +293,6 @@ int general_op_bra_ket(general_basis_core<I> *B,
 
 				if(r != s){ // off-diagonal matrix element
 					r = B->ref_state(r,g,sign);
-
-				
 					// use check_state to determine if state is a representative (same routine as in make-general_basis)
 					double norm_r = B->check_state(r);
 
@@ -310,21 +308,16 @@ int general_op_bra_ket(general_basis_core<I> *B,
 
 						local_err = check_imag(m,&M[i]); // assigns value to M[i]
 						bra[i] = r;
-
 					}
 					else{ // ref state in different particle number sector
 						M[i] = std::numeric_limits<T>::quiet_NaN();
 						bra[i] = s;
 					}
-
-					
 				}
 				else{ // diagonal matrix element
 					m *= sign;
-
 					local_err = check_imag(m,&M[i]); // assigns value to M[i]
 					bra[i] = s;
-					
 				}
 				
 				
@@ -354,9 +347,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 						  const int indx[],
 						  const std::complex<double> A,
 						  const npy_intp Ns,
-						  const int Npcon_blocks, // total number of particle-conserving sectors
-						  //const unsigned long int Np[], // array with particle conserving sectors
-						  const std::set<std::vector<int>> Np_set, // array with particle conserving sectors
+						  const std::set<std::vector<int>> &Np_set, // array with particle conserving sectors
 						  const	I ket[], // col
 						  		I bra[], // row
 						  		T M[]
@@ -366,11 +357,12 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 
 	#pragma omp parallel
 	{
+		const std::set<std::vector<int>> Np_set_local = Np_set;
 		const int nt = B->get_nt();
 		const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 		int * g = new int[nt];
 		
-		#pragma omp for schedule(dynamic,chunk)
+		#pragma omp for schedule(dynamic,chunk) 
 		for(npy_intp i=0;i<Ns;i++){
 			if(err != 0){
 				continue;
@@ -389,13 +381,12 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 				if(r != s){ // off-diagonal matrix element
 					r = B->ref_state(r,g,sign);
 
-					bool pcon_bool = B->check_pcon(r,Np_set);
+					bool pcon_bool = B->check_pcon(r,Np_set_local);
 
 					if(pcon_bool){ // reference state within same particle-number sector(s)
 
 						// use check_state to determine if state is a representative (same routine as in make-general_basis)
 						double norm_r = B->check_state(r);
-
 
 						if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
 

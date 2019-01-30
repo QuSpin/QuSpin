@@ -421,6 +421,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 					else:
 						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
+					Nf = [Nf]
 				else:
 					Nf = list(Nf)
 					if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):

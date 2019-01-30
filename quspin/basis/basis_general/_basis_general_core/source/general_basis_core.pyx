@@ -404,16 +404,10 @@ cdef class general_basis_core_wrap:
             with nogil:
                 err = general_op_bra_ket(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
         else:
-            if type(Np) is int:
-                Npcon_blocks=1
-            else:
-                Npcon_blocks=len(Np)
-            
             Np_set = load_pcon_list(Np)
-            #Np_array=array(Np,ndmin=1,dtype=uint64)
 
             with nogil:
-                err = general_op_bra_ket_pcon(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Npcon_blocks,Np_set,&ket[0],&bra[0],&M[0])
+                err = general_op_bra_ket_pcon(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,&ket[0],&bra[0],&M[0])
 
         if err == -1:
             raise ValueError("operator not recognized.")

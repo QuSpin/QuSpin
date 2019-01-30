@@ -23,7 +23,7 @@ cdef extern from "general_basis_op.h":
     int general_op_bra_ket[I,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const I[], I[], T[]) nogil
     int general_op_bra_ket_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],
-                          const double complex, const npy_intp, const int, const set[vector[int]], const I[], I[], T[]) nogil
+                          const double complex, const npy_intp, const set[vector[int]], const I[], I[], T[]) nogil
 
 cdef extern from "general_basis_get_vec.h":
     bool get_vec_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,

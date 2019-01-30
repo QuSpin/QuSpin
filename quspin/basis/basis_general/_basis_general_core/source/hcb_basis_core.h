@@ -93,7 +93,7 @@ class hcb_basis_core : public general_basis_core<I>
 			}
 		}
 
-		std::vector<int> count_particles(I s){
+		std::vector<int> count_particles(const I s){
 			std::vector<int> v(1);
 			v[0] = bit_count(s,general_basis_core<I>::N);
 			return v;
@@ -120,7 +120,7 @@ class hcb_basis_core : public general_basis_core<I>
 		// 	}
 		// }
 
-		I inline next_state_pcon(I s){
+		I inline next_state_pcon(const I s){
 			if(s==0){return s;}
 			I t = (s | (s - 1)) + 1;
 			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
