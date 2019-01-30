@@ -9,12 +9,11 @@
 
 
 template<class I>
-void mergeSort(I nums[],const I left,const I mid,const I right, bool  &f_count){
-    I * lAr = new I[mid - left + 1];
-    I * rAr = new I[right - mid];
-
+void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &f_count){
     I leftLength = mid - left + 1;
     I rightLength = right - mid;
+    I * lAr = work;
+    I * rAr = work+leftLength;
 
     for (I i = 0; i < leftLength; i++) {
       lAr[i] = nums[left + i];
@@ -47,18 +46,16 @@ void mergeSort(I nums[],const I left,const I mid,const I right, bool  &f_count){
         nums[k] = lAr[i];
       }
     }
-    delete[] lAr;
-    delete[] rAr;
   }
 
  //I sort the array using merge sort technique.
 template<class I>
-void getf_count(I nums[], I left, I right, bool &f_count){
+void getf_count(I nums[],I work[], I left, I right, bool &f_count){
     if (left < right) {
       I mid = (I)((int)left + (int)right) / 2;
-      getf_count(nums, left, mid, f_count);
-      getf_count(nums, (I)(mid + 1), right, f_count);
-      mergeSort(nums, left, mid, right, f_count);
+      getf_count(nums, work, left, mid, f_count);
+      getf_count(nums, work, (I)(mid + 1), right, f_count);
+      mergeSort(nums, work, left, mid, right, f_count);
     }
   }
 
@@ -71,6 +68,7 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	I ss = 0;
 	int np = 0;
 	int pos_list[bit_info<I>::bits];
+	int work[bit_info<I>::bits];
 	bool f_count = 0;
 
 	for(int i=N-1;i>=0;--i){
@@ -87,7 +85,7 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 		s >>= 1;
 	}
 
-	getf_count(pos_list,0,np-1,f_count);
+	getf_count(pos_list,work,0,np-1,f_count);
 	if(f_count){sign *= -1;}
 
 	return ss;

@@ -175,10 +175,6 @@ int general_inplace_op(general_basis_core<I> *B,
 			if(local_err == 0){
 				int sign = 1;
 
-				for(int k=0;k<nt;k++){
-					g[k]=0;
-				}
-
 				npy_intp j = i;
 				if(r != basis[i]){
 					I rr = B->ref_state(r,g,sign);
@@ -295,10 +291,6 @@ int general_op_bra_ket(general_basis_core<I> *B,
 			if(local_err == 0){
 				int sign = 1;
 
-				for(int k=0;k<nt;k++){
-					g[k]=0;
-				}
-					
 				if(r != s){ // off-diagonal matrix element
 					r = B->ref_state(r,g,sign);
 
@@ -370,8 +362,6 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 						  		T M[]
 						  )
 {
-	const int nt = B->get_nt();
-
 	int err = 0;
 
 	#pragma omp parallel
@@ -395,10 +385,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 			if(local_err == 0){
 				int sign = 1;
 
-				for(int k=0;k<nt;k++){
-					g[k]=0;
-				}
-					
+
 				if(r != s){ // off-diagonal matrix element
 					r = B->ref_state(r,g,sign);
 
@@ -408,19 +395,9 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 
 						// use check_state to determine if state is a representative (same routine as in make-general_basis)
 						double norm_r = B->check_state(r);
-						double int_norm = norm_r;
-
-						#if defined(_WIN64)
-							// x64 version
-							bool isnan = _isnanf(norm_r) != 0;
-						#elif defined(_WIN32)
-							bool isnan = _isnan(norm_r) != 0;
-						#else
-							bool isnan = std::isnan(norm_r);
-						#endif
 
 
-						if(!isnan && int_norm > 0){ // ref_state is a representative
+						if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
 
 							for(int k=0;k<nt;k++){
 								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];

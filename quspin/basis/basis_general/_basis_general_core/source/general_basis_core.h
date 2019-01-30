@@ -120,6 +120,7 @@ template<class I>
 I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,const int nt){
 
 	if(nt <= 0){
+		for(int i=0;i<nt;i++){g[i]=0;}
 		return s;
 	}
 

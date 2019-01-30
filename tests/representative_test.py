@@ -59,8 +59,6 @@ basis_spin_full = spin_basis_general(N_2d, pauli=False, make_basis=True,
 									Nup=N_2d//2,
 								)
 
-
-
 basis_fermion = spinless_fermion_basis_general(N_2d, make_basis=False,
 									Nf=N_2d//2,
 									kxblock=(T_x,0),kyblock=(T_y,0),
@@ -90,9 +88,7 @@ bases_2d=[basis_boson,basis_spin,basis_fermion,basis_spinful_fermion]
 bases_2d_full=[basis_boson_full,basis_spin_full,basis_fermion_full,basis_spinful_fermion_full]
 
 
-for basis_2d,basis_2d_full in zip(bases_2d,bases_2d_full):
-
-
+for i,(basis_2d,basis_2d_full) in enumerate(zip(bases_2d,bases_2d_full)):
 	# grab states of full basis
 	states=basis_2d_full.states
 
@@ -129,5 +125,5 @@ for basis_2d,basis_2d_full in zip(bases_2d,bases_2d_full):
 	g_out=basis_2d.representative(states,out=r_out,return_g=True)
 	sign_out=basis_2d.representative(states,out=r_out,return_sign=True)
 
-	print('passed')
+	print('test {} passed'.format(i))
 
