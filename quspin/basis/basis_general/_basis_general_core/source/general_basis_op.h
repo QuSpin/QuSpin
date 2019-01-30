@@ -54,7 +54,7 @@ int general_op(general_basis_core<I> *B,
 		const int nt = B->get_nt();
 		const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
 		int * g = new int[nt];
-		
+
 		#pragma omp for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
 			if(err != 0){
@@ -305,19 +305,8 @@ int general_op_bra_ket(general_basis_core<I> *B,
 				
 					// use check_state to determine if state is a representative (same routine as in make-general_basis)
 					double norm_r = B->check_state(r);
-					double int_norm = norm_r;
 
-					#if defined(_WIN64)
-						// x64 version
-						bool isnan = _isnanf(norm_r) != 0;
-					#elif defined(_WIN32)
-						bool isnan = _isnan(norm_r) != 0;
-					#else
-						bool isnan = std::isnan(norm_r);
-					#endif
-
-
-					if(!isnan && int_norm > 0){ // ref_state is a representative
+					if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
 
 						for(int k=0;k<nt;k++){
 							double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
@@ -339,12 +328,6 @@ int general_op_bra_ket(general_basis_core<I> *B,
 					
 				}
 				else{ // diagonal matrix element
-
-					for(int k=0;k<nt;k++){
-						double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-						m *= std::exp(std::complex<double>(0,-q));
-					}
-
 					m *= sign;
 
 					local_err = check_imag(m,&M[i]); // assigns value to M[i]

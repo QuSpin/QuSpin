@@ -126,7 +126,7 @@ class hcb_basis_core : public general_basis_core<I>
 			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
 		}
 
-		int op(I &r,std::complex<double> &m,const int n_op,const char const opstr[],const int const indx[]){
+		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
 			const I s = r;
 			const I one = 1;
 			for(int j=n_op-1;j>-1;j--){
