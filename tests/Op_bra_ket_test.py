@@ -59,10 +59,8 @@ static_list_spfs = _consolidate_static(static_spfs)
 
 def compare(static_list,basis,basis_op):
 	for opstr,indx,J in static_list:
-
 		ME,bra,ket = basis.Op_bra_ket(opstr,indx,J,np.float64,basis_op.states)
 		ME_op,row,col = basis_op.Op(opstr,indx,J,np.float64)
-
 		np.testing.assert_allclose(bra - basis_op[row],0.0,atol=1E-5,err_msg='failed bra/row in Op_bra_cket test!')
 		np.testing.assert_allclose(ket - basis_op[col],0.0,atol=1E-5,err_msg='failed ket/col in Op_bra_ket test!')
 		np.testing.assert_allclose(ME - ME_op,0.0,atol=1E-5,err_msg='failed ME in Op_bra_ket test!')
@@ -142,7 +140,6 @@ for Np in [ None, 2, N_2d-1, [N_2d//4,N_2d//8] ]:
 		Nf=list(zip(Np,Np))	
 	else: 
 		Nf=(Np,Np)
-
 
 	basis=spinful_fermion_basis_general(N_2d, make_basis=False,
 									Nf=Nf,

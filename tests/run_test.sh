@@ -1,9 +1,8 @@
 
-export OMP_NUM_THREADS=2
-
 rm failed.txt
 
-export OMP_NUM_THREADS=2
+export KMP_DUPLICATE_LIB_OK=TRUE
+export OMP_NUM_THREADS=4
 
 for filename in *test.py
 do

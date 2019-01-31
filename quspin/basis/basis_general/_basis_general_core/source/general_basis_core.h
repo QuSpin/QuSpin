@@ -32,14 +32,14 @@ class general_basis_core{
 
 		~general_basis_core() {}
 
-		bool check_pcon(const I,const std::set<std::vector<int>>);
+		bool check_pcon(const I,const std::set<std::vector<int>>&);
 		double check_state(I);
 		I ref_state(I,int[],int&);
 		virtual I next_state_pcon(I) = 0;
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;
 		virtual void map_state(I[],npy_intp,int,signed char[]) = 0;
 		virtual I map_state(I,int,int&) = 0;
-		virtual std::vector<int> count_particles(I s) = 0;
+		virtual std::vector<int> count_particles(const I s) = 0;
 		// virtual void print(I) = 0;
 		virtual int get_N() const{
 			return N;
@@ -195,15 +195,18 @@ double general_basis_core<I>::check_state(I s){
 
 
 template<class I>
-bool general_basis_core<I>::check_pcon(const I s,std::set<std::vector<int>> Np){
+bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>> &Np){
 	// basis_core objects have a count_particles function which returns a vector of the required size;
 	// cython construct a vector of vectors, each sub-vector can be arbitrary size: see function load_pcon_list in general_basis_core.pyx
 	// in order to be compatible with later general basis classes which may have more than two spcies of particles!
 	//
 	bool pcon = false;
 	std::vector<int> v = this->count_particles(s); 
-	typename std::set<std::vector<int>>::iterator np = Np.begin();
-	while(np != Np.end()){pcon = (pcon | std::equal(v.begin(),v.end(),(*np).begin()));np++;}
+	typename std::set<std::vector<int>>::iterator it;
+	for(it=Np.begin();it!=Np.end();++it){
+		pcon |= std::equal(v.begin(),v.end(),(*it).begin());
+		
+	}
 	return pcon;
 }
 

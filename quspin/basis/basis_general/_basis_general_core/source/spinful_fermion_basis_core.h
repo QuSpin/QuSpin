@@ -25,22 +25,22 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 		~spinful_fermion_basis_core() {}
 
 
-		std::vector<int> count_particles(I s){
+		std::vector<int> count_particles(const I s){
 			I s_left,s_right;
 			std::vector<int> v(2);
 			split_state(s,s_left,s_right);
-			v[0] = bit_count(s_left,general_basis_core<I>::N);
-			v[1] = bit_count(s_right,general_basis_core<I>::N);
+			v[0] = bit_count(s_left,N_sys);
+			v[1] = bit_count(s_right,N_sys);
 			return v;
 		}
 
 
-		void inline split_state(I s,I &s_left,I &s_right){
+		void inline split_state(const I s,I &s_left,I &s_right){
 			s_right = ((~(I)0) >> I(bit_info<I>::bits-N_sys))&s;
 			s_left = (s >> N_sys);
 		}
 
-		void inline get_right_min_max(I s,I &min,I &max){
+		void inline get_right_min_max(const I s,I &min,I &max){
 			int n = bit_count(s,N_sys);
 			if(n){
 				min = (~(I)0) >> I(bit_info<I>::bits-n);
@@ -51,17 +51,17 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 			}
 		}
 
-		I inline comb_state(I s_left,I s_right){
+		I inline comb_state(const I s_left,const I s_right){
 			return (s_left<<N_sys)+s_right;
 		}
 
-		I inline next_state_pcon_side(I s){
+		I inline next_state_pcon_side(const I s){
 			if(s==0){return s;}
 			I t = (s | (s - 1)) + 1;
 			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
 		}
 
-		I next_state_pcon(I s){
+		I next_state_pcon(const I s){
 
 			I s_left  = 0;
 			I s_right = 0;

@@ -27,8 +27,10 @@ def configuration(parent_package='', top_path=None):
             # extra_compile_args=[]
             # extra_link_args=[]            
         elif sys.platform == "darwin":
-            extra_compile_args = ["-std=c++11","-fopenmp"]
+            extra_compile_args = ["-std=c++11","-fopenmp"] 
             extra_link_args = ["-fopenmp"]
+            #extra_compile_args = ["-std=c++11"]
+            #extra_link_args = []
         else:
             extra_compile_args = ["-fopenmp"]
             extra_link_args = ["-lgomp"]
