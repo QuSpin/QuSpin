@@ -53,7 +53,7 @@ int general_op(general_basis_core<I> *B,
 	{
 		const int nt = B->get_nt();
 		const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
-		int * g = new int[nt];
+		int g[__GENERAL_BASIS_CORE__max_nt];
 
 		#pragma omp for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
@@ -106,7 +106,7 @@ int general_op(general_basis_core<I> *B,
 			}
 		}
 
-		delete[] g;
+		
 	}
 	return err;
 }
@@ -161,7 +161,7 @@ int general_inplace_op(general_basis_core<I> *B,
 	{
 		const int nt = B->get_nt();
 		const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
-		int * g = new int[nt];
+		int g[__GENERAL_BASIS_CORE__max_nt];
 		#pragma omp for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
 			if(err != 0){
@@ -250,7 +250,7 @@ int general_inplace_op(general_basis_core<I> *B,
 			}
 		}
 
-		delete[] g;
+		
 	}
 	return err;
 }
@@ -274,7 +274,7 @@ int general_op_bra_ket(general_basis_core<I> *B,
 	{
 		const int nt = B->get_nt();
 		const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
-		int * g = new int[nt];
+		int g[__GENERAL_BASIS_CORE__max_nt];
 			
 		#pragma omp for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
@@ -337,7 +337,7 @@ int general_op_bra_ket(general_basis_core<I> *B,
 			}
 		}
 
-		delete[] g;
+		
 	}
 	return err;
 }
@@ -368,7 +368,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 	{
 		const int nt = B->get_nt();
 		const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1);
-		int * g = new int[nt];
+		int g[__GENERAL_BASIS_CORE__max_nt];
 		
 		#pragma omp for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
@@ -447,7 +447,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 			}
 		}
 
-		delete[] g;
+		
 	}
 	return err;
 }

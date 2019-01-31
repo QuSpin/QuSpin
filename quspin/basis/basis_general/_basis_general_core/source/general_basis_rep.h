@@ -85,14 +85,14 @@ void general_representative(general_basis_core<I> *B,
 		#pragma omp parallel
 		{
 			const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
-			int * g = new int[nt];
+			int g[__GENERAL_BASIS_CORE__max_nt];
 			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<Ns;i++){
 				int temp_sign = 1;
 				r[i] = B->ref_state(s[i],g,temp_sign);
 				sign_out_ptr[i] = temp_sign;
 			}
-			delete[] g;
+			
 		}
 
 	}
@@ -100,13 +100,13 @@ void general_representative(general_basis_core<I> *B,
 		#pragma omp parallel
 		{
 			const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
-			int * g = new int[nt];
+			int g[__GENERAL_BASIS_CORE__max_nt];
 			#pragma omp for schedule(static,chunk)
 			for(npy_intp i=0;i<Ns;i++){
 				int temp_sign = 1;
 				r[i] = B->ref_state(s[i],g,temp_sign);
 			}
-			delete[] g;
+			
 		}
 	}
 }
