@@ -59,7 +59,7 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 	}
 
 	int gg[__GENERAL_BASIS_CORE__max_nt];
-	int ks[__GENERAL_BASIS_CORE__max_nt];
+	double ks[__GENERAL_BASIS_CORE__max_nt];
 	double k = 0;
 	int sign = 1;
 	double norm = 0;

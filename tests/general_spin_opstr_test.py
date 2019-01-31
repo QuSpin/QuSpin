@@ -115,13 +115,13 @@ def test_gen_basis_spin(l_max,S="1/2"):
 			raise ValueError("basis size mismatch")
 
 		try:
-			np.testing.assert_allclose(basis_1d._basis-gen_basis._basis,0,atol=1e-6)
+			np.testing.assert_allclose(basis_1d.states-gen_basis.states,0,atol=1e-6)
 			np.testing.assert_allclose(n-n_gen ,0,atol=1e-6)
 		except:
-			print(basis_1d._basis)
-			print(gen_basis._basis)
-			print(n.shape)
-			print(n_gen.shape)
+			print(basis_1d.states)
+			print(gen_basis.states)
+			print(n)
+			print(n_gen)
 			raise Exception
 
 		for l in range(1,l_max+1):
