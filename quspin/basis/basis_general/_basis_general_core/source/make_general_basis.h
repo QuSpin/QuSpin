@@ -30,17 +30,8 @@ npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp me
 		}
 		double norm = B->check_state(s);
 		J int_norm = norm;
-
-		#if defined(_WIN64)
-			// x64 version
-			bool isnan = _isnanf(norm) != 0;
-		#elif defined(_WIN32)
-			bool isnan = _isnan(norm) != 0;
-		#else
-			bool isnan = std::isnan(norm);
-		#endif
 		
-		if(!isnan && int_norm>0 ){
+		if(!check_nan(norm) && int_norm>0 ){
 			basis[Ns] = s;
 			n[Ns] = norm;
 			Ns++;
@@ -88,6 +79,11 @@ npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_in
 	}
 }
 
+
+
+
+
+
 template<class I, class J>
 struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
 {
@@ -104,9 +100,12 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 
 	#pragma omp parallel firstprivate(MAX) shared(master_block_data,index,Ns,insuff_mem)
 	{
-		std::vector<std::pair<I,J> > thread_block;
 		const int nthread = omp_get_num_threads();
 		const int threadn = omp_get_thread_num();
+		std::vector<std::pair<I,J> > thread_block;
+		const npy_intp block_size = 1.1*mem_MAX/nthread;
+		thread_block.reserve(block_size);
+
 		I s = threadn;
 		MAX -= threadn;
 
@@ -169,9 +168,13 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp
 
 	#pragma omp parallel firstprivate(MAX,s) shared(master_block_data,index,Ns,insuff_mem)
 	{
-		std::vector<std::pair<I,J> > thread_block;
+		
 		const int nthread = omp_get_num_threads();
 		const int threadn = omp_get_thread_num();
+		std::vector<std::pair<I,J> > thread_block;
+		const npy_intp block_size = 1.1*mem_MAX/nthread;
+		thread_block.reserve(block_size);
+		
 		MAX -= threadn;
 		for(int i=0;i<threadn;i++){s=B->next_state_pcon(s);}
 
@@ -226,6 +229,7 @@ template<class I,class J>
 npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
+	std::cout << nthreads << std::endl;
 	if(nthreads>1 && MAX > nthreads && nt>0){
 		return make_basis_parallel(B,MAX,mem_MAX,basis,n);
 	}
@@ -238,6 +242,7 @@ template<class I,class J>
 npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
+
 	if(nthreads>1 && MAX > nthreads && nt>0){
 		return make_basis_pcon_parallel(B,MAX,mem_MAX,s,basis,n);
 	}

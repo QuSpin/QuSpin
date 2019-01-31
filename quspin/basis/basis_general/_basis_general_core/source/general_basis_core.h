@@ -12,6 +12,7 @@
 #include "bits_info.h"
 #include <set>
 
+#define __GENERAL_BASIS_CORE__max_nt 32
 
 template<class I>
 class general_basis_core{
@@ -53,12 +54,12 @@ class general_basis_core{
 template<class I>
 double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt){
 
-	if(nt <= 0){
+	if(nt <= 0 || nt > __GENERAL_BASIS_CORE__max_nt){
 		return 1;
 	}
 
-	int * gg = new int[nt];
-	double * ks = new double[nt];
+	int gg[__GENERAL_BASIS_CORE__max_nt];
+	int ks[__GENERAL_BASIS_CORE__max_nt];
 	double k = 0;
 	int sign = 1;
 	double norm = 0;
@@ -109,9 +110,7 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 			depth--;  // move to upper level of the loop
 		}
 	}
-	delete[] ks;
-	delete[] gg;
-	
+
 	return norm;
 }
 
@@ -119,12 +118,12 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 template<class I>
 I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,const int nt){
 
-	if(nt <= 0){
-		for(int i=0;i<nt;i++){g[i]=0;}
+	if(nt <= 0 || nt > __GENERAL_BASIS_CORE__max_nt){
+		for(int i=0;i<std::min((int)__GENERAL_BASIS_CORE__max_nt,nt);i++){g[i]=0;}
 		return s;
 	}
 
-	int * gg = new int[nt];  // represent the different variables in the for loops;
+	int gg[__GENERAL_BASIS_CORE__max_nt];  // represent the different variables in the for loops;
 	int tempsign = 1;
 	I t = s;
 	I r = s;
@@ -177,7 +176,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 			depth--;  // move to upper level of the loop
 		}
 	}
-	delete[] gg;
+
 	return r;
 }
 
