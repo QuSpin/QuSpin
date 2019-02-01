@@ -29,8 +29,8 @@ class hcb_basis_core : public general_basis_core<I>
 {
 
 	public:
-		tr_benes<I> * benes_maps;
-		I * invs;
+		std::vector<tr_benes<I>> benes_maps;
+		std::vector<I> invs;
 
 		hcb_basis_core(const int _N) : \
 		general_basis_core<I>::general_basis_core(_N) {}
@@ -38,8 +38,8 @@ class hcb_basis_core : public general_basis_core<I>
 		hcb_basis_core(const int _N,const int _nt,const int _maps[], \
 					const int _pers[], const int _qs[]) : \
 		general_basis_core<I>::general_basis_core(_N,_nt,_maps,_pers,_qs) {
-			benes_maps = new tr_benes<I>[_nt];
-			invs = new I[_nt];
+			benes_maps.resize(_nt);
+			invs.resize(_nt);
 			ta_index<I> index;
 			for(int j=0;j<bit_info<I>::bits;j++){index.data[j] = no_index;}
 
@@ -68,10 +68,7 @@ class hcb_basis_core : public general_basis_core<I>
 			}
 		}
 
-		~hcb_basis_core() {
-			delete[] benes_maps;
-			delete[] invs;
-		}
+		~hcb_basis_core() {}
 
 		I map_state(I s,int n_map,int &sign){
 			if(general_basis_core<I>::nt<=0){
