@@ -218,6 +218,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self._check_pcon = True
 				self._get_proj_pcon = True
 
+				if self._sps is None and Nb==1:
+					raise ValueError("for Nb = 1, set sps >= 2.")
 				if self._sps is None:
 					self._sps = Nb
 
