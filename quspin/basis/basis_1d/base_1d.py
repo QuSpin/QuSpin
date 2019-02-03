@@ -63,7 +63,7 @@ class basis_1d(lattice_basis):
 			raise TypeError('L must be a positive integer')
 
 		if self.sps < 2:
-			raise ValueError("invalid value for sps, sps >= 2.")
+			raise ValueError("invalid value for sps, set variable sps >= 2.")
 
 
 		if type(a) is not int:
