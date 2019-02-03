@@ -77,36 +77,22 @@ void dia_matvec(const bool overwrite_y,
 
 #include <complex>
 
-void inline atomic_add(float &y,const float &aa){
+template<class T>
+void inline atomic_add(T &y,const T &aa){
 	#pragma omp atomic
 	y += aa;
 }
 
-void inline atomic_add(double &y,const double &aa){
-	#pragma omp atomic
-	y += aa;
-}
-
-void inline atomic_add(std::complex<float> &y,const std::complex<float> &aa){
-	float * y_v = reinterpret_cast<float*>(&y);
-	const float * aa_v = reinterpret_cast<const float*>(&aa);
+template<class T>
+void inline atomic_add(std::complex<T> &y,const std::complex<T> &aa){
+	T * y_v = reinterpret_cast<T*>(&y);
+	const T * aa_v = reinterpret_cast<const T*>(&aa);
 
 	#pragma omp atomic
 	y_v[0] += aa_v[0];
 	#pragma omp atomic
 	y_v[1] += aa_v[1];	
 }
-
-void inline atomic_add(std::complex<double> &y,const std::complex<double> &aa){
-	double * y_v = reinterpret_cast<double*>(&y);
-	const double * aa_v = reinterpret_cast<const double*>(&aa);
-
-	#pragma omp atomic
-	y_v[0] += aa_v[0];
-	#pragma omp atomic
-	y_v[1] += aa_v[1];	
-}
-
 
 template<typename I, typename T1,typename T2>
 void csc_matvec(const bool overwrite_y,

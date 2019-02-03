@@ -478,11 +478,11 @@ class hamiltonian(object):
 				for fmt,(f,f_args) in dynamic_fmt:
 					sparse_constuctor = getattr(_sp,fmt+"_matrix")
 					func = function(f,tuple(f_args))
-					self._dynamic[func] = sparse_constuctor(self._dynamic[func])
+					try:
+						self._dynamic[func] = sparse_constuctor(self._dynamic[func])
+					except KeyError:
+						raise ValueError("({},{}) is not found in dynamic list.".format(f,f_args))
 					
-
-
-
 		self._Ns = self._shape[0]
 
 	@property
