@@ -99,11 +99,8 @@ def make_static(basis,static_list,dtype):
 	for opstr,indx,J in static_list:
 		
 		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-		H=H+Ht
-		del Ht
-		H.sum_duplicates() # sum duplicate matrix elements
-		H.eliminate_zeros() # remove all zero matrix elements
+		H=H+_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+
 	return H 
 
 
@@ -162,10 +159,7 @@ def make_op(basis,opstr,bonds,dtype):
 		J=bond[0]
 		indx=bond[1:]
 		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-		H=H+Ht
-		del Ht
-		H.sum_duplicates() # sum duplicate matrix elements
-		H.eliminate_zeros() # remove all zero matrix elements
+		H=H+_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+
 	
 	return H

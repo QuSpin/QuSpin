@@ -91,7 +91,7 @@ struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
 };
 
 template<class I,class J>
-npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
+npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
 	npy_intp index = 0;
 	bool insuff_mem = false;
@@ -106,10 +106,12 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 		const npy_intp block_size = 1.1*mem_MAX/nthread;
 		thread_block.reserve(block_size);
 
-		I s = threadn;
-		MAX -= threadn;
+		npy_intp chunk = MAX/nthread;
+		if(threadn==nthread-1){chunk += MAX%nthread;}
 
-		while(MAX>0 && Ns < mem_MAX){
+		I s = threadn;
+
+		while(chunk>0 && !insuff_mem){
 			double norm = B->check_state(s);
 			J int_norm = norm;
 
@@ -118,16 +120,17 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 				#pragma omp atomic
 				Ns++;
 			}
-
 			s += nthread;
-			MAX -= nthread;
+			chunk--;
+
+			if(Ns>=mem_MAX){
+				#pragma omp critical
+				insuff_mem=true;
+			}
+
 		}
 
-		if(Ns < mem_MAX){
-			#pragma omp single
-			{
-				index = 0;
-			}
+		if(!insuff_mem){
 			#pragma omp critical
 			{
 				const npy_intp Ns_block = thread_block.size();
@@ -137,11 +140,6 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 				}
 			}
 		}
-		else{
-			#pragma omp single
-			insuff_mem = true;
-		}
-
 	}
 
 	if(insuff_mem){
@@ -159,7 +157,7 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_
 }
 
 template<class I,class J>
-npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
+npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I s,I basis[],J n[]){
 	npy_intp Ns = 0;
 	npy_intp index = 0;
 	bool insuff_mem = false;
@@ -171,14 +169,16 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp
 		
 		const int nthread = omp_get_num_threads();
 		const int threadn = omp_get_thread_num();
-		std::vector<std::pair<I,J> > thread_block;
+		std::vector<std::pair<I,J> > thread_block; // local array to store values found by each thread. this reduces the number of critical sections. 
 		const npy_intp block_size = 1.1*mem_MAX/nthread;
-		thread_block.reserve(block_size);
+		thread_block.reserve(block_size); // preallocate memory for each block so that it does not have to expand during search. 
 		
-		MAX -= threadn;
+		npy_intp chunk = MAX/nthread;
+		
+		if(threadn==nthread-1){chunk += MAX%threadn;}
 		for(int i=0;i<threadn;i++){s=B->next_state_pcon(s);}
 
-		while(MAX>0 && Ns < mem_MAX){
+		while(chunk>0 && !insuff_mem){
 			double norm = B->check_state(s);
 			J int_norm = norm;
 
@@ -187,11 +187,17 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp
 				#pragma omp atomic
 				Ns++;
 			}
+
 			for(int i=0;i<nthread;i++){s=B->next_state_pcon(s);}
-			MAX -= nthread;	
+			chunk--;
+
+			if(Ns>=mem_MAX){
+				#pragma omp critical
+				insuff_mem=true;
+			}
 		}
 
-		if(Ns < mem_MAX){
+		if(!insuff_mem){
 			#pragma omp critical
 			{
 				const npy_intp Ns_block = thread_block.size();
@@ -201,17 +207,13 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,npy_intp MAX,npy_intp
 				}
 			}
 		}
-		else{
-			#pragma omp single
-			insuff_mem = true;
-		}
-
 	}
 
 	if(insuff_mem){
 		return -1;
 	}
 	else{
+		// sort list based on basis and then fill ndarray values with the sorted list. 
 		master_block.resize(Ns);
 		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
 		for(npy_intp i=0;i<Ns;i++){
@@ -229,7 +231,7 @@ template<class I,class J>
 npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
-	std::cout << nthreads << std::endl;
+
 	if(nthreads>1 && MAX > nthreads && nt>0){
 		return make_basis_parallel(B,MAX,mem_MAX,basis,n);
 	}
