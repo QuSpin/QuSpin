@@ -19,6 +19,8 @@ from joblib import delayed as _delayed
 from six import iteritems as _iteritems
 from six import itervalues as _itervalues
 
+from ..operators import hamiltonian
+
 try:
 	from itertools import izip as _izip
 except ImportError:
