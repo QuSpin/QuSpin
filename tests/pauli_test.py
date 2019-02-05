@@ -24,9 +24,6 @@ opstr_zz=[['zz',sc_list]]
 
 opstr_lists=[opstr_pm, opstr_mp, opstr_xx, opstr_yy, opstr_zz]
 
-
-
-
 def compare_Op_bra_ket(static_list,basis_1,basis_2,ratio_12,test_ratio=True):
 	for opstr,indx,J in static_list:
 		ME_1,_,_ = basis_1.Op_bra_ket(opstr,indx,J,np.float64,basis_1.states)

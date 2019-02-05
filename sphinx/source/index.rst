@@ -17,6 +17,15 @@ Check out these papers for a detailed tutorial:
 The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_.
 
 
+New Features
+====================
+
+.. toctree::
+    :maxdepth: 1
+    
+    New_Features
+
+
 QuSpin API reference
 ====================
 
