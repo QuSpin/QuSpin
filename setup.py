@@ -17,12 +17,14 @@ def setup_package():
 	except:
 		raise ImportError("build requires numpy for fortran extensions")
 
-	import os
+	import os,sys
 
-
-	# if sys.platform == "darwin":
-	# 	os.environ["CC"]="clang"
-	# 	os.environ["CXX"]="clang++"
+	if "--omp" in sys.argv:
+		sys.argv.remove("--omp")
+		if sys.platform == "win32":
+			os.environ["CFLAGS"]="/openmp"
+		else:
+			os.environ["CFLAGS"]="-fopenmp"
 
 	io = open("meta.yaml","r")
 	meta_file = io.read()

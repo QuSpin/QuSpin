@@ -106,8 +106,7 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 		const npy_intp block_size = 1.1*mem_MAX/nthread;
 		thread_block.reserve(block_size);
 
-		npy_intp chunk = MAX/nthread;
-		if(threadn==nthread-1){chunk += MAX%nthread;}
+		npy_intp chunk = MAX - threadn;
 
 		I s = threadn;
 
@@ -121,7 +120,7 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 				Ns++;
 			}
 			s += nthread;
-			chunk--;
+			chunk-=nthread;
 
 			if(Ns>=mem_MAX){
 				#pragma omp critical
@@ -173,9 +172,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 		const npy_intp block_size = 1.1*mem_MAX/nthread;
 		thread_block.reserve(block_size); // preallocate memory for each block so that it does not have to expand during search. 
 		
-		npy_intp chunk = MAX/nthread;
-		
-		if(threadn==nthread-1){chunk += MAX%threadn;}
+		npy_intp chunk = MAX - threadn;
 		for(int i=0;i<threadn;i++){s=B->next_state_pcon(s);}
 
 		while(chunk>0 && !insuff_mem){
@@ -189,7 +186,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 			}
 
 			for(int i=0;i<nthread;i++){s=B->next_state_pcon(s);}
-			chunk--;
+			chunk-=nthread;
 
 			if(Ns>=mem_MAX){
 				#pragma omp critical

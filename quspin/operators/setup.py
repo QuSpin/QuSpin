@@ -18,19 +18,13 @@ def configuration(parent_package='', top_path=None):
     import os,numpy,sys
     config = Configuration('operators', parent_package, top_path)
 
-    extra_compile_args = []
-    extra_link_args = []
-    if sys.platform == "win32":
-        extra_compile_args=["/openmp"]
-        extra_link_args=["/openmp"]
-    elif sys.platform == "darwin":
-        extra_compile_args = ["-std=c++11","-fopenmp"]
-        extra_link_args = ["-fopenmp"]
-    else:
-        # extra_compile_args = []
-        # extra_link_args = []
-        extra_compile_args = ["-fopenmp"]
-        extra_link_args = ["-lgomp"]
+    cython_files()
+
+    extra_compile_args=[]
+    extra_link_args=[]  
+      
+    if sys.platform == "darwin":
+        extra_compile_args = ["-std=c++11"]
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     include_dirs = [numpy.get_include()]

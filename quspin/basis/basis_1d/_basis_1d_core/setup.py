@@ -40,6 +40,8 @@ def configuration(parent_package='', top_path=None):
 		from numpy.distutils.misc_util import Configuration
 		config = Configuration('_basis_1d_core',parent_package, top_path)
 
+		cython_files()
+
 		package_dir = os.path.dirname(os.path.realpath(__file__))
 		sources_dir = os.path.join(package_dir,"sources")
 

@@ -10,7 +10,6 @@ def cython_files():
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    # cython_src = ['hcb_core.pyx']
     include_dirs = os.path.join(package_dir,"source")
     if USE_CYTHON:
         cythonize(cython_src,language="c++",include_path=[include_dirs])
@@ -21,19 +20,13 @@ def configuration(parent_package='', top_path=None):
         from numpy.distutils.misc_util import Configuration
         config = Configuration('_basis_general_core',parent_package, top_path)
 
-        if sys.platform == "win32":
-            extra_compile_args=["/openmp"]
-            extra_link_args=["/openmp"]
-            # extra_compile_args=[]
-            # extra_link_args=[]            
-        elif sys.platform == "darwin":
-            extra_compile_args = ["-std=c++11","-fopenmp"] 
-            extra_link_args = ["-fopenmp"]
-            #extra_compile_args = ["-std=c++11"]
-            #extra_link_args = []
-        else:
-            extra_compile_args = ["-fopenmp"]
-            extra_link_args = ["-lgomp"]
+        cython_files()
+
+        extra_compile_args=[]
+        extra_link_args=[]  
+          
+        if sys.platform == "darwin":
+            extra_compile_args = ["-std=c++11"]
  
         package_dir = os.path.dirname(os.path.realpath(__file__))
         include_dir2 = os.path.join(package_dir,"source")
@@ -72,14 +65,7 @@ def configuration(parent_package='', top_path=None):
 
 if __name__ == '__main__':
         from numpy.distutils.core import setup
-        import sys
-        try:
-            instr = sys.argv[1]
-            if instr == "build_templates":
-                cython_files()
-            else:
-                setup(**configuration(top_path='').todict())
-        except IndexError: pass
+        setup(**configuration(top_path='').todict())
 
 
 
