@@ -74,6 +74,7 @@ def anti_commutator(H1,H2):
 	.. math::
 		\\{H_1,H_2\\}_+ = H_1 H_2 + H_2 H_1
 
+
 	Examples
 	--------
 	The following script shows how to compute the anticommutator of two `hamiltonian` objects.
@@ -597,7 +598,7 @@ class hamiltonian(object):
 		Parameters
 		-----------
 		V : {numpy.ndarray, scipy.spmatrix}
-			Array comtaining the quantums state to multiply the `hamiltonian` operator with.
+			Array containing the quantums state to multiply the `hamiltonian` operator with.
 		time : obj, optional
 			Can be either one of the following:
 
@@ -1283,7 +1284,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the real time Liouville operator.
+			This function is what gets passed into the ode solver. This is the real time Liouville operator.
 		
 		"""
 		rho = rho.reshape((self.Ns,self.Ns))
@@ -1305,7 +1306,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
+			This function is what gets passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
 		"""
 		V = V.reshape((self._Ns,-1))
 		V_dot = -self._static.dot(V)	
@@ -1321,7 +1322,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
+			This function is what gets passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
 		"""
 
 		V_dot = -self._static.dot(V)	
@@ -1347,7 +1348,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
 		
 		u_dot + iv_dot = -iH(u + iv)
@@ -1371,7 +1372,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
 		
 		u_dot + iv_dot = -iH(u + iv)
@@ -1394,7 +1395,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 		"""
 		V = V.reshape((self.Ns,-1))
 		V_dot = self._static.dot(V)	
@@ -1410,7 +1411,7 @@ class hamiltonian(object):
 			time, the time to evalute drive at.
 
 		description:
-			This function is what get's passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 		"""
 		V_dot = self._static.dot(V)	
 		for func,Hd in iteritems(self._dynamic):

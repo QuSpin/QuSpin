@@ -628,7 +628,7 @@ class exp_op(object):
 			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`
 			and :math:`\\exp(\\mathcal{O})`.
 		shift : scalar
-			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
+			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
 		call_kwargs : obj, optional
 			extra keyword arguments which include:
 				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
