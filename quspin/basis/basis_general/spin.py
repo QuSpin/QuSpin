@@ -34,11 +34,10 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			\\texttt{spin_basis_general} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
 		\\end{array}
 
-	**Note:** 
+	**Notes:** 
 		* The relation between spin and Pauli matrices is :math:`\\vec S = \\vec \\sigma/2`.
 		* The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support the operator strings "x" and "y". 
-		* The operator strings "+" and "-" are defined as follows: :math:`S^{\\pm}=S^x \\pm i S^y` (`pauli=False`) and :math:`\\sigma^{\\pm}=\\sigma^x \\pm i \\sigma^y` (`pauli=True`). 
- 		* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+		* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
 
  		
 	Examples
@@ -62,7 +61,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=True,Ns_block_est=None,make_basis=True,**blocks):
+	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=1,Ns_block_est=None,make_basis=True,**blocks):
 		"""Intializes the `spin_basis_general` object (basis for spin operators).
 
 		Parameters
@@ -77,8 +76,26 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		S: str, optional
 			Size of local spin degrees of freedom. Can be any (half-)integer from:
 			"1/2","1","3/2",...,"9999/2","5000".
-		pauli: bool, optional
-			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
+		pauli: bool, optional (requires `S=1/2)
+			* for `pauli=0` the code uses spin-1/2 operators: 
+	
+			.. math::
+
+				S^x = \\frac{1}{2}\\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad S^y = \\frac{1}{2}\\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad S^z = \\frac{1}{2}\\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad S^+ = \\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad S^- = \\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
+
+			* for `pauli=1` the code uses Pauli matrices with:
+
+			.. math::
+
+				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\frac{1}{2}\\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\frac{1}{2}\\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
+
+
+			* for `pauli=-1` the code uses Pauli matrices with:
+
+			.. math::
+
+				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
+		
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		make_basis: bool, optional
@@ -95,8 +112,11 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 		"""
 		self._S = S
-		self._pauli = pauli
+		self._pauli = int(pauli)
 		sps,S = S_dict[S]
+
+		if self._pauli not in [-1,0,1]:
+			raise ValueError("Invalid value for optional argument pauli. Allowed values are the integers [-1,0,1].")
 
 		_Np = blocks.get("_Np")
 		if _Np is not None:
@@ -146,8 +166,11 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		
 		if self._S == "1/2":
 			ME,row,col = hcb_basis_general._Op(self,opstr,indx,J,dtype)
-			if self._pauli:
+			if self._pauli==1:
 				n = len(opstr.replace("I",""))
+				ME *= (1<<n)
+			elif self._pauli==-1:
+				n = len(opstr.replace("I","").replace("+","").replace("-",""))
 				ME *= (1<<n)
 
 			return ME,row,col
@@ -159,8 +182,12 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
 		if self._S == "1/2":
-			if self._pauli:
+
+			if self._pauli==1:
 				n = len(opstr.replace("I",""))
+				J *= (1<<n)
+			elif self._pauli==-1:
+				n = len(opstr.replace("I","").replace("+","").replace("-",""))
 				J *= (1<<n)
 
 			return hcb_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
@@ -287,8 +314,11 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 		if self._S == "1/2":
 			ME,bra,ket = hcb_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
-			if self._pauli:
+			if self._pauli==1:
 				n = len(opstr.replace("I",""))
+				ME *= (1<<n)
+			elif self._pauli==-1:
+				n = len(opstr.replace("I","").replace("+","").replace("-",""))
 				ME *= (1<<n)
 		else:
 			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states)
