@@ -96,6 +96,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 		occupation. 
 	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
 		restrited by `sps`.
+	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+
 
 	Examples
 	--------

@@ -1,6 +1,12 @@
+from __future__ import print_function, division
+import sys,os
+# line 4 and line 5 below are for development purposes and can be removed
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
+#
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space boson basis
-from quspin.tools.measurements import evolve
+from quspin.tools.evolution import evolve
 import numpy as np # generic math functions
 from six import iteritems # loop over elements of dictionary
 import matplotlib.pyplot as plt # plot library

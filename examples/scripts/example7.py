@@ -103,7 +103,7 @@ plt.figure()
 plt.plot(times,ent_t,lw=2)
 plt.plot(times[im_ind],ent_t[im_ind],marker="o",linestyle="",color="red")
 plt.xlabel("$Jt$",fontsize=20)
-plt.ylabel("$s_\mathrm{ent}(t)$",fontsize=20)
+plt.ylabel("$s_\\mathrm{ent}(t)$",fontsize=20)
 plt.grid()
 plt.savefig("boson_entropy.pdf")
 #plt.show()
@@ -121,11 +121,13 @@ im = ax2.matshow(n_t[0],cmap="hot")
 fig.colorbar(im)
 def run(i): # function to update frame
 	# set new data for plots
+	if i==num-1:
+		exit() # comment this line to retain last plot
 	line1.set_data(times[:i],ent_t[:i])
 	im.set_data(n_t[i])
 	return im, line1
-# CAUTION: these are many animations
-ani = animation.FuncAnimation(fig, run, range(num),interval=50)
+# define and display animation
+ani = animation.FuncAnimation(fig, run, range(num),interval=50,repeat=False)
 plt.show()
 plt.close()
 #
