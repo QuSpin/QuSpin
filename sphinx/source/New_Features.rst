@@ -15,4 +15,5 @@ Added in v. 0.3.1
 * support for Quantum Computing defition of `"+"`, `"-"` Pauli matrices: see `pauli` argument of the `spin_basis_*` classes.  
 * adding argument `p_con` to `*_basis_general.get_vec()` and `*_basis_general.get_proj()` functions. 
 * adding functions `basis.int_to_state()` and `basis.state_to_int()`.
+* new `basis.states` attribute to show the list of basis states in their integer representation.
 
