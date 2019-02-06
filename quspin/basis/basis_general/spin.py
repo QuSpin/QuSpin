@@ -76,7 +76,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		S: str, optional
 			Size of local spin degrees of freedom. Can be any (half-)integer from:
 			"1/2","1","3/2",...,"9999/2","5000".
-		pauli: bool, optional (requires `S=1/2)
+		pauli: bool, optional (requires `S="1/2"`)
 			* for `pauli=0` the code uses spin-1/2 operators: 
 	
 			.. math::

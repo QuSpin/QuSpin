@@ -9,8 +9,8 @@ The example below demonstrates how to use:
 	* the OpenMP version of quspin for parallel computing,
 	* the `*_basis_general` methods `Op_bra_ket()` and `representative()` which do not require computing basis.
 
-Physics Problem
-----------------
+Physics Setup
+-------------
 
 The expectation value of an operator :math:`H` in a state :math:`\psi` can be written as
 

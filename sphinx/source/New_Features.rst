@@ -1,4 +1,4 @@
-List of New Features 
+List of new features 
 ============
 
 Added in v. 0.3.1
@@ -14,6 +14,6 @@ Added in v. 0.3.1
 * new `*_basis_general` class methods: `Op_bra_ket()`, `representative()`, `normalization()`.
 * support for Quantum Computing defition of `"+"`, `"-"` Pauli matrices: see `pauli` argument of the `spin_basis_*` classes.  
 * adding argument `p_con` to `*_basis_general.get_vec()` and `*_basis_general.get_proj()` functions. 
-* adding functions `basis.int_to_state()` and `basis.state_to_int()`.
+* adding functions `basis.int_to_state()` and `basis.state_to_int()` to convert between spin and integer representation of the states.
 * new `basis.states` attribute to show the list of basis states in their integer representation.
 
