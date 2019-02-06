@@ -22,9 +22,16 @@ def setup_package():
 	if "--omp" in sys.argv:
 		sys.argv.remove("--omp")
 		if sys.platform == "win32":
-			os.environ["CFLAGS"]=os.environ["CFLAGS"]+" /openmp"
+			if "CFLAGS" in os.environ:
+				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" /openmp"
+			else:
+				os.environ["CFLAGS"]="/openmp"
 		else:
-			os.environ["CFLAGS"]=os.environ["CFLAGS"]+" -fopenmp"
+			if "CFLAGS" in os.environ:
+				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" -fopenmp"
+			else:
+				os.environ["CFLAGS"]="-fopenmp"
+
 
 	io = open("meta.yaml","r")
 	meta_file = io.read()

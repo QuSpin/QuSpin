@@ -2,7 +2,6 @@
 cimport numpy as np
 import cython
 from cython.parallel cimport parallel
-from openmp cimport omp_get_max_threads
 from libcpp cimport bool
 from libcpp.vector cimport vector
 import scipy.sparse as _sp
@@ -26,6 +25,11 @@ cdef extern from "matvec.h":
                               const T1[],const T1,const T2[],T2[]) nogil
     void dia_matvecs[I,T1,T2](const bool,const I,const I,const I,const I,const I,
                               const I[],const T1[],const T1,const T2[],T2[]) nogil
+
+cdef extern from "openmp.h":
+  int omp_get_max_threads()
+
+
 
 ctypedef fused indtype:
   np.int32_t
