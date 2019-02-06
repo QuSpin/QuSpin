@@ -1,6 +1,6 @@
 .. _example11-label:
 
-Parallel Computing using OpenMP. Sampling Expecation Values of Obsevables.
+Parallel Computing using OpenMP. Sampling Expectation Values of Obsevables.
 --------------------------------------------------------------------------
 
 :download:`download script <../../../examples/scripts/example11.py>`
@@ -19,16 +19,16 @@ The expectation value of an operator :math:`H` in a state :math:`\psi` can be wr
 
 where :math:`\{|s\rangle\}_s` can be any basis, in particular the Flock (:math:`z`-) basis used in QuSpin. 
 
-The above expression suggests that one can use sampling methods, such as Monte Carlo, to estimate the expectation value of the quantity :math:`E_s` (sometimes referred to as local energy) in the probability distribution :math:`p_s=|\psi_s|^2`. If we have: (i) a function which compues the amplitudes :math:`s\mapsto\psi_s` for every spin configuration :math:`s`, and (ii) the matrix elements :math:`H_{ss'}`, then 
+The above expression suggests that one can use sampling methods, such as Monte Carlo, to estimate the expectation value of :math:`\langle\psi|H|\psi\rangle` using the quantity :math:`E_s` (sometimes referred to as local energy) evaluated in samples drawn from the probability distribution :math:`p_s=|\psi_s|^2`. If we have: (i) a function which compues the amplitudes :math:`s\mapsto\psi_s` for every spin configuration :math:`s`, and (ii) the matrix elements :math:`H_{ss'}`, then 
 
 .. math::
 	\langle\psi|H|\psi\rangle \approx \frac{1}{N}\sum_{s\in\mathcal{S}} E_s,  
 
 where :math:`\mathcal{S}` contains :math:`N` spin configurations sampled from :math:`p_s=|\psi_s|^2`.
 
-Such ideas allow to look for variational approximations to the wavefunction :math:`\psi_s` in large system sizes, based for instance on restricted boltzmann machines, see `arXiv:1606.02318 <https://arxiv.org/abs/1606.02318>`_.
+Since this procedure does not require to know the the state :math:`|\psi\rangle` to be normalized, such ideas allow to look for variational approximations to the wavefunction :math:`\psi_s` in large system sizes, based for instance on restricted Boltzmann machines, see e.g. `arXiv:1606.02318 <https://arxiv.org/abs/1606.02318>`_.
 
-In this example, we assume that we have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()`. These methods do not require to compute the basis, and thus can be combined to reach system sizes beyond exact diagonalization. 
+In the example below, we assume that we have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()`. These methods do not require to compute the basis, and thus can be combined to reach system sizes beyond exact diagonalization. 
 
 
 Parallel Computing in QuSpin using OpenMP
@@ -38,7 +38,10 @@ We also use the opportunity to show how to speed up QuSpin code using OpenMP. To
 ::
 	$ conda install -c weinbe58 quspin-omp
 
-**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages, which may induce an error outside QuSpin. However, this error can be disabled [at one own's risk] until it is officially fixed, see line in the code ?? below. 
+**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages, which may induce an error outside QuSpin. However, this error can be disabled [at one's own risk] until it is officially fixed, see line 25 in the code below. 
+
+Script
+------
 
 .. literalinclude:: ../../../examples/scripts/example11.py
 	:linenos:

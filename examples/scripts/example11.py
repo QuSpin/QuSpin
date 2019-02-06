@@ -17,13 +17,11 @@ from quspin.operators._make_hamiltonian import _consolidate_static
 import numpy as np
 from scipy.special import comb
 np.random.seed(1) #fixes seed of rng
-import os
 from time import time # timing package
-#
 #
 ##### define number of OpenMP threads used in the simulation
 #
-os.environ['OMP_NUM_THREADS']='4'
+os.environ['OMP_NUM_THREADS']='4' # set number of OpenMP threads to run in parallel
 os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX
 #
 #
@@ -72,13 +70,13 @@ def swap_bits(s,i,j):
 	""" Swap bits i, j in integer s.
 
 	Parameters
-		-----------
-		s: array_like(int)
-			array of spin configurations stored in their bit representation.
-		i: array_like(int)
-			array of positions to be swapped with the corresponding pair in j.
-		j: array_like(int)
-			array of positions to be swapped with the corresponding pair in i.
+	-----------
+	s: array_like(int)
+		array of spin configurations stored in their bit representation.
+	i: array_like(int)
+		array of positions to be swapped with the corresponding pair in j.
+	j: array_like(int)
+		array of positions to be swapped with the corresponding pair in i.
 
 	"""
 	x = np.bitwise_and( np.bitwise_xor( np.right_shift(s,i), np.right_shift(s,j) ) , 1)
@@ -87,19 +85,22 @@ def swap_bits(s,i,j):
 ##### define function to compute the amplitude `psi_s` for every spin configuration `s` #####
 #
 basis.make(Ns_block_est=16000) # computes the basis
+basis_state_inds_dict=dict()
+for s in basis.states:
+	basis_state_inds_dict[s]=np.where(basis.states==s)[0][0]
 def probability_amplitude(s,psi):
 	''' Computes probability amplitude `psi_s` of quantum state `psi` in z-basis state `s`.
 
 	Parameters
 	----------
 	s: array_like(int)
-			array of spin configurations [stored in their bit representation] to compute their local energies `E_s`.
-		psi_s: array
-			(unnormalized) probability amplitude values, corresponding to the states `s`. 
+		array of spin configurations [stored in their bit representation] to compute their local energies `E_s`.
+	psi_s: array
+		(unnormalized) probability amplitude values, corresponding to the states `s`. 
 
 	'''
-	return psi[[np.where(basis.states==ss)[0][0] for ss in s]]
-	
+	return psi[[basis_state_inds_dict[ss] for ss in s]]
+#
 ##### define function to compute local energy `E_s` #####
 #
 def compute_local_energy(s,psi_s,psi):
@@ -107,12 +108,12 @@ def compute_local_energy(s,psi_s,psi):
 
 	Parameters
 	----------
-		s: array_like(int)
-			array of spin configurations [stored in their bit representation] to compute their local energies `E_s`.
-		psi_s: array
-			(unnormalized) probability amplitude values, corresponding to the states `s`. 
-		psi: array
-			(unnormalized) state which encodes the mapping $s \\to \\psi_s$.
+	s: array_like(int)
+		array of spin configurations [stored in their bit representation] to compute their local energies `E_s`.
+	psi_s: array
+		(unnormalized) probability amplitude values, corresponding to the states `s`. 
+	psi: array
+		(unnormalized) state which encodes the mapping $s \\to \\psi_s$.
 		
 	"""
 	# preallocate variable
@@ -140,7 +141,7 @@ print('random initial state in bit representation:', s)
 # transform state in bit representation
 s=int(s,2)
 print('same random initial state in integer representation:', s)
-# compute representative of state `s` under basis symmetries (here onlt Z-symmetry)
+# compute representative of state `s` under basis symmetries (here only Z-symmetry)
 s=basis.representative(s)
 print('representative of random initial state in integer representation:', s)
 # compute amplitude in state s
@@ -149,46 +150,50 @@ psi_s=probability_amplitude(s,psi)
 # define MC sampling parameters
 equilibration_time=200
 # number of MC sampling points
-N_MC_points = 10000
+N_MC_points = 100000
 #
-##### run MC sampling #####
+##### run Markov chain MC #####
 #
 # compute all distinct site pairs to swap
 site_pairs=np.array([(i,j) for i in sites for j in sites if i!=j])
 np.random.shuffle(site_pairs)
-# branch MC chains: allows for parallel MC sampling
+# branch MC chains: allows to run mutiple Markov chains in a vectorized fashion
 s=np.tile(s,N_MC_points)
 psi_s=np.tile(psi_s,N_MC_points)
 #
-# sample from MC after auto_correlation time
+# sample from MC after allowing the equilibration time to pass
 for k in range(equilibration_time):
 	# draw set of pair of sites to swap their spins 
 	inds=np.random.randint(site_pairs.shape[0],size=N_MC_points)
 	inds=site_pairs[inds]
-	# swap spins
+	# swap bits in spin configurations
 	t = swap_bits(s,inds[:,0], inds[:,1])
-	# compute representatives
-	t=basis.representative(t)
+	# compute representatives or proposed configurations to bring them back to symmetry sector
+	# CAUTION: MC works only with Z-symmetry because it commutes with swap_bits(); other symmetries break detailed balance.
+	t=basis.representative(t) 
+	### accept/reject new states
 	psi_t=probability_amplitude(t, psi)
-	# accept/reject move
 	eps=np.random.uniform(0,1,size=N_MC_points)
+	# compute mask to determine whether to accept/reject every state
 	mask=np.where(eps <= np.abs(psi_t)**2/np.abs(psi_s)**2)
-	#
+	# apply mask to only update accepted states
 	s[mask]=t[mask]
 	psi_s[mask]=psi_t[mask]
 	#
-	print('{0:d}-th MC chain step complete'.format(k))
+	print('{0:d}-th MC chain equilibration step complete'.format(k))
 #
-##### compute local energy #####
+##### compute MC-sampled energy #####
+# compute local energy
+print('computing local energies E_s...')
 E_s = compute_local_energy(s,psi_s,psi)
-# estimate energy expectation and variance
+# compute energy expectation and MC variance
 E_mean=np.mean(E_s)
 E_var=np.std(E_s)/np.sqrt(N_MC_points)
 #
 #### compute exact expectation value #####
-#
+# build Hamiltonian
 H = hamiltonian(static,[],basis=basis,dtype=np.float64)
 E_exact=H.expt_value(psi/np.linalg.norm(psi))
-#
+# compare results
 print('mean energy: {0:.4f}, MC variance: {1:.4f}, exact energy {2:.4f}'.format(E_mean, E_var, E_exact) )
 print("simulation took {0:.4f} sec".format(time()-ti))
