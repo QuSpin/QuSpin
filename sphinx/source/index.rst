@@ -52,6 +52,14 @@ QuSpin Example Scripts
     
     Examples
 
+Parallel Computing Capabilities
+===============================
+
+.. toctree::
+    :maxdepth: 1
+    
+    parallelization
+
 Report a Bug / Ask a Question
 =============================
 
