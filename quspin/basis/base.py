@@ -6,9 +6,14 @@ import warnings,numba
 
 @numba.njit
 def _coo_dot(v_in,v_out,row,col,ME):
-	n = row.size
+	n = row.shape[0]
+	m = v_in.shape[1]
 	for i in range(n):
-		v_out[row[i],...] += ME[i] * v_in[col[i]]
+		r = row[i]
+		c = col[i]
+		me = ME[i]
+		for j in range(m):
+			v_out[r,j] += me * v_in[c,j]
 
 
 MAXPRINT = 50
@@ -123,7 +128,7 @@ class basis(object):
 		if conjugated:
 			ME = ME.conj()
 
-		_coo_dot(v_in,v_out,row,col,ME)
+		_coo_dot(v_in.reshape((self.Ns,-1)),v_out.reshape((self.Ns,-1)),row,col,ME)
 
 		return v_out			
 
