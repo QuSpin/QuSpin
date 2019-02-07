@@ -9,7 +9,7 @@ from quspin.basis import spin_basis_1d
 from quspin.tools.measurements import obs_vs_time
 import numpy as np
 import scipy.sparse as sp
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 try:
 	from itertools import izip as zip
 except ImportError:
