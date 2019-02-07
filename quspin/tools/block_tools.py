@@ -19,8 +19,6 @@ from joblib import delayed as _delayed
 from six import iteritems as _iteritems
 from six import itervalues as _itervalues
 
-from ..operators import hamiltonian
-
 try:
 	from itertools import izip as _izip
 except ImportError:
@@ -139,7 +137,6 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 		return hamiltonian(static,dynamic,copy=False)
 
 
-
 def _worker(gen_func,args_list,q,e):
 	"""
 	Worker function which loops over one of more generators provided by `gen_func` and returns the result 
@@ -246,7 +243,6 @@ def _expm_gen(psi,H,times,dt):
 		psi = _expm_multiply(H,psi)
 		yield psi
 	H /= dt
-
 
 
 def _block_evolve_iter(psi_blocks,H_list,P,t0,times,stack_state,imag_time,solver_name,solver_args,n_jobs):
@@ -477,6 +473,34 @@ class block_ops(object):
 				self._H_dict[key] = H
 
 
+	def get_P(self,key):
+		if self._P_dict.get(key) is None:
+			p = b.get_proj(self.dtype,**self._get_proj_kwargs)
+			if self._save:
+				self._P_dict[key] = p
+
+			return p
+		else:
+			return self._P_dict[key]
+
+	def get_H(self,key):
+		from ..operators import hamiltonian
+
+		if self._H_dict.get(key) is None:
+			if not self._checked:
+				H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+				self._checked=True
+			else:
+				H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+
+			if self._save:
+				self._H_dict[key] = H
+
+			return H
+		else:
+			return self._H_dict[key]
+
+
 	def evolve(self,psi_0,t0,times,iterate=False,n_jobs=1,block_diag=False,stack_state=False,imag_time=False,solver_name="dop853",**solver_args):
 		"""Creates symmetry blocks of the Hamiltonian and then uses them to run `hamiltonian.evolve()` in parallel.
 		
@@ -537,19 +561,15 @@ class block_ops(object):
 			Terminates when initial state has no projection onto the specified symmetry blocks.
 
 		"""
+
+
 		if imag_time:
 			raise ValueError("imaginary time not supported for block evolution.")
 		P = []
 		H_list = []
 		psi_blocks = []
 		for key,b in _iteritems(self._basis_dict):
-			if self._P_dict.get(key) is None:
-				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
-				if self._save:
-					self._P_dict[key] = p
-			else:
-				p = self._P_dict[key]
-
+			p = self.get_P(key)
 
 			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
@@ -561,21 +581,7 @@ class block_ops(object):
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
-
-				if self._H_dict.get(key) is None:
-					if not self._checked:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
-						self._checked=True
-					else:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
-
-					if self._save:
-						self._H_dict[key] = H
-
-					H_list.append(H)
-				else:
-					H_list.append(self._H_dict[key])
-
+				H_list.append(self.get_H(key))
 
 		if block_diag and H_list:
 			N_H = len(H_list)
@@ -672,6 +678,7 @@ class block_ops(object):
 			Terminates when initial state has no projection onto the specified symmetry blocks.
 
 		"""
+		from ..operators import hamiltonian
 
 		if iterate:
 			if start is None and  stop is None:
@@ -718,13 +725,7 @@ class block_ops(object):
 		H_list = []
 		psi_blocks = []
 		for key,b in _iteritems(self._basis_dict):
-			if self._P_dict.get(key) is None:
-				p = b.get_proj(self.dtype,**self._get_proj_kwargs)
-				if self._save:
-					self._P_dict[key] = p
-			else:
-				p = self._P_dict[key]
-
+			p = self.get_P(key)
 
 			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
@@ -735,21 +736,8 @@ class block_ops(object):
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
-				if self._H_dict.get(key) is None:
-					if not self._checked:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
-						self._checked=True
-					else:
-						H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
-
-					if self._save:
-						self._H_dict[key] = H
-					H = H(H_time_eval)*a
-
-				else:
-					H = self._H_dict[key](H_time_eval)*a
-
-
+				H = self.get_H(key)
+				H = H(H_time_eval)*a
 				if shift is not None:
 					H += a*shift*_sp.identity(b.Ns,dtype=self.dtype)
 

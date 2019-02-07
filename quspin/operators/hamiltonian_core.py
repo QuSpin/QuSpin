@@ -3,6 +3,8 @@ from __future__ import print_function, division
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
+from ..tools.evolution import evolve
+
 from ._oputils import matvec as _matvec
 
 from ._make_hamiltonian import make_static
@@ -1493,8 +1495,6 @@ class hamiltonian(object):
 		>>> v_t = H.evolve(v0,t0,times,eom="SE",solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
 
 		"""
-
-		from ..tools.evolution import evolve
 
 		try:
 			shape0 = v0.shape
