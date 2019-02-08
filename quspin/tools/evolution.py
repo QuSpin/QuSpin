@@ -196,7 +196,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	
 	for the complex-valued :math:`\\varphi(t)` by re-writing it as a real-valued vector `phi=[u,v]` where 
 	:math:`\\varphi(t) = u(t) + iv(t)`. The real and imaginary parts, :math:`u(t)` and :math:`v(t)`, have the same dimension as 
-	:math:`\phi(t)`.
+	:math:`\\phi(t)`.
 	
 	In the most general form, the single-particle Hamiltonian can be decomposed as 
 	:math:`H(t)= H_{stat} + f(t)H_{dyn}`, with a complex-valued driving function :math:`f(t)`. Then, the GPE can be cast in 
