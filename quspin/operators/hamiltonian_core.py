@@ -1301,40 +1301,17 @@ class hamiltonian(object):
 		rho_comm *= -1j
 		return rho_comm.ravel()
 
-	def __multi_ISO(self,time,V):
+
+	def __ISO(self,time,V,V_out):
 		"""
 		args:
 			V, the vector to multiple with
+			V_out, the vector to use with output.
 			time, the time to evalute drive at.
 
 		description:
 			This function is what gets passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
 		"""
-		V = V.reshape((self._Ns,-1))
-		V_dot = -self._static.dot(V)	
-		for func,Hd in iteritems(self._dynamic):
-			V_dot -= func(time)*(Hd.dot(V))
-
-		return V_dot.ravel()
-
-	def __ISO(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what gets passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
-		"""
-
-		V_dot = -self._static.dot(V)	
-		for func,Hd in iteritems(self._dynamic):
-			V_dot -= func(time)*(Hd.dot(V))
-
-		return V_dot
-
-	def __omp_ISO(self,time,V,V_out):
-
 		V = V.reshape(V_out.shape)
 		_matvec(self._static,V,out=V_out,overwrite_out=True)
 		for func,Hd in iteritems(self._dynamic):
@@ -1390,39 +1367,16 @@ class hamiltonian(object):
 
 		return V_dot
 
-	def __multi_SO(self,time,V):
+	def __SO(self,time,V,V_out):
 		"""
 		args:
 			V, the vector to multiple with
+			V_out, the vector to use with output.
 			time, the time to evalute drive at.
 
 		description:
-			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
+			This function is what gets passed into the ode solver. This is the Imaginary time Schrodinger operator -H(t)*|V >
 		"""
-		V = V.reshape((self.Ns,-1))
-		V_dot = self._static.dot(V)	
-		for func,Hd in iteritems(self._dynamic):
-			V_dot += func(time)*(Hd.dot(V))
-
-		return -1j*V_dot.reshape((-1,))
-
-	def __SO(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-		"""
-		V_dot = self._static.dot(V)	
-		for func,Hd in iteritems(self._dynamic):
-			V_dot += func(time)*(Hd.dot(V))
-
-		return -1j*V_dot
-
-	def __omp_SO(self,time,V,V_out):
-
 		V = V.reshape(V_out.shape)
 		_matvec(self._static,V,out=V_out,overwrite_out=True)
 		for func,Hd in iteritems(self._dynamic):
@@ -1460,7 +1414,6 @@ class hamiltonian(object):
 			Specifies the ODE type. Can be either one of
 
 				* "SE", real and imaginary-time Schroedinger equation.
-				* "SE_omp", real and imaginary-time Schroedinger equation with parallel csr matrix-vector dot-product.
 				* "LvNE", real-time Liouville equation.
 
 			Default is "eom = SE" (Schroedinger evolution).
@@ -1521,14 +1474,15 @@ class hamiltonian(object):
 				raise ValueError("v0 must have {0} elements".format(self.Ns))
 
 			if imag_time:
-				if v0.ndim == 1:
-					evolve_args  = evolve_args + (self.__ISO,)
-				else:
-					evolve_args  = evolve_args + (self.__multi_ISO,)
+				if stack_state:
+					raise NotImplementedError("stack state is not compatible with imaginary time evolution.")
 
-				result_dtype = _np.result_type(v0.dtype,self.dtype)
-				scalar_val = _np.zeros((),dtype=result_dtype)
-				evolve_kwargs["real"] = not _np.iscomplexobj(scalar_val)
+
+				evolve_args  = evolve_args + (self.__ISO,)					
+				result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
+				v0 = _np.array(v0,dtype=result_dtype,copy=True,order="C")
+				evolve_kwargs["f_params"]=(v0,)
+				evolve_kwargs["real"] = not _np.iscomplexobj(v0)
 
 			else:
 				if stack_state:
@@ -1538,40 +1492,39 @@ class hamiltonian(object):
 					else:
 						evolve_args = evolve_args + (self.__multi_SO_real,)
 				else:
+					v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+					evolve_kwargs["f_params"]=(v0,)
 					evolve_kwargs["real"]=False
-					if v0.ndim == 1:
-						evolve_args = evolve_args + (self.__SO,)
-					else:
-						evolve_args = evolve_args + (self.__multi_SO,)
+					evolve_args = evolve_args + (self.__SO,)
 
-		elif eom == "SE_omp":
-			if not (_sp.isspmatrix_csr(self.static) or _sp.isspmatrix_dia(self.static) or _sp.isspmatrix_csc(self.static)):
-				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
+		# elif eom == "SE_omp":
+		# 	if not (_sp.isspmatrix_csr(self.static) or _sp.isspmatrix_dia(self.static) or _sp.isspmatrix_csc(self.static)):
+		# 		raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
 
-			if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) or _sp.isspmatrix_csc(Hd) for func,Hd in iteritems(self._dynamic)):
-				raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
+		# 	if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) or _sp.isspmatrix_csc(Hd) for func,Hd in iteritems(self._dynamic)):
+		# 		raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
 
-			if v0.ndim > 1:
-				raise ValueError("v0 must have ndim <= 1")
+		# 	if v0.ndim > 1:
+		# 		raise ValueError("v0 must have ndim <= 1")
 
-			if v0.shape[0] != self.Ns:
-				raise ValueError("v0 must have {0} elements".format(self.Ns))
+		# 	if v0.shape[0] != self.Ns:
+		# 		raise ValueError("v0 must have {0} elements".format(self.Ns))
 
-			if imag_time:
-				evolve_args  = evolve_args + (self.__omp_ISO,)
+		# 	if imag_time:
+		# 		evolve_args  = evolve_args + (self.__omp_ISO,)
 
-				result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
-				v0 = _np.array(v0,dtype=dtype,copy=True,order="C")
-				evolve_kwargs["f_params"]=(v0,)
-				evolve_kwargs["real"] = not _np.iscomplexobj(v0)
-			else:
-				if stack_state:
-					raise NotImplementedError("stack state is not compatible with openmp implementation.")
+		# 		result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
+		# 		v0 = _np.array(v0,dtype=dtype,copy=True,order="C")
+		# 		evolve_kwargs["f_params"]=(v0,)
+		# 		evolve_kwargs["real"] = not _np.iscomplexobj(v0)
+		# 	else:
+		# 		if stack_state:
+		# 			raise NotImplementedError("stack state is not compatible with openmp implementation.")
 
-				v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
-				evolve_kwargs["f_params"]=(v0,)
-				evolve_kwargs["real"]=False
-				evolve_args = evolve_args + (self.__omp_SO,)
+		# 		v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+		# 		evolve_kwargs["f_params"]=(v0,)
+		# 		evolve_kwargs["real"]=False
+		# 		evolve_args = evolve_args + (self.__omp_SO,)
 					
 
 		elif eom == "LvNE":
@@ -1590,7 +1543,7 @@ class hamiltonian(object):
 				else:
 					evolve_args = evolve_args + (self.__LO,)
 		else:
-			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(equation))
+			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(eom))
 
 		return evolve(*evolve_args,**evolve_kwargs)
 

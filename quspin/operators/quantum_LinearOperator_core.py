@@ -123,8 +123,9 @@ class quantum_LinearOperator(LinearOperator):
 			self._diagonal = None
 
 
-
+		self._public_state_list = list(static_list)
 		static_list = _consolidate_static(static_list)
+
 		self._static_list = []
 		for opstr,indx,J in static_list:
 			ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
@@ -178,7 +179,7 @@ class quantum_LinearOperator(LinearOperator):
 	@property
 	def static_list(self):
 		"""list: operator list used to create this object."""
-		return self._static_list
+		return self._public_static_list
 
 	@property
 	def get_shape(self):

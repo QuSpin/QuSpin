@@ -87,7 +87,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			.. math::
 
-				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\frac{1}{2}\\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\frac{1}{2}\\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
+				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 2\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 2 & 0\\end{pmatrix}
 
 
 			* for `pauli=-1` the code uses Pauli matrices with:
@@ -256,24 +256,32 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			if opstr == "x":
 				op1 = list(op)
 				op1[0] = op1[0].replace("x","+")
-				op1[2] *= 0.5
+				if self._pauli in [0,1]:
+					op1[2] *= 0.5
 				op1.append(num)
 
 				op2 = list(op)
 				op2[0] = op2[0].replace("x","-")
-				op2[2] *= 0.5
+				if self._pauli in [0,1]:
+					op2[2] *= 0.5
 				op2.append(num)
 
 				return (tuple(op1),tuple(op2))
 			elif opstr == "y":
 				op1 = list(op)
 				op1[0] = op1[0].replace("y","+")
-				op1[2] *= -0.5j
+				if self._pauli in [0,1]:
+					op1[2] *= -0.5j
+				else:
+					op1[2] *= -1j
 				op1.append(num)
 
 				op2 = list(op)
 				op2[0] = op2[0].replace("y","-")
-				op2[2] *= 0.5j
+				if self._pauli in [0,1]:
+					op2[2] *= 0.5j
+				else:
+					op2[2] *= 1j
 				op2.append(num)
 
 				return (tuple(op1),tuple(op2))
