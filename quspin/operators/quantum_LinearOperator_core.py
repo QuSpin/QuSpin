@@ -123,7 +123,7 @@ class quantum_LinearOperator(LinearOperator):
 			self._diagonal = None
 
 
-		self._public_state_list = list(static_list)
+		self._public_static_list = list(static_list)
 		static_list = _consolidate_static(static_list)
 
 		self._static_list = []
@@ -287,7 +287,7 @@ class quantum_LinearOperator(LinearOperator):
 		if self.diagonal is not None:
 			_np.multiply(other.T,self.diagonal,out=new_other.T)
 
-		for opstr,indx,J in self.static_list:
+		for opstr,indx,J in self._static_list:
 			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
 								self._conjugated,self._transposed,v_out=new_other)
 		return new_other
