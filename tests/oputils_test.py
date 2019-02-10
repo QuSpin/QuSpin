@@ -39,14 +39,51 @@ for fmt in formats:
 				offsets = np.random.choice(np.arange(-N//2+1,N//2,1),size=ndiags,replace=False)
 				A = dia_matrix((diags,offsets),shape=(N,N),dtype=dtype1)
 
-			v = np.random.uniform(-1,1,size=N) + 1j * np.random.uniform(-1,1,size=N)
-			v = v.astype(dtype2)
+
 
 			if dtype1 in [np.complex128,np.complex64]:
 				H = hamiltonian([],[[A,func_cmplx,()]],static_fmt=fmt,dtype=dtype1)
 			else:
 				H = hamiltonian([],[[A,func,()]],static_fmt=fmt,dtype=dtype1)
 
+			v = np.random.uniform(-1,1,size=N) + 1j * np.random.uniform(-1,1,size=N)
+			v = v.astype(dtype2)
+
+			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2))
+
+			t = np.random.normal(0,1)
+
+			if dtype1 in [np.complex128,np.complex64]:
+				res2 = 1j*t*(A.dot(v))
+			else:
+				res2 = t*(A.dot(v))
+
+			res1 = H.dot(v,time=t)
+			H.dot(v,time=t,out=out,overwrite_out=True)
+
+
+			result_dtype = np.result_type(dtype1,dtype2)
+			atol = eps(N,dtype1,dtype2)
+			try:
+				np.testing.assert_allclose(res1,res2,atol=atol)
+			except AssertionError as e:
+				print(res1-res2, atol)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(res1,out,atol=atol)
+			except AssertionError as e:
+				print(res1-out, atol)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(out,res2,atol=atol)
+			except AssertionError as e:
+				print(out-res2, atol)
+				raise AssertionError(e)
+
+			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = v.astype(dtype2)
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2))
 
