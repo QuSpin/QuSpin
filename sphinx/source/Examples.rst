@@ -6,7 +6,7 @@ For a detailed tutorial on how to use the package, check out these papers:
 	* `arXiv:1804.06782 <https://arxiv.org/abs/1804.06782>`_
 
 
-The following Python scripts demonstrate basic and advanced functionality of QuSpin:
+The following Python scripts demonstrate basic and advanced functionality of QuSpin. To run them, besides QuSpin, you have to also install `matplotlib <https://matplotlib.org/users/installing.html>`_ (e.g. by using anaconda):
 	* :ref:`example0-label`, :download:`download script <../../examples/scripts/example0.py>`
 	* :ref:`example1-label`, :download:`download script <../../examples/scripts/example1.py>`
 	* :ref:`example2-label`, :download:`download script <../../examples/scripts/example2.py>`

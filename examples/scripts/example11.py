@@ -3,14 +3,14 @@ import sys,os
 # line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
-########################################################################
-#                            example 11                                #
-#   In this script we demonstrate how to use QuSpin's                  #	
-#   OpenMP capabilities. We also showcase methods of the general_basis #
-#   class which do not require explicit calculation of the basis       #
-#   itself. Using the J1-J2 model on a square lattice, we show how to  #
-#   estimate the energy of a state using Monte-Carlo sampling.         #
-########################################################################
+##########################################################################
+#                            example 11                                  #
+#   In this script we demonstrate how to use QuSpin's                    #	
+#   OpenMP capabilities. We also showcase methods of the general_basis   #
+#   class which do not require explicit calculation of the basis         #
+#   itself. Using the J1-J2 model on a square lattice, we show how to    #
+#   estimate the energy of a state using Monte-Carlo sampling.           #
+##########################################################################
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 from quspin.operators._make_hamiltonian import _consolidate_static
@@ -84,7 +84,7 @@ def swap_bits(s,i,j):
 #
 ##### define function to compute the amplitude `psi_s` for every spin configuration `s` #####
 #
-basis.make(Ns_block_est=16000) # computes the basis
+basis.make(Ns_block_est=16000) # computes the basis, NOT required for functions basis.representative() and basis.Op_bra_ket()
 basis_state_inds_dict=dict()
 for s in basis.states:
 	basis_state_inds_dict[s]=np.where(basis.states==s)[0][0]
