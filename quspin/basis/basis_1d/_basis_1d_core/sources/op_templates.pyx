@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 
 cdef int op_template(basis_type[:] op_pars, npy_intp Ns, basis_type[:] basis,

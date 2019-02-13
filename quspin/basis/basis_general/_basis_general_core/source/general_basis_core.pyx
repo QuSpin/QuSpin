@@ -1,3 +1,4 @@
+# distutils: language=c++
 from general_basis_core cimport *
 from numpy import pi, array, uint64
 from libc.math cimport cos,sin,abs,sqrt

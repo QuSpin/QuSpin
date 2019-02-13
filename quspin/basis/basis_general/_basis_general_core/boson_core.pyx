@@ -1,4 +1,5 @@
 # cython: language_level=2
+# distutils: language=c++
 import cython
 from scipy.misc import comb
 from general_basis_core cimport dtype,index_type,norm_type

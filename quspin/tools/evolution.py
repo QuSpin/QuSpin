@@ -329,7 +329,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	output_args = (complex_valued,stack_state,imag_time,n,shape0)
 
 	if _np.isscalar(times):
-		return _evolve_scalar(solver,v0,t0,times,verbose,*output_args)
+		return _evolve_scalar(solver,v0,t0,times,*output_args)
 	else:
 		if iterate:
 			return _evolve_iter(solver,v0,t0,times,verbose,*output_args)

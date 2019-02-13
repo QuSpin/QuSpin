@@ -1,4 +1,5 @@
 # cython: language_level=2
+# distutils: language=c++
 cimport numpy as np
 import cython
 from cython.parallel cimport parallel

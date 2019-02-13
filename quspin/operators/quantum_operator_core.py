@@ -403,7 +403,7 @@ class quantum_operator(object):
 		"""
 		return self.dot(X)
 
-	def dot(self,V,pars={},check=True,out=None):
+	def dot(self,V,pars={},check=True,out=None,overwrite_out=True):
 		"""Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
@@ -421,7 +421,11 @@ class quantum_operator(object):
 			are assumed to be set to unity.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
-			
+		out : array_like, optional
+			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. 
+		overwrite_out : bool, optional
+			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result of the dot product. 
+			If `False` the result of the dot product will be added to the values of `out`. 			
 
 		Returns
 		--------
@@ -482,8 +486,11 @@ class quantum_operator(object):
 				except AttributeError:
 					raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 
+				if overwrite_out:
+					out[...] = 0
 			else:
 				out = _np.zeros_like(V,dtype=result_dtype)
+
 
 			for key,J in pars.items():
 				_matvec(self._quantum_operator[key],V,overwrite_out=False,a=J,out=out)

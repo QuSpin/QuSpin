@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 # cython template, do not call from script
 cdef int op_func(npy_intp Ns, basis_type[:] basis,
