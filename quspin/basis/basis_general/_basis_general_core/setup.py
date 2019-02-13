@@ -9,10 +9,11 @@ def cython_files():
         USE_CYTHON = False
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
+
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    include_dirs = os.path.join(package_dir,"source")
+    include_dir = os.path.join(package_dir,"source")
     if USE_CYTHON:
-        cythonize(cython_src,language="c++",include_path=[include_dirs])
+        cythonize(cython_src,language="c++",include_path=[include_dir])
 
 
 def configuration(parent_package='', top_path=None):

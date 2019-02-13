@@ -1,5 +1,7 @@
 from __future__ import print_function, division
 
+from . import exp_op_core
+
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
@@ -612,7 +614,11 @@ class hamiltonian(object):
 
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
-			
+		out : array_like, optional
+			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. 
+		overwrite_out : bool, optional
+			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result. 
+			If `False` the result of the dot product will be added to the values of `out`. 
 
 		Returns
 		--------
@@ -627,12 +633,12 @@ class hamiltonian(object):
 	
 		"""
 
-		from .exp_op_core import isexp_op
+		# from .exp_op_core import isexp_op
 
 		
 		if ishamiltonian(V):
 			return self * V
-		elif isexp_op(V):
+		elif exp_op_core.isexp_op(V):
 			raise ValueError("This is ambiguous action. Use the .rdot() method of the `exp_op` class isntead.")
 
 		times = _np.array(time)
@@ -820,7 +826,7 @@ class hamiltonian(object):
 			 
 		"""
 
-		from .exp_op_core import isexp_op
+		# from .exp_op_core import isexp_op
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -828,7 +834,7 @@ class hamiltonian(object):
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
-		if isexp_op(V):
+		if exp_op_core.isexp_op(V):
 			raise TypeError("Can't take expectation value of exp_op")
 
 		# fluctuations =  expctH2 - expctH^2
@@ -880,7 +886,7 @@ class hamiltonian(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
+		# from .exp_op_core import isexp_op
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -888,7 +894,7 @@ class hamiltonian(object):
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
-		if isexp_op(V):
+		if exp_op_core.isexp_op(V):
 			raise TypeError("Can't take expectation value of exp_op")
 
 		
@@ -1039,14 +1045,14 @@ class hamiltonian(object):
 		correponds to :math:`V^\\dagger H V`.
 
 		"""
-		from .exp_op_core import isexp_op
+		# from .exp_op_core import isexp_op
 
 
 		if ishamiltonian(proj):
 			new = self._rmul_hamiltonian(proj.getH())
 			return new._imul_hamiltonian(proj)
 
-		elif isexp_op(proj):
+		elif exp_op_core.isexp_op(proj):
 			return proj.sandwich(self)
 
 		elif _sp.issparse(proj):
@@ -1147,8 +1153,7 @@ class hamiltonian(object):
 		"""
 
 		if generator:
-			from .exp_op_core import exp_op
-			return exp_op(other,**exp_op_kwargs).sandwich(self)
+			return exp_op_core.exp_op(other,**exp_op_kwargs).sandwich(self)
 		else:
 			return self.project_to(other)
 
@@ -1182,15 +1187,6 @@ class hamiltonian(object):
 		>>> eigenvalues,eigenvectors = H.eigsh(time=time,**eigsh_args)
 
 		"""
-		if self.Ns <= 0:
-			return _np.array([]),_np.array([[]])
-
-		if _np.array(time).ndim > 0:
-			raise TypeError('expecting scalar argument for time')
-
-		if self.Ns <= 0:
-			return _np.asarray([]), _np.asarray([[]])
-
 		return _sla.eigsh(self.tocsr(time=time),**eigsh_args)
 
 	def eigh(self,time=0,**eigh_args):
@@ -1222,15 +1218,7 @@ class hamiltonian(object):
 		>>> eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
 
 		"""
-		if self.Ns <= 0:
-			return _np.array([]),_np.array([[]])
-
 		eigh_args["overwrite_a"] = True
-		
-		if _np.array(time).ndim > 0:
-			raise TypeError('expecting scalar argument for time')
-
-
 		# fill dense array with hamiltonian
 		H_dense = self.todense(time=time)		
 		# calculate eigh
@@ -1266,12 +1254,6 @@ class hamiltonian(object):
 		>>> eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
 
 		"""
-		if self.Ns <= 0:
-			return _np.array([])
-		
-		if _np.array(time).ndim > 0:
-			raise TypeError('expecting scalar argument for time')
-
 		H_dense = self.todense(time=time)
 		eigvalsh_args["overwrite_a"] = True
 		E = _la.eigvalsh(H_dense,**eigvalsh_args)
@@ -1496,37 +1478,6 @@ class hamiltonian(object):
 					evolve_kwargs["f_params"]=(v0,)
 					evolve_kwargs["real"]=False
 					evolve_args = evolve_args + (self.__SO,)
-
-		# elif eom == "SE_omp":
-		# 	if not (_sp.isspmatrix_csr(self.static) or _sp.isspmatrix_dia(self.static) or _sp.isspmatrix_csc(self.static)):
-		# 		raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
-
-		# 	if not all(_sp.isspmatrix_csr(Hd) or _sp.isspmatrix_dia(Hd) or _sp.isspmatrix_csc(Hd) for func,Hd in iteritems(self._dynamic)):
-		# 		raise ValueError("to use 'SE_omp' all matricies in hamiltonian must be 'csr' or 'dia' format. ")
-
-		# 	if v0.ndim > 1:
-		# 		raise ValueError("v0 must have ndim <= 1")
-
-		# 	if v0.shape[0] != self.Ns:
-		# 		raise ValueError("v0 must have {0} elements".format(self.Ns))
-
-		# 	if imag_time:
-		# 		evolve_args  = evolve_args + (self.__omp_ISO,)
-
-		# 		result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
-		# 		v0 = _np.array(v0,dtype=dtype,copy=True,order="C")
-		# 		evolve_kwargs["f_params"]=(v0,)
-		# 		evolve_kwargs["real"] = not _np.iscomplexobj(v0)
-		# 	else:
-		# 		if stack_state:
-		# 			raise NotImplementedError("stack state is not compatible with openmp implementation.")
-
-		# 		v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
-		# 		evolve_kwargs["f_params"]=(v0,)
-		# 		evolve_kwargs["real"]=False
-		# 		evolve_args = evolve_args + (self.__omp_SO,)
-					
-
 		elif eom == "LvNE":
 			n = 1.0
 			if v0.ndim != 2:
@@ -1572,7 +1523,8 @@ class hamiltonian(object):
 		"""
 		time = _np.array(time)
 		if time.ndim > 0:
-			raise ValueError("time must be scalar!")
+			raise TypeError('expecting scalar argument for time')
+
 		matvec = functools.partial(_hamiltonian_dot,self,time)
 		rmatvec = functools.partial(_hamiltonian_dot,self.H,time)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
@@ -1688,6 +1640,9 @@ class hamiltonian(object):
 
 		"""
 
+		if _np.array(time).ndim > 0:
+			raise TypeError('expecting scalar argument for time')
+
 		if out is None:
 			out = _np.zeros(self._shape,dtype=self.dtype)
 			out = _np.asmatrix(out)
@@ -1731,6 +1686,9 @@ class hamiltonian(object):
 		>>> H_dense=H.toarray(time=time)
 
 		"""
+
+		if _np.array(time).ndim > 0:
+			raise TypeError('expecting scalar argument for time')
 
 		if out is None:
 			out = _np.zeros(self._shape,dtype=self.dtype)
@@ -1776,13 +1734,16 @@ class hamiltonian(object):
 
 		return hamiltonian([new_static],dynamic,basis=self._basis,dtype=self._dtype,copy=copy)
 
-	def as_sparse_format(self,static_fmt="csr",dynamic_fmt="csr",copy=False):
+	def as_sparse_format(self,static_fmt="csr",dynamic_fmt={},copy=False):
 		"""Casts `hamiltonian` operator to SPARSE format.
 
 		Parameters
 		-----------
-		fmt : str {"csr","csc","dia","bsr"}
-			Specifies for mat of sparse array.
+		static_fmt : str {"csr","csc","dia"}
+			Specifies format of static part of Hamiltonian.
+		dynamic_fmt: dict, keys (func,func_args), values: str {"csr","csc","dia"}
+			Specifies the format of the dynamic parts of the hamiltonian. To specify a particular dynamic part of the hamiltonian use a tuple (func,func_args) which matches a function+argument pair
+			used in the construction of the hamiltonian as a key in the dictionary.
 		copy : bool,optional
 			Whether to return a deep copy of the original object. Default is `copy = False`.
 
@@ -1796,7 +1757,8 @@ class hamiltonian(object):
 
 		Examples
 		---------
-		>>> H_sparse=H.as_sparse_format()
+		>>> H_dia=H.as_sparse_format(static_fmt="csr",dynamic_fmt={(func,func_args):"dia"})
+
 
 		"""
 

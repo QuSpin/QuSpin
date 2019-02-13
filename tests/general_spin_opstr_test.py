@@ -107,7 +107,8 @@ def test_gen_basis_spin(l_max,S="1/2"):
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
 		n = basis_1d._get_norms(np.float64)**2
 		n_gen = (gen_basis._n.astype(np.float64))*gen_basis._pers.prod()
-		print(basis_1d.Ns,gen_basis.Ns,basis_blocks)
+
+		print("checking S={S:} Nup={Nup:} kblock={kblock:} pblock={pblock:} zblock={zblock:}".format(Nup=Nup,**basis_blocks))
 		if basis_1d.Ns != gen_basis.Ns:
 			print(L,basis_blocks)
 			print(basis_1d)

@@ -1,3 +1,4 @@
+# distutils: language=c++
 from gmpy2 import popcount
 
 cdef extern from "bitcount.h":

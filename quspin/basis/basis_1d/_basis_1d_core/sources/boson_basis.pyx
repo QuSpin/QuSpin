@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 
 def initial_state(L,sps,Nb=None):

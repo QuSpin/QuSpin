@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 
 

@@ -1,3 +1,4 @@
+# distutils: language=c++
 """
 This file contains the bit operations used to construct the hcb, spin-1//2, and fermion basis.
 Each cython function comes with its python counterpart (used by get_vec)

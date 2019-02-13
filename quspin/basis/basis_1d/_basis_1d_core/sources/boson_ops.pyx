@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 
 # cython template, do not call from script

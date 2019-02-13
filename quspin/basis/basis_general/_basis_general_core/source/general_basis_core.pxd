@@ -1,3 +1,4 @@
+# distutils: language=c++
 from numpy cimport npy_intp,int8_t,int16_t,int32_t,int64_t,uint8_t,uint16_t,uint32_t,uint64_t
 from numpy cimport float32_t,float64_t,complex64_t,complex128_t
 from libcpp cimport bool
