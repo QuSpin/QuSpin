@@ -5,6 +5,8 @@ from __future__ import print_function, division
 # need linear algebra packages
 import numpy as _np 
 from functools import partial as _partial
+from scipy.integrate import ode
+from numpy.linalg import norm
 
 # needed for isinstance only
 from .expm_multiply_parallel_core import expm_multiply_parallel
@@ -264,15 +266,12 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		
 	"""
 
-	from scipy.integrate import complex_ode
-	from scipy.integrate import ode
-
 	ndim=v0.ndim
 	if ndim > 2:
 		raise ValueError("state mush have ndim < 3.")
 
 	shape0 = v0.shape
-	
+
 	if ndim == 2:
 		v0 = v0.ravel()
 		shape0_ravelled=v0.shape
@@ -327,13 +326,15 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	solver.set_integrator(solver_name,**solver_args)
 	solver.set_initial_value(v0, t0)
 
+	output_args = (complex_valued,stack_state,imag_time,n,shape0)
+
 	if _np.isscalar(times):
-		return _evolve_scalar(solver,v0,t0,times,complex_valued,stack_state,imag_time,n,shape0)
+		return _evolve_scalar(solver,v0,t0,times,verbose,*output_args)
 	else:
 		if iterate:
-			return _evolve_iter(solver,v0,t0,times,verbose,complex_valued,stack_state,imag_time,n,shape0)
+			return _evolve_iter(solver,v0,t0,times,verbose,*output_args)
 		else:
-			return _evolve_list(solver,v0,t0,times,verbose,complex_valued,stack_state,imag_time,n,shape0)
+			return _evolve_list(solver,v0,t0,times,verbose,*output_args)
 
 
 def _cmplx_f(t,y,f,f_params):
@@ -347,13 +348,12 @@ def _format_output(y,complex_valued,stack_state,imag_time,n,shape0):
 		yout = y[:Ns].astype(_np.complex128).reshape(shape0)
 		yout[...] += 1j*y[Ns:].reshape(shape0)
 	elif complex_valued:
-		# yout = y.view(_np.complex128).reshape(shape0)
 		yout = y.view(_np.complex128).reshape(shape0)
 	else:
 		yout = y.reshape(shape0)
 
 	if imag_time:
-		yout /= (_np.linalg.norm(yout,axis=0)/n)
+		yout /= (norm(yout,axis=0)/n)
 
 	return yout
 
@@ -370,7 +370,6 @@ def _evolve_scalar(solver,v0,t0,time,*output_args):
 		raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(time))	
 
 def _evolve_list(solver,v0,t0,times,verbose,*output_args):
-	from numpy.linalg import norm
 	shape0 = output_args[-1]
 	Ns = shape0[0]
 	
@@ -383,14 +382,16 @@ def _evolve_list(solver,v0,t0,times,verbose,*output_args):
 	for i,t in enumerate(times):
 
 		if t == t0:
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			v[i,...] = _format_output(v0,*output_args)
+			y_fmt = _format_output(v0,*output_args)
+			if verbose: print("evolved to time {0}, norm of state(s) {1}".format(t,norm(y_fmt,axis=0)))
+			v[i,...] = y_fmt
 			continue
 
 		solver.integrate(t)
 		if solver.successful():
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			v[i,...] = _format_output(solver._y,*output_args)
+			y_fmt = _format_output(solver._y,*output_args)
+			if verbose: print("evolved to time {0}, norm of state(s) {1}".format(t,norm(y_fmt,axis=0)))
+			v[i,...] = y_fmt
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))
 			
@@ -403,20 +404,21 @@ def _evolve_list(solver,v0,t0,times,verbose,*output_args):
 
 
 def _evolve_iter(solver,v0,t0,times,verbose,*output_args):
-	from numpy.linalg import norm
 	shape0 = output_args[-1]
 	Ns = shape0[0]
 
 
 	for i,t in enumerate(times):
 		if t == t0:
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			yield _format_output(v0,*output_args)
+			y_fmt = _format_output(v0,*output_args)
+			if verbose: print("evolved to time {0}, norm of state(s) {1}".format(t,norm(y_fmt,axis=0)))
+			yield y_fmt
 			continue
 			
 		solver.integrate(t)
 		if solver.successful():
-			if verbose: print("evolved to time {0}, norm of state {1}".format(t,_np.linalg.norm(solver.y)))
-			yield _format_output(solver._y,*output_args)
+			y_fmt = _format_output(solver._y,*output_args)
+			if verbose: print("evolved to time {0}, norm of state(s) {1}".format(t,norm(y_fmt,axis=0)))
+			yield y_fmt
 		else:
 			raise RuntimeError("failed to evolve to time {0}, nsteps might be too small".format(t))

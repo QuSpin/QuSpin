@@ -45,7 +45,7 @@ class quantum_LinearOperator(LinearOperator):
 		:lines: 7-
 
 	"""
-	def __init__(self,static_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+	def __init__(self,static_list,N=None,basis=None,diagonal=None,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,copy=False,**basis_args):
 		"""Intializes the `quantum_LinearOperator` object.
 		
 		Parameters
@@ -118,7 +118,7 @@ class quantum_LinearOperator(LinearOperator):
 			self.basis.check_pcon(static_list,[])
 
 		if diagonal is not None:
-			self.set_diagonal(diagonal)
+			self.set_diagonal(diagonal,copy=copy)
 		else:
 			self._diagonal = None
 
@@ -209,9 +209,11 @@ class quantum_LinearOperator(LinearOperator):
 	@property
 	def diagonal(self):
 		"""numpy.ndarray: static diagonal part of the linear operator. """
-		return self._diagonal
+		diagonal_view=self._diagonal[:]
+		diagonal_view.setflags(write=0,uic=0)
+		return diagonal_view
 
-	def set_diagonal(self,diagonal):
+	def set_diagonal(self,diagonal,copy=True):
 		"""Sets the diagonal part of the quantum_LinearOperator.
 
 		Parameters
@@ -227,7 +229,10 @@ class quantum_LinearOperator(LinearOperator):
 		if diagonal.shape[0] != self.Ns:
 			raise ValueError("length of diagonal must be equal to dimension of matrix")
 
-		self._diagonal = diagonal
+		if copy:
+			self._diagonal = diagonal.copy()
+		else:
+			self._diagonal = diagonal
 
 	### state manipulation/observable routines
 
@@ -423,9 +428,9 @@ class quantum_LinearOperator(LinearOperator):
 
 	def copy(self):
 		"""Returns a deep copy of `quantum_LinearOperator` object."""
-		return quantum_LinearOperator(self._static_list,basis=self._basis,
+		return quantum_LinearOperator(list(self._static_list),basis=self._basis,
 							diagonal=self._diagonal,dtype=self._dtype,
-							check_symm=False,check_herm=False,check_pcon=False)
+							check_symm=False,check_herm=False,check_pcon=False,copy=True)
 
 	def __repr__(self):
 		return "<{0}x{1} quspin quantum_LinearOperator of type '{2}'>".format(*(self._shape[0],self._shape[1],self._dtype))
@@ -443,7 +448,7 @@ class quantum_LinearOperator(LinearOperator):
 		elif isinstance(other,LinearOperator):
 			return LinearOperator.__add__(self,other)
 		elif _np.isscalar(other):
-			return self._mul_scalar(other)
+			return LinearOperator.__add__(self,other)
 		else:
 			dense = True
 			other = _np.asanyarray(other)
@@ -472,7 +477,7 @@ class quantum_LinearOperator(LinearOperator):
 		elif isinstance(other,LinearOperator):
 			return LinearOperator.__sub__(self,other)
 		elif _np.isscalar(other):
-			return self._mul_scalar(other)
+			return LinearOperator.__sub__(self,other)
 		else:
 			dense = False
 			other = _np.asanyarray(other)
