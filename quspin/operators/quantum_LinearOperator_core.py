@@ -287,8 +287,11 @@ class quantum_LinearOperator(LinearOperator):
 	# 	return self.__rmul__(other)
 
 	def _matvec(self,other):
+		other = _np.asanyarray(v_in)
 		result_dtype = _np.result_type(self._dtype,other.dtype)
+		other = _np.ascontiguousarray(other,dtype=result_dtype)
 		new_other = _np.zeros_like(other,dtype=result_dtype)
+		
 		if self.diagonal is not None:
 			_np.multiply(other.T,self.diagonal,out=new_other.T)
 

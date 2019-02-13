@@ -102,18 +102,17 @@ class basis(object):
 	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
 		""" default version for all basis classes which works so long as _Op is implemented."""
 
-		if v_in.__class__ not in [_np.ndarray, _np.matrix]:
-			v_in = _np.asanyarray(v_in)
+		v_in = _np.asanyarray(v_in)
+		
+		result_dtype = _np.result_type(v_in.dtype,dtype)
 
 		if v_in.shape[0] != self.Ns:
 			raise ValueError("dimension mismatch")
 
 		if v_out is None:
-			result_dtype = _np.result_type(v_in.dtype,dtype)
 			v_out = _np.zeros_like(v_in,dtype=result_dtype)
 		else:
-			if v_out.__class__ not in [_np.ndarray, _np.matrix]:
-				v_out = _np.asanyarray(v_out)
+			v_out = _np.asanyarray(v_out)
 
 			if v_out.shape != v_in.shape:
 				raise ValueError("v_in.shape != v_out.shape")
