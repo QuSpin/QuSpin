@@ -1187,6 +1187,17 @@ class hamiltonian(object):
 		>>> eigenvalues,eigenvectors = H.eigsh(time=time,**eigsh_args)
 
 		"""
+		if self.Ns <= 0:
+			try:
+				return_eigenvectors = eigsh_args["return_eigenvectors"]
+			except KeyError:
+				return_eigenvectors = True
+
+			if return_eigenvectors:
+				return _np.array([],dtype=self._dtype).real, _np.array([[]],dtype=self._dtype)
+			else:
+				return _np.array([],dtype=self._dtype).real
+
 		return _sla.eigsh(self.tocsr(time=time),**eigsh_args)
 
 	def eigh(self,time=0,**eigh_args):
@@ -1218,12 +1229,14 @@ class hamiltonian(object):
 		>>> eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
 
 		"""
+		if self.Ns <= 0:
+			return _np.array([],dtype=self._dtype).real,_np.array([[]],dtype=self._dtype)
+
 		eigh_args["overwrite_a"] = True
 		# fill dense array with hamiltonian
-		H_dense = self.todense(time=time)		
+		H_dense = self.todense(time=time)
 		# calculate eigh
-		E,H_dense = _la.eigh(H_dense,**eigh_args)
-		return E,H_dense
+		return _la.eigh(H_dense,**eigh_args)
 
 	def eigvalsh(self,time=0,**eigvalsh_args):
 		"""Computes ALL eigenvalues of hermitian `hamiltonian` operator using DENSE hermitian methods.
@@ -1254,10 +1267,12 @@ class hamiltonian(object):
 		>>> eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
 
 		"""
+		if self.Ns <= 0:
+			return _np.array([],dtype=self._dtype).real
+
 		H_dense = self.todense(time=time)
 		eigvalsh_args["overwrite_a"] = True
-		E = _la.eigvalsh(H_dense,**eigvalsh_args)
-		return E
+		return _la.eigvalsh(H_dense,**eigvalsh_args)
 
 	### Schroedinger evolution routines
 
