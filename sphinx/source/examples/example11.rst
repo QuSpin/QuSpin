@@ -6,8 +6,8 @@ Parallel Computing using OpenMP. Sampling Expectation Values of Obsevables.
 :download:`download script <../../../examples/scripts/example11.py>`
 
 The example below demonstrates how to use:
-	* the OpenMP version of quspin for parallel computing,
-	* the `*_basis_general` methods `Op_bra_ket()` and `representative()` which do not require computing basis.
+	* the OpenMP version of quspin for parallel computing [code lines 24, 25 below],
+	* the `*_basis_general` methods `Op_bra_ket()` and `representative()` which do not require computing basis [code lines 126, 145, 173 below].
 
 Physics Setup
 -------------
@@ -26,9 +26,9 @@ The above expression suggests that one can use sampling methods, such as Monte C
 
 where :math:`\mathcal{S}` contains :math:`N` spin configurations sampled from :math:`p_s=|\psi_s|^2`.
 
-Since this procedure does not require to know the the state :math:`|\psi\rangle` to be normalized, such ideas allow to look for variational approximations to the wavefunction :math:`\psi_s` in large system sizes, based for instance on restricted Boltzmann machines, see e.g. `arXiv:1606.02318 <https://arxiv.org/abs/1606.02318>`_.
+Since this procedure does not require the the state :math:`|\psi\rangle` to be normalized, ideas along these lines allow to look for variational approximations to the wavefunction :math:`\psi_s` in large system sizes, based for instance on restricted Boltzmann machines [`arXiv:1606.02318 <https://arxiv.org/abs/1606.02318>`_].
 
-In the example below, we assume that we have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()`. These methods do not require to compute the basis, and thus can be combined to reach system sizes beyond exact diagonalization. 
+In the example below, we assume that we already have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()`. These methods do not require to compute the full basis, and thus allow to reach system sizes beyond exact diagonalization. 
 
 
 Parallel Computing in QuSpin using OpenMP
@@ -36,9 +36,9 @@ Parallel Computing in QuSpin using OpenMP
 
 We also use the opportunity to show how to speed up QuSpin code using OpenMP. To install quspin with OpenMP support using anaconda, run 
 ::
-	$ conda install -c weinbe58 quspin-omp
+	$ conda install -c weinbe58 omp quspin
 
-**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages, which may induce an error outside QuSpin. However, this error can be disabled [at one's own risk] until it is officially fixed, see line 25 in the code below. 
+**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages for ython 3, which may induce an error unrelated to QuSpin. However, this error can be disabled [at one's own risk(!)] until it is officially fixed, see code line 25 below. 
 
 Script
 ------

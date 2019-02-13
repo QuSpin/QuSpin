@@ -1,11 +1,11 @@
-List of new features 
-====================
+Complete list of new features 
+=============================
 
 Added in v. 0.3.1
 -----------------
 
 * support for python 3.7.
-* matplotlib is no longer a required package to install quspin.
+* matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
 * parallelization: OpenMP support for osx and windows. Requires a different build (see Installation).
 * new OpenMP features in `hamiltonian.evolve()` and `tools.evolution.evolve`().
 * new example script: use of OpenMP and some new `*_basis_general` methods.
