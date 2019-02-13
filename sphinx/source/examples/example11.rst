@@ -1,13 +1,11 @@
 .. _example11-label:
 
-Parallel Computing using OpenMP. Sampling Expectation Values of Obsevables.
---------------------------------------------------------------------------
+Sampling Expectation Values of Obsevables.
+-------------------------------------------
 
 :download:`download script <../../../examples/scripts/example11.py>`
 
-The example below demonstrates how to use:
-	* the OpenMP version of quspin for parallel computing [code lines 24, 25 below],
-	* the `*_basis_general` methods `Op_bra_ket()` and `representative()` which do not require computing basis [code lines 126, 145, 173 below].
+The example below demonstrates how to use the `*_basis_general` methods `Op_bra_ket()` and `representative()` which do not require computing basis [code lines 120, 139, 167 below].
 
 Physics Setup
 -------------
@@ -30,15 +28,6 @@ Since this procedure does not require the the state :math:`|\psi\rangle` to be n
 
 In the example below, we assume that we already have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()`. These methods do not require to compute the full basis, and thus allow to reach system sizes beyond exact diagonalization. 
 
-
-Parallel Computing in QuSpin using OpenMP
------------------------------------------
-
-We also use the opportunity to show how to speed up QuSpin code using OpenMP. To install quspin with OpenMP support using anaconda, run 
-::
-	$ conda install -c weinbe58 omp quspin
-
-**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages for ython 3, which may induce an error unrelated to QuSpin. However, this error can be disabled [at one's own risk(!)] until it is officially fixed, see code line 25 below. 
 
 Script
 ------

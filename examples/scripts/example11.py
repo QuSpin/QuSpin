@@ -3,14 +3,13 @@ import sys,os
 # line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
-##########################################################################
-#                            example 11                                  #
-#   In this script we demonstrate how to use QuSpin's                    #	
-#   OpenMP capabilities. We also showcase methods of the general_basis   #
-#   class which do not require explicit calculation of the basis         #
-#   itself. Using the J1-J2 model on a square lattice, we show how to    #
-#   estimate the energy of a state using Monte-Carlo sampling.           #
-##########################################################################
+###########################################################################
+#                            example 11                                   #
+#  In this script we demonstrate how to use QuSpin's methods of 		  #
+#  the general_basis class which do not require explicit calculation      #
+#  of the basis itself. Using the J1-J2 model on a square lattice, we     #
+#  show how  to estimate the energy of a state using Monte-Carlo sampling.#
+###########################################################################
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 from quspin.operators._make_hamiltonian import _consolidate_static
@@ -18,12 +17,6 @@ import numpy as np
 from scipy.special import comb
 np.random.seed(1) #fixes seed of rng
 from time import time # timing package
-#
-##### define number of OpenMP threads used in the simulation
-#
-os.environ['OMP_NUM_THREADS']='4' # set number of OpenMP threads to run in parallel
-os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX
-#
 #
 ti = time() # start timer
 ###### define model parameters ######
