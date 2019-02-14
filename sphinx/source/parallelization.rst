@@ -123,7 +123,7 @@ Make sure you run your script from that terminal window. If you run your code fr
 2) in the beginning of your python script, set
 ::
 	import os
-	os.environ['MKL_NUM_THREADS'] = '4' # set number of OpenMP threads to run in parallel
+	os.environ['MKL_NUM_THREADS'] = '4' # set number of MKL threads to run in parallel
 
 This allows to change the MKL variable dynamically from your python script.
 
