@@ -1,11 +1,7 @@
 
 def cython_files():
     import os,glob
-    try:
-        from Cython.Build import cythonize
-        USE_CYTHON = True
-    except ImportError:
-        USE_CYTHON = False
+    from Cython.Build import cythonize
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     package_dir = os.path.expandvars(package_dir)
@@ -30,7 +26,7 @@ def configuration(parent_package='', top_path=None):
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     package_dir = os.path.expandvars(package_dir)
-    
+
     include_dirs = [numpy.get_include()]
     include_dirs.append(os.path.join(package_dir,"_oputils"))
     include_dirs.append(os.path.join(package_dir,"..","tools","expm_multiply_parallel_core","source"))

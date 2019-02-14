@@ -10,11 +10,7 @@
 
 def cython_files():
 	import os,glob
-	try:
-		from Cython.Build import cythonize
-		USE_CYTHON = True
-	except ImportError:
-		USE_CYTHON = False
+	from Cython.Build import cythonize
 
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 	package_dir = os.path.expandvars(package_dir)
@@ -45,7 +41,7 @@ def configuration(parent_package='', top_path=None):
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
 		package_dir = os.path.expandvars(package_dir)
-		
+
 		sources_dir = os.path.join(package_dir,"sources")
 
 		hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	
