@@ -5,6 +5,10 @@
 *.pdf
 
 
+*.cpp
+*.cxx
+*.c 
+
 failed.txt
 
 ./examples/scripts/*.pdf
