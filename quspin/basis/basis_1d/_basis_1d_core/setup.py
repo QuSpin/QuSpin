@@ -44,6 +44,8 @@ def configuration(parent_package='', top_path=None):
 		cython_files()
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
+		package_dir = os.path.expandvars(package_dir)
+		
 		sources_dir = os.path.join(package_dir,"sources")
 
 		hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	
