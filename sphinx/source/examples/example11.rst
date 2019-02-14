@@ -26,11 +26,13 @@ where :math:`\mathcal{S}` contains :math:`N` spin configurations sampled from :m
 
 Since this procedure does not require the the state :math:`|\psi\rangle` to be normalized, ideas along these lines allow to look for variational approximations to the wavefunction :math:`\psi_s` in large system sizes, for instance with the help of restricted Boltzmann machines [`arXiv:1606.02318 <https://arxiv.org/abs/1606.02318>`_].
 
-In the example below, we assume that we already have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()` [cf. code lines 120, 139, 167 below]. These methods do not require to compute the full basis, and thus allow to reach system sizes beyond exact diagonalization. 
+In the example below, we assume that we already have a quantum state :math:`\psi_s` in the Fock basis, and we sample the expectation value of an operator `H` using the `*_basis_general` methods `Op_bra_ket()` and `representative()` [cf. code lines 120, 139, 167 below]. These methods do not require to compute the full basis, and thus allow to develop techniques for reaching system sizes beyond exact diagonalization. 
 
 
 Script
 ------
+
+:download:`download script <../../../examples/scripts/example11.py>`
 
 .. literalinclude:: ../../../examples/scripts/example11.py
 	:linenos:

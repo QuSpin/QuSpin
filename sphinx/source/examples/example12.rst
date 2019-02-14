@@ -5,10 +5,10 @@ Parallel Computing in QuSpin
 
 :download:`download script <../../../examples/scripts/example12.py>`
 
-This example shows how to speed up QuSpin code via multi-threading by
+This example shows how to speed up QuSpin code via multi-threading by using
 
-* using OpenMP;
-* using the Intel's MKL library for NumPy (which is Anaconda's default NumPy version, starting from Anaconda 2.5 onwards).
+* OpenMP,
+* Intel's MKL library for NumPy/SciPy (which is Anaconda's default NumPy version, starting from Anaconda 2.5 onwards).
 
 
 To install quspin with OpenMP support using anaconda (see also :ref:`parallelization-label`), run 
@@ -36,6 +36,8 @@ However, this error can be disabled [at one's own risk!] until it is officially 
 
 Script
 ------
+
+:download:`download script <../../../examples/scripts/example12.py>`
 
 .. literalinclude:: ../../../examples/scripts/example12.py
 	:linenos:
