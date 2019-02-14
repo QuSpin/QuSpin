@@ -3,14 +3,13 @@ import sys,os
 # line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
-##########################################################################
-#                            example 11                                  #
-#   In this script we demonstrate how to use QuSpin's                    #	
-#   OpenMP capabilities. We also showcase methods of the general_basis   #
-#   class which do not require explicit calculation of the basis         #
-#   itself. Using the J1-J2 model on a square lattice, we show how to    #
-#   estimate the energy of a state using Monte-Carlo sampling.           #
-##########################################################################
+###########################################################################
+#                            example 11                                   #
+#  In this script we demonstrate how to use QuSpin's methods of           #
+#  the general_basis class which do not require explicit calculation      #
+#  of the basis itself. Using the J1-J2 model on a square lattice, we     #
+#  show how  to estimate the energy of a state using Monte-Carlo sampling.#
+###########################################################################
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 from quspin.operators._make_hamiltonian import _consolidate_static
@@ -18,12 +17,6 @@ import numpy as np
 from scipy.special import comb
 np.random.seed(1) #fixes seed of rng
 from time import time # timing package
-#
-##### define number of OpenMP threads used in the simulation
-#
-os.environ['OMP_NUM_THREADS']='4' # set number of OpenMP threads to run in parallel
-os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX
-#
 #
 ti = time() # start timer
 ###### define model parameters ######
@@ -58,6 +51,7 @@ static_formatted = _consolidate_static(static)
 # Z-symmetry allowed in sampling since it commutes with the swap operation which proposes new configurations in MC
 basis = spin_basis_general(N_2d, pauli=0, make_basis=False,Nup=N_2d//2,zblock=(Z,0) )
 print(basis) # examine basis: contains a single element because it is not calculated due to make_basis=False argument above.
+print('basis is empty [note argument make_basis=False]')
 #
 ###### define quantum state to compute the energy of using Monte-Carlo sampling ######
 #
@@ -84,10 +78,10 @@ def swap_bits(s,i,j):
 #
 ##### define function to compute the amplitude `psi_s` for every spin configuration `s` #####
 #
-basis.make(Ns_block_est=16000) # computes the basis, NOT required for functions basis.representative() and basis.Op_bra_ket()
+aux_basis = spin_basis_general(N_2d,make_basis=True,Nup=N_2d//2,zblock=(Z,0) ) # auxiliary basis, only needed for probability_amplitude()
 basis_state_inds_dict=dict()
-for s in basis.states:
-	basis_state_inds_dict[s]=np.where(basis.states==s)[0][0]
+for s in aux_basis.states:
+	basis_state_inds_dict[s]=np.where(aux_basis.states==s)[0][0]
 def probability_amplitude(s,psi):
 	''' Computes probability amplitude `psi_s` of quantum state `psi` in z-basis state `s`.
 
@@ -191,6 +185,9 @@ E_mean=np.mean(E_s)
 E_var=np.std(E_s)/np.sqrt(N_MC_points)
 #
 #### compute exact expectation value #####
+# compute full basis: required to construct the exact Hamiltonian
+basis.make(Ns_block_est=16000)
+print(basis) # after the basis is made, printing the basis returns the states
 # build Hamiltonian
 H = hamiltonian(static,[],basis=basis,dtype=np.float64)
 E_exact=H.expt_value(psi/np.linalg.norm(psi))

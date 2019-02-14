@@ -202,7 +202,7 @@ class Floquet(object):
 		VF : bool
 			Set to `True` to save Floquet states under attribute _.VF. Default is `False`. 
 		n_jobs : int, optional
-			Set the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
+			Sets the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
 
 		"""
 		from ..operators import ishamiltonian

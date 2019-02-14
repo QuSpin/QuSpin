@@ -44,7 +44,7 @@ Installation and Usage
     
     Installation
 
-QuSpin Example Scripts
+Example Scripts
 ======================
 
 .. toctree::

@@ -63,7 +63,7 @@ class spin_basis_1d(basis_1d):
 
 			.. math::
 
-				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \begin{pmatrix}0 & 2\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 2 & 0\\end{pmatrix}
+				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 2\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 2 & 0\\end{pmatrix}
 
 
 			* for `pauli=-1` the code uses Pauli matrices with:
@@ -71,7 +71,7 @@ class spin_basis_1d(basis_1d):
 			.. math::
 
 				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
-
+		
 		**blocks: optional
 			extra keyword arguments which include:
 

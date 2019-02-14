@@ -95,7 +95,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			.. math::
 
 				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
-		
+	
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		make_basis: bool, optional

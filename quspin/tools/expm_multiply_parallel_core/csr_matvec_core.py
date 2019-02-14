@@ -7,12 +7,14 @@ import os
 def csr_matvec(A,v,a=None,out=None,overwrite_out=True):
 	"""Calculates matrix vector products :math:`x += a A y` or :math:`x = a A y` with csr matrix.
 
+	**This function is DEPRICATED** starting from QuSpin 0.3.1.
+
 	Notes
 	-----
 	For QuSpin builds which support OpenMP this function will be multithreaded. Note that using
 	out=v will result in incorrect results. Also note that if format of A is not 'csr' 
 	the matrix will be converted.
-	
+
 	Examples
 	--------
 
@@ -33,7 +35,7 @@ def csr_matvec(A,v,a=None,out=None,overwrite_out=True):
 	Returns
 	--------
 	numpy.ndarray
-		result of :math:`\\a A v`. 
+		result of :math:`a A v`. 
 
 		If `out` is not None and `overwrite_out = True` the dunction returns `out` with the data overwritten, 
 		otherwise if `overwrite_out = False` the result is added to `out`.
