@@ -4,9 +4,6 @@
 *.pyd
 *.pdf
 
-*.cpp
-*.cxx
-*.c
 
 failed.txt
 
