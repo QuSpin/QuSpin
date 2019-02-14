@@ -10,13 +10,10 @@
 
 def cython_files():
 	import os,glob
-	try:
-		from Cython.Build import cythonize
-		USE_CYTHON = True
-	except ImportError:
-		USE_CYTHON = False
+	from Cython.Build import cythonize
 
 	package_dir = os.path.dirname(os.path.realpath(__file__))
+	package_dir = os.path.expandvars(package_dir)
 
 	cython_src = [
 					os.path.join(package_dir,"hcp_basis.pyx"),
@@ -26,8 +23,7 @@ def cython_files():
 					os.path.join(package_dir,"boson_basis.pyx"),
 					os.path.join(package_dir,"boson_ops.pyx"),
 				]
-	if USE_CYTHON:
-		cythonize(cython_src,language="c++")
+	cythonize(cython_src,language="c++")
 
 
 
@@ -43,6 +39,8 @@ def configuration(parent_package='', top_path=None):
 		cython_files()
 
 		package_dir = os.path.dirname(os.path.realpath(__file__))
+		package_dir = os.path.expandvars(package_dir)
+
 		sources_dir = os.path.join(package_dir,"sources")
 
 		hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	

@@ -29,7 +29,7 @@ npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp me
 			break;
 		}
 		double norm = B->check_state(s);
-		J int_norm = norm;
+		npy_intp int_norm = norm;
 		
 		if(!check_nan(norm) && int_norm>0 ){
 			basis[Ns] = s;
@@ -60,7 +60,7 @@ npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_in
 			break;
 		}
 		double norm = B->check_state(s);
-		J int_norm = norm;
+		npy_intp int_norm = norm;
 
 		if(!check_nan(norm) && int_norm>0 ){
 			basis[Ns] = s;
@@ -112,7 +112,7 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 
 		while(chunk>0 && !insuff_mem){
 			double norm = B->check_state(s);
-			J int_norm = norm;
+			npy_intp int_norm = norm;
 
 			if(!check_nan(norm) && int_norm>0 ){
 				thread_block.push_back(std::make_pair(s,int_norm));
@@ -177,7 +177,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 
 		while(chunk>0 && !insuff_mem){
 			double norm = B->check_state(s);
-			J int_norm = norm;
+			npy_intp int_norm = norm;
 
 			if(!check_nan(norm) && int_norm>0 ){
 				thread_block.push_back(std::make_pair(s,int_norm));
