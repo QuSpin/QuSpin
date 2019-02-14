@@ -24,6 +24,7 @@ def run_computation():
 	###### define model parameters ######
 	J1=1.0 # spin=spin interaction
 	J2=0.5 # magnetic field strength
+	Omega=8.0 # drive frequency
 	Lx, Ly = 4, 4 # linear dimension of spin 1 2d lattice
 	N_2d = Lx*Ly # number of sites for spin 1
 	#
@@ -39,25 +40,32 @@ def run_computation():
 	T_d = (x-1)%Lx + Lx*((y+1)%Ly) # translation along diagonal
 	#
 	###### setting up bases ######
-	basis_2d = spin_basis_general(N_2d,pauli=False) # computation sped up by OpenMP
+	basis_2d = spin_basis_general(N_2d,pauli=False) # making the basis sped up by OpenMP
 	print('finished computing basis')
 	#
 	###### setting up hamiltonian ######
+	# set up time-dependence
+	def drive(t,Omega):
+		return np.cos(Omega*t)
+	drive_args=[Omega,]
 	# setting up site-coupling lists
 	J1_list=[[J1,i,T_x[i]] for i in range(N_2d)] + [[J1,i,T_y[i]] for i in range(N_2d)]
 	J2_list=[[J2,i,T_d[i]] for i in range(N_2d)] + [[J2,i,T_a[i]] for i in range(N_2d)]
 	#
-	static=[ ["xx",J1_list],["yy",J1_list],["zz",J1_list],  
-			 ["xx",J2_list],["yy",J2_list],["zz",J2_list]
-			]
+	static =[ ["xx",J1_list],["yy",J1_list],["zz",J1_list] ]  
+	dynamic=[ ["xx",J2_list,drive,drive_args],["yy",J2_list,drive,drive_args],["zz",J2_list,drive,drive_args] ]
 	# build hamiltonian
 	H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64,check_symm=False,check_herm=False)
 	# diagonalise H
-	E,V=H.eigsh(k=50,which='LA') # computation sped up by MKL
+	E,V=H.eigsh(time=0.0,k=50,which='LA') # H.eigsh sped up by MKL
 	print('finished computing energies')
-	E_GS=H.matrix_ele(V[:,0],V[:,0]) # computation sped up by OpenMP
-	print('finished computing expectation')
-	print(E)
+	psi_0=V[:,0]
+	# evolve state
+	t=np.linspace(0.0,20*2*np.pi/Omega,21)
+	psi_t=H.evolve(psi_0,t[0],t,iterate=True) # H.evolve sped up by OpenMP
+	for j,psi in enumerate(psi_t):
+		E_t = H.expt_value(psi,time=t[j])
+		print("finished evolving up to time step {:d}".format(j) )
 #
 ti = time() # start timer
 run_computation()

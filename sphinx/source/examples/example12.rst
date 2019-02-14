@@ -5,7 +5,7 @@ Parallel Computing in QuSpin
 
 :download:`download script <../../../examples/scripts/example12.py>`
 
-The example shows how to speed up QuSpin code 
+This example shows how to speed up QuSpin code via multi-threading by
 
 * using OpenMP;
 * using the Intel's MKL library for NumPy (which is Anaconda's default NumPy version, starting from Anaconda 2.5 onwards).
@@ -15,18 +15,21 @@ To install quspin with OpenMP support using anaconda (see also :ref:`paralleliza
 ::
 	$ conda install -c weinbe58 omp quspin
 
-**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages for Python 3, which may induce an error unrelated to QuSpin. However, this error can be disabled [at one's own risk!] until it is officially fixed, see code line 7 below. 
-
-The example below demonstrates how to use the OpenMP version of quspin for parallel computing. It is set up in such a way that the numner of OpenMP and MKL threads is controlled from the command line (see code lines 8,9). To run the script, run
+The example below demonstrates how to use the OpenMP version of quspin for parallel computing. It is set up in such a way that the number of OpenMP and MKL threads is controlled from the command line [cf. code lines 8,9]. To run the script, run
 ::
 	>>> python example12.py ${OMP_NUM_THREADS} ${MKL_NUM_THREADS}
 
 You can directly compare the speed for different values of the number of threads
 ::
-	>>> python example12.py 1 1 
-	>>> python example12.py 4 1 
-	>>> python example12.py 1 2 
-	>>> python example12.py 4 2 
+	>>> python example12.py 1 1 # single-threaded computation
+	>>> python example12.py 4 1 # multi-threaded OpenMP computation, speedup 
+	>>> python example12.py 1 4 
+	>>> python example12.py 4 4 
+
+Notice how, as explained in :ref:`parallelization-label`, `OMP_NUM_THREADS` improves the speed of the basis computation (code line 43), and the time evolution (code line 65), while `MKL_NUM_THREADS` improves the speed of the exact diagonalization step (code line 60).
+
+**Note:** there is a common problem with using OpenMP problem on OSX in anaconda packages for Python 3, which may induce an error unrelated to QuSpin. However, this error can be disabled [at one's own risk!] until it is officially fixed, see code line 7 below. 
+
 
 Script
 ------
