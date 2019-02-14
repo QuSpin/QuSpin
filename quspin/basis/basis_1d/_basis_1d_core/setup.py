@@ -17,6 +17,7 @@ def cython_files():
 		USE_CYTHON = False
 
 	package_dir = os.path.dirname(os.path.realpath(__file__))
+	package_dir = os.path.expandvars(package_dir)
 
 	cython_src = [
 					os.path.join(package_dir,"hcp_basis.pyx"),
