@@ -1,4 +1,4 @@
-Complete list of new features 
+Complete list of the most recent features 
 =============================
 
 Added in v. 0.3.1
@@ -6,7 +6,7 @@ Added in v. 0.3.1
 
 * support for python 3.7.
 * matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
-* parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see Installation).
+* parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see also :ref:`parallelization-label`).
 * new OpenMP features in operators module (see section on parallel computing support).
 * improved OpenMP features in the `*_general_basis` classes.
 * new example scripts: (i) use of some new `*_basis_general` methods, (ii) use of OpenMP and QuSpin's parallel features.

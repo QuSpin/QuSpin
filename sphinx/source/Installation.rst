@@ -22,6 +22,9 @@ You will be prompted to enter your password. Follow the prompts of the installat
 Once you have Anaconda/miniconda installed, all you have to do to install QuSpin is to execute the following command into the terminal: 
 ::
 	$ conda install -c weinbe58 quspin
+or if you require OpenMP support (see also :ref:`parallelization-label`)
+::
+	$ conda install -c weinbe58 omp quspin
 
 If asked to install new packages just say `yes`. To keep the code up-to-date, just run this command regularly. 
 	
@@ -30,6 +33,9 @@ If asked to install new packages just say `yes`. To keep the code up-to-date, ju
 Installing the package manually is not recommended unless the above method failed. Note that you must have the Python packages NumPy, SciPy, and Joblib installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from `github <https://github.com/weinbe58/qspin/tree/master>`_ and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and execute:
 :: 
 	$ python setup.py install --record install_file.txt
+or if you require OpenMP support (see also :ref:`parallelization-label`)
+::
+	$ python setup.py install -omp --record install_file.txt
 
 This will compile the source code and copy it to the installation directory of Python recording the installation location to `install_file.txt`. To update the code, you must first completely remove the current version installed and then install the new code. The `install_file.txt` can be used to remove the package by running:  
 ::
@@ -50,6 +56,9 @@ To install Anaconda/miniconda on Windows, download the installer and execute it 
 Once you have Anaconda/miniconda installed all you have to do to install QuSpin is to execute the following command into the terminal: 
 ::
 	> conda install -c weinbe58 quspin
+or if you require OpenMP support (see also :ref:`parallelization-label`)
+::
+	> conda install -c weinbe58 omp quspin
 
 If asked to install new packages just say `yes`. To update the code just run this command regularly. 
 	
@@ -58,6 +67,9 @@ If asked to install new packages just say `yes`. To update the code just run thi
 Installing the package manually is not recommended unless the above method failed. Note that you must have NumPy, SciPy, and Joblib installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from `github <https://github.com/weinbe58/qspin/tree/master>`_ and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and then execute:  
 ::
 	> python setup.py install --record install_file.txt
+or if you require OpenMP support (see also :ref:`parallelization-label`)
+::
+	> python setup.py install -omp --record install_file.txt
 
 This will compile the source code and copy it to the installation directory of Python and record the installation location to `install_file.txt`. To update the code you must first completely remove the current version installed and then install the new code. 
 

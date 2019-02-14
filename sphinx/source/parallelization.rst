@@ -36,14 +36,14 @@ There are two ways to set up the OpenMP environment variable:
 	$ export OMP_NUM_THREADS = 4
 	$ echo $OMP_NUM_THREADS
 
-Make sure you run your script from that terminal. If you run your code from a different terminal, you have to set this variable again.
+Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
 2) in the beginning of your python script, set
 ::
 	import os
 	os.environ['OMP_NUM_THREADS'] = '4' # set number of OpenMP threads to run in parallel
 
-This makes the OpenMP variable a part of your python script.
+This allows to change the OpenMP variable dynamically from your python script.
 
 While this is very convenient, it does not make it clear which segments of the code will run faster. Thus, let us now go over all features which take advantage of this multi-threading. The function `tools.misc.csr_matvec()` wraps an efficient version of csr matrix-vector product based on a scheme which provides equal work load to all the threads, regardless of the sparsity structure of the matrix (see `this paper <https://ieeexplore.ieee.org/document/7877136>`_ for more details). This speedup will be inherited by the function `tools.evolution.expm_multiply_parallel()`, which creates a more efficient multi-threaded version of SciPy's `SciPy.sparse.linalg.expm_multiply` function. 
 Notice that these function would have to be explicitly used by the user in order for a calculation to gain speedup via OMP. 
@@ -112,14 +112,14 @@ There are two ways to set up the MKL environment variable:
 	$ export MKL_NUM_THREADS = 4
 	$ echo $MKL_NUM_THREADS
 
-Make sure you run your script from that terminal. If you run your code from a different terminal, you have to set this variable again.
+Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
 2) in the beginning of your python script, set
 ::
 	import os
 	os.environ['MKL_NUM_THREADS'] = '4' # set number of OpenMP threads to run in parallel
 
-This makes the MKL variable a part of your python script.
+This allows to change the MKL variable dynamically from your python script.
 
 Another useful python package for changing the number of cores MKL is using at runtime is `mkl-service <https://docs.anaconda.com/mkl-service/>`_. For more information about MKL-accelerated versions of NumPy, check out this `website <https://docs.anaconda.com/mkl-optimizations/>`_.
 

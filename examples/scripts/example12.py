@@ -15,7 +15,7 @@ from scipy.special import comb
 np.random.seed(1) #fixes seed of rng
 from time import time # timing package
 #
-os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX
+os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX for python 3
 #
 def run_computation():
 	#
@@ -51,12 +51,10 @@ def run_computation():
 	# build hamiltonian
 	H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64)
 	# diagonalise H
-	E,V=H.eigsh(k=16,which='LA')
+	E,V=H.eigsh(k=50,which='LA')
 	print(E)
 #
-#
-###
-#
+#####
 #
 os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 os.environ['OMP_NUM_THREADS']='1' # set number of OpenMP threads to run in parallel
@@ -67,12 +65,10 @@ print("single-threded simulation took {0:.4f} sec".format(time()-ti))
 #
 ##### define number of OpenMP threads used in the simulation
 #
-os.environ['MKL_NUM_THREADS']='4' # set number of MKL threads to run in parallel
-os.environ['OMP_NUM_THREADS']='4' # set number of OpenMP threads to run in parallel
+os.environ['MKL_NUM_THREADS']='8' # set number of MKL threads to run in parallel
+os.environ['OMP_NUM_THREADS']='8'	 # set number of OpenMP threads to run in parallel
 #
 ti = time() # start timer
 run_computation()
 print("single-threded simulation took {0:.4f} sec".format(time()-ti))
-
-
 
