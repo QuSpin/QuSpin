@@ -4,6 +4,9 @@
 *.pyd
 *.pdf
 
+*.cpp
+*.cxx
+
 failed.txt
 
 ./examples/scripts/*.pdf
