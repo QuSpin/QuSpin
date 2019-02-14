@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 
 from . import hamiltonian_core,quantum_operator_core 
 

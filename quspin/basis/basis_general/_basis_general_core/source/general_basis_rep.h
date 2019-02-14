@@ -28,12 +28,13 @@ int general_normalization(general_basis_core<I> *B,
 			}
 
 			double norm = B->check_state(s[i]);
-			npy_uint64 int_norm = norm;
+			npy_intp int_norm = norm;
 			
 			// checks if data type is large enough
 			if(!check_nan(norm) && int_norm>0 ){
 				if( int_norm > std::numeric_limits<J>::max() ){err = 1;}
-				n[i] = int_norm;
+
+				n[i] = (J)norm;
 			}
 			else{
 				n[i] = 0;

@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 
 from .hamiltonian_core import ishamiltonian
 from .hamiltonian_core import _check_static

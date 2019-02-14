@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
