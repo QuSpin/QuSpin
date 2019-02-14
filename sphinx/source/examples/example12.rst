@@ -19,12 +19,12 @@ The example below demonstrates how to use the OpenMP version of quspin for paral
 ::
 	>>> python example12.py ${OMP_NUM_THREADS} ${MKL_NUM_THREADS}
 
-You can directly compare the speed for different values of the number of threads
+You can directly compare the speed for different values of the number of threads [make sure your machine's processor has more than one core]
 ::
 	>>> python example12.py 1 1 # single-threaded computation
-	>>> python example12.py 4 1 # multi-threaded OpenMP computation, speedup 
-	>>> python example12.py 1 4 
-	>>> python example12.py 4 4 
+	>>> python example12.py 4 1 # multi-threaded OpenMP computation, speedup for basis functions, evolution, and matrix-vector multiplication
+	>>> python example12.py 1 4 # multi-threaded MKL computation, speedup for diagonalization-like routines
+	>>> python example12.py 4 4 # simulaneous OpenMP and MKL multi-threading speedup
 
 Notice how, as explained in :ref:`parallelization-label`, `OMP_NUM_THREADS` improves the speed of the basis computation (code line 43), and the time evolution (code line 65), while `MKL_NUM_THREADS` improves the speed of the exact diagonalization step (code line 60).
 

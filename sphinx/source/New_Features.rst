@@ -1,4 +1,4 @@
-Highlights: OpenMP support now here!
+:math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
 ======
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`!
