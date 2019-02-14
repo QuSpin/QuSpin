@@ -43,7 +43,7 @@ There are two ways to set up the OpenMP environment variable:
 
 Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
-2) in the beginning of your python script, set
+2) in the beginning of your python script, **before you import QuSpin**,  set
 ::
 	import os
 	os.environ['OMP_NUM_THREADS'] = '4' # set number of OpenMP threads to run in parallel
@@ -120,7 +120,7 @@ There are two ways to set up the MKL environment variable:
 
 Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
-2) in the beginning of your python script, set
+2) in the beginning of your python script, **before you import NumPy or SciPy** set
 ::
 	import os
 	os.environ['MKL_NUM_THREADS'] = '4' # set number of MKL threads to run in parallel

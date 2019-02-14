@@ -3,10 +3,15 @@ import sys,os
 # line 4 and line 5 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,qspin_path)
-##########################################################################
-#                            example 12                                  #
-# In this script we demonstrate how to use QuSpin's OpenMP capabilities. #	
-##########################################################################
+#
+os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX for python 3
+os.environ['OMP_NUM_THREADS']=str(int(sys.argv[1])) # set number of OpenMP threads to run in parallel
+os.environ['MKL_NUM_THREADS']=str(int(sys.argv[2])) # set number of MKL threads to run in parallel
+#
+###########################################################################
+#                            example 12                                   #
+# In this script we show how to use QuSpin's OpenMP and MKL capabilities. #	
+###########################################################################
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 from quspin.operators._make_hamiltonian import _consolidate_static
@@ -14,9 +19,6 @@ import numpy as np
 from scipy.special import comb
 np.random.seed(1) #fixes seed of rng
 from time import time # timing package
-#
-os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX for python 3
-#
 def run_computation():
 	#
 	###### define model parameters ######
@@ -37,7 +39,8 @@ def run_computation():
 	T_d = (x-1)%Lx + Lx*((y+1)%Ly) # translation along diagonal
 	#
 	###### setting up bases ######
-	basis_2d = spin_basis_general(N_2d,pauli=False)
+	basis_2d = spin_basis_general(N_2d,pauli=False) # computation sped up by OpenMP
+	print('finished computing basis')
 	#
 	###### setting up hamiltonian ######
 	# setting up site-coupling lists
@@ -47,28 +50,15 @@ def run_computation():
 	static=[ ["xx",J1_list],["yy",J1_list],["zz",J1_list],  
 			 ["xx",J2_list],["yy",J2_list],["zz",J2_list]
 			]
-	#
 	# build hamiltonian
-	H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64)
+	H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64,check_symm=False,check_herm=False)
 	# diagonalise H
-	E,V=H.eigsh(k=50,which='LA')
+	E,V=H.eigsh(k=50,which='LA') # computation sped up by MKL
+	print('finished computing energies')
+	E_GS=H.matrix_ele(V[:,0],V[:,0]) # computation sped up by OpenMP
+	print('finished computing expectation')
 	print(E)
 #
-#####
-#
-os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
-os.environ['OMP_NUM_THREADS']='1' # set number of OpenMP threads to run in parallel
-#
 ti = time() # start timer
 run_computation()
 print("single-threded simulation took {0:.4f} sec".format(time()-ti))
-#
-##### define number of OpenMP threads used in the simulation
-#
-os.environ['MKL_NUM_THREADS']='8' # set number of MKL threads to run in parallel
-os.environ['OMP_NUM_THREADS']='8'	 # set number of OpenMP threads to run in parallel
-#
-ti = time() # start timer
-run_computation()
-print("single-threded simulation took {0:.4f} sec".format(time()-ti))
-
