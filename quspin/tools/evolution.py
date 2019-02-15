@@ -149,7 +149,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	Examples
 	--------
 
-	The following example shows how to use the`evolve()` function to solve the periodically-driven 
+	The following example shows how to use the `evolve()` function to solve the periodically-driven 
 	Gross-Pitaevskii equation (GPE) on a one-imensional lattice. The GPE has a linear part, comprising the
 	kinetic energy and the external potentials (e.g. a harmonic trap), and a nonlinear part which describes
 	the interactions.
@@ -197,7 +197,7 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 		-i\\dot\\varphi(t) = H(t)\\varphi(t) + U |\\varphi(t)|^2 \\varphi(t)
 	
 	for the complex-valued :math:`\\varphi(t)` by re-writing it as a real-valued vector `phi=[u,v]` where 
-	:math:`\\varphi(t) = u(t) + iv(t)`. The real and imaginary parts, :math:`u(t)` and :math:`v(t)`, have the same dimension as 
+	:math:`\\varphi(t) = u(t) + iv(t)`. The real and imaginary parts, :math:`u(t)` and :math:`v(t)`, have the same array dimension as 
 	:math:`\\phi(t)`.
 	
 	In the most general form, the single-particle Hamiltonian can be decomposed as 
