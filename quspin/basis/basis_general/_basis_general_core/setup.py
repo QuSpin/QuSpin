@@ -10,7 +10,7 @@ def cython_files():
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
 
     include_dir = os.path.join(package_dir,"source")
-    cythonize(cython_src,language="c++",include_path=[include_dir])
+    cythonize(cython_src,include_path=[include_dir])
 
 
 def configuration(parent_package='', top_path=None):
