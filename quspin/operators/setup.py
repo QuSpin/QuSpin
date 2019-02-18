@@ -8,7 +8,7 @@ def cython_files():
 
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
     include_dirs = os.path.join(package_dir,"source")
-    cythonize(cython_src,language="c++",include_path=[include_dirs])
+    cythonize(cython_src,include_path=[include_dirs])
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration

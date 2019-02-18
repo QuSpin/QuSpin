@@ -31,7 +31,7 @@ If asked to install new packages just say `yes`. To keep the code up-to-date, ju
 	
 **Installing Manually**
 
-Installing the package manually is not recommended unless the above method failed. Note that you must have the Python packages NumPy, SciPy, and Joblib installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from `github <https://github.com/weinbe58/qspin/tree/master>`_ and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and execute:
+Installing the package manually is not recommended unless the above method failed. Note that you must have the requisite Python packages [see above] installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from `github <https://github.com/weinbe58/qspin/tree/master>`_ and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and execute:
 :: 
 	$ python setup.py install --record install_file.txt
 or if you require OpenMP support (see also :ref:`parallelization-label`)
@@ -65,7 +65,7 @@ If asked to install new packages just say `yes`. To update the code just run thi
 	
 **Installing Manually**
 
-Installing the package manually is not recommended unless the above method failed. Note that you must have NumPy, SciPy, and Joblib installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from `github <https://github.com/weinbe58/qspin/tree/master>`_ and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and then execute:  
+Installing the package manually is not recommended unless the above method failed. NNote that you must have the requisite Python packages [see above] installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from `github <https://github.com/weinbe58/qspin/tree/master>`_ and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and then execute:  
 ::
 	> python setup.py install --record install_file.txt
 or if you require OpenMP support (see also :ref:`parallelization-label`)

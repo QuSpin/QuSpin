@@ -66,7 +66,7 @@ def run_computation():
 	for j,psi in enumerate(psi_t):
 		E_t = H.expt_value(psi,time=t[j])
 		print("finished evolving up to time step {:d}".format(j) )
-#
+# time computation
 ti = time() # start timer
-run_computation()
+run_computation() 
 print("single-threded simulation took {0:.4f} sec".format(time()-ti))

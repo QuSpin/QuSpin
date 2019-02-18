@@ -293,10 +293,10 @@ class basis_general(lattice_basis):
 		_np.sqrt(c,out=c)
 		_np.power(c,-1,out=c)
 		index_type = _np.result_type(_np.min_scalar_type(-Ns_full),_np.int32)
-		col = _np.arange(self._Ns,dtype=index_type)
-		row = _np.arange(self._Ns,dtype=index_type)
+		indptr = _np.arange(self._Ns+1,dtype=index_type)
+		indices = _np.arange(self._Ns,dtype=index_type)
 
-		return self._core.get_proj(self._basis,dtype,sign,c,row,col,basis_pcon=basis_pcon)
+		return self._core.get_proj(self._basis,dtype,sign,c,indices,indptr,basis_pcon=basis_pcon)
 
 	def get_vec(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.

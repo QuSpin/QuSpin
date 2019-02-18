@@ -67,15 +67,15 @@ def check_gen_basis_hcb(S="1/2"):
 		basis_1d = spin_basis_1d(L,Nup=Nup,**basis_blocks)
 		gen_basis = spin_basis_general(L,Nup=Nup,**gen_blocks)
 
-		# P1 = basis_1d.get_proj(dtype)
-		# P2 = gen_basis.get_proj(dtype)
-		# np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
+		P1 = basis_1d.get_proj(dtype)
+		P2 = gen_basis.get_proj(dtype)
+		np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
 
-		# if Nup is not None:
-		# 	P1 = basis_1d.get_proj(dtype,pcon=True)
-		# 	P2 = gen_basis.get_proj(dtype,pcon=True)
+		if Nup is not None:
+			P1 = basis_1d.get_proj(dtype,pcon=True)
+			P2 = gen_basis.get_proj(dtype,pcon=True)
 
-		# 	np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
+			np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
 
 		v = np.random.ranf(size=(basis_1d.Ns,)).astype(dtype)
 		vs = np.random.ranf(size=(basis_1d.Ns,100)).astype(dtype)
@@ -86,20 +86,20 @@ def check_gen_basis_hcb(S="1/2"):
 		np.testing.assert_allclose(v1,v2,atol=1e-14,err_msg="failed single vector dense")
 
 
-		# v1 = basis_1d.get_vec(v,sparse=True)
-		# v2 = gen_basis.get_vec(v,sparse=True)
+		v1 = basis_1d.get_vec(v,sparse=True)
+		v2 = gen_basis.get_vec(v,sparse=True)
 
-		# np.testing.assert_allclose((v1-v2).data,0,atol=1e-14,err_msg="failed single vector sparse")
+		np.testing.assert_allclose((v1-v2).data,0,atol=1e-14,err_msg="failed single vector sparse")
 
-		# vs1 = basis_1d.get_vec(vs,sparse=False)
-		# vs2 = gen_basis.get_vec(vs,sparse=False)
+		vs1 = basis_1d.get_vec(vs,sparse=False)
+		vs2 = gen_basis.get_vec(vs,sparse=False)
 
-		# np.testing.assert_allclose((vs1-vs2),0,atol=1e-14,err_msg="failed multi vector dense")
+		np.testing.assert_allclose((vs1-vs2),0,atol=1e-14,err_msg="failed multi vector dense")
 
-		# vs1 = basis_1d.get_vec(vs,sparse=True)
-		# vs2 = gen_basis.get_vec(vs,sparse=True)
+		vs1 = basis_1d.get_vec(vs,sparse=True)
+		vs2 = gen_basis.get_vec(vs,sparse=True)
 
-		# np.testing.assert_allclose((vs1-vs2).data,0,atol=1e-14,err_msg="failed multi vector sparse")
+		np.testing.assert_allclose((vs1-vs2).data,0,atol=1e-14,err_msg="failed multi vector sparse")
 
 
 check_gen_basis_hcb(S="1/2")

@@ -23,7 +23,7 @@ def cython_files():
 					os.path.join(package_dir,"boson_basis.pyx"),
 					os.path.join(package_dir,"boson_ops.pyx"),
 				]
-	cythonize(cython_src,language="c++")
+	cythonize(cython_src)
 
 
 

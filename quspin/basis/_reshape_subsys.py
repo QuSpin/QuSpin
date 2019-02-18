@@ -1,5 +1,6 @@
 import numpy as _np
 import scipy.sparse as _sp
+from ._basis_utils import _shuffle_sites
 
 
 
@@ -53,7 +54,30 @@ def _lattice_partial_trace_sparse_pure(psi,sub_sys_A,L,sps,return_rdm="A"):
 		return psi.dot(psi.H),psi.H.dot(psi)
 
 
+def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
+	"""
+	This function reshapes the dense pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
+	Vectorisation available. 
+	"""
+	extra_dims = psi.shape[:-1]
+	n_dims = len(extra_dims)
+	sub_sys_B = set(range(L))-set(sub_sys_A)
 
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sub_sys_B)
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+	T_tup = sub_sys_A+sub_sys_B
+	psi_v = _shuffle_sites(sps,T_tup,psi)
+	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
+
+	return psi_v
+
+'''
 def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	"""
 	This function reshapes the dense pure state psi over the Hilbert space defined by sub_sys_A and its complement. 
@@ -78,9 +102,39 @@ def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	psi_v = psi.reshape(R_tup) # DM where index is given per site as rho_v[i_1,...,i_L,j_1,...j_L]
 	psi_v = psi_v.transpose(T_tup) # take transpose to reshuffle indices
 	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
-
 	return psi_v
+'''
 
+def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
+	"""
+	This function reshapes the dense mixed state psi over the Hilbert space defined by sub_sys_A and its complement.
+	Vectorisation available. 
+	"""
+	extra_dims = rho.shape[:-2]
+	n_dims = len(extra_dims)
+	sub_sys_B = set(range(L))-set(sub_sys_A)
+
+	sub_sys_A = tuple(sub_sys_A)
+	sub_sys_B = tuple(sub_sys_B)
+
+	L_A = len(sub_sys_A)
+	L_B = len(sub_sys_B)
+
+	Ns_A = (sps**L_A)
+	Ns_B = (sps**L_B)
+
+	# T_tup tells numpy how to reshuffle the indices such that when I reshape the array to the 
+	# 4-_tensor rho_{ik,jl} i,j are for sub_sys_A and k,l are for sub_sys_B
+	# which means I need (sub_sys_A,sub_sys_B,sub_sys_A+L,sub_sys_B+L)
+
+	T_tup = sub_sys_A+sub_sys_B
+	T_tup = tuple(T_tup) + tuple(L+s for s in T_tup)
+	rho = rho.reshape(extra_dims+(-1,))
+	rho_v = _shuffle_sites(sps,T_tup,rho)
+	
+	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
+
+'''
 def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 	"""
 	This function reshapes the dense mixed state psi over the Hilbert space defined by sub_sys_A and its complement.
@@ -112,6 +166,8 @@ def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 	rho_v = rho_v.transpose(T_tup) # take transpose to reshuffle indices
 	
 	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
+
+'''
 
 def _lattice_reshape_sparse_pure(psi,sub_sys_A,L,sps):
 	"""
