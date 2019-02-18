@@ -69,7 +69,7 @@ def _shuffle_sites(npy_intp sps,T_tup,A):
     A = _np.reshape(A,new_shape,order="C")
     A_T = _np.zeros(A.shape,dtype=A.dtype,order="C")
 
-    _transpose_array_core(sps,T_tup,A,A_T)
+    _shuffle_sites_core(sps,T_tup,A,A_T)
     A_T = _np.reshape(A_T,extra_dim+last_dim,order="C")
 
     return A_T
