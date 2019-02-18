@@ -3,43 +3,38 @@
 
 #include "numpy/ndarraytypes.h"
 
+#include "boost/multiprecision/cpp_int.hpp"
+typedef boost::multiprecision::uint128_t uint128_t;
+typedef boost::multiprecision::uint256_t uint256_t;
+typedef boost::multiprecision::uint512_t uint512_t;
+typedef boost::multiprecision::uint1024_t uint1024_t;
 
 template<typename I>
 struct bit_info{};
 
+template<>
+struct bit_info<uint1024_t>
+{ enum {ld_bits=10,bits=1024};
+  typedef int bit_index_type;
+};
 
-// #include "boost/multiprecision/cpp_int.hpp"
+template<>
+struct bit_info<uint512_t>
+{ enum {ld_bits=9,bits=512};
+  typedef int bit_index_type;
+};
 
-// typedef boost::multiprecision::uint128_t uint128_t;
-// typedef boost::multiprecision::uint256_t uint256_t;
-// typedef boost::multiprecision::uint512_t uint512_t;
-// typedef boost::multiprecision::uint1024_t uint1024_t;
+template<>
+struct bit_info<uint256_t>
+{ enum {ld_bits=8,bits=256};
+  typedef int bit_index_type;
+};
 
-
-// template<>
-// struct bit_info<uint1024_t>
-// { enum {ld_bits=10,bits=1024};
-//   typedef int bit_index_type;
-// };
-
-// template<>
-// struct bit_info<uint512_t>
-// { enum {ld_bits=9,bits=512};
-//   typedef int bit_index_type;
-// };
-
-// template<>
-// struct bit_info<uint256_t>
-// { enum {ld_bits=8,bits=256};
-//   typedef int bit_index_type;
-// };
-
-// template<>
-// struct bit_info<uint128_t>
-// { enum {ld_bits=7,bits=128};
-//   typedef int bit_index_type;
-// };
-
+template<>
+struct bit_info<uint128_t>
+{ enum {ld_bits=7,bits=128};
+  typedef int bit_index_type;
+};
 
 template<>
 struct bit_info<npy_uint64>

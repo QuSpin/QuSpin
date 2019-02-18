@@ -568,25 +568,6 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
-
-		'''
-		def get_state(b):
-			n_space = len(str(self.sps))
-			if self.N <= 64:
-				bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
-				state = "|"+(" ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits))+">"
-			else:
-				left_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
-				right_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
-
-				str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
-				str_list.append("...")
-				str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
-				state = "|"+(" ".join(str_list))+">"
-
-			return state
-		'''
-
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2

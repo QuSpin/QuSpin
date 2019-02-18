@@ -8,6 +8,9 @@ import numpy as _np
 from libcpp.vector cimport vector
 from libcpp.set cimport set
 
+from .general_basis_utils import get_site_list,uint32,uint64,uint128,uint256,uint512,uint1024
+
+
 @cython.boundscheck(False)
 cdef get_proj_helper(general_basis_core[state_type] * B, state_type * basis, int nt, int nnt,
                         int8_t[::1] sign, dtype[::1] c, index_type[::1] row, index_type[::1] col,object P):
@@ -208,10 +211,10 @@ cdef class general_basis_core_wrap:
         if not basis.flags["CARRAY"]:
             raise ValueError("input array must be C-contiguous")
 
-        if basis.dtype == _np.uint32:
+        if basis.dtype == uint32:
             with nogil:
                 err = general_op(<general_basis_core[uint32_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint32_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
-        elif basis.dtype == _np.uint64:
+        elif basis.dtype == uint64:
             with nogil:
                 err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint64_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         else:
@@ -237,11 +240,11 @@ cdef class general_basis_core_wrap:
         if not basis.flags["CARRAY"]:
             raise ValueError("basis array must be C-contiguous")
 
-        if basis.dtype == _np.uint32:
+        if basis.dtype == uint32:
             with nogil:
                 err = general_inplace_op(<general_basis_core[uint32_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint32_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == _np.uint64:
+        elif basis.dtype == uint64:
             with nogil:
                 err = general_inplace_op(<general_basis_core[uint64_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint64_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
@@ -273,10 +276,10 @@ cdef class general_basis_core_wrap:
             Ns_full = self._Ns_full
 
 
-        if basis.dtype == _np.uint32:
+        if basis.dtype == uint32:
             with nogil:
                 err = get_vec_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint32_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == _np.uint64:
+        elif basis.dtype == uint64:
             with nogil:
                 err = get_vec_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
         else:
@@ -309,11 +312,11 @@ cdef class general_basis_core_wrap:
 
         if basis_pcon is None:
             if self._nt <= 0: # no symmetries at all
-                if basis.dtype == _np.uint32: 
+                if basis.dtype == uint32: 
                     with nogil:
                         for i in range(Ns):
                             row[i] = Ns_full - <npy_intp>(<uint32_t*>basis_ptr)[i] - 1
-                elif basis.dtype == _np.uint64:
+                elif basis.dtype == uint64:
                     with nogil:
                         for i in range(Ns):
                             row[i] = Ns_full - <npy_intp>(<uint64_t*>basis_ptr)[i] - 1
@@ -323,9 +326,9 @@ cdef class general_basis_core_wrap:
                 return _sp.csc_matrix((c,(row,col)),shape=(Ns_full,Ns),dtype=Ptype)
             else:
                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-                if basis.dtype == _np.uint32: 
+                if basis.dtype == uint32: 
                     return get_proj_helper[uint32_t,dtype,index_type](<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,P)
-                elif basis.dtype == _np.uint64:
+                elif basis.dtype == uint64:
                     return get_proj_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,P)
                 else:
                     raise TypeError("basis dtype must be either uint32 or uint64")  
@@ -334,9 +337,9 @@ cdef class general_basis_core_wrap:
                 return _sp.identity(Ns,dtype=Ptype)
             else:
                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
-                if basis.dtype == _np.uint32:
+                if basis.dtype == uint32:
                     return get_proj_pcon_helper[uint32_t,dtype,index_type](<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,<uint32_t*>basis_pcon_ptr,P)
-                elif basis.dtype == _np.uint64:
+                elif basis.dtype == uint64:
                     return get_proj_pcon_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,<uint64_t*>basis_pcon_ptr,P)             
                 else:
                     raise TypeError("basis dtype must be either uint32 or uint64")  
@@ -352,10 +355,10 @@ cdef class general_basis_core_wrap:
         if not basis.flags["CARRAY"]:
             raise ValueError("input array must be C-contiguous")
 
-        if basis.dtype == _np.uint32:
+        if basis.dtype == uint32:
             with nogil:
                 Ns = make_basis(<general_basis_core[uint32_t]*>B,Ns,mem_MAX,<uint32_t*>basis_ptr,&n[0])
-        elif basis.dtype == _np.uint64:
+        elif basis.dtype == uint64:
             with nogil:
                 Ns = make_basis(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,<uint64_t*>basis_ptr,&n[0])
         else:
@@ -373,10 +376,10 @@ cdef class general_basis_core_wrap:
         if not basis.flags["CARRAY"]:
             raise ValueError("input array must be C-contiguous")
 
-        if basis.dtype == _np.uint32:
+        if basis.dtype == uint32:
             with nogil:
                 Ns = make_basis_pcon(<general_basis_core[uint32_t]*>B,Ns,mem_MAX,<uint32_t>s,<uint32_t*>basis_ptr,&n[0])
-        elif basis.dtype == _np.uint64:
+        elif basis.dtype == uint64:
             with nogil:
                 Ns = make_basis_pcon(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,<uint64_t>s,<uint64_t*>basis_ptr,&n[0])
         else:
@@ -384,31 +387,45 @@ cdef class general_basis_core_wrap:
         return Ns
 
 
-
-    ############################################################################ todo
-
-
-
     @cython.boundscheck(False)
-    def op_bra_ket(self,state_type[::1] ket,state_type[::1] bra,dtype[::1] M,object opstr,int[::1] indx,object J, object Np):
+    def op_bra_ket(self,_np.ndarray ket,_np.ndarray bra,dtype[::1] M,object opstr,int[::1] indx,object J, object Np):
         cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
         cdef int n_op = indx.shape[0]
         cdef npy_intp Ns = ket.shape[0]
         cdef int err = 0;
         cdef double complex JJ = J
         cdef int Npcon_blocks 
-        #cdef unsigned long int[::1] Np_array
         cdef set[vector[int]] Np_set
         cdef void * B = self._basis_core
+        cdef void * ket_ptr = _np.PyArray_GETPTR1(ket,0)
+        cdef void * bra_ptr = _np.PyArray_GETPTR1(bra,0)
+
+        if not ket.flags["CARRAY"] or not bra.flags["CARRAY"]:
+            raise ValueError("input arrays must be C-contiguous")
         
+        if ket.dtype != bra.dtype:
+            raise ValueError("ket and bra arrays must have same dtype.")
+
         if Np is None:
-            with nogil:
-                err = general_op_bra_ket(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,&ket[0],&bra[0],&M[0])
+            if ket.dtype == uint32:
+                with nogil:
+                    err = general_op_bra_ket(<general_basis_core[uint32_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint32_t*>ket_ptr,<uint32_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint64:
+                with nogil:
+                    err = general_op_bra_ket(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint64_t*>ket_ptr,<uint64_t*>bra_ptr,&M[0])
+            else:
+                raise TypeError("ket/bra dtype must be either uint32 or uint64") 
         else:
             Np_set = load_pcon_list(Np)
 
-            with nogil:
-                err = general_op_bra_ket_pcon(<general_basis_core[state_type]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,&ket[0],&bra[0],&M[0])
+            if ket.dtype == uint32:
+                with nogil:
+                    err = general_op_bra_ket_pcon(<general_basis_core[uint32_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint32_t*>ket_ptr,<uint32_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint64:
+                with nogil:
+                    err = general_op_bra_ket_pcon(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint64_t*>ket_ptr,<uint64_t*>bra_ptr,&M[0])
+            else:
+                raise TypeError("ket/bra dtype must be either uint32 or uint64") 
 
         if err == -1:
             raise ValueError("operator not recognized.")
@@ -416,28 +433,56 @@ cdef class general_basis_core_wrap:
             raise TypeError("attemping to use real type for complex matrix elements.")
 
     @cython.boundscheck(False)
-    def representative(self,state_type[::1] states,state_type[::1] ref_states,int[:,::1] g_out=None,int8_t[::1] sign_out=None):
+    def representative(self,_np.ndarray states,_np.ndarray ref_states,int[:,::1] g_out=None,int8_t[::1] sign_out=None):
         cdef npy_intp Ns = states.shape[0]
         cdef int * g_out_ptr = NULL
         cdef int8_t * sign_out_ptr = NULL
         cdef void * B = self._basis_core
+        cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
+        cdef void * ref_states_ptr = _np.PyArray_GETPTR1(ref_states,0)
         
+        if not states.flags["CARRAY"] or not ref_states.flags["CARRAY"]:
+            raise ValueError("input arrays must be C-contiguous")
+        
+        if states.dtype != ref_states.dtype:
+            raise ValueError("ket and bra arrays must have same dtype.")
+
         if g_out is not None:
             g_out_ptr = &g_out[0,0]
 
         if sign_out is not None:
             sign_out_ptr = &sign_out[0]
 
-        with nogil:
-            general_representative(<general_basis_core[state_type]*>B,&states[0],&ref_states[0],g_out_ptr,sign_out_ptr,Ns)
+
+        if states.dtype == uint32:
+            with nogil:
+                general_representative(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,<uint32_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
+        elif states.dtype == uint64:
+            with nogil:
+                general_representative(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,<uint64_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
+        else:
+            raise TypeError("array dtype must be either uint32 or uint64") 
+
+
 
 
     @cython.boundscheck(False)
-    def normalization(self,state_type[::1] states,norm_type[::1] norms):
+    def normalization(self,_np.ndarray states,norm_type[::1] norms):
         cdef npy_intp Ns = states.shape[0]
         cdef void * B = self._basis_core
-        with nogil:
-            err = general_normalization(<general_basis_core[state_type]*>B,&states[0],&norms[0],Ns)
+        cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
+
+        if not states.flags["CARRAY"]:
+            raise ValueError("input arrays must be C-contiguous")
+
+        if states.dtype == uint32:
+            with nogil:
+                err = general_normalization(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&norms[0],Ns)
+        elif states.dtype == uint64:
+            with nogil:
+                err = general_normalization(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&norms[0],Ns)
+        else:
+            raise TypeError("array dtype must be either uint32 or uint64") 
 
         if err > 0:
             raise TypeError("normalization values exceeds given data type. Increase data type of signed integer for normalizations array.") 
