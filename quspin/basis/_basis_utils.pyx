@@ -25,7 +25,7 @@ ctypedef fused npy_type:
 
 @cython.boundscheck(False)
 @cython.cdivision(True)
-def _transpose_array_core(const npy_intp sps,npy_intp[::1] T_tup,npy_type[:,::1] A, npy_type[:,::1] A_T):
+def _shuffle_sites_core(const npy_intp sps,npy_intp[::1] T_tup,npy_type[:,::1] A, npy_type[:,::1] A_T):
     cdef npy_intp i_new,i_old,i,j,r
     cdef npy_intp N_extra_dim = A.shape[0]
     cdef npy_intp Ns = A.shape[1]
