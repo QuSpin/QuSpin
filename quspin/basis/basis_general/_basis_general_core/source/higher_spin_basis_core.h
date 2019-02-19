@@ -26,7 +26,7 @@ class higher_spin_basis_core : public boson_basis_core<I>
 
 			for(int j=n_op-1;j>-1;j--){
 				I b = boson_basis_core<I>::M[general_basis_core<I>::N-indx[j]-1];
-				I occ = (r/b)%boson_basis_core<I>::sps;
+				int occ = (int)((r/b)%boson_basis_core<I>::sps);
 
 				char op = opstr[j];
 				switch(op){

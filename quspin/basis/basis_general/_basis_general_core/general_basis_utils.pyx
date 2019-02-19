@@ -1,14 +1,9 @@
 # cython: language_level=2
 # distutils: language=c++
 from general_basis_core cimport uint32_t,uint64_t,uint128_t,uint256_t,uint512_t,uint1024_t
-from libcpp.vector cimport vector
 import numpy as _np
 cimport numpy as _np
 from numpy cimport npy_intp
-
-# cdef extern from "source/general_basis_utils.h":
-#     void boost_init_array[T](T *,npy_intp) nogil
-#     vector[int] int_to_str_core[T](T*,int,int) nogil
 
 
 uint32 = _np.uint32
@@ -72,48 +67,60 @@ def boost_zeros(shape,dtype=uint32):
 
 
 
-# def get_site_list(a,int sps,int N):
-#     cdef vector[int] sites
+def get_basis_type(N, Np, sps):
 
-#     if type(a) is int:
-#         if sps>2:
-#             for i in range(N):
-#                 sites.push_back(a%sps)
-#                 a = a // sps
-#         else:
-#             for i in range(N):
-#                 sites.push_back(a&1)
-#                 a = a >> 1
+    if sps>2:
+        try:
+            Np = max(list(Np))
+        except TypeError: 
+            pass
 
-#         return sites
-#     else:
-#         a = _np.array(a)
-#         if a.ndim > 0:
-#             raise ValueError
+        # calculates the datatype which will fit the largest representative state in basis
+        if Np is None:
+            # if no particle conservation the largest representative is sps**N-1
+            s_max = sps**N-1
+        else:
+            # if particles are conservated the largest representative is placing all particles as far left
+            # as possible. 
+            l=Np//(sps-1)
+            s_max = sum((sps-1)*sps**(N-1-i)  for i in range(l))
+            s_max += (Np%(sps-1))*sps**(N-l-1)
 
-#     cdef _np.ndarray arr = a
-#     cdef void * ptr = _np.PyArray_GETPTR1(arr,0)
+        s_max = int(s_max)
 
-#     if arr.dtype == uint32:
-#         with nogil:
-#             sites = int_to_str_core[uint32_t](<uint32_t*>ptr,sps,N)
-#     elif arr.dtype == uint64:
-#         with nogil:
-#             sites = int_to_str_core[uint64_t](<uint64_t*>ptr,sps,N)
-#     elif arr.dtype == uint128:
-#         with nogil:
-#             sites = int_to_str_core[uint128_t](<uint128_t*>ptr,sps,N)
-#     elif arr.dtype == uint256:
-#         with nogil:
-#             sites = int_to_str_core[uint256_t](<uint256_t*>ptr,sps,N)
-#     elif arr.dtype == uint512:
-#         with nogil:
-#             sites = int_to_str_core[uint512_t](<uint512_t*>ptr,sps,N)
-#     elif arr.dtype == uint1024:
-#         with nogil:
-#             sites = int_to_str_core[uint1024_t](<uint1024_t*>ptr,sps,N)
-#     else:
-#         raise TypeError
+        nbits = 0
+        while(s_max>0):
+            s_max >>= 1
+            nbits += 1
 
-#     return sites
+        if nbits <= 32:
+            return uint32
+        elif nbits <= 64:
+            return uint64
+        elif nbits <= 128:
+            return uint128
+        elif nbits <= 256:
+            return uint256
+        elif nbits <= 512:
+            return uint512
+        elif nbits <= 1024:
+            return uint1024
+        else:
+            raise ValueError("basis is not representable with general_basis integer imeplmentations.")
+
+    else:
+        if N <= 32:
+            return uint32
+        elif N <= 64:
+            return uint64
+        elif N <= 128:
+            return uint128
+        elif N <= 256:
+            return uint256
+        elif N <= 512:
+            return uint512
+        elif N <= 1024:
+            return uint1024
+        else:
+            raise ValueError("basis is not representable with general_basis integer imeplmentations.")
 

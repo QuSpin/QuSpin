@@ -14,25 +14,25 @@ struct bit_info{};
 
 template<>
 struct bit_info<uint1024_t>
-{ enum {ld_bits=10,bits=1024};
+{ enum {ld_bits=10,bits=1024,bytes=128};
   typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<uint512_t>
-{ enum {ld_bits=9,bits=512};
+{ enum {ld_bits=9,bits=512,bytes=64};
   typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<uint256_t>
-{ enum {ld_bits=8,bits=256};
+{ enum {ld_bits=8,bits=256,bytes=32};
   typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<uint128_t>
-{ enum {ld_bits=7,bits=128};
+{ enum {ld_bits=7,bits=128,bytes=16};
   typedef int bit_index_type;
 };
 
@@ -74,12 +74,13 @@ typename bit_info<T>::bit_index_type bit_pos(T x, typename bit_info<T>::bit_inde
 
 
 template<class T>
-T inline bit_count(T v,int l){
+int inline bit_count(T v,int l){
   v = v & (((~(T)0) >> 1) >> (bit_info<T>::bits - 1 - l));
   v = v - ((v >> 1) & (T)~(T)0/3);                           // temp
   v = (v & (T)~(T)0/15*3) + ((v >> 2) & (T)~(T)0/15*3);      // temp
   v = (v + (v >> 4)) & (T)~(T)0/255*15;                      // temp
-  return (T)(v * ((T)~(T)0/255)) >> ((bit_info<T>::bytes - 1) * 8); // count
+  T res = (T)(v * ((T)~(T)0/255)) >> ((bit_info<T>::bytes - 1) * 8); // count
+  return (int)res;
 
 }
 

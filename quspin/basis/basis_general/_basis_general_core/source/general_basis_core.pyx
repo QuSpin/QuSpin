@@ -8,15 +8,12 @@ import numpy as _np
 from libcpp.vector cimport vector
 from libcpp.set cimport set
 
-<<<<<<< HEAD
-from .general_basis_utils import get_site_list,uint32,uint64,uint128,uint256,uint512,uint1024
-=======
+from .general_basis_utils import uint32,uint64,uint128,uint256,uint512,uint1024
 
->>>>>>> dev_0.3.1
 
 
 @cython.boundscheck(False)
-cdef get_proj_helper(general_basis_core[state_type] * B, state_type * basis, int nt, int nnt,
+cdef get_proj_helper(general_basis_core[npy_uint] * B, npy_uint * basis, int nt, int nnt,
                         int8_t[::1] sign, dtype[::1] c, index_type[::1] indices, index_type[::1] indptr,object P):
     cdef int per = B.pers[nt-nnt]
     cdef npy_intp Ns_full = P.shape[0]
@@ -227,8 +224,11 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == uint64:
             with nogil:
                 err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint64_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
+        elif basis.dtype == uint128:
+            with nogil:
+                err = general_op(<general_basis_core[uint128_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint128_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         else:
-            raise TypeError("basis dtype must be either uint32 or uint64")
+            raise TypeError("basis dtype must be either uint32, uint64, uint128, uint256, uint512 or uint1024.")
 
         if err == -1:
             raise ValueError("operator not recognized.")
@@ -258,6 +258,10 @@ cdef class general_basis_core_wrap:
             with nogil:
                 err = general_inplace_op(<general_basis_core[uint64_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint64_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
+        elif basis.dtype == uint128:
+            with nogil:
+                err = general_inplace_op(<general_basis_core[uint128_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
+                                                        <uint128_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")
 
@@ -307,6 +311,9 @@ cdef class general_basis_core_wrap:
         cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0) # use standard numpy API function
         cdef void * basis_pcon_ptr = NULL
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+        cdef uint32_t* uint32_basis_ptr = NULL
+        cdef uint64_t* uint64_basis_ptr = NULL
+        cdef uint128_t* uint128_basis_ptr = NULL
 
         if not basis.flags["CARRAY"]:
             raise ValueError("input array must be C-contiguous")
@@ -324,12 +331,14 @@ cdef class general_basis_core_wrap:
             if self._nt <= 0: # no symmetries at all
                 if basis.dtype == uint32: 
                     with nogil:
+                        uint32_basis_ptr = <uint32_t*>basis_ptr
                         for i in range(Ns):
-                            indices[i] = Ns_full - <npy_intp>(<uint32_t*>basis_ptr)[i] - 1
-                elif basis.dtype == _np.uint64:
+                            indices[i] = Ns_full - <npy_intp>uint32_basis_ptr[i] - 1
+                elif basis.dtype == uint64:
                     with nogil:
+                        uint64_basis_ptr = <uint64_t*>basis_ptr
                         for i in range(Ns):
-                            indices[i] = Ns_full - <npy_intp>(<uint64_t*>basis_ptr)[i] - 1
+                            indices[i] = Ns_full - <npy_intp>uint64_basis_ptr[i] - 1
                 else:
                     raise TypeError("Projector index dtype with no particles conservation must be either uint32 or uint64")
 
@@ -348,10 +357,13 @@ cdef class general_basis_core_wrap:
                 return _sp.identity(Ns,dtype=Ptype)
             else:
                 P = _sp.csc_matrix((Ns_full,Ns),dtype=Ptype)
+
                 if basis.dtype == uint32:
-                    return get_proj_pcon_helper[uint32_t,dtype,index_type](<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,<uint32_t*>basis_pcon_ptr,P)
+                    return get_proj_pcon_helper[uint32_t,dtype,index_type](<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,self._nt,self._nt,sign,c,indices,indptr,<uint32_t*>basis_pcon_ptr,P)
                 elif basis.dtype == uint64:
-                    return get_proj_pcon_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,sign,c,row,col,<uint64_t*>basis_pcon_ptr,P)             
+                    return get_proj_pcon_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,sign,c,indices,indptr,<uint64_t*>basis_pcon_ptr,P)             
+                elif basis.dtype == uint128:
+                    return get_proj_pcon_helper[uint128_t,dtype,index_type](<general_basis_core[uint128_t]*>B,<uint128_t*>basis_ptr,self._nt,self._nt,sign,c,indices,indptr,<uint128_t*>basis_pcon_ptr,P)             
                 else:
                     raise TypeError("basis dtype must be either uint32 or uint64")  
 
@@ -393,6 +405,9 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == uint64:
             with nogil:
                 Ns = make_basis_pcon(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,<uint64_t>s,<uint64_t*>basis_ptr,&n[0])
+        elif basis.dtype == uint128:
+            with nogil:
+                Ns = make_basis_pcon(<general_basis_core[uint128_t]*>B,Ns,mem_MAX,<uint128_t>s,<uint128_t*>basis_ptr,&n[0])
         else:
             raise TypeError("basis dtype must be either uint32 or uint64")  
         return Ns
@@ -424,6 +439,9 @@ cdef class general_basis_core_wrap:
             elif ket.dtype == uint64:
                 with nogil:
                     err = general_op_bra_ket(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint64_t*>ket_ptr,<uint64_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint128:
+                with nogil:
+                    err = general_op_bra_ket(<general_basis_core[uint128_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint128_t*>ket_ptr,<uint128_t*>bra_ptr,&M[0])
             else:
                 raise TypeError("ket/bra dtype must be either uint32 or uint64") 
         else:
@@ -435,6 +453,9 @@ cdef class general_basis_core_wrap:
             elif ket.dtype == uint64:
                 with nogil:
                     err = general_op_bra_ket_pcon(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint64_t*>ket_ptr,<uint64_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint128:
+                with nogil:
+                    err = general_op_bra_ket_pcon(<general_basis_core[uint128_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint128_t*>ket_ptr,<uint128_t*>bra_ptr,&M[0])
             else:
                 raise TypeError("ket/bra dtype must be either uint32 or uint64") 
 
@@ -471,6 +492,9 @@ cdef class general_basis_core_wrap:
         elif states.dtype == uint64:
             with nogil:
                 general_representative(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,<uint64_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
+        elif states.dtype == uint128:
+            with nogil:
+                general_representative(<general_basis_core[uint128_t]*>B,<uint128_t*>states_ptr,<uint128_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
         else:
             raise TypeError("array dtype must be either uint32 or uint64") 
 
@@ -492,6 +516,9 @@ cdef class general_basis_core_wrap:
         elif states.dtype == uint64:
             with nogil:
                 err = general_normalization(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&norms[0],Ns)
+        elif states.dtype == uint128:
+            with nogil:
+                err = general_normalization(<general_basis_core[uint128_t]*>B,<uint128_t*>states_ptr,&norms[0],Ns)
         else:
             raise TypeError("array dtype must be either uint32 or uint64") 
 

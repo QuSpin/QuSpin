@@ -66,6 +66,10 @@ ctypedef fused norm_type:
     uint32_t
     uint64_t
 
+ctypedef fused npy_uint:
+    uint32_t
+    uint64_t    
+
 ctypedef fused state_type:
     uint32_t
     uint64_t

@@ -1,4 +1,4 @@
-from ._basis_general_core import boson_basis_core_wrap
+from ._basis_general_core import boson_basis_core_wrap,get_basis_type
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
@@ -24,43 +24,6 @@ def H_dim(N,length,m_max):
             Ns += -comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
 
     return Ns
-
-
-def get_basis_type(N, Np, sps, use_boost=False, **blocks):
-    # calculates the datatype which will fit the largest representative state in basis
-    if Np is None:
-        # if no particle conservation the largest representative is sps**N-1
-        s_max = sps**N-1
-    else:
-        # if particles are conservated the largest representative is placing all particles as far left
-        # as possible. 
-        l=Np//(sps-1)
-        s_max = sum((sps-1)*sps**(N-1-i)  for i in range(l))
-        s_max += (Np%(sps-1))*sps**(N-l-1)
-
-    s_max = int(s_max)
-
-    nbits = 0
-    while(s_max>0):
-        s_max >>= 1
-        nbits += 1
-
-    if nbits <= 32:
-    	return _np.uint32
-    elif nbits <= 64:
-    	return _np.uint64
-    elif nbits <= 128 and use_boost:
-    	return _np.dtype((np.void,16)) # sizeof(uint128) is 16
-    elif nbits <= 256 and use_boost:
-    	return _np.dtype((np.void,48)) # sizeof(uint256) is 48
-    elif nbits <= 512 and use_boost:
-    	return _np.dtype((np.void,80)) # sizeof(uint512) is 80
-    elif nbits <= 1024 and use_boost:
-    	return _np.dtype((np.void,144)) # sizeof(uint1024) is 80
-    else:
-    	return _np.object
-
-
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
@@ -215,18 +178,14 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			if Nb is None:
 				Ns = sps**N
-				self._basis_dtype = get_basis_type(N,Nb,sps)
 			elif type(Nb) is int:
 				self._check_pcon = True
 				self._get_proj_pcon = True
 
-				if self._sps is None and Nb==1:
-					raise ValueError("for Nb = 1, set sps >= 2.")
 				if self._sps is None:
-					self._sps = Nb
+					self._sps = Nb+1
 
 				Ns = H_dim(Nb,N,self._sps-1)
-				self._basis_dtype = get_basis_type(N,Nb,self._sps)
 			else:
 				try:
 					Np_iter = iter(Nb)
@@ -234,15 +193,13 @@ class boson_basis_general(hcb_basis_general,basis_general):
 					raise TypeError("Nb must be integer or iteratable object.")
 
 				if self._sps is None:
-					self._sps = max(Nb)				
+					self._sps = max(list(Nb))+1				
 
 				Ns = 0
 				for b in Nb:
 					Ns += H_dim(b,N,self._sps-1)
 
-				self._basis_dtype = get_basis_type(N,max(Nb),self._sps)
-
-			self._pcon_args = dict(N=N,Nb=Nb,sps=sps)
+			self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:
@@ -254,9 +211,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 						raise ValueError("Ns_block_est must be an integer > 0")						
 					Ns = Ns_block_est
 
-			if self._basis_dtype not in [_np.uint32,_np.uint64]:
-				raise ValueError("basis type is not representable with uint32 or uint64.")
-
+			self._basis_dtype = get_basis_type(N,Nb,self._sps)
 			self._core = boson_basis_core_wrap(self._basis_dtype,N,self._sps,self._maps,self._pers,self._qs)
 			self._N = N
 			self._Ns = Ns

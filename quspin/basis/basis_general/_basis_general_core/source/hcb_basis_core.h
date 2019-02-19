@@ -120,7 +120,7 @@ class hcb_basis_core : public general_basis_core<I>
 		I inline next_state_pcon(const I s){
 			if(s==0){return s;}
 			I t = (s | (s - 1)) + 1;
-			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
+			return t | ((((t & (0-t)) / (s & (0-s))) >> 1) - 1);
 		}
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
@@ -128,7 +128,7 @@ class hcb_basis_core : public general_basis_core<I>
 			const I one = 1;
 			for(int j=n_op-1;j>-1;j--){
 
-				const I ind = general_basis_core<I>::N-indx[j]-1;
+				const int ind = general_basis_core<I>::N-indx[j]-1;
 				const I b = (one << ind);
 				const bool a = ((r >> ind)&one);
 				const char op = opstr[j];

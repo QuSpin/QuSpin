@@ -1,5 +1,17 @@
 
+def get_include_dirs():
+    from sysconfig import get_paths
+    import numpy,os
 
+    package_dir = os.path.dirname(os.path.realpath(__file__))
+    data_path = get_paths()["data"]
+
+    data_path = os.path.expandvars(data_path)
+
+    include_dirs = [numpy.get_include()]
+    include_dirs.append(os.path.join(data_path,"include"))
+
+    return include_dirs
 
 
 def cython_files():
@@ -12,7 +24,7 @@ def cython_files():
 	cython_src = [
 					os.path.join(package_dir,"_basis_utils.pyx"),
 				]
-	cythonize(cython_src)
+	cythonize(cython_src,include_path=get_include_dirs())
 
 
 
@@ -29,9 +41,9 @@ def configuration(parent_package='',top_path=None):
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 	package_dir = os.path.expandvars(package_dir)
 
-	basis_utils_src = os.path.join(package_dir,"_basis_utils.c")	
-	config.add_extension('_basis_utils',sources=basis_utils_src,include_dirs=[numpy.get_include()],
-							language="c")
+	basis_utils_src = os.path.join(package_dir,"_basis_utils.cpp")	
+	config.add_extension('_basis_utils',sources=basis_utils_src,include_dirs=get_include_dirs(),
+							language="c++")
 
 	return config
 

@@ -7,6 +7,7 @@ import scipy.sparse as _sp
 cimport numpy as _np
 import numpy as _np
 
+
 include "source/general_basis_core.pyx"
 
 cdef extern from "glibc_fix.h":
@@ -18,7 +19,6 @@ cdef extern from "hcb_basis_core.h":
         hcb_basis_core(const int,const int,const int[],const int[],const int[])
         hcb_basis_core(const int) 
 
-
 cdef class hcb_basis_core_wrap(general_basis_core_wrap):
     def __cinit__(self,object dtype,object N,int[:,::1] maps, int[:] pers, int[:] qs):
         self._N = N
@@ -26,18 +26,23 @@ cdef class hcb_basis_core_wrap(general_basis_core_wrap):
         self._sps = 2
         self._Ns_full = (<object>(1) << N)
 
-        if dtype == _np.uint32:
+        if dtype == uint32:
             if self._nt>0:
                 self._basis_core = <void *> new hcb_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new hcb_basis_core[uint32_t](N)
-        elif dtype == _np.uint64:
+        elif dtype == uint64:
             if self._nt>0:
                 self._basis_core = <void *> new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new hcb_basis_core[uint64_t](N)
+        elif dtype == uint128:
+            if self._nt>0:
+                self._basis_core = <void *> new hcb_basis_core[uint128_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new hcb_basis_core[uint128_t](N)
         else:
-            raise ValueError("general basis supports system sizes <= 64.")
+            raise ValueError("general basis supports system sizes <= 128.")
 
     def get_s0_pcon(self,object Np):
         return sum(1<<i for i in range(Np))
