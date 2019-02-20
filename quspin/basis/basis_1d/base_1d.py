@@ -818,20 +818,20 @@ class basis_1d(lattice_basis):
 			norm[mask] *= (1.0 + zblock*_np.cos(self._k*mm[mask]))	
 			del mask
 		elif (type(kblock) is int) and (type(pblock) is int):
-			if _np.abs(_np.sin(self._k)) < 1.0/self._L:
+			if 2*kblock == self._L or kblock == 0:
 				norm = _np.full(self._basis.shape,2*(self._L/a)**2,dtype=dtype)
 			else:
 				norm = _np.full(self._basis.shape,(self._L/a)**2,dtype=dtype)
 			norm *= _np.sign(self._N)
 			norm /= self._N
 			try:
-				m = self._M.astype(_np.min_scalar_type(-1*(self._M[0]+1)))
-			except IndexError:
+				m = self._M.astype(_np.min_scalar_type(-1*(self._M.max()+1)))
+			except ValueError:
 				m = self._M.astype(_np.int8)
 			_np.mod(m,self._L+1,out=m)
 			m -= 1
 			mask = (m >= 0)
-			sign = _np.empty(mask.sum(),dtype=_np.int8)
+			sign = _np.empty(mask.sum(),dtype=self._N.dtype)
 			_np.floor_divide(self._M[mask],(self._L+1),out=sign)
 			sign *= 2
 			sign -= 1

@@ -6,6 +6,7 @@ cimport numpy as _np
 from numpy cimport npy_intp
 
 
+
 uint32 = _np.uint32
 uint64 = _np.uint64
 uint128 = _np.dtype((_np.void,sizeof(uint128_t)))

@@ -35,23 +35,23 @@ template<class I>
 class boson_basis_core : public general_basis_core<I>
 {
 	public:
-		I M[64];
+		I M[1024];
 		const int sps;
 
 		boson_basis_core(const int _N, const int _sps) : \
 		general_basis_core<I>::general_basis_core(_N), sps(_sps) {
-			M[0] = 1;
+			M[0] = (I)1;
 			for(int i=1;i<_N;i++){
-				M[i] = M[i-1] * _sps;
+				M[i] = (M[i-1] * (I)_sps);
 			}
 		}
 
 		boson_basis_core(const int _N, const int _sps,const int _nt, \
 						 const int _maps[], const int _pers[], const int _qs[]) : \
 		general_basis_core<I>::general_basis_core(_N,_nt,_maps,_pers,_qs), sps(_sps) {
-			M[0] = 1;
+			M[0] = (I)1;
 			for(int i=1;i<_N;i++){
-				M[i] = M[i-1]*_sps;
+				M[i] = (M[i-1] * (I)_sps);
 			}			
 		}
 

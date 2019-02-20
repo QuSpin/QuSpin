@@ -80,6 +80,8 @@ ctypedef fused ll_basis_type:
     uint512_t
     uint1024_t
 
+__all__ = ["basis_int_to_python_int","get_basis_index","shuffle_sites"]
+
 
 @cython.boundscheck(False)
 @cython.cdivision(True)

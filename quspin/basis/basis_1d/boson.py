@@ -142,7 +142,7 @@ class boson_basis_1d(basis_1d):
 			self._Np = sum(Nb_list)
 
 		if self._sps is None:
-			self._sps = max(Nb_list)
+			self._sps = max(Nb_list)+1
 
 		self._blocks = blocks
 

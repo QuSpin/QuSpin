@@ -49,7 +49,10 @@ cdef class higher_spin_basis_core_wrap(general_basis_core_wrap):
         self._sps = sps
         self._Ns_full = (sps**N)
 
-        if self._sps < 2:
+        if self._sps < 3:
+            if sps == 2:
+                raise ValueError("for sps==2 use hcb_core for internals.")
+
             raise ValueError("must have sps > 2")
 
         if dtype == uint32:
@@ -67,13 +70,29 @@ cdef class higher_spin_basis_core_wrap(general_basis_core_wrap):
                 self._basis_core = <void *> new higher_spin_basis_core[uint128_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new higher_spin_basis_core[uint128_t](N,sps)
+        elif dtype == uint256:
+            if self._nt>0:
+                self._basis_core = <void *> new higher_spin_basis_core[uint256_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new higher_spin_basis_core[uint256_t](N,sps)
+        elif dtype == uint512:
+            if self._nt>0:
+                self._basis_core = <void *> new higher_spin_basis_core[uint512_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new higher_spin_basis_core[uint512_t](N,sps)
+        elif dtype == uint1024:
+            if self._nt>0:
+                self._basis_core = <void *> new higher_spin_basis_core[uint1024_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new higher_spin_basis_core[uint1024_t](N,sps)
         else:
             raise ValueError("general basis supports integer sizes <= 64 bits.")
 
     def get_s0_pcon(self,object Np):
-        l = Np//(self._sps-1)
-        s  = sum((self._sps-1)*self._sps**i for i in range(l))
-        s += (Np%(self._sps-1))*self._sps**l
+        sps = <object>(self._sps)
+        l = Np//(sps-1)
+        s  = sum((sps-1) * sps**i for i in range(l))
+        s += (Np%(sps-1)) * sps**l
         return s
 
     def get_Ns_pcon(self,object Np):

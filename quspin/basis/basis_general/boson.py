@@ -1,4 +1,4 @@
-from ._basis_general_core import boson_basis_core_wrap,get_basis_type
+from ._basis_general_core import boson_basis_core_wrap,get_basis_type,boost_zeros
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
@@ -125,6 +125,11 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Nb = int(nb*N)
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
+
+			try:
+				sps = max(list(Nb))+1
+			except TypeError:
+				sps = Nb+1
 		else:
 			if Nb is not None:
 				if nb is not None:
@@ -133,7 +138,6 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			elif nb is not None:
 				Nb = int(nb*N)
 
-		
 		self._sps = sps
 		self._allowed_ops=set(["I","z","n","+","-"])
 
@@ -222,7 +226,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self.make()
 			else:
 				self._Ns=1
-				self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
+				self._basis=boost_zeros(self._Ns,dtype=self._basis_dtype)
 				self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 

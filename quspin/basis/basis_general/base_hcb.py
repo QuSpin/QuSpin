@@ -67,7 +67,7 @@ class hcb_basis_general(basis_general):
 		else:
 			self._Ns=1
 			self._basis=boost_zeros(self._Ns,dtype=self._basis_dtype)
-			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 			
 		self._sps=2
 		self._allowed_ops=set(["I","x","y","z","+","-","n"])

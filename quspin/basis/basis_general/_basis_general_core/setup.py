@@ -27,7 +27,8 @@ def cython_files():
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
 
     include_dir = os.path.join(package_dir,"source")
-    cythonize(cython_src,include_path=get_include_dirs())
+    compile_time_env = {"USE_BOOST_INTEGERS":1}
+    cythonize(cython_src,include_path=get_include_dirs(),compile_time_env=compile_time_env)
 
 
 def configuration(parent_package='', top_path=None):
@@ -45,10 +46,12 @@ def configuration(parent_package='', top_path=None):
  
         package_dir = os.path.dirname(os.path.realpath(__file__))
         package_dir = os.path.expandvars(package_dir)
+        depends = glob.glob(os.path.join(package_dir,"source","*.h"))
 
         extension_kwargs = dict(include_dirs=get_include_dirs(),
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
+                                depends=depends,
                                 language="c++")
 
         utils_src = os.path.join(package_dir,"general_basis_utils.cpp")

@@ -42,13 +42,41 @@ cdef extern from "general_basis_rep.h":
 
 cdef extern from "boost/multiprecision/cpp_int.hpp" namespace "boost::multiprecision":
     cdef cppclass uint128_t:
-        pass
+        uint128_t operator&(int)
+        uint128_t operator>>(int)
+        uint128_t operator<<(int)
+        uint128_t operator^(uint128_t)
+        bool operator==(uint128_t)
+        bool operator!=(uint128_t)
+        bool operator!=(int)
+
     cdef cppclass uint256_t:
-        pass
+        uint256_t operator&(int)
+        uint256_t operator>>(int)
+        uint256_t operator<<(int)
+        uint256_t operator^(uint256_t)
+        uint256_t& operator[](int)
+        bool operator==(uint256_t)
+        bool operator!=(uint256_t)
+        bool operator!=(int)
+
     cdef cppclass uint512_t:
-        pass
+        uint512_t operator&(int)
+        uint512_t operator>>(int)
+        uint512_t operator<<(int)
+        uint512_t operator^(uint512_t)
+        bool operator==(uint512_t)
+        bool operator!=(uint512_t)
+        bool operator!=(int)
+
     cdef cppclass uint1024_t:
-        pass
+        uint1024_t operator&(int)
+        uint1024_t operator>>(int)
+        uint1024_t operator<<(int)
+        uint1024_t operator^(uint1024_t)
+        bool operator==(uint1024_t)
+        bool operator!=(uint1024_t)
+        bool operator!=(int)
 
 ctypedef fused index_type:
     int32_t

@@ -90,13 +90,42 @@ struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
 	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return a.first < b.first;}
 };
 
+// in-place merge two sorted arrays X[] and Y[]
+// invariant: X[] and Y[] are sorted at any point
+template<class T,class BinaryOperator>
+void merge_sorted(T * X,const npy_intp m, T * Y,const npy_intp n, BinaryOperator compare)
+{
+	// consider each element X[i] of array X and ignore the element
+	// if it is already in correct order else swap it with next smaller
+	// element which happens to be first element of Y
+	for (npy_intp i = 0; i < m;  i++)
+	{
+		// compare current element of X[] with first element of Y[]
+		if (compare(Y[0],X[i]))
+		{
+			std::swap(X[i], Y[0]);
+			T first = Y[0];
+
+			// move Y[0] to its correct position to maintain sorted
+			// order of Y[]. Note: Y[1..n-1] is already sorted
+			npy_intp k;
+			for (k = 1; k < n && Y[k] < first; k++) {
+				Y[k - 1] = Y[k];
+			}
+
+			Y[k - 1] = first;
+		}
+	}
+}
+
 template<class I,class J>
 npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
 	npy_intp index = 0;
 	bool insuff_mem = false;
 	std::vector<std::pair<I,J> > master_block(mem_MAX);
-	std::pair<I,J> * master_block_data = &master_block[0];;
+	std::pair<I,J> * master_block_data = &master_block[0];
+
 
 	#pragma omp parallel firstprivate(MAX) shared(master_block_data,index,Ns,insuff_mem)
 	{
@@ -129,14 +158,20 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 
 		}
 
+
+
 		if(!insuff_mem){
 			#pragma omp critical
 			{
 				const npy_intp Ns_block = thread_block.size();
+				const npy_intp beginning_index = index;
 				for(npy_intp j=0;j<Ns_block;j++){
-					master_block_data[index] = thread_block[j];
-					index++;
+					master_block_data[index++] = thread_block[j];
 				}
+				if(Ns_block>0 and beginning_index>0){
+					merge_sorted(master_block_data,beginning_index,master_block_data+beginning_index,Ns_block,compare_pair<I,J>());
+				}
+				
 			}
 		}
 	}
@@ -146,7 +181,7 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 	}
 	else{
 		master_block.resize(Ns);
-		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
+		// std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
 		for(npy_intp i=0;i<Ns;i++){
 			basis[i] = master_block[i].first;
 			n[i] = master_block[i].second;
@@ -198,9 +233,13 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 			#pragma omp critical
 			{
 				const npy_intp Ns_block = thread_block.size();
+				const npy_intp beginning_index = index;
 				for(npy_intp j=0;j<Ns_block;j++){
-					master_block_data[index] = thread_block[j];
-					index++;
+					master_block_data[index++] = thread_block[j];
+				}
+				// merge sorted data into the main list assuming both sections are sorted.
+				if(Ns_block>0 and beginning_index>0){
+					merge_sorted(master_block_data,beginning_index,master_block_data+beginning_index,Ns_block,compare_pair<I,J>());
 				}
 			}
 		}
@@ -212,7 +251,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 	else{
 		// sort list based on basis and then fill ndarray values with the sorted list. 
 		master_block.resize(Ns);
-		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
+		// std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
 		for(npy_intp i=0;i<Ns;i++){
 			basis[i] = master_block[i].first;
 			n[i] = master_block[i].second;

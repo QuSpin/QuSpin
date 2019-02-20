@@ -41,12 +41,27 @@ cdef class spinful_fermion_basis_core_wrap(general_basis_core_wrap):
                 self._basis_core = <void *> new spinful_fermion_basis_core[uint128_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new spinful_fermion_basis_core[uint128_t](N)
+        elif dtype == uint256:
+            if self._nt>0:
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint256_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint256_t](N)
+        elif dtype == uint512:
+            if self._nt>0:
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint512_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint512_t](N)
+        elif dtype == uint1024:
+            if self._nt>0:
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint1024_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint1024_t](N)
         else:
             raise ValueError("general basis supports system sizes <= 128.")
 
     def get_s0_pcon(self,object Np):
-        s = sum(1<<i for i in range(Np[1]))
-        s += (sum(1<<i for i in range(Np[0]))) << self._N
+        s = sum(<object>(1)<<i for i in range(Np[1]))
+        s += (sum(<object>(1)<<i for i in range(Np[0]))) << self._N
         return s
 
     def get_Ns_pcon(self,object Np):

@@ -1,6 +1,6 @@
 from ._basis_general_core import spinful_fermion_basis_core_wrap
 from ._basis_general_core import spinless_fermion_basis_core_wrap
-from ._basis_general_core import get_basis_type
+from ._basis_general_core import get_basis_type,boost_zeros
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -158,8 +158,8 @@ class spinless_fermion_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
-			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._basis=boost_zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 
 		self._operators = ("availible operators for ferion_basis_1d:"+
@@ -478,8 +478,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
-			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._basis=boost_zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+
