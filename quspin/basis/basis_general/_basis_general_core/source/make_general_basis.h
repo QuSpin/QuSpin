@@ -168,7 +168,7 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 				for(npy_intp j=0;j<Ns_block;j++){
 					master_block_data[index++] = thread_block[j];
 				}
-				if(Ns_block>0 and beginning_index>0){
+				if(Ns_block>0 && beginning_index>0){
 					merge_sorted(master_block_data,beginning_index,master_block_data+beginning_index,Ns_block,compare_pair<I,J>());
 				}
 				
@@ -238,7 +238,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 					master_block_data[index++] = thread_block[j];
 				}
 				// merge sorted data into the main list assuming both sections are sorted.
-				if(Ns_block>0 and beginning_index>0){
+				if(Ns_block>0 && beginning_index>0){
 					merge_sorted(master_block_data,beginning_index,master_block_data+beginning_index,Ns_block,compare_pair<I,J>());
 				}
 			}

@@ -33,7 +33,7 @@ cdef int op_func(npy_intp Ns, basis_type[:] basis,
         
         for j in range(N_indx-1,-1,-1): #loop over the copstr
             b = M[L-indx[j]-1]
-            occ = (r/b)%(Nmax+1)  #calculate occupation of site ind[j]
+            occ = (r//b)%(Nmax+1)  #calculate occupation of site ind[j]
             
             # loop over site positions
             if c_opstr[j] == I:

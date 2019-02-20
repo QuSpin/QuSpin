@@ -2,7 +2,7 @@
 
 def get_include_dirs():
     from sysconfig import get_paths
-    import numpy,os
+    import numpy,os,sys
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     data_path = get_paths()["data"]
@@ -12,7 +12,10 @@ def get_include_dirs():
 
     include_dirs = [numpy.get_include()]
     include_dirs.append(os.path.join(package_dir,"source"))
-    include_dirs.append(os.path.join(data_path,"include"))
+    if sys.platform == "win32":
+        include_dirs.append(os.path.join(data_path,"Library","include"))
+    else:
+        include_dirs.append(os.path.join(data_path,"include"))
 
     return include_dirs
 

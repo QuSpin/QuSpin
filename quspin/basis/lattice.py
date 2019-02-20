@@ -56,10 +56,7 @@ class lattice_basis(basis):
 		>>> print(s_str)
 
 		"""
-		try:
-			state = basis_int_to_python_int(state)
-		except ValueError:
-			raise ValueError("state must be integer")
+		state = basis_int_to_python_int(state)
 
 		n_space = len(str(self.sps))
 		if self.N <= 64:

@@ -545,7 +545,7 @@ class basis_1d(lattice_basis):
 		row = _np.zeros(N_op,dtype=self._basis_type)
 		ME = _np.zeros(N_op,dtype=dtype)
 		error = self._op(row,col,ME,opstr,indx,J,*self._op_args,**self._blocks_1d)
-
+		
 		if error != 0: raise OpstrError(_basis_op_errors[error])
 		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
 		col = col[mask]

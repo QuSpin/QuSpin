@@ -133,7 +133,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 		try:
 			Nup_iter = iter(Nup)
-			M = int(2*S*L)
+			M = int(2*S*N)
 			Nup = [(M+(Nup+1) if Nup<0 else Nup) for Nup in Nup_iter]
 		except TypeError:
 			if Nup is not None and Nup < 0:

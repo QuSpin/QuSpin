@@ -130,7 +130,7 @@ class hcb_basis_core : public general_basis_core<I>
 
 				const int ind = general_basis_core<I>::N-indx[j]-1;
 				const I b = (one << ind);
-				const bool a = ((r >> ind)&one);
+				const bool a = (bool)((r >> ind)&one);
 				const char op = opstr[j];
 				switch(op){
 					case 'z':

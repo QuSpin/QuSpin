@@ -41,6 +41,7 @@ def check_ME(b1,b2,opstr,indx,dtype,err_msg):
 			np.testing.assert_allclose(ME1,ME2,atol=1e-6,err_msg=err_msg)
 		except AssertionError:
 			print(err_msg)
+			print(b1)
 			print("difference:")
 			print(ME1-ME2)
 			print(row1-row2)
@@ -150,8 +151,6 @@ def test_gen_basis_spin_boost(L,Nups,l_max,S="1/2"):
 	kblocks = [None]
 	kblocks.extend(range(0,L,(L//4)))
 	pblocks = [None,0,1]
-	zblocks = [None,0,1]
-
 	if S=="1/2":
 		ops = ["x","y","z","+","-","I"]
 	else:
@@ -212,7 +211,7 @@ def test_gen_basis_spin_boost(L,Nups,l_max,S="1/2"):
 
 		for l in range(1,l_max+1):
 			for i0 in range(0,L-l+1,1):
-				indx = range(i0,i0+l,1)
+				indx = list(range(i0,i0+l,1))
 				for opstr in product(*[ops for i in range(l)]):
 					opstr = "".join(list(opstr))
 					printing = dict(basis_blocks)

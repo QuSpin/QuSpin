@@ -91,7 +91,7 @@ def _shuffle_sites_core(const npy_intp sps,npy_intp[::1] T_tup,npy_type[:,::1] A
     cdef npy_intp Ns = A.shape[1]
     cdef npy_intp M = max(T_tup)+1
     cdef npy_intp nd = T_tup.size
-    cdef npy_intp[::1] sps_pow = sps**(_np.arange(M)[::-1])
+    cdef npy_intp[::1] sps_pow = sps**(_np.arange(M,dtype=_np.intp)[::-1])
 
     with nogil:
         if sps > 2:
@@ -162,10 +162,14 @@ cdef object basis_to_python(ll_basis_type *ptr):
     return python_val
 
 def basis_int_to_python_int(a):
+
     cdef _np.ndarray a_wrapper = _np.array(a)
     cdef object python_int = 0
     cdef object i = 0
     cdef void * ptr = _np.PyArray_GETPTR1(a_wrapper,0)
+
+    if a_wrapper.dtype in [_np.int32,_np.int64]:
+        a_wrapper = a_wrapper.astype(_np.object)
 
     if a_wrapper.dtype == _np.object:
         return a
@@ -182,7 +186,7 @@ def basis_int_to_python_int(a):
     elif a_wrapper.dtype == _uint1024:
         return basis_to_python[uint1024_t](<uint1024_t*>ptr)
     else:
-        raise ValueError("value must be a python integer or basis type")
+        raise ValueError("dtype {} is not recognized, must be python integer or basis type".format(a_wrapper.dtype))
 
 
 cdef search_array(ll_basis_type * ptr,npy_intp n, object value):
