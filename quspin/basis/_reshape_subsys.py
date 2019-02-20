@@ -1,6 +1,6 @@
 import numpy as _np
 import scipy.sparse as _sp
-from ._basis_utils import _shuffle_sites
+from ._basis_utils import shuffle_sites
 
 
 
@@ -72,7 +72,7 @@ def _lattice_reshape_pure(psi,sub_sys_A,L,sps):
 	Ns_A = (sps**L_A)
 	Ns_B = (sps**L_B)
 	T_tup = sub_sys_A+sub_sys_B
-	psi_v = _shuffle_sites(sps,T_tup,psi)
+	psi_v = shuffle_sites(sps,T_tup,psi)
 	psi_v = psi_v.reshape(extra_dims+(Ns_A,Ns_B))
 
 	return psi_v
@@ -130,7 +130,7 @@ def _lattice_reshape_mixed(rho,sub_sys_A,L,sps):
 	T_tup = sub_sys_A+sub_sys_B
 	T_tup = tuple(T_tup) + tuple(L+s for s in T_tup)
 	rho = rho.reshape(extra_dims+(-1,))
-	rho_v = _shuffle_sites(sps,T_tup,rho)
+	rho_v = shuffle_sites(sps,T_tup,rho)
 	
 	return rho_v.reshape(extra_dims+(Ns_A,Ns_B,Ns_A,Ns_B))
 

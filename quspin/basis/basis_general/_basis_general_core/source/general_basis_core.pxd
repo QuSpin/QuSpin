@@ -40,6 +40,44 @@ cdef extern from "general_basis_rep.h":
 
     int general_normalization[I,J](general_basis_core[I] *B, I[], J[], const npy_intp) nogil
 
+cdef extern from "boost/multiprecision/cpp_int.hpp" namespace "boost::multiprecision":
+    cdef cppclass uint128_t:
+        uint128_t operator&(int)
+        uint128_t operator>>(int)
+        uint128_t operator<<(int)
+        uint128_t operator^(uint128_t)
+        bool operator==(uint128_t)
+        bool operator!=(uint128_t)
+        bool operator!=(int)
+
+    cdef cppclass uint256_t:
+        uint256_t operator&(int)
+        uint256_t operator>>(int)
+        uint256_t operator<<(int)
+        uint256_t operator^(uint256_t)
+        uint256_t& operator[](int)
+        bool operator==(uint256_t)
+        bool operator!=(uint256_t)
+        bool operator!=(int)
+
+    cdef cppclass uint512_t:
+        uint512_t operator&(int)
+        uint512_t operator>>(int)
+        uint512_t operator<<(int)
+        uint512_t operator^(uint512_t)
+        bool operator==(uint512_t)
+        bool operator!=(uint512_t)
+        bool operator!=(int)
+
+    cdef cppclass uint1024_t:
+        uint1024_t operator&(int)
+        uint1024_t operator>>(int)
+        uint1024_t operator<<(int)
+        uint1024_t operator^(uint1024_t)
+        bool operator==(uint1024_t)
+        bool operator!=(uint1024_t)
+        bool operator!=(int)
+
 ctypedef fused index_type:
     int32_t
     int64_t
@@ -56,7 +94,14 @@ ctypedef fused norm_type:
     uint32_t
     uint64_t
 
+ctypedef fused npy_uint:
+    uint32_t
+    uint64_t    
+
 ctypedef fused state_type:
     uint32_t
     uint64_t
-
+    uint128_t
+    uint256_t
+    uint512_t
+    uint1024_t
