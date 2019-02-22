@@ -1279,7 +1279,7 @@ class hamiltonian(object):
 
 	### Schroedinger evolution routines
 
-	def __LO(self,time,rho):
+	def __LO(self,time,rho,rho_out):
 		"""
 		args:
 			rho, flattened density matrix to multiple with
@@ -1290,18 +1290,15 @@ class hamiltonian(object):
 		
 		"""
 		rho = rho.reshape((self.Ns,self.Ns))
-		# _matvec(self._static,rho,out=rhoout)
-		# _matvec(self._static.T,rho.T,out=rhoout.T,a=-1,overwrite_out=False)
-
-		rho_comm = self._static.dot(rho)
-		rho_comm -= (self._static.T.dot(rho.T)).T
+		_matvec(self._static  ,rho  ,out=rho_out  ,a=+1.0,overwrite_out=True) # rho_out = self._static.dot(rho)
+		_matvec(self._static.T,rho.T,out=rho_out.T,a=-1.0,overwrite_out=False) # rho_out -= (self._static.T.dot(rho.T)).T
 		for func,Hd in iteritems(self._dynamic):
 			ft = func(time)
-			rho_comm += ft*Hd.dot(rho)	
-			rho_comm -= ft*(Hd.T.dot(rho.T)).T
+			_matvec(Hd  ,rho  ,out=rho_out  ,a=+ft,overwrite_out=False) # rho_out += ft*Hd.dot(rho)
+			_matvec(Hd.T,rho.T,out=rho_out.T,a=-ft,overwrite_out=False) # rho_out -= ft*(Hd.T.dot(rho.T)).T
 
-		rho_comm *= -1j
-		return rho_comm.ravel()
+		rho_out *= -1j
+		return rho_out.ravel()
 
 
 	def __ISO(self,time,V,V_out):
@@ -1322,10 +1319,11 @@ class hamiltonian(object):
 		V_out *= -1
 		return V_out.ravel()
 
-	def __multi_SO_real(self,time,V):
+	def __SO_real(self,time,V,V_out):
 		"""
 		args:
 			V, the vector to multiple with
+			V_out, the vector to use with output.
 			time, the time to evalute drive at.
 
 		description:
@@ -1336,36 +1334,13 @@ class hamiltonian(object):
 		u_dot = Hv
 		v_dot = -Hu
 		"""
-		V = V.reshape((2*self._Ns,-1))
-		V_dot = _np.zeros_like(V)
-		V_dot[:self._Ns,:] = self._static.dot(V[self._Ns:,:])
-		V_dot[self._Ns:,:] = -self._static.dot(V[:self._Ns,:])
+		V = V.reshape(V_out.shape)
+		_matvec(self._static,V[self._Ns:],out=V_out[:self._Ns],overwrite_out=True) # V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
+		_matvec(self._static,V[:self._Ns],out=V_out[self._Ns:],overwrite_out=True) # V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
 		for func,Hd in iteritems(self._dynamic):
-			V_dot[:self._Ns,:] += func(time)*Hd.dot(V[self._Ns:,:])
-			V_dot[self._Ns:,:] += -func(time)*Hd.dot(V[:self._Ns,:])
-
-		return V_dot.reshape((-1,))
-
-	def __SO_real(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
-		
-		u_dot + iv_dot = -iH(u + iv)
-		u_dot = Hv
-		v_dot = -Hu
-		"""
-		V_dot = _np.zeros_like(V)
-		V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
-		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
-		for func,Hd in iteritems(self._dynamic):
-			V_dot[:self._Ns] += func(time)*Hd.dot(V[self._Ns:])
-			V_dot[self._Ns:] += -func(time)*Hd.dot(V[:self._Ns])
+			ft=func(time)
+			_matvec(Hd,V[self._Ns:],out=V_out[:self._Ns],a=+ft,overwrite_out=False) # V_dot[:self._Ns] += func(time)*Hd.dot(V[self._Ns:])
+			_matvec(Hd,V[:self._Ns],out=V_out[self._Ns:],a=-ft,overwrite_out=False) # V_dot[self._Ns:] += -func(time)*Hd.dot(V[:self._Ns])
 
 		return V_dot
 
@@ -1428,7 +1403,7 @@ class hamiltonian(object):
 		solver_args : dict, optional
 			Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_.	
 		stack_state : bool, optional 
-			Flag to determine if `f` is real or complex-valued. Default is `False`.
+			Flag to determine if `f` is real or complex-valued. Default is `False` (i.e. complex-valued).
 		imag_time : bool, optional
 			Must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state 
 			at each time in `times`. Default is `False`.
@@ -1479,7 +1454,6 @@ class hamiltonian(object):
 				if stack_state:
 					raise NotImplementedError("stack state is not compatible with imaginary time evolution.")
 
-
 				evolve_args  = evolve_args + (self.__ISO,)					
 				result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
 				v0 = _np.array(v0,dtype=result_dtype,copy=True,order="C")
@@ -1487,17 +1461,17 @@ class hamiltonian(object):
 				evolve_kwargs["real"] = not _np.iscomplexobj(v0)
 
 			else:
+				v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+				evolve_kwargs["f_params"]=(v0,)
+				evolve_kwargs["real"]=False
+
 				if stack_state:
-					evolve_kwargs["real"]=False
-					if v0.ndim == 1:
-						evolve_args = evolve_args + (self.__SO_real,)
-					else:
-						evolve_args = evolve_args + (self.__multi_SO_real,)
+					#if self.dtype is complex: # no idea how to do this in python :D
+					#	raise ValueError('stack_state option cannot be used with complex-valued Hamiltonians')
+					evolve_args = evolve_args + (self.__SO_real,)
 				else:
-					v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
-					evolve_kwargs["f_params"]=(v0,)
-					evolve_kwargs["real"]=False
 					evolve_args = evolve_args + (self.__SO,)
+
 		elif eom == "LvNE":
 			n = 1.0
 			if v0.ndim != 2:
@@ -1512,6 +1486,8 @@ class hamiltonian(object):
 				if stack_state:
 					raise NotImplementedError("stack_state not implemented for Liouville-von Neumann dynamics")
 				else:
+					v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+					evolve_kwargs["f_params"]=(v0,)
 					evolve_args = evolve_args + (self.__LO,)
 		else:
 			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(eom))
