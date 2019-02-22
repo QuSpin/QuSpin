@@ -2,7 +2,6 @@
 # distutils: language=c++
 import cython
 from scipy.misc import comb
-from general_basis_core cimport dtype,index_type,norm_type
 import scipy.sparse as _sp
 
 include "source/general_basis_core.pyx"
@@ -11,7 +10,7 @@ cdef extern from "glibc_fix.h":
     pass
 
 # specialized code 
-cdef extern from "spinless_fermion_basis_core.h":
+cdef extern from "spinless_fermion_basis_core.h" namespace "basis_general":
     cdef cppclass spinless_fermion_basis_core[I](general_basis_core[I]):
         spinless_fermion_basis_core(const int,const int,const int[],const int[],const int[])
         spinless_fermion_basis_core(const int) 
@@ -33,26 +32,26 @@ cdef class spinless_fermion_basis_core_wrap(general_basis_core_wrap):
                 self._basis_core = <void *> new spinless_fermion_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new spinless_fermion_basis_core[uint64_t](N)
-        elif dtype == uint128:
-            if self._nt>0:
-                self._basis_core = <void *> new spinless_fermion_basis_core[uint128_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
-            else:
-                self._basis_core = <void *> new spinless_fermion_basis_core[uint128_t](N)
         elif dtype == uint256:
             if self._nt>0:
                 self._basis_core = <void *> new spinless_fermion_basis_core[uint256_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new spinless_fermion_basis_core[uint256_t](N)
-        elif dtype == uint512:
-            if self._nt>0:
-                self._basis_core = <void *> new spinless_fermion_basis_core[uint512_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
-            else:
-                self._basis_core = <void *> new spinless_fermion_basis_core[uint512_t](N)
         elif dtype == uint1024:
             if self._nt>0:
                 self._basis_core = <void *> new spinless_fermion_basis_core[uint1024_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new spinless_fermion_basis_core[uint1024_t](N)
+        elif dtype == uint4096:
+            if self._nt>0:
+                self._basis_core = <void *> new spinless_fermion_basis_core[uint4096_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new spinless_fermion_basis_core[uint4096_t](N)
+        elif dtype == uint16384:
+            if self._nt>0:
+                self._basis_core = <void *> new spinless_fermion_basis_core[uint16384_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new spinless_fermion_basis_core[uint16384_t](N)
         else:
             raise ValueError("general basis supports system sizes <= 64.")
 

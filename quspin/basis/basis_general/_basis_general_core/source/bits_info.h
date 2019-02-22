@@ -2,15 +2,46 @@
 #define __BITS_INFO_H__
 
 #include "numpy/ndarraytypes.h"
-
 #include "boost/multiprecision/cpp_int.hpp"
+
+namespace basis_general {
+
 typedef boost::multiprecision::uint128_t uint128_t;
 typedef boost::multiprecision::uint256_t uint256_t;
 typedef boost::multiprecision::uint512_t uint512_t;
 typedef boost::multiprecision::uint1024_t uint1024_t;
 
+typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<2048, 2048, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint2048_t;
+typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<4096, 4096, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint4096_t;
+typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<8192, 8192, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint8192_t;
+typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<16384, 16384, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint16384_t;
+
 template<typename I>
 struct bit_info{};
+
+template<>
+struct bit_info<uint16384_t>
+{ enum {ld_bits=14,bits=16384,bytes=2048};
+  typedef int bit_index_type;
+};
+
+template<>
+struct bit_info<uint8192_t>
+{ enum {ld_bits=13,bits=4096,bytes=1024};
+  typedef int bit_index_type;
+};
+
+template<>
+struct bit_info<uint4096_t>
+{ enum {ld_bits=12,bits=4096,bytes=512};
+  typedef int bit_index_type;
+};
+
+template<>
+struct bit_info<uint2048_t>
+{ enum {ld_bits=11,bits=2048,bytes=256};
+  typedef int bit_index_type;
+};
 
 template<>
 struct bit_info<uint1024_t>
@@ -38,19 +69,19 @@ struct bit_info<uint128_t>
 
 template<>
 struct bit_info<npy_uint64>
-{	enum {ld_bits=6,bits=64,bytes=8};
+{  enum {ld_bits=6,bits=64,bytes=8};
   typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<npy_uint32>
-{	enum {ld_bits=5,bits=32,bytes=4};
+{  enum {ld_bits=5,bits=32,bytes=4};
   typedef int bit_index_type;
 };
 
 template<>
 struct bit_info<npy_uint16>
-{	enum {ld_bits=4,bits=16,bytes=2};
+{  enum {ld_bits=4,bits=16,bytes=2};
   typedef int bit_index_type;
 };
 
@@ -85,6 +116,6 @@ int inline bit_count(T v,int l){
 }
 
 
-
+}
 
 #endif

@@ -5,6 +5,8 @@
 #include <cmath>
 #include "boson_basis_core.h"
 
+namespace basis_general {
+
 template<class I>
 class higher_spin_basis_core : public boson_basis_core<I>
 {
@@ -58,5 +60,5 @@ class higher_spin_basis_core : public boson_basis_core<I>
 			return 0;
 		}
 };
-
+}
 #endif

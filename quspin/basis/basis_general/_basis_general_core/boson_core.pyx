@@ -2,7 +2,6 @@
 # distutils: language=c++
 import cython
 from scipy.misc import comb
-from general_basis_core cimport dtype,index_type,norm_type
 import scipy.sparse as _sp
 cimport numpy as _np
 import numpy as _np
@@ -13,7 +12,7 @@ cdef extern from "glibc_fix.h":
     pass
 
 # specialized code 
-cdef extern from "boson_basis_core.h":
+cdef extern from "boson_basis_core.h" namespace "basis_general":
     cdef cppclass boson_basis_core[I](general_basis_core[I]):
         boson_basis_core(const int,const int,const int,const int[],const int[],const int[])
         boson_basis_core(const int,const int) 
@@ -65,26 +64,26 @@ cdef class boson_basis_core_wrap(general_basis_core_wrap):
                 self._basis_core = <void *> new boson_basis_core[uint64_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new boson_basis_core[uint64_t](N,sps)
-        elif dtype == uint128:
-            if self._nt>0:
-                self._basis_core = <void *> new boson_basis_core[uint128_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
-            else:
-                self._basis_core = <void *> new boson_basis_core[uint128_t](N,sps)
         elif dtype == uint256:
             if self._nt>0:
                 self._basis_core = <void *> new boson_basis_core[uint256_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new boson_basis_core[uint256_t](N,sps)
-        elif dtype == uint512:
-            if self._nt>0:
-                self._basis_core = <void *> new boson_basis_core[uint512_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
-            else:
-                self._basis_core = <void *> new boson_basis_core[uint512_t](N,sps)
         elif dtype == uint1024:
             if self._nt>0:
                 self._basis_core = <void *> new boson_basis_core[uint1024_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new boson_basis_core[uint1024_t](N,sps)
+        elif dtype == uint4096:
+            if self._nt>0:
+                self._basis_core = <void *> new boson_basis_core[uint4096_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new boson_basis_core[uint4096_t](N,sps)
+        elif dtype == uint16384:
+            if self._nt>0:
+                self._basis_core = <void *> new boson_basis_core[uint16384_t](N,sps,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new boson_basis_core[uint16384_t](N,sps)
 
         else:
             raise ValueError("general basis supports integer sizes <= 64 bits.")

@@ -8,6 +8,8 @@
 #include "misc.h"
 
 
+namespace basis_general {
+
 template<class T>
 bool inline update_out_dense(std::complex<double> c, int sign, npy_intp n_vec,const std::complex<T> *in, std::complex<T> *out){
 	for(npy_intp i=0;i<n_vec;i++){
@@ -169,7 +171,7 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 	return err;
 }
 
-
+}
 
 
 #endif

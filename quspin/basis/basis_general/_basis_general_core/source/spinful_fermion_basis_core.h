@@ -8,7 +8,7 @@
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
 
-
+namespace basis_general {
 
 template<class I>
 class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
@@ -82,7 +82,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 		}
 };
 
-
+}
 
 
 

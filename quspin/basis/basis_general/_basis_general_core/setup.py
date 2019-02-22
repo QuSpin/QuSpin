@@ -28,10 +28,10 @@ def cython_files():
     package_dir = os.path.expandvars(package_dir)
 
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+    # cython_src = [os.path.join(package_dir,"hcb_core.pyx")]
 
     include_dir = os.path.join(package_dir,"source")
-    compile_time_env = {"USE_BOOST_INTEGERS":1}
-    cythonize(cython_src,include_path=get_include_dirs(),compile_time_env=compile_time_env)
+    cythonize(cython_src,include_path=get_include_dirs())
 
 
 def configuration(parent_package='', top_path=None):
@@ -54,7 +54,7 @@ def configuration(parent_package='', top_path=None):
         extension_kwargs = dict(include_dirs=get_include_dirs(),
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
-                                depends=depends,
+                                # depends=depends,
                                 language="c++")
 
         utils_src = os.path.join(package_dir,"general_basis_utils.cpp")

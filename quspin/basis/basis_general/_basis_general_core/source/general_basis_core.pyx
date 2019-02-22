@@ -8,7 +8,7 @@ import numpy as _np
 from libcpp.vector cimport vector
 from libcpp.set cimport set
 
-from .general_basis_utils import uint32,uint64,uint128,uint256,uint512,uint1024
+from .general_basis_utils import uint32,uint64,uint256,uint1024,uint4096,uint16384
 
 
 
@@ -240,20 +240,20 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == uint64:
             with nogil:
                 err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint64_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
-        elif basis.dtype == uint128:
-            with nogil:
-                err = general_op(<general_basis_core[uint128_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint128_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         elif basis.dtype == uint256:
             with nogil:
                 err = general_op(<general_basis_core[uint256_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint256_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
-        elif basis.dtype == uint512:
-            with nogil:
-                err = general_op(<general_basis_core[uint512_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint512_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         elif basis.dtype == uint1024:
             with nogil:
                 err = general_op(<general_basis_core[uint1024_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint1024_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
+        elif basis.dtype == uint4096:
+            with nogil:
+                err = general_op(<general_basis_core[uint4096_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint4096_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
+        elif basis.dtype == uint16384:
+            with nogil:
+                err = general_op(<general_basis_core[uint16384_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,<uint16384_t*>basis_ptr,&n[0],&row[0],&col[0],&M[0])
         else:
-            raise TypeError("basis dtype must be either uint32, uint64, uint128, uint256, uint512 or uint1024.")
+            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 
         if err == -1:
             raise ValueError("operator not recognized.")
@@ -283,24 +283,24 @@ cdef class general_basis_core_wrap:
             with nogil:
                 err = general_inplace_op(<general_basis_core[uint64_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint64_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == uint128:
-            with nogil:
-                err = general_inplace_op(<general_basis_core[uint128_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
-                                                        <uint128_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
         elif basis.dtype == uint256:
             with nogil:
                 err = general_inplace_op(<general_basis_core[uint256_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint256_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == uint512:
-            with nogil:
-                err = general_inplace_op(<general_basis_core[uint512_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
-                                                        <uint512_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
         elif basis.dtype == uint1024:
             with nogil:
                 err = general_inplace_op(<general_basis_core[uint1024_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
                                                         <uint1024_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
+        elif basis.dtype == uint4096:
+            with nogil:
+                err = general_inplace_op(<general_basis_core[uint4096_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
+                                                        <uint4096_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
+        elif basis.dtype == uint16384:
+            with nogil:
+                err = general_inplace_op(<general_basis_core[uint16384_t]*>B,transposed,conjugated,n_op,&c_opstr[0],&indx[0],JJ,basis_full,Ns,nvecs,
+                                                        <uint16384_t*>basis_ptr,&n[0],&v_in[0,0],&v_out[0,0])
         else:
-            raise TypeError("basis dtype must be either uint32 or uint64")
+            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 
         if err == -1:
             raise ValueError("operator not recognized.")
@@ -318,14 +318,20 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("input array must be C-contiguous")
+            raise ValueError("basis array must be C-contiguous")
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
+
+            if not basis_pcon.flags["CARRAY"]:
+                raise ValueError("input array must be C-contiguous")
+
+            if basis.dtype != basis_pcon.dtype:
+                raise TypeError("basis_pcon must match dtype of the basis.")
+
             basis_pcon_ptr = _np.PyArray_GETPTR1(basis_pcon,0)
         else:
             Ns_full = self._Ns_full
-
 
         if basis.dtype == uint32:
             with nogil:
@@ -333,8 +339,20 @@ cdef class general_basis_core_wrap:
         elif basis.dtype == uint64:
             with nogil:
                 err = get_vec_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+        elif basis.dtype == uint256:
+            with nogil:
+                err = get_vec_general_dense(<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint256_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+        elif basis.dtype == uint1024:
+            with nogil:
+                err = get_vec_general_dense(<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint1024_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+        elif basis.dtype == uint4096:
+            with nogil:
+                err = get_vec_general_dense(<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint4096_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+        elif basis.dtype == uint16384:
+            with nogil:
+                err = get_vec_general_dense(<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint16384_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
         else:
-            raise TypeError("basis dtype must be either uint32 or uint64")
+            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 
         if not err:
             raise TypeError("attemping to use real type for complex elements.")
@@ -350,13 +368,19 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
         cdef uint32_t* uint32_basis_ptr = NULL
         cdef uint64_t* uint64_basis_ptr = NULL
-        cdef uint128_t* uint128_basis_ptr = NULL
 
         if not basis.flags["CARRAY"]:
             raise ValueError("input array must be C-contiguous")
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
+
+            if not basis_pcon.flags["CARRAY"]:
+                raise ValueError("input array must be C-contiguous")
+
+            if basis.dtype != basis_pcon.dtype:
+                raise TypeError("basis_pcon must match dtype of the basis.")
+
             basis_pcon_ptr = _np.PyArray_GETPTR1(basis_pcon,0)
         else:
             Ns_full = self._Ns_full
@@ -401,20 +425,20 @@ cdef class general_basis_core_wrap:
                 elif basis.dtype == uint64:
                     return get_proj_pcon_helper[uint64_t,dtype,index_type](<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,self._nt,self._nt,
                         sign,c,indices,indptr,<uint64_t*>basis_pcon_ptr,P)             
-                elif basis.dtype == uint128:
-                    return get_proj_pcon_helper[uint128_t,dtype,index_type](<general_basis_core[uint128_t]*>B,<uint128_t*>basis_ptr,self._nt,self._nt,
-                        sign,c,indices,indptr,<uint128_t*>basis_pcon_ptr,P)             
                 elif basis.dtype == uint256:
                     return get_proj_pcon_helper[uint256_t,dtype,index_type](<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,self._nt,self._nt,
                         sign,c,indices,indptr,<uint256_t*>basis_pcon_ptr,P)             
-                elif basis.dtype == uint512:
-                    return get_proj_pcon_helper[uint512_t,dtype,index_type](<general_basis_core[uint512_t]*>B,<uint512_t*>basis_ptr,self._nt,self._nt,
-                        sign,c,indices,indptr,<uint512_t*>basis_pcon_ptr,P)             
                 elif basis.dtype == uint1024:
                     return get_proj_pcon_helper[uint1024_t,dtype,index_type](<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,self._nt,self._nt,
                         sign,c,indices,indptr,<uint1024_t*>basis_pcon_ptr,P)             
+                elif basis.dtype == uint4096:
+                    return get_proj_pcon_helper[uint4096_t,dtype,index_type](<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,self._nt,self._nt,
+                        sign,c,indices,indptr,<uint4096_t*>basis_pcon_ptr,P)             
+                elif basis.dtype == uint16384:
+                    return get_proj_pcon_helper[uint16384_t,dtype,index_type](<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,self._nt,self._nt,
+                        sign,c,indices,indptr,<uint16384_t*>basis_pcon_ptr,P)             
                 else:
-                    raise TypeError("basis dtype must be either uint32 or uint64")  
+                    raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 
 
     @cython.boundscheck(False)
@@ -434,7 +458,7 @@ cdef class general_basis_core_wrap:
             with nogil:
                 Ns = make_basis(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,<uint64_t*>basis_ptr,&n[0])
         else:
-            raise TypeError("looping over the full basis dtype must be either uint32 or uint64")  
+            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
         return Ns
 
     @cython.boundscheck(False)
@@ -446,10 +470,10 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core
         cdef uint32_t s32 = <uint32_t>(0)
         cdef uint64_t s64 = <uint64_t>(0)
-        cdef uint128_t s128 = <uint128_t>(0)
-        cdef uint256_t s256 = <uint256_t>(0)
-        cdef uint512_t s512 = <uint512_t>(0)
-        cdef uint1024_t s1024 = <uint1024_t>(0)
+        cdef uint256_t s128 = <uint256_t>(0)
+        cdef uint1024_t s256 = <uint1024_t>(0)
+        cdef uint4096_t s512 = <uint4096_t>(0)
+        cdef uint16384_t s1024 = <uint16384_t>(0)
 
 
         if not basis.flags["CARRAY"]:
@@ -463,24 +487,25 @@ cdef class general_basis_core_wrap:
             s64 = python_to_basis_int(s,s64)
             with nogil:
                 Ns = make_basis_pcon(<general_basis_core[uint64_t]*>B,Ns,mem_MAX,s64,<uint64_t*>basis_ptr,&n[0])
-        elif basis.dtype == uint128:
+        elif basis.dtype == uint256:
             s128 = python_to_basis_int(s,s128)
             with nogil:
-                Ns = make_basis_pcon(<general_basis_core[uint128_t]*>B,Ns,mem_MAX,s128,<uint128_t*>basis_ptr,&n[0])
-        elif basis.dtype == uint256:
+                Ns = make_basis_pcon(<general_basis_core[uint256_t]*>B,Ns,mem_MAX,s128,<uint256_t*>basis_ptr,&n[0])
+        elif basis.dtype == uint1024:
             s256 = python_to_basis_int(s,s256)
             with nogil:
-                Ns = make_basis_pcon(<general_basis_core[uint256_t]*>B,Ns,mem_MAX,s256,<uint256_t*>basis_ptr,&n[0])
-        elif basis.dtype == uint512:
+                Ns = make_basis_pcon(<general_basis_core[uint1024_t]*>B,Ns,mem_MAX,s256,<uint1024_t*>basis_ptr,&n[0])
+        elif basis.dtype == uint4096:
             s512 = python_to_basis_int(s,s512)
             with nogil:
-                Ns = make_basis_pcon(<general_basis_core[uint512_t]*>B,Ns,mem_MAX,s512,<uint512_t*>basis_ptr,&n[0])
-        elif basis.dtype == uint1024:
+                Ns = make_basis_pcon(<general_basis_core[uint4096_t]*>B,Ns,mem_MAX,s512,<uint4096_t*>basis_ptr,&n[0])
+        elif basis.dtype == uint16384:
             s1024 = python_to_basis_int(s,s1024)
             with nogil:
-                Ns = make_basis_pcon(<general_basis_core[uint1024_t]*>B,Ns,mem_MAX,s1024,<uint1024_t*>basis_ptr,&n[0])
+                Ns = make_basis_pcon(<general_basis_core[uint16384_t]*>B,Ns,mem_MAX,s1024,<uint16384_t*>basis_ptr,&n[0])
         else:
-            raise TypeError("basis dtype must be either uint32 or uint64")  
+            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
+
         return Ns
 
 
@@ -510,20 +535,20 @@ cdef class general_basis_core_wrap:
             elif ket.dtype == uint64:
                 with nogil:
                     err = general_op_bra_ket(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint64_t*>ket_ptr,<uint64_t*>bra_ptr,&M[0])
-            elif ket.dtype == uint128:
-                with nogil:
-                    err = general_op_bra_ket(<general_basis_core[uint128_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint128_t*>ket_ptr,<uint128_t*>bra_ptr,&M[0])
             elif ket.dtype == uint256:
                 with nogil:
                     err = general_op_bra_ket(<general_basis_core[uint256_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint256_t*>ket_ptr,<uint256_t*>bra_ptr,&M[0])
-            elif ket.dtype == uint512:
-                with nogil:
-                    err = general_op_bra_ket(<general_basis_core[uint512_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint512_t*>ket_ptr,<uint512_t*>bra_ptr,&M[0])
             elif ket.dtype == uint1024:
                 with nogil:
                     err = general_op_bra_ket(<general_basis_core[uint1024_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint1024_t*>ket_ptr,<uint1024_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint4096:
+                with nogil:
+                    err = general_op_bra_ket(<general_basis_core[uint4096_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint4096_t*>ket_ptr,<uint4096_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint16384:
+                with nogil:
+                    err = general_op_bra_ket(<general_basis_core[uint16384_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,<uint16384_t*>ket_ptr,<uint16384_t*>bra_ptr,&M[0])
             else:
-                raise TypeError("ket/bra dtype must be either uint32 or uint64") 
+                raise TypeError("basis dtype {} not recognized.".format(ket.dtype))
         else:
             Np_set = load_pcon_list(Np)
 
@@ -533,20 +558,20 @@ cdef class general_basis_core_wrap:
             elif ket.dtype == uint64:
                 with nogil:
                     err = general_op_bra_ket_pcon(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint64_t*>ket_ptr,<uint64_t*>bra_ptr,&M[0])
-            elif ket.dtype == uint128:
-                with nogil:
-                    err = general_op_bra_ket_pcon(<general_basis_core[uint128_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint128_t*>ket_ptr,<uint128_t*>bra_ptr,&M[0])
             elif ket.dtype == uint256:
                 with nogil:
                     err = general_op_bra_ket_pcon(<general_basis_core[uint256_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint256_t*>ket_ptr,<uint256_t*>bra_ptr,&M[0])
-            elif ket.dtype == uint512:
-                with nogil:
-                    err = general_op_bra_ket_pcon(<general_basis_core[uint512_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint512_t*>ket_ptr,<uint512_t*>bra_ptr,&M[0])
             elif ket.dtype == uint1024:
                 with nogil:
                     err = general_op_bra_ket_pcon(<general_basis_core[uint1024_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint1024_t*>ket_ptr,<uint1024_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint4096:
+                with nogil:
+                    err = general_op_bra_ket_pcon(<general_basis_core[uint4096_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint4096_t*>ket_ptr,<uint4096_t*>bra_ptr,&M[0])
+            elif ket.dtype == uint16384:
+                with nogil:
+                    err = general_op_bra_ket_pcon(<general_basis_core[uint16384_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,Ns,Np_set,<uint16384_t*>ket_ptr,<uint16384_t*>bra_ptr,&M[0])
             else:
-                raise TypeError("ket/bra dtype must be either uint32 or uint64") 
+                raise TypeError("basis dtype {} not recognized.".format(ket.dtype))
 
         if err == -1:
             raise ValueError("operator not recognized.")
@@ -581,20 +606,20 @@ cdef class general_basis_core_wrap:
         elif states.dtype == uint64:
             with nogil:
                 general_representative(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,<uint64_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
-        elif states.dtype == uint128:
-            with nogil:
-                general_representative(<general_basis_core[uint128_t]*>B,<uint128_t*>states_ptr,<uint128_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
         elif states.dtype == uint256:
             with nogil:
                 general_representative(<general_basis_core[uint256_t]*>B,<uint256_t*>states_ptr,<uint256_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
-        elif states.dtype == uint512:
-            with nogil:
-                general_representative(<general_basis_core[uint512_t]*>B,<uint512_t*>states_ptr,<uint512_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
         elif states.dtype == uint1024:
             with nogil:
                 general_representative(<general_basis_core[uint1024_t]*>B,<uint1024_t*>states_ptr,<uint1024_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
+        elif states.dtype == uint4096:
+            with nogil:
+                general_representative(<general_basis_core[uint4096_t]*>B,<uint4096_t*>states_ptr,<uint4096_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
+        elif states.dtype == uint16384:
+            with nogil:
+                general_representative(<general_basis_core[uint16384_t]*>B,<uint16384_t*>states_ptr,<uint16384_t*>ref_states_ptr,g_out_ptr,sign_out_ptr,Ns)
         else:
-            raise TypeError("array dtype must be either uint32 or uint64") 
+            raise TypeError("basis dtype {} not recognized.".format(states.dtype))
 
 
 
@@ -614,20 +639,20 @@ cdef class general_basis_core_wrap:
         elif states.dtype == uint64:
             with nogil:
                 err = general_normalization(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&norms[0],Ns)
-        elif states.dtype == uint128:
-            with nogil:
-                err = general_normalization(<general_basis_core[uint128_t]*>B,<uint128_t*>states_ptr,&norms[0],Ns)
         elif states.dtype == uint256:
             with nogil:
                 err = general_normalization(<general_basis_core[uint256_t]*>B,<uint256_t*>states_ptr,&norms[0],Ns)
-        elif states.dtype == uint512:
-            with nogil:
-                err = general_normalization(<general_basis_core[uint512_t]*>B,<uint512_t*>states_ptr,&norms[0],Ns)
         elif states.dtype == uint1024:
             with nogil:
                 err = general_normalization(<general_basis_core[uint1024_t]*>B,<uint1024_t*>states_ptr,&norms[0],Ns)
+        elif states.dtype == uint4096:
+            with nogil:
+                err = general_normalization(<general_basis_core[uint4096_t]*>B,<uint4096_t*>states_ptr,&norms[0],Ns)
+        elif states.dtype == uint16384:
+            with nogil:
+                err = general_normalization(<general_basis_core[uint16384_t]*>B,<uint16384_t*>states_ptr,&norms[0],Ns)
         else:
-            raise TypeError("array dtype must be either uint32 or uint64") 
+            raise TypeError("basis dtype {} not recognized.".format(states.dtype))
 
         if err > 0:
             raise TypeError("normalization values exceeds given data type. Increase data type of signed integer for normalizations array.") 

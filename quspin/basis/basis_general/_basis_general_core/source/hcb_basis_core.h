@@ -9,7 +9,7 @@
 #include "benes_perm.h"
 #include "openmp.h"
 
-
+namespace basis_general {
 
 template<class I>
 I inline hcb_map_bits(I s,const int map[],const int N){
@@ -172,7 +172,7 @@ class hcb_basis_core : public general_basis_core<I>
 };
 
 
-
+}
 
 
 

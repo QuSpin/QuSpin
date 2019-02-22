@@ -9,7 +9,7 @@
 #define no_index int(-1)
 
 
-
+namespace basis_general {
 
 template<typename I>
 struct tr_bfly{
@@ -281,7 +281,7 @@ void gen_benes(tr_benes<I>* self, const ta_index<I> &c_tgt) {
 // Generate a configuration for the standard Benes network.
   ta_subword<I> a_stage_bwd;
   for(unsigned int i=0;i < bit_info<I>::ld_bits;++i){
-  	a_stage_bwd[i] = bit_info<I>::ld_bits - i - 1;
+    a_stage_bwd[i] = bit_info<I>::ld_bits - i - 1;
   }
   gen_benes_ex(self,c_tgt,a_stage_bwd);  // standard Benes order
   }
@@ -301,5 +301,5 @@ I benes_bwd(const tr_benes<I>* self, I x) {
 
   return ibfly(&self->b1, bfly(&self->b2,x));
   }
-
+}
 #endif

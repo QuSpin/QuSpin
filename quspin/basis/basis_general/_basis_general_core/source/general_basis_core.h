@@ -14,6 +14,9 @@
 
 #define __GENERAL_BASIS_CORE__max_nt 32
 
+
+namespace basis_general {
+
 template<class I>
 class general_basis_core{
 	public:
@@ -386,6 +389,6 @@ bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>
 // 	}
 // 	return ref_state_core<I>(this,s,s,g,gg,sign,tempsign,nt,0);
 // }
-
+}
 
 #endif

@@ -5,6 +5,8 @@
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
+namespace basis_general {
+
 template<class I>
 class two_hcb_basis_core : public hcb_basis_core<I>
 {
@@ -67,7 +69,7 @@ class two_hcb_basis_core : public hcb_basis_core<I>
 };
 
 
-
+}
 
 
 

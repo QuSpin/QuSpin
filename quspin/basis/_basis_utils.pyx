@@ -9,53 +9,18 @@ from numpy cimport int8_t, int16_t, int32_t, int64_t
 from numpy cimport uint8_t, uint16_t, uint32_t, uint64_t
 from libcpp.vector cimport vector
 from libcpp cimport bool
+from general_basis_core cimport state_type,uint32_t,uint64_t,uint256_t,uint1024_t,uint4096_t,uint16384_t,python_to_basis,basis_to_python
 # python imports
 import numpy as _np
 
-cdef extern from "boost/multiprecision/cpp_int.hpp" namespace "boost::multiprecision":
-    cdef cppclass uint128_t:
-        uint128_t operator&(int)
-        uint128_t operator>>(int)
-        uint128_t operator<<(int)
-        uint128_t operator^(uint128_t)
-        bool operator==(uint128_t)
-        bool operator!=(uint128_t)
-        bool operator!=(int)
-
-    cdef cppclass uint256_t:
-        uint256_t operator&(int)
-        uint256_t operator>>(int)
-        uint256_t operator<<(int)
-        uint256_t operator^(uint256_t)
-        bool operator==(uint256_t)
-        bool operator!=(uint256_t)
-        bool operator!=(int)
-
-    cdef cppclass uint512_t:
-        uint512_t operator&(int)
-        uint512_t operator>>(int)
-        uint512_t operator<<(int)
-        uint512_t operator^(uint512_t)
-        bool operator==(uint512_t)
-        bool operator!=(uint512_t)
-        bool operator!=(int)
-
-    cdef cppclass uint1024_t:
-        uint1024_t operator&(int)
-        uint1024_t operator>>(int)
-        uint1024_t operator<<(int)
-        uint1024_t operator^(uint1024_t)
-        bool operator==(uint1024_t)
-        bool operator!=(uint1024_t)
-        bool operator!=(int)
 
 
 _uint32 = _np.uint32
 _uint64 = _np.uint64
-_uint128 = _np.dtype((_np.void,sizeof(uint128_t)))
 _uint256 = _np.dtype((_np.void,sizeof(uint256_t)))
-_uint512 = _np.dtype((_np.void,sizeof(uint512_t)))
 _uint1024 = _np.dtype((_np.void,sizeof(uint1024_t)))
+_uint4096 = _np.dtype((_np.void,sizeof(uint4096_t)))
+_uint16384 = _np.dtype((_np.void,sizeof(uint16384_t)))
 
 
 ctypedef fused npy_type:
@@ -71,14 +36,6 @@ ctypedef fused npy_type:
     float64_t
     complex64_t
     complex128_t
-
-ctypedef fused ll_basis_type:
-    uint32_t
-    uint64_t
-    uint128_t
-    uint256_t
-    uint512_t
-    uint1024_t
 
 __all__ = ["basis_int_to_python_int","get_basis_index","shuffle_sites"]
 
@@ -135,32 +92,6 @@ def shuffle_sites(npy_intp sps,T_tup,A):
     return A_T
 
 
-
-
-
-cdef ll_basis_type python_to_basis_int(object python_val, ll_basis_type val):
-    cdef int i = 0
-    val = <ll_basis_type>(0)
-
-    while(python_val!=0):
-        val = val ^ ((<ll_basis_type>(<int>(python_val&1))) << i)
-        i += 1
-        python_val = python_val >> 1
-
-    return val
-
-cdef object basis_to_python(ll_basis_type *ptr):
-    cdef ll_basis_type val = ptr[0]
-    cdef object python_val = 0
-    cdef object i = 0
-
-    while(val!=0):
-        python_val ^= (<object>(<int>(val&1))) << i
-        i += 1
-        val = val >> 1
-
-    return python_val
-
 def basis_int_to_python_int(a):
 
     cdef _np.ndarray a_wrapper = _np.array(a)
@@ -177,23 +108,23 @@ def basis_int_to_python_int(a):
         return basis_to_python[uint32_t](<uint32_t*>ptr)
     elif a_wrapper.dtype == _uint64:
         return basis_to_python[uint64_t](<uint64_t*>ptr)
-    elif a_wrapper.dtype == _uint128:
-        return basis_to_python[uint128_t](<uint128_t*>ptr)
     elif a_wrapper.dtype == _uint256:
         return basis_to_python[uint256_t](<uint256_t*>ptr)
-    elif a_wrapper.dtype == _uint512:
-        return basis_to_python[uint512_t](<uint512_t*>ptr)
     elif a_wrapper.dtype == _uint1024:
         return basis_to_python[uint1024_t](<uint1024_t*>ptr)
+    elif a_wrapper.dtype == _uint4096:
+        return basis_to_python[uint4096_t](<uint4096_t*>ptr)
+    elif a_wrapper.dtype == _uint16384:
+        return basis_to_python[uint16384_t](<uint16384_t*>ptr)
     else:
         raise ValueError("dtype {} is not recognized, must be python integer or basis type".format(a_wrapper.dtype))
 
 
-cdef search_array(ll_basis_type * ptr,npy_intp n, object value):
-    cdef ll_basis_type val = <ll_basis_type>(0)
+cdef search_array(state_type * ptr,npy_intp n, object value):
+    cdef state_type val = <state_type>(0)
     cdef npy_intp i = 0
 
-    val = python_to_basis_int[ll_basis_type](value,val)
+    val = python_to_basis[state_type](value,val)
 
     for i in range(n):
         if(ptr[i]==val):
@@ -212,14 +143,14 @@ def get_basis_index(_np.ndarray basis,object val):
         i = search_array[uint32_t](<uint32_t*>ptr,n,value)
     elif basis.dtype == _uint64:
         i = search_array[uint64_t](<uint64_t*>ptr,n,value)
-    elif basis.dtype == _uint128:
-        i = search_array[uint128_t](<uint128_t*>ptr,n,value)
     elif basis.dtype == _uint256:
         i = search_array[uint256_t](<uint256_t*>ptr,n,value)
-    elif basis.dtype == _uint512:
-        i = search_array[uint512_t](<uint512_t*>ptr,n,value)
     elif basis.dtype == _uint1024:
         i = search_array[uint1024_t](<uint1024_t*>ptr,n,value)
+    elif basis.dtype == _uint4096:
+        i = search_array[uint4096_t](<uint4096_t*>ptr,n,value)
+    elif basis.dtype == _uint16384:
+        i = search_array[uint16384_t](<uint16384_t*>ptr,n,value)
     elif basis.dtype == _np.dtype('O'):
         for j in range(n):
             if(basis[i]==value):

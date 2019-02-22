@@ -6,7 +6,7 @@
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
 
-
+namespace basis_general {
 
 template<class I>
 void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &f_count){
@@ -212,7 +212,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 
 
-
+}
 
 
 

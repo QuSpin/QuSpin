@@ -1942,7 +1942,7 @@ class hamiltonian(object):
 		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype)
 
-	def copy(self,deep=False):
+	def copy(self,deep=True):
 		"""Returns a deep or shallow copy of `hamiltonian` object."""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,
