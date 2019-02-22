@@ -67,19 +67,19 @@ for fmt in formats:
 			try:
 				np.testing.assert_allclose(res1,res2,atol=atol)
 			except AssertionError as e:
-				print(res1-res2, atol)
+				print(res1-res2, atol,res1.shape)
 				raise AssertionError(e)
 
 			try:
 				np.testing.assert_allclose(res1,out,atol=atol)
 			except AssertionError as e:
-				print(res1-out, atol)
+				print(res1-out, atol,res1.shape)
 				raise AssertionError(e)
 
 			try:
 				np.testing.assert_allclose(out,res2,atol=atol)
 			except AssertionError as e:
-				print(out-res2, atol)
+				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
@@ -103,22 +103,131 @@ for fmt in formats:
 			try:
 				np.testing.assert_allclose(res1,res2,atol=atol)
 			except AssertionError as e:
-				print(res1-res2, atol)
+				print(res1-res2, atol,res1.shape)
 				raise AssertionError(e)
 
 			try:
 				np.testing.assert_allclose(res1,out,atol=atol)
 			except AssertionError as e:
-				print(res1-out, atol)
+				print(res1-out, atol,res1.shape)
 				raise AssertionError(e)
 
 			try:
 				np.testing.assert_allclose(out,res2,atol=atol)
 			except AssertionError as e:
-				print(out-res2, atol)
+				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
 
-			
+			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = v.astype(dtype2,order="F")
+
+			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="F")
+
+			t = np.random.normal(0,1)
+
+			if dtype1 in [np.complex128,np.complex64]:
+				res2 = 1j*t*(A.dot(v))
+			else:
+				res2 = t*(A.dot(v))
+
+			res1 = H.dot(v,time=t)
+			H.dot(v,time=t,out=out,overwrite_out=True)
+
+
+			result_dtype = np.result_type(dtype1,dtype2)
+			atol = eps(N,dtype1,dtype2)
+			try:
+				np.testing.assert_allclose(res1,res2,atol=atol)
+			except AssertionError as e:
+				print(res1-res2, atol,res1.shape)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(res1,out,atol=atol)
+			except AssertionError as e:
+				print(res1-out, atol,res1.shape)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(out,res2,atol=atol)
+			except AssertionError as e:
+				print(out-res2, atol,res1.shape)
+				raise AssertionError(e)
+
+
+			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = v.astype(dtype2,order="C")
+
+			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="F")
+
+			t = np.random.normal(0,1)
+
+			if dtype1 in [np.complex128,np.complex64]:
+				res2 = 1j*t*(A.dot(v))
+			else:
+				res2 = t*(A.dot(v))
+
+			res1 = H.dot(v,time=t)
+			H.dot(v,time=t,out=out,overwrite_out=True)
+
+
+			result_dtype = np.result_type(dtype1,dtype2)
+			atol = eps(N,dtype1,dtype2)
+			try:
+				np.testing.assert_allclose(res1,res2,atol=atol)
+			except AssertionError as e:
+				print(res1-res2, atol,res1.shape)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(res1,out,atol=atol)
+			except AssertionError as e:
+				print(res1-out, atol,res1.shape)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(out,res2,atol=atol)
+			except AssertionError as e:
+				print(out-res2, atol,res1.shape)
+				raise AssertionError(e)
+
+
+			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = v.astype(dtype2,order="F")
+
+			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="C")
+
+			t = np.random.normal(0,1)
+
+			if dtype1 in [np.complex128,np.complex64]:
+				res2 = 1j*t*(A.dot(v))
+			else:
+				res2 = t*(A.dot(v))
+
+			res1 = H.dot(v,time=t)
+			H.dot(v,time=t,out=out,overwrite_out=True)
+
+
+			result_dtype = np.result_type(dtype1,dtype2)
+			atol = eps(N,dtype1,dtype2)
+			try:
+				np.testing.assert_allclose(res1,res2,atol=atol)
+			except AssertionError as e:
+				print(res1-res2, atol,res1.shape)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(res1,out,atol=atol)
+			except AssertionError as e:
+				print(res1-out, atol,res1.shape)
+				raise AssertionError(e)
+
+			try:
+				np.testing.assert_allclose(out,res2,atol=atol)
+			except AssertionError as e:
+				print(out-res2, atol,res1.shape)
+				raise AssertionError(e)
+
 
 
 print("oputils tests passed!")

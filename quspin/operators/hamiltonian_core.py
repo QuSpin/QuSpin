@@ -674,14 +674,19 @@ class hamiltonian(object):
 					raise ValueError("Density matricies must be square!")
 
 				# allocate C-contiguous array to output results in.
-
-				V_dot = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
+				if out is None:
+					out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
+				else:
+					if out.dtype != result_dtype:
+						raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
+					if out.shape != V.shape[-1:]+V.shape[:-1]:
+						raise ValueError("'out' must be array with correct dtype and dimensions for output array.")
 
 				for i,t in enumerate(time):
-					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
-					_matvec(self._static,v,overwrite_out=True,out=V_dot[i,...])
+					# v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
+					_matvec(self._static,V[...,i],overwrite_out=True,out=out[i,...])
 					for func,Hd in iteritems(self._dynamic):
-						_matvec(Hd,v,overwrite_out=False,a=func(t),out=V_dot[i,...])
+						_matvec(Hd,V[...,i],overwrite_out=False,a=func(t),out=out[i,...])
 
 				# transpose, leave non-contiguous results which can be handled by numpy. 
 				
@@ -702,7 +707,7 @@ class hamiltonian(object):
 				for func,Hd in iteritems(self._dynamic):
 					out = out + func(time)*(Hd.dot(V))
 			else:
-				V = _np.ascontiguousarray(V,dtype=result_dtype)
+				V = _np.asarray(V,dtype=result_dtype)
 				if out is None:
 					out = _matvec(self._static,V)
 				else:
@@ -711,8 +716,8 @@ class hamiltonian(object):
 							raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 						if out.shape != V.shape:
 							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-						if not out.flags["CARRAY"]:
-							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+						# if not out.flags["CARRAY"]:
+						# 	raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 					except AttributeError:
 						raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 
@@ -1285,6 +1290,8 @@ class hamiltonian(object):
 		
 		"""
 		rho = rho.reshape((self.Ns,self.Ns))
+		# _matvec(self._static,rho,out=rhoout)
+		# _matvec(self._static.T,rho.T,out=rhoout.T,a=-1,overwrite_out=False)
 
 		rho_comm = self._static.dot(rho)
 		rho_comm -= (self._static.T.dot(rho.T)).T

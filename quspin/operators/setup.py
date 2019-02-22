@@ -17,7 +17,7 @@ def configuration(parent_package='', top_path=None):
 
     cython_files()
 
-    extra_compile_args=[]
+    extra_compile_args=["-fno-strict-aliasing"]
     extra_link_args=[]  
       
     if sys.platform == "darwin":
@@ -30,11 +30,15 @@ def configuration(parent_package='', top_path=None):
     include_dirs.append(os.path.join(package_dir,"_oputils"))
     include_dirs.append(os.path.join(package_dir,"..","tools","expm_multiply_parallel_core","source"))
 
-
+    depends =[
+        os.path.join(package_dir,"_oputils","matvec.h"),
+        os.path.join(package_dir,"..","tools","expm_multiply_parallel_core","source","csrmv_merge.h")
+    ]
     src = os.path.join(package_dir,"_oputils.cpp") 
     config.add_extension('_oputils',sources=src,include_dirs=include_dirs,
                             extra_compile_args=extra_compile_args,
                             extra_link_args=extra_link_args,
+                            depends=depends,
                             language="c++")
 
     return config
