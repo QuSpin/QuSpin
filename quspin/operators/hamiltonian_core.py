@@ -674,28 +674,21 @@ class hamiltonian(object):
 					raise ValueError("Density matricies must be square!")
 
 				# allocate C-contiguous array to output results in.
-				if out is None:
-					out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
-				else:
-					if out.dtype != result_dtype:
-						raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
-					if out.shape != V.shape[-1:]+V.shape[:-1]:
-						raise ValueError("'out' must be array with correct dtype and dimensions for output array.")
+				out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
 
 				for i,t in enumerate(time):
-					# v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
-					_matvec(self._static,V[...,i],overwrite_out=True,out=out[i,...])
+					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
+					_matvec(self._static,v,overwrite_out=True,out=out[i,...])
 					for func,Hd in iteritems(self._dynamic):
-						_matvec(Hd,V[...,i],overwrite_out=False,a=func(t),out=out[i,...])
+						_matvec(Hd,v,overwrite_out=False,a=func(t),out=out[i,...])
 
 				# transpose, leave non-contiguous results which can be handled by numpy. 
-				
-				if V_dot.ndim == 2:
-					V_dot = V_dot.transpose()
+				if out.ndim == 2:
+					out = out.transpose()
 				else:
-					V_dot = V_dot.transpose((1,2,0))
+					out = out.transpose((1,2,0))
 
-				return V_dot
+				return out
 		
 		else:
 
@@ -707,7 +700,14 @@ class hamiltonian(object):
 				for func,Hd in iteritems(self._dynamic):
 					out = out + func(time)*(Hd.dot(V))
 			else:
+
+				# if V.ndim == 1:
+				# 	V = _np.ascontiguousarray(V,dtype=result_dtype)
+				# else:
+				# 	V = _np.asarray(V,dtype=result_dtype)
+
 				V = _np.asarray(V,dtype=result_dtype)
+
 				if out is None:
 					out = _matvec(self._static,V)
 				else:
@@ -716,7 +716,7 @@ class hamiltonian(object):
 							raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 						if out.shape != V.shape:
 							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-						# if not out.flags["CARRAY"]:
+						# if out.ndim == 1 and not out.flags["CARRAY"]:
 						# 	raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 					except AttributeError:
 						raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
@@ -1330,19 +1330,19 @@ class hamiltonian(object):
 			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
 		
-		u_dot + iv_dot = -iH(u + iv)
+		u_dot + i*v_dot = -i*H(u + i*v)
 		u_dot = Hv
 		v_dot = -Hu
 		"""
 		V = V.reshape(V_out.shape)
-		_matvec(self._static,V[self._Ns:],out=V_out[:self._Ns],overwrite_out=True) # V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
-		_matvec(self._static,V[:self._Ns],out=V_out[self._Ns:],overwrite_out=True) # V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
+		_matvec(self._static,V[self._Ns:],out=V_out[:self._Ns],a=+1,overwrite_out=True) # V_dot[:self._Ns] =  self._static.dot(V[self._Ns:])
+		_matvec(self._static,V[:self._Ns],out=V_out[self._Ns:],a=-1,overwrite_out=True) # V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
 		for func,Hd in iteritems(self._dynamic):
 			ft=func(time)
 			_matvec(Hd,V[self._Ns:],out=V_out[:self._Ns],a=+ft,overwrite_out=False) # V_dot[:self._Ns] += func(time)*Hd.dot(V[self._Ns:])
 			_matvec(Hd,V[:self._Ns],out=V_out[self._Ns:],a=-ft,overwrite_out=False) # V_dot[self._Ns:] += -func(time)*Hd.dot(V[:self._Ns])
 
-		return V_dot
+		return V_out
 
 	def __SO(self,time,V,V_out):
 		"""
@@ -1461,15 +1461,18 @@ class hamiltonian(object):
 				evolve_kwargs["real"] = not _np.iscomplexobj(v0)
 
 			else:
-				v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
-				evolve_kwargs["f_params"]=(v0,)
 				evolve_kwargs["real"]=False
-
 				if stack_state:
-					#if self.dtype is complex: # no idea how to do this in python :D
-					#	raise ValueError('stack_state option cannot be used with complex-valued Hamiltonians')
+					if _np.iscomplexobj(_np.array(1,dtype=self.dtype)): # no idea how to do this in python :D
+						raise ValueError('stack_state option cannot be used with complex-valued Hamiltonians')
+					shape = (v0.shape[0]*2,)+v0.shape[1:]
+					v0 = _np.zeros(shape,dtype=_np.float64,order="C")
+					evolve_kwargs["f_params"]=(v0,)
+
 					evolve_args = evolve_args + (self.__SO_real,)
 				else:
+					v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+					evolve_kwargs["f_params"]=(v0,)
 					evolve_args = evolve_args + (self.__SO,)
 
 		elif eom == "LvNE":
