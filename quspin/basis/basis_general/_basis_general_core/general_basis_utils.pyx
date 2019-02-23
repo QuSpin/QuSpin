@@ -112,3 +112,24 @@ def get_basis_type(N, Np, sps):
     else:
         raise ValueError("basis is not representable with general_basis integer imeplmentations.")
 
+
+def bitwise_and(_np.ndarray x1, _np.ndarray x2, _np.ndarray out=None, bool[:] where=None):
+    cdef npy_intp Ns = x1.shape[0]
+    cdef void * x1_ptr = _np.PyArray_GETPTR1(x1,0)
+    cdef void * x2_ptr = _np.PyArray_GETPTR1(x2,0)
+    cdef int * where_ptr = NULL
+
+    # check dimensions and types uint32,..., uint16000
+
+    if out is None:
+        out = _np.zeros(x1.shape,dtype=x1.dtype,order="C")
+    out_ptr = _np.PyArray_GETPTR1(out,0)
+
+    if where is not None:
+        where_ptr = &where[0]
+
+    with nogil:
+        bitwise_and(x1_ptr, x2_ptr, where_ptr, out_ptr, Ns) # bitwise_and_op[uint32,uint32,uint32]
+
+    return out
+
