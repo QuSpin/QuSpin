@@ -330,29 +330,37 @@ cdef class general_basis_core_wrap:
                 raise TypeError("basis_pcon must match dtype of the basis.")
 
             basis_pcon_ptr = _np.PyArray_GETPTR1(basis_pcon,0)
+            if basis.dtype == uint32:
+                with nogil:
+                    err = get_vec_general_pcon_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint32_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint64:
+                with nogil:
+                    err = get_vec_general_pcon_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+            elif basis.dtype == uint256:
+                with nogil:
+                    err = get_vec_general_pcon_dense(<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint256_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint1024:
+                with nogil:
+                    err = get_vec_general_pcon_dense(<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint1024_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+            elif basis.dtype == uint4096:
+                with nogil:
+                    err = get_vec_general_pcon_dense(<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint4096_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint16384:
+                with nogil:
+                    err = get_vec_general_pcon_dense(<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint16384_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+            else:
+                raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
         else:
             Ns_full = self._Ns_full
 
-        if basis.dtype == uint32:
-            with nogil:
-                err = get_vec_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint32_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == uint64:
-            with nogil:
-                err = get_vec_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
-        elif basis.dtype == uint256:
-            with nogil:
-                err = get_vec_general_dense(<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint256_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == uint1024:
-            with nogil:
-                err = get_vec_general_dense(<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint1024_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
-        elif basis.dtype == uint4096:
-            with nogil:
-                err = get_vec_general_dense(<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint4096_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
-        elif basis.dtype == uint16384:
-            with nogil:
-                err = get_vec_general_dense(<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint16384_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
-        else:
-            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
+            if basis.dtype == uint32:
+                with nogil:
+                    err = get_vec_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint64:
+                with nogil:
+                    err = get_vec_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])            
+            else:
+                raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 
         if not err:
             raise TypeError("attemping to use real type for complex elements.")
