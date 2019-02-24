@@ -11,11 +11,14 @@ def get_include_dirs():
 
 	include_dirs = [numpy.get_include()]
 	include_dirs.append(os.path.join(package_dir,"basis_general","_basis_general_core","source"))
+	include_dirs.append(os.path.join(package_dir,"_basis_utils"))
 	
 	if sys.platform == "win32":
 		include_dirs.append(os.path.join(data_path,"Library","include"))
 	else:
 		include_dirs.append(os.path.join(data_path,"include"))
+
+
 
 	return include_dirs
 
@@ -46,15 +49,16 @@ def configuration(parent_package='',top_path=None):
 
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 	package_dir = os.path.expandvars(package_dir)
-	extra_compile_args=[]
+	extra_compile_args=["-fno-strict-aliasing"]
 	extra_link_args=[]  
 	  
 	if sys.platform == "darwin":
-		extra_compile_args = ["-std=c++11"]
+		extra_compile_args.append( ["-std=c++11"])
 
+	depends = [os.path.join(package_dir,"_basis_utils","shuffle_sites.h")]
 	basis_utils_src = os.path.join(package_dir,"_basis_utils.cpp")	
 	config.add_extension('_basis_utils',sources=basis_utils_src,include_dirs=get_include_dirs(),
-							language="c++",extra_compile_args=extra_compile_args,extra_link_args=extra_link_args)
+							language="c++",depends=depends,extra_compile_args=extra_compile_args,extra_link_args=extra_link_args)
 
 	return config
 

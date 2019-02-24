@@ -144,19 +144,9 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 
 			#pragma omp single // calculate the cumulative sum to get data paritions of master_block
 			{
-				for(int i=0;i<nthread+1;i++){
-					std::cout <<  master_pos_data[i] << "  ";
-				}
-				std::cout << std::endl;
-				
 				for(int i=0;i<nthread;i++){
 					master_pos_data[i+1] += master_pos_data[i];
 				}
-
-				for(int i=0;i<nthread+1;i++){
-					std::cout <<  master_pos_data[i] << "  ";
-				}
-				std::cout << std::endl;
 			}
 
 			// load data into master block in parallel
