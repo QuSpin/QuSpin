@@ -121,7 +121,6 @@ def _reduce_transpose(T_tup,sps=2):
     for sub_list in sub_lists_sorted:
         R_tup.append(sps**len(sub_list))
 
-
     for i,sub_list in enumerate(sub_lists):
         j = sub_lists_sorted.index(sub_list)
         T_tup.append(j)
@@ -143,7 +142,7 @@ def shuffle_sites(npy_intp sps,T_tup,A):
         A = A.reshape(new_shape,order="C")
         T_tup = _np.array(T_tup_reduced,dtype=_np.int32)
         R_tup = _np.array(R_tup_reduced,dtype=_np.intp)
-        
+
         if len(T_tup_reduced) < 32: # use numpy as it is much faster
             reshape_tup = A.shape[:1] + tuple(R_tup)
             A = A.reshape(reshape_tup,order="C")
