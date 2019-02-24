@@ -4,7 +4,8 @@
 #if defined(_OPENMP)
 #include <omp.h>
 
-
+#include <complex>
+#include <algorithm>
 
 template<class T>
 void inline atomic_add(T &y,const T &aa){

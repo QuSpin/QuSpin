@@ -43,7 +43,6 @@ def configuration(parent_package='', top_path=None):
         package_dir = os.path.expandvars(package_dir)
         
         include_dirs = get_include_dirs()
-        print include_dirs
 
         depends_csr = [os.path.join(include_dirs["_oputils"],"csrmv_merge.h"),
                             os.path.join(include_dirs["source"],"csr_matvec.h"),
