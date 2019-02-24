@@ -34,6 +34,7 @@ def configuration(parent_package='', top_path=None):
 
     depends =[
         os.path.join(package_dir,"_oputils","matvec.h"),
+        os.path.join(package_dir,"_oputils","matvecs.h"),
         os.path.join(package_dir,"_oputils","csrmv_merge.h"),
     ]
     src = os.path.join(package_dir,"_oputils.cpp") 

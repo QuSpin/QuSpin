@@ -15,21 +15,28 @@ ctypedef float complex cfloat
 cdef extern from "matvec.h":
     void csr_matvec[I,T1,T2](const bool,const I,const I[],const I[],const T1[],
                               const T1,const npy_intp,const T2[],I[],T2[],const npy_intp,T2 []) nogil
+
+    void csc_matvec[I,T1,T2](const bool,const I,const I,const I[],const I[],const T1[],
+                              const T1,const npy_intp,const T2[],const npy_intp,T2 []) nogil
+
+    void dia_matvec[I,T1,T2](const bool,const I,const I,const I,const I,const I[],
+                              const T1[],const T1,const npy_intp,const T2[],const npy_intp,T2[]) nogil
+
+
+cdef extern from "matvecs.h":
     void csr_matvecs[I,T1,T2](const bool,const I,const I,const I[],const I[],
                               const T1[],const T1,const npy_intp,const npy_intp,const T2[],
                               const npy_intp,const npy_intp,T2 []) nogil
 
-    void csc_matvec[I,T1,T2](const bool,const I,const I,const I[],const I[],const T1[],
-                              const T1,const npy_intp,const T2[],const npy_intp,T2 []) nogil
     void csc_matvecs[I,T1,T2](const bool,const I,const I,const I,const I[],const I[],
                               const T1[],const T1,const npy_intp,const npy_intp,const T2[],
                               const npy_intp,const npy_intp,T2 []) nogil
 
-    void dia_matvec[I,T1,T2](const bool,const I,const I,const I,const I,const I[],
-                              const T1[],const T1,const npy_intp,const T2[],const npy_intp,T2[]) nogil
     void dia_matvecs[I,T1,T2](const bool,const I,const I,const I,const I,const I,
                               const I[],const T1[],const T1,const npy_intp,const npy_intp,const T2[],
                               const npy_intp,const npy_intp,T2 []) nogil
+
+
 
 cdef extern from "openmp.h":
   int omp_get_max_threads()
@@ -51,6 +58,8 @@ ctypedef fused T2:
   double
   float complex
   double complex
+
+
 
 @cython.boundscheck(False)   
 def _csr_matvec(bool overwrite_y, indtype[::1] Ap, indtype[::1] Aj,T1[::1] Ax, T1 a, T2[:] Xx, T2[:] Yx):
