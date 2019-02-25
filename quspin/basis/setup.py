@@ -53,7 +53,7 @@ def configuration(parent_package='',top_path=None):
 	extra_link_args=[]  
 	  
 	if sys.platform == "darwin":
-		extra_compile_args.append( ["-std=c++11"])
+		extra_compile_args.append("-std=c++11")
 
 	depends = [os.path.join(package_dir,"_basis_utils","shuffle_sites.h")]
 	basis_utils_src = os.path.join(package_dir,"_basis_utils.cpp")	

@@ -737,8 +737,9 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 		for key,Obs in Obs_dict.items():
 			
 			val = Obs.expt_value(psi,time=time,check=False).real
-			dtype = _np.dtype(val)
-			Expt_time[key] = _np.zeros((len(times),),dtype=dtype)
+			dtype = val.dtype #_np.dtype(val)
+			shape = (len(times),) + val.shape
+			Expt_time[key] = _np.zeros(shape,dtype=dtype)
 			Expt_time[key][0] = val
 
 
