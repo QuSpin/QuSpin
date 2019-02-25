@@ -194,7 +194,6 @@ def bitwise_not(x, out=None, where=None):
     return out
 
 
-
 def bitwise_and(x1, x2, out=None, where=None):
     """ Bitwise AND operation `x1 & x2`.
 
@@ -456,7 +455,6 @@ def bitwise_xor(x1, x2, out=None, where=None):
     return out
 
 
-
 def bitwise_left_shift(x1, x2, out=None, where=None):
     """ Bitwise LEFT SHIFT operation `x1 << x2`.
 
@@ -467,7 +465,7 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
     x1 : array-like
         a collection of integers which contain basis states to apply pair-wise LEFT SHIFT on.
     x2 : array-like
-        a collection of integers which contain basis states to apply pair-wise LEFT SHIFT on.   
+        a collection of integers to apply pair-wise LEFT SHIFT of `x1` with.  
     out : array-like, optional
         an array to hold the resulting `x1 << x2` integer.
     where: array_like[bool], optional
@@ -555,7 +553,7 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
     x1 : array-like
         a collection of integers which contain basis states to apply pair-wise RIGHT SHIFT on.
     x2 : array-like
-        a collection of integers which contain basis states to apply pair-wise RIGHT SHIFT on.   
+        a collection of integers to apply pair-wise RIGHT SHIFT of `x1` with.   
     out : array-like, optional
         an array to hold the resulting `x1 >> x2` integer.
     where: array_like[bool], optional
