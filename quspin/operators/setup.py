@@ -1,14 +1,17 @@
 
 def cython_files():
-    import os,glob
+    import os,glob,numpy
     from Cython.Build import cythonize
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
     package_dir = os.path.expandvars(package_dir)
 
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    include_dirs = os.path.join(package_dir,"source")
-    cythonize(cython_src,include_path=[include_dirs])
+
+    include_dirs = [numpy.get_include()]
+    include_dirs.append(os.path.join(package_dir,"_oputils"))
+
+    cythonize(cython_src,include_path=include_dirs)
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
@@ -28,13 +31,17 @@ def configuration(parent_package='', top_path=None):
 
     include_dirs = [numpy.get_include()]
     include_dirs.append(os.path.join(package_dir,"_oputils"))
-    include_dirs.append(os.path.join(package_dir,"..","tools","expm_multiply_parallel_core","source"))
 
-
+    depends =[
+        os.path.join(package_dir,"_oputils","matvec.h"),
+        os.path.join(package_dir,"_oputils","matvecs.h"),
+        os.path.join(package_dir,"_oputils","csrmv_merge.h"),
+    ]
     src = os.path.join(package_dir,"_oputils.cpp") 
     config.add_extension('_oputils',sources=src,include_dirs=include_dirs,
                             extra_compile_args=extra_compile_args,
                             extra_link_args=extra_link_args,
+                            depends=depends,
                             language="c++")
 
     return config
