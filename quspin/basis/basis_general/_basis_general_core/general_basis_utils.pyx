@@ -118,7 +118,7 @@ cdef inline void bitwise_and_op_core(state_type * x1_ptr, state_type * x2_ptr, b
         bitwise_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
 
 
-def bitwise_and(_np.ndarray[::1] x1, _np.ndarray[::1] x2, _np.ndarray[::1] out=None, bool[::1] where=None):
+def bitwise_and(_np.ndarray x1, _np.ndarray x2, _np.ndarray[::1] out=None, bool[::1] where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(x1,0)
     cdef void * x2_ptr = _np.PyArray_GETPTR1(x2,0)
