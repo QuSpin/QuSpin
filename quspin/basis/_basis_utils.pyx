@@ -3,7 +3,7 @@
 # cython imports
 cimport numpy as _np
 cimport cython
-from numpy cimport npy_intp
+from numpy cimport npy_intp,npy_uintp
 from numpy cimport float32_t,float64_t,complex64_t,complex128_t
 from numpy cimport int8_t, int16_t, int32_t, int64_t
 from numpy cimport uint8_t, uint16_t, uint32_t, uint64_t
@@ -40,56 +40,122 @@ ctypedef fused npy_type:
 __all__ = ["basis_int_to_python_int","get_basis_index","shuffle_sites"]
 
 
+cdef extern from "shuffle_sites.h":
+    void shuffle_sites_core[T](const int32_t,const npy_intp,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
+    void shuffle_sites_core_base_2[T](const int32_t,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
+    void shuffle_sites_strid[T](const int32_t,const npy_intp*,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
+
+# @cython.boundscheck(False)
+# def _shuffle_sites_core(npy_intp sps,int32_t[::1] T_tup,npy_type[:,::1] A, npy_type[:,::1] A_T):
+
+#     cdef npy_intp n_row = A.shape[0]
+#     cdef npy_intp n_col = A.shape[1]
+#     cdef int32_t nd = T_tup.size
+#     cdef int32_t * T_tup_ptr = &T_tup[0]
+#     cdef npy_type * A_ptr = &A[0,0]
+#     cdef npy_type * A_T_ptr = &A_T[0,0]
+
+#     if nd > 64:
+#         raise ValueError("can't transpose more than 64 dimensions")
+
+#     with nogil:
+#         if sps > 2:
+#             shuffle_sites_core(nd,sps,T_tup_ptr,n_row,n_col,A_ptr,A_T_ptr)
+#         else:
+#             shuffle_sites_core_base_2(nd,T_tup_ptr,n_row,n_col,A_ptr,A_T_ptr)
+
+
 @cython.boundscheck(False)
-@cython.cdivision(True)
-def _shuffle_sites_core(const npy_intp sps,npy_intp[::1] T_tup,npy_type[:,::1] A, npy_type[:,::1] A_T):
-    cdef npy_intp i_new,i_old,i,j,r
-    cdef npy_intp N_extra_dim = A.shape[0]
-    cdef npy_intp Ns = A.shape[1]
-    cdef npy_intp M = max(T_tup)+1
-    cdef npy_intp nd = T_tup.size
-    cdef npy_intp[::1] sps_pow = sps**(_np.arange(M,dtype=_np.intp)[::-1])
+def _shuffle_sites_core(npy_intp[::1] R_tup,int32_t[::1] T_tup,npy_type[:,::1] A, npy_type[:,::1] A_T):
+
+    cdef npy_intp n_row = A.shape[0]
+    cdef npy_intp n_col = A.shape[1]
+    cdef int32_t nd = T_tup.size
+    cdef int32_t * T_tup_ptr = &T_tup[0]
+    cdef npy_intp * R_tup_ptr = &R_tup[0]
+    cdef npy_type * A_ptr = &A[0,0]
+    cdef npy_type * A_T_ptr = &A_T[0,0]
+
+    if nd > 64:
+        raise ValueError("can't transpose more than 64 dimensions")
 
     with nogil:
-        if sps > 2:
-            for i in range(Ns):
-                j = 0
-                for i_old in range(nd):
-                    i_new = T_tup[i_old]
-                    j += ((i/(sps_pow[i_new])) % sps)*(sps_pow[i_old])
-
-                for r in range(N_extra_dim):
-                    A_T[r,j] = A[r,i]
-
-        else:
-            for i in range(Ns):
-                j = 0
-                for i_old in range(nd):
-                    i_new = T_tup[i_old]
-                    j += ((i>>(M-i_new-1))&1)<<(M-i_old-1)
+        shuffle_sites_strid(nd,R_tup_ptr,T_tup_ptr,n_row,n_col,A_ptr,A_T_ptr)
 
 
-                for r in range(N_extra_dim):
-                    A_T[r,j] = A[r,i]
+
+
+
+
+def _reduce_transpose(T_tup,sps=2):
+    """
+    This function is used to reduce the size of the reshaping and transposing tuples.
+    It does this by finding consecutive sites in T_tup and then grouping those indices together
+    replacing it with a single index which has a range of values given by sps**(num_sites) where
+    'num_sites' is the number of sites within that grouping.
+
+    for example when the subsystem is just a consecutive section starting at site 0, this function suggests that there is no 
+    need to do a transpose returning T_tup: (0,) and R_tup: (2**N,).
+    """
+    T_tup = list(T_tup)
+
+    sub_lists = []
+    while(len(T_tup)>0):
+        n = len(T_tup)
+        sub_list = (T_tup[0],)
+        for i in range(n-1):
+            if T_tup[i]+1 == T_tup[i+1]:
+                sub_list = sub_list + (T_tup[i+1],)
+            else:
+                break
+
+        for s in sub_list:
+            T_tup.remove(s)
+
+        sub_lists.append(sub_list)
+
+    sub_lists_sorted = sorted(sub_lists,key=lambda x:x[0])
+
+    T_tup = []
+    R_tup = []
+    for sub_list in sub_lists_sorted:
+        R_tup.append(sps**len(sub_list))
+
+    for i,sub_list in enumerate(sub_lists):
+        j = sub_lists_sorted.index(sub_list)
+        T_tup.append(j)
+
+    return tuple(T_tup),tuple(R_tup)
+
 
 
 def shuffle_sites(npy_intp sps,T_tup,A):
-    A = _np.asanyarray(A)
-    T_tup = _np.array(T_tup,dtype=_np.intp)
-
-
-    extra_dim = A.shape[:-1]
-    last_dim = A.shape[-1:]
-    new_shape = (-1,)+A.shape[-1:]
-
     A = _np.ascontiguousarray(A)
-    A = _np.reshape(A,new_shape,order="C")
-    A_T = _np.zeros(A.shape,dtype=A.dtype,order="C")
 
-    _shuffle_sites_core(sps,T_tup,A,A_T)
-    A_T = _np.reshape(A_T,extra_dim+last_dim,order="C")
+    T_tup_reduced,R_tup_reduced = _reduce_transpose(T_tup,sps)
 
-    return A_T
+    if len(T_tup_reduced) > 1:
+
+        extra_dim = A.shape[:-1]
+        last_dim = A.shape[-1:]
+        new_shape = (-1,)+A.shape[-1:]
+        A = A.reshape(new_shape,order="C")
+        T_tup = _np.array(T_tup_reduced,dtype=_np.int32)
+        R_tup = _np.array(R_tup_reduced,dtype=_np.intp)
+
+        if len(T_tup_reduced) < 32: # use numpy as it is much faster
+            reshape_tup = A.shape[:1] + tuple(R_tup)
+            A = A.reshape(reshape_tup,order="C")
+            transpose_tup = (0,)+tuple(T_tup+1)
+            A = A.transpose(transpose_tup)
+            A_T = A.reshape(extra_dim+last_dim,order="C")
+        else: # spill into less efficient C++ code
+            A_T = _np.zeros(A.shape,dtype=A.dtype,order="C")
+            _shuffle_sites_core(R_tup,T_tup,A,A_T)
+
+        return A_T
+    else:
+        return A
 
 
 def basis_int_to_python_int(a):
