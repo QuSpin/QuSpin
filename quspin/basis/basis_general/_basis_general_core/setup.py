@@ -46,7 +46,7 @@ def configuration(parent_package='', top_path=None):
           
         if sys.platform == "darwin":
             extra_compile_args.append("-std=c++11")
- 
+    
         package_dir = os.path.dirname(os.path.realpath(__file__))
         package_dir = os.path.expandvars(package_dir)
         depends = glob.glob(os.path.join(package_dir,"source","*.h"))

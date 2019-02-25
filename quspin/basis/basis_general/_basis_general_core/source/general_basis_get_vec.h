@@ -91,7 +91,7 @@ bool get_vec_rep_pcon(general_basis_core<I> *B,
 {
 	bool err = true;
 	if(nt<=0){
-		const npy_intp full = (Ns_full - s - 1)*n_vec;
+		const npy_intp full = binary_search(Ns_full,basis_pcon,s)*n_vec;
 		err = update_out_dense(c,sign,n_vec,in,&out[full]);		
 		return err;
 	}
