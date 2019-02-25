@@ -14,7 +14,37 @@ struct bitwise_and_op : std::binary_function<I,I,I>
 	I inline operator()(I &a, I &b){return a & b;}
 };
 
-// in pyx
+template<class I>
+struct bitwise_or_op : std::binary_function<I,I,I>
+{
+	I inline operator()(I &a, I &b){return a | b;}
+};
+
+template<class I>
+struct bitwise_xor_op : std::binary_function<I,I,I>
+{
+	I inline operator()(I &a, I &b){return a ^ b;}
+};
+
+template<class I>
+struct bitwise_not_op : std::binary_function<I,I,I>
+{
+	I inline operator()(I &a, I &b){return a ~ b;}
+};
+
+template<class I>
+struct bitwise_left_shift_op : std::binary_function<I,I,I>
+{
+	I inline operator()(I &a, I &b){return a << b;}
+};
+
+template<class I>
+struct bitwise_right_shift_op : std::binary_function<I,I,I>
+{
+	I inline operator()(I &a, I &b){return a >> b;}
+};
+
+
 
 
 namespace basis_general {
@@ -37,7 +67,7 @@ void bitwise_op(const I x1[],
 			for(npy_intp i=0;i<Ns;i++){
 
 				if(where[i]){
-					out[i]=x1[i] & x2[i]; # op(x1[i], x2[i])
+					out[i]=x1[i] & x2[i]; // op(x1[i], x2[i])
 				}
 			}
 		}
