@@ -133,12 +133,9 @@ cdef inline object basis_to_python(state_type *ptr):
 
     return python_val
 
-#'''
 cdef extern from "general_basis_bitops.h" namespace "basis_general":
 
     void bitwise_op[I,binary_operator](const I[], const I[], bool[], I[], const npy_intp, binary_operator) nogil
 
     cdef cppclass bitwise_and_op[I]:
-        pass
-
-#'''
+        bitwise_and_op()

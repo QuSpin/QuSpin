@@ -1,6 +1,6 @@
 # cython: language_level=2
 # distutils: language=c++
-from general_basis_core cimport bool,uint32_t,uint64_t,uint256_t,uint1024_t,uint4096_t,uint16384_t,bitwise_op,bitwise_and_op
+from general_basis_core cimport *
 import numpy as _np
 cimport numpy as _np
 from numpy cimport npy_intp
@@ -112,7 +112,12 @@ def get_basis_type(N, Np, sps):
     else:
         raise ValueError("basis is not representable with general_basis integer imeplmentations.")
 
-#'''
+cdef inline void bitwise_and_op_core(state_type * x1_ptr, state_type * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
+    cdef bitwise_and_op[state_type] * op = new bitwise_and_op[state_type]()
+    with nogil:
+        bitwise_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
+
+
 def bitwise_and(_np.ndarray[::1] x1, _np.ndarray[::1] x2, _np.ndarray[::1] out=None, bool[::1] where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(x1,0)
@@ -121,12 +126,11 @@ def bitwise_and(_np.ndarray[::1] x1, _np.ndarray[::1] x2, _np.ndarray[::1] out=N
 
     if x1.shape != x2.shape:
         raise TypeError("expecting same shape for x1 and x2 arrays.")
-    '''
-    if x1.dtype is not state_type:
-        raise TypeError("unsupported dtype for variable x1. Expecting array of unsigned integer.")
-    if x2.dtype is not state_type:
-        raise TypeError("unsupported dtype for variable x2. Expecting array of unsigned integer.")
-    '''
+    
+    if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
+        raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
+    if x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
+        raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
 
     if out is None:
         out = _np.zeros(x1.shape,dtype=x1.dtype,order="C")
@@ -134,8 +138,8 @@ def bitwise_and(_np.ndarray[::1] x1, _np.ndarray[::1] x2, _np.ndarray[::1] out=N
         if out.shape!=x1.shape:
             raise TypeError("expecting same shape for out and x1 arrays.")
 
-        #if out.dtype is not state_type:
-        #    raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
+        if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
+           raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     out_ptr = _np.PyArray_GETPTR1(out,0)
 
@@ -143,27 +147,19 @@ def bitwise_and(_np.ndarray[::1] x1, _np.ndarray[::1] x2, _np.ndarray[::1] out=N
         where_ptr = &where[0]
 
     if x1.dtype == uint32:
-        with nogil:
-            bitwise_op(<uint32_t*>x1_ptr, <uint32_t*>x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns, bitwise_op->bitwise_op[uint32_t,bitwise_and_op[uint32_t]]  ) #bitwise_and_op[uint32_t]()
-    '''
+        bitwise_and_op_core(<uint32_t*>x1_ptr, <uint32_t*>x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
     elif x1.dtype == uint64:
-        with nogil:
-            bitwise_op(<uint64_t*>x1_ptr, <uint64_t*>x2_ptr, where_ptr, <uint64_t*>out_ptr, Ns, bitwise_and_op[uint64]() )
+        bitwise_and_op_core(<uint64_t*>x1_ptr, <uint64_t*>x2_ptr, where_ptr, <uint64_t*>out_ptr, Ns )
     elif x1.dtype == uint256:
-        with nogil:
-            bitwise_op(<uint256_t*>x1_ptr, <uint256_t*>x2_ptr, where_ptr, <uint256_t*>out_ptr, Ns, bitwise_and_op[uint256]() )
+        bitwise_and_op_core(<uint256_t*>x1_ptr, <uint256_t*>x2_ptr, where_ptr, <uint256_t*>out_ptr, Ns )
     elif x1.dtype == uint1024:
-        with nogil:
-            bitwise_op(<uint1024_t*>x1_ptr, <uint1024_t*>x2_ptr, where_ptr, <uint1024_t*>out_ptr, Ns, bitwise_and_op[uint1024]() )
+        bitwise_and_op_core(<uint1024_t*>x1_ptr, <uint1024_t*>x2_ptr, where_ptr, <uint1024_t*>out_ptr, Ns )
     elif x1.dtype == uint4096:
-        with nogil:
-            bitwise_op(<uint4096_t*>x1_ptr, <uint4096_t*>x2_ptr, where_ptr, <uint4096_t*>out_ptr, Ns, bitwise_and_op[uint4096]() )
+        bitwise_and_op_core(<uint4096_t*>x1_ptr, <uint4096_t*>x2_ptr, where_ptr, <uint4096_t*>out_ptr, Ns )
     elif x1.dtype == uint16384:
-        with nogil:
-            bitwise_op(<uint16384_t*>x1_ptr, <uint16384_t*>x2_ptr, where_ptr, <uint16384_t*>out_ptr, Ns, bitwise_and_op[uint16384]() )    
+        bitwise_and_op_core(<uint16384_t*>x1_ptr, <uint16384_t*>x2_ptr, where_ptr, <uint16384_t*>out_ptr, Ns )    
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
-    '''
     
     return out
-#'''
+
