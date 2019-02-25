@@ -138,5 +138,7 @@ cdef extern from "general_basis_bitops.h" namespace "basis_general":
 
     void bitwise_op[I,binary_operator](const I[], const I[], bool[], I[], const npy_intp, binary_operator) nogil
 
-    I bitwise_and_op[I](I, I) nogil
+    cdef cppclass bitwise_and_op[I]:
+        pass
+
 #'''

@@ -67,7 +67,7 @@ void bitwise_op(const I x1[],
 			for(npy_intp i=0;i<Ns;i++){
 
 				if(where[i]){
-					out[i]=x1[i] & x2[i]; // op(x1[i], x2[i])
+					out[i]=op(x1[i],x2[i]);  
 				}
 			}
 		}
@@ -80,7 +80,7 @@ void bitwise_op(const I x1[],
 			#pragma omp parallel for schedule(static,chunk)
 			for(npy_intp i=0;i<Ns;i++){
 
-				out[i]=x1[i] & x2[i];
+				out[i]=op(x1[i],x2[i]);  
 			}
 		}
 	}
