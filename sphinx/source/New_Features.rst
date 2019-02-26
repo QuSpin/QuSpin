@@ -19,7 +19,7 @@ Improved Functionality
 * improved OpenMP features in the `*_general_basis` classes.
 * new example scripts: (i) use of some new `*_basis_general` methods, (ii) use of OpenMP and QuSpin's parallel features.
 * faster implementation of spin-1/2 and hard-core bosons in the general basis classes. 
-* more memory efficient versions of matrix-vector/matrix products implemented for both `hamiltonian` and `quantum_operator` classes.
+* more memory efficient versions of matrix-vector/matrix products implemented for both `hamiltonian` and `quantum_operator` classes. Allows using OpenMP in the `hamiltonian.evolve()` function method.
 * refactored code for `*_general_basis` classes.
 
 New Attributes, Functions, Methods and Classes
