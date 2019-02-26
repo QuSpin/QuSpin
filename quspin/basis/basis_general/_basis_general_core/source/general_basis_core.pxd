@@ -137,20 +137,17 @@ cdef extern from "general_basis_bitops.h" namespace "basis_general":
 
     void bitwise_op[I,binary_operator](const I[], const I[], bool[], I[], const npy_intp, binary_operator) nogil
     void bitwise_shift_op[I,J,binary_operator](const I[], const J[], bool[], I[], const npy_intp, binary_operator) nogil
+
     void bitwise_not_op_core[I](const I[], bool[], I[], const npy_intp) nogil
 
     cdef cppclass bitwise_and_op[I]:
         bitwise_and_op()
-
     cdef cppclass bitwise_or_op[I]:
         bitwise_or_op()
-
     cdef cppclass bitwise_xor_op[I]:
         bitwise_xor_op()
-
     cdef cppclass bitwise_left_shift_op[I,J]:
         bitwise_left_shift_op()
-
     cdef cppclass bitwise_right_shift_op[I,J]:
         bitwise_right_shift_op()
 
@@ -159,8 +156,7 @@ cdef inline void bitwise_and_op_core(state_type * x1_ptr, state_type * x2_ptr, b
     cdef bitwise_and_op[state_type] * op = new bitwise_and_op[state_type]()
     with nogil:
         bitwise_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
-
-
+        
 cdef inline void bitwise_or_op_core(state_type * x1_ptr, state_type * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
     cdef bitwise_or_op[state_type] * op = new bitwise_or_op[state_type]()
     with nogil:

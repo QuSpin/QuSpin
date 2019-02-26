@@ -130,7 +130,7 @@ def bitwise_not(x, out=None, where=None):
     out : array-like, optional
         an array to hold the resulting `~x` integer.
     where: array_like[bool], optional
-        an array of booleans (mask) to define which elements of `x`` to apply the bitwise NOT operation on.
+        an array of booleans (mask) to define which elements of `x` to apply the bitwise NOT operation on.
 
     Returns
     -------
@@ -142,22 +142,25 @@ def bitwise_not(x, out=None, where=None):
 
     >>> basis=spin_basis_general(4) # 16 states Hilbert space
     >>> x=basis.states[:8]
-    >>> not_x1=bitwise_not(x)
+    >>> not_x=bitwise_not(x)
     >>> print(not_x)
 
     """
-    cdef _np.ndarray[bool] py_array_where = _np.asarray(where)
+    cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x=_np.asarray(x)
     cdef _np.ndarray py_array_x = _np.asarray(x,order='C')
  
-
     cdef npy_intp Ns = x.shape[0]
     cdef void * x_ptr = _np.PyArray_GETPTR1(py_array_x,0)
-    cdef bool * where_ptr = NULL
     
-   
+    cdef bool * where_ptr = NULL
+    if where is not None:
+        py_array_where = _np.asarray(where,dtype=_np.uint8)
+        where_ptr =<bool*> &py_array_where[0]   
+
+    
     if x.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
 
@@ -171,11 +174,9 @@ def bitwise_not(x, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
-    out_ptr = _np.PyArray_GETPTR1(out,0)
+    out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
-    if where is not None:
-        where_ptr = &py_array_where[0] #_np.PyArray_GETPTR1(where,0)
-
+   
     if x.dtype == uint32:
         bitwise_not_op_core(<uint32_t*>x_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
     elif x.dtype == uint64:
@@ -191,7 +192,7 @@ def bitwise_not(x, out=None, where=None):
     else:
         raise TypeError("basis dtype {} not recognized.".format(x.dtype))
     
-    return out
+    return py_array_out
 
 
 def bitwise_and(x1, x2, out=None, where=None):
@@ -225,7 +226,7 @@ def bitwise_and(x1, x2, out=None, where=None):
     >>> print(x1_and_x2)
 
     """
-    cdef _np.ndarray[bool] py_array_where = _np.asarray(where)
+    cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
@@ -237,7 +238,11 @@ def bitwise_and(x1, x2, out=None, where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
     cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
+    
     cdef bool * where_ptr = NULL
+    if where is not None:
+        py_array_where = _np.asarray(where,dtype=_np.uint8)
+        where_ptr =<bool*> &py_array_where[0] 
     
 
     if x1.shape != x2.shape:
@@ -258,10 +263,7 @@ def bitwise_and(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
-    out_ptr = _np.PyArray_GETPTR1(out,0)
-
-    if where is not None:
-        where_ptr = &py_array_where[0] #_np.PyArray_GETPTR1(where,0)
+    out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
         bitwise_and_op_core(<uint32_t*>x1_ptr, <uint32_t*>x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
@@ -278,7 +280,7 @@ def bitwise_and(x1, x2, out=None, where=None):
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
-    return out
+    return py_array_out
 
 
 def bitwise_or(x1, x2, out=None, where=None):
@@ -312,7 +314,7 @@ def bitwise_or(x1, x2, out=None, where=None):
     >>> print(x1_or_x2)
 
     """
-    cdef _np.ndarray[bool] py_array_where = _np.asarray(where)
+    cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
@@ -324,7 +326,11 @@ def bitwise_or(x1, x2, out=None, where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
     cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
+    
     cdef bool * where_ptr = NULL
+    if where is not None:
+        py_array_where = _np.asarray(where,dtype=_np.uint8)
+        where_ptr =<bool*> &py_array_where[0] 
     
 
     if x1.shape != x2.shape:
@@ -345,10 +351,7 @@ def bitwise_or(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
-    out_ptr = _np.PyArray_GETPTR1(out,0)
-
-    if where is not None:
-        where_ptr = &py_array_where[0] #_np.PyArray_GETPTR1(where,0)
+    out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
         bitwise_or_op_core(<uint32_t*>x1_ptr, <uint32_t*>x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
@@ -365,7 +368,7 @@ def bitwise_or(x1, x2, out=None, where=None):
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
-    return out
+    return py_array_out
 
 
 def bitwise_xor(x1, x2, out=None, where=None):
@@ -399,7 +402,7 @@ def bitwise_xor(x1, x2, out=None, where=None):
     >>> print(x1_xor_x2)
 
     """
-    cdef _np.ndarray[bool] py_array_where = _np.asarray(where)
+    cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
@@ -411,7 +414,11 @@ def bitwise_xor(x1, x2, out=None, where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
     cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
+    
     cdef bool * where_ptr = NULL
+    if where is not None:
+        py_array_where = _np.asarray(where,dtype=_np.uint8)
+        where_ptr =<bool*> &py_array_where[0] 
     
 
     if x1.shape != x2.shape:
@@ -432,10 +439,7 @@ def bitwise_xor(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
-    out_ptr = _np.PyArray_GETPTR1(out,0)
-
-    if where is not None:
-        where_ptr = &py_array_where[0] #_np.PyArray_GETPTR1(where,0)
+    out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
         bitwise_xor_op_core(<uint32_t*>x1_ptr, <uint32_t*>x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
@@ -452,7 +456,7 @@ def bitwise_xor(x1, x2, out=None, where=None):
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
-    return out
+    return py_array_out
 
 
 def bitwise_left_shift(x1, x2, out=None, where=None):
@@ -486,7 +490,7 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
     >>> print(x1_leftshift_x2)
 
     """
-    cdef _np.ndarray[bool] py_array_where = _np.asarray(where)
+    cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
@@ -498,7 +502,11 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
     cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
+    
     cdef bool * where_ptr = NULL
+    if where is not None:
+        py_array_where = _np.asarray(where,dtype=_np.uint8)
+        where_ptr =<bool*> &py_array_where[0] 
     
 
     if x1.shape != x2.shape:
@@ -519,10 +527,7 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
-    out_ptr = _np.PyArray_GETPTR1(out,0)
-
-    if where is not None:
-        where_ptr = &py_array_where[0] #_np.PyArray_GETPTR1(where,0)
+    out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
         bitwise_left_shift_op_core(<uint32_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
@@ -539,8 +544,7 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
-    return out
-
+    return py_array_out
 
 
 def bitwise_right_shift(x1, x2, out=None, where=None):
@@ -574,7 +578,7 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
     >>> print(x1_rightshift_x2)
 
     """
-    cdef _np.ndarray[bool] py_array_where = _np.asarray(where)
+    cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
@@ -586,7 +590,11 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
     cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
+    
     cdef bool * where_ptr = NULL
+    if where is not None:
+        py_array_where = _np.asarray(where,dtype=_np.uint8)
+        where_ptr =<bool*> &py_array_where[0] 
     
 
     if x1.shape != x2.shape:
@@ -607,10 +615,7 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
-    out_ptr = _np.PyArray_GETPTR1(out,0)
-
-    if where is not None:
-        where_ptr = &py_array_where[0] #_np.PyArray_GETPTR1(where,0)
+    out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
         bitwise_right_shift_op_core(<uint32_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
@@ -627,5 +632,5 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
-    return out
+    return py_array_out
 
