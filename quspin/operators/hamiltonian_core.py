@@ -485,7 +485,7 @@ class hamiltonian(object):
 						self._dynamic[func] = sparse_constuctor(self._dynamic[func])
 					except KeyError:
 						raise ValueError("({},{}) is not found in dynamic list.".format(f,f_args))
-					
+
 		self._Ns = self._shape[0]
 
 	@property
@@ -1900,7 +1900,7 @@ class hamiltonian(object):
 
 		return trace
 	
-	def astype(self,dtype):
+	def astype(self,dtype,copy=False):
 		"""Changes data type of `hamiltonian` object.
 
 		Parameters
@@ -1926,7 +1926,10 @@ class hamiltonian(object):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
 		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
-		return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype)
+		if dtype == self._dtype:
+			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=copy)
+		else:
+			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=True)
 
 	def copy(self,deep=False):
 		"""Returns a deep or shallow copy of `hamiltonian` object."""
@@ -2277,8 +2280,8 @@ class hamiltonian(object):
 	##########################
 
 	def _add_hamiltonian(self,other): 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		new._is_dense = new._is_dense or other._is_dense
 
@@ -2354,8 +2357,8 @@ class hamiltonian(object):
 		return self.copy()
 
 	def _sub_hamiltonian(self,other):
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		new._is_dense = new._is_dense or other._is_dense
 
@@ -2558,8 +2561,8 @@ class hamiltonian(object):
 
 	def _add_sparse(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		try:
 			new._static += other
@@ -2597,8 +2600,8 @@ class hamiltonian(object):
 
 	def _sub_sparse(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		try:
 			new._static -= other
@@ -2636,8 +2639,8 @@ class hamiltonian(object):
 
 	def _mul_sparse(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		new._static = new._static * other
 
@@ -2669,9 +2672,9 @@ class hamiltonian(object):
 		# Auxellery function to calculate the right-side multipication with another sparse matrix.
 
 		# find resultant type from product
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 		# create a copy of the hamiltonian object with the previous dtype
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		# proform multiplication on all matricies of the new hamiltonian object.
 
@@ -2734,7 +2737,7 @@ class hamiltonian(object):
 
 	def _mul_scalar(self,other):
 		dtype = _np.result_type(self._dtype, other)
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 
 		new=self.copy()
@@ -2798,12 +2801,12 @@ class hamiltonian(object):
 
 	def _add_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2841,12 +2844,12 @@ class hamiltonian(object):
 
 	def _sub_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 
 		if not self._is_dense:
@@ -2885,12 +2888,12 @@ class hamiltonian(object):
 
 	def _mul_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2913,12 +2916,12 @@ class hamiltonian(object):
 
 	def _rmul_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		if not self._is_dense:
 			self._is_dense = True
