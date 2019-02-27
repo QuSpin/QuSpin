@@ -6,7 +6,7 @@ sys.path.insert(0,qspin_path)
 
 import numpy as np
 from quspin.basis import spin_basis_general, spin_basis_1d, basis_int_to_python_int
-from quspin.basis import bitwise_not,bitwise_and,bitwise_or,bitwise_xor,bitwise_left_shift,bitwise_right_shift
+from quspin.basis import bitwise_not,bitwise_and,bitwise_or,bitwise_xor,bitwise_leftshift,bitwise_rightshift
 
 
 # test doc example
@@ -68,7 +68,7 @@ def run_funcs(x1,x2,b):
 
 
 	# test shifts
-	funcs=[(np.left_shift,bitwise_left_shift),(np.right_shift,bitwise_right_shift)]
+	funcs=[(np.left_shift,bitwise_leftshift),(np.right_shift,bitwise_rightshift)]
 	for numpy_func, quspin_func in funcs:
 		out,where=initiate(x1)
 		y1_np=numpy_func(x1,b)
@@ -108,7 +108,7 @@ def run_funcs_large_ints(x1,x2,b,z1,z2,d):
 
 
 	# test shifts
-	funcs=[(np.left_shift,bitwise_left_shift),(np.right_shift,bitwise_right_shift)]
+	funcs=[(np.left_shift,bitwise_leftshift),(np.right_shift,bitwise_rightshift)]
 	for numpy_func, quspin_func in funcs:
 		out,where=initiate(x1)
 		out_py,where_py=initiate(z1)

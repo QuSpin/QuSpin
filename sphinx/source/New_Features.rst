@@ -21,6 +21,7 @@ Improved Functionality
 * faster implementation of spin-1/2 and hard-core bosons in the general basis classes. 
 * more memory efficient versions of matrix-vector/matrix products implemented for both `hamiltonian` and `quantum_operator` classes. Allows using OpenMP in the `hamiltonian.evolve()` function method.
 * refactored code for `*_general_basis` classes.
+* large integer support for `*_general_basis` classes allows to build lattices with more than 64 sites. 
 
 New Attributes, Functions, Methods and Classes
 +++++
