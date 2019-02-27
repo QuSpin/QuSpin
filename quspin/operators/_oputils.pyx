@@ -271,42 +271,94 @@ def _dia_matvecs(bool overwrite_y, indtype[::1] offsets ,T1[:,::1] diags, T1 a, 
       dia_matvecs(overwrite_y,nr,nc,nv,nd,L,&offsets[0],&diags[0,0],a,xsr,xsc,&Xx[0,0],ysr,ysc,&Yx[0,0])
 
 
-def matvec(mat_obj,other,overwrite_out=False,out=None,a=1.0):
-  result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
 
+
+
+
+
+
+
+def csr_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   if out is None:
     overwrite_out = True
+    result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
     out = _np.zeros(mat_obj.shape[:1]+other.shape[1:],dtype=result_dtype,order="C")
 
-  if _sp.isspmatrix_csr(mat_obj):
-    if other.ndim == 1:
-      _csr_matvec(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
-    else:
-      _csr_matvecs(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
-   
-  elif _sp.isspmatrix_csc(mat_obj):
-    if other.ndim == 1:
-      _csc_matvec(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
-    else:
-      _csc_matvecs(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
-
-  elif _sp.isspmatrix_dia(mat_obj):
-    if other.ndim == 1:
-      _dia_matvec(overwrite_out,mat_obj.offsets,mat_obj.data,a,other,out)
-    else:
-      _dia_matvecs(overwrite_out,mat_obj.offsets,mat_obj.data,a,other,out)
-
+  if other.ndim == 1:
+    _csr_matvec(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
   else:
-    inter_res = mat_obj.dot(other)
-
-    if overwrite_out:
-      _np.multiply(a,inter_res,out=out)
-    else:
-      try:
-        inter_res *= a
-        out += inter_res
-      except TypeError:
-        out += a * inter_res
+    _csr_matvecs(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
 
   return out
 
+
+
+
+def csc_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+  if out is None:
+    overwrite_out = True
+    result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
+    out = _np.zeros(mat_obj.shape[:1]+other.shape[1:],dtype=result_dtype,order="C")
+
+  if other.ndim == 1:
+    _csc_matvec(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
+  else:
+    _csc_matvecs(overwrite_out,mat_obj.indptr,mat_obj.indices,mat_obj.data,a,other,out)
+
+  return out
+
+
+def dia_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+  if out is None:
+    overwrite_out = True
+    result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
+    out = _np.zeros(mat_obj.shape[:1]+other.shape[1:],dtype=result_dtype,order="C")
+
+  if other.ndim == 1:
+    _dia_matvec(overwrite_out,mat_obj.offsets,mat_obj.data,a,other,out)
+  else:
+    _dia_matvecs(overwrite_out,mat_obj.offsets,mat_obj.data,a,other,out)
+
+  return out
+
+
+def other_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+  if out is None:
+    overwrite_out = True
+    result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
+    out = _np.zeros(mat_obj.shape[:1]+other.shape[1:],dtype=result_dtype,order="C")
+
+  inter_res = mat_obj.dot(other)
+
+  if overwrite_out:
+    _np.multiply(a,inter_res,out=out)
+  else:
+    try:
+      inter_res *= a
+      out += inter_res
+    except TypeError:
+      out += a * inter_res
+
+  return out
+
+
+def matvec(mat_obj,*args,**kwargs):
+  if _sp.isspmatrix_csr(mat_obj):
+    return csr_dot(mat_obj,*args,**kwargs)
+  elif _sp.isspmatrix_csc(mat_obj):
+    return csc_dot(mat_obj,*args,**kwargs)
+  elif _sp.isspmatrix_dia(mat_obj):
+    return dia_dot(mat_obj,*args,**kwargs)
+  else:
+    return other_dot(mat_obj,*args,**kwargs)
+
+
+def _get_matvec_function(mat_obj):
+  if _sp.isspmatrix_csr(mat_obj):
+    return csr_dot
+  elif _sp.isspmatrix_csc(mat_obj):
+    return csc_dot
+  elif _sp.isspmatrix_dia(mat_obj):
+    return dia_dot
+  else:
+    return other_dot

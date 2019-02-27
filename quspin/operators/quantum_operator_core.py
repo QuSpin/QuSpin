@@ -3,7 +3,7 @@ from __future__ import print_function, division, absolute_import
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-from ._oputils import matvec as _matvec
+from ._oputils import _get_matvec_function, matvec as _matvec
 from ._make_hamiltonian import make_static
 
 from . import hamiltonian_core
@@ -95,12 +95,13 @@ class quantum_operator(object):
 		other_dict = {}
 		self._quantum_operator = {}
 		if isinstance(input_dict,dict):
-			for key,op in input_dict.items():
+			for key,op in iteritems(input_dict):
 				if type(key) is not str:
 					raise ValueError("keys to input_dict must be strings.")
 					
 				if type(op) not in [list,tuple]:
 					raise ValueError("input_dict must contain values which are lists/tuples.")
+
 				opstr_list = []
 				other_list = []
 				for ele in op:
@@ -113,8 +114,6 @@ class quantum_operator(object):
 					opstr_dict[key] = opstr_list
 				if other_list:
 					other_dict[key] = other_list
-		elif isinstance(input_dict,quantum_operator):
-			other_dict = {key:[value] for key,value in input_dict._quantum_operator_dict.items()} 
 		else:
 			raise ValueError("input_dict must be dictionary or another quantum_operator quantum_operators")
 			
@@ -270,17 +269,12 @@ class quantum_operator(object):
 
 		self._Ns = self._shape[0]
 
-		for key in self._quantum_operator.keys():
-			if key in op_fmts:
-				fmt = op_fmts[key]
-				if fmt not in ["dia","csr","csc"]:
-					raise TypeError("sparse formats must be either 'csr','csc' or 'dia'.")
+		self.update_op_fmts(op_fmts)
 
-				sparse_constuctor = getattr(_sp,fmt+"_matrix")
-				O = self._quantum_operator[key]
-				if _sp.issparse(O):
-					self._quantum_operator[key] = sparse_constuctor(O)
-
+	@property
+	def get_operators(self,key):
+		return self._quantum_operator[key]
+	
 
 	@property
 	def basis(self):
@@ -478,11 +472,9 @@ class quantum_operator(object):
 			if out is not None:
 				try:
 					if out.dtype != result_dtype:
-						raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+						raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
 					if out.shape != V.shape:
-						raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-					if not out.flags["CARRAY"]:
-						raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+						raise ValueError("'out' must be array with correct dtype and dimensions for output array.")
 				except AttributeError:
 					raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 
@@ -491,9 +483,12 @@ class quantum_operator(object):
 			else:
 				out = _np.zeros_like(V,dtype=result_dtype)
 
-
+			eps = _np.finfo(self.dtype).eps
+			V = _np.asarray(V,dtype=result_dtype)
 			for key,J in pars.items():
-				_matvec(self._quantum_operator[key],V,overwrite_out=False,a=J,out=out)
+				if _np.abs(J)>eps:
+					self._matvec_functions[key](self._quantum_operator[key],V,overwrite_out=False,a=J,out=out)
+
 
 		return out
 
@@ -1040,6 +1035,36 @@ class quantum_operator(object):
 
 		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
 
+	def update_op_fmts(self,op_fmts):
+		"""
+
+		"""
+		if type(op_fmts) is not dict:
+			raise ValueError("op_fmts must be a dictionary with the formats of the matrices being values and keys being the operator keys.")
+
+		extra = set(op_fmts.keys()) - set(self._quantum_operator.keys())
+		if extra:
+			raise ValueError("unexpected couplings: {}".format(extra))
+
+		for key in self._quantum_operator.keys():
+			if key in op_fmts:
+				fmt = op_fmts[key]
+				if fmt not in ["dia","csr","csc","dense"]:
+					raise TypeError("sparse formats must be either 'csr','csc', 'dia' or 'dense'.")
+
+				if fmt == "dense":
+					O = self._quantum_operator[key]
+					try:
+						self._quantum_operator[key] = O.toarray()
+					except AttributeError:
+						self._quantum_operator[key] = _np.ascontiguousarray(O)
+				else:
+					sparse_constuctor = getattr(_sp,fmt+"_matrix")
+					O = self._quantum_operator[key]
+					if _sp.issparse(O):
+						self._quantum_operator[key] = sparse_constuctor(O)	
+
+		self._update_matvecs()	
 
 	### algebra operations
 
@@ -1061,10 +1086,13 @@ class quantum_operator(object):
 		>>> H_tran = H.transpose()
 
 		"""
-		new_dict = {key:op.transpose() for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=copy)
+		if copy:
+			new_dict = {key:[op.transpose().copy()] for key,op in iteritems(self._quantum_operator)}
+		else:
+			new_dict = {key:[op.transpose()] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=False)
 
-	def conjugate(self):
+	def conjugate(self,copy=False):
 		"""Conjugates `quantum_operator` quantum_operator.
 
 		Notes
@@ -1082,7 +1110,11 @@ class quantum_operator(object):
 		>>> H_conj = H.conj()
 
 		"""
-		new_dict = {key:op.conjugate() for key,op in iteritems(self._quantum_operator)}
+		if copy:
+			new_dict = {key:[op.conjugate().copy()] for key,op in iteritems(self._quantum_operator)}
+		else:
+			new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
+
 		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=False)
 
 	def conj(self):
@@ -1151,7 +1183,7 @@ class quantum_operator(object):
 		"""
 		pars = self._check_scalar_pars(pars)
 		diag = _np.zeros(self.Ns,dtype=self._dtype)
-		for key,value in iteritems(self._quantum_operator_dict):
+		for key,value in iteritems(self._quantum_operator):
 			diag += pars[key] * value.diagonal()
 		return diag
 
@@ -1177,14 +1209,14 @@ class quantum_operator(object):
 		"""
 		pars = self._check_scalar_pars(pars)
 		tr = 0.0
-		for key,value in iteritems(self._quantum_operator_dict):
+		for key,value in iteritems(self._quantum_operator):
 			try:
 				tr += pars[key] * value.trace()
 			except AttributeError:
 				tr += pars[key] * value.diagonal().sum()
 		return tr
 
-	def astype(self,dtype):
+	def astype(self,dtype,copy=False):
 		""" Changes data type of `quantum_operator` object.
 
 		Parameters
@@ -1204,14 +1236,17 @@ class quantum_operator(object):
 		if dtype not in hamiltonian_core.supported_dtypes:
 			raise ValueError("quantum_operator can only be cast to floating point types")
 
-		if dtype == self._dtype:
-			return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=dtype,copy=False)
-		else:
-			return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=dtype,copy=True)
+		new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
 
-	def copy(self,deep=False):
+		if dtype == self._dtype:
+			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,copy=copy)
+		else:
+			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,copy=True)
+
+	def copy(self,deep=True):
 		"""Returns a deep copy of `quantum_operator` object."""
-		return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=self._dtype,copy=deep)
+		new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=deep)
 
 
 	def __call__(self,**pars):
@@ -1228,10 +1263,12 @@ class quantum_operator(object):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,quantum_operator):
 			for key,value in iteritems(other._quantum_operator_dict):
-				if key in self._quantum_operator_dict:
-					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] + value
+				if key in self._quantum_operator:
+					self._quantum_operator[key] = self._quantum_operator[key] + value
 				else:
-					self._quantum_operator_dict[key] = value
+					self._quantum_operator[key] = value
+
+			self._update_matvecs()
 			return self
 		elif other == 0:
 			return self
@@ -1239,21 +1276,21 @@ class quantum_operator(object):
 			return NotImplemented
 
 	def __add__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new += other
 		return new
-
-
 
 	def __isub__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,quantum_operator):
 			for key,values in iteritems(other._quantum_operator_dict):
-				if key in self._quantum_operator_dict:
-					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] - value
+				if key in self._quantum_operator:
+					self._quantum_operator[key] = self._quantum_operator[key] - value
 				else:
-					self._quantum_operator_dict[key] = -value
+					self._quantum_operator[key] = -value
+
+			self._update_matvecs()
 			return self
 		elif other == 0:
 			return self
@@ -1261,38 +1298,43 @@ class quantum_operator(object):
 			return NotImplemented
 
 	def __sub__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new -= other
 		return new		
 
 	def __imul__(self,other):
-		if not _np.isscalar(other):
+		if isinstance(other,quantum_operator):
+			return NotImplemented
+		elif not _np.isscalar(other):
 			return NotImplemented
 		else:
-			for op in itervalues(self._quantum_operator_dict):
+			for op in itervalues(self._quantum_operator):
 				op *= other
 
+			self._update_matvecs()
 			return self
 
 	def __mul__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new *= other
 		return new
 
 	def __idiv__(self,other):
-		if not _np.isscalar(other):
+		if isinstance(other,quantum_operator):
+			return NotImplemented
+		elif not _np.isscalar(other):
 			return NotImplemented
 		else:
-			for op in itervalues(self._quantum_operator_dict):
+			for op in itervalues(self._quantum_operator):
 				op /= other
-
+			self._update_matvecs()
 			return self
 
 	def __div__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new /= other
 		return new
 
@@ -1322,7 +1364,6 @@ class quantum_operator(object):
 				if J.ndim > 0:
 					raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
-
 		return pars
 
 	def _check_scalar_pars(self,pars):
@@ -1334,15 +1375,9 @@ class quantum_operator(object):
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
-
-		missing = set(self._quantum_operator.keys()) - set(pars.keys())
+		missing =  set(self._quantum_operator.keys()) - set(pars.keys())
 		for key in missing:
-			pars[key] = _np.array(1,dtype=_np.int32)
-
-		for J in pars.values():
-			J = _np.array(J)				
-			if J.ndim > 0:
-				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
+			pars[key] = 1.0
 
 		return pars
 
@@ -1359,6 +1394,11 @@ class quantum_operator(object):
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 				raise ValueError('cannot cast types')	
 
+	def _update_matvecs(self):
+		self._matvec_functions = {}
+
+		for key in self._quantum_operator.keys():
+			self._matvec_functions[key] = _get_matvec_function(self._quantum_operator[key])
 
 def isquantum_operator(obj):
 	"""Checks if instance is object of `quantum_operator` class.

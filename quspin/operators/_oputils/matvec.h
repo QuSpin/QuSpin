@@ -243,11 +243,11 @@ void csr_matvec_strided(const bool overwrite_y,
                 const I Aj[],
                 const T1 Ax[],
                 const T1 a,
-                const npy_intp x_stride.
+                const npy_intp x_stride,
                 const T2 x[],
                       I rco[],
                       T2 vco[],
-                const npy_intp y_stride.
+                const npy_intp y_stride,
                       T2 y[])
 {
     const T2 a_cast = a;

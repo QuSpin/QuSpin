@@ -62,6 +62,7 @@ functions
    coherent_state
    photon_Hspace_dim
 
+=====================
 large integer support
 =====================
 
@@ -96,6 +97,8 @@ Utilities to use large integers
    :toctree: generated/
   
    get_basis_type
+   python_int_to_basis_int
+   basis_int_to_python_int
    bitwise_not
    bitwise_and
    bitwise_or
