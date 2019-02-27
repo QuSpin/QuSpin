@@ -8,7 +8,7 @@
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
 
-
+namespace basis_general {
 
 template<class I>
 class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
@@ -36,14 +36,14 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 
 
 		void inline split_state(const I s,I &s_left,I &s_right){
-			s_right = ((~(I)0) >> I(bit_info<I>::bits-N_sys))&s;
+			s_right = ((~(I)0) >> (bit_info<I>::bits-N_sys))&s;
 			s_left = (s >> N_sys);
 		}
 
 		void inline get_right_min_max(const I s,I &min,I &max){
 			int n = bit_count(s,N_sys);
 			if(n){
-				min = (~(I)0) >> I(bit_info<I>::bits-n);
+				min = (~(I)0) >> (bit_info<I>::bits-n);
 				max = min << (N_sys - n);
 			}
 			else{
@@ -58,7 +58,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 		I inline next_state_pcon_side(const I s){
 			if(s==0){return s;}
 			I t = (s | (s - 1)) + 1;
-			return t | ((((t & -t) / (s & -s)) >> 1) - 1);
+			return t | ((((t & (0-t)) / (s & (0-s))) >> 1) - 1);
 		}
 
 		I next_state_pcon(const I s){
@@ -82,7 +82,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 		}
 };
 
-
+}
 
 
 

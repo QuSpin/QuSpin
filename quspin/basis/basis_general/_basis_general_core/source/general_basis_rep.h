@@ -9,6 +9,7 @@
 #include "misc.h"
 #include "openmp.h"
 
+namespace basis_general {
 
 template<class I,class J>
 int general_normalization(general_basis_core<I> *B,
@@ -32,7 +33,7 @@ int general_normalization(general_basis_core<I> *B,
 			
 			// checks if data type is large enough
 			if(!check_nan(norm) && int_norm>0 ){
-				if( int_norm > std::numeric_limits<J>::max() ){err = 1;}
+				if( (npy_uintp)int_norm > std::numeric_limits<J>::max() ){err = 1;}
 
 				n[i] = (J)norm;
 			}
@@ -112,6 +113,6 @@ void general_representative(general_basis_core<I> *B,
 	}
 }
 
-
+}
 
 #endif

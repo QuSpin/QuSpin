@@ -15,7 +15,7 @@
 
 
 
-
+namespace basis_general {
 
 template<class I,class J>
 npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
@@ -90,19 +90,24 @@ struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
 	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return a.first < b.first;}
 };
 
+
+
 template<class I,class J>
 npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
-	npy_intp index = 0;
+
 	bool insuff_mem = false;
 	std::vector<std::pair<I,J> > master_block(mem_MAX);
-	std::pair<I,J> * master_block_data = &master_block[0];;
+	std::vector<npy_intp> master_pos(omp_get_max_threads()+1);
+	std::pair<I,J> * master_block_data = &master_block[0];
+	npy_intp * master_pos_data = &master_pos[0];
 
-	#pragma omp parallel firstprivate(MAX) shared(master_block_data,index,Ns,insuff_mem)
+
+	#pragma omp parallel firstprivate(MAX) shared(master_block_data,master_pos_data,Ns,insuff_mem)
 	{
 		const int nthread = omp_get_num_threads();
 		const int threadn = omp_get_thread_num();
-		std::vector<std::pair<I,J> > thread_block;
+		std::vector<std::pair<I,J> > thread_block(0);
 		const npy_intp block_size = 1.1*mem_MAX/nthread;
 		thread_block.reserve(block_size);
 
@@ -129,14 +134,41 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 
 		}
 
+
+
 		if(!insuff_mem){
-			#pragma omp critical
+
+			master_pos_data[threadn+1] = thread_block.size(); // get sizes for each thread block into shared memory
+
+			#pragma omp barrier // wait for all threads to finish searching.
+
+			#pragma omp single // calculate the cumulative sum to get data paritions of master_block
 			{
-				const npy_intp Ns_block = thread_block.size();
-				for(npy_intp j=0;j<Ns_block;j++){
-					master_block_data[index] = thread_block[j];
-					index++;
+				for(int i=0;i<nthread;i++){
+					master_pos_data[i+1] += master_pos_data[i];
 				}
+			}
+
+			// load data into master block in parallel
+			const npy_intp start = master_pos_data[threadn];
+			const npy_intp end = master_pos_data[threadn+1];
+			npy_intp i = 0;
+
+			for(npy_intp j=start;j<end;j++){
+				master_block_data[j] = thread_block[i++];
+			}
+
+			#pragma omp barrier
+
+			#pragma omp single
+			{
+				std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+			}
+
+			#pragma omp for schedule(static)
+			for(npy_intp i=0;i<Ns;i++){
+				basis[i] = master_block_data[i].first;
+				n[i] = master_block_data[i].second;
 			}
 		}
 	}
@@ -145,12 +177,12 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 		return -1;
 	}
 	else{
-		master_block.resize(Ns);
-		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
-		for(npy_intp i=0;i<Ns;i++){
-			basis[i] = master_block[i].first;
-			n[i] = master_block[i].second;
-		}
+		// master_block.resize(Ns);
+		// std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
+		// for(npy_intp i=0;i<Ns;i++){
+		// 	basis[i] = master_block[i].first;
+		// 	n[i] = master_block[i].second;
+		// }
 		return Ns;
 	}
 }
@@ -158,17 +190,20 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 template<class I,class J>
 npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I s,I basis[],J n[]){
 	npy_intp Ns = 0;
-	npy_intp index = 0;
+
 	bool insuff_mem = false;
 	std::vector<std::pair<I,J> > master_block(mem_MAX);
+	std::vector<npy_intp> master_pos(omp_get_max_threads()+1);
 	std::pair<I,J> * master_block_data = &master_block[0];
+	npy_intp * master_pos_data = &master_pos[0];
 
-	#pragma omp parallel firstprivate(MAX,s) shared(master_block_data,index,Ns,insuff_mem)
+
+	#pragma omp parallel firstprivate(MAX,s) shared(master_block_data,master_pos_data,Ns,insuff_mem)
 	{
 		
 		const int nthread = omp_get_num_threads();
 		const int threadn = omp_get_thread_num();
-		std::vector<std::pair<I,J> > thread_block; // local array to store values found by each thread. this reduces the number of critical sections. 
+		std::vector<std::pair<I,J> > thread_block(0); // local array to store values found by each thread. this reduces the number of critical sections. 
 		const npy_intp block_size = 1.1*mem_MAX/nthread;
 		thread_block.reserve(block_size); // preallocate memory for each block so that it does not have to expand during search. 
 		
@@ -195,13 +230,36 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 		}
 
 		if(!insuff_mem){
-			#pragma omp critical
+			master_pos_data[threadn+1] = thread_block.size();
+
+			#pragma omp barrier
+
+			#pragma omp single
 			{
-				const npy_intp Ns_block = thread_block.size();
-				for(npy_intp j=0;j<Ns_block;j++){
-					master_block_data[index] = thread_block[j];
-					index++;
+				for(int i=0;i<nthread;i++){
+					master_pos_data[i+1] += master_pos_data[i];
 				}
+			}
+
+			const npy_intp start = master_pos_data[threadn];
+			const npy_intp end = master_pos_data[threadn+1];
+			npy_intp i = 0;
+
+			for(npy_intp j=start;j<end;j++){
+				master_block_data[j] = thread_block[i++];
+			}
+
+			#pragma omp barrier
+
+			#pragma omp single
+			{
+				std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+			}
+
+			#pragma omp for schedule(static)
+			for(npy_intp i=0;i<Ns;i++){
+				basis[i] = master_block_data[i].first;
+				n[i] = master_block_data[i].second;
 			}
 		}
 	}
@@ -211,12 +269,12 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 	}
 	else{
 		// sort list based on basis and then fill ndarray values with the sorted list. 
-		master_block.resize(Ns);
-		std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
-		for(npy_intp i=0;i<Ns;i++){
-			basis[i] = master_block[i].first;
-			n[i] = master_block[i].second;
-		}
+		// master_block.resize(Ns);
+		// std::sort(master_block.begin(),master_block.end(), compare_pair<I,J>());
+		// for(npy_intp i=0;i<Ns;i++){
+		// 	basis[i] = master_block[i].first;
+		// 	n[i] = master_block[i].second;
+		// }
 		return Ns;
 	}
 }
@@ -262,6 +320,6 @@ npy_intp inline make_basis_pcon_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,np
 	return make_basis_pcon(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I)s,(I*)basis,n);
 }
 
-
+}
 
 #endif

@@ -11,7 +11,7 @@
 #include "openmp.h"
 
 
-
+namespace basis_general {
 
 template<class T>
 int inline check_imag(std::complex<double> m,std::complex<T> *M){
@@ -444,6 +444,6 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 }
 
 
-
+}
 
 #endif

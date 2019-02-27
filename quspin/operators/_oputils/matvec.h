@@ -3,8 +3,8 @@
 
 #include <complex>
 #include <algorithm>
-#include <iostream>
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
 #if defined(_OPENMP)
 #include "csrmv_merge.h"

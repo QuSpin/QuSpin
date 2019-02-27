@@ -1,6 +1,6 @@
-from ._basis_general_core import higher_spin_basis_core_wrap
+from ._basis_general_core import higher_spin_basis_core_wrap,get_basis_type,basis_zeros
 from .base_general import basis_general
-from .boson import H_dim,get_basis_type
+from .boson import H_dim
 import numpy as _np
 from scipy.misc import comb
 
@@ -8,7 +8,7 @@ from scipy.misc import comb
 
 # general basis for higher spin representations
 class higher_spin_basis_general(basis_general):
-	def __init__(self,N,Nup=None,sps=None,Ns_block_est=None,_Np=None,_make_basis=True,**kwargs):
+	def __init__(self,N,sps,Nup=None,Ns_block_est=None,_Np=None,_make_basis=True,**kwargs):
 		basis_general.__init__(self,N,**kwargs)
 		self._check_pcon = False
 		self._count_particles = False
@@ -26,11 +26,8 @@ class higher_spin_basis_general(basis_general):
 			else:
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
-		if Nup is None and sps is None:
-			raise ValueError("must specify number of boons or sps")
-
-		if Nup is not None and sps is None:
-			sps = Nup+1
+		if sps is None:
+			raise ValueError("sps required for higher_spin_core")
 
 		if Nup is None:
 			Ns = sps**N
@@ -62,9 +59,7 @@ class higher_spin_basis_general(basis_general):
 
 				Ns = Ns_block_est
 
-		if self._basis_dtype not in [_np.uint32,_np.uint64]:
-			raise ValueError("basis type is not representable with uint32 or uint64.")
-
+		self._basis_dtype = get_basis_type(N,Nup,sps)
 		self._core = higher_spin_basis_core_wrap(self._basis_dtype,N,sps,self._maps,self._pers,self._qs)
 
 		self._N = N
@@ -77,8 +72,8 @@ class higher_spin_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=basis_type)
-			self._n=_np.zeros(self._Ns,dtype=basis_type)
+			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 		self._sps=sps
 		self._allowed_ops=set(["I","z","+","-"])

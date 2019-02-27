@@ -1,5 +1,6 @@
 from ._basis_general_core import spinful_fermion_basis_core_wrap
 from ._basis_general_core import spinless_fermion_basis_core_wrap
+from ._basis_general_core import get_basis_type,basis_zeros
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -143,13 +144,7 @@ class spinless_fermion_basis_general(basis_general):
 					
 				Ns = Ns_block_est
 
-		if N<=32:
-			self._basis_dtype=_np.uint32
-		elif N<=64:
-			self._basis_dtype=_np.uint64
-		else:
-			raise ValueError("basis type is not representable with uint32 or uint64.")
-
+		self._basis_dtype = get_basis_type(N,None,2)
 		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 		
 		self._sps = 2
@@ -163,8 +158,8 @@ class spinless_fermion_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
-			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 
 		self._operators = ("availible operators for ferion_basis_1d:"+
@@ -470,13 +465,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 										
 				Ns = Ns_block_est
 
-		if N<=16:
-			self._basis_dtype=_np.uint32
-		elif N<=32:
-			self._basis_dtype=_np.uint64
-		else:
-			raise ValueError("basis type is not representable with uint32 or uint64.")
-
+		self._basis_dtype = get_basis_type(2*N,None,2)
 		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 
 		self._sps = 2
@@ -489,8 +478,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=_np.zeros(self._Ns,dtype=self._basis_dtype)
-			self._n=_np.zeros(self._Ns,dtype=self._basis_dtype)
+			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
+			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 		self._operators = ("availible operators for ferion_basis_1d:"+
 							"\n\tI: identity "+

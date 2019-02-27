@@ -9,7 +9,7 @@
 #define no_index int(-1)
 
 
-
+namespace basis_general {
 
 template<typename I>
 struct tr_bfly{
@@ -90,7 +90,7 @@ void invert_perm(const ta_index<I> &src, ta_index<I> &tgt) {
   }
 
 template<typename I>
-I bit_permute_step(I x, I m, I shift) {
+I bit_permute_step(I x, I m, int shift) {
 // INLINE
 // Can be replaced by bit_permute_step_simple,
 // if for the relevant bits n the following holds:
@@ -198,7 +198,7 @@ void gen_benes_ex(tr_benes<I>* self, const ta_index<I> &c_tgt, const ta_subword<
     stage = a_stage[stage_idx];
     src_set = 0;
     src_idx = 0;
-    mask = lo_bit << stage;
+    mask = ((int)lo_bit) << stage;
     cfg_src = 0;
     cfg_tgt = 0;
     for (main_idx = 0; main_idx <= bit_info<I>::bits-1; ++main_idx) {  // This order to meet Waksman test
@@ -281,7 +281,7 @@ void gen_benes(tr_benes<I>* self, const ta_index<I> &c_tgt) {
 // Generate a configuration for the standard Benes network.
   ta_subword<I> a_stage_bwd;
   for(unsigned int i=0;i < bit_info<I>::ld_bits;++i){
-  	a_stage_bwd[i] = bit_info<I>::ld_bits - i - 1;
+    a_stage_bwd[i] = bit_info<I>::ld_bits - i - 1;
   }
   gen_benes_ex(self,c_tgt,a_stage_bwd);  // standard Benes order
   }
@@ -301,5 +301,5 @@ I benes_bwd(const tr_benes<I>* self, I x) {
 
   return ibfly(&self->b1, bfly(&self->b2,x));
   }
-
+}
 #endif

@@ -2,6 +2,7 @@ from .base import basis,MAXPRINT
 from ._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
 from ._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
 from ._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
+from ._basis_utils import basis_int_to_python_int,_get_basis_index
 import numpy as _np
 import scipy.sparse as _sp
 from numpy.linalg import norm,eigvalsh,svd
@@ -55,17 +56,15 @@ class lattice_basis(basis):
 		>>> print(s_str)
 
 		"""
-
-		if int(state)!=state:
-			raise ValueError("state must be integer")
+		state = basis_int_to_python_int(state)
 
 		n_space = len(str(self.sps))
 		if self.N <= 64:
-			bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
+			bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
 			s_str = " ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits)
 		else:
-			left_bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
-			right_bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
+			left_bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
+			right_bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
 
 			str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
 			str_list.append("...")
@@ -103,7 +102,7 @@ class lattice_basis(basis):
 
 		"""
 		
-		return self._basis[self.index(state)]
+		return basis_int_to_python_int(self._basis[self.index(state)])
 
 	def index(self,s):
 		"""Finds the index of user-defined Fock state in any lattice basis.
@@ -133,19 +132,10 @@ class lattice_basis(basis):
 		>>> psi[i0] = 1.0 # define state corresponding to the string "111000"
 
 		"""
-		if int(s)==s:
-			pass
-		elif type(s) is str:
+		if type(s) is str:
 			s = int(s,self.sps)
-		else:
-			raise ValueError("s must be integer or string")
 
-		indx = _np.argwhere(self._basis == s)
-
-		if len(indx) != 0:
-			return _np.squeeze(indx)
-		else:
-			raise ValueError("s must be representive state in basis. ")
+		return _get_basis_index(self.states,s)
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
@@ -568,25 +558,6 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
-
-		'''
-		def get_state(b):
-			n_space = len(str(self.sps))
-			if self.N <= 64:
-				bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
-				state = "|"+(" ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits))+">"
-			else:
-				left_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
-				right_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
-
-				str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
-				str_list.append("...")
-				str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
-				state = "|"+(" ".join(str_list))+">"
-
-			return state
-		'''
-
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2

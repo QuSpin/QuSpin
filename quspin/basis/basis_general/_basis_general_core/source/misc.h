@@ -3,6 +3,8 @@
 
 #include "numpy/ndarraytypes.h"
 
+namespace basis_general {
+
 template<class K,class I>
 K binary_search(const K N,const I A[],const I s){
 	K b,bmin,bmax;
@@ -36,6 +38,7 @@ bool inline check_nan(double val){
 #endif
 }
 
+}
 
 
 
