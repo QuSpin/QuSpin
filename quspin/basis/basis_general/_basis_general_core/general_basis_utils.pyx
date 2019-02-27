@@ -459,7 +459,7 @@ def bitwise_xor(x1, x2, out=None, where=None):
     return py_array_out
 
 
-def bitwise_left_shift(x1, x2, out=None, where=None):
+def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
     """ Bitwise LEFT SHIFT operation `x1 << x2`.
 
     Performs pair-wise bitwise OR operation on pairs of basis states in integer representation.
@@ -494,14 +494,13 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
-    x2=_np.asarray(x2)
+    #x2=_np.asarray(x2)
     cdef _np.ndarray py_array_x1 = _np.asarray(x1,order='C')
-    cdef _np.ndarray py_array_x2 = _np.asarray(x2,order='C')
+    #cdef _np.ndarray py_array_x2 = _np.asarray(x2,order='C')
 
 
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
-    cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
     
     cdef bool * where_ptr = NULL
     if where is not None:
@@ -509,13 +508,13 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
         where_ptr =<bool*> &py_array_where[0] 
     
 
-    if x1.shape != x2.shape:
-        raise TypeError("expecting same shape for x1 and x2 arrays.")
+    #if x1.shape != x2.shape:
+    #    raise TypeError("expecting same shape for x1 and x2 arrays.")
     
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("x1 dtype must be one of the possible dtypes used as the representatives for the general basis class.")
-    if not _np.issubdtype(x2.dtype, _np.unsignedinteger): #x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
-        raise TypeError("x2 dtype must be unsigned integer.")
+    #if not _np.issubdtype(x2.dtype, _np.unsignedinteger): #x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
+    #    raise TypeError("x2 dtype must be unsigned integer.")
 
     if out is None:
         out = _np.zeros(x1.shape,dtype=x1.dtype,order="C")
@@ -530,24 +529,24 @@ def bitwise_left_shift(x1, x2, out=None, where=None):
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
-        bitwise_left_shift_op_core(<uint32_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
+        bitwise_left_shift_op_core(<uint32_t*>x1_ptr, &x2[0], where_ptr, <uint32_t*>out_ptr, Ns)
     elif x1.dtype == uint64:
-        bitwise_left_shift_op_core(<uint64_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint64_t*>out_ptr, Ns )
+        bitwise_left_shift_op_core(<uint64_t*>x1_ptr, &x2[0], where_ptr, <uint64_t*>out_ptr, Ns )
     elif x1.dtype == uint256:
-        bitwise_left_shift_op_core(<uint256_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint256_t*>out_ptr, Ns )
+        bitwise_left_shift_op_core(<uint256_t*>x1_ptr, &x2[0], where_ptr, <uint256_t*>out_ptr, Ns )
     elif x1.dtype == uint1024:
-        bitwise_left_shift_op_core(<uint1024_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint1024_t*>out_ptr, Ns )
+        bitwise_left_shift_op_core(<uint1024_t*>x1_ptr, &x2[0], where_ptr, <uint1024_t*>out_ptr, Ns )
     elif x1.dtype == uint4096:
-        bitwise_left_shift_op_core(<uint4096_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint4096_t*>out_ptr, Ns )
+        bitwise_left_shift_op_core(<uint4096_t*>x1_ptr, &x2[0], where_ptr, <uint4096_t*>out_ptr, Ns )
     elif x1.dtype == uint16384:
-        bitwise_left_shift_op_core(<uint16384_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint16384_t*>out_ptr, Ns )    
+        bitwise_left_shift_op_core(<uint16384_t*>x1_ptr, &x2[0], where_ptr, <uint16384_t*>out_ptr, Ns )    
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
     return py_array_out
 
 
-def bitwise_right_shift(x1, x2, out=None, where=None):
+def bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
     """ Bitwise RIGHT SHIFT operation `x1 >> x2`.
 
     Performs pair-wise bitwise OR operation on pairs of basis states in integer representation.
@@ -582,14 +581,13 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
-    x2=_np.asarray(x2)
+    #x2=_np.asarray(x2)
     cdef _np.ndarray py_array_x1 = _np.asarray(x1,order='C')
-    cdef _np.ndarray py_array_x2 = _np.asarray(x2,order='C')
+    #cdef _np.ndarray py_array_x2 = _np.asarray(x2,order='C')
 
 
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
-    cdef void * x2_ptr = _np.PyArray_GETPTR1(py_array_x2,0)
     
     cdef bool * where_ptr = NULL
     if where is not None:
@@ -597,13 +595,13 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
         where_ptr =<bool*> &py_array_where[0] 
     
 
-    if x1.shape != x2.shape:
-        raise TypeError("expecting same shape for x1 and x2 arrays.")
+    #if x1.shape != x2.shape:
+    #    raise TypeError("expecting same shape for x1 and x2 arrays.")
     
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("x1 dtype must be one of the possible dtypes used as the representatives for the general basis class.")
-    if not _np.issubdtype(x2.dtype, _np.unsignedinteger): #x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
-        raise TypeError("x2 dtype must be unsigned integer.")
+    #if not _np.issubdtype(x2.dtype, _np.unsignedinteger): #x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
+    #    raise TypeError("x2 dtype must be unsigned integer.")
 
     if out is None:
         out = _np.zeros(x1.shape,dtype=x1.dtype,order="C")
@@ -618,17 +616,17 @@ def bitwise_right_shift(x1, x2, out=None, where=None):
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
-        bitwise_right_shift_op_core(<uint32_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint32_t*>out_ptr, Ns)
+        bitwise_right_shift_op_core(<uint32_t*>x1_ptr, &x2[0], where_ptr, <uint32_t*>out_ptr, Ns)
     elif x1.dtype == uint64:
-        bitwise_right_shift_op_core(<uint64_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint64_t*>out_ptr, Ns )
+        bitwise_right_shift_op_core(<uint64_t*>x1_ptr, &x2[0], where_ptr, <uint64_t*>out_ptr, Ns )
     elif x1.dtype == uint256:
-        bitwise_right_shift_op_core(<uint256_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint256_t*>out_ptr, Ns )
+        bitwise_right_shift_op_core(<uint256_t*>x1_ptr, &x2[0], where_ptr, <uint256_t*>out_ptr, Ns )
     elif x1.dtype == uint1024:
-        bitwise_right_shift_op_core(<uint1024_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint1024_t*>out_ptr, Ns )
+        bitwise_right_shift_op_core(<uint1024_t*>x1_ptr, &x2[0], where_ptr, <uint1024_t*>out_ptr, Ns )
     elif x1.dtype == uint4096:
-        bitwise_right_shift_op_core(<uint4096_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint4096_t*>out_ptr, Ns )
+        bitwise_right_shift_op_core(<uint4096_t*>x1_ptr, &x2[0], where_ptr, <uint4096_t*>out_ptr, Ns )
     elif x1.dtype == uint16384:
-        bitwise_right_shift_op_core(<uint16384_t*>x1_ptr, <unsigned long int *> x2_ptr, where_ptr, <uint16384_t*>out_ptr, Ns )    
+        bitwise_right_shift_op_core(<uint16384_t*>x1_ptr, &x2[0], where_ptr, <uint16384_t*>out_ptr, Ns )    
     else:
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     

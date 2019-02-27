@@ -96,6 +96,12 @@ ctypedef fused norm_type:
     uint32_t
     uint64_t
 
+ctypedef fused shift_type:
+    uint8_t
+    uint16_t
+    uint32_t
+    uint64_t
+
 ctypedef fused npy_uint:
     uint32_t
     uint64_t    
@@ -156,7 +162,7 @@ cdef inline void bitwise_and_op_core(state_type * x1_ptr, state_type * x2_ptr, b
     cdef bitwise_and_op[state_type] * op = new bitwise_and_op[state_type]()
     with nogil:
         bitwise_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
-        
+
 cdef inline void bitwise_or_op_core(state_type * x1_ptr, state_type * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
     cdef bitwise_or_op[state_type] * op = new bitwise_or_op[state_type]()
     with nogil:
@@ -169,12 +175,14 @@ cdef inline void bitwise_xor_op_core(state_type * x1_ptr, state_type * x2_ptr, b
 
 
 
-cdef inline void bitwise_left_shift_op_core(state_type * x1_ptr, unsigned long int * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
-    cdef bitwise_left_shift_op[state_type, unsigned long int] * op = new bitwise_left_shift_op[state_type, unsigned long int]()
+cdef inline void bitwise_left_shift_op_core(state_type * x1_ptr, shift_type * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
+    cdef bitwise_left_shift_op[state_type, shift_type] * op = new bitwise_left_shift_op[state_type, shift_type]()
     with nogil:
         bitwise_shift_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
 
-cdef inline void bitwise_right_shift_op_core(state_type * x1_ptr, unsigned long int * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
-    cdef bitwise_right_shift_op[state_type, unsigned long int] * op = new bitwise_right_shift_op[state_type, unsigned long int]()
+cdef inline void bitwise_right_shift_op_core(state_type * x1_ptr, shift_type * x2_ptr, bool * where_ptr, state_type * out_ptr, npy_intp Ns):
+    cdef bitwise_right_shift_op[state_type, shift_type] * op = new bitwise_right_shift_op[state_type, shift_type]()
     with nogil:
         bitwise_shift_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
+
+

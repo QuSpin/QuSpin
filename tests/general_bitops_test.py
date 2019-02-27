@@ -5,7 +5,7 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 import numpy as np
-from quspin.basis import spin_basis_general
+from quspin.basis import spin_basis_general, spin_basis_1d
 from quspin.basis import bitwise_not,bitwise_and,bitwise_or,bitwise_xor,bitwise_left_shift,bitwise_right_shift
 
 def test(y1,y2):
@@ -16,15 +16,7 @@ def initiate(x1):
 	out=np.zeros_like(x1)
 	return out,where
 
-
-for N in [4,6,8]:
-
-	basis=spin_basis_general(N)
-	x1=basis.states[:2**(N-1)]
-	x2=basis.states[2**(N-1):]
-	b=1*np.ones(x1.shape,dtype=np.uint32) # shift by b bits
-
-
+def run_funcs(x1,x2,b):
 	# test NOT
 	out,where=initiate(x1)
 	y1_np=np.invert(x1)
@@ -62,4 +54,20 @@ for N in [4,6,8]:
 		test(y1,out)
 
 
-	print("passed bitwise_ops test for N={0:d}".format(N))
+for N,L in [(4,1000),(6,2000),(8,4000)]:
+
+	# test general basis dtypes
+	basis=spin_basis_general(N)
+	x1=basis.states[:2**(N-1)]
+	x2=basis.states[2**(N-1):]
+	b=1*np.ones(x1.shape,dtype=np.uint32) # shift by b bits
+	run_funcs(x1,x2,b)
+
+	# test basis 1d dtypes
+	basis=spin_basis_1d(L,Nup=1)
+	x1=basis.states[:2**(N-1)]
+	x2=basis.states[2**(N-1):]
+	b=2*np.ones(x1.shape,dtype=np.uint32) # shift by b bits
+	run_funcs(x1,x2,b)
+
+	print("passed general bitwise_ops test for N={0:d}".format(N))
