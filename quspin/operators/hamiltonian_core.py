@@ -2674,7 +2674,7 @@ class hamiltonian(object):
 	#####################
 
 	def _mul_scalar(self,other):
-		dtype = _np.result_type(self._dtype, other)
+		result_dtype = _np.result_type(self._dtype, other)
 		new=self.astype(result_dtype,copy=True)
 
 		try:

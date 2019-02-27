@@ -159,8 +159,8 @@ def get_basis_type(N, Np, sps):
     try:
         Np = max(list(Np))
     except TypeError: 
-        if Np is not None:
-            raise ValueError("Np must be None, an integer, or list of integers")
+        if Np is not None and type(Np) is not int:
+            raise ValueError("{} is not None, an integer, or list of integers".format(Np))
 
     if Np is not None and (Np > N*(sps-1)):
         raise ValueError("{} particle(s) will not fit into system size {} with sps={}".format(Np,N,sps))

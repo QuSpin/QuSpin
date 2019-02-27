@@ -57,8 +57,7 @@ void dia_matvec_contig(const bool overwrite_y,
     const int nthread = omp_get_num_threads();
 
     if(overwrite_y){
-        const I chunk = n_row/nthread;
-        #pragma omp for schedule(static,chunk)
+        #pragma omp for schedule(static)
         for(I n=0;n<n_row;n++){
             y[n] = 0; 
         }
@@ -72,12 +71,11 @@ void dia_matvec_contig(const bool overwrite_y,
         const I j_end   = std::min<I>(std::min<I>(n_row + k, n_col),L);
 
         const I N = j_end - j_start;  //number of elements to process
-        const I chunk = N/nthread;
         const T1 * diag = diags + i*L + j_start;
         const T2 * x_row = x + j_start;
               T2 * y_row = y + i_start;
 
-        #pragma omp for schedule(static,chunk)
+        #pragma omp for schedule(static)
         for(I n=0;n<N;n++){
             y_row[n] += (T2)(a * diag[n]) * x_row[n]; 
         }
@@ -99,11 +97,8 @@ void dia_matvec_strided(const bool overwrite_y,
                       T2 y[])
 {
 
-    const int nthread = omp_get_num_threads();
-
     if(overwrite_y){
-        const I chunk = n_row/nthread;
-        #pragma omp for schedule(static,chunk)
+        #pragma omp for schedule(static)
         for(I n=0;n<n_row;n++){
             y[n * y_stride] = 0; 
         }
@@ -117,12 +112,11 @@ void dia_matvec_strided(const bool overwrite_y,
         const I j_end   = std::min<I>(std::min<I>(n_row + k, n_col),L);
 
         const I N = j_end - j_start;  //number of elements to process
-        const I chunk = N/nthread;
         const T1 * diag = diags + i*L + j_start;
         const T2 * x_row = x + j_start * x_stride;
               T2 * y_row = y + i_start * y_stride;
 
-        #pragma omp for schedule(static,chunk)
+        #pragma omp for schedule(static)
         for(I n=0;n<N;n++){
             y_row[n * y_stride] += (T2)(a * diag[n]) * x_row[n * x_stride]; 
         }
@@ -145,7 +139,7 @@ void csc_matvec_contig(const bool overwrite_y,
     const int nthread = omp_get_num_threads();
     const I chunk = std::max((I)1,n_row/(100*nthread));
     if(overwrite_y){
-        #pragma omp for schedule(static,chunk)
+        #pragma omp for schedule(static)
         for(I j = 0; j < n_row; j++){
             y[j] = 0;
         }
@@ -181,7 +175,7 @@ void csc_matvec_strided(const bool overwrite_y,
     const int nthread = omp_get_num_threads();
     const I chunk = std::max((I)1,n_row/(100*nthread));
     if(overwrite_y){
-        #pragma omp for schedule(static,chunk)
+        #pragma omp for schedule(static)
         for(I j = 0; j < n_row; j++){
             y[j * y_stride] = 0;
         }
@@ -434,7 +428,7 @@ void csr_matvec(const bool overwrite_y,
                         const npy_intp y_stride,
                               T2 y[])
 {
-    if(y_stride == 1 && y_stride == x_stride){
+    if(y_stride == 1 && x_stride == 1){
         csr_matvec_contig(overwrite_y,n,Ap,Aj,Ax,a,x,rco,vco,y);    
     }
     else{
@@ -457,7 +451,7 @@ void dia_matvec(const bool overwrite_y,
                 const npy_intp y_stride,
                       T2 y[])
 {
-    if(y_stride == 1 && y_stride == x_stride){
+    if(y_stride == 1 && x_stride == 1){
         dia_matvec_contig(overwrite_y,n_row,n_col,n_diags,L,offsets,diags,a,x,y);
     }
     else{
@@ -480,7 +474,7 @@ void csc_matvec(const bool overwrite_y,
                 const npy_intp y_stride,
                       T2 y[])
 {
-    if(y_stride == 1 && y_stride == x_stride){
+    if(y_stride == 1 && x_stride == 1){
         csc_matvec_contig(overwrite_y,n_row,n_col,Ap,Ai,Ax,a,x,y);
     }
     else{
