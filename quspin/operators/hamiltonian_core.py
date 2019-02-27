@@ -1379,7 +1379,7 @@ class hamiltonian(object):
 		Currently the following three built-in routines are supported (see parameter `eom`):
 			i) real-time Schroedinger equation: :math:`\\partial_t|v(t)\\rangle=-iH(t)|v(t)\\rangle`.
 			ii) imaginary-time Schroedinger equation: :math:`\\partial_t|v(t)\\rangle=-H(t)|v(t)\\rangle`.
-			iii) Liouvillian dynamics: :math:`\\partial_t\\rho(t)=[H,\\rho(t)]`.
+			iii) Liouvillian dynamics: :math:`\\partial_t\\rho(t)=-i[H,\\rho(t)]`.
 
 		Notes
 		-----
