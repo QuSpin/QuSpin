@@ -1,3 +1,4 @@
+# cython: embedsignature=True
 # cython: language_level=2
 # distutils: language=c++
 # cython imports
@@ -138,7 +139,7 @@ def _shuffle_sites(npy_intp sps,T_tup,A):
 
 
 def basis_int_to_python_int(basis_int):
-    """ convert QuSpin basis type integer to a python integer.
+    """ Converts QuSpin basis type integer to a python integer.
 
     This function takes a QuSpin basis type integer and converts it to a python integer with the same value. 
 
@@ -189,7 +190,7 @@ def basis_int_to_python_int(basis_int):
 
 
 def python_int_to_basis_int(python_int,dtype=None):
-    """ convert python integer to QuSpin basis type.
+    """ Converts python integer to QuSpin basis type.
 
     This function takes a python integer and converts it to a basis type either specified by the user via the `dtype` argument or the minium type which will
     fit that integer. 

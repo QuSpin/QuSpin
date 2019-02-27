@@ -1,3 +1,4 @@
+# cython: embedsignature=True
 # cython: language_level=2
 # distutils: language=c++
 from general_basis_core cimport *
@@ -17,7 +18,7 @@ uint16384 = _np.dtype((_np.void,sizeof(uint16384_t)))
 
 
 def basis_zeros(shape,dtype=uint32):
-    """ allocate initialized array using the QuSpin basis integers.
+    """ Allocates initialized array using the QuSpin basis integers.
 
     QuSpin uses non-standard numpy datatypes which wrap boost multiprecision integers. 
     This function creates an array of integers which are properly initialized to 0. 
@@ -73,7 +74,7 @@ def basis_zeros(shape,dtype=uint32):
 
 
 def basis_ones(shape,dtype=uint32):
-    """ allocate initialized array using the QuSpin basis integers.
+    """ Allocates initialized array using the QuSpin basis integers.
 
     QuSpin uses non-standard numpy datatypes which wrap boost multiprecision integers. 
     This function creates an array of integers which are properly initialized to 1. 
@@ -129,7 +130,7 @@ def basis_ones(shape,dtype=uint32):
 
 
 def get_basis_type(N, Np, sps):
-    """ return minimum dtype to represent manybody state. 
+    """ Returns minimum dtype to represent manybody state. 
 
     Given the system size, number of particles and states per site this function calculates the minimum type required to represent those states.
 
@@ -662,13 +663,15 @@ def bitwise_xor(x1, x2, out=None, where=None):
     return py_array_out
 
 
-def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
+
+
+def bitwise_leftshift(x1, x2, out=None, where=None):
     """ Bitwise LEFT SHIFT operation `x1 << x2`.
 
     Performs pair-wise bitwise OR operation on pairs of basis states in integer representation.
 
     Parameters
-    -----------
+    ----------
     x1 : array-like
         a collection of integers which contain basis states to apply pair-wise LEFT SHIFT on.
     x2 : array-like
@@ -691,7 +694,7 @@ def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
     >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
     >>> x1=[basis.states[0]] # large integer stored as a byte
     >>> x2=[basis.states[1]] # large integer stored as a byte
-    >>> x1_leftshift_x2=bitwise_left_shift(x1,x2)
+    >>> x1_leftshift_x2=bitwise_leftshift(x1,x2)
     >>> print('x1 integer stored as a byte:') 
     >>> print(x1)
     >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
@@ -701,6 +704,55 @@ def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
     >>> print(basis_int_to_python_int(x1_leftshift_x2))
 
     """
+
+    return _bitwise_left_shift(x1, x2, out=out, where=where)
+
+
+def bitwise_rightshift(x1, x2, out=None, where=None):
+    """ Bitwise RIGHT SHIFT operation `x1 >> x2`.
+
+    Performs pair-wise bitwise OR operation on pairs of basis states in integer representation.
+
+    Parameters
+    ----------
+    x1 : array-like
+        a collection of integers which contain basis states to apply pair-wise RIGHT SHIFT on.
+    x2 : array-like
+        a collection of integers to apply pair-wise RIGHT SHIFT of `x1` with.   
+    out : array-like, optional
+        an array to hold the resulting `x1 >> x2` integer.
+    where: array_like[bool], optional
+        an array of booleans (mask) to define which pairs of elements of `(x1,x2)` to apply the bitwise RIGHT SHIFT operation on.
+
+    Returns
+    -------
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
+
+    Examples
+    --------
+
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x1=[basis.states[0]] # large integer stored as a byte
+    >>> x2=[basis.states[1]] # large integer stored as a byte
+    >>> x1_rightshift_x2=bitwise_rightshift(x1,x2)
+    >>> print('x1 integer stored as a byte:') 
+    >>> print(x1)
+    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
+    >>> print('x1 integer in integer form:')
+    >>> print(x1_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(x1_rightshift_x2)) 
+
+    """
+
+    return _bitwise_right_shift(x1, x2, out=out, where=where)
+
+
+def _bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
+    
     cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
@@ -770,48 +822,11 @@ def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
     return py_array_out
 
 
-def bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
-    """ Bitwise RIGHT SHIFT operation `x1 >> x2`.
-
-    Performs pair-wise bitwise OR operation on pairs of basis states in integer representation.
-
-    Parameters
-    -----------
-    x1 : array-like
-        a collection of integers which contain basis states to apply pair-wise RIGHT SHIFT on.
-    x2 : array-like
-        a collection of integers to apply pair-wise RIGHT SHIFT of `x1` with.   
-    out : array-like, optional
-        an array to hold the resulting `x1 >> x2` integer.
-    where: array_like[bool], optional
-        an array of booleans (mask) to define which pairs of elements of `(x1,x2)` to apply the bitwise RIGHT SHIFT operation on.
-
-    Returns
-    -------
-    numpy.ndarray
-        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
-
-    Examples
-    --------
-
-    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
-    >>> N=100 # sites
-    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
-    >>> x1=[basis.states[0]] # large integer stored as a byte
-    >>> x2=[basis.states[1]] # large integer stored as a byte
-    >>> x1_rightshift_x2=bitwise_right_shift(x1,x2)
-    >>> print('x1 integer stored as a byte:') 
-    >>> print(x1)
-    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
-    >>> print('x1 integer in integer form:')
-    >>> print(x1_int)
-    >>> print('result in integer form:')
-    >>> print(basis_int_to_python_int(x1_rightshift_x2))
-
-    """
+def _bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
+    
     cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
-    
+   
     x1=_np.asarray(x1)
     cdef _np.ndarray py_array_x1 = _np.asarray(x1,order='C')
 

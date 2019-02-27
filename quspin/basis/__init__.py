@@ -62,12 +62,13 @@ functions
    coherent_state
    photon_Hspace_dim
 
-=====================
-large integer support
-=====================
 
-QuSpin defined dtype
+large integer support for general basis classes
 --------------------
+
+
+a) custom large integer data types supported in general basis
+++++++
 
 .. autosummary::
    :toctree: generated/
@@ -77,8 +78,8 @@ QuSpin defined dtype
    uint4096
    uint16384
 
-Array initialization routines
------------------------------
+b) array initialization routines
++++++++++++++++++++
 
 .. autosummary::
    :toctree: generated/
@@ -90,8 +91,8 @@ Array initialization routines
 
 
 
-Utilities to use large integers
--------------------------------
+c) utilities to use large integers
++++++++++++++++++++
 
 .. autosummary::
    :toctree: generated/
@@ -103,10 +104,8 @@ Utilities to use large integers
    bitwise_and
    bitwise_or
    bitwise_xor
-   bitwise_left_shift
-   bitwise_right_shift
-
-
+   bitwise_leftshift
+   bitwise_rightshift
 """
 from .basis_1d import *
 from .basis_general import *
@@ -115,3 +114,4 @@ from .lattice import *
 from .photon import *
 from .tensor import *
 from ._basis_utils import *
+
