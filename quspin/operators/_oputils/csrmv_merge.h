@@ -2,7 +2,9 @@
 #define __CSRMV_MERGE_H__
 
 #include <algorithm>
-#include <omp.h>
+#include "openmp.h"
+#include "numpy/ndarraytypes.h"
+
 
 // See work my Merrill et. al. (http://ieeexplore.ieee.org/abstract/document/7877136/) for original work and implementation.
 // This code contains modified versions of algorithms 2 and 3.
@@ -116,19 +118,19 @@ void csrmv_merge(const bool overwrite_y,
 
 template<class I,class T1,class T2,class T3>
 void csrmv_merge_strided(const bool overwrite_y,
-				const I num_rows,
-				const I row_offsets[],
-				const I column_indices[],
-				const T1 values[],
-				const T2 alpha,
-				const I stride,
-				const T3 x[], 
-					  I row_carry_out[],
-					  T3 value_carry_out[],
-					  T3 y[])
+						const I num_rows,
+						const I row_offsets[],
+						const I column_indices[],
+						const T1 values[],
+						const T2 alpha,
+						const npy_intp stride_x,
+						const T3 x[],
+							  I row_carry_out[],
+							  T3 value_carry_out[],
+						const npy_intp stride_y,
+							  T3 y[])
 {
 
-	const npy_intp Ntot = num_rows * stride;
 	const I* row_end_offsets = row_offsets + 1; // Merge list A: row end-offsets
 	const I num_nonzeros = row_offsets[num_rows];
 	int num_threads = omp_get_num_threads();
@@ -138,8 +140,8 @@ void csrmv_merge_strided(const bool overwrite_y,
 
 	if(overwrite_y){
 		#pragma omp for schedule(static)
-		for(I i=0;i<Ntot;i+=stride){
-			y[i] = 0;
+		for(I i=0;i<num_rows;i++){
+			y[i * stride_y] = 0;
 		}
 	}
 	// Spawn parallel threads
@@ -157,15 +159,15 @@ void csrmv_merge_strided(const bool overwrite_y,
 		for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
 		{
 			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
-			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]*stride];
+			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y] * stride_x];
 
-			y[(npy_intp)stride * thread_coord.x] += T3(alpha)*running_total;
+			y[thread_coord.x * stride_y] += T3(alpha)*running_total;
 			running_total = 0.0;
 		}
 
 		// Consume partial portion of thread's last row
 		for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
-			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]*stride];
+			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y] * stride_x];
 
 		// Save carry-outs
 		row_carry_out[tid] = thread_coord_end.x;
@@ -177,10 +179,15 @@ void csrmv_merge_strided(const bool overwrite_y,
 	{
 		for (int tid = 0; tid < num_threads - 1; ++tid)
 		if (row_carry_out[tid] < num_rows)
-		y[row_carry_out[tid]*stride] += T3(alpha)*value_carry_out[tid];
+		y[row_carry_out[tid] * stride_y] += T3(alpha)*value_carry_out[tid];
 	}
 
 	#pragma omp barrier
 }
+
+
+
+
+
 
 #endif

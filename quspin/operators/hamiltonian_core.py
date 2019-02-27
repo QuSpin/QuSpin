@@ -485,7 +485,7 @@ class hamiltonian(object):
 						self._dynamic[func] = sparse_constuctor(self._dynamic[func])
 					except KeyError:
 						raise ValueError("({},{}) is not found in dynamic list.".format(f,f_args))
-					
+
 		self._Ns = self._shape[0]
 
 	@property
@@ -674,23 +674,21 @@ class hamiltonian(object):
 					raise ValueError("Density matricies must be square!")
 
 				# allocate C-contiguous array to output results in.
-
-				V_dot = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
+				out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
 
 				for i,t in enumerate(time):
 					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
-					_matvec(self._static,v,overwrite_out=True,out=V_dot[i,...])
+					_matvec(self._static,v,overwrite_out=True,out=out[i,...])
 					for func,Hd in iteritems(self._dynamic):
-						_matvec(Hd,v,overwrite_out=False,a=func(t),out=V_dot[i,...])
+						_matvec(Hd,v,overwrite_out=False,a=func(t),out=out[i,...])
 
 				# transpose, leave non-contiguous results which can be handled by numpy. 
-				
-				if V_dot.ndim == 2:
-					V_dot = V_dot.transpose()
+				if out.ndim == 2:
+					out = out.transpose()
 				else:
-					V_dot = V_dot.transpose((1,2,0))
+					out = out.transpose((1,2,0))
 
-				return V_dot
+				return out
 		
 		else:
 
@@ -702,7 +700,14 @@ class hamiltonian(object):
 				for func,Hd in iteritems(self._dynamic):
 					out = out + func(time)*(Hd.dot(V))
 			else:
-				V = _np.ascontiguousarray(V,dtype=result_dtype)
+
+				# if V.ndim == 1:
+				# 	V = _np.ascontiguousarray(V,dtype=result_dtype)
+				# else:
+				# 	V = _np.asarray(V,dtype=result_dtype)
+
+				V = _np.asarray(V,dtype=result_dtype)
+
 				if out is None:
 					out = _matvec(self._static,V)
 				else:
@@ -711,8 +716,8 @@ class hamiltonian(object):
 							raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 						if out.shape != V.shape:
 							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-						if not out.flags["CARRAY"]:
-							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
+						# if out.ndim == 1 and not out.flags["CARRAY"]:
+						# 	raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 					except AttributeError:
 						raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 
@@ -1274,7 +1279,7 @@ class hamiltonian(object):
 
 	### Schroedinger evolution routines
 
-	def __LO(self,time,rho):
+	def __LO(self,time,rho,rho_out):
 		"""
 		args:
 			rho, flattened density matrix to multiple with
@@ -1285,16 +1290,15 @@ class hamiltonian(object):
 		
 		"""
 		rho = rho.reshape((self.Ns,self.Ns))
-
-		rho_comm = self._static.dot(rho)
-		rho_comm -= (self._static.T.dot(rho.T)).T
+		_matvec(self._static  ,rho  ,out=rho_out  ,a=+1.0,overwrite_out=True) # rho_out = self._static.dot(rho)
+		_matvec(self._static.T,rho.T,out=rho_out.T,a=-1.0,overwrite_out=False) # rho_out -= (self._static.T.dot(rho.T)).T
 		for func,Hd in iteritems(self._dynamic):
 			ft = func(time)
-			rho_comm += ft*Hd.dot(rho)	
-			rho_comm -= ft*(Hd.T.dot(rho.T)).T
+			_matvec(Hd  ,rho  ,out=rho_out  ,a=+ft,overwrite_out=False) # rho_out += ft*Hd.dot(rho)
+			_matvec(Hd.T,rho.T,out=rho_out.T,a=-ft,overwrite_out=False) # rho_out -= ft*(Hd.T.dot(rho.T)).T
 
-		rho_comm *= -1j
-		return rho_comm.ravel()
+		rho_out *= -1j
+		return rho_out.ravel()
 
 
 	def __ISO(self,time,V,V_out):
@@ -1315,52 +1319,30 @@ class hamiltonian(object):
 		V_out *= -1
 		return V_out.ravel()
 
-	def __multi_SO_real(self,time,V):
+	def __SO_real(self,time,V,V_out):
 		"""
 		args:
 			V, the vector to multiple with
+			V_out, the vector to use with output.
 			time, the time to evalute drive at.
 
 		description:
 			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
 			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
 		
-		u_dot + iv_dot = -iH(u + iv)
+		u_dot + i*v_dot = -i*H(u + i*v)
 		u_dot = Hv
 		v_dot = -Hu
 		"""
-		V = V.reshape((2*self._Ns,-1))
-		V_dot = _np.zeros_like(V)
-		V_dot[:self._Ns,:] = self._static.dot(V[self._Ns:,:])
-		V_dot[self._Ns:,:] = -self._static.dot(V[:self._Ns,:])
+		V = V.reshape(V_out.shape)
+		_matvec(self._static,V[self._Ns:],out=V_out[:self._Ns],a=+1,overwrite_out=True) # V_dot[:self._Ns] =  self._static.dot(V[self._Ns:])
+		_matvec(self._static,V[:self._Ns],out=V_out[self._Ns:],a=-1,overwrite_out=True) # V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
 		for func,Hd in iteritems(self._dynamic):
-			V_dot[:self._Ns,:] += func(time)*Hd.dot(V[self._Ns:,:])
-			V_dot[self._Ns:,:] += -func(time)*Hd.dot(V[:self._Ns,:])
+			ft=func(time)
+			_matvec(Hd,V[self._Ns:],out=V_out[:self._Ns],a=+ft,overwrite_out=False) # V_dot[:self._Ns] += func(time)*Hd.dot(V[self._Ns:])
+			_matvec(Hd,V[:self._Ns],out=V_out[self._Ns:],a=-ft,overwrite_out=False) # V_dot[self._Ns:] += -func(time)*Hd.dot(V[:self._Ns])
 
-		return V_dot.reshape((-1,))
-
-	def __SO_real(self,time,V):
-		"""
-		args:
-			V, the vector to multiple with
-			time, the time to evalute drive at.
-
-		description:
-			This function is what gets passed into the ode solver. This is the real time Schrodinger operator -i*H(t)*|V >
-			This function is designed for real hamiltonians and increases the speed of integration compared to __SO
-		
-		u_dot + iv_dot = -iH(u + iv)
-		u_dot = Hv
-		v_dot = -Hu
-		"""
-		V_dot = _np.zeros_like(V)
-		V_dot[:self._Ns] = self._static.dot(V[self._Ns:])
-		V_dot[self._Ns:] = -self._static.dot(V[:self._Ns])
-		for func,Hd in iteritems(self._dynamic):
-			V_dot[:self._Ns] += func(time)*Hd.dot(V[self._Ns:])
-			V_dot[self._Ns:] += -func(time)*Hd.dot(V[:self._Ns])
-
-		return V_dot
+		return V_out
 
 	def __SO(self,time,V,V_out):
 		"""
@@ -1421,7 +1403,7 @@ class hamiltonian(object):
 		solver_args : dict, optional
 			Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_.	
 		stack_state : bool, optional 
-			Flag to determine if `f` is real or complex-valued. Default is `False`.
+			Flag to determine if `f` is real or complex-valued. Default is `False` (i.e. complex-valued).
 		imag_time : bool, optional
 			Must be set to `True` when `f` defines imaginary-time evolution, in order to normalise the state 
 			at each time in `times`. Default is `False`.
@@ -1472,7 +1454,6 @@ class hamiltonian(object):
 				if stack_state:
 					raise NotImplementedError("stack state is not compatible with imaginary time evolution.")
 
-
 				evolve_args  = evolve_args + (self.__ISO,)					
 				result_dtype = _np.result_type(v0.dtype,self.dtype,_np.float64)
 				v0 = _np.array(v0,dtype=result_dtype,copy=True,order="C")
@@ -1480,17 +1461,20 @@ class hamiltonian(object):
 				evolve_kwargs["real"] = not _np.iscomplexobj(v0)
 
 			else:
+				evolve_kwargs["real"]=False
 				if stack_state:
-					evolve_kwargs["real"]=False
-					if v0.ndim == 1:
-						evolve_args = evolve_args + (self.__SO_real,)
-					else:
-						evolve_args = evolve_args + (self.__multi_SO_real,)
+					if _np.iscomplexobj(_np.array(1,dtype=self.dtype)): # no idea how to do this in python :D
+						raise ValueError('stack_state option cannot be used with complex-valued Hamiltonians')
+					shape = (v0.shape[0]*2,)+v0.shape[1:]
+					v0 = _np.zeros(shape,dtype=_np.float64,order="C")
+					evolve_kwargs["f_params"]=(v0,)
+
+					evolve_args = evolve_args + (self.__SO_real,)
 				else:
 					v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
 					evolve_kwargs["f_params"]=(v0,)
-					evolve_kwargs["real"]=False
 					evolve_args = evolve_args + (self.__SO,)
+
 		elif eom == "LvNE":
 			n = 1.0
 			if v0.ndim != 2:
@@ -1505,6 +1489,8 @@ class hamiltonian(object):
 				if stack_state:
 					raise NotImplementedError("stack_state not implemented for Liouville-von Neumann dynamics")
 				else:
+					v0 = _np.array(v0,dtype=_np.complex128,copy=True,order="C")
+					evolve_kwargs["f_params"]=(v0,)
 					evolve_args = evolve_args + (self.__LO,)
 		else:
 			raise ValueError("'{} equation' not recognized, must be 'SE' or 'LvNE'".format(eom))
@@ -1914,7 +1900,7 @@ class hamiltonian(object):
 
 		return trace
 	
-	def astype(self,dtype):
+	def astype(self,dtype,copy=False):
 		"""Changes data type of `hamiltonian` object.
 
 		Parameters
@@ -1940,7 +1926,10 @@ class hamiltonian(object):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
 		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
-		return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype)
+		if dtype == self._dtype:
+			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=copy)
+		else:
+			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=True)
 
 	def copy(self,deep=False):
 		"""Returns a deep or shallow copy of `hamiltonian` object."""
@@ -2291,8 +2280,8 @@ class hamiltonian(object):
 	##########################
 
 	def _add_hamiltonian(self,other): 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		new._is_dense = new._is_dense or other._is_dense
 
@@ -2368,8 +2357,8 @@ class hamiltonian(object):
 		return self.copy()
 
 	def _sub_hamiltonian(self,other):
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		new._is_dense = new._is_dense or other._is_dense
 
@@ -2572,8 +2561,8 @@ class hamiltonian(object):
 
 	def _add_sparse(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		try:
 			new._static += other
@@ -2611,8 +2600,8 @@ class hamiltonian(object):
 
 	def _sub_sparse(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		try:
 			new._static -= other
@@ -2650,8 +2639,8 @@ class hamiltonian(object):
 
 	def _mul_sparse(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
-		new=self.astype(dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		new._static = new._static * other
 
@@ -2683,9 +2672,9 @@ class hamiltonian(object):
 		# Auxellery function to calculate the right-side multipication with another sparse matrix.
 
 		# find resultant type from product
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 		# create a copy of the hamiltonian object with the previous dtype
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		# proform multiplication on all matricies of the new hamiltonian object.
 
@@ -2748,7 +2737,7 @@ class hamiltonian(object):
 
 	def _mul_scalar(self,other):
 		dtype = _np.result_type(self._dtype, other)
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 
 		new=self.copy()
@@ -2812,12 +2801,12 @@ class hamiltonian(object):
 
 	def _add_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2855,12 +2844,12 @@ class hamiltonian(object):
 
 	def _sub_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 
 		if not self._is_dense:
@@ -2899,12 +2888,12 @@ class hamiltonian(object):
 
 	def _mul_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		if not self._is_dense:
 			self._is_dense = True
@@ -2927,12 +2916,12 @@ class hamiltonian(object):
 
 	def _rmul_dense(self,other):
 
-		dtype = _np.result_type(self._dtype, other.dtype)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
 
 		if dtype not in supported_dtypes:
 			return NotImplemented
 
-		new=self.astype(dtype)
+		new=self.astype(result_dtype,copy=True)
 
 		if not self._is_dense:
 			self._is_dense = True
