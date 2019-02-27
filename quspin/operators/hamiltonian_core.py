@@ -229,6 +229,11 @@ class hamiltonian(object):
 			Number of lattice sites for the `hamiltonian` object.
 		dtype : numpy.datatype, optional
 			Data type (e.g. numpy.float64) to construct the operator with.
+		static_fmt : str {"csr","csc","dia","dense"}, optional
+			Specifies format of static part of Hamiltonian.
+		dynamic_fmt: dict, keys (func,func_args), values: str {"csr","csc","dia","dense"}, optional
+			Specifies the format of the dynamic parts of the hamiltonian. To specify a particular dynamic part of the hamiltonian use a tuple (func,func_args) which matches a function+argument pair
+			used in the construction of the hamiltonian as a key in the dictionary.
 		shape : tuple, optional
 			Shape to create the `hamiltonian` object with. Default is `shape = None`.
 		copy: bool, optional
@@ -458,13 +463,17 @@ class hamiltonian(object):
 			if type(static_fmt) is not str:
 				raise ValueError("Expecting string for 'sparse_fmt'")
 
-			if static_fmt not in ["csr","csc","dia"]:
+			if static_fmt not in ["csr","csc","dia","dense"]:
 				raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(static_fmt))
 
 
-			sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
-
-			if _sp.issparse(self._static):
+			if static_fmt == "dense":
+				if _sp.issparse(self._static):
+					self._static = self._static.toarray()
+				else:
+					self._static = _np.ascontiguousarray(self._static)
+			else:
+				sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
 				self._static = sparse_constuctor(self._static)
 
 		if dynamic_fmt is not None:
@@ -474,16 +483,33 @@ class hamiltonian(object):
 					raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(dynamic_fmt))
 
 
-				sparse_constuctor = getattr(_sp,dynamic_fmt+"_matrix")
-				updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic) if _sp.issparse(Hd)}
+				if dynamic_fmt == "dense":
+					updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic) if _sp.issparse(Hd)}
+					updates.update({func:_np.ascontiguousarray(Hd) for func,Hd in iteritems(self._dynamic) if not _sp.issparse(Hd)})
+				else:
+					updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic)}
+
+				
 				self._dynamic.update(updates)
 
 			elif type(dynamic_fmt) in [list,tuple]:
 				for fmt,(f,f_args) in dynamic_fmt:
-					sparse_constuctor = getattr(_sp,fmt+"_matrix")
+
 					func = function(f,tuple(f_args))
+
+					if fmt not in ["csr","csc","dia"]:
+						raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(fmt))
+
 					try:
-						self._dynamic[func] = sparse_constuctor(self._dynamic[func])
+						if fmt == "dense":
+							if _sp.issparse(self._static):
+								self._dynamic[func] = self._dynamic[func].toarray()
+							else:
+								self._dynamic[func] = _np.ascontiguousarray(self._dynamic[func])
+						else:
+							sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
+							self._dynamic[func] = sparse_constuctor(self._dynamic[func])
+
 					except KeyError:
 						raise ValueError("({},{}) is not found in dynamic list.".format(f,f_args))
 
@@ -1747,9 +1773,9 @@ class hamiltonian(object):
 
 		Parameters
 		-----------
-		static_fmt : str {"csr","csc","dia"}
+		static_fmt : str {"csr","csc","dia","dense"}
 			Specifies format of static part of Hamiltonian.
-		dynamic_fmt: dict, keys (func,func_args), values: str {"csr","csc","dia"}
+		dynamic_fmt: dict, keys (func,func_args), values: str {"csr","csc","dia","dense"}
 			Specifies the format of the dynamic parts of the hamiltonian. To specify a particular dynamic part of the hamiltonian use a tuple (func,func_args) which matches a function+argument pair
 			used in the construction of the hamiltonian as a key in the dictionary.
 		copy : bool,optional
