@@ -17,6 +17,30 @@ uint16384 = _np.dtype((_np.void,sizeof(uint16384_t)))
 
 
 def basis_zeros(shape,dtype=uint32):
+    """ allocate initialized array using the QuSpin basis integers.
+
+    QuSpin uses non-standard numpy datatypes which wrap boost multiprecision integers. 
+    This function creates an array of integers which are properly initialized to 0. 
+
+    Parameters
+    -----------
+    shape : tuple
+        shape of the numpy array.
+    dtype : numpy.dtype, optional
+        numpy dtype used to create the array, one can use QuSpin defined dtypes here: `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`, or `uint16384`.
+
+
+    Returns
+    -------
+    numpy.array object
+        a properly initialized array of type `dtype` initialized to 0.
+
+    Examples
+    --------
+
+    >>> a = basis_zeros((100,))  
+
+    """
     if dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
 
@@ -49,6 +73,30 @@ def basis_zeros(shape,dtype=uint32):
 
 
 def basis_ones(shape,dtype=uint32):
+    """ allocate initialized array using the QuSpin basis integers.
+
+    QuSpin uses non-standard numpy datatypes which wrap boost multiprecision integers. 
+    This function creates an array of integers which are properly initialized to 1. 
+
+    Parameters
+    -----------
+    shape : tuple
+        shape of the numpy array.
+    dtype : numpy.dtype, optional
+        numpy dtype used to create the array, one can use QuSpin defined dtypes here: `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`, or `uint16384`.
+
+
+    Returns
+    -------
+    numpy.array object
+        a properly initialized array of type `dtype` initialized to 1.
+
+    Examples
+    --------
+
+    >>> a = basis_ones((100,))  
+
+    """
     if dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
 
@@ -81,13 +129,43 @@ def basis_ones(shape,dtype=uint32):
 
 
 def get_basis_type(N, Np, sps):
+    """ return minimum dtype to represent manybody state. 
+
+    Given the system size, number of particles and states per site this function calculates the minimum type required to represent those states.
+
+    Parameters
+    -----------
+    N : int
+        total number of sites on lattice
+    Np : None, int, or list of ints
+        number of particles on the lattice. For a list, the largest particle sector is chosen for the representation. 
+    sps: int
+        number of possible states allowed per site. e.g. spin-1/2 has 2 possible states per site. 
+
+    Returns
+    -------
+    numpy.dtype object
+        the appropriate dtype size to represent the system. will be one of:  `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`, or `uint16384`.
+
+    Examples
+    --------
+
+    >>> dtype = get_basis_type(10,5,2)  
+
+    """
+    sps = int(sps)
+    N = int(N)
+
+    try:
+        Np = max(list(Np))
+    except TypeError: 
+        if Np is not None:
+            raise ValueError("Np must be None, an integer, or list of integers")
+
+    if Np is not None and (Np > N*(sps-1)):
+        raise ValueError("{} particle(s) will not fit into system size {} with sps={}".format(Np,N,sps))
 
     if sps>2:
-        try:
-            Np = max(list(Np))
-        except TypeError: 
-            pass
-
         # calculates the datatype which will fit the largest representative state in basis
         if Np is None:
             # if no particle conservation the largest representative is sps**N-1
@@ -106,8 +184,10 @@ def get_basis_type(N, Np, sps):
             s_max >>= 1
             nbits += 1
             
-    else:
+    elif sps == 2:
         nbits = N
+    else:
+        raise ValueError("sps must be larger than 1.")
 
     if nbits <= 32:
         return uint32

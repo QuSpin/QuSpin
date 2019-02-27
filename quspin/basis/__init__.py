@@ -62,6 +62,39 @@ functions
    coherent_state
    photon_Hspace_dim
 
+large integer support
+---------------------
+
+.. autosummary::
+   :toctree: generated/
+
+QuSpin defined dtype:
+   uint32 
+   uint64
+   uint256
+   uint1024
+   uint4096
+   uint16384
+
+Array initialization:
+   basis_ones
+   basis_zeros
+
+
+   get_basis_type
+
+
+Utilities to use large integers
+   
+
+   bitwise_not
+   bitwise_and
+   bitwise_or
+   bitwise_xor
+   bitwise_left_shift
+   bitwise_right_shift
+
+
 """
 from .basis_1d import *
 from .basis_general import *

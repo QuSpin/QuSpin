@@ -2,7 +2,7 @@ from .base import basis,MAXPRINT
 from ._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
 from ._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
 from ._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
-from ._basis_utils import basis_int_to_python_int,get_basis_index
+from ._basis_utils import basis_int_to_python_int,_get_basis_index
 import numpy as _np
 import scipy.sparse as _sp
 from numpy.linalg import norm,eigvalsh,svd
@@ -135,7 +135,7 @@ class lattice_basis(basis):
 		if type(s) is str:
 			s = int(s,self.sps)
 
-		return get_basis_index(self.states,s)
+		return _get_basis_index(self.states,s)
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.

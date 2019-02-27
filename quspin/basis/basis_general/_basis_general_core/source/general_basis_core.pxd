@@ -114,7 +114,14 @@ ctypedef fused state_type:
     uint4096_t
     uint16384_t
 
+cdef inline void python_to_basis_inplace(object python_val, state_type * val):
+    cdef int i = 0
+    val[0] = <state_type>(0)
 
+    while(python_val!=0):
+        val[0] = val[0] ^ ((<state_type>(<int>(python_val&1))) << i)
+        i += 1
+        python_val = python_val >> 1
 
 cdef inline state_type python_to_basis(object python_val, state_type val):
     cdef int i = 0

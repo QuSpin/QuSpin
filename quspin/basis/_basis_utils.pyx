@@ -41,28 +41,9 @@ __all__ = ["basis_int_to_python_int","get_basis_index","shuffle_sites"]
 
 
 cdef extern from "shuffle_sites.h":
-    void shuffle_sites_core[T](const int32_t,const npy_intp,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
-    void shuffle_sites_core_base_2[T](const int32_t,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
     void shuffle_sites_strid[T](const int32_t,const npy_intp*,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
 
-# @cython.boundscheck(False)
-# def _shuffle_sites_core(npy_intp sps,int32_t[::1] T_tup,npy_type[:,::1] A, npy_type[:,::1] A_T):
 
-#     cdef npy_intp n_row = A.shape[0]
-#     cdef npy_intp n_col = A.shape[1]
-#     cdef int32_t nd = T_tup.size
-#     cdef int32_t * T_tup_ptr = &T_tup[0]
-#     cdef npy_type * A_ptr = &A[0,0]
-#     cdef npy_type * A_T_ptr = &A_T[0,0]
-
-#     if nd > 64:
-#         raise ValueError("can't transpose more than 64 dimensions")
-
-#     with nogil:
-#         if sps > 2:
-#             shuffle_sites_core(nd,sps,T_tup_ptr,n_row,n_col,A_ptr,A_T_ptr)
-#         else:
-#             shuffle_sites_core_base_2(nd,T_tup_ptr,n_row,n_col,A_ptr,A_T_ptr)
 
 
 @cython.boundscheck(False)
@@ -158,18 +139,38 @@ def shuffle_sites(npy_intp sps,T_tup,A):
         return A
 
 
-def basis_int_to_python_int(a):
+def basis_int_to_python_int(basis_int):
+    """ convert QuSpin basis type integer to a python integer.
 
-    cdef _np.ndarray a_wrapper = _np.array(a)
+    This function takes a QuSpin basis type integer and converts it to a python integer with the same value. 
+
+    Parameters
+    -----------
+    basis_int : scalar
+        integer to be converted
+
+    Returns
+    -------
+    object: int
+        the appropriate converted value to a python int. 
+
+    Examples
+    --------
+
+    >>> new_val = basis_int_to_python_int(val,dtype=uint256)
+    >>> new_val = basis_int_to_python_int(val) 
+
+    """
+    cdef _np.ndarray basis_int_wrapper = _np.array(basis_int)
     cdef object python_int = 0
     cdef object i = 0
-    cdef void * ptr = _np.PyArray_GETPTR1(a_wrapper,0)
+    cdef void * ptr = _np.PyArray_GETPTR1(basis_int_wrapper,0)
 
-    if a_wrapper.dtype in [_np.int32,_np.int64]:
-        a_wrapper = a_wrapper.astype(_np.object)
+    if basis_int_wrapper.dtype in [_np.int32,_np.int64]:
+        basis_int_wrapper = basis_int_wrapper.astype(_np.object)
 
     if a_wrapper.dtype == _np.object:
-        return a
+        return basis_int
     elif a_wrapper.dtype == _uint32:
         return basis_to_python[uint32_t](<uint32_t*>ptr)
     elif a_wrapper.dtype == _uint64:
@@ -183,7 +184,100 @@ def basis_int_to_python_int(a):
     elif a_wrapper.dtype == _uint16384:
         return basis_to_python[uint16384_t](<uint16384_t*>ptr)
     else:
-        raise ValueError("dtype {} is not recognized, must be python integer or basis type".format(a_wrapper.dtype))
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(a_wrapper.dtype))
+
+
+def python_int_to_basis_int(python_int,dtype=None):
+    """ convert python integer to QuSpin basis type.
+
+    This function takes a python integer and converts it to a basis type either specified by the user via the `dtype` argument or the minium type which will
+    fit that integer. 
+
+    Parameters
+    -----------
+    python_int : int
+        integer to be converted
+    dtype : dtype, optional
+        data type used to represent the python integer:  `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`,`uint16384` or `numpy.object`
+
+    Returns
+    -------
+    numpy scalar object
+        the appropriate converted value which can be assigned to a numpy array. 
+
+    Examples
+    --------
+
+    >>> new_val = python_int_to_basis_int(val,dtype=uint256)
+    >>> new_val = python_int_to_basis_int(val) 
+
+    """
+    if a < 0:
+        raise ValueError("value must be > 0.")
+
+    nbits = 0
+    a = int(python_int)
+
+    while(a>0):
+        a >>= 1
+        nbits += 1
+
+    if dtype is None:
+        if nbits <= 32:
+            dtype = _uint32
+        elif nbits <= 64:
+            dtype = _uint64
+        elif nbits <= 256:
+            dtype = _uint256
+        elif nbits <= 1024:
+            dtype = _uint1024
+        elif nbits <= 4096:
+            dtype = _uint4096
+        elif nbits <= 16384:
+            dtype = _uint16384
+        else:
+            dtype = _np.object
+
+    cdef _np.ndarray a_wrapper = _np.empty((),dtype=dtype)
+    cdef void * ptr = _np.PyArray_GETPTR1(a_wrapper,0)
+
+    if dtype == _np.object:
+        return python_int
+    elif dtype == _uint32:
+        if nbits > 32:
+            raise ValueError("python integer too large for bassis type uint32.")
+        python_to_basis_inplace[uint32_t](python_int,<uint32_t*>ptr)
+
+    elif dtype == _uint64:
+        if nbits > 64:
+            raise ValueError("python integer too large for bassis type uint64.")
+        python_to_basis_inplace[uint64_t](python_int,<uint64_t*>ptr)
+
+    elif dtype == _uint256:
+        if nbits > 256:
+            raise ValueError("python integer too large for bassis type uint256.")
+        python_to_basis_inplace[uint256_t](python_int,<uint256_t*>ptr)
+
+    elif dtype == _uint1024:
+        if nbits > 1024:
+            raise ValueError("python integer too large for bassis type uint1024.")
+        python_to_basis_inplace[uint1024_t](python_int,<uint1024_t*>ptr)
+
+    elif dtype == _uint4096:
+        if nbits > 4096:
+            raise ValueError("python integer too large for bassis type uint4096.")
+        python_to_basis_inplace[uint4096_t](python_int,<uint4096_t*>ptr)
+
+    elif dtype == _uint16384:
+        if nbits > 16384:
+            raise ValueError("python integer too large for bassis type uint16384.")
+        python_to_basis_inplace[uint16384_t](python_int,<uint16384_t*>ptr)
+
+    else:
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(dtype))
+
+    return a_wrapper
+
 
 
 cdef search_array(state_type * ptr,npy_intp n, object value):
@@ -198,7 +292,7 @@ cdef search_array(state_type * ptr,npy_intp n, object value):
 
     return -1
 
-def get_basis_index(_np.ndarray basis,object val):
+def _get_basis_index(_np.ndarray basis,object val):
     cdef object value = basis_int_to_python_int(val)
     cdef void * ptr = _np.PyArray_GETPTR1(basis,0)
     cdef npy_intp n = basis.size
