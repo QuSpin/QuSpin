@@ -1,5 +1,5 @@
 from ._basis_general_core import hcb_basis_core_wrap
-from ._basis_general_core import get_basis_type,boost_zeros
+from ._basis_general_core import get_basis_type,basis_zeros
 from .base_general import basis_general
 import numpy as _np
 from scipy.misc import comb
@@ -66,7 +66,7 @@ class hcb_basis_general(basis_general):
 			self.make()
 		else:
 			self._Ns=1
-			self._basis=boost_zeros(self._Ns,dtype=self._basis_dtype)
+			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 			
 		self._sps=2

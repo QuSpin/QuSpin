@@ -1,4 +1,4 @@
-from ._basis_general_core import boson_basis_core_wrap,get_basis_type,boost_zeros
+from ._basis_general_core import boson_basis_core_wrap,get_basis_type,basis_zeros
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
@@ -226,7 +226,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self.make()
 			else:
 				self._Ns=1
-				self._basis=boost_zeros(self._Ns,dtype=self._basis_dtype)
+				self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 				self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 

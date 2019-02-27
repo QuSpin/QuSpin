@@ -139,6 +139,16 @@ cdef inline object basis_to_python(state_type *ptr):
 
     return python_val
 
+cdef inline void set_zeros(state_type * ptr, npy_intp N) nogil:
+    cdef npy_intp i
+    for i in range(N):
+        ptr[i] = <state_type>(0)
+
+cdef inline void set_ones(state_type * ptr, npy_intp N) nogil:
+    cdef npy_intp i
+    for i in range(N):
+        ptr[i] = <state_type>(1)
+
 cdef extern from "general_basis_bitops.h" namespace "basis_general":
 
     void bitwise_op[I,binary_operator](const I[], const I[], bool[], I[], const npy_intp, binary_operator) nogil

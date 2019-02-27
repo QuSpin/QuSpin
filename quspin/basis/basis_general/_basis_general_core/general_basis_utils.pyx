@@ -16,56 +16,68 @@ uint16384 = _np.dtype((_np.void,sizeof(uint16384_t)))
 
 
 
-def boost_zeros(shape,dtype=uint32):
+def basis_zeros(shape,dtype=uint32):
     if dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
 
     cdef _np.ndarray array = _np.zeros(shape,dtype=dtype)
     cdef void * ptr = _np.PyArray_GETPTR1(array,0)
-    cdef uint32_t * uint32_ptr = NULL
-    cdef uint64_t * uint64_ptr = NULL
-    cdef uint256_t * uint256_ptr = NULL
-    cdef uint1024_t * uint1024_ptr = NULL
-    cdef uint4096_t * uint4096_ptr = NULL
-    cdef uint16384_t * uint16384_ptr = NULL
-
     cdef npy_intp i,N
 
     N = array.size
 
     if array.dtype == uint32:
         with nogil:
-            uint32_ptr = <uint32_t*>ptr
-            for i in range(N):
-                uint32_ptr[i] = <uint32_t>(0)
+            set_zeros[uint32_t](<uint32_t*>ptr,N)
     elif array.dtype == uint64:
         with nogil:
-            uint64_ptr = <uint64_t*>ptr
-            for i in range(N):
-                uint64_ptr[i] = <uint64_t>(0)
+            set_zeros[uint64_t](<uint64_t*>ptr,N)
     elif array.dtype == uint256:
         with nogil:
-            uint256_ptr = <uint256_t*>ptr
-            for i in range(N):
-                uint256_ptr[i] = <uint256_t>(0)
+            set_zeros[uint256_t](<uint256_t*>ptr,N)
     elif array.dtype == uint1024:
         with nogil:
-            uint1024_ptr = <uint1024_t*>ptr
-            for i in range(N):
-                uint1024_ptr[i] = <uint1024_t>(0)
+            set_zeros[uint1024_t](<uint1024_t*>ptr,N)
     elif array.dtype == uint4096:
         with nogil:
-            uint4096_ptr = <uint4096_t*>ptr
-            for i in range(N):
-                uint4096_ptr[i] = <uint4096_t>(0)
+            set_zeros[uint4096_t](<uint4096_t*>ptr,N)
     elif array.dtype == uint16384:
         with nogil:
-            uint16384_ptr = <uint16384_t*>ptr
-            for i in range(N):
-                uint16384_ptr[i] = <uint16384_t>(0)
+            set_zeros[uint16384_t](<uint16384_t*>ptr,N)
 
     return array
 
+
+def basis_ones(shape,dtype=uint32):
+    if dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
+        raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
+
+    cdef _np.ndarray array = _np.zeros(shape,dtype=dtype)
+    cdef void * ptr = _np.PyArray_GETPTR1(array,0)
+    cdef npy_intp i,N
+
+    N = array.size
+
+    if array.dtype == uint32:
+        with nogil:
+            set_ones[uint32_t](<uint32_t*>ptr,N)
+    elif array.dtype == uint64:
+        with nogil:
+            set_ones[uint64_t](<uint64_t*>ptr,N)
+    elif array.dtype == uint256:
+        with nogil:
+            set_ones[uint256_t](<uint256_t*>ptr,N)
+    elif array.dtype == uint1024:
+        with nogil:
+            set_ones[uint1024_t](<uint1024_t*>ptr,N)
+    elif array.dtype == uint4096:
+        with nogil:
+            set_ones[uint4096_t](<uint4096_t*>ptr,N)
+    elif array.dtype == uint16384:
+        with nogil:
+            set_ones[uint16384_t](<uint16384_t*>ptr,N)
+            
+    return array
 
 
 def get_basis_type(N, Np, sps):
