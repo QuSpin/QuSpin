@@ -5,6 +5,8 @@
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 
+namespace basis_general {
+
 template<class I>
 class local_pcon_basis_core : public general_basis_core<I>
 {
@@ -21,6 +23,6 @@ class local_pcon_basis_core : public general_basis_core<I>
 		I next_state_pcon(I) = 0;
 		int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;		
 };
-
+}
 
 #endif

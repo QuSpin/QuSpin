@@ -46,7 +46,8 @@ class spin_basis_1d(basis_1d):
 			Length of chain/number of sites.
 		Nup: {int,list}, optional
 			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
-			more particle sectors.
+			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.
+			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.
 		m: float, optional
 			Density of spin up in chain (spin up per site).
 		S: str, optional
@@ -107,6 +108,15 @@ class spin_basis_1d(basis_1d):
 				raise ValueError("N must be between -S and S")
 
 			Nup = int((m+S)*L)
+
+		try:
+			Nup_iter = iter(Nup)
+			M = int(2*S*L)
+			Nup = [((M+Nup+1) if Nup<0 else Nup) for Nup in Nup_iter]
+		except TypeError:
+			if Nup is not None and Nup < 0:
+				Nup = int(2*S*L) + Nup + 1
+
 
 		if Nup is None:
 			Nup_list = None

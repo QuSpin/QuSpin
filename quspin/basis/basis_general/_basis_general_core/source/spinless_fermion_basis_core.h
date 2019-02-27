@@ -6,7 +6,7 @@
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
 
-
+namespace basis_general {
 
 template<class I>
 void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &f_count){
@@ -170,15 +170,15 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
 			I s = r;
-			I one = 1;
+			const I one = 1;
 
 			for(int j=n_op-1;j>-1;j--){
-				int ind = general_basis_core<I>::N-indx[j]-1;
+				const int ind = general_basis_core<I>::N-indx[j]-1;
 				I f_count = bit_count(r,ind);
 				double sign = ((f_count&1)?-1:1);
-				I b = (one << ind);
-				bool a = bool((r >> ind)&one);
-				char op = opstr[j];
+				const I b = (one << ind);
+				const bool a = (bool)((r >> ind)&one);
+				const char op = opstr[j];
 				switch(op){
 					case 'z':
 						m *= (a?0.5:-0.5);
@@ -212,7 +212,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 
 
-
+}
 
 
 

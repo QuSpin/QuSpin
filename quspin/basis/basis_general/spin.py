@@ -70,7 +70,8 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			number of sites.
 		Nup: {int,list}, optional
 			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
-			more particle sectors.
+			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.
+			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.
 		m: float, optional
 			Density of spin up in chain (spin up per site).
 		S: str, optional
@@ -130,6 +131,13 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			Nup = int((m+S)*N)
 
+		try:
+			Nup_iter = iter(Nup)
+			M = int(2*S*N)
+			Nup = [(M+(Nup+1) if Nup<0 else Nup) for Nup in Nup_iter]
+		except TypeError:
+			if Nup is not None and Nup < 0:
+				Nup = int(2*S*N) + Nup + 1
 
 		self._pcon_args = dict(N=N,Nup=Nup,S=self._S)
 		if _Np is not None:

@@ -102,6 +102,7 @@ def check_gen_basis_hcb(S="1/2"):
 		np.testing.assert_allclose((vs1-vs2).data,0,atol=1e-14,err_msg="failed multi vector sparse")
 
 
+
 check_gen_basis_hcb(S="1/2")
 check_gen_basis_hcb(S="1")
 check_gen_basis_hcb(S="3/2")

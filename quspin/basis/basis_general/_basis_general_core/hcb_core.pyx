@@ -2,7 +2,6 @@
 # distutils: language=c++
 import cython
 from scipy.misc import comb
-from general_basis_core cimport *
 import scipy.sparse as _sp
 cimport numpy as _np
 import numpy as _np
@@ -13,11 +12,10 @@ cdef extern from "glibc_fix.h":
     pass
 
 # specialized code 
-cdef extern from "hcb_basis_core.h":
+cdef extern from "hcb_basis_core.h" namespace "basis_general":
     cdef cppclass hcb_basis_core[I](general_basis_core[I]):
         hcb_basis_core(const int,const int,const int[],const int[],const int[])
         hcb_basis_core(const int) 
-
 
 cdef class hcb_basis_core_wrap(general_basis_core_wrap):
     def __cinit__(self,object dtype,object N,int[:,::1] maps, int[:] pers, int[:] qs):
@@ -26,21 +24,41 @@ cdef class hcb_basis_core_wrap(general_basis_core_wrap):
         self._sps = 2
         self._Ns_full = (<object>(1) << N)
 
-        if dtype == _np.uint32:
+        if dtype == uint32:
             if self._nt>0:
                 self._basis_core = <void *> new hcb_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new hcb_basis_core[uint32_t](N)
-        elif dtype == _np.uint64:
+        elif dtype == uint64:
             if self._nt>0:
                 self._basis_core = <void *> new hcb_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
             else:
                 self._basis_core = <void *> new hcb_basis_core[uint64_t](N)
+        elif dtype == uint256:
+            if self._nt>0:
+                self._basis_core = <void *> new hcb_basis_core[uint256_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new hcb_basis_core[uint256_t](N)
+        elif dtype == uint1024:
+            if self._nt>0:
+                self._basis_core = <void *> new hcb_basis_core[uint1024_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new hcb_basis_core[uint1024_t](N)
+        elif dtype == uint4096:
+            if self._nt>0:
+                self._basis_core = <void *> new hcb_basis_core[uint4096_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new hcb_basis_core[uint4096_t](N)
+        elif dtype == uint16384:
+            if self._nt>0:
+                self._basis_core = <void *> new hcb_basis_core[uint16384_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+            else:
+                self._basis_core = <void *> new hcb_basis_core[uint16384_t](N)
         else:
-            raise ValueError("general basis supports system sizes <= 64.")
+            raise ValueError("general basis supports system sizes <= 128.")
 
     def get_s0_pcon(self,object Np):
-        return sum(1<<i for i in range(Np))
+        return sum(<object>(1)<<i for i in range(Np))
 
     def get_Ns_pcon(self,object Np):
         return comb(self._N,Np,exact=True)
