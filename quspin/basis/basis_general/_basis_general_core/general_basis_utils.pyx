@@ -226,16 +226,24 @@ def bitwise_not(x, out=None, where=None):
 
     Returns
     -------
-    numpy.ndarray[uint]
-        array of unsigned integers containing the result of the bitwise operation.
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
 
     Examples
     --------
-
-    >>> basis=spin_basis_general(4) # 16 states Hilbert space
-    >>> x=basis.states[:8]
+    
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x=[basis.states[0]] # large integer stored as a byte
     >>> not_x=bitwise_not(x)
-    >>> print(not_x)
+    >>> print('original integer stored as a byte:') 
+    >>> print(x)
+    >>> x_int=basis_int_to_python_int(x) # cast byte as python integer
+    >>> print('original integer in integer form:')
+    >>> print(x_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(not_x))
 
     """
     cdef _np.ndarray[uint8_t] py_array_where 
@@ -250,8 +258,17 @@ def bitwise_not(x, out=None, where=None):
     cdef bool * where_ptr = NULL
     if where is not None:
         py_array_where = _np.asarray(where,dtype=_np.uint8)
-        where_ptr =<bool*> &py_array_where[0]   
+       
+        if x.size!=py_array_where.size:
+            raise TypeError("expecting same size for x and where input arrays.")
+       
+        if py_array_where.ndim!=1:
+            raise TypeError("where must be a 1d array.")
+       
+        where_ptr =<bool*> &py_array_where[0]
 
+    if x.ndim!=1:
+        raise TypeError("x must be a 1d array.")
     
     if x.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
@@ -266,6 +283,13 @@ def bitwise_not(x, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
+
+    if py_array_out.ndim!=1:
+            raise TypeError("out must be a 1d array.")
+
+    if x.size != py_array_out.size:
+        raise TypeError("expecting same size for x and out input arrays.")
+
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
    
@@ -305,17 +329,25 @@ def bitwise_and(x1, x2, out=None, where=None):
 
     Returns
     -------
-    numpy.ndarray[uint]
-        array of unsigned integers containing the result of the bitwise operation.
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
 
     Examples
     --------
 
-    >>> basis=spin_basis_general(4) # 16 states Hilbert space
-    >>> x1=basis.states[:8]
-    >>> x2=basis.states[8:]
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x1=[basis.states[0]] # large integer stored as a byte
+    >>> x2=[basis.states[1]] # large integer stored as a byte
     >>> x1_and_x2=bitwise_and(x1,x2)
-    >>> print(x1_and_x2)
+    >>> print('x1 integer stored as a byte:') 
+    >>> print(x1)
+    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
+    >>> print('x1 integer in integer form:')
+    >>> print(x1_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(x1_and_x2))
 
     """
     cdef _np.ndarray[uint8_t] py_array_where 
@@ -334,11 +366,25 @@ def bitwise_and(x1, x2, out=None, where=None):
     cdef bool * where_ptr = NULL
     if where is not None:
         py_array_where = _np.asarray(where,dtype=_np.uint8)
-        where_ptr =<bool*> &py_array_where[0] 
+       
+        if x1.size!=py_array_where.size:
+            raise TypeError("expecting same size for x1 and where input arrays.")
+       
+        if py_array_where.ndim!=1:
+            raise TypeError("where must be a 1d array.")
+       
+        where_ptr =<bool*> &py_array_where[0]
     
 
+    if x1.size != x2.size:
+        raise TypeError("expecting same size for x1 and x2 input arrays.")
     if x1.shape != x2.shape:
         raise TypeError("expecting same shape for x1 and x2 arrays.")
+    if x1.ndim!=1:
+        raise TypeError("x1 must be a 1d array.")
+    if x2.ndim!=1:
+        raise TypeError("x2 must be a 1d array.")
+
     
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
@@ -355,6 +401,13 @@ def bitwise_and(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
+
+    if py_array_out.ndim!=1:
+            raise TypeError("out must be a 1d array.")
+
+    if x1.size != py_array_out.size:
+        raise TypeError("expecting same size for x1 and out input arrays.")
+
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
@@ -393,17 +446,25 @@ def bitwise_or(x1, x2, out=None, where=None):
 
     Returns
     -------
-    numpy.ndarray[uint]
-        array of unsigned integers containing the result of the bitwise operation.
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
 
     Examples
     --------
 
-    >>> basis=spin_basis_general(4) # 16 states Hilbert space
-    >>> x1=basis.states[:8]
-    >>> x2=basis.states[8:]
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x1=[basis.states[0]] # large integer stored as a byte
+    >>> x2=[basis.states[1]] # large integer stored as a byte
     >>> x1_or_x2=bitwise_or(x1,x2)
-    >>> print(x1_or_x2)
+    >>> print('x1 integer stored as a byte:') 
+    >>> print(x1)
+    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
+    >>> print('x1 integer in integer form:')
+    >>> print(x1_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(x1_or_x2))
 
     """
     cdef _np.ndarray[uint8_t] py_array_where 
@@ -422,11 +483,25 @@ def bitwise_or(x1, x2, out=None, where=None):
     cdef bool * where_ptr = NULL
     if where is not None:
         py_array_where = _np.asarray(where,dtype=_np.uint8)
+       
+        if x1.size!=py_array_where.size:
+            raise TypeError("expecting same size for x1 and where input arrays.")
+       
+        if py_array_where.ndim!=1:
+            raise TypeError("where must be a 1d array.")
+       
         where_ptr =<bool*> &py_array_where[0] 
     
 
+    if x1.size != x2.size:
+        raise TypeError("expecting same size for x1 and x2 input arrays.")
     if x1.shape != x2.shape:
         raise TypeError("expecting same shape for x1 and x2 arrays.")
+    if x1.ndim!=1:
+        raise TypeError("x1 must be a 1d array.")
+    if x2.ndim!=1:
+        raise TypeError("x2 must be a 1d array.")
+
     
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
@@ -443,6 +518,13 @@ def bitwise_or(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
+
+    if py_array_out.ndim!=1:
+            raise TypeError("out must be a 1d array.")
+
+    if x1.size != py_array_out.size:
+        raise TypeError("expecting same size for x1 and out input arrays.")
+
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
@@ -481,17 +563,25 @@ def bitwise_xor(x1, x2, out=None, where=None):
 
     Returns
     -------
-    numpy.ndarray[uint]
-        array of unsigned integers containing the result of the bitwise operation.
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
 
     Examples
     --------
 
-    >>> basis=spin_basis_general(4) # 16 states Hilbert space
-    >>> x1=basis.states[:8]
-    >>> x2=basis.states[8:]
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x1=[basis.states[0]] # large integer stored as a byte
+    >>> x2=[basis.states[1]] # large integer stored as a byte
     >>> x1_xor_x2=bitwise_xor(x1,x2)
-    >>> print(x1_xor_x2)
+    >>> print('x1 integer stored as a byte:') 
+    >>> print(x1)
+    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
+    >>> print('x1 integer in integer form:')
+    >>> print(x1_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(x1_xor_x2))
 
     """
     cdef _np.ndarray[uint8_t] py_array_where 
@@ -510,11 +600,25 @@ def bitwise_xor(x1, x2, out=None, where=None):
     cdef bool * where_ptr = NULL
     if where is not None:
         py_array_where = _np.asarray(where,dtype=_np.uint8)
-        where_ptr =<bool*> &py_array_where[0] 
+       
+        if x1.size!=py_array_where.size:
+            raise TypeError("expecting same size for x1 and where input arrays.")
+       
+        if py_array_where.ndim!=1:
+            raise TypeError("where must be a 1d array.")
+       
+        where_ptr =<bool*> &py_array_where[0]
     
 
+    if x1.size != x2.size:
+        raise TypeError("expecting same size for x1 and x2 input arrays.")
     if x1.shape != x2.shape:
         raise TypeError("expecting same shape for x1 and x2 arrays.")
+    if x1.ndim!=1:
+        raise TypeError("x1 must be a 1d array.")
+    if x2.ndim!=1:
+        raise TypeError("x2 must be a 1d array.")
+
     
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("dtype must be one of the possible dtypes used as the representatives for the general basis class.")
@@ -531,6 +635,13 @@ def bitwise_xor(x1, x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
+
+    if py_array_out.ndim!=1:
+            raise TypeError("out must be a 1d array.")
+
+    if x1.size != py_array_out.size:
+        raise TypeError("expecting same size for x1 and out input arrays.")
+
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
@@ -569,27 +680,32 @@ def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
 
     Returns
     -------
-    numpy.ndarray[uint]
-        array of unsigned integers containing the result of the bitwise operation.
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
 
     Examples
     --------
 
-    >>> basis=spin_basis_general(4) # 16 states Hilbert space
-    >>> x1=basis.states[:8]
-    >>> x2=basis.states[8:]
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x1=[basis.states[0]] # large integer stored as a byte
+    >>> x2=[basis.states[1]] # large integer stored as a byte
     >>> x1_leftshift_x2=bitwise_left_shift(x1,x2)
-    >>> print(x1_leftshift_x2)
+    >>> print('x1 integer stored as a byte:') 
+    >>> print(x1)
+    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
+    >>> print('x1 integer in integer form:')
+    >>> print(x1_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(x1_leftshift_x2))
 
     """
     cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
-    #x2=_np.asarray(x2)
     cdef _np.ndarray py_array_x1 = _np.asarray(x1,order='C')
-    #cdef _np.ndarray py_array_x2 = _np.asarray(x2,order='C')
-
 
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
@@ -597,17 +713,25 @@ def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
     cdef bool * where_ptr = NULL
     if where is not None:
         py_array_where = _np.asarray(where,dtype=_np.uint8)
+       
+        if x1.size!=py_array_where.size:
+            raise TypeError("expecting same size for x1 and where input arrays.")
+       
+        if py_array_where.ndim!=1:
+            raise TypeError("where must be a 1d array.")
+       
         where_ptr =<bool*> &py_array_where[0] 
     
 
-    #if x1.shape != x2.shape:
-    #    raise TypeError("expecting same shape for x1 and x2 arrays.")
+    if x1.size != x2.size:
+        raise TypeError("expecting same size for x1 and x2 input arrays.")
     
+    if x1.ndim!=1:
+        raise TypeError("x1 must be a 1d array.")
+
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("x1 dtype must be one of the possible dtypes used as the representatives for the general basis class.")
-    #if not _np.issubdtype(x2.dtype, _np.unsignedinteger): #x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
-    #    raise TypeError("x2 dtype must be unsigned integer.")
-
+   
     if out is None:
         out = _np.zeros(x1.shape,dtype=x1.dtype,order="C")
     else:
@@ -618,7 +742,15 @@ def bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
+
+    if py_array_out.ndim!=1:
+            raise TypeError("out must be a 1d array.")
+
+    if x1.size != py_array_out.size:
+        raise TypeError("expecting same size for x1 and out input arrays.")
+
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
+
 
     if x1.dtype == uint32:
         bitwise_left_shift_op_core(<uint32_t*>x1_ptr, &x2[0], where_ptr, <uint32_t*>out_ptr, Ns)
@@ -656,27 +788,32 @@ def bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
 
     Returns
     -------
-    numpy.ndarray[uint]
-        array of unsigned integers containing the result of the bitwise operation.
+    numpy.ndarray
+        array of unsigned integers containing the result of the bitwise operation. Output is of same data type as `x`.
 
     Examples
     --------
 
-    >>> basis=spin_basis_general(4) # 16 states Hilbert space
-    >>> x1=basis.states[:8]
-    >>> x2=basis.states[8:]
+    >>> from quspin.basis import spin_basis_general, basis_int_to_python_int
+    >>> N=100 # sites
+    >>> basis=spin_basis_general(N,Nup=1) # 1 particle 
+    >>> x1=[basis.states[0]] # large integer stored as a byte
+    >>> x2=[basis.states[1]] # large integer stored as a byte
     >>> x1_rightshift_x2=bitwise_right_shift(x1,x2)
-    >>> print(x1_rightshift_x2)
+    >>> print('x1 integer stored as a byte:') 
+    >>> print(x1)
+    >>> x1_int=basis_int_to_python_int(x1) # cast byte as python integer
+    >>> print('x1 integer in integer form:')
+    >>> print(x1_int)
+    >>> print('result in integer form:')
+    >>> print(basis_int_to_python_int(x1_rightshift_x2))
 
     """
     cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
     
     x1=_np.asarray(x1)
-    #x2=_np.asarray(x2)
     cdef _np.ndarray py_array_x1 = _np.asarray(x1,order='C')
-    #cdef _np.ndarray py_array_x2 = _np.asarray(x2,order='C')
-
 
     cdef npy_intp Ns = x1.shape[0]
     cdef void * x1_ptr = _np.PyArray_GETPTR1(py_array_x1,0)
@@ -684,17 +821,25 @@ def bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
     cdef bool * where_ptr = NULL
     if where is not None:
         py_array_where = _np.asarray(where,dtype=_np.uint8)
+       
+        if x1.size!=py_array_where.size:
+            raise TypeError("expecting same size for x1 and where input arrays.")
+       
+        if py_array_where.ndim!=1:
+            raise TypeError("where must be a 1d array.")
+       
         where_ptr =<bool*> &py_array_where[0] 
     
 
-    #if x1.shape != x2.shape:
-    #    raise TypeError("expecting same shape for x1 and x2 arrays.")
+    if x1.size != x2.size:
+        raise TypeError("expecting same size for x1 and x2 input arrays.")
     
+    if x1.ndim!=1:
+        raise TypeError("x1 must be a 1d array.")
+
     if x1.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
         raise TypeError("x1 dtype must be one of the possible dtypes used as the representatives for the general basis class.")
-    #if not _np.issubdtype(x2.dtype, _np.unsignedinteger): #x2.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
-    #    raise TypeError("x2 dtype must be unsigned integer.")
-
+   
     if out is None:
         out = _np.zeros(x1.shape,dtype=x1.dtype,order="C")
     else:
@@ -705,6 +850,13 @@ def bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
     py_array_out = out
+
+    if py_array_out.ndim!=1:
+            raise TypeError("out must be a 1d array.")
+
+    if x1.size != py_array_out.size:
+        raise TypeError("expecting same size for x1 and out input arrays.")
+
     out_ptr = _np.PyArray_GETPTR1(py_array_out,0)
 
     if x1.dtype == uint32:
