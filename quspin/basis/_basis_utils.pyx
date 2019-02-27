@@ -9,7 +9,7 @@ from numpy cimport int8_t, int16_t, int32_t, int64_t
 from numpy cimport uint8_t, uint16_t, uint32_t, uint64_t
 from libcpp.vector cimport vector
 from libcpp cimport bool
-from general_basis_core cimport state_type,uint32_t,uint64_t,uint256_t,uint1024_t,uint4096_t,uint16384_t,python_to_basis,basis_to_python
+from general_basis_core cimport state_type,uint32_t,uint64_t,uint256_t,uint1024_t,uint4096_t,uint16384_t,python_to_basis,basis_to_python,python_to_basis_inplace
 # python imports
 import numpy as _np
 
@@ -37,7 +37,7 @@ ctypedef fused npy_type:
     complex64_t
     complex128_t
 
-__all__ = ["basis_int_to_python_int","get_basis_index","shuffle_sites"]
+__all__ = ["basis_int_to_python_int","python_int_to_basis_int"]
 
 
 cdef extern from "shuffle_sites.h":
@@ -110,9 +110,7 @@ def _reduce_transpose(T_tup,sps=2):
 
 
 
-def shuffle_sites(npy_intp sps,T_tup,A):
-    A = _np.ascontiguousarray(A)
-
+def _shuffle_sites(npy_intp sps,T_tup,A):
     T_tup_reduced,R_tup_reduced = _reduce_transpose(T_tup,sps)
 
     if len(T_tup_reduced) > 1:
@@ -136,7 +134,7 @@ def shuffle_sites(npy_intp sps,T_tup,A):
 
         return A_T
     else:
-        return A
+        return _np.ascontiguousarray(A)
 
 
 def basis_int_to_python_int(basis_int):
@@ -161,30 +159,33 @@ def basis_int_to_python_int(basis_int):
     >>> new_val = basis_int_to_python_int(val) 
 
     """
-    cdef _np.ndarray basis_int_wrapper = _np.array(basis_int)
+    cdef _np.ndarray basis_int_wrapper = _np.atleast_1d(basis_int)
     cdef object python_int = 0
     cdef object i = 0
     cdef void * ptr = _np.PyArray_GETPTR1(basis_int_wrapper,0)
 
+    if basis_int_wrapper.size > 1:
+        raise ValueError("input value must be scalar")
+
     if basis_int_wrapper.dtype in [_np.int32,_np.int64]:
         basis_int_wrapper = basis_int_wrapper.astype(_np.object)
 
-    if a_wrapper.dtype == _np.object:
+    if basis_int_wrapper.dtype == _np.object:
         return basis_int
-    elif a_wrapper.dtype == _uint32:
+    elif basis_int_wrapper.dtype == _uint32:
         return basis_to_python[uint32_t](<uint32_t*>ptr)
-    elif a_wrapper.dtype == _uint64:
+    elif basis_int_wrapper.dtype == _uint64:
         return basis_to_python[uint64_t](<uint64_t*>ptr)
-    elif a_wrapper.dtype == _uint256:
+    elif basis_int_wrapper.dtype == _uint256:
         return basis_to_python[uint256_t](<uint256_t*>ptr)
-    elif a_wrapper.dtype == _uint1024:
+    elif basis_int_wrapper.dtype == _uint1024:
         return basis_to_python[uint1024_t](<uint1024_t*>ptr)
-    elif a_wrapper.dtype == _uint4096:
+    elif basis_int_wrapper.dtype == _uint4096:
         return basis_to_python[uint4096_t](<uint4096_t*>ptr)
-    elif a_wrapper.dtype == _uint16384:
+    elif basis_int_wrapper.dtype == _uint16384:
         return basis_to_python[uint16384_t](<uint16384_t*>ptr)
     else:
-        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(a_wrapper.dtype))
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(basis_int_wrapper.dtype))
 
 
 def python_int_to_basis_int(python_int,dtype=None):
@@ -212,14 +213,14 @@ def python_int_to_basis_int(python_int,dtype=None):
     >>> new_val = python_int_to_basis_int(val) 
 
     """
-    if a < 0:
+    if python_int < 0:
         raise ValueError("value must be > 0.")
 
     nbits = 0
-    a = int(python_int)
+    python_val = int(python_int)
 
-    while(a>0):
-        a >>= 1
+    while(python_val>0):
+        python_val >>= 1
         nbits += 1
 
     if dtype is None:

@@ -63,30 +63,39 @@ functions
    photon_Hspace_dim
 
 large integer support
----------------------
+=====================
+
+QuSpin defined dtype
+--------------------
 
 .. autosummary::
    :toctree: generated/
 
-QuSpin defined dtype:
-   uint32 
-   uint64
    uint256
    uint1024
    uint4096
    uint16384
 
-Array initialization:
+Array initialization routines
+-----------------------------
+
+.. autosummary::
+   :toctree: generated/
+
    basis_ones
    basis_zeros
 
 
-   get_basis_type
+
 
 
 Utilities to use large integers
-   
+-------------------------------
 
+.. autosummary::
+   :toctree: generated/
+  
+   get_basis_type
    bitwise_not
    bitwise_and
    bitwise_or
