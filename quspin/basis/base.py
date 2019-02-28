@@ -81,7 +81,7 @@ class basis(object):
 
 	@property
 	def sps(self):
-		"""int: number of states per site (i.e. the local degrees of freedom)."""
+		"""int: number of states per site (i.e. the on-site Hilbert space dimension)."""
 		try:
 			return self._sps
 		except AttributeError:
