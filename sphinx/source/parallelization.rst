@@ -100,7 +100,7 @@ Casting `H` as a `LinearOperator <https://docs.scipy.org/doc/scipy/reference/gen
 1.2.2 Parallel support in the general basis classes `*_basis_general`
 +++++++++
 
-Starting from QuSpin 0.3.1, we have efficient implementation of parallel support for the methods in the `*_general_basis` classes.
+Starting from QuSpin 0.3.1, we have efficient implementation of parallel support for the methods in the `*_basis_general` classes.
 Additionally, we have also added an implementation of `inplace_Op` which is used to do 'on the fly' calculation of an operator acting on a state using multi-threading OpenMP speed-up (which can be accessed simply by using any general basis in the `quantum_LinearOperator` class).
 
 Note that the `*_basis_1d` classes do **not** support OpenMP. 

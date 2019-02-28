@@ -65,7 +65,8 @@ functions
 
 large integer support for general basis classes
 --------------------
-
+To construct `*_basis_general` classes with more than 64 lattice sites, QuSpin uses custom unsigned integer types for the integer 
+representation of many-body states.
 
 a) custom large integer data types supported in general basis
 ++++++
@@ -86,9 +87,6 @@ b) array initialization routines
 
    basis_ones
    basis_zeros
-
-
-
 
 
 c) utilities to use large integers
