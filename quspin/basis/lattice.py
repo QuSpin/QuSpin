@@ -28,6 +28,103 @@ class lattice_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
+	def _int_to_state(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implementation of '_int_to_state' required for printing a child of lattice basis!".format(self.__class__))	
+
+	def _state_to_int(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implementation of '_state_to_int' required for for printing a child of lattice basis".format(self.__class__))	
+
+	def _index(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implementation of '_index' required for searching for index of representative!".format(self.__class__))	
+
+	def int_to_state(self,state,bracket_notation=True):
+		"""Finds string representation of a state defined in integer representation.
+
+		Notes
+		-----
+		This function is the einverse of `state_to_int`.
+
+		Parameters
+		-----------
+		state : int
+			Defines the Fock state in integer representation in underlying lattice `basis`.
+		bracket_notation : bool, optional
+			Toggles whether to return the state in |str> notation.
+
+		Returns
+		--------
+		str
+			String corresponding to the Fock `state` in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> s = basis[0] # pick state from basis set
+		>>> s_str = basis.int_to_state(s)
+		>>> print(s_str)
+
+		"""
+		return self._int_to_state(state,bracket_notation=bracket_notation)
+
+	def state_to_int(self,state):
+		"""Finds integer representation of a state defined in string format.
+
+		Notes
+		-----
+		This function is the einverse of `int_to_state`.
+
+		Parameters
+		-----------
+		state : str
+			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
+
+		Returns
+		--------
+		int
+			Integer corresponding to the Fock `state` in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> s_str = "111000" # pick state from basis set
+		>>> s = basis.state_to_int(s_str)
+		>>> print(s)
+
+		"""
+		
+		return self._state_to_int(state)
+
+	def index(self,s):
+		"""Finds the index of user-defined Fock state in any lattice basis.
+
+		Notes
+		-----
+		Particularly useful for defining initial Fock states through a unit vector in the direction specified
+		by `index()`. 
+
+		Parameters
+		-----------
+		s : {str, int}
+			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
+
+		Returns
+		--------
+		int
+			Position of the Fock state in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> i0 = index("111000") # pick state from basis set
+		>>> print(basis)
+		>>> print(i0)
+		>>> psi = np.zeros(basis.Ns,dtype=np.float64)
+		>>> psi[i0] = 1.0 # define state corresponding to the string "111000"
+
+		"""
+		return self._index(s)
+
+
 	@property
 	def states(self):
 		"""numpy.ndarray(int): basis states stored in their integer representation."""

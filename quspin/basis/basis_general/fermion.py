@@ -531,6 +531,64 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		'''
 		return spinless_fermion_basis_general._Op(self,opstr,indx,J,dtype)
 
+
+	def index(self,up_state,down_state):
+		"""Finds the index of user-defined Fock state in spinful fermion basis.
+
+		Notes
+		-----
+		Particularly useful for defining initial Fock states through a unit vector in the direction specified
+		by `index()`. 
+
+		Parameters
+		-----------
+		up_state : str
+			string which define the Fock state for the spin up fermions. 
+
+		down_state : str
+			string which define the Fock state for the spin down fermions. 
+
+		Returns
+		--------
+		int
+			Position of the Fock state in the `spinful_fermion_basis_1d`.
+
+		Examples
+		--------
+
+		>>> s_up = "".join("1" for i in range(2)) + "".join("0" for i in range(2))
+		>>> s_down = "".join("0" for i in range(2)) + "".join("1" for i in range(2))
+		>>> print( basis.index(s_up,s_down) )
+
+		"""
+		if type(up_state) is int:
+			pass
+		elif type(up_state) is str:
+			up_state = int(up_state,2)
+		else:
+			raise ValueError("up_state must be integer or string.")
+
+		if type(down_state) is int:
+			pass
+		elif type(down_state) is str:
+			down_state = int(down_state,2)
+		else:
+			raise ValueError("down_state must be integer or string.")
+
+		s = down_state + (up_state << self.L)
+
+		indx = _np.argwhere(self._basis == s)
+
+		if len(indx) != 0:
+			return _np.squeeze(indx)
+		else:
+			raise ValueError("state must be representive state in basis.")
+
+	def int_to_state(self,*args):
+		""" Not Implemented."""
+
+	def state_to_int(self,*args):
+		""" Not Implemented."""
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
 		if self._simple_symm:
@@ -573,23 +631,22 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	def _fermion_basis(self):
 		return True 
 
+	def _get_state(self,b):
+		b = int(b)
+		bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
+		state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
+		bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
+		state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
+		return state_left+state_right
+
 	def _get__str__(self):
-		def get_state(b):
-			b = int(b)
-			bits_left = ((b>>(self._N-i-1))&1 for i in range(self._N//2))
-			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
-			bits_right = ((b>>(self._N//2-i-1))&1 for i in range(self._N//2))
-			state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
-			return state_left+state_right
-
-
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+self._get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+self._get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 
