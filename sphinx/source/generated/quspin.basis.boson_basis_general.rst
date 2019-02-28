@@ -14,6 +14,7 @@ quspin.basis.boson\_basis\_general
    .. autosummary::
    
       ~boson_basis_general.Op
+      ~boson_basis_general.Op_bra_ket
       ~boson_basis_general.__init__
       ~boson_basis_general.check_hermitian
       ~boson_basis_general.check_pcon
@@ -24,7 +25,12 @@ quspin.basis.boson\_basis\_general
       ~boson_basis_general.get_vec
       ~boson_basis_general.index
       ~boson_basis_general.inplace_Op
+      ~boson_basis_general.int_to_state
+      ~boson_basis_general.make
+      ~boson_basis_general.normalization
       ~boson_basis_general.partial_trace
+      ~boson_basis_general.representative
+      ~boson_basis_general.state_to_int
    
    
 
@@ -40,5 +46,6 @@ quspin.basis.boson\_basis\_general
       ~boson_basis_general.description
       ~boson_basis_general.operators
       ~boson_basis_general.sps
+      ~boson_basis_general.states
    
    

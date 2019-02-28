@@ -24,7 +24,9 @@ quspin.basis.spin\_basis\_1d
       ~spin_basis_1d.get_vec
       ~spin_basis_1d.index
       ~spin_basis_1d.inplace_Op
+      ~spin_basis_1d.int_to_state
       ~spin_basis_1d.partial_trace
+      ~spin_basis_1d.state_to_int
    
    
 
@@ -41,5 +43,6 @@ quspin.basis.spin\_basis\_1d
       ~spin_basis_1d.description
       ~spin_basis_1d.operators
       ~spin_basis_1d.sps
+      ~spin_basis_1d.states
    
    

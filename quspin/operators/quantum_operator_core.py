@@ -46,7 +46,7 @@ class quantum_operator(object):
 			:lines: 7-
 
 	"""
-	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,op_fmts={},dtype=_np.complex128,**basis_args):
+	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,matrix_formats={},dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_operator` object (parameter dependent quantum quantum_operators).
 
 		Parameters
@@ -75,6 +75,9 @@ class quantum_operator(object):
 			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.
 		check_pcon : bool, optional
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
+		matrix_formats: dict, optional
+			dictionary of key,value pairs which given a key associated with an operator in `input_dict` the value of this dict
+			specifies the format {"csr","csc","dia","dense"}
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
 			to create the quantum_operator.		
@@ -269,7 +272,7 @@ class quantum_operator(object):
 
 		self._Ns = self._shape[0]
 
-		self.update_op_fmts(op_fmts)
+		self.update_matrix_formats(matrix_formats)
 
 	@property
 	def get_operators(self,key):
@@ -1035,20 +1038,33 @@ class quantum_operator(object):
 
 		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
 
-	def update_op_fmts(self,op_fmts):
-		"""
+	def update_matrix_formats(self,formats_dict):
+		"""Change the internal structure of the matrices in-place.
+
+		Parameters
+		-----------
+		formats_dict: str {"csr","csc","dia","dense"} or  dict, keys for the operators with values: str {"csr","csc","dia","dense"}
+			Specifies the format of each operator specified by the key.
+
+		Examples
+		---------
+		Giving `O` which has two operators given by strings: 'Hx' for transverse field, and 'Hising' is the Ising part. The Ising part must be diagonal
+		therefore it is useful to cast it to a DIA matrix format, while the transverse field is not diagonal so it is most efficient to use CSR matrix format.
+		This can be accomplished by the following:
+
+		>>> O.update_matrix_formats(dict(Hx="csr",Hising="dia"))
 
 		"""
-		if type(op_fmts) is not dict:
-			raise ValueError("op_fmts must be a dictionary with the formats of the matrices being values and keys being the operator keys.")
+		if type(matrix_formats) is not dict:
+			raise ValueError("matrix_formats must be a dictionary with the formats of the matrices being values and keys being the operator keys.")
 
-		extra = set(op_fmts.keys()) - set(self._quantum_operator.keys())
+		extra = set(matrix_formats.keys()) - set(self._quantum_operator.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
 		for key in self._quantum_operator.keys():
-			if key in op_fmts:
-				fmt = op_fmts[key]
+			if key in matrix_formats:
+				fmt = matrix_formats[key]
 				if fmt not in ["dia","csr","csc","dense"]:
 					raise TypeError("sparse formats must be either 'csr','csc', 'dia' or 'dense'.")
 
@@ -1086,13 +1102,11 @@ class quantum_operator(object):
 		>>> H_tran = H.transpose()
 
 		"""
-		if copy:
-			new_dict = {key:[op.transpose().copy()] for key,op in iteritems(self._quantum_operator)}
-		else:
-			new_dict = {key:[op.transpose()] for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=False)
+		
+		new_dict = {key:[op.transpose()] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=copy)
 
-	def conjugate(self,copy=False):
+	def conjugate(self):
 		"""Conjugates `quantum_operator` quantum_operator.
 
 		Notes
@@ -1236,17 +1250,17 @@ class quantum_operator(object):
 		if dtype not in hamiltonian_core.supported_dtypes:
 			raise ValueError("quantum_operator can only be cast to floating point types")
 
-		new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
+		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
 
 		if dtype == self._dtype:
 			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,copy=copy)
 		else:
 			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,copy=True)
 
-	def copy(self,deep=True):
+	def copy(self):
 		"""Returns a deep copy of `quantum_operator` object."""
-		new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=deep)
+		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=True)
 
 
 	def __call__(self,**pars):

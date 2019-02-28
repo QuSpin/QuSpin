@@ -24,7 +24,9 @@ quspin.basis.photon\_basis
       ~photon_basis.get_vec
       ~photon_basis.index
       ~photon_basis.inplace_Op
+      ~photon_basis.int_to_state
       ~photon_basis.partial_trace
+      ~photon_basis.state_to_int
    
    
 

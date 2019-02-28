@@ -2,7 +2,6 @@ from .base import basis,MAXPRINT
 from ._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
 from ._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
 from ._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
-from ._basis_utils import basis_int_to_python_int,_get_basis_index
 import numpy as _np
 import scipy.sparse as _sp
 from numpy.linalg import norm,eigvalsh,svd
@@ -29,113 +28,12 @@ class lattice_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
-	def int_to_state(self,state,bracket_notation=True):
-		"""Finds string representation of a state defined in integer representation.
-
-		Notes
-		-----
-		This function is the einverse of `state_to_int`.
-
-		Parameters
-		-----------
-		state : int
-			Defines the Fock state in integer representation in underlying lattice `basis`.
-		bracket_notation : bool, optional
-			Toggles whether to return the state in |str> notation.
-
-		Returns
-		--------
-		str
-			String corresponding to the Fock `state` in the lattice basis.
-
-		Examples
-		--------
-		
-		>>> s = basis[0] # pick state from basis set
-		>>> s_str = basis.int_to_state(s)
-		>>> print(s_str)
-
-		"""
-		state = basis_int_to_python_int(state)
-
-		n_space = len(str(self.sps))
-		if self.N <= 64:
-			bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
-			s_str = " ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits)
-		else:
-			left_bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
-			right_bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
-
-			str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
-			str_list.append("...")
-			str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
-			s_str = (" ".join(str_list))
-
-		if bracket_notation:
-			return "|"+s_str+">"
-		else:
-			return s_str.replace(' ', '')
-
-	def state_to_int(self,state):
-		"""Finds integer representation of a state defined in string format.
-
-		Notes
-		-----
-		This function is the einverse of `int_to_state`.
-
-		Parameters
-		-----------
-		state : str
-			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
-
-		Returns
-		--------
-		int
-			Integer corresponding to the Fock `state` in the lattice basis.
-
-		Examples
-		--------
-		
-		>>> s_str = "111000" # pick state from basis set
-		>>> s = basis.state_to_int(s_str)
-		>>> print(s)
-
-		"""
-		
-		return basis_int_to_python_int(self._basis[self.index(state)])
-
-	def index(self,s):
-		"""Finds the index of user-defined Fock state in any lattice basis.
-
-		Notes
-		-----
-		Particularly useful for defining initial Fock states through a unit vector in the direction specified
-		by `index()`. 
-
-		Parameters
-		-----------
-		s : {str, int}
-			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
-
-		Returns
-		--------
-		int
-			Position of the Fock state in the lattice basis.
-
-		Examples
-		--------
-		
-		>>> i0 = index("111000") # pick state from basis set
-		>>> print(basis)
-		>>> print(i0)
-		>>> psi = np.zeros(basis.Ns,dtype=np.float64)
-		>>> psi[i0] = 1.0 # define state corresponding to the string "111000"
-
-		"""
-		if type(s) is str:
-			s = int(s,self.sps)
-
-		return _get_basis_index(self.states,s)
+	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		basis_view=self._basis[:]
+		basis_view.setflags(write=0,uic=0)
+		return basis_view
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.

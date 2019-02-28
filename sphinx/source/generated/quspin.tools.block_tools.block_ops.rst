@@ -17,6 +17,8 @@ quspin.tools.block\_tools.block\_ops
       ~block_ops.compute_all_blocks
       ~block_ops.evolve
       ~block_ops.expm
+      ~block_ops.get_H
+      ~block_ops.get_P
       ~block_ops.update_blocks
    
    

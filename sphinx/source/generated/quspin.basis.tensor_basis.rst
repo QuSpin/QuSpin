@@ -24,7 +24,9 @@ quspin.basis.tensor\_basis
       ~tensor_basis.get_vec
       ~tensor_basis.index
       ~tensor_basis.inplace_Op
+      ~tensor_basis.int_to_state
       ~tensor_basis.partial_trace
+      ~tensor_basis.state_to_int
    
    
 

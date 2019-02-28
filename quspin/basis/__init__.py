@@ -113,5 +113,4 @@ from .base import *
 from .lattice import *
 from .photon import *
 from .tensor import *
-from ._basis_utils import *
 

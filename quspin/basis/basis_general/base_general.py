@@ -1,6 +1,7 @@
 import numpy as _np
 import scipy.sparse as _sp
 import os
+from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
 from ..lattice import lattice_basis
 import warnings
 
@@ -174,6 +175,37 @@ class basis_general(lattice_basis):
 		string = """general basis for lattice of N = {0} sites containing {5} states \n\t{1}: {2} \n\tquantum numbers: {4} \n\n""".format(self._N,symm,self._conserved,'',blocks,self._Ns)
 		string += self.operators
 		return string
+
+
+	def _int_to_state(self,state,bracket_notation=True):
+		state = basis_int_to_python_int(state)
+
+		n_space = len(str(self.sps))
+		if self.N <= 64:
+			bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
+			s_str = " ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits)
+		else:
+			left_bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
+			right_bits = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
+
+			str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
+			str_list.append("...")
+			str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
+			s_str = (" ".join(str_list))
+
+		if bracket_notation:
+			return "|"+s_str+">"
+		else:
+			return s_str.replace(' ', '')
+
+	def _state_to_int(self,state):
+		return basis_int_to_python_int(self._basis[self.index(state)])
+
+	def _index(self,s):
+		if type(s) is str:
+			s = int(s,self.sps)
+
+		return _get_basis_index(self.states,s)
 	
 
 	def _reduce_n_dtype(self):

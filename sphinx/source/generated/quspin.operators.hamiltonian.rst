@@ -41,6 +41,7 @@ quspin.operators.hamiltonian
       ~hamiltonian.todense
       ~hamiltonian.trace
       ~hamiltonian.transpose
+      ~hamiltonian.update_matrix_formats
    
    
 

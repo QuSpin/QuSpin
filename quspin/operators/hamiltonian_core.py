@@ -231,7 +231,7 @@ class hamiltonian(object):
 			Data type (e.g. numpy.float64) to construct the operator with.
 		static_fmt : str {"csr","csc","dia","dense"}, optional
 			Specifies format of static part of Hamiltonian.
-		dynamic_fmt: dict, keys (func,func_args), values: str {"csr","csc","dia","dense"}, optional
+		dynamic_fmt: str {"csr","csc","dia","dense"} or  dict, keys: (func,func_args), values: str {"csr","csc","dia","dense"}
 			Specifies the format of the dynamic parts of the hamiltonian. To specify a particular dynamic part of the hamiltonian use a tuple (func,func_args) which matches a function+argument pair
 			used in the construction of the hamiltonian as a key in the dictionary.
 		shape : tuple, optional
@@ -459,62 +459,8 @@ class hamiltonian(object):
 				self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 				self._dynamic = {}
 
-		if static_fmt is not None:
-			if type(static_fmt) is not str:
-				raise ValueError("Expecting string for 'sparse_fmt'")
 
-			if static_fmt not in ["csr","csc","dia","dense"]:
-				raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(static_fmt))
-
-
-			if static_fmt == "dense":
-				if _sp.issparse(self._static):
-					self._static = self._static.toarray()
-				else:
-					self._static = _np.ascontiguousarray(self._static)
-			else:
-				sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
-				self._static = sparse_constuctor(self._static)
-
-		if dynamic_fmt is not None:
-			if type(dynamic_fmt) is str:
-
-				if dynamic_fmt not in ["csr","csc","dia"]:
-					raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(dynamic_fmt))
-
-
-				if dynamic_fmt == "dense":
-					updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic) if _sp.issparse(Hd)}
-					updates.update({func:_np.ascontiguousarray(Hd) for func,Hd in iteritems(self._dynamic) if not _sp.issparse(Hd)})
-				else:
-					updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic)}
-
-				
-				self._dynamic.update(updates)
-
-			elif type(dynamic_fmt) in [list,tuple]:
-				for fmt,(f,f_args) in dynamic_fmt:
-
-					func = function(f,tuple(f_args))
-
-					if fmt not in ["csr","csc","dia"]:
-						raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(fmt))
-
-					try:
-						if fmt == "dense":
-							if _sp.issparse(self._static):
-								self._dynamic[func] = self._dynamic[func].toarray()
-							else:
-								self._dynamic[func] = _np.ascontiguousarray(self._dynamic[func])
-						else:
-							sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
-							self._dynamic[func] = sparse_constuctor(self._dynamic[func])
-
-					except KeyError:
-						raise ValueError("({},{}) is not found in dynamic list.".format(f,f_args))
-
-
-		self._get_matvecs()
+		self.update_matrix_formats(static_fmt,dynamic_fmt)
 		self._Ns = self._shape[0]
 
 	@property
@@ -1737,6 +1683,84 @@ class hamiltonian(object):
 		
 		return out
 
+	def update_matrix_formats(self,static_fmt,dynamic_fmt):
+		"""Change the internal structure of the matrices in-place.
+
+		Parameters
+		-----------
+		static_fmt : str {"csr","csc","dia","dense"}
+			Specifies format of static part of Hamiltonian.
+		dynamic_fmt: str {"csr","csc","dia","dense"} or  dict, keys: (func,func_args), values: str {"csr","csc","dia","dense"}
+			Specifies the format of the dynamic parts of the hamiltonian. To specify a particular dynamic part of the hamiltonian use a tuple (func,func_args) which matches a function+argument pair
+			used in the construction of the hamiltonian as a key in the dictionary.
+		copy : bool,optional
+			Whether to return a deep copy of the original object. Default is `copy = False`.
+
+		Examples
+		---------
+		make the dynamic part of the `hamiltonian` object to be DIA matrix format and have the static part be CSR matrix format:
+
+		>>> H.update_matrix_formats(static_fmt="csr",dynamic_fmt={(func,func_args):"dia"})
+
+
+		"""
+		if static_fmt is not None:
+			if type(static_fmt) is not str:
+				raise ValueError("Expecting string for 'sparse_fmt'")
+
+			if static_fmt not in ["csr","csc","dia","dense"]:
+				raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(static_fmt))
+
+
+			if static_fmt == "dense":
+				if _sp.issparse(self._static):
+					self._static = self._static.toarray()
+				else:
+					self._static = _np.ascontiguousarray(self._static)
+			else:
+				sparse_constuctor = getattr(_sp,static_fmt+"_matrix")
+				self._static = sparse_constuctor(self._static)
+
+		if dynamic_fmt is not None:
+			if type(dynamic_fmt) is str:
+
+				if dynamic_fmt not in ["csr","csc","dia","dense"]:
+					raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(dynamic_fmt))
+
+
+				if dynamic_fmt == "dense":
+					updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic) if _sp.issparse(Hd)}
+					updates.update({func:_np.ascontiguousarray(Hd) for func,Hd in iteritems(self._dynamic) if not _sp.issparse(Hd)})
+				else:
+					updates = {func:sparse_constuctor(Hd) for func,Hd in iteritems(self._dynamic)}
+
+				
+				self._dynamic.update(updates)
+
+			elif type(dynamic_fmt) in [list,tuple]:
+				for fmt,(f,f_args) in dynamic_fmt:
+
+					func = function(f,tuple(f_args))
+
+					if fmt not in ["csr","csc","dia","dense"]:
+						raise ValueError("'{0}' is not a valid sparse format for Hamiltonian class.".format(fmt))
+
+					try:
+						if fmt == "dense":
+							if _sp.issparse(self._static):
+								self._dynamic[func] = self._dynamic[func].toarray()
+							else:
+								self._dynamic[func] = _np.ascontiguousarray(self._dynamic[func])
+						else:
+							sparse_constuctor = getattr(_sp,fmt+"_matrix")
+							self._dynamic[func] = sparse_constuctor(self._dynamic[func])
+
+					except KeyError:
+						raise ValueError("({},{}) is not found in dynamic list.".format(f,f_args))
+
+
+		self._get_matvecs()	
+
 	def as_dense_format(self,copy=False):
 		"""Casts `hamiltonian` operator to DENSE format.
 
@@ -1769,13 +1793,13 @@ class hamiltonian(object):
 		return hamiltonian([new_static],dynamic,basis=self._basis,dtype=self._dtype,copy=copy)
 
 	def as_sparse_format(self,static_fmt="csr",dynamic_fmt={},copy=False):
-		"""Casts `hamiltonian` operator to SPARSE format.
+		"""Casts `hamiltonian` operator to SPARSE format(s).
 
 		Parameters
 		-----------
 		static_fmt : str {"csr","csc","dia","dense"}
 			Specifies format of static part of Hamiltonian.
-		dynamic_fmt: dict, keys (func,func_args), values: str {"csr","csc","dia","dense"}
+		dynamic_fmt: str {"csr","csc","dia","dense"} or  dict, keys: (func,func_args), values: str {"csr","csc","dia","dense"}
 			Specifies the format of the dynamic parts of the hamiltonian. To specify a particular dynamic part of the hamiltonian use a tuple (func,func_args) which matches a function+argument pair
 			used in the construction of the hamiltonian as a key in the dictionary.
 		copy : bool,optional
@@ -1786,8 +1810,8 @@ class hamiltonian(object):
 		obj
 			Either one of the following:
 
-			* Shallow copy, if `copy = False`.
-			* Deep copy, if `copy = True`.
+			* whenever possible do not copy data, if `copy = False`.
+			* explicitly copy all possible data, if `copy = True`.
 
 		Examples
 		---------
@@ -1795,12 +1819,9 @@ class hamiltonian(object):
 
 
 		"""
-
-
-		dynamic = [[M,func]	for func,M in iteritems(self.dynamic)]
-
-		return hamiltonian([self.static],dynamic,
-						basis=self._basis,dtype=self._dtype,static_fmt=static_fmt,dynamic_fmt=dynamic_fmt,copy=copy)
+		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
+		return hamiltonian([self.static],dynamic,basis=self._basis,dtype=self._dtype,
+			static_fmt=static_fmt,dynamic_fmt=dynamic_fmt,copy=copy)
 
 	### algebra operations
 
@@ -1967,7 +1988,7 @@ class hamiltonian(object):
 			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=True)
 
 	def copy(self):
-		"""Returns a deep or shallow copy of `hamiltonian` object."""
+		"""Returns a copy of `hamiltonian` object."""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,
 					basis=self._basis,dtype=self._dtype,copy=True)

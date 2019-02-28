@@ -518,6 +518,46 @@ class basis_1d(lattice_basis):
 		string += self.operators
 		return string 
 
+	def _int_to_state(self,state,bracket_notation=True):
+		if int(state)!=state:
+			raise ValueError("state must be integer")
+
+		n_space = len(str(self.sps))
+		if self.N <= 64:
+			bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
+			s_str = " ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits)
+		else:
+			left_bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
+			right_bits = (int(state)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
+
+			str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
+			str_list.append("...")
+			str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
+			s_str = (" ".join(str_list))
+
+		if bracket_notation:
+			return "|"+s_str+">"
+		else:
+			return s_str.replace(' ', '')
+
+	def _state_to_int(self,state):		
+		return int(self._basis[self.index(state)])
+
+	def _index(self,s):
+		if int(s)==s:
+			pass
+		elif type(s) is str:
+			s = int(s,self.sps)
+		else:
+			raise ValueError("s must be integer or string")
+
+		indx = _np.argwhere(self._basis == s)
+
+		if len(indx) != 0:
+			return _np.squeeze(indx)
+		else:
+			raise ValueError("s must be representive state in basis. ")
+
 	def _Op(self,opstr,indx,J,dtype):
 
 		indx = _np.asarray(indx,dtype=_np.int32)

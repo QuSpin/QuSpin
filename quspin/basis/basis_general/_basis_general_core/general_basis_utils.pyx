@@ -6,7 +6,10 @@ import numpy as _np
 cimport numpy as _np
 from numpy cimport npy_intp
 
-
+__all__ = ["uint32","uint64","uint256","uint1024","uint4096","uint16384",
+            "basis_int_to_python_int","python_int_to_basis_int","basis_zeros",
+            "basis_ones","get_basis_type","bitwise_not","bitwise_and","bitwise_or",
+            "bitwise_xor","bitwise_leftshift","bitwise_rightshift"]
 
 uint32 = _np.uint32
 uint64 = _np.uint64
@@ -14,6 +17,200 @@ uint256 = _np.dtype((_np.void,sizeof(uint256_t)))
 uint1024 = _np.dtype((_np.void,sizeof(uint1024_t)))
 uint4096 = _np.dtype((_np.void,sizeof(uint4096_t)))
 uint16384 = _np.dtype((_np.void,sizeof(uint16384_t)))
+
+
+
+
+
+##################################3
+
+
+def basis_int_to_python_int(basis_int):
+    """ Converts QuSpin basis type integer to a python integer.
+
+    This function takes a QuSpin basis type integer and converts it to a python integer with the same value. 
+
+    Parameters
+    -----------
+    basis_int : scalar
+        integer to be converted
+
+    Returns
+    -------
+    object: int
+        the appropriate converted value to a python int. 
+
+    Examples
+    --------
+
+    >>> new_val = basis_int_to_python_int(val,dtype=uint256)
+    >>> new_val = basis_int_to_python_int(val) 
+
+    """
+    cdef _np.ndarray basis_int_wrapper = _np.atleast_1d(basis_int)
+    cdef object python_int = 0
+    cdef object i = 0
+    cdef void * ptr = _np.PyArray_GETPTR1(basis_int_wrapper,0)
+
+    if basis_int_wrapper.size > 1:
+        raise ValueError("input value must be scalar")
+
+    if basis_int_wrapper.dtype in [_np.int32,_np.int64]:
+        basis_int_wrapper = basis_int_wrapper.astype(_np.object)
+
+    if basis_int_wrapper.dtype == _np.object:
+        return basis_int
+    elif basis_int_wrapper.dtype == uint32:
+        return basis_to_python[uint32_t](<uint32_t*>ptr)
+    elif basis_int_wrapper.dtype == uint64:
+        return basis_to_python[uint64_t](<uint64_t*>ptr)
+    elif basis_int_wrapper.dtype == uint256:
+        return basis_to_python[uint256_t](<uint256_t*>ptr)
+    elif basis_int_wrapper.dtype == uint1024:
+        return basis_to_python[uint1024_t](<uint1024_t*>ptr)
+    elif basis_int_wrapper.dtype == uint4096:
+        return basis_to_python[uint4096_t](<uint4096_t*>ptr)
+    elif basis_int_wrapper.dtype == uint16384:
+        return basis_to_python[uint16384_t](<uint16384_t*>ptr)
+    else:
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(basis_int_wrapper.dtype))
+
+
+def python_int_to_basis_int(python_int,dtype=None):
+    """ Converts python integer to QuSpin basis type.
+
+    This function takes a python integer and converts it to a basis type either specified by the user via the `dtype` argument or the minium type which will
+    fit that integer. 
+
+    Parameters
+    -----------
+    python_int : int
+        integer to be converted
+    dtype : dtype, optional
+        data type used to represent the python integer:  `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`,`uint16384` or `numpy.object`
+
+    Returns
+    -------
+    numpy scalar object
+        the appropriate converted value which can be assigned to a numpy array. 
+
+    Examples
+    --------
+
+    >>> new_val = python_int_to_basis_int(val,dtype=uint256)
+    >>> new_val = python_int_to_basis_int(val) 
+
+    """
+    if python_int < 0:
+        raise ValueError("value must be > 0.")
+
+    nbits = 0
+    python_val = int(python_int)
+
+    while(python_val>0):
+        python_val >>= 1
+        nbits += 1
+
+    if dtype is None:
+        if nbits <= 32:
+            dtype = uint32
+        elif nbits <= 64:
+            dtype = uint64
+        elif nbits <= 256:
+            dtype = uint256
+        elif nbits <= 1024:
+            dtype = uint1024
+        elif nbits <= 4096:
+            dtype = uint4096
+        elif nbits <= 16384:
+            dtype = uint16384
+        else:
+            dtype = _np.object
+
+    cdef _np.ndarray a_wrapper = _np.empty((),dtype=dtype)
+    cdef void * ptr = _np.PyArray_GETPTR1(a_wrapper,0)
+
+    if dtype == _np.object:
+        return python_int
+    elif dtype == uint32:
+        if nbits > 32:
+            raise ValueError("python integer too large for bassis type uint32.")
+        python_to_basis_inplace[uint32_t](python_int,<uint32_t*>ptr)
+
+    elif dtype == uint64:
+        if nbits > 64:
+            raise ValueError("python integer too large for bassis type uint64.")
+        python_to_basis_inplace[uint64_t](python_int,<uint64_t*>ptr)
+
+    elif dtype == uint256:
+        if nbits > 256:
+            raise ValueError("python integer too large for bassis type uint256.")
+        python_to_basis_inplace[uint256_t](python_int,<uint256_t*>ptr)
+
+    elif dtype == uint1024:
+        if nbits > 1024:
+            raise ValueError("python integer too large for bassis type uint1024.")
+        python_to_basis_inplace[uint1024_t](python_int,<uint1024_t*>ptr)
+
+    elif dtype == uint4096:
+        if nbits > 4096:
+            raise ValueError("python integer too large for bassis type uint4096.")
+        python_to_basis_inplace[uint4096_t](python_int,<uint4096_t*>ptr)
+
+    elif dtype == uint16384:
+        if nbits > 16384:
+            raise ValueError("python integer too large for bassis type uint16384.")
+        python_to_basis_inplace[uint16384_t](python_int,<uint16384_t*>ptr)
+
+    else:
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(dtype))
+
+    return a_wrapper
+
+
+
+cdef search_array(state_type * ptr,npy_intp n, object value):
+    cdef state_type val = <state_type>(0)
+    cdef npy_intp i = 0
+
+    val = python_to_basis[state_type](value,val)
+
+    for i in range(n):
+        if(ptr[i]==val):
+            return i
+
+    return -1
+
+def _get_basis_index(_np.ndarray basis,object val):
+    cdef object value = basis_int_to_python_int(val)
+    cdef void * ptr = _np.PyArray_GETPTR1(basis,0)
+    cdef npy_intp n = basis.size
+    cdef npy_intp j = 0
+    cdef npy_intp i = -1
+
+    if basis.dtype == uint32:
+        i = search_array[uint32_t](<uint32_t*>ptr,n,value)
+    elif basis.dtype == uint64:
+        i = search_array[uint64_t](<uint64_t*>ptr,n,value)
+    elif basis.dtype == uint256:
+        i = search_array[uint256_t](<uint256_t*>ptr,n,value)
+    elif basis.dtype == uint1024:
+        i = search_array[uint1024_t](<uint1024_t*>ptr,n,value)
+    elif basis.dtype == uint4096:
+        i = search_array[uint4096_t](<uint4096_t*>ptr,n,value)
+    elif basis.dtype == uint16384:
+        i = search_array[uint16384_t](<uint16384_t*>ptr,n,value)
+    else:
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(basis.dtype))
+
+    if i < 0:
+        raise ValueError("s must be representive state in basis. ")
+
+    return i
+
+
+#################################
+
 
 
 
@@ -661,8 +858,6 @@ def bitwise_xor(x1, x2, out=None, where=None):
         raise TypeError("basis dtype {} not recognized.".format(x1.dtype))
     
     return py_array_out
-
-
 
 
 def bitwise_leftshift(x1, x2, out=None, where=None):
