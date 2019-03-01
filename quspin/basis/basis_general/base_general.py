@@ -627,7 +627,7 @@ class basis_general(lattice_basis):
 
 		"""
 
-		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
+		states=_np.array(states,copy=False,dtype=self._basis.dtype,ndmin=1)
 
 		if states.ndim != 1:
 			raise TypeError("dimension of array_like states must not exceed 1.")
@@ -704,7 +704,7 @@ class basis_general(lattice_basis):
 
 		"""
 
-		states=_np.array(states,dtype=self._basis.dtype,ndmin=1)
+		states=_np.array(states,copy=False,dtype=self._basis.dtype,ndmin=1)
 
 		if out is None:
 			out=_np.zeros(states.shape,dtype=self._n_dtype)

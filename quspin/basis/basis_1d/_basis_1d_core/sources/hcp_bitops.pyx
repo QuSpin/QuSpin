@@ -14,7 +14,7 @@ cdef inline NP_INT32_t bit_count(basis_type I,int l):
     elif basis_type is NP_UINT64_t:
         return bitcount_64_C(I,l)
     else:
-        return popcount(I&((1<<l)-1))
+        return popcount(I&((<object>(1)<<l)-1))
 
 cdef inline basis_type shift(basis_type I,int shift,int period,NP_INT8_t * sign,basis_type[:] pars):
     # this functino is used to shift the bits of an integer by 'shift' bits.

@@ -54,8 +54,6 @@ void dia_matvec_contig(const bool overwrite_y,
                       T2 y[])
 {
 
-    const int nthread = omp_get_num_threads();
-
     if(overwrite_y){
         #pragma omp for schedule(static)
         for(I n=0;n<n_row;n++){

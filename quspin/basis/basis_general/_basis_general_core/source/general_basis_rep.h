@@ -62,9 +62,7 @@ void general_representative(general_basis_core<I> *B,
 	if(g_out_ptr && sign_out_ptr){
 		#pragma omp parallel
 		{
-
-			const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
-			#pragma omp for schedule(static,chunk)
+			#pragma omp for schedule(static) // NOTE: refstate time has a constant workload
 			for(npy_intp i=0;i<Ns;i++){
 				int temp_sign = 1;
 				r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_sign);
@@ -75,8 +73,7 @@ void general_representative(general_basis_core<I> *B,
 	else if(g_out_ptr){
 		#pragma omp parallel
 		{
-			const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
-			#pragma omp parallel for schedule(static,chunk)
+			#pragma omp parallel for schedule(static) // NOTE: refstate time has a constant workload
 			for(npy_intp i=0;i<Ns;i++){
 				int temp_sign = 1;
 				r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_sign);
@@ -86,9 +83,8 @@ void general_representative(general_basis_core<I> *B,
 	else if(sign_out_ptr){
 		#pragma omp parallel
 		{
-			const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
 			int g[__GENERAL_BASIS_CORE__max_nt];
-			#pragma omp for schedule(static,chunk)
+			#pragma omp for schedule(static) // NOTE: refstate time has a constant workload
 			for(npy_intp i=0;i<Ns;i++){
 				int temp_sign = 1;
 				r[i] = B->ref_state(s[i],g,temp_sign);
@@ -101,9 +97,8 @@ void general_representative(general_basis_core<I> *B,
 	else{
 		#pragma omp parallel
 		{
-			const npy_intp chunk = Ns/omp_get_num_threads(); // NOTE: refstate time has a constant workload
 			int g[__GENERAL_BASIS_CORE__max_nt];
-			#pragma omp for schedule(static,chunk)
+			#pragma omp for schedule(static) // NOTE: refstate time has a constant workload
 			for(npy_intp i=0;i<Ns;i++){
 				int temp_sign = 1;
 				r[i] = B->ref_state(s[i],g,temp_sign);
