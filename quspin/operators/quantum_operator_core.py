@@ -1038,12 +1038,12 @@ class quantum_operator(object):
 
 		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
 
-	def update_matrix_formats(self,formats_dict):
+	def update_matrix_formats(self,matrix_formats):
 		"""Change the internal structure of the matrices in-place.
 
 		Parameters
 		-----------
-		formats_dict: str {"csr","csc","dia","dense"} or  dict, keys for the operators with values: str {"csr","csc","dia","dense"}
+		matrix_formats: str {"csr","csc","dia","dense"} or  dict, keys for the operators with values: str {"csr","csc","dia","dense"}
 			Specifies the format of each operator specified by the key.
 
 		Examples
