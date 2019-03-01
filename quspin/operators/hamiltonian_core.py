@@ -8,7 +8,7 @@ from ..tools.evolution import evolve
 from ._oputils import matvec as _matvec
 from ._oputils import _get_matvec_function
 
-from .exp_op_core import isexp_op,exp_op
+# from .exp_op_core import isexp_op,exp_op
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
@@ -614,7 +614,7 @@ class hamiltonian(object):
 	
 		"""
 
-		#from .exp_op_core import isexp_op
+		from .exp_op_core import isexp_op
 
 		
 		if ishamiltonian(V):
@@ -812,7 +812,7 @@ class hamiltonian(object):
 			 
 		"""
 
-		#from .exp_op_core import isexp_op
+		from .exp_op_core import isexp_op
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -872,7 +872,7 @@ class hamiltonian(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		#from .exp_op_core import isexp_op
+		from .exp_op_core import isexp_op
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -1031,7 +1031,7 @@ class hamiltonian(object):
 		correponds to :math:`V^\\dagger H V`.
 
 		"""
-		#from .exp_op_core import isexp_op
+		from .exp_op_core import isexp_op
 
 
 		if ishamiltonian(proj):
@@ -1137,6 +1137,7 @@ class hamiltonian(object):
 		corresponds to :math:`\\exp(K^\\dagger) H \\exp(K)`.
 
 		"""
+		from .exp_op_core import exp_op 
 
 		if generator:
 			return exp_op(other,**exp_op_kwargs).sandwich(self)

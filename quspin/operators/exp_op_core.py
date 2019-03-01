@@ -32,7 +32,7 @@ class exp_op(object):
 	-----
 	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
 
-	For a fast computations, look up the `tools.expm_multiply_parallel` function.
+	For a faster computations, look up the `tools.expm_multiply_parallel` function.
 
 	Examples
 	---------
