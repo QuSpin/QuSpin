@@ -475,7 +475,7 @@ class block_ops(object):
 
 	def get_P(self,key):
 		if self._P_dict.get(key) is None:
-			p = b.get_proj(self.dtype,**self._get_proj_kwargs)
+			p = self._basis_dict[key].get_proj(self.dtype,**self._get_proj_kwargs)
 			if self._save:
 				self._P_dict[key] = p
 
@@ -488,10 +488,10 @@ class block_ops(object):
 
 		if self._H_dict.get(key) is None:
 			if not self._checked:
-				H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._checks)
+				H = hamiltonian(self._static,self._dynamic,basis=self._basis_dict[key],dtype=self.dtype,**self._checks)
 				self._checked=True
 			else:
-				H = hamiltonian(self._static,self._dynamic,basis=b,dtype=self.dtype,**self._no_checks)
+				H = hamiltonian(self._static,self._dynamic,basis=self._basis_dict[key],dtype=self.dtype,**self._no_checks)
 
 			if self._save:
 				self._H_dict[key] = H
