@@ -1,3 +1,5 @@
+rm failed.txt
+
 cd tests/
 sh run_test.sh
 
