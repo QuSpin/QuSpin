@@ -473,7 +473,7 @@ class block_ops(object):
 				self._H_dict[key] = H
 
 
-	def get_P(self,key):
+	def _get_P(self,key):
 		if self._P_dict.get(key) is None:
 			p = self._basis_dict[key].get_proj(self.dtype,**self._get_proj_kwargs)
 			if self._save:
@@ -483,7 +483,7 @@ class block_ops(object):
 		else:
 			return self._P_dict[key]
 
-	def get_H(self,key):
+	def _get_H(self,key):
 		from ..operators import hamiltonian
 
 		if self._H_dict.get(key) is None:
@@ -569,7 +569,7 @@ class block_ops(object):
 		H_list = []
 		psi_blocks = []
 		for key,b in _iteritems(self._basis_dict):
-			p = self.get_P(key)
+			p = self._get_P(key)
 
 			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
@@ -581,7 +581,7 @@ class block_ops(object):
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
-				H_list.append(self.get_H(key))
+				H_list.append(self._get_H(key))
 
 		if block_diag and H_list:
 			N_H = len(H_list)
@@ -725,7 +725,7 @@ class block_ops(object):
 		H_list = []
 		psi_blocks = []
 		for key,b in _iteritems(self._basis_dict):
-			p = self.get_P(key)
+			p = self._get_P(key)
 
 			if _sp.issparse(psi_0):
 				psi = p.H.dot(psi_0).toarray()
@@ -736,7 +736,7 @@ class block_ops(object):
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
 				psi_blocks.append(psi)
 				P.append(p.tocoo())
-				H = self.get_H(key)
+				H = self._get_H(key)
 				H = H(H_time_eval)*a
 				if shift is not None:
 					H += a*shift*_sp.identity(b.Ns,dtype=self.dtype)

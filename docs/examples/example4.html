@@ -1,0 +1,267 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>The Spectrum of the Transverse Field Ising Model and the Jordan-Wigner Transformation &#8212; QuSpin 0.3.1 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-spectrum-of-the-transverse-field-ising-model-and-the-jordan-wigner-transformation">
+<span id="example4-label"></span><h1>The Spectrum of the Transverse Field Ising Model and the Jordan-Wigner Transformation<a class="headerlink" href="#the-spectrum-of-the-transverse-field-ising-model-and-the-jordan-wigner-transformation" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/bfd47563a7ee906e23a99135601de8a6/example4.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="c1"># line 4 and line 5 below are for development purposes and can be removed</span>
+<span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
+<span class="c1">#####################################################################</span>
+<span class="c1">#                            example 4                              #</span>
+<span class="c1">#    In this script we demonstrate how to construct fermionic       #</span>
+<span class="c1">#    Hamiltonians, and check the Jordan-Wigner transformation.      #</span>
+<span class="c1">#####################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span> <span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="c1">#</span>
+<span class="c1">##### define model parameters #####</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">8</span> <span class="c1"># system size</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin zz interaction</span>
+<span class="n">h</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># z magnetic field strength</span>
+<span class="c1">#</span>
+<span class="c1"># loop over spin inversion symmetry block variable and boundary conditions</span>
+<span class="k">for</span> <span class="n">zblock</span><span class="p">,</span><span class="n">PBC</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+	<span class="c1">#</span>
+	<span class="c1">##### define spin model</span>
+	<span class="c1"># site-coupling lists (PBC for both spin inversion sectors)</span>
+	<span class="n">h_field</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+	<span class="n">J_zz</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+	<span class="c1"># define spin static and dynamic lists</span>
+	<span class="n">static_spin</span> <span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_zz</span><span class="p">],[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">h_field</span><span class="p">]]</span> <span class="c1"># static part of H</span>
+	<span class="n">dynamic_spin</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># time-dependent part of H</span>
+	<span class="c1"># construct spin basis in pos/neg spin inversion sector depending on APBC/PBC</span>
+	<span class="n">basis_spin</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">zblock</span><span class="o">=</span><span class="n">zblock</span><span class="p">)</span> 
+	<span class="c1"># build spin Hamiltonians</span>
+	<span class="n">H_spin</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_spin</span><span class="p">,</span><span class="n">dynamic_spin</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_spin</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+	<span class="c1"># calculate spin energy levels</span>
+	<span class="n">E_spin</span><span class="o">=</span><span class="n">H_spin</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">()</span>
+	<span class="c1">#</span>
+	<span class="c1">##### define fermion model</span>
+	<span class="c1"># define site-coupling lists for external field</span>
+	<span class="n">h_pot</span><span class="o">=</span><span class="p">[[</span><span class="mf">2.0</span><span class="o">*</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+	<span class="k">if</span> <span class="n">PBC</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># periodic BC: odd particle number subspace only</span>
+		<span class="c1"># define site-coupling lists (including boudary couplings)</span>
+		<span class="n">J_pm</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+		<span class="n">J_mp</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+		<span class="n">J_pp</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+		<span class="n">J_mm</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+		<span class="c1"># construct fermion basis in the odd particle number subsector</span>
+		<span class="n">basis_fermion</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+	<span class="k">elif</span> <span class="n">PBC</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># anti-periodic BC: even particle number subspace only</span>
+		<span class="c1"># define bulk site coupling lists</span>
+		<span class="n">J_pm</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+		<span class="n">J_mp</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+		<span class="n">J_pp</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+		<span class="n">J_mm</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+		<span class="c1"># add boundary coupling between sites (L-1,0)</span>
+		<span class="n">J_pm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># APBC</span>
+		<span class="n">J_mp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># APBC</span>
+		<span class="n">J_pp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># APBC</span>
+		<span class="n">J_mm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># APBC</span>
+		<span class="c1"># construct fermion basis in the even particle number subsector</span>
+		<span class="n">basis_fermion</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+	<span class="c1"># define fermionic static and dynamic lists</span>
+	<span class="n">static_fermion</span> <span class="o">=</span><span class="p">[[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">J_pm</span><span class="p">],[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">J_mp</span><span class="p">],[</span><span class="s2">&quot;++&quot;</span><span class="p">,</span><span class="n">J_pp</span><span class="p">],[</span><span class="s2">&quot;--&quot;</span><span class="p">,</span><span class="n">J_mm</span><span class="p">],[</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">h_pot</span><span class="p">]]</span>
+	<span class="n">dynamic_fermion</span><span class="o">=</span><span class="p">[]</span>
+	<span class="c1"># build fermionic Hamiltonian</span>
+	<span class="n">H_fermion</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_fermion</span><span class="p">,</span><span class="n">dynamic_fermion</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_fermion</span><span class="p">,</span>
+							<span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+	<span class="c1"># calculate fermionic energy levels</span>
+	<span class="n">E_fermion</span><span class="o">=</span><span class="n">H_fermion</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">()</span>
+	<span class="c1">#</span>
+	<span class="c1">##### plot spectra</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">H_fermion</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">E_fermion</span><span class="o">/</span><span class="n">L</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span>
+									<span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fermion&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">H_spin</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">E_spin</span><span class="o">/</span><span class="n">L</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span>
+									<span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spin&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;state number&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example4.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+	<span class="c1">#plt.show()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example4.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

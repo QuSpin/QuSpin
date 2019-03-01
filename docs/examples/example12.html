@@ -1,0 +1,277 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Parallel Computing in QuSpin &#8212; QuSpin 0.3.1 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="parallel-computing-in-quspin">
+<span id="example12-label"></span><h1>Parallel Computing in QuSpin<a class="headerlink" href="#parallel-computing-in-quspin" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/491fbbb7adaf5c4ccc3aa0778c6dde17/example12.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p>This example shows how to speed up QuSpin code via multi-threading by using</p>
+<ul class="simple">
+<li>OpenMP,</li>
+<li>Intel’s MKL library for NumPy/SciPy (which is Anaconda’s default NumPy version, starting from Anaconda 2.5 onwards).</li>
+</ul>
+<p>To install quspin with OpenMP support using anaconda (see also <a class="reference internal" href="../parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a>), run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c weinbe58 omp quspin
+</pre></div>
+</div>
+<p>The example below demonstrates how to use the OpenMP version of quspin for parallel computing. It is set up in such a way that the number of OpenMP and MKL threads is controlled from the command line [cf. code lines 8,9]. To run the script, run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python example12.py ${OMP_NUM_THREADS} ${MKL_NUM_THREADS}
+</pre></div>
+</div>
+<p>You can directly compare the speed for different values of the number of threads [make sure your machine’s processor has more than one core]</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python example12.py 1 1 # single-threaded computation
+$ python example12.py 4 1 # multi-threaded OpenMP computation, speedup for basis functions, evolution, and matrix-vector multiplication
+$ python example12.py 1 4 # multi-threaded MKL computation, speedup for diagonalization-like routines
+$ python example12.py 4 4 # simulaneous OpenMP and MKL multi-threading speedup
+</pre></div>
+</div>
+<p>Notice how, as explained in <a class="reference internal" href="../parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a>, <cite>OMP_NUM_THREADS</cite> improves the speed of the basis computation (code line 43), and the time evolution (code line 65), while <cite>MKL_NUM_THREADS</cite> improves the speed of the exact diagonalization step (code line 60).</p>
+<p><strong>Note:</strong> there is a common problem with using OpenMP on OSX with anaconda packages for Python 3, which may induce an error unrelated to QuSpin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized.
+</pre></div>
+</div>
+<p>However, this error can be disabled [at one’s own risk!] until it is officially fixed, see code line 7 below.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/491fbbb7adaf5c4ccc3aa0778c6dde17/example12.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="c1"># line 4 and line 5 below are for development purposes and can be removed</span>
+<span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="c1">###########################################################################</span>
+<span class="c1">#                            example 12                                   #</span>
+<span class="c1"># In this script we show how to use QuSpin&#39;s OpenMP and MKL capabilities. #	</span>
+<span class="c1">###########################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span>
+<span class="kn">from</span> <span class="nn">quspin.operators._make_hamiltonian</span> <span class="kn">import</span> <span class="n">_consolidate_static</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#fixes seed of rng</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span> <span class="c1"># timing package</span>
+<span class="k">def</span> <span class="nf">run_computation</span><span class="p">():</span>
+	<span class="c1">#</span>
+	<span class="c1">###### define model parameters ######</span>
+	<span class="n">J1</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin=spin interaction</span>
+	<span class="n">J2</span><span class="o">=</span><span class="mf">0.5</span> <span class="c1"># magnetic field strength</span>
+	<span class="n">Omega</span><span class="o">=</span><span class="mf">8.0</span> <span class="c1"># drive frequency</span>
+	<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span> <span class="c1"># linear dimension of spin 1 2d lattice</span>
+	<span class="n">N_2d</span> <span class="o">=</span> <span class="n">Lx</span><span class="o">*</span><span class="n">Ly</span> <span class="c1"># number of sites for spin 1</span>
+	<span class="c1">#</span>
+	<span class="c1">###### setting up user-defined symmetry transformations for 2d lattice ######</span>
+	<span class="n">sites</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)</span> <span class="c1"># sites [0,1,2,....]</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="n">sites</span><span class="o">%</span><span class="n">Lx</span> <span class="c1"># x positions for sites</span>
+	<span class="n">y</span> <span class="o">=</span> <span class="n">sites</span><span class="o">//</span><span class="n">Lx</span> <span class="c1"># y positions for sites</span>
+	<span class="c1">#</span>
+	<span class="n">T_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">y</span> <span class="c1"># translation along x-direction</span>
+	<span class="n">T_y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span><span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Ly</span><span class="p">)</span> <span class="c1"># translation along y-direction</span>
+	<span class="c1">#</span>
+	<span class="n">T_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Ly</span><span class="p">)</span> <span class="c1"># translation along anti-diagonal</span>
+	<span class="n">T_d</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Ly</span><span class="p">)</span> <span class="c1"># translation along diagonal</span>
+	<span class="c1">#</span>
+	<span class="c1">###### setting up bases ######</span>
+	<span class="n">basis_2d</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># making the basis sped up by OpenMP</span>
+	<span class="k">print</span><span class="p">(</span><span class="s1">&#39;finished computing basis&#39;</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="c1">###### setting up hamiltonian ######</span>
+	<span class="c1"># set up time-dependence</span>
+	<span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Omega</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">Omega</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">drive_args</span><span class="o">=</span><span class="p">[</span><span class="n">Omega</span><span class="p">,]</span>
+	<span class="c1"># setting up site-coupling lists</span>
+	<span class="n">J1_list</span><span class="o">=</span><span class="p">[[</span><span class="n">J1</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_x</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">J1</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+	<span class="n">J2_list</span><span class="o">=</span><span class="p">[[</span><span class="n">J2</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_d</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">J2</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_a</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+	<span class="c1">#</span>
+	<span class="n">static</span> <span class="o">=</span><span class="p">[</span> <span class="p">[</span><span class="s2">&quot;xx&quot;</span><span class="p">,</span><span class="n">J1_list</span><span class="p">],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,</span><span class="n">J1_list</span><span class="p">],[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J1_list</span><span class="p">]</span> <span class="p">]</span>  
+	<span class="n">dynamic</span><span class="o">=</span><span class="p">[</span> <span class="p">[</span><span class="s2">&quot;xx&quot;</span><span class="p">,</span><span class="n">J2_list</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,</span><span class="n">J2_list</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">],[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J2_list</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">]</span> <span class="p">]</span>
+	<span class="c1"># build hamiltonian</span>
+	<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_2d</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+	<span class="c1"># diagonalise H</span>
+	<span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;LA&#39;</span><span class="p">)</span> <span class="c1"># H.eigsh sped up by MKL</span>
+	<span class="k">print</span><span class="p">(</span><span class="s1">&#39;finished computing energies&#39;</span><span class="p">)</span>
+	<span class="n">psi_0</span><span class="o">=</span><span class="n">V</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1"># evolve state</span>
+	<span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mi">20</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">Omega</span><span class="p">,</span><span class="mi">21</span><span class="p">)</span>
+	<span class="n">psi_t</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># H.evolve sped up by OpenMP</span>
+	<span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">psi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_t</span><span class="p">):</span>
+		<span class="n">E_t</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+		<span class="k">print</span><span class="p">(</span><span class="s2">&quot;finished evolving up to time step {:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="p">)</span>
+<span class="c1"># time computation</span>
+<span class="n">ti</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="c1"># start timer</span>
+<span class="n">run_computation</span><span class="p">()</span> 
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;single-threded simulation took {0:.4f} sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Parallel Computing in QuSpin</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example12.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>
