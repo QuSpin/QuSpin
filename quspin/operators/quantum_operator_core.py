@@ -76,8 +76,8 @@ class quantum_operator(object):
 		check_pcon : bool, optional
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
 		matrix_formats: dict, optional
-			dictionary of key,value pairs which given a key associated with an operator in `input_dict` the value of this dict
-			specifies the format {"csr","csc","dia","dense"}
+			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
+			specifies the sparse matrix format {"csr","csc","dia","dense"}.
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
 			to create the quantum_operator.		
@@ -1038,17 +1038,18 @@ class quantum_operator(object):
 
 		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
 
-	def update_matrix_formats(self,formats_dict):
+	def update_matrix_formats(self,matrix_formats):
 		"""Change the internal structure of the matrices in-place.
 
 		Parameters
 		-----------
-		formats_dict: str {"csr","csc","dia","dense"} or  dict, keys for the operators with values: str {"csr","csc","dia","dense"}
-			Specifies the format of each operator specified by the key.
+		matrix_formats: dict, optional
+			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
+			specifies the sparse matrix format {"csr","csc","dia","dense"}.
 
 		Examples
 		---------
-		Giving `O` which has two operators given by strings: 'Hx' for transverse field, and 'Hising' is the Ising part. The Ising part must be diagonal
+		Given `O` which has two operators defined by strings: 'Hx' for transverse field, and 'Hising' is the Ising part. The Ising part must be diagonal
 		therefore it is useful to cast it to a DIA matrix format, while the transverse field is not diagonal so it is most efficient to use CSR matrix format.
 		This can be accomplished by the following:
 
