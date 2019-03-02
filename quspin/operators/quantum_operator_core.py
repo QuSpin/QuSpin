@@ -5,6 +5,7 @@ from ..basis import isbasis as _isbasis
 
 from ._oputils import _get_matvec_function, matvec as _matvec
 from ._make_hamiltonian import make_static
+from ._make_hamiltonian import _check_almost_zero
 
 from . import hamiltonian_core
 
@@ -243,7 +244,7 @@ class quantum_operator(object):
 					# if not
 					if basis is None: 
 						if N is None: # if N is missing 
-							raise Exception("argument N or shape needed to create empty hamiltonian")
+							raise Exception("argument N or shape needed to create empty quantum_operator")
 
 						if type(N) is not int: # if L is not int
 							raise TypeError('argument N must be integer')
@@ -272,11 +273,20 @@ class quantum_operator(object):
 
 		self._Ns = self._shape[0]
 
+		keys = list(self._quantum_operator.keys())
+		for key in keys:
+			if _check_almost_zero(self._quantum_operator[key]):
+				self._quantum_operator.pop(key)
+
 		self.update_matrix_formats(matrix_formats)
 
 	@property
 	def get_operators(self,key):
 		return self._quantum_operator[key]
+	
+	@property
+	def shape(self):
+		return self._shape
 	
 
 	@property
@@ -1105,7 +1115,8 @@ class quantum_operator(object):
 		"""
 		
 		new_dict = {key:[op.transpose()] for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=copy)
+		print(self._basis)
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=copy)
 
 	def conjugate(self):
 		"""Conjugates `quantum_operator` quantum_operator.
@@ -1125,12 +1136,8 @@ class quantum_operator(object):
 		>>> H_conj = H.conj()
 
 		"""
-		if copy:
-			new_dict = {key:[op.conjugate().copy()] for key,op in iteritems(self._quantum_operator)}
-		else:
-			new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
-
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=False)
+		new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=False)
 
 	def conj(self):
 		"""Conjugates `quantum_operator` quantum_operator.
@@ -1171,7 +1178,39 @@ class quantum_operator(object):
 		>>> H_herm = H.getH()
 
 		"""
-		return self.conj().transpose(copy=copy)
+		return self.conjugate().transpose(copy=copy)
+
+	def copy(self):
+		"""Returns a deep copy of `quantum_operator` object."""
+		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=True)
+
+	def astype(self,dtype,copy=False):
+		""" Changes data type of `quantum_operator` object.
+
+		Parameters
+		-----------
+		dtype : 'type'
+			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
+
+		Returns
+		`quantum_operator`
+			quantum_operator with altered data type.
+
+		Examples
+		---------
+		>>> H_cpx=H.astype(np.complex128)
+
+		"""
+		if dtype not in hamiltonian_core.supported_dtypes:
+			raise ValueError("quantum_operator can only be cast to floating point types")
+
+		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
+
+		if dtype == self._dtype:
+			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=copy)
+		else:
+			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=True)
 
 
 	### lin-alg operations
@@ -1231,38 +1270,15 @@ class quantum_operator(object):
 				tr += pars[key] * value.diagonal().sum()
 		return tr
 
-	def astype(self,dtype,copy=False):
-		""" Changes data type of `quantum_operator` object.
+	def __str__(self):
+		s = ""
+		for key,op in iteritems(self._quantum_operator):
+			s = s + ("{}:\n{}\n".format(key,op))
 
-		Parameters
-		-----------
-		dtype : 'type'
-			The data type (e.g. numpy.float64) to cast the Hamiltonian with.
+		return s
 
-		Returns
-		`quantum_operator`
-			quantum_operator with altered data type.
-
-		Examples
-		---------
-		>>> H_cpx=H.astype(np.complex128)
-
-		"""
-		if dtype not in hamiltonian_core.supported_dtypes:
-			raise ValueError("quantum_operator can only be cast to floating point types")
-
-		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
-
-		if dtype == self._dtype:
-			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,copy=copy)
-		else:
-			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,copy=True)
-
-	def copy(self):
-		"""Returns a deep copy of `quantum_operator` object."""
-		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=True)
-
+	def __repr__(self):
+		return "<{} x {} quspin.operator.quantum_operator with {} operator(s)>".format(self.shape[0],self.shape[1],len(self._quantum_operator))
 
 	def __call__(self,**pars):
 		pars = self._check_scalar_pars(pars)
@@ -1277,11 +1293,14 @@ class quantum_operator(object):
 	def __iadd__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,quantum_operator):
-			for key,value in iteritems(other._quantum_operator_dict):
+			for key,value in iteritems(other._quantum_operator):
 				if key in self._quantum_operator:
 					self._quantum_operator[key] = self._quantum_operator[key] + value
 				else:
 					self._quantum_operator[key] = value
+
+				if _check_almost_zero(self._quantum_operator[key]):
+					self._quantum_operator.pop(key)
 
 			self._update_matvecs()
 			return self
@@ -1299,11 +1318,14 @@ class quantum_operator(object):
 	def __isub__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,quantum_operator):
-			for key,values in iteritems(other._quantum_operator_dict):
+			for key,value in iteritems(other._quantum_operator):
 				if key in self._quantum_operator:
 					self._quantum_operator[key] = self._quantum_operator[key] - value
 				else:
 					self._quantum_operator[key] = -value
+
+				if _check_almost_zero(self._quantum_operator[key]):
+					self._quantum_operator.pop(key)
 
 			self._update_matvecs()
 			return self

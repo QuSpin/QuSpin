@@ -627,7 +627,9 @@ class basis_general(lattice_basis):
 
 		"""
 
-		states=_np.array(states,copy=False,dtype=self._basis.dtype,ndmin=1)
+		states = _np.asarray(states,order="C",dtype=self._basis.dtype)
+		states = _np.atleast_1d(states)
+
 
 		if states.ndim != 1:
 			raise TypeError("dimension of array_like states must not exceed 1.")
@@ -636,10 +638,10 @@ class basis_general(lattice_basis):
 			g_out=_np.zeros((states.shape[0],self._qs.shape[0] ), dtype=_np.int32, order='C')
 
 		if return_sign:
-			sign_out=_np.zeros((states.shape[0], ), dtype=_np.int8, order='C')
+			sign_out=_np.zeros(states.shape, dtype=_np.int8, order='C')
 
 		if out is None:
-			out=_np.zeros(states.shape,dtype=self._basis.dtype)
+			out=_np.zeros(states.shape,dtype=self._basis.dtype,order="C")
 
 			if return_g and return_sign:
 				self._core.representative(states,out,g_out=g_out,sign_out=sign_out)
@@ -655,12 +657,14 @@ class basis_general(lattice_basis):
 				return out
 
 		else:
+			if not isinstance(out,_np.ndarray):
+				raise TypeError('out must be a numpy.ndarray')
 			if states.shape!=out.shape:
 				raise TypeError('states and out must have same shape.')
 			if out.dtype != self._basis.dtype:
 				raise TypeError('out must have same type as basis')
-			if not isinstance(out,_np.ndarray):
-				raise TypeError('out must be a numpy.ndarray')
+			if not out.flags["CARRAY"]:
+				raise ValueError("out must be C-contiguous array.")
 			
 			if return_g and return_sign:
 				self._core.representative(states,out,g_out=g_out,sign_out=sign_out)
@@ -704,7 +708,8 @@ class basis_general(lattice_basis):
 
 		"""
 
-		states=_np.array(states,copy=False,dtype=self._basis.dtype,ndmin=1)
+		states = _np.asarray(states,order="C",dtype=self._basis.dtype)
+		states = _np.atleast_1d(states)
 
 		if out is None:
 			out=_np.zeros(states.shape,dtype=self._n_dtype)
@@ -722,6 +727,9 @@ class basis_general(lattice_basis):
 			if _np.issubdtype(out.dtype, _np.signedinteger):
 				raise TypeError('out must have datatype numpy.uint8, numpy.uint16, numpy.uint32, or numpy.uint64.')
 		
+			if not out.flags["CARRAY"]:
+				raise ValueError("out must be C-contiguous array.")
+
 			self._core.normalization(states,out)
 
 			out_dtype = _np.min_scalar_type(out.max())

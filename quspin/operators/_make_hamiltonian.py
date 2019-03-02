@@ -8,6 +8,15 @@ from ._functions import function
 
 
 
+def _check_almost_zero(matrix):
+	""" Check if matrix is almost zero. """
+	atol = 100*_np.finfo(matrix.dtype).eps
+
+	if _sp.issparse(matrix):
+		return _np.allclose(matrix.data,0,atol=atol)
+	else:
+		return _np.allclose(matrix,0,atol=atol)
+
 
 def _consolidate_static(static_list):
 	eps = 10 * _np.finfo(_np.float64).eps
@@ -144,6 +153,9 @@ def make_dynamic(basis,dynamic_list,dtype):
 				dynamic[func] = dynamic[func] + Ht
 		else:
 			dynamic[func] = Ht
+
+		if _check_almost_zero(dynamic[func]):
+			dynamic.pop(func)
 
 
 	return dynamic

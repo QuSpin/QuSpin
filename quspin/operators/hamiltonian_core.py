@@ -13,6 +13,7 @@ from ._oputils import _get_matvec_function
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
 from ._make_hamiltonian import test_function
+from ._make_hamiltonian import _check_almost_zero
 from ._functions import function
 
 # need linear algebra packages
@@ -156,14 +157,6 @@ def _check_dynamic(sub_list):
 		raise TypeError('expecting list with object, driving function, and function arguments')
 
 
-def _check_almost_zero(matrix):
-	""" Check if matrix is almost zero. """
-	atol = 100*_np.finfo(matrix.dtype).eps
-
-	if _sp.issparse(matrix):
-		return _np.allclose(matrix.data,0,atol=atol)
-	else:
-		return _np.allclose(matrix,0,atol=atol)
 
 
 def _hamiltonian_dot(hamiltonian,time,v):

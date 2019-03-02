@@ -232,7 +232,7 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("input array must be C-contiguous")
+            raise ValueError("basis array must be writable and C-contiguous")
 
         if basis.dtype == uint32:
             with nogil:
@@ -273,7 +273,7 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("basis array must be C-contiguous")
+            raise ValueError("basis array must be writable and C-contiguous")
 
         if basis.dtype == uint32:
             with nogil:
@@ -318,12 +318,12 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("basis array must be C-contiguous")
+            raise ValueError("basis array must be writable and C-contiguous")
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
 
-            if not basis_pcon.flags["CARRAY"]:
+            if not basis_pcon.flags["C_CONTIGUOUS"]:
                 raise ValueError("input array must be C-contiguous")
 
             if basis.dtype != basis_pcon.dtype:
@@ -378,13 +378,13 @@ cdef class general_basis_core_wrap:
         cdef uint64_t* uint64_basis_ptr = NULL
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("input array must be C-contiguous")
+            raise ValueError("basis array must be writable and C-contiguous")
 
         if basis_pcon is not None:
             Ns_full = basis_pcon.shape[0]
 
-            if not basis_pcon.flags["CARRAY"]:
-                raise ValueError("input array must be C-contiguous")
+            if not basis_pcon.flags["C_CONTIGUOUS"]:
+                raise ValueError("basis array must be C-contiguous")
 
             if basis.dtype != basis_pcon.dtype:
                 raise TypeError("basis_pcon must match dtype of the basis.")
@@ -457,7 +457,7 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("input array must be C-contiguous")
+            raise ValueError("basis array must be writable and C-contiguous")
 
         if basis.dtype == uint32:
             with nogil:
@@ -485,7 +485,7 @@ cdef class general_basis_core_wrap:
 
 
         if not basis.flags["CARRAY"]:
-            raise ValueError("input array must be C-contiguous")
+            raise ValueError("basis array must be writable and C-contiguous")
 
         if basis.dtype == uint32:
             s32 = python_to_basis_int(s,s32)
@@ -530,8 +530,11 @@ cdef class general_basis_core_wrap:
         cdef void * ket_ptr = _np.PyArray_GETPTR1(ket,0)
         cdef void * bra_ptr = _np.PyArray_GETPTR1(bra,0)
 
-        if not ket.flags["CARRAY"] or not bra.flags["CARRAY"]:
-            raise ValueError("input arrays must be C-contiguous")
+        if not ket.flags["C_CONTIGUOUS"]:
+            raise ValueError("key array must be C-contiguous")
+
+        if not bra.flags["CARRAY"]:
+            raise ValueError("bra array must be writable and C-contiguous")
         
         if ket.dtype != bra.dtype:
             raise ValueError("ket and bra arrays must have same dtype.")
@@ -595,8 +598,11 @@ cdef class general_basis_core_wrap:
         cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
         cdef void * ref_states_ptr = _np.PyArray_GETPTR1(ref_states,0)
         
-        if not states.flags["CARRAY"] or not ref_states.flags["CARRAY"]:
-            raise ValueError("input arrays must be C-contiguous")
+        if not states.flags["C_CONTIGUOUS"]:
+            raise ValueError("states array must be C-contiguous")
+
+        if not ref_states.flags["CARRAY"]:
+            raise ValueError("out array must be C-contiguous and writable")
         
         if states.dtype != ref_states.dtype:
             raise ValueError("ket and bra arrays must have same dtype.")
@@ -638,8 +644,8 @@ cdef class general_basis_core_wrap:
         cdef void * B = self._basis_core
         cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
 
-        if not states.flags["CARRAY"]:
-            raise ValueError("input arrays must be C-contiguous")
+        if not states.flags["C_CONTIGUOUS"]:
+            raise ValueError("states arrays must be C-contiguous")
 
         if states.dtype == uint32:
             with nogil:
