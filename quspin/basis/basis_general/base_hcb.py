@@ -7,8 +7,8 @@ import cProfile
 
 # general basis for hardcore bosons/spin-1/2
 class hcb_basis_general(basis_general):
-	def __init__(self,N,Nb=None,Ns_block_est=None,_Np=None,_make_basis=True,**kwargs):
-		basis_general.__init__(self,N,**kwargs)
+	def __init__(self,N,Nb=None,Ns_block_est=None,_Np=None,_make_basis=True,block_order=None,**kwargs):
+		basis_general.__init__(self,N,block_order=block_order,**kwargs)
 		self._check_pcon = False
 		self._count_particles = False
 		if _Np is not None and Nb is None:

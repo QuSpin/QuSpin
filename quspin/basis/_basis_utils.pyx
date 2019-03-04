@@ -10,18 +10,10 @@ from numpy cimport int8_t, int16_t, int32_t, int64_t
 from numpy cimport uint8_t, uint16_t, uint32_t, uint64_t
 from libcpp.vector cimport vector
 from libcpp cimport bool
-from general_basis_core cimport state_type,uint32_t,uint64_t,uint256_t,uint1024_t,uint4096_t,uint16384_t,python_to_basis,basis_to_python,python_to_basis_inplace
 # python imports
 import numpy as _np
 
 
-
-_uint32 = _np.uint32
-_uint64 = _np.uint64
-_uint256 = _np.dtype((_np.void,sizeof(uint256_t)))
-_uint1024 = _np.dtype((_np.void,sizeof(uint1024_t)))
-_uint4096 = _np.dtype((_np.void,sizeof(uint4096_t)))
-_uint16384 = _np.dtype((_np.void,sizeof(uint16384_t)))
 
 
 ctypedef fused npy_type:

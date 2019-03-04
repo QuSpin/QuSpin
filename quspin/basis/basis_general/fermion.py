@@ -61,7 +61,7 @@ class spinless_fermion_basis_general(basis_general):
 	"""
 	
 
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,make_basis=True,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,make_basis=True,block_order=None,**blocks):
 		"""Intializes the `spinless_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -76,6 +76,8 @@ class spinless_fermion_basis_general(basis_general):
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 	
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		block_order: list of strings, optional
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -97,7 +99,7 @@ class spinless_fermion_basis_general(basis_general):
 		if Nf is None and nf is not None:
 			Nf = int(nf*N)
 
-		basis_general.__init__(self,N,**blocks)
+		basis_general.__init__(self,N,block_order=block_order,**blocks)
 		self._check_pcon = False
 		self._count_particles = False
 		if _Np is not None and Nf is None:
@@ -323,7 +325,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,**blocks):
 		"""Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -340,6 +342,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		block_order: list of strings, optional
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -382,7 +386,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		blocks.update(new_blocks)
 
-		basis_general.__init__(self,2*N,**blocks)
+		basis_general.__init__(self,2*N,block_order=block_order,**blocks)
 		self._check_pcon = False
 		self._count_particles = False
 		if _Np is not None and Nf is None:

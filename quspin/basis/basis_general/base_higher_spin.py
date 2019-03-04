@@ -8,8 +8,8 @@ from scipy.misc import comb
 
 # general basis for higher spin representations
 class higher_spin_basis_general(basis_general):
-	def __init__(self,N,sps,Nup=None,Ns_block_est=None,_Np=None,_make_basis=True,**kwargs):
-		basis_general.__init__(self,N,**kwargs)
+	def __init__(self,N,sps,Nup=None,Ns_block_est=None,_Np=None,_make_basis=True,block_order=None,**kwargs):
+		basis_general.__init__(self,N,block_order=block_order,**kwargs)
 		self._check_pcon = False
 		self._count_particles = False
 		if _Np is not None and Nup is None:

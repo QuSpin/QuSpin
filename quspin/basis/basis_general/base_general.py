@@ -76,7 +76,7 @@ def check_symmetry_maps(item1,item2):
 
 
 class basis_general(lattice_basis):
-	def __init__(self,N,**kwargs):
+	def __init__(self,N,block_order=None,**kwargs):
 		self._unique_me = True
 		self._check_pcon = None
 		self._basis_pcon = None
@@ -105,9 +105,21 @@ class basis_general(lattice_basis):
 			raise ValueError("blocks must contain tuple: (map,q).")
 
 		kwargs = {block:process_map(*item) for block,item in kwargs.items()}
-		
-		sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
-		sorted_items.reverse()
+	
+		if block_order is None: # sort by periodicies largest to smallest
+			sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
+			sorted_items.reverse()
+		else:
+			block_order = list(block_order)
+			missing = set(kwargs.keys()) - set(block_order)
+			if len(missing)>0:
+				raise ValueError("{} names found in block names but missing from block_order.".format(missing))
+
+			missing = set(block_order) - set(kwargs.keys())
+			if len(missing)>0:
+				raise ValueError("{} names found in block_order but missing from block names.".format(missing))
+
+			sorted_items = [(key,kwargs[key]) for key in block_order]
 
 		self._blocks = {block:((-1)**q if per==2 else q) for block,(_,per,q,_) in sorted_items}
 		self._maps_dict = {block:map for block,(map,_,_,_) in sorted_items}
@@ -130,6 +142,7 @@ class basis_general(lattice_basis):
 			n_maps = len(items)
 			maps,pers,qs,_ = zip(*items)
 
+
 			self._maps = _np.vstack(maps)
 			self._qs   = _np.asarray(qs,dtype=_np.int32)
 			self._pers = _np.asarray(pers,dtype=_np.int32)
@@ -147,6 +160,7 @@ class basis_general(lattice_basis):
 				for i in range(j+1,n_maps,1):
 					if _np.all(self._maps[j]==self._maps[i]):
 						ValueError("repeated map in maps list.")
+
 		else:
 			self._maps = _np.array([[]],dtype=_np.int32)
 			self._qs   = _np.array([],dtype=_np.int32)

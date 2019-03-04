@@ -61,7 +61,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=1,Ns_block_est=None,make_basis=True,**blocks):
+	def __init__(self,N,Nup=None,m=None,S="1/2",pauli=1,Ns_block_est=None,make_basis=True,block_order=None,**blocks):
 		"""Intializes the `spin_basis_general` object (basis for spin operators).
 
 		Parameters
@@ -101,6 +101,8 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		block_order: list of strings, optional
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -144,9 +146,11 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			self._pcon_args["_Np"] = _Np
 
 		if sps==2:
-			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
+			hcb_basis_general.__init__(self,N,Nb=Nup,Ns_block_est=Ns_block_est,
+				_Np=_Np,_make_basis=make_basis,block_order=block_order,**blocks)
 		else:
-			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,_Np=_Np,_make_basis=make_basis,**blocks)
+			higher_spin_basis_general.__init__(self,N,Nup=Nup,sps=sps,Ns_block_est=Ns_block_est,
+				_Np=_Np,_make_basis=make_basis,block_order=block_order,**blocks)
 
 
 		if self._sps <= 2:

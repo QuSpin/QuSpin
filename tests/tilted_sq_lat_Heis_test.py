@@ -135,25 +135,26 @@ def tilted_square_transformations(n,m,a_1=None,a_2=None):
 
 
 def get_blocks(T1,t1,T2,t2,Pr,pr):
+	# print( t1,t2)
 	for i1 in range(t1):
 		for i2 in range(t2):
-			if i1*2==t1 and i2*2==t2:
+			if i1==0 and i2 == 0:
 				for ip in range(pr):
-					blocks = dict(tb1=(T1,i1),tb2=(T2,i2),prb=(Pr,ip))
+					blocks = dict(tb1=(T1,i1),tb2=(T2,i2),prb=(Pr,ip),block_order=["tb1","tb2","prb"])
 					yield blocks
-			elif i1==0 and i2 == 0:
+			elif i1*2==t1 and i2*2==t2:
 				for ip in range(pr):
-					blocks = dict(tb1=(T1,i1),tb2=(T2,i2),prb=(Pr,ip))
+					blocks = dict(tb1=(T1,i1),tb2=(T2,i2),prb=(Pr,ip),block_order=["tb1","tb2","prb"])
 					yield blocks
 			else:
-				blocks = dict(tb1=(T1,i1),tb2=(T2,i2))
+				blocks = dict(tb1=(T1,i1),tb2=(T2,i2),block_order=["tb1","tb2"])
 				yield blocks
-
 
 def test_Nup(n,m,S):
 	nmax = int(eval("2*"+S))
 	N = n**2 + m**2
-	Nups=range(nmax*N+1)
+	# Nups=range(nmax*N+1)
+	Nups = [2]
 
 	a_1 = np.array([0,1])
 	a_2 = np.array([1,0])
@@ -190,11 +191,11 @@ def test_Nup(n,m,S):
 
 			block,values = zip(*blocks.items())
 			Tr,qs = zip(*values)
-			print(basis.Ns,Nup,zip(block,qs))
+			print(basis.Ns,Nup,list(zip(block,qs)))
 
 			for Hd in H._dynamic.values():
 				dH=(Hd-Hd.T.conj())
-				n = np.linalg.norm(dH.data)
+				n = "{} {} {}".format(basis.Ns,Nup,list(zip(block,qs)))
 				np.testing.assert_allclose(dH.data,0,atol=1e-7,err_msg=str(n))
 
 			E_list = []

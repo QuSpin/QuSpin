@@ -10,15 +10,13 @@ def get_include_dirs():
 	data_path = os.path.expandvars(data_path)
 
 	include_dirs = [numpy.get_include()]
-	include_dirs.append(os.path.join(package_dir,"basis_general","_basis_general_core","source"))
 	include_dirs.append(os.path.join(package_dir,"_basis_utils"))
+
 	
 	if sys.platform == "win32":
 		include_dirs.append(os.path.join(data_path,"Library","include"))
 	else:
 		include_dirs.append(os.path.join(data_path,"include"))
-
-
 
 	return include_dirs
 

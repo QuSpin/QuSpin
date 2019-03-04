@@ -65,8 +65,7 @@ class boson_basis_core : public general_basis_core<I>
 			}
 			const int n = general_basis_core<I>::N;
 			const int * map = &general_basis_core<I>::maps[n_map*n];
-			const npy_intp chunk = P/omp_get_num_threads();
-			#pragma omp for schedule(static,chunk)
+			#pragma omp for schedule(static)
 			for(npy_intp i=0;i<P;i++){
 				s[i] = boson_map_bits(s[i],map,&M[0],sps,n);
 			}
