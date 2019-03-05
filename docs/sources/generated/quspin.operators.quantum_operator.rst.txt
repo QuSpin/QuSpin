@@ -58,5 +58,6 @@ quspin.operators.quantum\_operator
       ~quantum_operator.get_shape
       ~quantum_operator.is_dense
       ~quantum_operator.ndim
+      ~quantum_operator.shape
    
    

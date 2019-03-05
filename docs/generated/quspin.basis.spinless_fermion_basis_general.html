@@ -53,7 +53,7 @@
 <h1>quspin.basis.spinless_fermion_basis_general<a class="headerlink" href="#quspin-basis-spinless-fermion-basis-general" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.basis.spinless_fermion_basis_general">
-<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinless_fermion_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>make_basis=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinless_fermion_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>make_basis=True</em>, <em>block_order=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for spinless fermion operators for USER-DEFINED symmetries.</p>
 <p>Any unitary symmetry transformation <span class="math notranslate nohighlight">\(Q\)</span> of multiplicity <span class="math notranslate nohighlight">\(m_Q\)</span> (<span class="math notranslate nohighlight">\(Q^{m_Q}=1\)</span>) has
 eigenvalues <span class="math notranslate nohighlight">\(\exp(-2\pi i q/m_Q)\)</span>, labelled by an ingeter <span class="math notranslate nohighlight">\(q\in\{0,1,\dots,m_Q-1\}\)</span>.
@@ -253,7 +253,7 @@ we do translation invariance and parity (reflection) (along each lattice directi
 </table>
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>make_basis=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>make_basis=True</em>, <em>block_order=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>spinless_fermion_basis_general</cite> object (basis for fermionic operators).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -274,6 +274,9 @@ we do translation invariance and parity (reflection) (along each lattice directi
 </dd>
 <dt><strong>make_basis: bool, optional</strong></dt>
 <dd><p class="first last">Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.</p>
+</dd>
+<dt><strong>block_order: list of strings, optional</strong></dt>
+<dd><p class="first last">A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.</p>
 </dd>
 <dt><strong>**blocks: optional</strong></dt>
 <dd><p class="first">keyword arguments which pass the symmetry generator arrays. For instance:</p>
@@ -305,7 +308,7 @@ sector.</p>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="quspin.basis.spinless_fermion_basis_general.Op_bra_ket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_bra_ket</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype,&nbsp;ket_states)</td>
 <td>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="quspin.basis.spinless_fermion_basis_general.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;Ns_block_est,&nbsp;make_basis])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="quspin.basis.spinless_fermion_basis_general.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;Ns_block_est,&nbsp;…])</td>
 <td>Intializes the <cite>spinless_fermion_basis_general</cite> object (basis for fermionic operators).</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="quspin.basis.spinless_fermion_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>

@@ -53,7 +53,7 @@
 <h1>quspin.basis.spinful_fermion_basis_general<a class="headerlink" href="#quspin-basis-spinful-fermion-basis-general" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.basis.spinful_fermion_basis_general">
-<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinful_fermion_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>simple_symm=True</em>, <em>make_basis=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinful_fermion_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_general" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinful_fermion_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>simple_symm=True</em>, <em>make_basis=True</em>, <em>block_order=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinful_fermion_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_general" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for spinful fermion operators for USER-DEFINED symmetries.</p>
 <p>Any unitary symmetry transformation <span class="math notranslate nohighlight">\(Q\)</span> of multiplicity <span class="math notranslate nohighlight">\(m_Q\)</span> (<span class="math notranslate nohighlight">\(Q^{m_Q}=1\)</span>) has
 eigenvalues <span class="math notranslate nohighlight">\(\exp(-2\pi i q/m_Q)\)</span>, labelled by an ingeter <span class="math notranslate nohighlight">\(q\in\{0,1,\dots,m_Q-1\}\)</span>.
@@ -459,7 +459,7 @@ we do translation invariance and fermion spin inversion.</p>
 </table>
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_general.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>simple_symm=True</em>, <em>make_basis=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinful_fermion_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>simple_symm=True</em>, <em>make_basis=True</em>, <em>block_order=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinful_fermion_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>spinful_fermion_basis_general</cite> object (basis for fermionic operators).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -483,6 +483,9 @@ we do translation invariance and fermion spin inversion.</p>
 </dd>
 <dt><strong>make_basis: bool, optional</strong></dt>
 <dd><p class="first last">Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.</p>
+</dd>
+<dt><strong>block_order: list of strings, optional</strong></dt>
+<dd><p class="first last">A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.</p>
 </dd>
 <dt><strong>**blocks: optional</strong></dt>
 <dd><p class="first">keyword arguments which pass the symmetry generator arrays. For instance:</p>

@@ -168,27 +168,28 @@
 <span class="sd">			If `overwrite_v = True` the dunction returns `v` with the data overwritten, otherwise the result is stored in a new array.  </span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="n">overwrite_v</span><span class="p">:</span>
-			<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
+		<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+			
 		<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;array must have ndim of 1.&quot;</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dimension mismatch </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
 		<span class="n">a_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
 		<span class="n">v_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="n">v_dtype</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">overwrite_v</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input array must match correct output dtype for matrix multiplication.&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">overwrite_v</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">v_dtype</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;if overwrite_v is True, the input array must match correct output dtype for matrix multiplication.&quot;</span><span class="p">)</span>
 
-			<span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">v_dtype</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input array must a contiguous and writable.&quot;</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dimension mismatch </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-
-		
+			<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;array must have ndim of 1.&quot;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">v_dtype</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">work_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">work_array</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>

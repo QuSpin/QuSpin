@@ -132,7 +132,7 @@
 
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="boson_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+<div class="viewcode-block" id="boson_basis_general.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `boson_basis_general` object (basis for bosonic operators).</span>
 
 <span class="sd">		Parameters</span>
@@ -149,6 +149,8 @@
 <span class="sd">			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. </span>
 <span class="sd">		make_basis: bool, optional</span>
 <span class="sd">			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.</span>
+<span class="sd">		block_order: list of strings, optional</span>
+<span class="sd">			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.</span>
 <span class="sd">		**blocks: optional</span>
 <span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
 
@@ -203,7 +205,7 @@
 								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
 								<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
 
-			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="n">make_basis</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="n">_Np</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="n">make_basis</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="n">block_order</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
 		
 		<span class="k">else</span><span class="p">:</span>
 
