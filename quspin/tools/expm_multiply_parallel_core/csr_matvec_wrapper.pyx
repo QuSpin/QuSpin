@@ -35,8 +35,8 @@ ctypedef fused T3:
   double complex
 
 @cython.boundscheck(False)
-def _csr_matvec(bool overwrite_y, index[:] Ap, index[:] Aj,
-                  T1[:] Ax, T2 alpha, T3[:] Xx, T3[:] Yx):
+def _csr_matvec(bool overwrite_y, index[::1] Ap, index[::1] Aj,
+                  T1[::1] Ax, T2 alpha, T3[::1] Xx, T3[::1] Yx):
   cdef index nr = Yx.shape[0]
   cdef index rco[128];
   cdef T3 vco[128];
