@@ -35,22 +35,6 @@ T csr_trace(const I n,
 	return trace;
 }
 
-// template<typename T>
-// T inline my_max(T norm,T x){
-// 	T a = x*x;
-// 	// return (a<norm?norm:a);
-// 	return std::max(norm,a);
-// }
-
-// template<typename T>
-// T inline my_max(T norm,std::complex<T> x){
-// 	T re = x.real();
-// 	T im = x.imag();
-// 	T a = re*re+im*im;
-// 	// return (a<norm?norm:a);
-// 	return std::max(norm,a);
-// }
-
 template<typename T,typename I>
 T inf_norm_chunk(T * arr,I begin,I end){
 	T max = 0;
@@ -72,6 +56,7 @@ T inf_norm_chunk(std::complex<T> * arr,I begin,I end){
 	}
 	return std::sqrt(max);
 }
+
 
 template<typename I, typename T1,typename T2,typename T3>
 void _expm_multiply(const I n,
@@ -96,8 +81,8 @@ void _expm_multiply(const I n,
 	
 	#pragma omp parallel shared(c1,c2,c3,flag,F,B1,B2,rco,vco)
 	{
-		int nthread = omp_get_num_threads();
-		int threadn = omp_get_thread_num();
+		const int nthread = omp_get_num_threads();
+		const int threadn = omp_get_thread_num();
 		const I items_per_thread = n/nthread;
 		const I begin = items_per_thread * threadn;
 		I end0 = items_per_thread * ( threadn + 1 );
