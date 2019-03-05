@@ -98,17 +98,17 @@ void _expm_multiply(const I n,
 	{
 		int nthread = omp_get_num_threads();
 		int threadn = omp_get_thread_num();
-		I items_per_thread = n/nthread;
-		I begin = items_per_thread * threadn;
-		I end = items_per_thread * ( threadn + 1 );
+		const I items_per_thread = n/nthread;
+		const I begin = items_per_thread * threadn;
+		I end0 = items_per_thread * ( threadn + 1 );
 		if(threadn == nthread-1){
-			end += n%nthread;
+			end0 += n%nthread;
 		}
+		const I end = end0;
 
-		T3 eta = std::exp(a*mu/T2(s));
+		const T3 eta = std::exp(a*mu/T2(s));
 
-		#pragma omp for schedule(static,items_per_thread)
-		for(I k=0;k<n;k++){ 
+		for(I k=begin;k<end;k++){ 
 			B1[k] = F[k];
 			B2[k] = 0;
 		}
@@ -131,8 +131,7 @@ void _expm_multiply(const I n,
 
 				csr_matvec(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
 
-				#pragma omp for schedule(static,items_per_thread)
-				for(I k=0;k<n;k++){
+				for(I k=begin;k<end;k++){
 					F[k] += B1[k] = B2[k];
 				}
 
@@ -162,8 +161,7 @@ void _expm_multiply(const I n,
 
 			}
 
-			#pragma omp for schedule(static,items_per_thread)
-			for(I k=0;k<n;k++){
+			for(I k=begin;k<end;k++){
 				F[k] *= eta;
 				B1[k] = F[k];
 			}
