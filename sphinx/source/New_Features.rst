@@ -13,7 +13,7 @@ Improved Functionality
 +++++
 
 * support for python 3.7.
-* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms. QuSpin for python 3.5 will be available up to version 0.3.0. 
+* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms. QuSpin for python 3.5 will remain available up to version 0.3.0. 
 * matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
 * parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see also :ref:`parallelization-label`).
 * new OpenMP features in operators module (see :ref:`parallelization-label` and example script :ref:`example12-label`).
@@ -29,10 +29,11 @@ New Attributes, Functions, Methods and Classes
 
 * new argument `make_basis` for `*_basis_general` classes allows to use some of the basis functionality without constructing the basis. 
 * new `*_basis_general` class methods: `Op_bra_ket()`, `representative()`, `normalization()`, `inplace_Op()`.
-* support for Quantum Computing defition of `"+"`, `"-"` Pauli matrices: see `pauli` argument of the `spin_basis_*` classes.  
+* support for Quantum Computing definition of `"+"`, `"-"` Pauli matrices: see `pauli` argument of the `spin_basis_*` classes.  
 * adding argument `p_con` to `*_basis_general.get_vec()` and `*_basis_general.get_proj()` functions. 
 * adding functions `basis.int_to_state()` and `basis.state_to_int()` to convert between spin and integer representation of the states.
 * new `basis.states` attribute to show the list of basis states in their integer representation.
+* new methods of the `*_basis_general` classes for bitwise operations on basis states stored in integer representation. 
 * both `hamiltonian` and `quantum_operator` classes support a new `out` argument for `dot` and `rdot` which allows the user to specify an output array for the result.
 * both `hamiltonian` and `quantum_operator` classes support a new `overwrite_out` argument which allows the user to toggle between overwriting the data within `out` or adding the result to `out` inplace without allocating extra data.
 
