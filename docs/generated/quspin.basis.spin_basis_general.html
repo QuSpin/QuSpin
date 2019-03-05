@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -202,61 +203,53 @@ use the two symemtries together to reduce the Hilbert space dimension.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.Op" title="quspin.basis.spin_basis_general.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
 <td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_hermitian" title="quspin.basis.spin_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.Op_bra_ket" title="quspin.basis.spin_basis_general.Op_bra_ket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_bra_ket</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype,&nbsp;ket_states)</td>
+<td>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_hermitian" title="quspin.basis.spin_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for hermiticity of the combined operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_pcon" title="quspin.basis.spin_basis_general.check_pcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_pcon" title="quspin.basis.spin_basis_general.check_pcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_symm" title="quspin.basis.spin_basis_general.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.check_symm" title="quspin.basis.spin_basis_general.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
 <td>Checks operator string lists for the required symmetries of the combined operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.ent_entropy" title="quspin.basis.spin_basis_general.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.ent_entropy" title="quspin.basis.spin_basis_general.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
 <td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.expanded_form" title="quspin.basis.spin_basis_general.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.expanded_form" title="quspin.basis.spin_basis_general.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
 <td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_proj" title="quspin.basis.spin_basis_general.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;pcon])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_proj" title="quspin.basis.spin_basis_general.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;pcon])</td>
 <td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_vec" title="quspin.basis.spin_basis_general.get_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse,&nbsp;pcon])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.get_vec" title="quspin.basis.spin_basis_general.get_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse,&nbsp;pcon])</td>
 <td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.index" title="quspin.basis.spin_basis_general.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.index" title="quspin.basis.spin_basis_general.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</td>
 <td>Finds the index of user-defined Fock state in any lattice basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.inplace_Op" title="quspin.basis.spin_basis_general.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.inplace_Op" title="quspin.basis.spin_basis_general.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
 <td>Calculates the action of an operator on a state.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.int_to_state" title="quspin.basis.spin_basis_general.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[,&nbsp;bracket_notation])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.int_to_state" title="quspin.basis.spin_basis_general.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[,&nbsp;bracket_notation])</td>
 <td>Finds string representation of a state defined in integer representation.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.make" title="quspin.basis.spin_basis_general.make"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make</span></code></a>([Ns_block_est])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.make" title="quspin.basis.spin_basis_general.make"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make</span></code></a>([Ns_block_est])</td>
 <td>Creates the entire basis by calling the basis constructor.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.normalization" title="quspin.basis.spin_basis_general.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[,&nbsp;out])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.normalization" title="quspin.basis.spin_basis_general.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[,&nbsp;out])</td>
 <td>Computes normalization of <cite>basis</cite> states.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.partial_trace" title="quspin.basis.spin_basis_general.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.partial_trace" title="quspin.basis.spin_basis_general.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
 <td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.representative" title="quspin.basis.spin_basis_general.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[,&nbsp;out,&nbsp;return_g,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.representative" title="quspin.basis.spin_basis_general.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[,&nbsp;out,&nbsp;return_g,&nbsp;…])</td>
 <td>Maps states to their representatives under the <cite>basis</cite> symmetries.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.state_to_int" title="quspin.basis.spin_basis_general.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_general.state_to_int" title="quspin.basis.spin_basis_general.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</td>
 <td>Finds integer representation of a state defined in string format.</td>
-</tr>
-</tbody>
-</table>
-<table border="1" class="docutils">
-<colgroup>
-<col width="58%" />
-<col width="42%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>Op_bra_ket</strong></td>
-<td>&#160;</td>
 </tr>
 </tbody>
 </table>
@@ -1301,7 +1294,7 @@ it is a square array. Default is <cite>False</cite>.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>
