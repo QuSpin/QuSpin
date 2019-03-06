@@ -112,7 +112,6 @@ void csrmv_merge(const bool overwrite_y,
 		y[row_carry_out[tid]] += T3(alpha)*value_carry_out[tid];
 	}
 
-	#pragma omp barrier
 }
 
 
@@ -182,7 +181,6 @@ void csrmv_merge_strided(const bool overwrite_y,
 		y[row_carry_out[tid] * stride_y] += T3(alpha)*value_carry_out[tid];
 	}
 
-	#pragma omp barrier
 }
 
 

@@ -36,7 +36,7 @@ T csr_trace(const I n,
 }
 
 template<typename T,typename I>
-T inf_norm_chunk(T * arr,I begin,I end){
+T inf_norm_chunk(T * arr,const I begin,const I end){
 	T max = 0;
 	for(I i=begin;i<end;i++){
 		T a = arr[i]*arr[i];
@@ -46,7 +46,7 @@ T inf_norm_chunk(T * arr,I begin,I end){
 }
 
 template<typename T,typename I>
-T inf_norm_chunk(std::complex<T> * arr,I begin,I end){
+T inf_norm_chunk(std::complex<T> * arr,const I begin,const I end){
 	T max = 0;
 	for(I i=begin;i<end;i++){
 		T re = arr[i].real();
@@ -150,6 +150,8 @@ void _expm_multiply(const I n,
 				F[k] *= eta;
 				B1[k] = F[k];
 			}
+
+			#pragma omp barrier
 		}
 	}
 }
