@@ -69,4 +69,4 @@ def run_computation():
 # time computation
 ti = time() # start timer
 run_computation() 
-print("single-threded simulation took {0:.4f} sec".format(time()-ti))
+print("simulation took {0:.4f} sec".format(time()-ti))

@@ -1,9 +1,9 @@
 from __future__ import print_function, division
+from time import time # timing package
 
 import sys,os
 quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
-
 # return line number
 import inspect
 def lineno():
@@ -228,4 +228,6 @@ def test():
 
 
 if __name__ == '__main__':
+	ti = time() # start timer
 	test()
+	print("single-threded simulation took {0:.4f} sec".format(time()-ti))
