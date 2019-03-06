@@ -25,8 +25,7 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -58,7 +57,7 @@
 <h1>quspin.operators.hamiltonian<a class="headerlink" href="#quspin-operators-hamiltonian" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.operators.hamiltonian">
-<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">hamiltonian</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>static_fmt=None</em>, <em>dynamic_fmt=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">hamiltonian</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>static_fmt=None</em>, <em>dynamic_fmt=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs time-dependent (hermitian and nonhermitian) operators.</p>
 <p>The <cite>hamiltonian</cite> class wraps most of the functionalty of the QuSpin package. This object allows the user to construct 
 lattice Hamiltonians and operators, solve the time-dependent Schroedinger equation, do full/Lanczos 
@@ -269,7 +268,7 @@ instantiation with a <cite>basis</cite> will automatically ignore all symmetry i
 </table>
 <dl class="method">
 <dt id="quspin.operators.hamiltonian.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>static_fmt=None</em>, <em>dynamic_fmt=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>dynamic_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>shape=None</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>static_fmt=None</em>, <em>dynamic_fmt=None</em>, <em>copy=True</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>**basis_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.hamiltonian.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>hamtilonian</cite> object (any quantum operator).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1679,7 +1678,7 @@ used in the construction of the hamiltonian as a key in the dictionary.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

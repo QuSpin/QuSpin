@@ -25,8 +25,7 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -54,7 +53,7 @@
 <h1>quspin.operators.quantum_LinearOperator<a class="headerlink" href="#quspin-operators-quantum-linearoperator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.operators.quantum_LinearOperator">
-<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_LinearOperator</code><span class="sig-paren">(</span><em>static_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>copy=False</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.operators.</code><code class="descname">quantum_LinearOperator</code><span class="sig-paren">(</span><em>static_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>copy=False</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a quantum operator directly onto a state, without constructing the operator matrix.</p>
 <p>The <cite>quantum_LinearOperator</cite> class uses the <cite>basis.Op()</cite> function to calculate the matrix vector product on the 
 fly, greatly reducing the amount of memory needed for a calculation at the cost of speed.</p>
@@ -179,50 +178,58 @@ fly, greatly reducing the amount of memory needed for a calculation at the cost 
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x)</td>
-<td>Call self as a function.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.adjoint" title="quspin.operators.quantum_LinearOperator.adjoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjoint</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.adjoint" title="quspin.operators.quantum_LinearOperator.adjoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjoint</span></code></a>()</td>
 <td>Hermitian adjoint.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.conj" title="quspin.operators.quantum_LinearOperator.conj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conj</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.conj" title="quspin.operators.quantum_LinearOperator.conj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conj</span></code></a>()</td>
 <td>Conjugates <cite>quantum_LinearOperator</cite> operator.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.conjugate" title="quspin.operators.quantum_LinearOperator.conjugate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conjugate</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.conjugate" title="quspin.operators.quantum_LinearOperator.conjugate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conjugate</span></code></a>()</td>
 <td>Conjugates <cite>quantum_LinearOperator</cite> operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.copy" title="quspin.operators.quantum_LinearOperator.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.copy" title="quspin.operators.quantum_LinearOperator.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</td>
 <td>Returns a deep copy of <cite>quantum_LinearOperator</cite> object.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.dot" title="quspin.operators.quantum_LinearOperator.dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot</span></code></a>(x)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.dot" title="quspin.operators.quantum_LinearOperator.dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot</span></code></a>(x)</td>
 <td>Matrix-matrix or matrix-vector multiplication.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.eigsh" title="quspin.operators.quantum_LinearOperator.eigsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigsh</span></code></a>(**eigsh_args)</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.eigsh" title="quspin.operators.quantum_LinearOperator.eigsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigsh</span></code></a>(**eigsh_args)</td>
 <td>Computes SOME eigenvalues and eigenvectors of hermitian <cite>quantum_LinearOperator</cite> operator using SPARSE hermitian methods.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.getH" title="quspin.operators.quantum_LinearOperator.getH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getH</span></code></a>([copy])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.getH" title="quspin.operators.quantum_LinearOperator.getH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getH</span></code></a>([copy])</td>
 <td>Calculates hermitian conjugate of <cite>quantum_LinearOperator</cite> operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.matmat" title="quspin.operators.quantum_LinearOperator.matmat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmat</span></code></a>(X)</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.matmat" title="quspin.operators.quantum_LinearOperator.matmat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmat</span></code></a>(X)</td>
 <td>Matrix-matrix multiplication.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.matvec" title="quspin.operators.quantum_LinearOperator.matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matvec</span></code></a>(x)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.matvec" title="quspin.operators.quantum_LinearOperator.matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matvec</span></code></a>(x)</td>
 <td>Matrix-vector multiplication.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.rmatvec" title="quspin.operators.quantum_LinearOperator.rmatvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rmatvec</span></code></a>(x)</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.rmatvec" title="quspin.operators.quantum_LinearOperator.rmatvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rmatvec</span></code></a>(x)</td>
 <td>Adjoint matrix-vector multiplication.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.set_diagonal" title="quspin.operators.quantum_LinearOperator.set_diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_diagonal</span></code></a>(diagonal[,&nbsp;copy])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.set_diagonal" title="quspin.operators.quantum_LinearOperator.set_diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_diagonal</span></code></a>(diagonal[,&nbsp;copy])</td>
 <td>Sets the diagonal part of the quantum_LinearOperator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.transpose" title="quspin.operators.quantum_LinearOperator.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([copy])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.operators.quantum_LinearOperator.transpose" title="quspin.operators.quantum_LinearOperator.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([copy])</td>
 <td>Transposes <cite>quantum_LinearOperator</cite> operator.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="55%" />
+<col width="45%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>__call__</strong></td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="quspin.operators.quantum_LinearOperator.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;class 'numpy.complex128'&gt;</em>, <em>copy=False</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>static_list</em>, <em>N=None</em>, <em>basis=None</em>, <em>diagonal=None</em>, <em>check_symm=True</em>, <em>check_herm=True</em>, <em>check_pcon=True</em>, <em>dtype=&lt;type 'numpy.complex128'&gt;</em>, <em>copy=False</em>, <em>**basis_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_LinearOperator_core.html#quantum_LinearOperator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.operators.quantum_LinearOperator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>quantum_LinearOperator</cite> object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -775,7 +782,7 @@ _rmatvec method to ensure that y has the correct shape and type.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>
