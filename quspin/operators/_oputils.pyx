@@ -12,31 +12,38 @@ from numpy cimport npy_intp
 ctypedef double complex cdouble
 ctypedef float complex cfloat
 
+cdef extern from "matvec_impl.h":
+  void csr_matvec_gil(const int,const bool,const npy_intp,void*,void*,void*,const npy_intp,void*,const npy_intp,void*)
+  void csr_matvec_nogil(const int,const bool,const npy_intp,void*,void*,void*,const npy_intp,void*,const npy_intp,void*) nogil
+
+
 cdef extern from "matvec.h":
-    void csr_matvec[I,T1,T2](const bool,const I,const I[],const I[],const T1[],
-                              const T1,const npy_intp,const T2[],I[],T2[],const npy_intp,T2 []) nogil
+  void csr_matvec[I,T1,T2](const bool,const I,const I[],const I[],const T1[],
+                            const T1,const npy_intp,const T2[],I[],T2[],const npy_intp,T2 []) nogil
 
-    void csc_matvec[I,T1,T2](const bool,const I,const I,const I[],const I[],const T1[],
-                              const T1,const npy_intp,const T2[],const npy_intp,T2 []) nogil
+  void csc_matvec[I,T1,T2](const bool,const I,const I,const I[],const I[],const T1[],
+                            const T1,const npy_intp,const T2[],const npy_intp,T2 []) nogil
 
-    void dia_matvec[I,T1,T2](const bool,const I,const I,const I,const I,const I[],
-                              const T1[],const T1,const npy_intp,const T2[],const npy_intp,T2[]) nogil
+  void dia_matvec[I,T1,T2](const bool,const I,const I,const I,const I,const I[],
+                            const T1[],const T1,const npy_intp,const T2[],const npy_intp,T2[]) nogil
 
 
 cdef extern from "matvecs.h":
-    void csr_matvecs[I,T1,T2](const bool,const I,const I,const I[],const I[],
-                              const T1[],const T1,const npy_intp,const npy_intp,const T2[],
-                              const npy_intp,const npy_intp,T2 []) nogil
 
-    void csc_matvecs[I,T1,T2](const bool,const I,const I,const I,const I[],const I[],
-                              const T1[],const T1,const npy_intp,const npy_intp,const T2[],
-                              const npy_intp,const npy_intp,T2 []) nogil
+  void csr_matvecs[I,T1,T2](const bool,const I,const I,const I[],const I[],
+                            const T1[],const T1,const npy_intp,const npy_intp,const T2[],
+                            const npy_intp,const npy_intp,T2 []) nogil
 
-    void dia_matvecs[I,T1,T2](const bool,const I,const I,const I,const I,const I,
-                              const I[],const T1[],const T1,const npy_intp,const npy_intp,const T2[],
-                              const npy_intp,const npy_intp,T2 []) nogil
+  void csc_matvecs[I,T1,T2](const bool,const I,const I,const I,const I[],const I[],
+                            const T1[],const T1,const npy_intp,const npy_intp,const T2[],
+                            const npy_intp,const npy_intp,T2 []) nogil
 
+  void dia_matvecs[I,T1,T2](const bool,const I,const I,const I,const I,const I,
+                            const I[],const T1[],const T1,const npy_intp,const npy_intp,const T2[],
+                            const npy_intp,const npy_intp,T2 []) nogil
 
+cdef extern from "parse_types.h":
+    int get_switch_num(PyArray_Descr*,PyArray_Descr*,PyArray_Descr*) 
 
 cdef extern from "openmp.h":
   int omp_get_max_threads()
@@ -58,6 +65,32 @@ ctypedef fused T2:
   double
   float complex
   double complex
+
+cdef void _csr_matvec(bool overwrite_y, ndarray Ap,ndarray Aj, ndarray Ax,object a,ndarray Xx,ndarray Yx):
+  cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(Ap)
+  cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(Ax)
+  cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
+  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
+  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
+  cdef npy_intp ys = Yx_strides[0]
+  cdef npy_intp xs = Xx_strides[0]
+  cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
+  cdef void * Ap_ptr = np.PyArray_DATA(Ap)
+  cdef void * Aj_ptr = np.PyArray_DATA(Aj)
+  cdef void * Ax_ptr = np.PyArray_DATA(Ax)
+  cdef void * Xx_ptr = np.PyArray_DATA(Xx)
+  cdef void * Yx_ptr = np.PyArray_DATA(Yx)
+  cdef npy_intp nr = np.PyArray_DIM(Yx,0)
+
+  if switch_num < 0:
+    raise TypeError("invalid types")
+
+  if nr < MAX_NOGIL:
+    csr_matvec_gil(switch_num,overwrite_y,nr,Ap_ptr,Aj_ptr,Ax_ptr,xs,Xx_ptr,ys,Yx_ptr)
+  else:
+    with nogil: # uses openmp if QuSpin build against openmp.
+      csr_matvec_nogil(switch_num,overwrite_y,nr,Ap_ptr,Aj_ptr,Ax_ptr,xs,Xx_ptr,ys,Yx_ptr)
+
 
 
 
