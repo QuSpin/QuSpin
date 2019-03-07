@@ -13,7 +13,7 @@ Improved Functionality
 +++++
 
 * support for python 3.7.
-* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. These platforms will remain available up to version 0.3.0. 
+* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. These versions will remain available up to version 0.3.0. 
 * matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
 * parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see also :ref:`parallelization-label`).
 * new OpenMP features in operators module (see :ref:`parallelization-label` and example script :ref:`example12-label`).
