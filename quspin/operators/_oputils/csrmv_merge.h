@@ -2,6 +2,7 @@
 #define __CSRMV_MERGE_H__
 
 #include <algorithm>
+#include "complex_ops.h"
 #include "openmp.h"
 #include "numpy/ndarraytypes.h"
 
@@ -67,7 +68,7 @@ void csrmv_merge(const bool overwrite_y,
 	CountingInputIterator<I> nz_indices(0); // Merge list B: Natural numbers(NZ indices)
 	I num_merge_items = num_rows + num_nonzeros; // Merge path total length
 	I items_per_thread = (num_merge_items + num_threads - 1) / num_threads; // Merge items per thread
-
+	T3 alpha_cast = T3(alpha);
 	if(overwrite_y){
 		#pragma omp for schedule(static)
 		for(I i=0;i<num_rows;i++){
@@ -91,7 +92,7 @@ void csrmv_merge(const bool overwrite_y,
 			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
 			running_total += T3(values[thread_coord.y]) * x[column_indices[thread_coord.y]];
 
-			y[thread_coord.x] += T3(alpha)*running_total;
+			y[thread_coord.x] += alpha_cast*running_total;
 			running_total = 0.0;
 		}
 
@@ -109,7 +110,7 @@ void csrmv_merge(const bool overwrite_y,
 	{
 		for (int tid = 0; tid < num_threads - 1; ++tid)
 		if (row_carry_out[tid] < num_rows)
-		y[row_carry_out[tid]] += T3(alpha)*value_carry_out[tid];
+		y[row_carry_out[tid]] += alpha_cast*value_carry_out[tid];
 	}
 
 }

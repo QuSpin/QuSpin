@@ -681,8 +681,7 @@ class hamiltonian(object):
 				# 	V = _np.ascontiguousarray(V,dtype=result_dtype)
 				# else:
 				# 	V = _np.asarray(V,dtype=result_dtype)
-
-				V = _np.asarray(V,dtype=result_dtype)
+				V = V.astype(result_dtype)
 
 				if out is None:
 					out = self._static_matvec(self._static,V)

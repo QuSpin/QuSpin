@@ -1,6 +1,13 @@
+from __future__ import division, print_function, absolute_import
+
+import os
+import sys
+import subprocess
+import glob
+
 
 def cython_files():
-    import os,glob,numpy
+    import numpy
     from Cython.Build import cythonize
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
@@ -15,10 +22,17 @@ def cython_files():
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
-    import os,numpy,sys
+    import numpy
     config = Configuration('operators', parent_package, top_path)
 
+
+    subprocess.check_call([sys.executable,
+                           os.path.join(os.path.dirname(__file__),
+                                        'generate_oputils.py')])
+
     cython_files()
+
+
 
     extra_compile_args=["-fno-strict-aliasing"]
     extra_link_args=[]  
@@ -36,8 +50,9 @@ def configuration(parent_package='', top_path=None):
         os.path.join(package_dir,"_oputils","matvec.h"),
         os.path.join(package_dir,"_oputils","matvecs.h"),
         os.path.join(package_dir,"_oputils","csrmv_merge.h"),
+        os.path.join(package_dir,"_oputils","oputils_impl.h"),
     ]
-    src = os.path.join(package_dir,"_oputils.cpp") 
+    src = [os.path.join(package_dir,"_oputils.cpp")]
     config.add_extension('_oputils',sources=src,include_dirs=include_dirs,
                             extra_compile_args=extra_compile_args,
                             extra_link_args=extra_link_args,

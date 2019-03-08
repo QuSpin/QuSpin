@@ -5,16 +5,8 @@
 #include <algorithm>
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
+#include "utils.h"
 
-// y += a*x
-template <typename I, typename T>
-void axpy_strided(const I n, const T a,const I x_stride, const T * x,const I y_stride, T * y){
-    for(I i = 0; i < n; ++i){
-        (*y) += a * (*x);
-        y += y_stride;
-        x += x_stride;
-    }
-}
 
 
 #if defined(_OPENMP)

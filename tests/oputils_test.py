@@ -10,7 +10,8 @@ import numpy as np
 from itertools import product
 
 dtypes = [np.float32,np.float64,np.complex64,np.complex128]
-formats = ["dia","csr","csc"]
+# formats = ["dia","csr","csc"]
+formats = ["csr"]
 
 def eps(N,dtype1,dtype2):
 	return N*max(np.finfo(dtype1).eps,np.finfo(dtype2).eps)
