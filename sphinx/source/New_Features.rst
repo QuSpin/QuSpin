@@ -6,6 +6,15 @@ Check out :ref:`parallelization-label` and the example script :ref:`example12-la
 Complete list of the most recent features 
 =============================
 
+Added in v. 0.3.2
+-----------------
+
+Improved Functionality
++++++
+
+* improved implementation of matrix-vector/matrix products functions leads to speedup in the `hamiltonian` and `quantum_operator` classes.
+
+
 Added in v. 0.3.1
 -----------------
 
