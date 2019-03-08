@@ -15,8 +15,10 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 
+np.random.seed(0)
+
 def check_gen_basis_hcb(S="1/2"):
-	L=6
+	L=4
 	kblocks = [None]
 	kblocks.extend(range(L))
 	pblocks = [None,0,1]
@@ -67,8 +69,13 @@ def check_gen_basis_hcb(S="1/2"):
 
 		P1 = basis_1d.get_proj(dtype)
 		P2 = gen_basis.get_proj(dtype)
-
 		np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
+
+		if Nup is not None:
+			P1 = basis_1d.get_proj(dtype,pcon=True)
+			P2 = gen_basis.get_proj(dtype,pcon=True)
+
+			np.testing.assert_allclose((P1-P2).data,0,atol=1e-14,err_msg="failed projector")
 
 		v = np.random.ranf(size=(basis_1d.Ns,)).astype(dtype)
 		vs = np.random.ranf(size=(basis_1d.Ns,100)).astype(dtype)
@@ -76,7 +83,7 @@ def check_gen_basis_hcb(S="1/2"):
 		v1 = basis_1d.get_vec(v,sparse=False)
 		v2 = gen_basis.get_vec(v,sparse=False)
 
-		np.testing.assert_allclose((v1-v2),0,atol=1e-14,err_msg="failed single vector dense")
+		np.testing.assert_allclose(v1,v2,atol=1e-14,err_msg="failed single vector dense")
 
 
 		v1 = basis_1d.get_vec(v,sparse=True)
@@ -93,6 +100,7 @@ def check_gen_basis_hcb(S="1/2"):
 		vs2 = gen_basis.get_vec(vs,sparse=True)
 
 		np.testing.assert_allclose((vs1-vs2).data,0,atol=1e-14,err_msg="failed multi vector sparse")
+
 
 
 check_gen_basis_hcb(S="1/2")

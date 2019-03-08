@@ -1,17 +1,30 @@
 
+
+def get_include_dirs():
+    import numpy,os
+    package_dir = os.path.dirname(os.path.realpath(__file__))
+    package_dir = os.path.expandvars(package_dir)
+    include_dirs = {}
+    include_dirs["numpy"] = numpy.get_include()
+    include_dirs["source"] = os.path.join(package_dir,"source")
+    include_dirs["_oputils"] = os.path.join(package_dir,"..","..","operators","_oputils")
+
+    return include_dirs
+
+
+
+
 def cython_files():
     import os,glob
-    try:
-        from Cython.Build import cythonize
-        USE_CYTHON = True
-    except ImportError:
-        USE_CYTHON = False
+    from Cython.Build import cythonize
 
     package_dir = os.path.dirname(os.path.realpath(__file__))
+    package_dir = os.path.expandvars(package_dir)
+
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    include_dirs = os.path.join(package_dir,"source")
-    if USE_CYTHON:
-        cythonize(cython_src,language="c++",include_path=[include_dirs])
+    include_dirs = get_include_dirs()
+
+    cythonize(cython_src,include_path=list(include_dirs.values()))
 
 
 def configuration(parent_package='', top_path=None):
@@ -19,29 +32,41 @@ def configuration(parent_package='', top_path=None):
         from numpy.distutils.misc_util import Configuration
         config = Configuration('expm_multiply_parallel_core',parent_package, top_path)
 
-        extra_compile_args = []
+        cython_files()
+
+        extra_compile_args = ["-fno-strict-aliasing"]
         extra_link_args = []
-        if sys.platform == "win32":
-            extra_compile_args=["/openmp"]
-            extra_link_args=["/openmp"]
-        elif sys.platform == "darwin":
-            extra_compile_args = []
-            extra_link_args = []
-        else:
-            extra_compile_args = ["-fopenmp"]
-            extra_link_args = ["-lgomp"]
+        if sys.platform == "darwin":
+            extra_compile_args.append("-std=c++11")
  
         package_dir = os.path.dirname(os.path.realpath(__file__))
-        include_dirs = os.path.join(package_dir,"source")
+        package_dir = os.path.expandvars(package_dir)
+        
+        include_dirs = get_include_dirs()
+
+        depends_csr = [os.path.join(include_dirs["_oputils"],"csrmv_merge.h"),
+                            os.path.join(include_dirs["source"],"csr_matvec.h"),
+                            ]
+
+        depends_expm = [os.path.join(include_dirs["_oputils"],"csrmv_merge.h"),
+                            os.path.join(include_dirs["source"],"csr_matvec.h"),
+                            os.path.join(include_dirs["source"],"expm_multiply_parallel.h"),
+                            ]
+
+        include_dirs_list = list(include_dirs.values())
 
         src = os.path.join(package_dir,"expm_multiply_parallel_wrapper.cpp") 
-        config.add_extension('expm_multiply_parallel_wrapper',sources=src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('expm_multiply_parallel_wrapper',sources=src,
+                                include_dirs=include_dirs_list,
+                                depends=depends_expm,
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")
 
         src = os.path.join(package_dir,"csr_matvec_wrapper.cpp") 
-        config.add_extension('csr_matvec_wrapper',sources=src,include_dirs=[numpy.get_include(),include_dirs],
+        config.add_extension('csr_matvec_wrapper',sources=src,
+                                include_dirs=include_dirs_list,
+                                depends=depends_csr,
                                 extra_compile_args=extra_compile_args,
                                 extra_link_args=extra_link_args,
                                 language="c++")

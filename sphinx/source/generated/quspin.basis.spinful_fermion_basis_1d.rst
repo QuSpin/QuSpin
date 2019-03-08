@@ -24,7 +24,9 @@ quspin.basis.spinful\_fermion\_basis\_1d
       ~spinful_fermion_basis_1d.get_vec
       ~spinful_fermion_basis_1d.index
       ~spinful_fermion_basis_1d.inplace_Op
+      ~spinful_fermion_basis_1d.int_to_state
       ~spinful_fermion_basis_1d.partial_trace
+      ~spinful_fermion_basis_1d.state_to_int
    
    
 
@@ -41,5 +43,6 @@ quspin.basis.spinful\_fermion\_basis\_1d
       ~spinful_fermion_basis_1d.description
       ~spinful_fermion_basis_1d.operators
       ~spinful_fermion_basis_1d.sps
+      ~spinful_fermion_basis_1d.states
    
    

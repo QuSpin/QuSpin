@@ -6,9 +6,7 @@ from __future__ import print_function, division
 import scipy.sparse as _sp
 import numpy as _np
 
-# needed for isinstance only
-from ..operators import ishamiltonian as _ishamiltonian
-from ..basis import isbasis
+
 from .expm_multiply_parallel_core import csr_matvec
 
 import warnings
@@ -57,6 +55,10 @@ def project_op(Obs,proj,dtype=_np.complex128):
 		* "Proj_Obs": projected observable `Obs`.
 
 	"""
+	
+	# needed for isinstance only
+	from ..operators import ishamiltonian
+	from ..basis import isbasis
 
 	variables = ["Proj_Obs"]
 
@@ -65,7 +67,7 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	elif (proj.__class__ not in [_np.ndarray,_np.matrix]) and (not _sp.issparse(proj)):
 		raise ValueError("Expecting either matrix/array or basis object for proj argument.")
 
-	if _ishamiltonian(Obs):
+	if ishamiltonian(Obs):
 
 		if Obs.Ns != proj.shape[0]:
 			if Obs.Ns != proj.shape[1]:

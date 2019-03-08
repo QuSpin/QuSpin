@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 cdef inline basis_type next_state_pcon(basis_type v,basis_type[:] pars):
 	if v == 0 :

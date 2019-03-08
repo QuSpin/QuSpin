@@ -29,5 +29,5 @@ J_nn=[[J,i,(i+1)%L] for i in range(L)] # PBC
 static=[["zz",J_nn],["z",z_field]]
 dynamic=[["x",x_field,drive,drive_args]]
 ###### construct Hamiltonian
-H=hamiltonian(static,dynamic,dtype=np.float64,basis=basis)
+H=hamiltonian(static,dynamic,static_fmt="dia",dtype=np.float64,basis=basis)
 print(H.toarray())

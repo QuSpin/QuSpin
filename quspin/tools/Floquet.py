@@ -2,8 +2,6 @@
 
 from __future__ import print_function, division
 
-from ..operators import hamiltonian,ishamiltonian
-
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
@@ -44,10 +42,23 @@ def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 	
 	"""
 	
-	nsteps=_np.iinfo(_np.int32).max # huge number to make sure solver is successful.
 	psi0=_np.zeros((H.Ns,),dtype=_np.complex128) 
 	psi0[i]=1.0
 
+	t_list = [0,T]
+	nsteps = 1
+	while nsteps<1E7:
+		try:
+			psi_t=H.evolve(psi0,0,t_list,eom="SE",iterate=False,atol=atol,rtol=rtol)
+			return psi_t[:,-1]
+		except:
+			RuntimeError
+		nsteps *= 10
+		t_list = _np.linspace(0,T,num=nsteps+1,endpoint=True)
+	
+	raise RuntimeError("Ode solver takes more than {0:d} nsteps to complete time evolution. Cannot integrate ODE successfully.".format(nsteps))
+
+	'''
 	solver=complex_ode(H._hamiltonian__SO)
 	solver.set_integrator('dop853', atol=atol,rtol=rtol,nsteps=nsteps) 
 	solver.set_initial_value(psi0,t=0.0)
@@ -66,7 +77,7 @@ def _evolve_cont(i,H,T,atol=1E-9,rtol=1E-9):
 		nsteps *= 10
 		t_list = _np.linspace(0,T,num=nsteps+1,endpoint=True)
 
-
+	'''
 
 
 def _evolve_step_3(i,H_list,dt_list):
@@ -78,6 +89,7 @@ def _evolve_step_3(i,H_list,dt_list):
 	psi0[i]=1.0
 
 	for dt,H in zip(dt_list,H_list):
+		# can replace _sla.expm_multiply by tools.expm_multiply_parallel
 		psi0 = _sla.expm_multiply(-1j*dt*H.tocsr(),psi0)
 
 	return psi0
@@ -91,6 +103,7 @@ def _evolve_step_2(i,H,t_list,dt_list):
 	psi0[i]=1.0
 
 	for t,dt in zip(t_list,dt_list):
+		# can replace _sla.expm_multiply by tools.expm_multiply_parallel
 		psi0 = _sla.expm_multiply(-1j*dt*H.tocsr(t),psi0)
 
 	return psi0
@@ -127,7 +140,7 @@ class Floquet(object):
 	.. math::
 		U_F=U(T,0)=\\mathcal{T}_t\\exp\\left(-i\\int_0^T\\mathrm{d}t H(t) \\right)
 
-	with :math:`\\mathcal{T}_t\exp` denoting the time-ordered exponential.
+	with :math:`\\mathcal{T}_t\\exp` denoting the time-ordered exponential.
 
 	Examples
 	--------
@@ -136,10 +149,10 @@ class Floquet(object):
 
 	.. math::
 		H(t) = \\left\\{ 
-		\\begin{array}{cl} \sum_j J\sigma^z_{j+1}\sigma^z_j + h\sigma^z_j , &  t\\in[-T/4,T/4] \\newline 
-		\sum_j g\sigma^x_j, &  t \\in[T/4,3T/4] 
+		\\begin{array}{cl} \\sum_j J\\sigma^z_{j+1}\\sigma^z_j + h\\sigma^z_j , &  t\\in[-T/4,T/4] \\newline 
+		\\sum_j g\\sigma^x_j, &  t \\in[T/4,3T/4] 
 		\\end{array} 
-		\\right\\}  \mathrm{mod}\\ T
+		\\right\\}  \\mathrm{mod}\\ T
 
 	where :math:`T=2\\pi/\\Omega` is the drive period. We choose the starting point of the evolution 
 	(or equivalently -- the driving phase) to be :math:`t=0`.
@@ -189,10 +202,11 @@ class Floquet(object):
 		VF : bool
 			Set to `True` to save Floquet states under attribute _.VF. Default is `False`. 
 		n_jobs : int, optional
-			Set the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
+			Sets the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
 
 		"""
-
+		from ..operators import ishamiltonian
+		
 		variables = []
 		if HF: variables.append('HF')
 		if UF: variables.append('UF')
@@ -203,7 +217,7 @@ class Floquet(object):
 		if isinstance(evo_dict,dict):
 
 			keys = evo_dict.keys()
-			if set(keys) == set(["H","T"]) or set(keys) == set(["H","T","atol"]) or set(keys) == set(["H","T","atol","rtol"]):
+			if set(keys) == set(["H","T"]) or set(keys) == set(["H","T","atol"]) or set(keys) == set(["H","T","rtol"]) or set(keys) == set(["H","T","atol","rtol"]):
 
 				H = evo_dict["H"]
 				T = evo_dict["T"]

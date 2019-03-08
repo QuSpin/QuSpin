@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 
 from . import hamiltonian_core,quantum_operator_core 
 
@@ -32,7 +32,7 @@ class exp_op(object):
 	-----
 	To calculate the matrix exponential itself, use the function method `exp_op.get_mat()`.
 
-	For a fast computations, look up the `tools.expm_multiply_parallel` function.
+	For a faster computations, look up the `tools.expm_multiply_parallel` function.
 
 	Examples
 	---------
@@ -488,7 +488,7 @@ class exp_op(object):
 			if is_ham:
 				return _hamiltonian_iter_dot(M, other, self._step, self._grid)
 			else:
-				return _iter_dot(M, other, self.step, self._grid)
+				return _iter_dot(M, other, self._step, self._grid)
 
 		else:
 			if self._grid is None and self._step is None:
@@ -628,7 +628,7 @@ class exp_op(object):
 			The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`
 			and :math:`\\exp(\\mathcal{O})`.
 		shift : scalar
-			Shifts operator to be exponentiated by a constant `shift` times te identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
+			Shifts operator to be exponentiated by a constant `shift` times the identity matrix: :math:`\\exp(\\mathcal{O} - \\mathrm{shift}\\times\\mathrm{Id})`.
 		call_kwargs : obj, optional
 			extra keyword arguments which include:
 				**time** (*scalar*) - if the operator `O` to be exponentiated is a `hamiltonian` object.
@@ -740,7 +740,7 @@ def _iter_sandwich(M, other, step, grid):
 		yield other.copy()
 
 def _hamiltonian_dot(M, other):
-	new = other.copy(deep=False)
+	new = other.copy() #deep=False: not implememnted in hamiltonian_core.copy()
 	new._dtype = _np.result_type(M.dtype,new._dtype)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}
@@ -761,7 +761,7 @@ def _hamiltonian_iter_dot(M, other, grid, step):
 		yield other
 
 def _hamiltonian_rdot(M, other):
-	new = other.copy(deep=False)
+	new = other.copy() #deep=False: not implememnted in hamiltonian_core.copy()
 	new._dtype = _np.result_type(M.dtype,new._dtype)
 	new._static = _expm_multiply(M, other.static)
 	new._dynamic = {func:_expm_multiply(M, Hd) for func,Hd in iteritems(other._dynamic)}

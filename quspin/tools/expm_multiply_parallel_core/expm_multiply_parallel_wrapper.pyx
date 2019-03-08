@@ -1,3 +1,5 @@
+# cython: language_level=2
+# distutils: language=c++
 cimport cython
 cimport numpy as _np
 
@@ -39,8 +41,8 @@ def _wrapper_csr_trace(indtype[:] Ap, indtype[:] Aj, T1[:] Ax):
 	return csr_trace(n_row,n_row,&Ap[0],&Aj[0],&Ax[0])	
 
 @cython.boundscheck(False)
-def _wrapper_expm_multiply(indtype[:] Ap, indtype[:] Aj, T1[:] Ax,int m_star,int s,
-							object a,T2 tol,T1 mu,T3[:] v,T3[:] work):
+def _wrapper_expm_multiply(indtype[::1] Ap, indtype[::1] Aj, T1[::1] Ax,int m_star,int s,
+							object a,T2 tol,T1 mu,T3[::1] v,T3[::1] work):
 	cdef indtype n_row = Ap.shape[0] - 1
 	cdef int err = 0
 	cdef T3 aa = a

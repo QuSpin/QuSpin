@@ -117,7 +117,7 @@ class spinless_fermion_basis_1d(basis_1d):
 		Imax = (1<<L)-1
 		stag_A = sum(1<<i for i in range(0,L,2))
 		stag_B = sum(1<<i for i in range(1,L,2))
-		pars = _np.array([1,L,Imax,stag_A,stag_B]) # sign to be calculated
+		pars = [1,L,Imax,stag_A,stag_B] # sign to be calculated
 		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -358,7 +358,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 
 		Imax = (1<<L)-1
-		pars = _np.array([L,Imax,0,0]) # sign to be calculated
+		pars = [L,Imax,0,0] # sign to be calculated
 		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
@@ -431,7 +431,12 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		else:
 			raise ValueError("state must be representive state in basis.")
 
-		
+	def int_to_state(self,*args):
+		""" Not Implemented."""
+
+	def state_to_int(self,*args):
+		""" Not Implemented."""
+
 	def partial_trace(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
 
@@ -492,8 +497,6 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		return basis_1d._partial_trace(self,state,sub_sys_A=sub_sys_A,
 					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 					enforce_pure=enforce_pure,sparse=sparse)
-
-
 
 	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
@@ -617,22 +620,22 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	def _expand_opstr(self,op,num):
 		return _expand_opstr_spinful(op,num) 
 
+	def _get_state(self,b):
+		b = int(b)
+		bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
+		state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
+		bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
+		state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
+		return state_left+state_right
+
 	def _get__str__(self):
-		def get_state(b):
-			bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
-			state_left = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_left))+">"
-			bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
-			state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
-			return state_left+state_right
-
-
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+self._get_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+self._get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 

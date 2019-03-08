@@ -17,6 +17,21 @@ def setup_package():
 	except:
 		raise ImportError("build requires numpy for fortran extensions")
 
+	import os,sys
+
+	if "--omp" in sys.argv:
+		sys.argv.remove("--omp")
+		if sys.platform == "win32":
+			if "CFLAGS" in os.environ:
+				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" /openmp"
+			else:
+				os.environ["CFLAGS"]="/openmp"
+		else:
+			if "CFLAGS" in os.environ:
+				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" -fopenmp"
+			else:
+				os.environ["CFLAGS"]="-fopenmp"
+
 
 	io = open("meta.yaml","r")
 	meta_file = io.read()

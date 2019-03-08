@@ -28,6 +28,72 @@ class lattice_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
+	def _int_to_state(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implementation of '_int_to_state' required for printing a child of lattice basis!".format(self.__class__))	
+
+	def _state_to_int(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implementation of '_state_to_int' required for for printing a child of lattice basis".format(self.__class__))	
+
+	def _index(self,*args,**kwargs):
+		raise NotImplementedError("basis class: {0} missing implementation of '_index' required for searching for index of representative!".format(self.__class__))	
+
+	def int_to_state(self,state,bracket_notation=True):
+		"""Finds string representation of a state defined in integer representation.
+
+		Notes
+		-----
+		This function is the einverse of `state_to_int`.
+
+		Parameters
+		-----------
+		state : int
+			Defines the Fock state in integer representation in underlying lattice `basis`.
+		bracket_notation : bool, optional
+			Toggles whether to return the state in |str> notation.
+
+		Returns
+		--------
+		str
+			String corresponding to the Fock `state` in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> s = basis[0] # pick state from basis set
+		>>> s_str = basis.int_to_state(s)
+		>>> print(s_str)
+
+		"""
+		return self._int_to_state(state,bracket_notation=bracket_notation)
+
+	def state_to_int(self,state):
+		"""Finds integer representation of a state defined in string format.
+
+		Notes
+		-----
+		This function is the einverse of `int_to_state`.
+
+		Parameters
+		-----------
+		state : str
+			Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
+
+		Returns
+		--------
+		int
+			Integer corresponding to the Fock `state` in the lattice basis.
+
+		Examples
+		--------
+		
+		>>> s_str = "111000" # pick state from basis set
+		>>> s = basis.state_to_int(s_str)
+		>>> print(s)
+
+		"""
+		
+		return self._state_to_int(state)
+
 	def index(self,s):
 		"""Finds the index of user-defined Fock state in any lattice basis.
 
@@ -56,19 +122,15 @@ class lattice_basis(basis):
 		>>> psi[i0] = 1.0 # define state corresponding to the string "111000"
 
 		"""
-		if type(s) is int:
-			pass
-		elif type(s) is str:
-			s = int(s,self.sps)
-		else:
-			raise ValueError("s must be integer or state")
+		return self._index(s)
 
-		indx = _np.argwhere(self._basis == s)
 
-		if len(indx) != 0:
-			return _np.squeeze(indx)
-		else:
-			raise ValueError("s must be representive state in basis. ")
+	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		basis_view=self._basis[:]
+		basis_view.setflags(write=0,uic=0)
+		return basis_view
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
@@ -491,31 +553,13 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
-
-		def get_state(b):
-			n_space = len(str(self.sps))
-			if self.N <= 64:
-				bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N))
-				state = "|"+(" ".join(("{:"+str(n_space)+"d}").format(bit) for bit in bits))+">"
-			else:
-				left_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(32))
-				right_bits = (int(b)//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N-32,self.N,1))
-
-				str_list = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits]
-				str_list.append("...")
-				str_list.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits)
-				state = "|"+(" ".join(str_list))+">"
-
-			return state
-
-
 		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+self.int_to_state(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+self.int_to_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+get_state(b) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+self.int_to_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 

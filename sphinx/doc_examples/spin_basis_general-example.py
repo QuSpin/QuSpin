@@ -29,7 +29,7 @@ basis_2d = spin_basis_general(N_2d,kxblock=(T_x,0),kyblock=(T_y,0),pxblock=(P_x,
 #
 ###### setting up hamiltonian ######
 # setting up site-coupling lists
-Jzz=[[J,i,T_x[i]] for i in range(N_2d)]+[[-1.0,i,T_y[i]] for i in range(N_2d)]
+Jzz=[[J,i,T_x[i]] for i in range(N_2d)]+[[J,i,T_y[i]] for i in range(N_2d)]
 gx =[[g,i] for i in range(N_2d)]
 #
 static=[["zz",Jzz],["x",gx]]

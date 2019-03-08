@@ -1,9 +1,11 @@
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
+from ._oputils import _get_matvec_function, matvec as _matvec
 from ._make_hamiltonian import make_static
+from ._make_hamiltonian import _check_almost_zero
 
 from . import hamiltonian_core
 
@@ -45,7 +47,7 @@ class quantum_operator(object):
 			:lines: 7-
 
 	"""
-	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,dtype=_np.complex128,**basis_args):
+	def __init__(self,input_dict,N=None,basis=None,shape=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,matrix_formats={},dtype=_np.complex128,**basis_args):
 		"""Intializes the `quantum_operator` object (parameter dependent quantum quantum_operators).
 
 		Parameters
@@ -74,6 +76,9 @@ class quantum_operator(object):
 			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.
 		check_pcon : bool, optional
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
+		matrix_formats: dict, optional
+			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
+			specifies the sparse matrix format {"csr","csc","dia","dense"}.
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
 			to create the quantum_operator.		
@@ -94,12 +99,13 @@ class quantum_operator(object):
 		other_dict = {}
 		self._quantum_operator = {}
 		if isinstance(input_dict,dict):
-			for key,op in input_dict.items():
+			for key,op in iteritems(input_dict):
 				if type(key) is not str:
 					raise ValueError("keys to input_dict must be strings.")
 					
 				if type(op) not in [list,tuple]:
 					raise ValueError("input_dict must contain values which are lists/tuples.")
+
 				opstr_list = []
 				other_list = []
 				for ele in op:
@@ -112,13 +118,9 @@ class quantum_operator(object):
 					opstr_dict[key] = opstr_list
 				if other_list:
 					other_dict[key] = other_list
-		elif isinstance(input_dict,quantum_operator):
-			other_dict = {key:[value] for key,value in input_dict._quantum_operator_dict.items()} 
 		else:
 			raise ValueError("input_dict must be dictionary or another quantum_operator quantum_operators")
 			
-
-
 		if opstr_dict:
 			# check if user input basis
 
@@ -158,7 +160,9 @@ class quantum_operator(object):
 			self._shape=(basis.Ns,basis.Ns)
 
 			for key,opstr_list in iteritems(opstr_dict):
-				self._quantum_operator[key]=make_static(basis,opstr_list,dtype)
+				O = make_static(basis,opstr_list,dtype)
+				self._quantum_operator[key] = O
+
 
 		if other_dict:
 			if not hasattr(self,"_shape"):
@@ -240,7 +244,7 @@ class quantum_operator(object):
 					# if not
 					if basis is None: 
 						if N is None: # if N is missing 
-							raise Exception("argument N or shape needed to create empty hamiltonian")
+							raise Exception("argument N or shape needed to create empty quantum_operator")
 
 						if type(N) is not int: # if L is not int
 							raise TypeError('argument N must be integer')
@@ -257,7 +261,6 @@ class quantum_operator(object):
 					if not basis is None: 
 						raise ValueError("empty hamiltonian only accepts basis or shape, not both")
 
-			
 				if len(shape) != 2:
 					raise ValueError('expecting ndim = 2')
 				if shape[0] != shape[1]:
@@ -270,6 +273,21 @@ class quantum_operator(object):
 
 		self._Ns = self._shape[0]
 
+		keys = list(self._quantum_operator.keys())
+		for key in keys:
+			if _check_almost_zero(self._quantum_operator[key]):
+				self._quantum_operator.pop(key)
+
+		self.update_matrix_formats(matrix_formats)
+
+	@property
+	def get_operators(self,key):
+		return self._quantum_operator[key]
+	
+	@property
+	def shape(self):
+		return self._shape
+	
 
 	@property
 	def basis(self):
@@ -392,7 +410,7 @@ class quantum_operator(object):
 		"""
 		return self.dot(X)
 
-	def dot(self,V,pars={},check=True):
+	def dot(self,V,pars={},check=True,out=None,overwrite_out=True):
 		"""Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
@@ -400,8 +418,6 @@ class quantum_operator(object):
 
 		Notes
 		-----
-		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
-		vectors together.
 
 		Parameters
 		-----------
@@ -409,10 +425,14 @@ class quantum_operator(object):
 			Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
-			
+		out : array_like, optional
+			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. 
+		overwrite_out : bool, optional
+			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result of the dot product. 
+			If `False` the result of the dot product will be added to the values of `out`. 			
 
 		Returns
 		--------
@@ -428,70 +448,62 @@ class quantum_operator(object):
 		"""
 
 		
-		if self.Ns <= 0:
-			return _np.asarray([])
-
 		pars = self._check_scalar_pars(pars)
 
 
-		if not check:
-			result_dtype = _np.result_type(V,self._dtype)
-			V_dot = _np.zeros(V.shape,dtype=result_dtype)
-			for key,J in pars.items():
-				V_dot += J*self._quantum_operator[key].dot(V)
-			return V_dot
+		if check:
+			try:
+				shape = V.shape
+			except AttributeError:
+				V =_np.asanyarray(V)
+				shape = V.shape
 
-		if V.ndim > 2:
-			raise ValueError("Expecting V.ndim < 3.")
-
-
-
-
-		if V.__class__ is _np.ndarray:
-			if V.shape[0] != self._shape[1]:
+			if shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-			result_dtype = _np.result_type(V,self._dtype)
-			V_dot = _np.zeros(V.shape,dtype=result_dtype)
+			if V.ndim not in [1,2]:
+				raise ValueError("Expecting  0< V.ndim < 3.")
+
+		result_dtype = _np.result_type(V.dtype,self._dtype)
+
+		if not (result_dtype in hamiltonian_core.supported_dtypes):
+			raise TypeError('hamiltonian does not support type: '+str(dtype))
+
+		if self.Ns <= 0:
+			return _np.asarray([],dtype=result_dtype)
+
+		if _sp.issparse(V):
+			if out is not None:
+				raise TypeError("'out' option does not apply for sparse inputs.")
+
+			sparse_constuctor = getattr(_sp,V.get_format()+"_matrix")
+			out = sparse_constuctor(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
-				V_dot += J*self._quantum_operator[key].dot(V)
-
-
-		elif _sp.issparse(V):
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			result_dtype = _np.result_type(V,self._dtype)
-			V_dot = _np.zeros(V.shape,dtype=result_dtype)	
-			for key,J in pars.items():
-				V_dot += J*self._quantum_operator[key].dot(V)
-
-
-
-		elif V.__class__ is _np.matrix:
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
-
-			result_dtype = _np.result_type(V,self._dtype)
-			V_dot = _np.zeros(V.shape,dtype=result_dtype)
-			for key,J in pars.items():
-				V_dot += J*self._quantum_operator[key].dot(V)
+				out = out + J*self._quantum_operator[key].dot(V)
 
 		else:
-			V = _np.asanyarray(V)
-			if V.ndim not in [1,2]:
-				raise ValueError("Expecting 1 or 2 dimensional array")
+			if out is not None:
+				try:
+					if out.dtype != result_dtype:
+						raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
+					if out.shape != V.shape:
+						raise ValueError("'out' must be array with correct dtype and dimensions for output array.")
+				except AttributeError:
+					raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
 
-			if V.shape[0] != self._shape[1]:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+				if overwrite_out:
+					out[...] = 0
+			else:
+				out = _np.zeros_like(V,dtype=result_dtype)
 
-			result_dtype = _np.result_type(V,self._dtype)
-			V_dot = _np.zeros(V.shape,dtype=result_dtype)
+			eps = _np.finfo(self.dtype).eps
+			V = _np.asarray(V,dtype=result_dtype)
 			for key,J in pars.items():
-				V_dot += J*self._quantum_operator[key].dot(V)
+				if _np.abs(J)>eps:
+					self._matvec_functions[key](self._quantum_operator[key],V,overwrite_out=False,a=J,out=out)
 
 
-		return V_dot
+		return out
 
 	def rdot(self,V,pars={},check=False):
 		"""Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
@@ -506,7 +518,7 @@ class quantum_operator(object):
 			Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 			
@@ -530,6 +542,124 @@ class quantum_operator(object):
 			V = V.transpose()
 		return (self.transpose().dot(V,pars=pars,check=check)).transpose()
 
+	def quant_fluct(self,V,pars={},check=True,enforce_pure=False):
+		"""Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.
+
+		.. math::
+			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enforce_pure`].
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to unity.
+
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+		check : bool, optional
+			
+		Returns
+		--------
+		float
+			Quantum fluctuations of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+			 
+		"""
+
+		from .exp_op_core import isexp_op
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		# fluctuations =  expctH2 - expctH^2
+		kwargs = dict(enforce_pure=enforce_pure)
+		V_dot = self.dot(V,pars=pars,check=check)
+		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
+
+		if V.shape[0] != V.shape[1] or enforce_pure:
+			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
+		else:
+			V_dot = self.dot(V_dot,time=time,check=check)
+			sq_expt_value = self._expt_value_core(V,V_dot,**kwargs)
+
+		return sq_expt_value - expt_value_sq
+
+	def expt_value(self,V,pars={},check=True,enforce_pure=False):
+		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
+
+		.. math::
+			\\langle V|H(t=\\texttt{time})|V\\rangle
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enforce_pure` argument of `basis.ent_entropy`].
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to unity.
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+		check : bool, optional
+			
+		Returns
+		--------
+		float
+			Expectation value of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
+			 
+		"""
+		from .exp_op_core import isexp_op
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		
+		V_dot = self.dot(V,time=time,check=check)
+		return self._expt_value_core(V,V_dot,enforce_pure=enforce_pure)
+
+	def _expt_value_core(self,V_left,V_right,enforce_pure=False):
+		if _sp.issparse(V_right):
+			if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
+				return _np.asscalar((V_left.H.dot(V_right)).toarray())
+			else: # density matrix
+				return V_right.diagonal().sum()
+		else:
+			V_right = _np.asarray(V_right).squeeze()
+			if V_right.ndim == 1: # pure state
+				return _np.vdot(V_left,V_right)
+			elif V_left.shape[0] != V_left.shape[1] or enforce_pure: # multiple pure states
+				return _np.einsum("ij,ij->j",V_left.conj(),V_right)
+			else: # density matrix
+				return V_right.trace()
+
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
 		"""Calculates matrix element of `quantum_operator` quantum_operator for parameters `pars` in states `Vl` and `Vr`.
 
@@ -548,7 +678,7 @@ class quantum_operator(object):
 			Vector(s)/state(s) to multiple with on right side.
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		diagonal : bool, optional
 			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
 		check : bool,
@@ -565,81 +695,31 @@ class quantum_operator(object):
 		corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. 
 
 		"""
-		if self.Ns <= 0:
-			return _np.array([])
+		Vr = self.dot(Vr,pars=pars,check=check)
 
-		pars = self._check_scalar_pars(pars)
+		if check:
+			try:
+				shape = Vl.shape
+			except AttributeError:
+				Vl =_np.asanyarray(Vl)
+				shape = Vl.shape
 
-		Vr=self.dot(Vr,pars=pars,check=check)
+			if shape[0] != self._shape[1]:
+				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-		if not check:
+			if Vl.ndim > 2:
+				raise ValueError("Expecting  0< V.ndim < 3.")
+
+		if _sp.issparse(Vl):
+			if diagonal:
+				return Vl.H.dot(Vr).diagonal()
+			else:
+				return Vl.H.dot(Vr)
+		else:
 			if diagonal:
 				return _np.einsum("ij,ij->j",Vl.conj(),Vr)
 			else:
 				return Vl.T.conj().dot(Vr)
- 
-
-		if Vl.__class__ is _np.ndarray:
-			if Vl.ndim == 1:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-
-				return Vl.conj().dot(Vr)
-			elif Vl.ndim == 2:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-
-				if diagonal:
-					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
-				else:
-					return Vl.T.conj().dot(Vr)
-			else:
-				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-
-		elif Vl.__class__ is _np.matrix:
-			if Vl.ndim == 1:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-
-				return Vl.conj().dot(Vr)
-			elif Vl.ndim == 2:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-
-				if diagonal:
-					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
-				else:
-					return Vl.H.dot(Vr)
-			else:
-				raise ValueError('Expecting Vl to have ndim < 3')
-
-		elif _sm.issparse(Vl):
-			if Vl.ndim == 2:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError('dimension mismatch')
-				if diagonal:
-					return Vl.H.dot(Vr).diagonal()
-				else:
-					return Vl.H.dot(Vr)
-			else:
-				raise ValueError('Expecting Vl to have ndim < 3')
-
-		else:
-			Vl = _np.asanyarray(Vl)
-			if Vl.ndim == 1:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-				if diagonal:
-					return _np.einsum("ij,ij->j",Vl.conj(),Vr)
-				else:
-					return Vl.conj().dot(Vr)
-			elif Vl.ndim == 2:
-				if Vl.shape[0] != self._shape[1]:
-					raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V1.shape,self._shape))
-
-				return Vl.T.conj().dot(Vr)
-			else:
-				raise ValueError('Expecting Vl to have ndim < 3')
 
 	### Diagonalisation routines
 
@@ -658,7 +738,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		eigsh_args : 
 			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
 			
@@ -693,7 +773,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		eigh_args : 
 			For all additional arguments see documentation of `numpy.linalg.eigh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html>`_.
 			
@@ -734,7 +814,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		eigvalsh_args : 
 			For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh>`_.
 			
@@ -772,7 +852,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity. 
+			are assumed to be set to unity. 
 
 		Returns
 		--------
@@ -806,7 +886,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 
 		Returns
 		--------
@@ -844,7 +924,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		out : numpy.ndarray
 			Array to fill in with the output.
 		
@@ -882,7 +962,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 		out : numpy.ndarray
 			Array to fill in with the output.
 		
@@ -918,7 +998,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 
 		Returns
 		--------
@@ -941,7 +1021,7 @@ class quantum_operator(object):
 		-----------
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
+			are assumed to be set to unity.
 
 		Returns
 		--------
@@ -968,6 +1048,50 @@ class quantum_operator(object):
 
 		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
 
+	def update_matrix_formats(self,matrix_formats):
+		"""Change the internal structure of the matrices in-place.
+
+		Parameters
+		-----------
+		matrix_formats: dict, optional
+			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
+			specifies the sparse matrix format {"csr","csc","dia","dense"}.
+
+		Examples
+		---------
+		Given `O` which has two operators defined by strings: 'Hx' for transverse field, and 'Hising' is the Ising part. The Ising part must be diagonal
+		therefore it is useful to cast it to a DIA matrix format, while the transverse field is not diagonal so it is most efficient to use CSR matrix format.
+		This can be accomplished by the following:
+
+		>>> O.update_matrix_formats(dict(Hx="csr",Hising="dia"))
+
+		"""
+		if type(matrix_formats) is not dict:
+			raise ValueError("matrix_formats must be a dictionary with the formats of the matrices being values and keys being the operator keys.")
+
+		extra = set(matrix_formats.keys()) - set(self._quantum_operator.keys())
+		if extra:
+			raise ValueError("unexpected couplings: {}".format(extra))
+
+		for key in self._quantum_operator.keys():
+			if key in matrix_formats:
+				fmt = matrix_formats[key]
+				if fmt not in ["dia","csr","csc","dense"]:
+					raise TypeError("sparse formats must be either 'csr','csc', 'dia' or 'dense'.")
+
+				if fmt == "dense":
+					O = self._quantum_operator[key]
+					try:
+						self._quantum_operator[key] = O.toarray()
+					except AttributeError:
+						self._quantum_operator[key] = _np.ascontiguousarray(O)
+				else:
+					sparse_constuctor = getattr(_sp,fmt+"_matrix")
+					O = self._quantum_operator[key]
+					if _sp.issparse(O):
+						self._quantum_operator[key] = sparse_constuctor(O)	
+
+		self._update_matvecs()	
 
 	### algebra operations
 
@@ -989,8 +1113,10 @@ class quantum_operator(object):
 		>>> H_tran = H.transpose()
 
 		"""
-		new_dict = {key:op.transpose() for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=copy)
+		
+		new_dict = {key:[op.transpose()] for key,op in iteritems(self._quantum_operator)}
+		print(self._basis)
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=copy)
 
 	def conjugate(self):
 		"""Conjugates `quantum_operator` quantum_operator.
@@ -1010,8 +1136,8 @@ class quantum_operator(object):
 		>>> H_conj = H.conj()
 
 		"""
-		new_dict = {key:op.conjugate() for key,op in iteritems(self._quantum_operator)}
-		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,copy=False)
+		new_dict = {key:[op.conjugate()] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=False)
 
 	def conj(self):
 		"""Conjugates `quantum_operator` quantum_operator.
@@ -1052,67 +1178,14 @@ class quantum_operator(object):
 		>>> H_herm = H.getH()
 
 		"""
-		return self.conj().transpose(copy=copy)
+		return self.conjugate().transpose(copy=copy)
 
+	def copy(self):
+		"""Returns a deep copy of `quantum_operator` object."""
+		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
+		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=True)
 
-	### lin-alg operations
-
-	def diagonal(self,pars={}):
-		""" Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.
-
-		Parameters
-		-----------
-		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
-
-		Returns
-		--------
-		numpy.ndarray
-			array containing the diagonal part of the operator :math:`diag_j = H_{jj}(\\lambda)`.
-
-		Examples
-		---------
-
-		>>> H_diagonal = H.diagonal(pars=pars)
-
-		"""
-		pars = self._check_scalar_pars(pars)
-		diag = _np.zeros(self.Ns,dtype=self._dtype)
-		for key,value in iteritems(self._quantum_operator_dict):
-			diag += pars[key] * value.diagonal()
-		return diag
-
-	def trace(self,pars={}):
-		""" Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.
-
-		Parameters
-		-----------
-		pars : dict, optional
-			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
-			are assumed to be set to inity.
-
-		Returns
-		--------
-		float
-			Trace of quantum_operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
-
-		Examples
-		---------
-
-		>>> H_tr = H.trace(pars=pars)
-
-		"""
-		pars = self._check_scalar_pars(pars)
-		tr = 0.0
-		for key,value in iteritems(self._quantum_operator_dict):
-			try:
-				tr += pars[key] * value.trace()
-			except AttributeError:
-				tr += pars[key] * value.diagonal().sum()
-		return tr
-
-	def astype(self,dtype):
+	def astype(self,dtype,copy=False):
 		""" Changes data type of `quantum_operator` object.
 
 		Parameters
@@ -1132,15 +1205,80 @@ class quantum_operator(object):
 		if dtype not in hamiltonian_core.supported_dtypes:
 			raise ValueError("quantum_operator can only be cast to floating point types")
 
+		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
+
 		if dtype == self._dtype:
-			return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=dtype,copy=False)
+			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=copy)
 		else:
-			return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=dtype,copy=True)
+			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=True)
 
-	def copy(self,deep=False):
-		"""Returns a deep copy of `quantum_operator` object."""
-		return quantum_operator(self._quantum_operator_dict,basis=self._basis,dtype=self._dtype,copy=deep)
 
+	### lin-alg operations
+
+	def diagonal(self,pars={}):
+		""" Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.
+
+		Parameters
+		-----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to unity.
+
+		Returns
+		--------
+		numpy.ndarray
+			array containing the diagonal part of the operator :math:`diag_j = H_{jj}(\\lambda)`.
+
+		Examples
+		---------
+
+		>>> H_diagonal = H.diagonal(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+		diag = _np.zeros(self.Ns,dtype=self._dtype)
+		for key,value in iteritems(self._quantum_operator):
+			diag += pars[key] * value.diagonal()
+		return diag
+
+	def trace(self,pars={}):
+		""" Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.
+
+		Parameters
+		-----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to unity.
+
+		Returns
+		--------
+		float
+			Trace of quantum_operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
+
+		Examples
+		---------
+
+		>>> H_tr = H.trace(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+		tr = 0.0
+		for key,value in iteritems(self._quantum_operator):
+			try:
+				tr += pars[key] * value.trace()
+			except AttributeError:
+				tr += pars[key] * value.diagonal().sum()
+		return tr
+
+	def __str__(self):
+		s = ""
+		for key,op in iteritems(self._quantum_operator):
+			s = s + ("{}:\n{}\n".format(key,op))
+
+		return s
+
+	def __repr__(self):
+		return "<{} x {} quspin.operator.quantum_operator with {} operator(s)>".format(self.shape[0],self.shape[1],len(self._quantum_operator))
 
 	def __call__(self,**pars):
 		pars = self._check_scalar_pars(pars)
@@ -1155,11 +1293,16 @@ class quantum_operator(object):
 	def __iadd__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,quantum_operator):
-			for key,value in iteritems(other._quantum_operator_dict):
-				if key in self._quantum_operator_dict:
-					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] + value
+			for key,value in iteritems(other._quantum_operator):
+				if key in self._quantum_operator:
+					self._quantum_operator[key] = self._quantum_operator[key] + value
 				else:
-					self._quantum_operator_dict[key] = value
+					self._quantum_operator[key] = value
+
+				if _check_almost_zero(self._quantum_operator[key]):
+					self._quantum_operator.pop(key)
+
+			self._update_matvecs()
 			return self
 		elif other == 0:
 			return self
@@ -1167,21 +1310,24 @@ class quantum_operator(object):
 			return NotImplemented
 
 	def __add__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new += other
 		return new
-
-
 
 	def __isub__(self,other):
 		self._is_dense = self._is_dense or other._is_dense
 		if isinstance(other,quantum_operator):
-			for key,values in iteritems(other._quantum_operator_dict):
-				if key in self._quantum_operator_dict:
-					self._quantum_operator_dict[key] = self._quantum_operator_dict[key] - value
+			for key,value in iteritems(other._quantum_operator):
+				if key in self._quantum_operator:
+					self._quantum_operator[key] = self._quantum_operator[key] - value
 				else:
-					self._quantum_operator_dict[key] = -value
+					self._quantum_operator[key] = -value
+
+				if _check_almost_zero(self._quantum_operator[key]):
+					self._quantum_operator.pop(key)
+
+			self._update_matvecs()
 			return self
 		elif other == 0:
 			return self
@@ -1189,38 +1335,43 @@ class quantum_operator(object):
 			return NotImplemented
 
 	def __sub__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new -= other
 		return new		
 
 	def __imul__(self,other):
-		if not _np.isscalar(other):
+		if isinstance(other,quantum_operator):
+			return NotImplemented
+		elif not _np.isscalar(other):
 			return NotImplemented
 		else:
-			for op in itervalues(self._quantum_operator_dict):
+			for op in itervalues(self._quantum_operator):
 				op *= other
 
+			self._update_matvecs()
 			return self
 
 	def __mul__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new *= other
 		return new
 
 	def __idiv__(self,other):
-		if not _np.isscalar(other):
+		if isinstance(other,quantum_operator):
+			return NotImplemented
+		elif not _np.isscalar(other):
 			return NotImplemented
 		else:
-			for op in itervalues(self._quantum_operator_dict):
+			for op in itervalues(self._quantum_operator):
 				op /= other
-
+			self._update_matvecs()
 			return self
 
 	def __div__(self,other):
-		new_type = _np.result_type(self._dtype, other.dtype)
-		new = self.astype(new_type)
+		result_dtype = _np.result_type(self._dtype, other.dtype)
+		new = self.astype(result_dtype,copy=True)
 		new /= other
 		return new
 
@@ -1250,7 +1401,6 @@ class quantum_operator(object):
 				if J.ndim > 0:
 					raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
 
-
 		return pars
 
 	def _check_scalar_pars(self,pars):
@@ -1262,15 +1412,9 @@ class quantum_operator(object):
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
-
-		missing = set(self._quantum_operator.keys()) - set(pars.keys())
+		missing =  set(self._quantum_operator.keys()) - set(pars.keys())
 		for key in missing:
-			pars[key] = _np.array(1,dtype=_np.int32)
-
-		for J in pars.values():
-			J = _np.array(J)				
-			if J.ndim > 0:
-				raise ValueError("expecting parameters to be either scalar or tuple of function and arguements of function.")
+			pars[key] = 1.0
 
 		return pars
 
@@ -1287,6 +1431,11 @@ class quantum_operator(object):
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
 				raise ValueError('cannot cast types')	
 
+	def _update_matvecs(self):
+		self._matvec_functions = {}
+
+		for key in self._quantum_operator.keys():
+			self._matvec_functions[key] = _get_matvec_function(self._quantum_operator[key])
 
 def isquantum_operator(obj):
 	"""Checks if instance is object of `quantum_operator` class.

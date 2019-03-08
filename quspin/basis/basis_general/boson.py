@@ -1,4 +1,4 @@
-from ._basis_general_core import boson_basis_core_wrap_32,boson_basis_core_wrap_64
+from ._basis_general_core import boson_basis_core_wrap,get_basis_type,basis_zeros
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
@@ -24,25 +24,6 @@ def H_dim(N,length,m_max):
             Ns += -comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
 
     return Ns
-
-
-
-
-def get_basis_type(N, Np, sps, **blocks):
-    # calculates the datatype which will fit the largest representative state in basis
-    if Np is None:
-        # if no particle conservation the largest representative is sps**N
-        dtype = _np.min_scalar_type(int(sps**N-1))
-        return _np.result_type(dtype,_np.uint32)
-    else:
-        # if particles are conservated the largest representative is placing all particles as far left
-        # as possible. 
-        l=Np//(sps-1)
-        s_max = sum((sps-1)*sps**(N-1-i)  for i in range(l))
-        s_max += (Np%(sps-1))*sps**(N-l-1)
-        dtype = _np.min_scalar_type(int(s_max))
-        return _np.result_type(dtype,_np.uint32)
-
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
@@ -78,6 +59,8 @@ class boson_basis_general(hcb_basis_general,basis_general):
 		occupation. 
 	* if `Nb` or `nb` and `sps` are specified, the finite boson basis is constructed with the local Hilbert space 
 		restrited by `sps`.
+	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+
 
 	Examples
 	--------
@@ -97,7 +80,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 
 	"""
-	def __init__(self,N,Nb=None,nb=None,sps=None,Ns_block_est=None,**blocks):
+	def __init__(self,N,Nb=None,nb=None,sps=None,Ns_block_est=None,make_basis=True,block_order=None,**blocks):
 		"""Intializes the `boson_basis_general` object (basis for bosonic operators).
 
 		Parameters
@@ -112,6 +95,10 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			Number of states per site (including zero bosons), or on-site Hilbert space dimension.
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
+		make_basis: bool, optional
+			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		block_order: list of strings, optional
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -140,6 +127,11 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				Nb = int(nb*N)
 			else:
 				raise ValueError("expecting value for 'Nb','nb' or 'sps'")
+
+			try:
+				sps = max(list(Nb))+1
+			except TypeError:
+				sps = Nb+1
 		else:
 			if Nb is not None:
 				if nb is not None:
@@ -148,9 +140,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			elif nb is not None:
 				Nb = int(nb*N)
 
-		
 		self._sps = sps
-
 		self._allowed_ops=set(["I","z","n","+","-"])
 
 
@@ -163,7 +153,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 								"\n\tn: number operator"+
 								"\n\tz: c-symm number operator")
 
-			hcb_basis_general.__init__(self,N,Nb=Nb,_Np=_Np,**blocks)
+			hcb_basis_general.__init__(self,N,Nb=Nb,_Np=_Np,_make_basis=make_basis,block_order=block_order,**blocks)
 		
 		else:
 
@@ -177,9 +167,9 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			basis_general.__init__(self,N,**blocks)
 			self._check_pcon = False
-			count_particles = False
+			self._count_particles = False
 			if _Np is not None and Nb is None:
-				count_particles = True
+				self._count_particles = True
 				if type(_Np) is not int:
 					raise ValueError("_Np must be integer")
 				if _Np >= -1:
@@ -194,15 +184,14 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 			if Nb is None:
 				Ns = sps**N
-				basis_type = get_basis_type(N,Nb,sps)
 			elif type(Nb) is int:
 				self._check_pcon = True
+				self._get_proj_pcon = True
 
 				if self._sps is None:
-					self._sps = Nb
+					self._sps = Nb+1
 
 				Ns = H_dim(Nb,N,self._sps-1)
-				basis_type = get_basis_type(N,Nb,self._sps)
 			else:
 				try:
 					Np_iter = iter(Nb)
@@ -210,13 +199,13 @@ class boson_basis_general(hcb_basis_general,basis_general):
 					raise TypeError("Nb must be integer or iteratable object.")
 
 				if self._sps is None:
-					self._sps = max(Nb)				
+					self._sps = max(list(Nb))+1				
 
 				Ns = 0
 				for b in Nb:
 					Ns += H_dim(b,N,self._sps-1)
 
-				basis_type = get_basis_type(N,max(Nb),self._sps)
+			self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:
@@ -228,79 +217,22 @@ class boson_basis_general(hcb_basis_general,basis_general):
 						raise ValueError("Ns_block_est must be an integer > 0")						
 					Ns = Ns_block_est
 
-			Ns = max(Ns,1000)
-
-			if basis_type==_np.uint32:
-				basis = _np.zeros(Ns,dtype=_np.uint32)
-				n     = _np.zeros(Ns,dtype=self._n_dtype)
-				self._core = boson_basis_core_wrap_32(N,self._sps,self._maps,self._pers,self._qs)
-			elif basis_type==_np.uint64:
-				basis = _np.zeros(Ns,dtype=_np.uint64)
-				n     = _np.zeros(Ns,dtype=self._n_dtype)
-				self._core = boson_basis_core_wrap_64(N,self._sps,self._maps,self._pers,self._qs)
-			else:
-				raise ValueError("states can't be represented as 64-bit unsigned integer")
-
-			# if count_particles and (Nb_list is not None):
-			# 	Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-			# 	self._Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
-			# 	if self._Ns < 0:
-			# 		raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-			# 	basis,ind = _np.unique(basis,return_index=True)
-			# 	if self.Ns != basis.shape[0]:
-			# 		basis = basis[1:]
-			# 		ind = ind[1:]
-
-			# 	self._basis = basis[::-1].copy()
-			# 	self._n = n[ind[::-1]].copy()
-			# 	self._Np_list = Np_list[ind[::-1]].copy()
-			# else:
-			# 	self._Ns = self._core.make_basis(basis,n,Np=Nb)
-			# 	if self._Ns < 0:
-			# 		raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-			# 	basis,ind = _np.unique(basis,return_index=True)
-			# 	if self.Ns != basis.shape[0]:
-			# 		basis = basis[1:]
-			# 		ind = ind[1:]
-			# 	self._basis = basis[::-1].copy()
-			# 	self._n = n[ind[::-1]].copy()
-
-
-			if count_particles and (Nb is not None):
-				Np_list = _np.zeros_like(basis,dtype=_np.uint8)
-				Ns = self._core.make_basis(basis,n,Np=Nb,count=Np_list)
-			else:
-				Np_list = None
-				Ns = self._core.make_basis(basis,n,Np=Nb)
-
-			if Ns < 0:
-					raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
-			if type(Nb) is int or Nb is None:
-				if Ns > 0:
-					self._basis = basis[Ns-1::-1].copy()
-					self._n = n[Ns-1::-1].copy()
-					if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
-				else:
-					self._basis = _np.array([],dtype=basis.dtype)
-					self._n = _np.array([],dtype=n.dtype)
-					if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
-			else:
-				ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
-				self._basis = basis[ind].copy()
-				self._n = n[ind].copy()
-				if Np_list is not None: self._Np_list = Np_list[ind].copy()
-
-
-
-			self._Ns = Ns
+			self._basis_dtype = get_basis_type(N,Nb,self._sps)
+			self._core = boson_basis_core_wrap(self._basis_dtype,N,self._sps,self._maps,self._pers,self._qs)
 			self._N = N
-			self._index_type = _np.min_scalar_type(-self._Ns)
+			self._Ns = Ns
+			self._Np = Nb
 
-			self._reduce_n_dtype()
+			# make the basis; make() is function method of base_general
+			if make_basis:		
+				self.make()
+			else:
+				self._Ns=1
+				self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
+				self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
+
+			
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
 			raise ValueError("'|' character found in op: {0},{1}".format(op[0],op[1]))

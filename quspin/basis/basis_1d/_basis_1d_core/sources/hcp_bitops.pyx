@@ -1,22 +1,20 @@
+# distutils: language=c++
 
-cdef NP_INT32_t bit_count(basis_type I,int l):
-    cdef basis_type out = 0
+
+from gmpy2 import popcount
+
+cdef extern from "bitcount.h":
+    int bitcount_32_C(NP_UINT32_t,int)
+    int bitcount_64_C(NP_UINT64_t,int)
+
+
+cdef inline NP_INT32_t bit_count(basis_type I,int l):
     if basis_type is NP_UINT32_t:
-        I &= (0x7FFFFFFF >> (31-l));
-        I = I - ((I >> 1) & 0x55555555);
-        I = (I & 0x33333333) + ((I >> 2) & 0x33333333);
-        return (((I + (I >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;    
+        return bitcount_32_C(I,l)
     elif basis_type is NP_UINT64_t:
-        I &= (0x7FFFFFFFFFFFFFFF >> (63-l));
-        I = I - ((I >> 1) & 0x5555555555555555);
-        I = (I & 0x3333333333333333) + ((I >> 2) & 0x3333333333333333);
-        return (((I + (I >> 4)) & 0x0F0F0F0F0F0F0F0F) * 0x0101010101010101) >> 56;
+        return bitcount_64_C(I,l)
     else:
-        for i in range(l):
-            out += (I & 1) 
-            I >>= 1
-
-        return out
+        return popcount(I&((<object>(1)<<l)-1))
 
 cdef inline basis_type shift(basis_type I,int shift,int period,NP_INT8_t * sign,basis_type[:] pars):
     # this functino is used to shift the bits of an integer by 'shift' bits.

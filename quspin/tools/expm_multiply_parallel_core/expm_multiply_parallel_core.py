@@ -116,27 +116,28 @@ class expm_multiply_parallel(object):
 			If `overwrite_v = True` the dunction returns `v` with the data overwritten, otherwise the result is stored in a new array.  
 
 		"""
-		if overwrite_v:
-			v = _np.ascontiguousarray(v)
-		else:
-			v = _np.ascontiguousarray(v).copy()
-
+		v = _np.asarray(v)
+			
 		if v.ndim != 1:
-			raise ValueError
+			raise ValueError("array must have ndim of 1.")
+		
+		if v.shape[0] != self._A.shape[1]:
+			raise ValueError("dimension mismatch {}, {}".format(self._A.shape,v.shape))
 
 		a_dtype = _np.array(self._a).dtype
 		v_dtype = _np.result_type(self._A.dtype,a_dtype,v.dtype)
 
-		if v_dtype != v.dtype:
-			if overwrite_v:
-				raise ValueError("input array must match correct output dtype for matrix multiplication.")
+		if overwrite_v:
+			if v_dtype != v.dtype:
+				raise ValueError("if overwrite_v is True, the input array must match correct output dtype for matrix multiplication.")
 
-			v = v.astype(v_dtype)
+			if not v.flags["CARRAY"]:
+				raise TypeError("input array must a contiguous and writable.")
 
-		if v.shape[0] != self._A.shape[1]:
-			raise ValueError("dimension mismatch {}, {}".format(self._A.shape,v.shape))
-
-		
+			if v.ndim != 1:
+				raise ValueError("array must have ndim of 1.")
+		else:
+			v = v.astype(v_dtype,order="C",copy=True)
 
 		if work_array is None:
 			work_array = _np.zeros((2*self._A.shape[0],),dtype=v.dtype)

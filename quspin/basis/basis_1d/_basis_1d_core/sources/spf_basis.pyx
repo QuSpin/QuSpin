@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 def get_state(L,Ntup=None):
     s = 0

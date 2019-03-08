@@ -1,0 +1,329 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Free Particle Systems: the Fermionic SSH Chain &#8212; QuSpin 0.3.1 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="free-particle-systems-the-fermionic-ssh-chain">
+<span id="example5-label"></span><h1>Free Particle Systems: the Fermionic SSH Chain<a class="headerlink" href="#free-particle-systems-the-fermionic-ssh-chain" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/e729ba9467bab9499dbf64e4f82145d2/example5.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="c1"># line 4 and line 5 below are for development purposes and can be removed</span>
+<span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
+<span class="c1">#####################################################################</span>
+<span class="c1">#                            example 5                              #</span>
+<span class="c1">#    In this script we demonstrate how to use QuSpin&#39;s to build     #</span>
+<span class="c1">#    the Hamiltonian of the SSH model in real and momentum space.   # </span>
+<span class="c1">#    Along the way, we showcase the block tools which allow the     #</span>
+<span class="c1">#    user to create block-diagonal Hamiltonians. Last, we show      #</span>
+<span class="c1">#    how to time-evolve free fermion states like the Fermi sea      #</span>
+<span class="c1">#    and measure correlators.                                       #</span>
+<span class="c1">#####################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">exp_op</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert space fermion basis</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.block_tools</span> <span class="kn">import</span> <span class="n">block_diag_hamiltonian</span> <span class="c1"># block diagonalisation</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="k">try</span><span class="p">:</span> <span class="c1"># import python 3 zip function in python 2 and pass if already using python 3</span>
+    <span class="kn">import</span> <span class="nn">itertools.izip</span> <span class="kn">as</span> <span class="nn">zip</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span> 
+<span class="c1">##### define model parameters #####</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">100</span> <span class="c1"># system size</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># uniform hopping</span>
+<span class="n">deltaJ</span><span class="o">=</span><span class="mf">0.1</span> <span class="c1"># bond dimerisation</span>
+<span class="n">Delta</span><span class="o">=</span><span class="mf">0.5</span> <span class="c1"># staggered potential</span>
+<span class="n">beta</span><span class="o">=</span><span class="mf">100.0</span> <span class="c1"># inverse temperature for Fermi-Dirac distribution</span>
+<span class="c1">##### construct single-particle Hamiltonian #####</span>
+<span class="c1"># define site-coupling lists</span>
+<span class="n">hop_pm</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="o">-</span><span class="n">deltaJ</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">hop_mp</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="o">+</span><span class="n">deltaJ</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
+<span class="n">stagg_pot</span><span class="o">=</span><span class="p">[[</span><span class="n">Delta</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>	
+<span class="c1"># define static and dynamic lists</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">hop_pm</span><span class="p">],[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">hop_mp</span><span class="p">],[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span><span class="n">stagg_pot</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1"># define basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spinless_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># build real-space Hamiltonian</span>
+<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1"># diagonalise real-space Hamiltonian</span>
+<span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="c1">##### compute Fourier transform and momentum-space Hamiltonian #####</span>
+<span class="c1"># define momentm blocks and basis arguments</span>
+<span class="n">blocks</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">Nf</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="n">i</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span> <span class="c1"># only L//2 distinct momenta</span>
+<span class="n">basis_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">,)</span>
+<span class="c1"># construct block-diagonal Hamiltonian</span>
+<span class="n">FT</span><span class="p">,</span><span class="n">Hblock</span> <span class="o">=</span> <span class="n">block_diag_hamiltonian</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span><span class="p">,</span>
+						<span class="n">basis_args</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pcon</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="c1"># diagonalise momentum-space Hamiltonian</span>
+<span class="n">Eblock</span><span class="p">,</span><span class="n">Vblock</span><span class="o">=</span><span class="n">Hblock</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="c1">##### prepare the density observables and initial states #####</span>
+<span class="c1"># grab single-particle states and treat them as initial states</span>
+<span class="n">psi0</span><span class="o">=</span><span class="n">Vblock</span>
+<span class="c1"># construct operator n_1 = $n_{j=0}$</span>
+<span class="n">n_1_static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;n&#39;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]]]]</span>
+<span class="n">n_1</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">n_1_static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+				<span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="c1"># construct operator n_2 = $n_{j=L/2}$</span>
+<span class="n">n_2_static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;n&#39;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">]]]]</span>
+<span class="n">n_2</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">n_2_static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+				<span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="c1"># transform n_j operators to momentum space</span>
+<span class="n">n_1</span><span class="o">=</span><span class="n">n_1</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">FT</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">n_2</span><span class="o">=</span><span class="n">n_2</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">FT</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="c1">##### evaluate nonequal time correlator &lt;FS|n_2(t) n_1(0)|FS&gt; #####</span>
+<span class="c1"># define time vector</span>
+<span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">90.0</span><span class="p">,</span><span class="mi">901</span><span class="p">)</span>
+<span class="c1"># calcualte state acted on by n_1</span>
+<span class="n">n_psi0</span><span class="o">=</span><span class="n">n_1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span>
+<span class="c1"># construct time-evolution operator using exp_op class (sometimes faster)</span>
+<span class="n">U</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hblock</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">stop</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1"># evolve states</span>
+<span class="n">psi_t</span><span class="o">=</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span>
+<span class="n">n_psi_t</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n_psi0</span><span class="p">)</span>
+<span class="c1"># alternative method for time evolution using Hamiltonian class</span>
+<span class="c1">#psi_t=Hblock.evolve(psi0,0.0,t,iterate=True)</span>
+<span class="c1">#n_psi_t=Hblock.evolve(n_psi0,0.0,t,iterate=True)</span>
+<span class="c1"># preallocate variable</span>
+<span class="n">correlators</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="o">+</span><span class="n">psi0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="c1"># loop over the time-evolved states</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">n_psi</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="nb">zip</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">n_psi_t</span><span class="p">)</span> <span class="p">):</span>
+	<span class="n">correlators</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">=</span><span class="n">n_2</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">n_psi</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+<span class="c1"># evaluate correlator at finite temperature</span>
+<span class="n">n_FD</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="n">E</span><span class="p">)</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">correlator</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_FD</span><span class="o">*</span><span class="n">correlators</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">##### plot spectra</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">E</span><span class="o">/</span><span class="n">L</span><span class="p">,</span>
+					<span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;real space&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Hblock</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">Eblock</span><span class="o">/</span><span class="n">L</span><span class="p">,</span>
+					<span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;momentum space&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;state number&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example5a.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="c1">#plt.show()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="c1">##### plot correlator</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">correlator</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$C_{0,L/2}(t,</span><span class="se">\\</span><span class="s1">beta)$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example5b.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="c1">#plt.show()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example5.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

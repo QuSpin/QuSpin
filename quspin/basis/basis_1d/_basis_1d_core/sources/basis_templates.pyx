@@ -1,3 +1,4 @@
+# distutils: language=c++
 
 cdef void make_n_basis_template(ns_type next_state,basis_type[:] ns_pars,npy_intp MAX,basis_type s,basis_type[:] basis):
     cdef npy_intp i

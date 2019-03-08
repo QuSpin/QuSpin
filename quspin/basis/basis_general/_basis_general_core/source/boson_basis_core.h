@@ -5,25 +5,17 @@
 #include <cmath>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
+#include "openmp.h"
 
-// template<class I>
-// I inline boson_map_bits(I s,const int map[],const I inv,const I M[],const int sps,const int N){
-// 	I ss = 0;
-// 	for(int i=N-1;i>=0;--i){
-// 		int j = N-map[i]-1;
-// 		ss += ( inv&1 ? (sps-(s%sps)-1)*M[j] : (s%sps)*M[j] );
-// 		s /= sps;
-// 		inv >>= 1;
-// 	}
-// 	return ss;
-// }
+namespace basis_general {
+
 
 template<class I>
 I inline boson_map_bits(I s,const int map[],const I M[],const int sps,const int N){
 	I ss = 0;
 	for(int i=N-1;i>=0;--i){
 		int j = map[i];
-		ss += ( j<0 ? (sps-(s%sps)-1)*M[j+N] : (s%sps)*M[N-j-1] );
+		ss += ( j<0 ? (sps-(int)(s%sps)-1)*M[j+N] : (int)(s%sps)*M[N-j-1] );
 		s /= sps;
 	}
 	return ss;
@@ -34,23 +26,25 @@ template<class I>
 class boson_basis_core : public general_basis_core<I>
 {
 	public:
-		I M[64];
-		const I sps;
+		std::vector<I> M;
+		const int sps;
 
 		boson_basis_core(const int _N, const int _sps) : \
 		general_basis_core<I>::general_basis_core(_N), sps(_sps) {
-			M[0] = 1;
+			M.resize(_N);
+			M[0] = (I)1;
 			for(int i=1;i<_N;i++){
-				M[i] = M[i-1]*_sps;
+				M[i] = (M[i-1] * (I)_sps);
 			}
 		}
 
 		boson_basis_core(const int _N, const int _sps,const int _nt, \
 						 const int _maps[], const int _pers[], const int _qs[]) : \
 		general_basis_core<I>::general_basis_core(_N,_nt,_maps,_pers,_qs), sps(_sps) {
-			M[0] = 1;
+			M.resize(_N);
+			M[0] = (I)1;
 			for(int i=1;i<_N;i++){
-				M[i] = M[i-1]*_sps;
+				M[i] = (M[i-1] * (I)_sps);
 			}			
 		}
 
@@ -61,7 +55,7 @@ class boson_basis_core : public general_basis_core<I>
 				return s;
 			}
 			const int n = general_basis_core<I>::N;
-			return boson_map_bits(s,&general_basis_core<I>::maps[n_map*n],M,sps,n);
+			return boson_map_bits(s,&general_basis_core<I>::maps[n_map*n],&M[0],sps,n);
 			
 		}
 
@@ -71,23 +65,35 @@ class boson_basis_core : public general_basis_core<I>
 			}
 			const int n = general_basis_core<I>::N;
 			const int * map = &general_basis_core<I>::maps[n_map*n];
-			#pragma omp for schedule(static,1)
+			#pragma omp for schedule(static)
 			for(npy_intp i=0;i<P;i++){
-				s[i] = boson_map_bits(s[i],map,M,sps,n);
-				sign[i] *= 1;
+				s[i] = boson_map_bits(s[i],map,&M[0],sps,n);
 			}
 		}
 
-		I inline next_state_pcon(I s){
-			if(s == 0){
-				return s;
+		std::vector<int> count_particles(const I r){
+			std::vector<int> v(1);
+			int n = 0;
+			I s = r;
+			for(int i=0;i<general_basis_core<I>::N;i++){
+				n += (int)(s%sps);
+				s /= sps;
 			}
+			v[0] = n;
+			return v;
+		}
+
+		I inline next_state_pcon(const I r){
+			if(r == 0){
+				return r;
+			}
+			I s = r;
 			int n=0;
 			for(int i=0;i<general_basis_core<I>::N-1;i++){
-				unsigned int b1 = (s/M[i])%sps;
+				int b1 = (int)((s/M[i])%sps);
 				if(b1>0){
 					n += b1;
-					unsigned int b2 = (s/M[i+1])%sps;
+					int b2 = (int)((s/M[i+1])%sps);
 					if(b2<(sps-1)){
 						n -= 1;
 						s -= M[i];
@@ -96,7 +102,7 @@ class boson_basis_core : public general_basis_core<I>
 							int l = n/(sps-1);
 							int n_left = n%(sps-1);
 							for(int j=0;j<(i+1);j++){
-								s -= ((s/M[j])%sps)*M[j];
+								s -= (int)((s/M[j])%sps) * M[j];
 								if(j<l){
 									s += (sps-1)*M[j];
 								}
@@ -116,12 +122,16 @@ class boson_basis_core : public general_basis_core<I>
 			I s = r;
 			double me_offdiag=1;
 			double me_diag=1;
+			double S = (sps-1.0)/2.0;
+
 			for(int j=n_op-1;j>-1;j--){
 				int ind = general_basis_core<I>::N-indx[j]-1;
-				I occ = (r/M[ind])%sps;
+				int occ = (int)((r/M[ind])%sps);
 				I b = M[ind];
 				char op = opstr[j];
 				switch(op){
+					case 'z':
+						me_diag *= (occ-S);
 					case 'n':
 						me_diag *= occ;
 						break;
@@ -154,7 +164,7 @@ class boson_basis_core : public general_basis_core<I>
 
 
 
-
+}
 
 
 #endif

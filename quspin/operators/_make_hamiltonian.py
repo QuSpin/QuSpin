@@ -8,6 +8,15 @@ from ._functions import function
 
 
 
+def _check_almost_zero(matrix):
+	""" Check if matrix is almost zero. """
+	atol = 100*_np.finfo(matrix.dtype).eps
+
+	if _sp.issparse(matrix):
+		return _np.allclose(matrix.data,0,atol=atol)
+	else:
+		return _np.allclose(matrix,0,atol=atol)
+
 
 def _consolidate_static(static_list):
 	eps = 10 * _np.finfo(_np.float64).eps
@@ -66,77 +75,11 @@ def _consolidate_dynamic(dynamic_list):
 
 
 
-# def _consolidate_bonds(bonds):
-# 	eps = _np.finfo(_np.float64).eps
-# 	l = len(bonds)
-# 	i=0
-# 	while(i < l):
-# 		j = 0
-# 		while(j < l):
-# 			if i != j:
-# 				if bonds[i][1:] == bonds[j][1:]:
-# 					bonds[i][0] += bonds[j][0]
-# 					del bonds[j]
-# 					if j < i: i -= 1
-# 					l = len(bonds)
-# 			j += 1
-# 		i += 1
 
-
-# 	i=0
-# 	while(i < l):
-# 		if abs(bonds[i][0]) < 10 * eps:
-# 			del bonds[i]
-# 			l = len(bonds)
-# 			continue
-
-# 		i += 1
-					
-
-
-
-# def _consolidate_static(static_list):
-# 	l = len(static_list)
-# 	i=0
-# 	while(i < l):
-# 		j = 0
-# 		while(j < l):
-# 			if i != j:
-# 				opstr1,bonds1 = tuple(static_list[i])
-# 				opstr2,bonds2 = tuple(static_list[j])
-# 				if opstr1 == opstr2:
-# 					del static_list[j]
-# 					static_list[i][1].extend(bonds2)
-# 					_consolidate_bonds(static_list[i][1])
-# 					l = len(static_list)
-# 			j += 1
-# 		i += 1
-
-
-# def _consolidate_dynamic(dynamic_list):
-# 	l = len(dynamic_list)
-# 	i = 0
-
-# 	while(i < l):
-# 		j = 0
-# 		while(j < l):
-# 			if i != j:
-# 				opstr1,bonds1,f1,f1_args = tuple(dynamic_list[i])
-# 				opstr2,bonds2,f2,f2_args = tuple(dynamic_list[j])
-# 				if (opstr1 == opstr2) and (f1 == f2) and (f1_args == f2_args):
-# 					del dynamic_list[j]
-# 					dynamic_list[i][1].extend(bonds2)
-# 					_consolidate_bonds(dynamic_list[i][1])
-# 					l = len(dynamic_list)
-# 			j += 1
-# 		i += 1
-
-
-
-def test_function(func,func_args):
+def test_function(func,func_args,dtype):
 	t = _np.cos( (_np.pi/_np.exp(0))**( 1.0/_np.euler_gamma ) )
 	func_val=func(t,*func_args)
-	func_val=_np.array(func_val)
+	func_val=_np.array(func_val,dtype=dtype)
 	if func_val.ndim > 0:
 		raise ValueError("function must return 0-dim numpy array or scalar value.")
 
@@ -160,17 +103,13 @@ def make_static(basis,static_list,dtype):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 	Ns=basis.Ns
-	H = _sp.csr_matrix((Ns,Ns),dtype=dtype)
+	H = _sp.dia_matrix((Ns,Ns),dtype=dtype)
 	static_list = _consolidate_static(static_list)
 	for opstr,indx,J in static_list:
-		# print(opstr,bond)
+		
 		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-		H=H+Ht
-		del Ht
-		H.sum_duplicates() # sum duplicate matrix elements
-		H.eliminate_zeros() # remove all zero matrix elements
-	# print()
+		H=H+_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+
 	return H 
 
 
@@ -200,7 +139,7 @@ def make_dynamic(basis,dynamic_list,dtype):
 	dynamic_list = _consolidate_dynamic(dynamic_list)
 	for opstr,indx,J,f,f_args in dynamic_list:
 		if _np.isscalar(f_args): raise TypeError("function arguments must be array type")
-		test_function(f,f_args)
+		test_function(f,f_args,dtype)
 
 		#indx = _np.asarray(indx,_np.int32)
 		ME,row,col = basis.Op(opstr,indx,J,dtype)
@@ -214,6 +153,9 @@ def make_dynamic(basis,dynamic_list,dtype):
 				dynamic[func] = dynamic[func] + Ht
 		else:
 			dynamic[func] = Ht
+
+		if _check_almost_zero(dynamic[func]):
+			dynamic.pop(func)
 
 
 	return dynamic
@@ -229,10 +171,7 @@ def make_op(basis,opstr,bonds,dtype):
 		J=bond[0]
 		indx=bond[1:]
 		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		Ht=_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-		H=H+Ht
-		del Ht
-		H.sum_duplicates() # sum duplicate matrix elements
-		H.eliminate_zeros() # remove all zero matrix elements
+		H=H+_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
+
 	
 	return H

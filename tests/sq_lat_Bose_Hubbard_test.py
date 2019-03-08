@@ -30,7 +30,11 @@ def test(sps,Lx,Ly):
 			Ns_block += basis.Ns
 			basis_blocks.append(basis)
 
-		assert(Ns_block == pcon_basis.Ns)
+		try:
+			assert(Ns_block == pcon_basis.Ns)
+		except AssertionError:
+			print(Ns_block,pcon_basis.Ns)
+			raise AssertionError
 
 		basis_dict[Nb] = (pcon_basis,basis_blocks)
 

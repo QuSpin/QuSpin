@@ -11,7 +11,7 @@ from quspin.tools.Floquet import Floquet_t_vec
 import numpy as np # generic math functions
 import scipy.sparse as sp
 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 ##### define model parameters #####
 L=20 # system size

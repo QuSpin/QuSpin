@@ -22,7 +22,6 @@ class spin_basis_1d(basis_1d):
 	**Note:** 
 		* The relation between spin and Pauli matrices is :math:`\\vec S = \\vec \\sigma/2`.
 		* The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support the operator strings "x" and "y". 
-		* The operator strings "+" and "-" are defined as follows: :math:`S^{\\pm}=S^x \\pm i S^y` (`pauli=False`) and :math:`\\sigma^{\\pm}=\\sigma^x \\pm i \\sigma^y` (`pauli=True`). 
 
 	Examples
 	--------
@@ -38,7 +37,7 @@ class spin_basis_1d(basis_1d):
 		:lines: 7-
 
 	"""	
-	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=True,**blocks):
+	def __init__(self,L,Nup=None,m=None,S="1/2",pauli=1,**blocks):
 		"""Intializes the `spin_basis_1d` object (basis for spin operators).
 
 		Parameters
@@ -47,14 +46,33 @@ class spin_basis_1d(basis_1d):
 			Length of chain/number of sites.
 		Nup: {int,list}, optional
 			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
-			more particle sectors.
+			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.
+			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.
 		m: float, optional
 			Density of spin up in chain (spin up per site).
 		S: str, optional
 			Size of local spin degrees of freedom. Can be any (half-)integer from:
 			"1/2","1","3/2",...,"9999/2","5000".
-		pauli: bool, optional
-			Whether or not to use Pauli or spin-1/2 operators. Requires `S=1/2`.
+		pauli: bool, optional (requires `S="1/2"`)
+			* for `pauli=0` the code uses spin-1/2 operators: 
+	
+			.. math::
+
+				S^x = \\frac{1}{2}\\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad S^y = \\frac{1}{2}\\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad S^z = \\frac{1}{2}\\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad S^+ = \\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad S^- = \\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
+
+			* for `pauli=1` the code uses Pauli matrices with:
+
+			.. math::
+
+				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 2\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 2 & 0\\end{pmatrix}
+
+
+			* for `pauli=-1` the code uses Pauli matrices with:
+
+			.. math::
+
+				\\sigma^x = \\begin{pmatrix}0 & 1\\\\ 1 & 0\\end{pmatrix},\\quad \\sigma^y = \\begin{pmatrix}0 & -i\\\\ i & 0\\end{pmatrix},\\quad \\sigma^z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad \\sigma^+ = \\begin{pmatrix}0 & 1\\\\ 0 & 0\\end{pmatrix},\\quad \\sigma^- = \\begin{pmatrix}0 & 0\\\\ 1 & 0\\end{pmatrix}
+		
 		**blocks: optional
 			extra keyword arguments which include:
 
@@ -90,6 +108,15 @@ class spin_basis_1d(basis_1d):
 				raise ValueError("N must be between -S and S")
 
 			Nup = int((m+S)*L)
+
+		try:
+			Nup_iter = iter(Nup)
+			M = int(2*S*L)
+			Nup = [((M+Nup+1) if Nup<0 else Nup) for Nup in Nup_iter]
+		except TypeError:
+			if Nup is not None and Nup < 0:
+				Nup = int(2*S*L) + Nup + 1
+
 
 		if Nup is None:
 			Nup_list = None
@@ -176,11 +203,14 @@ class spin_basis_1d(basis_1d):
 					raise ValueError("unit cell size 'a' must be even")
 
 		if self._sps <= 2:
-			self._pauli = pauli
+			self._pauli = int(pauli)
+			if self._pauli not in [-1,0,1]:
+				raise ValueError("Invalid value for optional argument pauli. Allowed values are the integers [-1,0,1].")
+
 			Imax = (1<<L)-1
 			stag_A = sum(1<<i for i in range(0,L,2))
 			stag_B = sum(1<<i for i in range(1,L,2))
-			pars = _np.array([0,L,Imax,stag_A,stag_B])
+			pars = [0,L,Imax,stag_A,stag_B]
 			self._operators = ("availible operators for spin_basis_1d:"+
 								"\n\tI: identity "+
 								"\n\t+: raising operator"+
@@ -192,7 +222,7 @@ class spin_basis_1d(basis_1d):
 			self._allowed_ops = set(["I","+","-","x","y","z"])
 			basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nup_list,pars=pars,count_particles=count_particles,**blocks)
 		else:
-			self._pauli = False
+			self._pauli = 0
 			pars = (L,) + tuple(self._sps**i for i in range(L+1)) + (1,) # flag to turn off higher spin matrix elements for +/- operators
 			self._operators = ("availible operators for spin_basis_1d:"+
 								"\n\tI: identity "+
@@ -206,9 +236,12 @@ class spin_basis_1d(basis_1d):
 
 	def _Op(self,opstr,indx,J,dtype):
 		ME,row,col = basis_1d._Op(self,opstr,indx,J,dtype)
-		if self._pauli:
-			n_ops = len(opstr.replace("I",""))
-			ME *= (1<<n_ops)
+		if self._pauli==1:
+			n = len(opstr.replace("I",""))
+			ME *= (1<<n)
+		elif self._pauli==-1:
+			n = len(opstr.replace("I","").replace("+","").replace("-",""))
+			ME *= (1<<n)
 
 		return ME,row,col
 
@@ -274,24 +307,32 @@ class spin_basis_1d(basis_1d):
 			if opstr == "x":
 				op1 = list(op)
 				op1[0] = op1[0].replace("x","+")
-				op1[2] *= 0.5
+				if self._pauli in [0,1]:
+					op1[2] *= 0.5
 				op1.append(num)
 
 				op2 = list(op)
 				op2[0] = op2[0].replace("x","-")
-				op2[2] *= 0.5
+				if self._pauli in [0,1]:
+					op2[2] *= 0.5
 				op2.append(num)
 
 				return (tuple(op1),tuple(op2))
 			elif opstr == "y":
 				op1 = list(op)
 				op1[0] = op1[0].replace("y","+")
-				op1[2] *= -0.5j
+				if self._pauli in [0,1]:
+					op1[2] *= -0.5j
+				else:
+					op1[2] *= -1j
 				op1.append(num)
 
 				op2 = list(op)
 				op2[0] = op2[0].replace("y","-")
-				op2[2] *= 0.5j
+				if self._pauli in [0,1]:
+					op2[2] *= 0.5j
+				else:
+					op2[2] *= 1j
 				op2.append(num)
 
 				return (tuple(op1),tuple(op2))

@@ -1,0 +1,335 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Integrability Breaking and Thermalising Dynamics in the Translationally Invariant 2D Transverse-Field Ising Model &#8212; QuSpin 0.3.1 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="integrability-breaking-and-thermalising-dynamics-in-the-translationally-invariant-2d-transverse-field-ising-model">
+<span id="example9-label"></span><h1>Integrability Breaking and Thermalising Dynamics in the Translationally Invariant 2D Transverse-Field Ising Model<a class="headerlink" href="#integrability-breaking-and-thermalising-dynamics-in-the-translationally-invariant-2d-transverse-field-ising-model" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/0a470ea0546217cbd415fb01241ce94d/example9.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="c1"># line 4 and line 5 below are for development purposes and can be removed</span>
+<span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
+<span class="c1">#####################################################################</span>
+<span class="c1">#                            example 9                              #</span>
+<span class="c1">#   In this script we demonstrate how to use QuSpin&#39;s               #</span>
+<span class="c1">#   general basis class to construct user-defined symmetry sectors.	#</span>
+<span class="c1">#   We study thermalisation in the 2D transverse-field Ising model  #</span>
+<span class="c1">#   with periodic boundary conditions.                              #</span>
+<span class="c1">#####################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">exp_op</span> <span class="c1"># operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span><span class="p">,</span> <span class="n">spin_basis_general</span> <span class="c1"># spin basis constructor</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span> <span class="c1"># period-spaced time vector</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="c1">#</span>
+<span class="c1">###### define model parameters ######</span>
+<span class="n">L_1d</span> <span class="o">=</span> <span class="mi">16</span> <span class="c1"># length of chain for spin 1/2</span>
+<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span> <span class="c1"># linear dimension of spin 1 2d lattice</span>
+<span class="n">N_2d</span> <span class="o">=</span> <span class="n">Lx</span><span class="o">*</span><span class="n">Ly</span> <span class="c1"># number of sites for spin 1</span>
+<span class="n">Omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># drive frequency</span>
+<span class="n">A</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># drive amplitude</span>
+<span class="c1">#</span>
+<span class="c1">###### setting up user-defined symmetry transformations for 2d lattice ######</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)</span> <span class="c1"># sites [0,1,2,....]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">s</span><span class="o">%</span><span class="n">Lx</span> <span class="c1"># x positions for sites</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">s</span><span class="o">//</span><span class="n">Lx</span> <span class="c1"># y positions for sites</span>
+<span class="n">T_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">y</span> <span class="c1"># translation along x-direction</span>
+<span class="n">T_y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span><span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Ly</span><span class="p">)</span> <span class="c1"># translation along y-direction</span>
+<span class="n">P_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">(</span><span class="n">Ly</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># reflection about x-axis</span>
+<span class="n">P_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">Lx</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">y</span> <span class="c1"># reflection about y-axis</span>
+<span class="n">Z</span>   <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># spin inversion</span>
+<span class="c1">#</span>
+<span class="c1">###### setting up bases ######</span>
+<span class="n">basis_1d</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L_1d</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1d - basis</span>
+<span class="n">basis_2d</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span><span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">kyblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+				<span class="n">pxblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">pyblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">zblock</span><span class="o">=</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span> <span class="c1"># 2d - basis</span>
+<span class="c1"># print information about the basis</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Size of 1D H-space: {Ns:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Ns</span><span class="o">=</span><span class="n">basis_1d</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Size of 2D H-space: {Ns:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Ns</span><span class="o">=</span><span class="n">basis_2d</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
+<span class="c1">#</span>
+<span class="c1">###### setting up operators in hamiltonian ######</span>
+<span class="c1"># setting up site-coupling lists</span>
+<span class="n">Jzz_1d</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L_1d</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L_1d</span><span class="p">)]</span>
+<span class="n">hx_1d</span> <span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L_1d</span><span class="p">)]</span>
+<span class="c1">#</span>
+<span class="n">Jzz_2d</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_x</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span><span class="o">+</span><span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+<span class="n">hx_2d</span> <span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+<span class="c1"># setting up hamiltonians</span>
+<span class="c1"># 1d</span>
+<span class="n">Hzz_1d</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">Jzz_1d</span><span class="p">]],[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_1d</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">Hx_1d</span> <span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">hx_1d</span><span class="p">]],[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_1d</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1"># 2d</span>
+<span class="n">Hzz_2d</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">Jzz_2d</span><span class="p">]],[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_2d</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="n">Hx_2d</span> <span class="o">=</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">hx_2d</span><span class="p">]],[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_2d</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">###### calculate initial states ######</span>
+<span class="c1"># calculating bandwidth for non-driven hamiltonian</span>
+<span class="p">[</span><span class="n">E_1d_min</span><span class="p">],</span><span class="n">psi_1d</span> <span class="o">=</span> <span class="n">Hzz_1d</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">E_2d_min</span><span class="p">],</span><span class="n">psi_2d</span> <span class="o">=</span> <span class="n">Hzz_2d</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
+<span class="c1"># setting up initial states</span>
+<span class="n">psi0_1d</span> <span class="o">=</span> <span class="n">psi_1d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">psi0_2d</span> <span class="o">=</span> <span class="n">psi_2d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="c1">#</span>
+<span class="c1">###### time evolution ######</span>
+<span class="c1"># stroboscopic time vector</span>
+<span class="n">nT</span> <span class="o">=</span> <span class="mi">200</span> <span class="c1"># number of periods to evolve to</span>
+<span class="n">t</span><span class="o">=</span><span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span><span class="n">nT</span><span class="p">,</span><span class="n">len_T</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># t.vals=t, t.i=initial time, t.T=drive period</span>
+<span class="c1"># creating generators of time evolution using exp_op class</span>
+<span class="n">U1_1d</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hzz_1d</span><span class="o">+</span><span class="n">A</span><span class="o">*</span><span class="n">Hx_1d</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">U2_1d</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hzz_1d</span><span class="o">-</span><span class="n">A</span><span class="o">*</span><span class="n">Hx_1d</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">U1_2d</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hzz_2d</span><span class="o">+</span><span class="n">A</span><span class="o">*</span><span class="n">Hx_2d</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">U2_2d</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hzz_2d</span><span class="o">-</span><span class="n">A</span><span class="o">*</span><span class="n">Hx_2d</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># user-defined generator for stroboscopic dynamics </span>
+<span class="k">def</span> <span class="nf">evolve_gen</span><span class="p">(</span><span class="n">psi0</span><span class="p">,</span><span class="n">nT</span><span class="p">,</span><span class="o">*</span><span class="n">U_list</span><span class="p">):</span>
+	<span class="k">yield</span> <span class="n">psi0</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nT</span><span class="p">):</span> <span class="c1"># loop over number of periods</span>
+		<span class="k">for</span> <span class="n">U</span> <span class="ow">in</span> <span class="n">U_list</span><span class="p">:</span> <span class="c1"># loop over unitaries</span>
+			<span class="n">psi0</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span>
+		<span class="k">yield</span> <span class="n">psi0</span>
+<span class="c1"># get generator objects for time-evolved states</span>
+<span class="n">psi_1d_t</span> <span class="o">=</span> <span class="n">evolve_gen</span><span class="p">(</span><span class="n">psi0_1d</span><span class="p">,</span><span class="n">nT</span><span class="p">,</span><span class="n">U1_1d</span><span class="p">,</span><span class="n">U2_1d</span><span class="p">,</span><span class="n">U1_1d</span><span class="p">)</span>
+<span class="n">psi_2d_t</span> <span class="o">=</span> <span class="n">evolve_gen</span><span class="p">(</span><span class="n">psi0_2d</span><span class="p">,</span><span class="n">nT</span><span class="p">,</span><span class="n">U1_2d</span><span class="p">,</span><span class="n">U2_2d</span><span class="p">,</span><span class="n">U1_2d</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">###### compute expectation values of observables ######</span>
+<span class="c1"># measure Hzz as a function of time</span>
+<span class="n">Obs_1d_t</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_1d_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="nb">dict</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="n">Hzz_1d</span><span class="p">),</span><span class="n">return_state</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">Obs_2d_t</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_2d_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="nb">dict</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="n">Hzz_2d</span><span class="p">),</span><span class="n">return_state</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1"># calculating the entanglement entropy density</span>
+<span class="n">Sent_time_1d</span> <span class="o">=</span> <span class="n">basis_1d</span><span class="o">.</span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">Obs_1d_t</span><span class="p">[</span><span class="s2">&quot;psi_t&quot;</span><span class="p">],</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">L_1d</span><span class="o">//</span><span class="mi">2</span><span class="p">))[</span><span class="s2">&quot;Sent_A&quot;</span><span class="p">]</span>
+<span class="n">Sent_time_2d</span> <span class="o">=</span> <span class="n">basis_2d</span><span class="o">.</span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">Obs_2d_t</span><span class="p">[</span><span class="s2">&quot;psi_t&quot;</span><span class="p">],</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">))[</span><span class="s2">&quot;Sent_A&quot;</span><span class="p">]</span>
+<span class="c1"># calculate entanglement entropy density</span>
+<span class="n">s_p_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">L_1d</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">L_1d</span>
+<span class="n">s_p_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">N_2d</span>
+<span class="c1">#</span>
+<span class="c1">###### plotting results ######</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,(</span><span class="n">Obs_1d_t</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">E_1d_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">E_1d_min</span><span class="p">),</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$S=1/2$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,(</span><span class="n">Obs_2d_t</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">E_2d_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">E_2d_min</span><span class="p">),</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$S=1$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$Q(t)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t/T$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;TFIM_Q.pdf&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,</span><span class="n">Sent_time_1d</span><span class="o">/</span><span class="n">s_p_1d</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$1d$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,</span><span class="n">Sent_time_2d</span><span class="o">/</span><span class="n">s_p_2d</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$2d$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$s_{\mathrm{ent}}(t)/s_\mathrm{Page}$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t/T$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;TFIM_S.pdf&quot;</span><span class="p">)</span>
+<span class="c1">#plt.show()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example9.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

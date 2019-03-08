@@ -12,8 +12,6 @@ from itertools import product
 import os
 
 
-os.environ["OMP_NUM_THREADS"]="1"
-
 def test(S,Lx,Ly):
 
 	N = Lx*Ly

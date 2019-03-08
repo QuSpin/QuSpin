@@ -35,24 +35,8 @@ T csr_trace(const I n,
 	return trace;
 }
 
-// template<typename T>
-// T inline my_max(T norm,T x){
-// 	T a = x*x;
-// 	// return (a<norm?norm:a);
-// 	return std::max(norm,a);
-// }
-
-// template<typename T>
-// T inline my_max(T norm,std::complex<T> x){
-// 	T re = x.real();
-// 	T im = x.imag();
-// 	T a = re*re+im*im;
-// 	// return (a<norm?norm:a);
-// 	return std::max(norm,a);
-// }
-
 template<typename T,typename I>
-T inf_norm_chunk(T * arr,I begin,I end){
+T inf_norm_chunk(T * arr,const I begin,const I end){
 	T max = 0;
 	for(I i=begin;i<end;i++){
 		T a = arr[i]*arr[i];
@@ -62,7 +46,7 @@ T inf_norm_chunk(T * arr,I begin,I end){
 }
 
 template<typename T,typename I>
-T inf_norm_chunk(std::complex<T> * arr,I begin,I end){
+T inf_norm_chunk(std::complex<T> * arr,const I begin,const I end){
 	T max = 0;
 	for(I i=begin;i<end;i++){
 		T re = arr[i].real();
@@ -72,6 +56,7 @@ T inf_norm_chunk(std::complex<T> * arr,I begin,I end){
 	}
 	return std::sqrt(max);
 }
+
 
 template<typename I, typename T1,typename T2,typename T3>
 void _expm_multiply(const I n,
@@ -96,19 +81,19 @@ void _expm_multiply(const I n,
 	
 	#pragma omp parallel shared(c1,c2,c3,flag,F,B1,B2,rco,vco)
 	{
-		int nthread = omp_get_num_threads();
-		int threadn = omp_get_thread_num();
-		I items_per_thread = n/nthread;
-		I begin = items_per_thread * threadn;
-		I end = items_per_thread * ( threadn + 1 );
+		const int nthread = omp_get_num_threads();
+		const int threadn = omp_get_thread_num();
+		const I items_per_thread = n/nthread;
+		const I begin = items_per_thread * threadn;
+		I end0 = items_per_thread * ( threadn + 1 );
 		if(threadn == nthread-1){
-			end += n%nthread;
+			end0 += n%nthread;
 		}
+		const I end = end0;
 
-		T3 eta = std::exp(a*mu/T2(s));
+		const T3 eta = std::exp(a*mu/T2(s));
 
-		#pragma omp for schedule(static,items_per_thread)
-		for(I k=0;k<n;k++){ 
+		for(I k=begin;k<end;k++){ 
 			B1[k] = F[k];
 			B2[k] = 0;
 		}
@@ -131,8 +116,7 @@ void _expm_multiply(const I n,
 
 				csr_matvec(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
 
-				#pragma omp for schedule(static,items_per_thread)
-				for(I k=0;k<n;k++){
+				for(I k=begin;k<end;k++){
 					F[k] += B1[k] = B2[k];
 				}
 
@@ -162,11 +146,12 @@ void _expm_multiply(const I n,
 
 			}
 
-			#pragma omp for schedule(static,items_per_thread)
-			for(I k=0;k<n;k++){
+			for(I k=begin;k<end;k++){
 				F[k] *= eta;
 				B1[k] = F[k];
 			}
+
+			#pragma omp barrier
 		}
 	}
 }

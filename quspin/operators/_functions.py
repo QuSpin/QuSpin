@@ -8,7 +8,7 @@ class function(object):
 		self._args = args
 
 	def conjugate(self):
-		return conjugate_function(function(self._f,*self._args))
+		return conjugate_function(function(self._f,self._args))
 
 	def __str__(self):
 		return self._f.__name__
