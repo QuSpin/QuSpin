@@ -3,8 +3,24 @@
 
 #include "complex_ops.h"
 #include "utils.h"
+#include <iostream>
+#include <iomanip>
 
+void write(const float& a){
+    std::cout << a;
+}
 
+void write(const double& a){
+    std::cout << a;
+}
+
+void write(const npy_cfloat_wrapper& a){
+    std::cout << a.real << std::setw(20) << a.imag;
+}
+
+void write(const npy_cdouble_wrapper& a){
+    std::cout << a.real << std::setw(20) << a.imag;
+}
 
 template<typename I, typename T1,typename T2>
 void csr_matvec_noomp_contig(const bool overwrite_y,
@@ -16,14 +32,14 @@ void csr_matvec_noomp_contig(const bool overwrite_y,
                 const T2 x[],
                       T2 y[])
 {
-    const T2 a_cast = T2(a);
+    // const T2 a_cast = T2(a);
     if(overwrite_y){
         for(I k = 0; k<n_row; k++){
             T2 sum = 0;
             for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
                 sum += Ax[jj] * x[Aj[jj]];
             }
-            y[k] = a_cast * sum;
+            y[k] = a * sum;
         }
     }else{
         for(I k = 0; k<n_row; k++){
@@ -31,7 +47,8 @@ void csr_matvec_noomp_contig(const bool overwrite_y,
             for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
                 sum += Ax[jj] * x[Aj[jj]];
             }
-            y[k] += a_cast * sum;
+
+            y[k] += a * sum;
         }
     }
 }
@@ -48,14 +65,14 @@ void csr_matvec_noomp_strided(const bool overwrite_y,
                 const npy_intp y_stride,
                       T2 y[])
 {
-    const T2 a_cast = T2(a);
+    // const T2 a_cast = T2(a);
     if(overwrite_y){
         for(I k = 0; k<n_row; k++){
             T2 sum = 0;
             for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
                 sum += Ax[jj] * x[Aj[jj] * x_stride];
             }
-            y[k * y_stride] = a_cast * sum;
+            y[k * y_stride] = a * sum;
         }
     }else{
         for(I k = 0; k<n_row; k++){
@@ -63,7 +80,7 @@ void csr_matvec_noomp_strided(const bool overwrite_y,
             for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
                 sum += Ax[jj] * x[Aj[jj] * x_stride];
             }
-            y[k * y_stride] += a_cast * sum;
+            y[k * y_stride] += a * sum;
         }
     }
 }
@@ -90,7 +107,7 @@ void csr_matvecs_noomp_strided(const bool overwrite_y,
         const npy_intp m = (npy_intp)n_row * n_vecs;
 
         for(npy_intp i = 0; i < m; i++){
-            y[i] = T2(0);
+            y[i] = 0;
         }
     }
 
@@ -98,9 +115,9 @@ void csr_matvecs_noomp_strided(const bool overwrite_y,
     if(y_stride_col < y_stride_row){
         for(I k = 0; k<n_row; k++){
             for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
-                const T2 ax = T2(a * Ax[jj]);
+                const T2 ax = a * Ax[jj];
                 const T2 * x_row = x + x_stride_row *  Aj[jj];
-                axpy_strided((npy_intp)n_vecs, ax, x_stride_col, x_row, y_stride_col, y);
+                axpy_strided(n_vecs, ax, x_stride_col, x_row, y_stride_col, y);
             }
             y += y_stride_row;
         }
@@ -110,7 +127,7 @@ void csr_matvecs_noomp_strided(const bool overwrite_y,
             for(I k = 0; k<n_row; k++){
                 for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
                     const npy_intp ii = x_stride_row *  Aj[jj];
-                    (*y) += T2(a * Ax[jj]) * x[ii];
+                    (*y) += (a * Ax[jj]) * x[ii];
                 }
                 y += y_stride_row;
             }
@@ -261,7 +278,7 @@ void csr_matvec_noomp(const bool overwrite_y,
 {
 	const npy_intp y_stride = y_stride_byte/sizeof(T2);
 	const npy_intp x_stride = x_stride_byte/sizeof(T2);
-
+    
     if(y_stride == 1){
         if(x_stride == 1){
             csr_matvec_noomp_contig(overwrite_y,n_row,Ap,Aj,Ax,a,x,y);
@@ -348,10 +365,10 @@ inline void csr_matvecs_noomp(const bool overwrite_y,
     }
     else if(y_stride_row==1){
         if(x_stride_col==1){
-            csr_matvecs_noomp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,1,x,y_stride_row,1,y);
+            csr_matvecs_noomp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,1,x,1,y_stride_col,y);
         }
         else if(x_stride_row==1){
-            csr_matvecs_noomp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,1,x_stride_col,x,y_stride_row,1,y);
+            csr_matvecs_noomp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,1,x_stride_col,x,1,y_stride_col,y);
         }
         else{
             csr_matvecs_noomp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,x_stride_col,x,1,y_stride_col,y);
@@ -360,8 +377,6 @@ inline void csr_matvecs_noomp(const bool overwrite_y,
     else{
         csr_matvecs_noomp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,x_stride_col,x,y_stride_row,y_stride_col,y);
     }
-    
-
 }
 
 template<typename I, typename T1,typename T2>
@@ -398,10 +413,10 @@ inline void csr_matvecs_omp(const bool overwrite_y,
     }
     else if(y_stride_row==1){
         if(x_stride_col==1){
-            csr_matvecs_omp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,1,x,y_stride_row,1,y);
+            csr_matvecs_omp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,1,x,1,y_stride_col,y);
         }
         else if(x_stride_row==1){
-            csr_matvecs_omp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,1,x_stride_col,x,y_stride_row,1,y);
+            csr_matvecs_omp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,1,x_stride_col,x,1,y_stride_col,y);
         }
         else{
             csr_matvecs_omp_strided(overwrite_y,n_row,n_vecs,Ap,Aj,Ax,a,x_stride_row,x_stride_col,x,1,y_stride_col,y);

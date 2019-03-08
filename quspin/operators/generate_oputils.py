@@ -47,11 +47,11 @@ def generate_get_switch():
 	return get_switch_body.format(body)
 
 
-csr_body = """
+comp_body = """
 
-#include "csr.h"
+#include "{fmt}.h"
 
-void csr_matvec_gil(const int switch_num,
+void {fmt}_matvec_gil(const int switch_num,
 					const bool overwrite_y,
 					const npy_intp n_row,
 					const npy_intp n_col,
@@ -65,10 +65,12 @@ void csr_matvec_gil(const int switch_num,
 						  void * y)
 {{
 	switch(switch_num){{{matvec_gil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
 	}}
 }}
 
-void csr_matvec_nogil(const int switch_num,
+void {fmt}_matvec_nogil(const int switch_num,
 					  const bool overwrite_y,
 					  const npy_intp n_row,
 					  const npy_intp n_col,
@@ -82,10 +84,12 @@ void csr_matvec_nogil(const int switch_num,
 						    void * y)
 {{
 	switch(switch_num){{{matvec_nogil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
 	}}
 }}
 
-void csr_matvecs_gil(const int switch_num,
+void {fmt}_matvecs_gil(const int switch_num,
 					  const bool overwrite_y,
 					  const npy_intp n_row,
 					  const npy_intp n_col,
@@ -102,10 +106,12 @@ void csr_matvecs_gil(const int switch_num,
 						    void * y)
 {{
 	switch(switch_num){{{matvecs_gil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
 	}}
 }}
 
-void csr_matvecs_nogil(const int switch_num,
+void {fmt}_matvecs_nogil(const int switch_num,
 					  const bool overwrite_y,
 					  const npy_intp n_row,
 					  const npy_intp n_col,
@@ -122,6 +128,8 @@ void csr_matvecs_nogil(const int switch_num,
 						    void * y)
 {{
 	switch(switch_num){{{matvecs_nogil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
 	}}
 }}"""
 
@@ -132,8 +140,164 @@ def generate_csr():
 	matvecs_gil_body = ""
 	matvecs_nogil_body = ""
 	case_tmp = "\n\t\tcase {} :\n\t\t\t{}\n\t\t\tbreak;"
-	matvec_tmp = "csr_matvec_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,(const {T1}*)Ap,(const {T1}*)Aj,(const {T2}*)Ax,*(const {T2}*)a,x_stride_byte,(const {T3}*)x,y_stride_byte,({T3}*)y);"
-	matvecs_tmp = "csr_matvecs_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,n_vecs,(const {T1}*)Ap,(const {T1}*)Aj,(const {T2}*)Ax,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
+	matvec_tmp = "{fmt}_matvec_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,(const {T1}*)Ap,(const {T1}*)Aj,(const {T2}*)Ax,*(const {T2}*)a,x_stride_byte,(const {T3}*)x,y_stride_byte,({T3}*)y);"
+	matvecs_tmp = "{fmt}_matvecs_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,n_vecs,(const {T1}*)Ap,(const {T1}*)Aj,(const {T2}*)Ax,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
+	for T1 in I_types:
+		for T2 in T_types:
+			for T3 in T_types:
+				if np.can_cast(T2,T3):
+					call = matvec_tmp.format(fmt="csr",omp="omp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvec_nogil_body = matvec_nogil_body + case_tmp.format(switch_num,call)
+
+					call = matvec_tmp.format(fmt="csr",omp="noomp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvec_gil_body = matvec_gil_body + case_tmp.format(switch_num,call)
+
+					call = matvecs_tmp.format(fmt="csr",omp="omp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvecs_nogil_body = matvecs_nogil_body + case_tmp.format(switch_num,call)
+
+					call = matvecs_tmp.format(fmt="csr",omp="noomp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvecs_gil_body = matvecs_gil_body + case_tmp.format(switch_num,call)
+
+					switch_num += 1
+
+
+
+	return comp_body.format(fmt="csr",matvec_nogil_body=matvec_nogil_body,matvec_gil_body=matvec_gil_body,
+						   matvecs_nogil_body=matvecs_nogil_body,matvecs_gil_body=matvecs_gil_body)	
+
+
+def generate_csc():
+	switch_num = 0
+	matvec_gil_body = ""
+	matvec_nogil_body = ""
+	matvecs_gil_body = ""
+	matvecs_nogil_body = ""
+	case_tmp = "\n\t\tcase {} :\n\t\t\t{}\n\t\t\tbreak;"
+	matvec_tmp = "{fmt}_matvec_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,(const {T1}*)Ap,(const {T1}*)Aj,(const {T2}*)Ax,*(const {T2}*)a,x_stride_byte,(const {T3}*)x,y_stride_byte,({T3}*)y);"
+	matvecs_tmp = "{fmt}_matvecs_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,n_vecs,(const {T1}*)Ap,(const {T1}*)Aj,(const {T2}*)Ax,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
+	for T1 in I_types:
+		for T2 in T_types:
+			for T3 in T_types:
+				if np.can_cast(T2,T3):
+					call = matvec_tmp.format(fmt="csc",omp="omp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvec_nogil_body = matvec_nogil_body + case_tmp.format(switch_num,call)
+
+					call = matvec_tmp.format(fmt="csc",omp="noomp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvec_gil_body = matvec_gil_body + case_tmp.format(switch_num,call)
+
+					call = matvecs_tmp.format(fmt="csc",omp="omp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvecs_nogil_body = matvecs_nogil_body + case_tmp.format(switch_num,call)
+
+					call = matvecs_tmp.format(fmt="csc",omp="noomp",T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+					matvecs_gil_body = matvecs_gil_body + case_tmp.format(switch_num,call)
+
+					switch_num += 1
+
+
+
+	return comp_body.format(fmt="csc",matvec_nogil_body=matvec_nogil_body,matvec_gil_body=matvec_gil_body,
+						   matvecs_nogil_body=matvecs_nogil_body,matvecs_gil_body=matvecs_gil_body)	
+
+
+dia_body = """
+
+#include "dia.h"
+
+void dia_matvec_gil(const int switch_num,
+					const bool overwrite_y,
+					const npy_intp n_row,
+					const npy_intp n_col,
+                    const npy_intp n_diags,
+                    const npy_intp L,
+						  void * offsets,
+						  void * diags,
+						  void * a,
+					const npy_intp x_stride_byte,
+						  void * x,
+					const npy_intp y_stride_byte,
+						  void * y)
+{{
+	switch(switch_num){{{matvec_gil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
+	}}
+}}
+
+void dia_matvec_nogil(const int switch_num,
+					  const bool overwrite_y,
+					  const npy_intp n_row,
+					  const npy_intp n_col,
+                      const npy_intp n_diags,
+                      const npy_intp L,
+						    void * offsets,
+						    void * diags,
+						    void * a,
+					  const npy_intp x_stride_byte,
+						    void * x,
+					  const npy_intp y_stride_byte,
+						    void * y)
+{{
+	switch(switch_num){{{matvec_nogil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
+	}}
+}}
+
+void dia_matvecs_gil(const int switch_num,
+					 const bool overwrite_y,
+					 const npy_intp n_row,
+					 const npy_intp n_col,
+					 const npy_intp n_vecs,
+                     const npy_intp n_diags,
+                     const npy_intp L,
+						   void * offsets,
+						   void * diags,
+						   void * a,
+					 const npy_intp x_stride_row_byte,
+					 const npy_intp x_stride_col_byte,
+						   void * x,
+					 const npy_intp y_stride_row_byte,
+					 const npy_intp y_stride_col_byte,
+						   void * y)
+{{
+	switch(switch_num){{{matvecs_gil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
+	}}
+}}
+
+void dia_matvecs_nogil(const int switch_num,
+					   const bool overwrite_y,
+					   const npy_intp n_row,
+					   const npy_intp n_col,
+					   const npy_intp n_vecs,
+                       const npy_intp n_diags,
+                       const npy_intp L,
+						     void * offsets,
+						     void * diags,
+						     void * a,
+					   const npy_intp x_stride_row_byte,
+					   const npy_intp x_stride_col_byte,
+						     void * x,
+					   const npy_intp y_stride_row_byte,
+					   const npy_intp y_stride_col_byte,
+						     void * y)
+{{
+	switch(switch_num){{{matvecs_nogil_body:}
+	    default:
+	        throw std::runtime_error("internal error: invalid argument typenums");
+	}}
+}}"""
+
+def generate_dia():
+	switch_num = 0
+	matvec_gil_body = ""
+	matvec_nogil_body = ""
+	matvecs_gil_body = ""
+	matvecs_nogil_body = ""
+	case_tmp = "\n\t\tcase {} :\n\t\t\t{}\n\t\t\tbreak;"
+	matvec_tmp = "dia_matvec_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,(const {T1})n_diags,(const {T1})L,(const {T1}*)offsets,(const {T2}*)diags,*(const {T2}*)a,x_stride_byte,(const {T3}*)x,y_stride_byte,({T3}*)y);"
+	matvecs_tmp = "dia_matvecs_{omp}(overwrite_y,(const {T1})n_row,(const {T1})n_col,n_vecs,(const {T1})n_diags,(const {T1})L,(const {T1}*)offsets,(const {T2}*)diags,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
 	for T1 in I_types:
 		for T2 in T_types:
 			for T3 in T_types:
@@ -154,15 +318,8 @@ def generate_csr():
 
 
 
-	return csr_body.format(matvec_nogil_body=matvec_nogil_body,matvec_gil_body=matvec_gil_body,
+	return dia_body.format(matvec_nogil_body=matvec_nogil_body,matvec_gil_body=matvec_gil_body,
 						   matvecs_nogil_body=matvecs_nogil_body,matvecs_gil_body=matvecs_gil_body)	
-
-
-def generate_csc():
-	return "\n"
-
-def generate_dia():
-	return "\n"
 
 
 oputils_impl_header = """#ifndef __OPUTILS_IMPL_H__

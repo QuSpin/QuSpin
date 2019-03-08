@@ -5,6 +5,7 @@
 #include <omp.h>
 
 #include <complex>
+#include "complex_ops.h"
 #include <algorithm>
 
 template<class T>
@@ -17,6 +18,28 @@ template<class T>
 void inline atomic_add(std::complex<T> &y,const std::complex<T> &aa){
     T * y_v = reinterpret_cast<T*>(&y);
     const T * aa_v = reinterpret_cast<const T*>(&aa);
+
+    #pragma omp atomic
+    y_v[0] += aa_v[0];
+    #pragma omp atomic
+    y_v[1] += aa_v[1];    
+}
+
+
+void inline atomic_add(npy_cdouble_wrapper &y,const npy_cdouble_wrapper &aa){
+    double * y_v = reinterpret_cast<double*>(&y);
+    const double * aa_v = reinterpret_cast<const double*>(&aa);
+
+    #pragma omp atomic
+    y_v[0] += aa_v[0];
+    #pragma omp atomic
+    y_v[1] += aa_v[1];    
+}
+
+
+void inline atomic_add(npy_cfloat_wrapper &y,const npy_cfloat_wrapper &aa){
+    float * y_v = reinterpret_cast<float*>(&y);
+    const float * aa_v = reinterpret_cast<const float*>(&aa);
 
     #pragma omp atomic
     y_v[0] += aa_v[0];

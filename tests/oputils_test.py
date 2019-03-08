@@ -10,8 +10,7 @@ import numpy as np
 from itertools import product
 
 dtypes = [np.float32,np.float64,np.complex64,np.complex128]
-# formats = ["dia","csr","csc"]
-formats = ["csr"]
+formats = ["dia","csr","csc"]
 
 def eps(N,dtype1,dtype2):
 	return N*max(np.finfo(dtype1).eps,np.finfo(dtype2).eps)
@@ -85,6 +84,7 @@ for fmt in formats:
 				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
 
+
 			# testing multi vector C to C
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
@@ -122,7 +122,7 @@ for fmt in formats:
 			except AssertionError as e:
 				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
-
+			
 			# testing multi vector F to F
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
@@ -161,6 +161,7 @@ for fmt in formats:
 				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
 
+			continue
 			# testing multi vector C to F
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))

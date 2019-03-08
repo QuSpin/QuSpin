@@ -72,7 +72,7 @@ void csrmv_merge(const bool overwrite_y,
 	if(overwrite_y){
 		#pragma omp for schedule(static)
 		for(I i=0;i<num_rows;i++){
-			y[i] = 0;
+			y[i] = T3(0);
 		}
 	}
 	// Spawn parallel threads
