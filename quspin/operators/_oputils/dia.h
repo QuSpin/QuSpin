@@ -277,9 +277,8 @@ inline void dia_matvecs_omp_strided(const bool overwrite_y,
                         const npy_intp y_stride_col,
                               T2 y[])
 {
-    dia_matvec_noomp_strided(overwrite_y,n_row,n_col,n_vecs,n_diags,L,offsets,diags,a,x_stride,x,y_stride,y);
+    dia_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,n_diags,L,offsets,diags,a,x_stride_row,x_stride_col,x,y_stride_row,y_stride_col,y);
 }
-
 
 
 #else
