@@ -9,6 +9,8 @@
 *.cxx
 *.c 
 
+oputils_impl.h
+
 failed.txt
 
 ./examples/scripts/*.pdf
