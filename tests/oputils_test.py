@@ -25,7 +25,7 @@ def func_cmplx(t):
 N = 1000
 for fmt in formats:
 	for dtype1,dtype2 in product(dtypes,dtypes):
-		for i in range(10):
+		for i in range(5):
 			print("testing {} {} {} {}".format(fmt,dtype1,dtype2,i+1))
 			if fmt in ["csr","csc"]:
 			
