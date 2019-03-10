@@ -2,64 +2,53 @@
 #ifndef _EXPM_MULTIPLY_H
 #define _EXPM_MULTIPLY_H
 
+#include "complex_ops.h"
+
 #include "openmp.h"
-#include "csr_matvec.h"
-#include <cmath>
-#include <algorithm>
-#include <complex>
-#include <iostream>
-
-template <class I, class T>
-T csr_trace(const I n,
-			const I n_col, 
-			const I Ap[], 
-			const I Aj[], 
-			const T Ax[])
+#if defined(_OPENMP)
+#include "csrmv_merge.h"
+#else
+template<typename I, typename T1,typename T2,typename T3>
+void csr_matvec(const bool overwrite_y,
+				const I n,
+				const I Ap[],
+				const I Aj[],
+				const T1 Ax[],
+				const T2 a,
+				const T3 x[],
+					  I rco[],
+					  T3 vco[],
+					  T3 y[])
 {
-
-	T trace = 0;
-	const I N = (n<n_col?n_col:n);
-
-	for(I i = 0; i < N; i++){
-		const I row_start = Ap[i];
-		const I row_end   = Ap[i+1];
-
-		T diag = 0;
-		for(I jj = row_start; jj < row_end; jj++){
-			if (Aj[jj] == i)
-				diag += Ax[jj];
+	if(overwrite_y){
+		for(I k = 0; k<n; k++){
+			T3 sum = 0;
+			for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
+				sum += Ax[jj] * x[Aj[jj]];
+			}
+			y[k] = a * sum;
 		}
-
-		trace += diag;
+	}else{
+		for(I k = 0; k<n; k++){
+			T3 sum = 0;
+			for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
+				sum += Ax[jj] * x[Aj[jj]];
+			}
+			y[k] += a * sum;
+		}
 	}
-	return trace;
-}
 
-template<typename T,typename I>
-T inf_norm_chunk(T * arr,const I begin,const I end){
-	T max = 0;
-	for(I i=begin;i<end;i++){
-		T a = arr[i]*arr[i];
-		max = std::max(max,a);
-	}
-	return std::sqrt(max);
 }
+#endif
 
-template<typename T,typename I>
-T inf_norm_chunk(std::complex<T> * arr,const I begin,const I end){
-	T max = 0;
-	for(I i=begin;i<end;i++){
-		T re = arr[i].real();
-		T im = arr[i].imag();
-		T a = re*re+im*im;
-		max = std::max(max,a);
-	}
-	return std::sqrt(max);
-}
+#include <algorithm>
+#include <vector>
+#include "math_functions.h"
+
 
 
 template<typename I, typename T1,typename T2,typename T3>
-void _expm_multiply(const I n,
+void expm_multiply(const I n,
 					const I Ap[],
 					const I Aj[],
 					const T1 Ax[],
@@ -69,19 +58,24 @@ void _expm_multiply(const I n,
 					const T1 mu,
 					const T3 a,
 			 			  T3 F[],
-						  T3 B1[], 
-						  T3 B2[]
+						  T3 work[]
 			)
 {
 
 	T2  c1,c2,c3;
 	bool flag=false;
-	I rco[128];
-	T3 vco[128];
+
+	const int nthread = omp_get_max_threads();
+	std::vector<I> rco_vec(nthread);
+	std::vector<T3> vco_vec(nthread);
+
+	T3 * B1 = work;
+	T3 * B2 = work + n;
+	I * rco = &rco_vec[0];
+	T3 * vco = &vco_vec[0];
 	
-	#pragma omp parallel shared(c1,c2,c3,flag,F,B1,B2,rco,vco)
+	#pragma omp parallel shared(c1,c2,c3,flag,F,B1,B2,rco,vco) firstprivate(nthread)
 	{
-		const int nthread = omp_get_num_threads();
 		const int threadn = omp_get_thread_num();
 		const I items_per_thread = n/nthread;
 		const I begin = items_per_thread * threadn;
@@ -91,7 +85,7 @@ void _expm_multiply(const I n,
 		}
 		const I end = end0;
 
-		const T3 eta = std::exp(a*mu/T2(s));
+		const T3 eta = math_functions::exp(a*mu/T2(s));
 
 		for(I k=begin;k<end;k++){ 
 			B1[k] = F[k];
@@ -99,7 +93,7 @@ void _expm_multiply(const I n,
 		}
 		for(int i=0;i<s;i++){
 
-			T2 c1_thread = inf_norm_chunk(B1,begin,end);
+			T2 c1_thread = math_functions::inf_norm(B1,begin,end);
 
 			#pragma omp single
 			{
@@ -114,14 +108,18 @@ void _expm_multiply(const I n,
 
 			for(int j=1;j<m_star+1 && !flag;j++){
 
-				csr_matvec(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
+				#if defined(_OPENMP)
+				csrmv_merge<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
+				#else
+				csr_matvec<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
+				#endif
 
 				for(I k=begin;k<end;k++){
 					F[k] += B1[k] = B2[k];
 				}
 
-				T2 c2_thread = inf_norm_chunk(B2,begin,end);
-				T2 c3_thread = inf_norm_chunk(F,begin,end);
+				T2 c2_thread = math_functions::inf_norm(B2,begin,end);
+				T2 c3_thread = math_functions::inf_norm(F,begin,end);
 
 				#pragma omp single
 				{

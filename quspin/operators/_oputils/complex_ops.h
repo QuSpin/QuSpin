@@ -196,4 +196,16 @@ npy_cfloat_wrapper operator*(const float& B, const npy_cfloat_wrapper& A) {
   return npy_cfloat_wrapper(A.real * B, A.imag * B);
 }
 
+
+template<typename c_type>
+npy_cdouble_wrapper operator/(const npy_cdouble_wrapper& A, const c_type& B) {
+  return npy_cdouble_wrapper(A.real / B, A.imag / B);
+}
+
+template<typename c_type>
+npy_cfloat_wrapper operator/(const npy_cfloat_wrapper& A, const c_type& B) {
+  return npy_cfloat_wrapper(A.real / B, A.imag / B);
+}
+
+
 #endif
