@@ -1,8 +1,8 @@
 from __future__ import print_function, division
 
 import sys,os
-#qspin_path = os.path.join(os.getcwd(),"../")
-#sys.path.insert(0,qspin_path)
+qspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,qspin_path)
 
 #print(os.environ["OMP_NUM_THREADS"])
 
