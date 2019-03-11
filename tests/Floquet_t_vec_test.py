@@ -17,7 +17,7 @@ This test only makes sure the floquet_t_vec class runs.
 """
 
 Omega=uniform(3.0,10.0) # drive frequency
-N_const = randint(100)
+N_const = randint(1,100)
 
 ####
 
@@ -37,7 +37,7 @@ t.strobo.inds
 
 ####
 
-t = Floquet_t_vec(Omega,N_const,len_T=100,N_up=randint(100))
+t = Floquet_t_vec(Omega,N_const,len_T=100,N_up=randint(1,100))
 
 t.vals
 t.i
@@ -74,7 +74,7 @@ t.const.strobo.inds
 
 ####
 
-t = Floquet_t_vec(Omega,N_const,len_T=100,N_up=randint(100),N_down=randint(100))
+t = Floquet_t_vec(Omega,N_const,len_T=100,N_up=randint(1,100),N_down=randint(1,100))
 
 t.vals
 t.i
