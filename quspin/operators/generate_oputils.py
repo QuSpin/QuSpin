@@ -329,6 +329,10 @@ oputils_impl_header = """#ifndef __OPUTILS_IMPL_H__
 #include "numpy/ndarrayobject.h"
 #include "numpy/ndarraytypes.h"
 
+inline bool EquivTypes(PyArray_Descr * dtype1,PyArray_Descr * dtype2){{
+	return PyArray_EquivTypes(dtype1,dtype2);
+}}
+
 {header_body}
 #endif"""
 

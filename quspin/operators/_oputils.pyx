@@ -65,10 +65,8 @@ cdef void _csr_matvec(bool overwrite_y, ndarray Ap,ndarray Aj, ndarray Ax,ndarra
   cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(Ap)
   cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(Ax)
   cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
-  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
-  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
-  cdef npy_intp ys = Yx_strides[0]
-  cdef npy_intp xs = Xx_strides[0]
+  cdef npy_intp ys = np.PyArray_STRIDE(Yx,0)
+  cdef npy_intp xs = np.PyArray_STRIDE(Xx,0)
   cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
   cdef void * Ap_ptr = np.PyArray_DATA(Ap)
   cdef void * Aj_ptr = np.PyArray_DATA(Aj)
@@ -92,12 +90,10 @@ cdef void _csr_matvecs(bool overwrite_y, ndarray Ap,ndarray Aj, ndarray Ax,ndarr
   cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(Ap)
   cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(Ax)
   cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
-  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
-  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
-  cdef npy_intp ysr = Yx_strides[0]
-  cdef npy_intp xsr = Xx_strides[0]
-  cdef npy_intp ysc = Yx_strides[1]
-  cdef npy_intp xsc = Xx_strides[1]
+  cdef npy_intp ysr = np.PyArray_STRIDE(Yx,0)
+  cdef npy_intp xsr = np.PyArray_STRIDE(Xx,0)
+  cdef npy_intp ysc = np.PyArray_STRIDE(Yx,1)
+  cdef npy_intp xsc = np.PyArray_STRIDE(Xx,1)
   cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
   cdef void * Ap_ptr = np.PyArray_DATA(Ap)
   cdef void * Aj_ptr = np.PyArray_DATA(Aj)
@@ -123,10 +119,8 @@ cdef void _csc_matvec(bool overwrite_y, ndarray Ap,ndarray Aj, ndarray Ax,ndarra
   cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(Ap)
   cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(Ax)
   cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
-  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
-  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
-  cdef npy_intp ys = Yx_strides[0]
-  cdef npy_intp xs = Xx_strides[0]
+  cdef npy_intp ys = np.PyArray_STRIDE(Yx,0)
+  cdef npy_intp xs = np.PyArray_STRIDE(Xx,0)
   cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
   cdef void * Ap_ptr = np.PyArray_DATA(Ap)
   cdef void * Aj_ptr = np.PyArray_DATA(Aj)
@@ -150,12 +144,10 @@ cdef void _csc_matvecs(bool overwrite_y, ndarray Ap,ndarray Aj, ndarray Ax,ndarr
   cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(Ap)
   cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(Ax)
   cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
-  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
-  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
-  cdef npy_intp ysr = Yx_strides[0]
-  cdef npy_intp xsr = Xx_strides[0]
-  cdef npy_intp ysc = Yx_strides[1]
-  cdef npy_intp xsc = Xx_strides[1]
+  cdef npy_intp ysr = np.PyArray_STRIDE(Yx,0)
+  cdef npy_intp xsr = np.PyArray_STRIDE(Xx,0)
+  cdef npy_intp ysc = np.PyArray_STRIDE(Yx,1)
+  cdef npy_intp xsc = np.PyArray_STRIDE(Xx,1)
   cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
   cdef void * Ap_ptr = np.PyArray_DATA(Ap)
   cdef void * Aj_ptr = np.PyArray_DATA(Aj)
@@ -181,10 +173,8 @@ cdef void _dia_matvec(bool overwrite_y, ndarray offsets ,ndarray diags, ndarray 
   cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(offsets)
   cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(diags)
   cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
-  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
-  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
-  cdef npy_intp ys = Yx_strides[0]
-  cdef npy_intp xs = Xx_strides[0]
+  cdef npy_intp ys = np.PyArray_STRIDE(Yx,0)
+  cdef npy_intp xs = np.PyArray_STRIDE(Xx,0)
   cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
   cdef void * diags_ptr = np.PyArray_DATA(diags)
   cdef void * offsets_ptr = np.PyArray_DATA(offsets)
@@ -210,12 +200,10 @@ cdef void _dia_matvecs(bool overwrite_y, ndarray offsets ,ndarray diags, ndarray
   cdef PyArray_Descr * dtype1 = np.PyArray_DESCR(offsets)
   cdef PyArray_Descr * dtype2 = np.PyArray_DESCR(diags)
   cdef PyArray_Descr * dtype3 = np.PyArray_DESCR(Xx)
-  cdef npy_intp * Xx_strides = np.PyArray_STRIDES(Xx)
-  cdef npy_intp * Yx_strides = np.PyArray_STRIDES(Yx)
-  cdef npy_intp ysr = Yx_strides[0]
-  cdef npy_intp xsr = Xx_strides[0]
-  cdef npy_intp ysc = Yx_strides[1]
-  cdef npy_intp xsc = Xx_strides[1]
+  cdef npy_intp ysr = np.PyArray_STRIDE(Yx,0)
+  cdef npy_intp xsr = np.PyArray_STRIDE(Xx,0)
+  cdef npy_intp ysc = np.PyArray_STRIDE(Yx,1)
+  cdef npy_intp xsc = np.PyArray_STRIDE(Xx,1)
   cdef int switch_num = get_switch_num(dtype1,dtype2,dtype3)
   cdef void * diags_ptr = np.PyArray_DATA(diags)
   cdef void * offsets_ptr = np.PyArray_DATA(offsets)
@@ -512,7 +500,7 @@ def _dia_matvecs(bool overwrite_y, indtype[::1] offsets ,T1[:,::1] diags, T1 a, 
 """
 
 
-def csr_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+def _csr_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   if out is None:
     overwrite_out = True
     result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
@@ -529,7 +517,7 @@ def csr_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
 
 
 
-def csc_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+def _csc_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   if out is None:
     overwrite_out = True
     result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
@@ -544,7 +532,7 @@ def csc_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   return out
 
 
-def dia_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+def _dia_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   if out is None:
     overwrite_out = True
     result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
@@ -559,7 +547,7 @@ def dia_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   return out
 
 
-def other_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
+def _other_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   if out is None:
     overwrite_out = True
     result_dtype = _np.result_type(mat_obj.dtype,other.dtype)
@@ -581,21 +569,21 @@ def other_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
 
 def matvec(mat_obj,*args,**kwargs):
   if _sp.isspmatrix_csr(mat_obj):
-    return csr_dot(mat_obj,*args,**kwargs)
+    return _csr_dot(mat_obj,*args,**kwargs)
   elif _sp.isspmatrix_csc(mat_obj):
-    return csc_dot(mat_obj,*args,**kwargs)
+    return _csc_dot(mat_obj,*args,**kwargs)
   elif _sp.isspmatrix_dia(mat_obj):
-    return dia_dot(mat_obj,*args,**kwargs)
+    return _dia_dot(mat_obj,*args,**kwargs)
   else:
-    return other_dot(mat_obj,*args,**kwargs)
+    return _other_dot(mat_obj,*args,**kwargs)
 
 
 def _get_matvec_function(mat_obj):
   if _sp.isspmatrix_csr(mat_obj):
-    return csr_dot
+    return _csr_dot
   elif _sp.isspmatrix_csc(mat_obj):
-    return csc_dot
+    return _csc_dot
   elif _sp.isspmatrix_dia(mat_obj):
-    return dia_dot
+    return _dia_dot
   else:
-    return other_dot
+    return _other_dot
