@@ -619,7 +619,7 @@ class Floquet_t_vec(object):
 		
 		"""
 		if hasattr(self,"_const"):
-			return self._up
+			return self._const
 		else:
 			raise AttributeError("missing attribute 'const'")
 
@@ -632,7 +632,7 @@ class Floquet_t_vec(object):
 		Requires optional __init___ parameter N_down to be specified.
 		"""
 		if hasattr(self,"_down"):
-			return self._up
+			return self._down
 		else:
 			raise AttributeError("missing attribute 'down'")
 
