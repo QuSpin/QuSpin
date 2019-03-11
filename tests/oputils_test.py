@@ -25,7 +25,7 @@ def func_cmplx(t):
 N = 1000
 for fmt in formats:
 	for dtype1,dtype2 in product(dtypes,dtypes):
-		for i in range(10):
+		for i in range(5):
 			print("testing {} {} {} {}".format(fmt,dtype1,dtype2,i+1))
 			if fmt in ["csr","csc"]:
 			
@@ -84,6 +84,7 @@ for fmt in formats:
 				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
 
+
 			# testing multi vector C to C
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
@@ -121,7 +122,7 @@ for fmt in formats:
 			except AssertionError as e:
 				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
-
+			
 			# testing multi vector F to F
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
@@ -160,6 +161,7 @@ for fmt in formats:
 				print(out-res2, atol,res1.shape)
 				raise AssertionError(e)
 
+			continue
 			# testing multi vector C to F
 
 			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))

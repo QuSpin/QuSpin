@@ -719,8 +719,29 @@
 				<span class="k">return</span> <span class="n">out</span>
 		
 		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+				<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">)</span>
 
-			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">try</span><span class="p">:</span>
+						<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">result_dtype</span><span class="p">:</span>
+							<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+						<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+
+						<span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]:</span>
+							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+					<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+
+					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">)</span>
+
+				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+
+			<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 				<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; option does not apply for sparse inputs.&quot;</span><span class="p">)</span>
 
@@ -728,31 +749,8 @@
 				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 					<span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
 			<span class="k">else</span><span class="p">:</span>
+				<span class="k">pass</span>
 
-				<span class="c1"># if V.ndim == 1:</span>
-				<span class="c1"># 	V = _np.ascontiguousarray(V,dtype=result_dtype)</span>
-				<span class="c1"># else:</span>
-				<span class="c1"># 	V = _np.asarray(V,dtype=result_dtype)</span>
-
-				<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
-
-				<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-					<span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">)</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">try</span><span class="p">:</span>
-						<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">result_dtype</span><span class="p">:</span>
-							<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be C-contiguous array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
-						<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be C-contiguous array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
-						<span class="c1"># if out.ndim == 1 and not out.flags[&quot;CARRAY&quot;]:</span>
-						<span class="c1"># 	raise ValueError(&quot;&#39;out&#39; must be C-contiguous array with correct dtype and dimensions for output array.&quot;)</span>
-					<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be C-contiguous array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
-
-					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">)</span>
-
-				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
 			<span class="k">return</span> <span class="n">out</span></div>
 

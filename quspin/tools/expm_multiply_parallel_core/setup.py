@@ -1,4 +1,7 @@
-
+import os
+import sys
+import subprocess
+import glob
 
 def get_include_dirs():
     import numpy,os
@@ -28,49 +31,48 @@ def cython_files():
 
 
 def configuration(parent_package='', top_path=None):
-        import numpy,os,sys
-        from numpy.distutils.misc_util import Configuration
-        config = Configuration('expm_multiply_parallel_core',parent_package, top_path)
+    import numpy,os,sys
+    from numpy.distutils.misc_util import Configuration
+    config = Configuration('expm_multiply_parallel_core',parent_package, top_path)
 
-        cython_files()
+    subprocess.check_call([sys.executable,
+                           os.path.join(os.path.dirname(__file__),
+                                        'generate_source.py')])
 
-        extra_compile_args = ["-fno-strict-aliasing"]
-        extra_link_args = []
-        if sys.platform == "darwin":
-            extra_compile_args.append("-std=c++11")
- 
-        package_dir = os.path.dirname(os.path.realpath(__file__))
-        package_dir = os.path.expandvars(package_dir)
-        
-        include_dirs = get_include_dirs()
+    cython_files()
 
-        depends_csr = [os.path.join(include_dirs["_oputils"],"csrmv_merge.h"),
-                            os.path.join(include_dirs["source"],"csr_matvec.h"),
-                            ]
+    extra_compile_args = ["-fno-strict-aliasing"]
+    extra_link_args = []
+    if sys.platform == "darwin":
+        extra_compile_args.append("-std=c++11")
 
-        depends_expm = [os.path.join(include_dirs["_oputils"],"csrmv_merge.h"),
-                            os.path.join(include_dirs["source"],"csr_matvec.h"),
-                            os.path.join(include_dirs["source"],"expm_multiply_parallel.h"),
-                            ]
+    package_dir = os.path.dirname(os.path.realpath(__file__))
+    package_dir = os.path.expandvars(package_dir)
+    
+    include_dirs = get_include_dirs()
 
-        include_dirs_list = list(include_dirs.values())
+    depends_csr = [os.path.join(include_dirs["source"],"csr_matvec.h")]
 
-        src = os.path.join(package_dir,"expm_multiply_parallel_wrapper.cpp") 
-        config.add_extension('expm_multiply_parallel_wrapper',sources=src,
-                                include_dirs=include_dirs_list,
-                                depends=depends_expm,
-                                extra_compile_args=extra_compile_args,
-                                extra_link_args=extra_link_args,
-                                language="c++")
+    depends_expm = [os.path.join(include_dirs["source"],"expm_multiply_parallel_impl.h")]
 
-        src = os.path.join(package_dir,"csr_matvec_wrapper.cpp") 
-        config.add_extension('csr_matvec_wrapper',sources=src,
-                                include_dirs=include_dirs_list,
-                                depends=depends_csr,
-                                extra_compile_args=extra_compile_args,
-                                extra_link_args=extra_link_args,
-                                language="c++")
-        return config
+    include_dirs_list = list(include_dirs.values())
+
+    src = os.path.join(package_dir,"expm_multiply_parallel_wrapper.cpp") 
+    config.add_extension('expm_multiply_parallel_wrapper',sources=src,
+                            include_dirs=include_dirs_list,
+                            depends=depends_expm,
+                            extra_compile_args=extra_compile_args,
+                            extra_link_args=extra_link_args,
+                            language="c++")
+
+    src = os.path.join(package_dir,"csr_matvec_wrapper.cpp") 
+    config.add_extension('csr_matvec_wrapper',sources=src,
+                            include_dirs=[include_dirs["source"]],
+                            depends=depends_csr,
+                            extra_compile_args=extra_compile_args,
+                            extra_link_args=extra_link_args,
+                            language="c++")
+    return config
 
 if __name__ == '__main__':
         from numpy.distutils.core import setup

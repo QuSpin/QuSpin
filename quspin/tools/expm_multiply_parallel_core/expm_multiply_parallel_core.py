@@ -45,9 +45,10 @@ class expm_multiply_parallel(object):
 		if A.shape[0] != A.shape[1]:
 			raise ValueError("A must be a square matrix.")
 
-		self._tol = _np.finfo(A.dtype).eps
+		tol = _np.finfo(A.dtype).eps/2
+		self._tol = _np.array(tol,dtype=tol.dtype)
 
-		self._mu = _wrapper_csr_trace(self._A.indptr,self._A.indices,self._A.data)/self._A.shape[0]
+		self._mu = _np.array(_wrapper_csr_trace(self._A.indptr,self._A.indices,self._A.data)/self._A.shape[0],dtype=A.dtype)
 		self._A -= self._mu * _sp.identity(self._A.shape[0],dtype=self._A.dtype,format="csr")
 		self._A_1_norm = _np.max(_np.abs(A).sum(axis=0))
 		self._calculate_partition()
@@ -148,8 +149,9 @@ class expm_multiply_parallel(object):
 			if work_array.dtype != v_dtype:
 				raise ValueError("work_array must be array of dtype which matches the result of the matrix-vector multiplication.")
 
+		a = _np.array(self._a,dtype=v_dtype)
 		_wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
-					self._m_star,self._s,self._a,self._tol,self._mu,v,work_array)
+					self._m_star,self._s,a,self._tol,self._mu,v,work_array)
 
 		return v
 

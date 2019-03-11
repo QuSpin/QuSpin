@@ -1,10 +1,20 @@
 :math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
-======
+===================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`!
 
 Complete list of the most recent features 
-=============================
+=========================================
+
+Added in v. 0.3.2
+-----------------
+
+Improved Functionality
+++++++++++++++++++++++
+
+* improved performance for matrix vector product in _oputils.
+* improved performance for expm_multiply_parallel.
+
 
 Added in v. 0.3.2
 -----------------
@@ -18,8 +28,9 @@ Improved Functionality
 Added in v. 0.3.1
 -----------------
 
+
 Improved Functionality
-+++++
+++++++++++++++++++++++
 
 * support for python 3.7.
 * :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. These versions will remain available up to version 0.3.0. 
@@ -34,7 +45,7 @@ Improved Functionality
 * large integer support for `*_general_basis` classes allows to build lattices with more than 64 sites. 
 
 New Attributes, Functions, Methods and Classes
-+++++
+++++++++++++++++++++++++++++++++++++++++++++++
 
 * new argument `make_basis` for `*_basis_general` classes allows to use some of the basis functionality without constructing the basis. 
 * new `*_basis_general` class methods: `Op_bra_ket()`, `representative()`, `normalization()`, `inplace_Op()`.
