@@ -4,10 +4,9 @@
 
 #if defined(_OPENMP)
 
-
-#include <algorithm>
 #include <omp.h>
-#include "complex_ops.h"
+#include <algorithm>
+#include <complex>
 
 // See work my Merrill et. al. (http://ieeexplore.ieee.org/abstract/document/7877136/) for original work and implementation.
 // This code contains modified versions of algorithms 2 and 3.
@@ -135,6 +134,7 @@ void inline csr_matvec(const bool overwrite_y,
 }
 #else
 
+#include <complex>
 inline int omp_get_max_threads(void){return 1;}
 inline int omp_get_num_threads(void){return 1;}
 inline int omp_get_thread_num(void){return 0;}

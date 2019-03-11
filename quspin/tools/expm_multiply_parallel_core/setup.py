@@ -53,11 +53,7 @@ def configuration(parent_package='', top_path=None):
 
     depends_csr = [os.path.join(include_dirs["source"],"csr_matvec.h")]
 
-    depends_expm = [os.path.join(include_dirs["_oputils"],"csrmv_merge.h"),
-                        os.path.join(include_dirs["source"],"csr_matvec.h"),
-                        os.path.join(include_dirs["source"],"expm_multiply_parallel.h"),
-                        os.path.join(include_dirs["source"],"expm_multiply_parallel_impl.h"),
-                        ]
+    depends_expm = [os.path.join(include_dirs["source"],"expm_multiply_parallel_impl.h")]
 
     include_dirs_list = list(include_dirs.values())
 
