@@ -1,19 +1,34 @@
+:math:`\mathrm{\color{magenta} {QuSpin\ 0.3.2}}` here (updated on 2019.03.11)
+===================================================================
+
 :math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
-======
+===================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`!
 
-Complete list of the most recent features 
-=============================
 
-Added in v. 0.3.1
+Complete list of the most recent features 
+=========================================
+
+Added in v. 0.3.2 (2019.03.11)
 -----------------
 
 Improved Functionality
-+++++
+++++++++++++++++++++++
+
+* improved performance for matrix vector product in _oputils and expm_multiply_parallel. Leads to significant speedup in the `hamiltonian` and `quantum_operator` classes (e.g. in the `hamiltonian.evolve()` function) and the `tools.evolution.expm_multiply_parallel()` function.
+
+
+
+Added in v. 0.3.1 (2019.03.08)
+-----------------
+
+
+Improved Functionality
+++++++++++++++++++++++
 
 * support for python 3.7.
-* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. These platforms will remain available up to version 0.3.0. 
+* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained. 
 * matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
 * parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see also :ref:`parallelization-label`).
 * new OpenMP features in operators module (see :ref:`parallelization-label` and example script :ref:`example12-label`).
@@ -25,7 +40,7 @@ Improved Functionality
 * large integer support for `*_general_basis` classes allows to build lattices with more than 64 sites. 
 
 New Attributes, Functions, Methods and Classes
-+++++
+++++++++++++++++++++++++++++++++++++++++++++++
 
 * new argument `make_basis` for `*_basis_general` classes allows to use some of the basis functionality without constructing the basis. 
 * new `*_basis_general` class methods: `Op_bra_ket()`, `representative()`, `normalization()`, `inplace_Op()`.

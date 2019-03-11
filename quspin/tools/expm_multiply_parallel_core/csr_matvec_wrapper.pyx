@@ -4,6 +4,7 @@ cimport numpy as np
 import cython
 from cython.parallel cimport parallel
 from libcpp cimport bool
+from libcpp.vector cimport vector
 
 ctypedef double complex cdouble
 ctypedef float complex cfloat
@@ -11,6 +12,10 @@ ctypedef float complex cfloat
 cdef extern from "csr_matvec.h":
     void csr_matvec[I,T1,T2,T3](const bool,const I,const I[],const I[],const T1[],
                               const T2,const T3[],I[],T3[],T3[]) nogil
+    int omp_get_max_threads()
+
+  
+
 
 ctypedef fused index:
   np.int32_t
@@ -38,8 +43,12 @@ ctypedef fused T3:
 def _csr_matvec(bool overwrite_y, index[::1] Ap, index[::1] Aj,
                   T1[::1] Ax, T2 alpha, T3[::1] Xx, T3[::1] Yx):
   cdef index nr = Yx.shape[0]
-  cdef index rco[128];
-  cdef T3 vco[128];
+  cdef vector[index] rco;
+  cdef vector[T3] vco;
+  cdef int nthread = omp_get_max_threads()
+
+  rco.resize(nthread)
+  vco.resize(nthread)
 
   if T1 is cdouble:
     if T3 is cdouble:

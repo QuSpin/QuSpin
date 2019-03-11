@@ -667,8 +667,29 @@ class hamiltonian(object):
 				return out
 		
 		else:
+			if isinstance(V,_np.ndarray):
+				V = V.astype(result_dtype)
 
-			if _sp.issparse(V):
+				if out is None:
+					out = self._static_matvec(self._static,V)
+				else:
+					try:
+						if out.dtype != result_dtype:
+							raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
+						if out.shape != V.shape:
+							raise ValueError("'out' must be array with correct dtype and dimensions for output array.")
+
+						if not out.flags["B"]:
+							raise ValueError("'out' must be array with correct dtype and dimensions for output array.")
+					except AttributeError:
+						raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
+
+					self._static_matvec(self._static,V,out=out,overwrite_out=overwrite_out)
+
+				for func,Hd in iteritems(self._dynamic):
+					self._dynamic_matvec[func](Hd,V,overwrite_out=False,a=func(time),out=out)
+
+			elif _sp.issparse(V):
 				if out is not None:
 					raise TypeError("'out' option does not apply for sparse inputs.")
 
@@ -676,31 +697,8 @@ class hamiltonian(object):
 				for func,Hd in iteritems(self._dynamic):
 					out = out + func(time)*(Hd.dot(V))
 			else:
+				pass
 
-				# if V.ndim == 1:
-				# 	V = _np.ascontiguousarray(V,dtype=result_dtype)
-				# else:
-				# 	V = _np.asarray(V,dtype=result_dtype)
-
-				V = _np.asarray(V,dtype=result_dtype)
-
-				if out is None:
-					out = self._static_matvec(self._static,V)
-				else:
-					try:
-						if out.dtype != result_dtype:
-							raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-						if out.shape != V.shape:
-							raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-						# if out.ndim == 1 and not out.flags["CARRAY"]:
-						# 	raise ValueError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-					except AttributeError:
-						raise TypeError("'out' must be C-contiguous array with correct dtype and dimensions for output array.")
-
-					self._static_matvec(self._static,V,out=out,overwrite_out=overwrite_out)
-
-				for func,Hd in iteritems(self._dynamic):
-					self._dynamic_matvec[func](Hd,V,overwrite_out=False,a=func(time),out=out)
 
 			return out
 

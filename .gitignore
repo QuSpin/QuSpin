@@ -9,6 +9,9 @@
 *.cxx
 *.c 
 
+oputils_impl.h
+expm_multiply_parallel_impl.h
+
 failed.txt
 
 ./examples/scripts/*.pdf
