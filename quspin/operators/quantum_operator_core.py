@@ -1115,7 +1115,6 @@ class quantum_operator(object):
 		"""
 		
 		new_dict = {key:[op.transpose()] for key,op in iteritems(self._quantum_operator)}
-		print(self._basis)
 		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=copy)
 
 	def conjugate(self):
